@@ -1603,6 +1603,36 @@ test_zone_templates() {
 }
 
 ##############################################################################
+# Test: Permission Listing (q filter, sort, paging)
+##############################################################################
+
+test_permission_listing() {
+    print_section "Permission Listing Tests (q filter, sort, paging)"
+
+    # The permission catalogue is fixed and the default templates are seeded, so no test data is needed
+    api_request_v2 "GET" "/permissions" "" 200 "List permissions without the new parameters"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    local total
+    total=$(echo "$LAST_RESPONSE_BODY" | jq '.data.permissions | length')
+
+    api_request_v2 "GET" "/permissions?q=UEBERUSER" "" 200 "Filter permissions by name"
+    assert_json "q finds user_is_ueberuser" "$LAST_RESPONSE_BODY" '.data.permissions | map(.name) | join(",")' "user_is_ueberuser"
+    api_request_v2 "GET" "/permissions?sort=name:desc&per_page=5&page=1" "" 200 "First page of permissions by name desc"
+    assert_json "Permission pagination total counts the catalogue" "$LAST_RESPONSE_BODY" '.pagination.total' "$total"
+    assert_json "Names descend" "$LAST_RESPONSE_BODY" '[.data.permissions[].name] == ([.data.permissions[].name] | sort | reverse)' "true"
+    api_request_v2 "GET" "/permissions?sort=descr" "" 400 "Reject unknown permission sort field"
+
+    api_request_v2 "GET" "/permission-templates?type=group" "" 200 "Filter permission templates by type"
+    assert_json "Only group templates" "$LAST_RESPONSE_BODY" '[.data.templates[].template_type] | unique | join(",")' "group"
+    api_request_v2 "GET" "/permission-templates?q=administrator&type=user" "" 200 "Filter permission templates by name"
+    assert_json "q finds the Administrator template" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | index("Administrator") != null' "true"
+    api_request_v2 "GET" "/permission-templates?sort=template_type,name&per_page=1" "" 200 "First page of permission templates"
+    assert_json "Group templates sort before user templates" "$LAST_RESPONSE_BODY" '.data.templates[0].template_type' "group"
+    api_request_v2 "GET" "/permission-templates?type=admins" "" 400 "Reject unknown permission template type"
+    api_request_v2 "GET" "/permission-templates?sort=owner" "" 400 "Reject unknown permission template sort field"
+}
+
+##############################################################################
 # Test: Zone Template Listing (q filter, sort, paging)
 ##############################################################################
 
@@ -3832,6 +3862,7 @@ main() {
     test_users_crud || true
     test_zone_templates || true
     test_zone_template_listing || true
+    test_permission_listing || true
     test_users_ldap_sync || true
     test_users_perm_templ_validation || true
     test_users_self_edit_guard || true
