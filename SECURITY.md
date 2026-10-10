@@ -9,7 +9,7 @@
 | 3.9.x | Yes, LTS until December 2027 |
 | 4.1.x, 4.0.x, 3.8.x and older | No, please upgrade |
 
-See [Version Support](https://github.com/poweradmin/poweradmin/blob/master/README.md#version-support) in the README for the current branch status.
+See [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/) for the support rules and dates.
 
 ## Reporting a Vulnerability
 
