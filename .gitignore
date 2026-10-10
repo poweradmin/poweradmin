@@ -76,6 +76,7 @@ locale/**/*.po.backup.*
 # PHP tools
 /.phpstan-cache/
 .phan/phan.phar
+.phan/phan.phar.tmp
 .doctum/*
 !.doctum/theme/
 

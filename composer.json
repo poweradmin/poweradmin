@@ -166,7 +166,7 @@
         "@locale:stats"
     ],
 
-    "phan:install": "test -f .phan/phan.phar || curl -sL -o .phan/phan.phar https://github.com/phan/phan/releases/download/6.0.1/phan.phar",
+    "phan:install": "test -f .phan/phan.phar || (curl -fsSL --retry 3 --retry-all-errors --max-time 120 -o .phan/phan.phar.tmp https://github.com/phan/phan/releases/download/6.0.1/phan.phar && mv .phan/phan.phar.tmp .phan/phan.phar)",
     "compat:8.2": ["@phan:install", "php .phan/phan.phar --target-php-version=8.2 --allow-polyfill-parser"],
     "compat:8.3": ["@phan:install", "php .phan/phan.phar --target-php-version=8.3 --allow-polyfill-parser"],
     "compat:8.4": ["@phan:install", "php .phan/phan.phar --target-php-version=8.4 --allow-polyfill-parser"],
