@@ -1603,6 +1603,74 @@ test_zone_templates() {
 }
 
 ##############################################################################
+# Test: Zone Template Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_template_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zone-templates" 2>/dev/null \
+        | jq -r '.data.templates[]? | select(.name | IN("tlist-alpha", "tlist-beta")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/zone-templates/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_template_listing() {
+    print_section "Zone Template Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_template_listing_test_data
+
+    local alpha_id beta_id
+    if api_request_v2 "POST" "/zone-templates" '{"name":"tlist-alpha","description":"Listing mail setup"}' 201 "Create template for listing tests"; then
+        alpha_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+    else
+        print_fail "Failed to create template - skipping template listing tests"
+        return 1
+    fi
+    if api_request_v2 "POST" "/zone-templates" '{"name":"tlist-beta","description":"Listing web setup"}' 201 "Create second template for listing tests"; then
+        beta_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+    fi
+
+    # Template list
+    api_request_v2 "GET" "/zone-templates?q=TLIST-" "" 200 "Filter templates by name substring"
+    assert_json "q finds both listing templates" "$LAST_RESPONSE_BODY" '.data.templates | length' "2"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    api_request_v2 "GET" "/zone-templates?q=web%20setup" "" 200 "Filter templates by description"
+    assert_json "Description filter finds one template" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | join(",")' "tlist-beta"
+    api_request_v2 "GET" "/zone-templates?q=tlist-&sort=name:desc&per_page=1&page=2" "" 200 "Second page of templates by name desc"
+    assert_json "Second page holds tlist-alpha" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | join(",")' "tlist-alpha"
+    assert_json "Template pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/zone-templates?sort=owner" "" 400 "Reject unknown template sort field"
+
+    # Template records
+    local base="/zone-templates/${alpha_id}/records"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx2.[ZONE]","ttl":3600,"priority":20}' 201 "Add MX template record"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx1.[ZONE]","ttl":3600,"priority":10}' 201 "Add second MX template record"
+    api_request_v2 "POST" "$base" '{"name":"www.[ZONE]","type":"A","content":"192.0.2.10","ttl":300,"priority":0}' 201 "Add A template record"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx3.[ZONE]","ttl":3600,"priority":30}' 201 "Add third MX template record"
+
+    api_request_v2 "GET" "${base}?type=mx&sort=priority" "" 200 "Filter template records by type, sort by priority"
+    assert_json "MX records sorted by priority" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "mx1.[ZONE],mx2.[ZONE],mx3.[ZONE]"
+    api_request_v2 "GET" "${base}?name=WWW" "" 200 "Filter template records by name"
+    assert_json "Name filter finds the A record" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | join(",")' "A"
+    api_request_v2 "GET" "${base}?content=mx1" "" 200 "Filter template records by content"
+    assert_json "Content filter finds one record" "$LAST_RESPONSE_BODY" '.data.records | length' "1"
+    api_request_v2 "GET" "${base}?type=MX&sort=priority:desc&per_page=1" "" 200 "First page of MX records by priority desc"
+    assert_json "Highest priority first" "$LAST_RESPONSE_BODY" '.data.records[0].content' "mx3.[ZONE]"
+    assert_json "Template record pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    api_request_v2 "GET" "${base}?sort=prio" "" 400 "Reject unknown template record sort field"
+
+    local id
+    for id in "$alpha_id" "$beta_id"; do
+        if [[ -n "$id" ]]; then
+            api_request_v2 "DELETE" "/zone-templates/${id}" "" 200 "Delete listing test template" || true
+        fi
+    done
+}
+
+##############################################################################
 # Test: Zone Owners API
 ##############################################################################
 
@@ -3763,6 +3831,7 @@ main() {
     test_zone_dnssec_keys || true
     test_users_crud || true
     test_zone_templates || true
+    test_zone_template_listing || true
     test_users_ldap_sync || true
     test_users_perm_templ_validation || true
     test_users_self_edit_guard || true
