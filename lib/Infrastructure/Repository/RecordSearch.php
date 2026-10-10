@@ -269,6 +269,11 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
         return $foundRecords;
     }
 
+    public function commentMatchesTruncated(): bool
+    {
+        return false;
+    }
+
     /**
      * Get the total number of found records based on the given search criteria.
      *

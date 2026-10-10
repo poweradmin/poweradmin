@@ -165,6 +165,25 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->assertSame(7, $params['total_records']);
     }
 
+    public function testTheTruncatedCommentNoticeFlagReachesTheTemplate(): void
+    {
+        $this->post(['query' => 'example.com']);
+        $this->dnsData->method('searchRecordsCommentsTruncated')->willReturn(true);
+
+        $this->runController();
+
+        $this->assertTrue($this->renderedParams()['record_comments_truncated']);
+    }
+
+    public function testNoTruncatedCommentNoticeByDefault(): void
+    {
+        $this->post(['query' => 'example.com']);
+
+        $this->runController();
+
+        $this->assertFalse($this->renderedParams()['record_comments_truncated']);
+    }
+
     public function testTheSearchesRunAtTheUsersViewScope(): void
     {
         $this->viewLevel = 'own';

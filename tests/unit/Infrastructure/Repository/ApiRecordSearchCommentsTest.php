@@ -257,6 +257,63 @@ class ApiRecordSearchCommentsTest extends TestCase
         $this->assertCount(50, $rows);
     }
 
+    /** @return array{list<array>, array<string, list<array>>} */
+    private function zoneHits(int $count): array
+    {
+        $hits = [];
+        $zoneRows = [];
+        for ($i = 1; $i <= $count; $i++) {
+            $hits[] = $this->commentHit($i, "z$i.example", "www.z$i.example");
+            $zoneRows["z$i.example"] = [$this->row($i, "z$i.example", "www.z$i.example", 'A', '192.0.2.1')];
+        }
+
+        return [$hits, $zoneRows];
+    }
+
+    public function testMoreThanTheZoneCapSetsTheTruncatedFlag(): void
+    {
+        [$hits, $zoneRows] = $this->zoneHits(51);
+        $search = $this->searchWith($hits, $zoneRows);
+
+        $search->searchRecords($this->parameters(), 'all', null, 'name', 'ASC', false, 100, false, 1);
+
+        $this->assertTrue($search->commentMatchesTruncated());
+    }
+
+    public function testExactlyTheZoneCapDoesNotSetTheTruncatedFlag(): void
+    {
+        [$hits, $zoneRows] = $this->zoneHits(50);
+        $search = $this->searchWith($hits, $zoneRows);
+
+        $search->searchRecords($this->parameters(), 'all', null, 'name', 'ASC', false, 100, false, 1);
+
+        $this->assertFalse($search->commentMatchesTruncated());
+    }
+
+    public function testZonesTheUserCannotSeeDoNotCountTowardsTruncation(): void
+    {
+        [$hits, $zoneRows] = $this->zoneHits(80);
+        $search = $this->searchWith($hits, $zoneRows, [], range(1, 10));
+
+        $rows = $search->searchRecords($this->parameters(), 'own', 7, 'name', 'ASC', false, 100, false, 1);
+
+        $this->assertCount(10, $rows);
+        $this->assertFalse($search->commentMatchesTruncated());
+    }
+
+    public function testTheTruncatedFlagSurvivesTheCountAndResetsOnTheNextSearch(): void
+    {
+        [$hits, $zoneRows] = $this->zoneHits(60);
+        $search = $this->searchWith($hits, $zoneRows);
+        $search->searchRecords($this->parameters(), 'all', null, 'name', 'ASC', false, 100, false, 1);
+        $search->getTotalRecords($this->parameters(), 'all', null, false);
+        $this->assertTrue($search->commentMatchesTruncated());
+
+        $search->searchRecords($this->parameters(['comments' => false]), 'all', null, 'name', 'ASC', false, 100, false, 1);
+
+        $this->assertFalse($search->commentMatchesTruncated());
+    }
+
     public function testCountReusesTheCommentRowsOfThePageSearch(): void
     {
         $search = $this->search(true);

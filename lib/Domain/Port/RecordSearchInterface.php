@@ -48,4 +48,9 @@ interface RecordSearchInterface
     ): array;
 
     public function getTotalRecords(array $parameters, string $permissionView, ?int $userId, bool $groupRecords): int;
+
+    /**
+     * Whether the last searchRecords() call dropped comment matches because it hit the per-search zone cap.
+     */
+    public function commentMatchesTruncated(): bool;
 }

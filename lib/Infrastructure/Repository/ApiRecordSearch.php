@@ -43,6 +43,8 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
     /** @var array<string, array> Comment-matched rows per (query, mode, view, user), shared by the page and the count */
     private array $commentRows = [];
 
+    private bool $commentMatchesTruncated = false;
+
     public function __construct(
         PDO $db,
         DnsBackendProviderInterface $backendProvider,
@@ -64,6 +66,7 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
         bool $includeComments,
         int $page
     ): array {
+        $this->commentMatchesTruncated = false;
         $query = $parameters['query'] ?? '';
         if (empty($query) || !$parameters['records']) {
             return [];
@@ -113,7 +116,9 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
 
         if ($this->recordCommentsEnabled && !empty($parameters['comments'])) {
             $exact = isset($parameters['wildcard']) && !$parameters['wildcard'];
-            $records = $this->mergeCommentMatches($records, $this->commentMatches($rawQuery, $exact, $permissionView, $userId));
+            $commentMatches = $this->commentMatches($rawQuery, $exact, $permissionView, $userId);
+            $this->commentMatchesTruncated = $commentMatches['truncated'];
+            $records = $this->mergeCommentMatches($records, $commentMatches['records']);
         }
 
         if (empty($records)) {
@@ -185,8 +190,16 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
         return count($this->searchRecords($parameters, $permissionView, $userId, 'name', 'ASC', $groupRecords, PHP_INT_MAX, false, 1));
     }
 
+    public function commentMatchesTruncated(): bool
+    {
+        return $this->commentMatchesTruncated;
+    }
+
     /**
-     * Comment-matched rows, computed once per request for a given search and user.
+     * Comment-matched rows and whether the zone cap dropped any zone, computed
+     * once per request for a given search and user.
+     *
+     * @return array{records: array, truncated: bool}
      */
     private function commentMatches(string $query, bool $exact, string $permissionView, ?int $userId): array
     {
@@ -201,7 +214,9 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
     /**
      * Records of every RRset whose comment matches. PowerDNS comments belong to
      * the whole RRset, so all of its records match, one zone fetch per zone.
-     * With an owner id, zones that user cannot see are dropped before any fetch.
+     * With an owner id, zones that user cannot see are dropped before the zone cap applies.
+     *
+     * @return array{records: array, truncated: bool}
      */
     private function findRecordsByComment(string $query, bool $exact, ?int $ownerId): array
     {
@@ -222,7 +237,8 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
             $rrsetsByZone[$zoneName][strtolower(($hit['name'] ?? '') . '|' . ($hit['type'] ?? ''))] = true;
         }
 
-        if (count($rrsetsByZone) > self::MAX_COMMENT_ZONES) {
+        $truncated = count($rrsetsByZone) > self::MAX_COMMENT_ZONES;
+        if ($truncated) {
             $this->logger?->warning('Comment search matched {zones} zones, listing the first {max}', [
                 'zones' => count($rrsetsByZone),
                 'max' => self::MAX_COMMENT_ZONES,
@@ -240,7 +256,7 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
             }
         }
 
-        return $records;
+        return ['records' => $records, 'truncated' => $truncated];
     }
 
     /**

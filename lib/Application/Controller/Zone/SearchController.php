@@ -64,6 +64,7 @@ class SearchController extends BaseController
         $zones_page = 1;
         $totalRecords = 0;
         $searchResultRecords = [];
+        $recordCommentsTruncated = false;
         $records_page = 1;
 
         // Sorting by owner data the user cannot fully see would leak ownership
@@ -141,6 +142,8 @@ class SearchController extends BaseController
 
             $totalRecords = $dnsDataService->searchRecordsTotalCount($parameters, $permission_view, $iface_search_group_records);
 
+            $recordCommentsTruncated = $dnsDataService->searchRecordsCommentsTruncated();
+
             // Shorten IPv6 addresses in AAAA record content for display
             $searchResultRecords = SearchResultPresenter::records($this->shortenIPv6InRecords($searchResultRecords));
         }
@@ -179,7 +182,8 @@ class SearchController extends BaseController
             $deletePermission,
             $ownershipViewPermission,
             $ownerSortAllowed,
-            $isRecordCountSortSupported
+            $isRecordCountSortSupported,
+            $recordCommentsTruncated
         );
     }
 
@@ -203,7 +207,8 @@ class SearchController extends BaseController
         string $deletePermission,
         string $ownershipViewPermission,
         bool $ownerSortAllowed,
-        bool $isRecordCountSortSupported
+        bool $isRecordCountSortSupported,
+        bool $recordCommentsTruncated
     ): void {
         // Get all record types for the filter dropdown
         $recordTypeService = new RecordTypeService($this->getConfig());
@@ -232,6 +237,7 @@ class SearchController extends BaseController
             'found_records' => $searchResultRecords,
             'total_zones' => $totalZones,
             'total_records' => $totalRecords,
+            'record_comments_truncated' => $recordCommentsTruncated,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
             'zones_pager' => PaginationService::pagerWindow($totalZones, $zone_rowamount, $zones_page),

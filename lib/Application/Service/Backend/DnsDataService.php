@@ -351,6 +351,14 @@ class DnsDataService
         return $this->recordSearch()->getTotalRecords($parameters, $permissionView, $this->actor->userId(), $groupRecords);
     }
 
+    /**
+     * Whether the last record search listed only part of the comment matches (API backend zone cap).
+     */
+    public function searchRecordsCommentsTruncated(): bool
+    {
+        return $this->recordSearch()->commentMatchesTruncated();
+    }
+
     private function zoneSearch(): ZoneSearchInterface
     {
         return $this->zoneSearch ??= $this->repositoryFactory->createZoneSearch();

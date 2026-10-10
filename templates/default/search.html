@@ -110,6 +110,12 @@
     </div>
 </div>
 
+{% if record_comments_truncated %}
+<div class="alert alert-warning py-2 small" role="alert" data-testid="comment-matches-truncated">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Comment matches were limited to 50 zones; refine your search to see more.{% endtrans %}
+</div>
+{% endif %}
+
 {% if has_zones %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -279,7 +285,7 @@
 {% if has_records %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}</span></span>
+        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}{% if record_comments_truncated %}+{% endif %}</span></span>
         {% if total_records > record_rowamount %}
         <div class="d-flex align-items-center">
             <label for="records-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
