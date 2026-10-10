@@ -184,6 +184,7 @@
     ]
   },
   "config": {
+    "process-timeout": 0,
     "platform": {
       "php": "8.2.27"
     },
