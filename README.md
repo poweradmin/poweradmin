@@ -122,35 +122,14 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Version Support
 
-Poweradmin maintains multiple release branches:
+| Version | Status |
+|---------|--------|
+| 4.4.x | LTS until December 2027, recommended for production. Last line with API v1 |
+| 4.3.x, 4.2.x | Last fixes only, end of life three months after the 4.5.0 release |
+| 3.9.x | LTS until December 2027 |
+| 4.1.x, 4.0.x, 3.8.x and older | End of life, please upgrade |
 
-| Branch | Status | Support |
-|--------|--------|---------|
-| `develop` | Development | 4.6.0 development, may be unstable |
-| `master` | Next release | 4.5.0, awaiting its release - critical fixes only |
-| `release/4.4.x` | LTS | Recommended for production - bug and security fixes until December 2027 (security fixes only later in the period) |
-| `release/4.3.x` | Maintenance | Last fixes only - end of life three months after the 4.5.0 release |
-| `release/4.2.x` | Maintenance | Last fixes only - end of life three months after the 4.5.0 release |
-| `release/4.1.x` | End of support | No further updates - upgrade to 4.4.x |
-| `release/4.0.x` | End of support | No further updates - upgrade to 4.4.x |
-| `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
-
-### PHP Version Support
-
-**Important:** Starting with version 4.2.x, the minimum required PHP version is **8.2**. PHP 8.1 is no longer supported.
-
-Poweradmin tracks the [official PHP release lifecycle](https://www.php.net/supported-versions.php). PHP versions that have reached end-of-life are dropped from the next Poweradmin release; security-only versions remain supported until then. See [docs.poweradmin.org → Requirements](https://docs.poweradmin.org/getting-started/requirements/) for the current supported range.
-
-### Long-Term Support (LTS)
-
-Poweradmin keeps one 4.x line and the 3.9.x line on Long-Term Support (LTS):
-
-- **4.4.x** - LTS until December 2027. It is the last line with API v1, which is removed in 4.5.0, so it suits setups that still need v1. Bug and security fixes at first, security fixes only later in the period.
-- **3.9.x** - LTS until December 2027, starting with version 3.9.8. Bug fixes and security updates for organizations that prefer stability over immediate upgrades.
-
-The 4.2.x and 4.3.x lines reach end of life three months after 4.5.0 is released. Plan the upgrade to 4.4.x or newer before then.
-
-For more details, see the [Poweradmin in 2025: Year in Review](https://www.poweradmin.org/p/poweradmin-in-2025-year-in-review) blog post.
+`master` holds 4.5.0 and `develop` holds 4.6.0 development. The support rules, a timeline, and the PHP, PowerDNS and distribution support dates are on [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/).
 
 ## Contributing
 
