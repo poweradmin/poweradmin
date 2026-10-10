@@ -338,7 +338,9 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
      */
     private function zonesMatching(callable $match, ?string $kind): array
     {
-        $readsCatalogPerZone = $this->client->zoneListOmitsCatalog();
+        // A producer or consumer lookup reads no catalog, so it skips the server version probe too
+        $readsCatalogPerZone = !in_array($kind, [ZoneType::PRODUCER, ZoneType::CONSUMER], true)
+            && $this->client->zoneListOmitsCatalog();
         $zones = [];
         foreach ($this->readZoneKinds() as $apiName => $entry) {
             if ($kind !== null && $entry['kind'] !== $kind) {

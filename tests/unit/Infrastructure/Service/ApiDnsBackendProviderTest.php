@@ -634,7 +634,7 @@ class ApiDnsBackendProviderTest extends TestCase
             'member.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => ''],
             'producer.example.com.' => ['kind' => 'PRODUCER', 'masters' => [], 'catalog' => ''],
         ]);
-        $this->mockClient->method('zoneListOmitsCatalog')->willReturn(true);
+        $this->mockClient->expects($this->never())->method('zoneListOmitsCatalog');
         $this->mockClient->expects($this->never())->method('getZoneCatalogName');
 
         $stmt = $this->createMock(PDOStatement::class);
