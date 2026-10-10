@@ -68,6 +68,9 @@ class PowerdnsApiClient
     /** @var string|null PowerDNS version, when the caller supplied one instead of leaving it to be probed */
     private ?string $serverVersion = null;
 
+    /** PowerDNS's own explanation for the last rejected RRset PATCH. */
+    private ?string $lastWriteRejection = null;
+
     /**
      * @param string|null $serverVersion Skips the capability probe when the caller
      *        already knows the PowerDNS version
@@ -1082,6 +1085,7 @@ class PowerdnsApiClient
      */
     public function patchZoneRRsets(string $zoneName, array $rrsets): bool
     {
+        $this->lastWriteRejection = null;
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $data = ['rrsets' => $rrsets];
@@ -1092,8 +1096,35 @@ class PowerdnsApiClient
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to patch RRsets for zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            $this->lastWriteRejection = self::rejectionReason($e);
             return false;
         }
+    }
+
+    /**
+     * What PowerDNS said when it refused the last patchZoneRRsets() call, or null when
+     * the call succeeded or failed without a PowerDNS verdict (transport, auth).
+     */
+    public function getLastWriteRejection(): ?string
+    {
+        return $this->lastWriteRejection;
+    }
+
+    /**
+     * The "error" text of a 4xx PowerDNS answer. Auth failures (401/403) and
+     * transport errors say nothing about the record, so they yield null.
+     */
+    private static function rejectionReason(ApiErrorException $e): ?string
+    {
+        $status = $e->getDetail('http_code');
+        if (!is_int($status) || $status < 400 || $status > 499 || $status === 401 || $status === 403) {
+            return null;
+        }
+
+        $response = $e->getDetail('response');
+        $reason = is_array($response) ? ($response['error'] ?? null) : null;
+
+        return is_string($reason) && trim($reason) !== '' ? $reason : null;
     }
 
     // ---------------------------------------------------------------

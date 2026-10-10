@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
@@ -54,6 +55,8 @@ use Poweradmin\Domain\Service\Validation\Refusal;
  */
 class RecordManager implements RecordManagerInterface
 {
+    private const MAX_BACKEND_REASON_LENGTH = 300;
+
     private TransactionInterface $transaction;
     private ConfigurationInterface $config;
     private DnsFormatter $dnsFormatter;
@@ -313,7 +316,7 @@ class RecordManager implements RecordManagerInterface
                 if ($ownTransaction) {
                     $this->transaction->rollBack();
                 }
-                return RecordWriteResult::backendFailure(_('Failed to add record to DNS backend.'));
+                return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to add record to DNS backend.'), $this->writeRejection()), RecordField::CONTENT);
             }
 
             $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
@@ -349,6 +352,33 @@ class RecordManager implements RecordManagerInterface
         }
 
         return RecordWriteResult::ok($recordId);
+    }
+
+    private function writeRejection(): ?string
+    {
+        return $this->backendProvider instanceof ReportsWriteRejection ? $this->backendProvider->lastWriteRejection() : null;
+    }
+
+    /**
+     * The failure text with the backend's own reason appended: "Failed to add record to
+     * DNS backend: <reason>". The reason is untranslated text from PowerDNS, stripped of
+     * control characters and capped; the caller escapes it on output like any message.
+     */
+    public static function backendFailureMessage(string $message, ?string $reason): string
+    {
+        if ($reason === null) {
+            return $message;
+        }
+
+        $reason = trim((string)preg_replace('/[\\x00-\\x1F\\x7F]+/u', ' ', $reason));
+        if ($reason === '') {
+            return $message;
+        }
+        if (mb_strlen($reason) > self::MAX_BACKEND_REASON_LENGTH) {
+            $reason = mb_substr($reason, 0, self::MAX_BACKEND_REASON_LENGTH) . '...';
+        }
+
+        return (preg_replace('/[.\x{3002}\x{FF0E}\x{0964}]\s*$/u', '', $message) ?? $message) . ': ' . $reason;
     }
 
     /**
@@ -471,7 +501,7 @@ class RecordManager implements RecordManagerInterface
                 $comment
             )
         ) {
-            return RecordWriteResult::backendFailure(_('Failed to update record in DNS backend.'));
+            return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to update record in DNS backend.'), $this->writeRejection()), RecordField::CONTENT);
         }
 
         $afterRecord = [
@@ -530,7 +560,7 @@ class RecordManager implements RecordManagerInterface
         }
 
         if (!$this->backendProvider->deleteRecord($rid)) {
-            return RecordWriteResult::backendFailure(_('Failed to delete record from DNS backend.'));
+            return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to delete record from DNS backend.'), $this->writeRejection()));
         }
 
         $this->captureChange(function () use ($record, $rid, $zone): void {

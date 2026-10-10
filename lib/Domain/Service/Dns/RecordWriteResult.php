@@ -74,8 +74,8 @@ final readonly class RecordWriteResult
         return new self(false, $message, Refusal::NOT_FOUND, null, null);
     }
 
-    public static function backendFailure(string $message): self
+    public static function backendFailure(string $message, ?RecordField $field = null): self
     {
-        return new self(false, $message, Refusal::BACKEND_FAILURE, null, null);
+        return new self(false, $message, Refusal::BACKEND_FAILURE, $field, null);
     }
 }

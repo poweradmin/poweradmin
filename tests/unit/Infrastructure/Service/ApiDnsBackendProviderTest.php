@@ -1027,6 +1027,59 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    private function stubSingleRecordRRset(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetchColumn')->willReturn(1);
+        $this->mockDb->method('prepare')->willReturn($stmt);
+
+        $this->mockClient->method('getZoneRrset')->willReturn([
+            'rrsets' => [[
+                'name' => 'www.example.com.',
+                'type' => 'A',
+                'ttl' => 3600,
+                'records' => [['content' => '192.168.1.1', 'disabled' => false]],
+            ]],
+        ]);
+    }
+
+    public function testRejectedDeleteReportsPowerDnsReason(): void
+    {
+        $this->stubSingleRecordRRset();
+        $this->mockClient->method('patchZoneRRsets')->willReturn(false);
+        $this->mockClient->method('getLastWriteRejection')->willReturn('Zone is read-only');
+
+        $result = $this->provider->deleteRecord(RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0));
+
+        $this->assertFalse($result);
+        $this->assertSame('Zone is read-only', $this->provider->lastWriteRejection());
+    }
+
+    public function testSuccessfulDeleteClearsAStaleRejection(): void
+    {
+        $this->stubSingleRecordRRset();
+        $this->mockClient->method('patchZoneRRsets')->willReturnOnConsecutiveCalls(false, true);
+        $this->mockClient->method('getLastWriteRejection')->willReturn('Not in expected format');
+        $id = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->assertFalse($this->provider->deleteRecord($id));
+        $this->assertSame('Not in expected format', $this->provider->lastWriteRejection());
+
+        $this->assertTrue($this->provider->deleteRecord($id));
+        $this->assertNull($this->provider->lastWriteRejection());
+    }
+
+    public function testDeleteFailingBeforeThePatchDropsAStaleRejection(): void
+    {
+        $this->stubSingleRecordRRset();
+        $this->mockClient->method('patchZoneRRsets')->willReturn(false);
+        $this->mockClient->method('getLastWriteRejection')->willReturn('old reason');
+        $this->provider->deleteRecord(RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0));
+
+        $this->assertFalse($this->provider->deleteRecord('not-an-encoded-id!'));
+        $this->assertNull($this->provider->lastWriteRejection());
+    }
+
     public function testDeleteRecordReplacesRRsetWithRemainingRecords(): void
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);

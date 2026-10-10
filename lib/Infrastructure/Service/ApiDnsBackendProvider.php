@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
@@ -49,7 +50,7 @@ use Poweradmin\Infrastructure\Session\PhpSession;
  * Zone metadata is stored locally in the Poweradmin zones table.
  * Records are identified by encoded composite keys (no PowerDNS DB access needed).
  */
-final class ApiDnsBackendProvider implements DnsBackendProviderInterface
+final class ApiDnsBackendProvider implements DnsBackendProviderInterface, ReportsWriteRejection
 {
     private PowerdnsApiClient $client;
     private PDO $db;
@@ -59,6 +60,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
+
+    private ?string $lastWriteRejection = null;
 
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
@@ -443,6 +446,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
      */
     private function appendRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment): ?string
     {
+        $this->lastWriteRejection = null;
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
             $this->logger->error('Cannot create record: zone id {id} has no local zones row', ['id' => $domainId]);
@@ -482,6 +486,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         }
 
         if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
             return null;
         }
 
@@ -490,6 +495,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
     {
+        $this->lastWriteRejection = null;
         // Decode the encoded record ID to get the old record identity
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("editRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
@@ -610,7 +616,17 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
         }
         $rrsets[] = $target;
 
-        return $this->client->patchZoneRRsets($apiZoneName, $rrsets);
+        if (!$this->client->patchZoneRRsets($apiZoneName, $rrsets)) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            return false;
+        }
+
+        return true;
+    }
+
+    public function lastWriteRejection(): ?string
+    {
+        return $this->lastWriteRejection;
     }
 
     /**
@@ -631,6 +647,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
 
     public function deleteRecord(int|string $recordId): bool
     {
+        $this->lastWriteRejection = null;
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("deleteRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
             return false;
@@ -685,7 +702,12 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface
             ];
         }
 
-        return $this->client->patchZoneRRsets($apiZoneName, [$rrset]);
+        if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            return false;
+        }
+
+        return true;
     }
 
     // ---------------------------------------------------------------

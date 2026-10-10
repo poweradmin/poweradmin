@@ -186,6 +186,27 @@ test.describe('Record CRUD Operations', () => {
 
       await expectRecordAdded(page, zoneId, { name: label, content: 'key=123' });
     });
+
+    test('should show the PowerDNS reason when it rejects a TXT record (multi-record add path)', async ({ page, baseURL }) => {
+      test.skip(!isApiModeInstance(baseURL), 'SQL backend stores the content without asking PowerDNS to parse it');
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const zoneId = zone.id;
+      const label = uniqueName('txtreject');
+
+      await page.goto(`/zones/${zoneId}/records/add`);
+
+      await page.locator('select[name*="type"]').first().selectOption('TXT');
+      await page.locator('input[name*="name"]').first().fill(label);
+      // Passes Poweradmin's validator, PowerDNS answers 422 "Not in expected format"; the reason
+      // reaches the page through the add path's failure reasons
+      await page.locator('input[name*="content"], textarea[name*="content"]').first().fill('"test=\\"value\\"; key=123"');
+
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      await expect(page).toHaveURL(/\/records\/add/);
+      await expect(page.locator('.alert-danger')).toContainText('Failed to add record to DNS backend: ');
+      await expect(page.locator('.alert-danger')).toContainText('Not in expected format');
+    });
   });
 
   test.describe('Add Record - CNAME Record', () => {
