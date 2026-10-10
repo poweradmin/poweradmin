@@ -5,6 +5,10 @@
     {label: 'Edit record'|trans},
 ]) }}
 
+{% if zone_is_editable %}
+{% include '_partials/api_escape_warning.html' with {api_mode: api_escape_warning, rrsets: api_escape_rrsets} only %}
+{% endif %}
+
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
         <strong>

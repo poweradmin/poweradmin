@@ -5,6 +5,10 @@
     {label: 'Edit'|trans},
 ]) }}
 
+{% if zone_is_editable %}
+{% include '_partials/api_escape_warning.html' with {api_mode: api_escape_warning, rrsets: api_escape_rrsets} only %}
+{% endif %}
+
 {% if zone_is_editable and iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">

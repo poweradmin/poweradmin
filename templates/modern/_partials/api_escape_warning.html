@@ -1,0 +1,33 @@
+{# PowerDNS Auth 5.1.x drops one level of backslash escaping on API writes (PowerDNS issue 18159) #}
+{% if api_mode %}
+{% if rrsets is not empty %}
+<div class="alert alert-warning small" role="alert" data-testid="api-escape-warning">
+    <i class="bi bi-exclamation-triangle me-1"></i>
+    {% trans %}PowerDNS Auth 5.1.x removes one level of backslash escaping from records saved through its API. Saving any record with the same name and type as the records below rewrites them as well, so a backslash is lost or an escaped quote is refused. Edit them with pdnsutil until PowerDNS fixes this:{% endtrans %}
+    <ul class="mb-0 mt-1">
+        {% for rrset in rrsets %}
+        <li><code>{{ rrset }}</code></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+<div class="alert alert-warning small d-none" role="alert" id="apiEscapeLiveWarning" data-testid="api-escape-live-warning">
+    <i class="bi bi-exclamation-triangle me-1"></i>
+    {% trans %}This content contains a backslash. PowerDNS Auth 5.1.x removes one level of backslash escaping from records saved through its API, so it may be stored differently from what you entered.{% endtrans %}
+</div>
+<script>
+(function () {
+    // The zone page's record filter is also named "content", hence the id exclusion
+    var selector = '[name="content"]:not(#content), [name$="[content]"], textarea[name="records"]';
+    document.addEventListener('input', function (event) {
+        if (!event.target.matches || !event.target.matches(selector)) {
+            return;
+        }
+        var hasBackslash = Array.prototype.some.call(document.querySelectorAll(selector), function (field) {
+            return field.value !== field.defaultValue && field.value.indexOf('\\') !== -1;
+        });
+        document.getElementById('apiEscapeLiveWarning').classList.toggle('d-none', !hasBackslash);
+    });
+})();
+</script>
+{% endif %}

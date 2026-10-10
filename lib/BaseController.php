@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\RequestValidator;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Domain\Service\Dns\ApiEscapeRisk;
 use Poweradmin\Application\Service\DnsDataService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PermissionTemplateWriteService;
@@ -436,6 +437,21 @@ abstract class BaseController
     private function services(): ControllerServiceFactory
     {
         return $this->serviceFactory ??= new ControllerServiceFactory($this->db, $this->config, $this->logger);
+    }
+
+    /**
+     * RRsets of the zone that PowerDNS Auth 5.1.x would alter on the next API write
+     * to them; always empty on the SQL backend, which writes content as entered.
+     *
+     * @return list<string>
+     */
+    protected function apiEscapeRiskRrsets(int $zoneId, string $zoneName): array
+    {
+        if (!DnsBackendProviderFactory::isApiBackend($this->config)) {
+            return [];
+        }
+
+        return ApiEscapeRisk::affectedRrsets($this->services()->dnsBackendProvider()->getZoneRecords($zoneId, $zoneName));
     }
 
     protected function createUserPreferenceService(): UserPreferenceService

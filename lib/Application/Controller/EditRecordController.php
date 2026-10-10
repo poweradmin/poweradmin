@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Domain\Service\PermissionService;
@@ -187,6 +188,9 @@ class EditRecordController extends BaseController
             'perm_edit' => $perm_edit,
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_is_editable' => $user_can_edit_zone && !$zone_is_read_only,
+            'api_escape_warning' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            // Only this record's RRset is rewritten by the save
+            'api_escape_rrsets' => array_values(array_intersect(($zone_name !== null ? $this->apiEscapeRiskRrsets((int)$zid, $zone_name) : []), [$record['name'] . ' ' . $record['type']])),
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),

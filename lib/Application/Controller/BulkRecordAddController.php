@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Exception;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
@@ -280,6 +281,8 @@ class BulkRecordAddController extends BaseController
             'display_hostname_only' => $this->createUserPreferenceService()->getDisplayHostnameOnly(
                 $this->userContextService->getLoggedInUserId()
             ),
+            'api_escape_warning' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            'api_escape_rrsets' => $zone_name !== null ? $this->apiEscapeRiskRrsets($zone_id, $zone_name) : [],
         ]);
     }
 

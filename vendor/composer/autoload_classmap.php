@@ -1396,6 +1396,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/URIRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\WALLETRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/WALLETRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\ZONEMDRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\Dns\\ApiEscapeRisk' => $baseDir . '/lib/Domain/Service/Dns/ApiEscapeRisk.php',
     'Poweradmin\\Domain\\Service\\Dns\\DomainManager' => $baseDir . '/lib/Domain/Service/Dns/DomainManager.php',
     'Poweradmin\\Domain\\Service\\Dns\\DomainManagerInterface' => $baseDir . '/lib/Domain/Service/Dns/DomainManagerInterface.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordManager' => $baseDir . '/lib/Domain/Service/Dns/RecordManager.php',

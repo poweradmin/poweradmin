@@ -541,6 +541,8 @@ class EditController extends BaseController
             'zone_is_read_only' => $zone_is_read_only,
             'user_can_edit_zone' => $user_can_edit_zone,
             'zone_is_editable' => $zone_is_editable,
+            'api_escape_warning' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
+            'api_escape_rrsets' => $this->apiEscapeRiskRrsets($zone_id, $zone_name),
             'can_view_zone_logs' => $can_view_zone_logs,
             'can_manage_dnssec' => $can_manage_dnssec,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
