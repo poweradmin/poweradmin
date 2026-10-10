@@ -604,7 +604,7 @@ class ZoneTemplate
      */
     public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name'): array
     {
-        $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
+        $allowedSortColumns = ['name', 'type', 'content', 'prio', 'ttl'];
         $sortby = in_array($sortby, $allowedSortColumns) ? htmlspecialchars($sortby) : 'name';
 
         $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby;
