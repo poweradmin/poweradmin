@@ -25,6 +25,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -37,6 +39,9 @@ use Exception;
  */
 class GroupMembersController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups/{id}/members */
+    private const MEMBER_SORT_FIELDS = ['user_id', 'username', 'fullname', 'email', 'joined_at'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -94,6 +99,34 @@ class GroupMembersController extends PublicApiController
             )
         ]
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on username, full name or email',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'admin')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: user_id, username, fullname, email, joined_at. Default: newest member first',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'username')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Members retrieved successfully',
@@ -101,6 +134,17 @@ class GroupMembersController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Members retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     type: 'object',
@@ -125,8 +169,10 @@ class GroupMembersController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Group not found')]
     private function listMembers(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
@@ -134,6 +180,12 @@ class GroupMembersController extends PublicApiController
         }
 
         try {
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::MEMBER_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
             $groupId = (int)$this->pathParameters['id'];
             $members = $this->membershipService->listGroupMembers($groupId);
 
@@ -144,8 +196,10 @@ class GroupMembersController extends PublicApiController
                 'email' => $m->getEmail(),
                 'joined_at' => $m->getCreatedAt(),
             ], $members);
+            $membersData = ListPaging::filterContains($membersData, (string)$this->request->query->get('q', ''), static fn(array $m): array => [$m['username'], $m['fullname'], $m['email']]);
+            [$membersData, $extra] = ListPaging::paginate($sort->sortRows($membersData), $page, $perPage);
 
-            return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully');
+            return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {

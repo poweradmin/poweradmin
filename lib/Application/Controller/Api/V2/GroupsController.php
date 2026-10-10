@@ -26,6 +26,8 @@ use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Error\LastZoneOwnerException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
@@ -42,6 +44,9 @@ use Exception;
  */
 class GroupsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups */
+    private const GROUP_SORT_FIELDS = ['id', 'name', 'member_count', 'zone_count', 'created_at'];
+
     private const MAX_ZONES_INVALID = 'max_zones must be null or a whole number from 0 to ' . ZoneOwnershipLimit::MAX_LIMIT;
 
     protected function acceptsZoneRestrictedKey(): bool
@@ -98,6 +103,34 @@ class GroupsController extends PublicApiController
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['groups']
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the group name or description',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'dns')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, member_count, zone_count, created_at. Default: name',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'zone_count:desc,name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Groups retrieved successfully',
@@ -105,6 +138,17 @@ class GroupsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Groups retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     properties: [
@@ -132,36 +176,68 @@ class GroupsController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     private function listGroups(): JsonResponse
     {
         try {
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::GROUP_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
             $userId = $this->authenticatedUserId;
             $isAdmin = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $groups = $this->groupService->listGroups($userId, $isAdmin);
 
-            $enrichedGroups = [];
+            $rows = [];
             foreach ($groups as $group) {
-                $details = $this->groupService->getGroupDetails($group->getId());
-                $enrichedGroups[] = [
+                $rows[] = [
                     'id' => $group->getId(),
                     'name' => $group->getName(),
                     'description' => $group->getDescription(),
                     'perm_templ_id' => $group->getPermTemplId(),
                     'max_zones' => $group->getMaxZones(),
-                    'member_count' => $details['memberCount'],
-                    'zone_count' => $details['zoneCount'],
+                    'member_count' => null,
+                    'zone_count' => null,
                     'created_at' => $group->getCreatedAt(),
                 ];
             }
+            $rows = ListPaging::filterContains($rows, (string)$this->request->query->get('q', ''), static fn(array $g): array => [$g['name'], $g['description']]);
 
-            return $this->returnApiResponse(['groups' => $enrichedGroups], true, 'Groups retrieved successfully');
+            // The counts cost a lookup per group, so only a sort on them loads them for every group
+            $sortsOnCounts = array_intersect(array_column($sort->fields(), 'field'), ['member_count', 'zone_count']) !== [];
+            if ($sortsOnCounts) {
+                $rows = array_map($this->withCounts(...), $rows);
+            }
+            [$rows, $extra] = ListPaging::paginate($sort->sortRows($rows), $page, $perPage);
+            if (!$sortsOnCounts) {
+                $rows = array_map($this->withCounts(...), $rows);
+            }
+
+            return $this->returnApiResponse(['groups' => $rows], true, 'Groups retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
             return $this->handleException($e, 'GroupsController::listGroups', 'Failed to retrieve groups');
         }
+    }
+
+    /**
+     * Fill in the member and zone counts of a group list row
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function withCounts(array $row): array
+    {
+        $details = $this->groupService->getGroupDetails($row['id']);
+        $row['member_count'] = $details['memberCount'];
+        $row['zone_count'] = $details['zoneCount'];
+
+        return $row;
     }
 
     /**
