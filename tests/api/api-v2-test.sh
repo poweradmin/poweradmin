@@ -1420,6 +1420,94 @@ test_groups() {
 }
 
 ##############################################################################
+# Test: Group Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_group_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups" 2>/dev/null \
+        | jq -r '.data.groups[]? | select(.name | IN("glist-alpha", "glist-beta")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones" 2>/dev/null \
+        | jq -r '.data.zones[]? | select(.name | IN("glist-a.example.com", "glist-b.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users" 2>/dev/null \
+        | jq -r '.data.users[]? | select(.username == "glist_member") | .user_id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_group_listing() {
+    print_section "Group Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_group_listing_test_data
+
+    local alpha_id beta_id zone_a zone_b member_id
+    if api_request_v2 "POST" "/groups" '{"name":"glist-alpha","description":"Listing ops group","perm_templ_id":6}' 201 "Create group for listing tests"; then
+        alpha_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.group.id')
+    else
+        print_fail "Failed to create group - skipping group listing tests"
+        return 1
+    fi
+    if api_request_v2 "POST" "/groups" '{"name":"glist-beta","description":"Listing web group","perm_templ_id":6}' 201 "Create second group for listing tests"; then
+        beta_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.group.id')
+    fi
+    if api_request_v2 "POST" "/zones" '{"name":"glist-b.example.com","type":"MASTER"}' 201 "Create zone for group listing tests"; then
+        zone_b=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2 "POST" "/zones" '{"name":"glist-a.example.com","type":"MASTER"}' 201 "Create second zone for group listing tests"; then
+        zone_a=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2 "POST" "/users" '{"username":"glist_member","password":"SecureTestPass1234","fullname":"Listing Member","email":"glist@example.com","description":"","perm_templ":1,"active":true}' 201 "Create user for group listing tests"; then
+        member_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+    fi
+    api_request_v2 "POST" "/groups/${alpha_id}/zones" "{\"zone_id\":${zone_b}}" 201 "Assign zone to group"
+    api_request_v2 "POST" "/groups/${alpha_id}/zones" "{\"zone_id\":${zone_a}}" 201 "Assign second zone to group"
+    api_request_v2 "POST" "/groups/${alpha_id}/members" "{\"user_id\":${member_id}}" 201 "Add member to group"
+    local admin_id
+    admin_id=$(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users?username=admin" 2>/dev/null | jq -r '.data.users[0]?.user_id // empty')
+    api_request_v2 "POST" "/groups/${alpha_id}/members" "{\"user_id\":${admin_id}}" 201 "Add admin to group"
+
+    # Group list
+    api_request_v2 "GET" "/groups?q=GLIST-" "" 200 "Filter groups by name substring"
+    assert_json "q finds both listing groups" "$LAST_RESPONSE_BODY" '.data.groups | length' "2"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    api_request_v2 "GET" "/groups?q=web%20group" "" 200 "Filter groups by description"
+    assert_json "Description filter finds one group" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-beta"
+    api_request_v2 "GET" "/groups?q=glist-&sort=name:desc&per_page=1&page=2" "" 200 "Second page of groups by name desc"
+    assert_json "Second page holds glist-alpha" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-alpha"
+    assert_json "Group pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    assert_json "Counts are filled on a paged list" "$LAST_RESPONSE_BODY" '.data.groups[0].zone_count' "2"
+    api_request_v2 "GET" "/groups?q=glist-&sort=zone_count:asc" "" 200 "Sort groups by zone count"
+    assert_json "Group without zones first, unlike the name order" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-beta,glist-alpha"
+    api_request_v2 "GET" "/groups?sort=perm_templ_id" "" 400 "Reject unknown group sort field"
+
+    # Members and zones of a group
+    api_request_v2 "GET" "/groups/${alpha_id}/members?q=GLIST" "" 200 "Filter group members"
+    assert_json "q finds the listing member" "$LAST_RESPONSE_BODY" '.data.members | map(.username) | join(",")' "glist_member"
+    # Both directions, since both members may join in the same second and tie in the default order
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=username:asc&per_page=1" "" 200 "First page of members by username asc"
+    assert_json "admin sorts first ascending" "$LAST_RESPONSE_BODY" '.data.members[0].username' "admin"
+    assert_json "Member pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=username:desc&per_page=1" "" 200 "First page of members by username desc"
+    assert_json "glist_member sorts first descending" "$LAST_RESPONSE_BODY" '.data.members[0].username' "glist_member"
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=password" "" 400 "Reject unknown member sort field"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?q=GLIST-A" "" 200 "Filter group zones"
+    assert_json "q finds one zone" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-a.example.com"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=zone_name:asc&per_page=1&page=2" "" 200 "Second page of group zones by name asc"
+    assert_json "Second page ascending holds glist-b" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-b.example.com"
+    assert_json "Zone pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=zone_name:desc&per_page=1&page=2" "" 200 "Second page of group zones by name desc"
+    assert_json "Second page descending holds glist-a" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-a.example.com"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=owner" "" 400 "Reject unknown group zone sort field"
+
+    cleanup_existing_group_listing_test_data
+}
+
+##############################################################################
 # Test: Zone Templates API
 ##############################################################################
 
@@ -3824,6 +3912,7 @@ main() {
     test_master_port_syntax || true
     test_zone_status_codes || true
     test_groups || true
+    test_group_listing || true
     test_zone_owners || true
     test_zone_metadata || true
     test_zone_dnssec || true
