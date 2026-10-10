@@ -78,6 +78,8 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
         }
 
         $db->exec("CREATE TABLE zones (id INT PRIMARY KEY, domain_id INT NULL, owner INT NULL, zone_name VARCHAR(255) NULL)");
+        $db->exec("CREATE TABLE domains (id INT PRIMARY KEY)");
+        $db->exec("CREATE TABLE app_settings (setting_key VARCHAR(100) PRIMARY KEY, setting_value VARCHAR(255) NULL, value_type VARCHAR(20) NULL)");
 
         return $db;
     }
@@ -199,5 +201,60 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
         $this->assertTrue($repository->transferUserZones(self::FROM, self::TO));
 
         $this->assertSame(2, (int)$db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL")->fetchColumn());
+    }
+
+    /** @return array<string, array{string, bool}> */
+    public static function lockingEngines(): array
+    {
+        return [
+            'mysql sql' => ['mysql', false], 'mysql api' => ['mysql', true],
+            'pgsql sql' => ['pgsql', false], 'pgsql api' => ['pgsql', true],
+        ];
+    }
+
+    private function secondConnection(string $engine): PDO
+    {
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        if ($engine === 'mysql') {
+            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::MYSQL_DB, 'root', 'uberuser', $options);
+        }
+        $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
+        $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+
+        return $db;
+    }
+
+    private static function lockIsFree(PDO $db, bool $api): bool
+    {
+        $sql = $api
+            ? "SELECT setting_value FROM app_settings WHERE setting_key = 'backend.zone_ids' FOR UPDATE NOWAIT"
+            : "SELECT id FROM domains WHERE id = 10 FOR UPDATE NOWAIT";
+        $db->beginTransaction();
+        try {
+            $db->query($sql)->fetchAll();
+            return true;
+        } catch (PDOException) {
+            return false;
+        } finally {
+            $db->rollBack();
+        }
+    }
+
+    #[DataProvider('lockingEngines')]
+    public function testTheTransferHoldsTheOwnerWritersLockUntilItsTransactionEnds(string $engine, bool $api): void
+    {
+        $db = $this->connect($engine);
+        $db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (10, 10, 1, 'a.example')");
+        $db->exec("INSERT INTO domains (id) VALUES (10)");
+        $db->exec("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES ('backend.zone_ids', '" . ($api ? 'api' : 'sql') . "', 'string')");
+        $repository = new DbUserRepository($db, new FakeConfiguration([]), $api);
+        $other = $this->secondConnection($engine);
+
+        $db->beginTransaction();
+        $this->assertTrue($repository->transferUserZones(self::FROM, self::TO));
+        $this->assertFalse(self::lockIsFree($other, $api), 'an owner add must wait for the transfer');
+        $db->rollBack();
+
+        $this->assertTrue(self::lockIsFree($other, $api));
     }
 }

@@ -702,10 +702,12 @@ class DbUserRepositoryTest extends TestCase
         $result = $this->repository->transferUserZones(1, 2);
 
         $this->assertTrue($result);
-        $this->assertStringContainsString('DELETE FROM zones', $prepared[0]);
-        $this->assertStringContainsString('DELETE FROM zones', $prepared[1]);
-        $this->assertStringContainsString('UPDATE zones SET owner', $prepared[2]);
-        $this->assertCount(3, $prepared);
+        $this->assertStringContainsString('SELECT DISTINCT domain_id FROM zones', $prepared[0]);
+        $this->assertStringContainsString('SELECT id FROM domains', $prepared[1]);
+        $this->assertStringContainsString('DELETE FROM zones', $prepared[2]);
+        $this->assertStringContainsString('DELETE FROM zones', $prepared[3]);
+        $this->assertStringContainsString('UPDATE zones SET owner', $prepared[4]);
+        $this->assertCount(5, $prepared);
     }
 
     // ========== assignPermissionTemplate tests ==========

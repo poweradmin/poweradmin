@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
@@ -978,6 +979,7 @@ class DbUserRepository implements UserRepositoryInterface
         }
 
         try {
+            $this->queueOwnershipWriters($fromUserId);
             $this->dropSharedOwnerships($fromUserId, $toUserId);
             $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
             $moved = $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
@@ -991,6 +993,31 @@ class DbUserRepository implements UserRepositoryInterface
                 $transaction->rollBack();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * Takes the lock every zone owner writer queues on (the API marker row, or each of the
+     * sender's domains rows in ascending order), so an owner added meanwhile cannot slip in
+     * between the dedupe and the move. DELETE and UPDATE read current rows, not the snapshot.
+     */
+    private function queueOwnershipWriters(int $fromUserId): void
+    {
+        if ($this->isApiBackend) {
+            BackendModeMarker::markApi($this->db);
+            return;
+        }
+
+        $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :fromUserId AND domain_id IS NOT NULL ORDER BY domain_id");
+        $stmt->execute([':fromUserId' => $fromUserId]);
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        $domains = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM $domains WHERE id = :id$lock");
+        foreach ($zoneIds as $zoneId) {
+            $stmt->execute([':id' => $zoneId]);
+            $stmt->fetchAll();
         }
     }
 
