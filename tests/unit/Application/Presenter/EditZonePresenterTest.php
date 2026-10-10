@@ -312,6 +312,15 @@ class EditZonePresenterTest extends TestCase
         $this->assertFalse($this->present(['showRecordId' => false, 'recordIdsAreNumeric' => true])['iface_edit_show_id']);
     }
 
+    public function testTimestampColumnNeedsARecordThatCarriesOne(): void
+    {
+        $this->assertFalse($this->present()['records_have_timestamps']);
+        $this->assertTrue($this->present(['records' => [
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'modified_at' => null],
+            ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'modified_at' => 1791640525],
+        ]])['records_have_timestamps']);
+    }
+
     public function testStoredCommentIsShownWhenNothingWasRejected(): void
     {
         $vars = $this->present();
@@ -393,7 +402,7 @@ class EditZonePresenterTest extends TestCase
             'zone_replicates_from_primary', 'can_notify_zone', 'can_retrieve_zone', 'zone_type_change_allowed', 'catalog_members_view',
             'catalog_selector_view', 'catalog_producers', 'catalog_producer_id', 'catalog_name', 'zone_templates',
             'zone_template_id', 'zone_template_details', 'record_count', 'filtered_record_count', 'records',
-            'stale_form_dropped', 'perm_view', 'perm_edit', 'perm_edit_ns_subzone', 'perm_meta_edit', 'meta_edit',
+            'records_have_timestamps', 'stale_form_dropped', 'perm_view', 'perm_edit', 'perm_edit_ns_subzone', 'perm_meta_edit', 'meta_edit',
             'metadata_view', 'ownership_view', 'zone_is_read_only', 'user_can_edit_zone', 'zone_is_editable',
             'can_edit_records', 'edit_mode', 'require_change_comment', 'pending_change_requests',
             'can_review_change_requests', 'can_view_zone_logs', 'can_manage_dnssec', 'perm_zone_templ_add',

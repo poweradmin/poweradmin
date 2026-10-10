@@ -356,6 +356,7 @@
                max_input_vars truncation cannot drop it. #}
             <input type="hidden" name="changed_rows_only" value="0" id="changed-rows-only">
 
+            {% set show_record_timestamps = pdns_caps and pdns_caps.supportsRecordTimestamps and records_have_timestamps %}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm add-record-form">
                     <thead class="table-light">
@@ -424,7 +425,7 @@
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                             {% endif %}
                         </th>
-                        {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+                        {% if show_record_timestamps %}
                         <th>{% trans %}Last modified{% endtrans %}</th>
                         {% endif %}
                         {% if iface_show_record_edit_button or iface_show_record_delete_button %}
@@ -471,7 +472,7 @@
             </td>
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
-            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            {% if show_record_timestamps %}
             <td class="small text-muted text-nowrap">
                 {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
@@ -517,7 +518,7 @@
                 {# Row-complete marker; dropped first if max_input_vars truncates the POST. #}
                 <input type="hidden" name="record[{{ r['id'] }}][_complete]" value="1">
             </td>
-            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            {% if show_record_timestamps %}
             <td class="small text-muted text-nowrap">
                 {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>

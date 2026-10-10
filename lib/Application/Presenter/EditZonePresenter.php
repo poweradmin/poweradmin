@@ -210,6 +210,8 @@ final class EditZonePresenter
             'record_count' => $this->recordCount,
             'filtered_record_count' => $this->filteredRecordCount,
             'records' => $records,
+            // Only the LMDB backend fills modified_at; elsewhere the column would be all dashes
+            'records_have_timestamps' => array_filter($records, static fn($r): bool => !empty($r['modified_at'])) !== [],
             'stale_form_dropped' => $staleFormDropped,
             'perm_view' => $this->permView,
             'perm_edit' => $this->permEdit,
