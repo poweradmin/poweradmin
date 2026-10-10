@@ -77,9 +77,11 @@ interface ZoneReadRepositoryInterface
      * @param string|null $nameFilter Optional name filter
      * @param int|null $offset Optional pagination offset
      * @param int|null $limit Optional pagination limit
+     * @param string|null $nameContains Optional case-insensitive substring filter on the name
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (name, type or id); empty keeps the name order
      * @return array Array of matching zones
      */
-    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array;
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null, ?string $nameContains = null, array $sort = []): array;
 
     /**
      * Get the total number of zones
@@ -94,9 +96,10 @@ interface ZoneReadRepositoryInterface
      * @param int[]|null $zoneIds Optional array of zone IDs to filter
      * @param int|null $userId Optional user ID filter
      * @param string|null $nameFilter Optional name filter
+     * @param string|null $nameContains Optional case-insensitive substring filter on the name
      * @return int Number of matching zones
      */
-    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int;
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?string $nameContains = null): int;
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
 

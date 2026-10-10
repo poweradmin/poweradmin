@@ -96,6 +96,17 @@ final class ListSort
     }
 
     /**
+     * The requested sort keys in order, for endpoints that sort in SQL. Every
+     * field is one of the allowed fields; empty when no sort was requested.
+     *
+     * @return list<array{field: string, desc: bool}>
+     */
+    public function fields(): array
+    {
+        return $this->fields;
+    }
+
+    /**
      * Sort already-loaded rows (for endpoints that filter in PHP rather than SQL).
      *
      * Integers compare numerically, everything else case-insensitively in

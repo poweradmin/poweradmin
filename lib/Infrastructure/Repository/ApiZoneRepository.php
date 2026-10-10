@@ -26,6 +26,7 @@ use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use LogicException;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneDetail;
@@ -44,6 +45,7 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
  * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
@@ -1054,13 +1056,13 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
-    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?string $nameContains = null): int
     {
         if ($zoneIds !== null && empty($zoneIds)) {
             return 0;
         }
 
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
         $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL"
             . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
 
@@ -1080,9 +1082,10 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
      * @param int|null $userId Owner to filter by, or null for no ownership restriction
      * @param string|null $nameFilter Optional exact zone-name filter
+     * @param string|null $nameContains Optional case-insensitive zone-name substring filter
      * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
      */
-    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter, ?string $nameContains = null): array
     {
         $conditions = [];
         $params = [];
@@ -1120,7 +1123,41 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $params[':name_filter'] = $nameFilter;
         }
 
+        $nameContains = trim((string)$nameContains);
+        if ($nameContains !== '') {
+            // LOWER() on both sides because PostgreSQL LIKE is case-sensitive
+            $conditions[] = "LOWER(z.zone_name) LIKE LOWER(:name_contains) ESCAPE '!'";
+            $params[':name_contains'] = '%' . DbCompat::escapeLike($nameContains) . '%';
+        }
+
         return [$conditions, $params];
+    }
+
+    /**
+     * ORDER BY for the zone list. The row id tiebreaker keeps pages stable when
+     * sort values repeat; no sort keeps the plain name order the list always had.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private function zoneListOrder(array $sort): string
+    {
+        if ($sort === []) {
+            return 'z.zone_name';
+        }
+
+        $clauses = [];
+        foreach ($sort as $key) {
+            $direction = $key['desc'] ? 'DESC' : 'ASC';
+            $clauses[] = match ($key['field']) {
+                'name' => SortHelper::naturalSortOrder('z.zone_name', $this->dbType, $direction),
+                'type' => "z.zone_type $direction",
+                'id' => $this->canonicalId('z') . " $direction",
+                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
+            };
+        }
+        $clauses[] = 'z.id';
+
+        return implode(', ', $clauses);
     }
 
     /**
@@ -1141,13 +1178,13 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             . " OR $alias.id IN (" . implode(', ', $resolvedRows) . "))";
     }
 
-    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null, ?string $nameContains = null, array $sort = []): array
     {
         if ($zoneIds !== null && empty($zoneIds)) {
             return [];
         }
 
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
         // id is the canonical id every endpoint keys on; canonical_id stays for clients that read it
         $query = "SELECT " . $this->canonicalId('z') . " AS id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.zone_master as master,
@@ -1155,7 +1192,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                   FROM zones z
                   WHERE z.zone_name IS NOT NULL"
             . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
-        $query .= " ORDER BY z.zone_name";
+        $query .= " ORDER BY " . $this->zoneListOrder($sort);
         if ($limit !== null && $limit > 0) {
             $query .= " LIMIT :limit OFFSET :offset";
         }

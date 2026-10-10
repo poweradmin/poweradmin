@@ -43,9 +43,11 @@ interface UserAdminInterface
      *
      * @param int $offset Starting offset for pagination
      * @param int $limit Maximum number of users to return
+     * @param string|null $search Case-insensitive substring filter on username, full name, email or description
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (id, username, fullname or email); empty sorts by id
      * @return array Array of user data with zone counts
      */
-    public function getUsersList(int $offset, int $limit): array;
+    public function getUsersList(int $offset, int $limit, ?string $search = null, array $sort = []): array;
 
     /**
      * Get all users with the number of zones each one owns

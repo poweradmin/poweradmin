@@ -264,6 +264,49 @@ class ZonesControllerReadTest extends V2ControllerTestCase
         $this->assertSame(200, $this->listZones(['name' => 'example'])->getStatusCode());
     }
 
+    public function testTheSubstringFilterAndSortArePassedThroughToTheRepository(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->expects($this->once())
+            ->method('getZoneCountFiltered')
+            ->with(null, null, null, 'Example')
+            ->willReturn(3);
+        $this->zones->expects($this->once())
+            ->method('getAllZonesFiltered')
+            ->with(null, null, null, 0, 2, 'Example', [['field' => 'type', 'desc' => false], ['field' => 'name', 'desc' => true]])
+            ->willReturn([]);
+
+        $body = $this->decode($this->listZones(['q' => ' Example ', 'sort' => 'type,name:desc', 'per_page' => 2]));
+
+        $this->assertSame(3, $body['pagination']['total']);
+    }
+
+    public function testABlankSubstringFilterAndNoSortKeepTheDefaultList(): void
+    {
+        $this->permissions->method('getUserVisibleZoneIds')->willReturn(null);
+        $this->zones->expects($this->once())
+            ->method('getZoneCountFiltered')
+            ->with(null, null, null, null)
+            ->willReturn(1);
+        $this->zones->expects($this->once())
+            ->method('getAllZonesFiltered')
+            ->with(null, null, null, null, null, null, [])
+            ->willReturn([['id' => 1, 'name' => 'a.example.com']]);
+
+        $this->assertSame(200, $this->listZones(['q' => '  '])->getStatusCode());
+    }
+
+    public function testAnUnknownSortFieldIs400BeforeAnyQuery(): void
+    {
+        $this->permissions->expects($this->never())->method('getUserVisibleZoneIds');
+        $this->zones->expects($this->never())->method('getZoneCountFiltered');
+
+        $response = $this->listZones(['sort' => 'count_records']);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame("Invalid sort field 'count_records'. Allowed fields: name, type, id", $this->messageOf($response));
+    }
+
     public function testFetchingAZoneOutsideTheKeysScopeIs403(): void
     {
         $this->scope = new ApiKeyScope([999], null, false);

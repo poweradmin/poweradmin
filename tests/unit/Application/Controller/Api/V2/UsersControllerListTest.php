@@ -105,6 +105,40 @@ class UsersControllerListTest extends V2ControllerTestCase
         $this->assertSame(10000, $body['pagination']['per_page']);
     }
 
+    public function testTheSearchAndSortArePassedToTheCountAndThePage(): void
+    {
+        $sort = [['field' => 'email', 'desc' => true]];
+        $this->users->expects($this->once())->method('countUsers')->with('ops')->willReturn(5);
+        $this->users->expects($this->once())
+            ->method('getUsersPage')
+            ->with($this->callback(fn(Pagination $p): bool => $p->getOffset() === 2 && $p->getLimit() === 2), 'ops', $sort)
+            ->willReturn([['id' => 3]]);
+
+        $body = $this->decode($this->listUsers(['q' => ' ops ', 'sort' => 'email:desc', 'per_page' => 2, 'page' => 2]));
+
+        $this->assertSame(['current_page' => 2, 'per_page' => 2, 'total' => 5, 'last_page' => 3], $body['pagination']);
+    }
+
+    public function testTheSearchAndSortAlsoApplyWithoutPaging(): void
+    {
+        $this->users->expects($this->once())
+            ->method('getUsersPage')
+            ->with($this->anything(), 'ops', [['field' => 'username', 'desc' => false]])
+            ->willReturn([]);
+
+        $this->assertSame(200, $this->listUsers(['q' => 'ops', 'sort' => 'username'])->getStatusCode());
+    }
+
+    public function testAnUnknownSortFieldIs400(): void
+    {
+        $this->users->expects($this->never())->method('getUsersPage');
+
+        $response = $this->listUsers(['sort' => 'password']);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame("Invalid sort field 'password'. Allowed fields: id, username, fullname, email", $this->messageOf($response));
+    }
+
     /**
      * @param array<string, mixed> $query
      */

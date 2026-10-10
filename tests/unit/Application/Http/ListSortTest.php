@@ -105,6 +105,16 @@ class ListSortTest extends TestCase
         $this->assertSame([null, 'a', 'b'], array_column(ListSort::fromQuery('name', self::ALLOWED)->sortRows($rows), 'name'));
     }
 
+    public function testFieldsListTheParsedKeysForSqlSorting(): void
+    {
+        $this->assertSame(
+            [['field' => 'type', 'desc' => false], ['field' => 'ttl', 'desc' => true]],
+            ListSort::fromQuery('type, TTL:DESC', self::ALLOWED)->fields()
+        );
+        $this->assertSame([], ListSort::fromQuery(null, self::ALLOWED)->fields());
+        $this->assertSame([], ListSort::fromQuery('content', self::ALLOWED)->fields());
+    }
+
     public function testSortRowsReindexes(): void
     {
         $rows = [3 => ['name' => 'b'], 7 => ['name' => 'a']];
