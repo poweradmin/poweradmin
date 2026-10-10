@@ -107,13 +107,14 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
+- **develop (4.6.0)**: PHP 8.2-8.5, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
+- **master (4.5.x)**: PHP 8.2, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.4.x (LTS)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.3.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
-**User-reported compatibility:**
-- PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
+**Other PowerDNS versions:** the development environment can also run PowerDNS 4.5, 4.6, 4.7, 4.8, 4.9 and 5.0 (`PDNS_VERSION` in `.devcontainer/.env`). Versions older than 4.5 are not tested. Many stable distributions still ship PowerDNS 4.x, so 4.x support stays.
 
 **Compatibility note:** In the default SQL backend, Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API for DNSSEC operations - the database schema stays relatively stable between PowerDNS releases, so compatibility is broad. In API backend mode, all operations go through the PowerDNS HTTP API instead. Since 4.4.0, the interface also detects the connected PowerDNS version and adjusts the available features accordingly.
 
