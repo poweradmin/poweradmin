@@ -260,10 +260,10 @@ final readonly class PdnsCapabilities
         return $this->isAtLeast('4.6.0');
     }
 
-    /** Per-record last-modified timestamps in API responses added in 4.9. */
+    /** Per-record last-modified timestamps in API responses added in 4.9.8; of the stock backends only LMDB fills them. */
     public function supportsRecordTimestamps(): bool
     {
-        return $this->isAtLeast('4.9.0');
+        return $this->isAtLeast('4.9.8');
     }
 
     /* ----- DNSSEC ----------------------------------------------------- */

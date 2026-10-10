@@ -44,7 +44,7 @@ final readonly class RecordRow implements ArrayAccess, JsonSerializable
 {
     /**
      * @param int|string $id Numeric on the SQL backend, an encoded string on the API backend
-     * @param int|null $modifiedAt PowerDNS 4.9+ through the API backend only
+     * @param int|null $modifiedAt API backend with PowerDNS 4.9.8+ on LMDB only; set per RRset write
      * @param int|null $changeDate SQL backend only
      * @param string|null $ordername SQL backend only
      * @param bool|null $auth SQL backend only

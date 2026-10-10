@@ -219,8 +219,10 @@ class PdnsCapabilitiesTest extends TestCase
         $this->assertFalse($v45->supportsAutoprimariesApi());
         $this->assertTrue($v46->supportsAutoprimariesApi());
 
-        $this->assertFalse(PdnsCapabilities::fromVersion('4.8.0')->supportsRecordTimestamps());
-        $this->assertTrue(PdnsCapabilities::fromVersion('4.9.0')->supportsRecordTimestamps());
+        // modified_at landed in auth-4.9.8 (backport of the 5.0 change), not 4.9.0
+        $this->assertFalse(PdnsCapabilities::fromVersion('4.9.7')->supportsRecordTimestamps());
+        $this->assertTrue(PdnsCapabilities::fromVersion('4.9.8')->supportsRecordTimestamps());
+        $this->assertTrue(PdnsCapabilities::fromVersion('4.9.10')->supportsRecordTimestamps());
     }
 
     public function testDnssecGates(): void

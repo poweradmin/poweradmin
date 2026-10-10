@@ -1241,10 +1241,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
                     'api_comment' => $rrsetComment,
                     'api_comment_account' => $rrsetCommentAccount,
                     'api_comment_modified_at' => $rrsetCommentModifiedAt,
-                    // PowerDNS 4.9+ exposes a Unix timestamp per record. Older
-                    // servers, the DB-backed provider, and freshly-created
-                    // records all leave this null; the UI hides the column
-                    // when no record has it.
+                    // PowerDNS 4.9.8+ sends this only from LMDB (gsql never stores it), and every
+                    // write restamps the whole RRset
                     'modified_at' => isset($record['modified_at']) ? (int)$record['modified_at'] : null,
                 ];
             }
