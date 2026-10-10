@@ -217,9 +217,12 @@ class ZoneOwnershipGuard
         }
 
         try {
-            foreach ($this->zoneGroupRepository->findByGroupId($groupId) as $zoneGroup) {
-                $this->zoneRepository->lockZoneOwners($zoneGroup->getDomainId());
-                $this->zoneGroupRepository->lockZoneGroups($zoneGroup->getDomainId());
+            // Ascending zone order, so two requests locking overlapping zones queue instead of deadlocking
+            $domainIds = array_map(static fn($zoneGroup): int => $zoneGroup->getDomainId(), $this->zoneGroupRepository->findByGroupId($groupId));
+            sort($domainIds);
+            foreach ($domainIds as $domainId) {
+                $this->zoneRepository->lockZoneOwners($domainId);
+                $this->zoneGroupRepository->lockZoneGroups($domainId);
             }
 
             $orphaned = $this->zonesOrphanedByGroupDeletion($groupId);

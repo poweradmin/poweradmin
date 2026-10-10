@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -827,6 +828,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function lockZoneOwners(int $zoneId): void
     {
+        $this->queueOwnershipWriters($zoneId);
         $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id" . DbCompat::rowLock($this->db_type));
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
@@ -872,6 +874,26 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
+     * Locks the zone's PowerDNS domains row, the one row every writer of the zone's ownership
+     * queues on. It is a primary key lookup, so only that record is locked, and the locking
+     * read leaves the MySQL snapshot unset: what the caller reads next includes whatever the
+     * writer ahead of it committed. Locking the zones rows alone leaves two writers each
+     * holding a gap the other must insert into, a deadlock on InnoDB. deleteZone() takes the
+     * same lock first, so lock order is the same for every writer.
+     *
+     * @return bool False when the domains row does not exist, so there is nothing to own
+     */
+    private function queueOwnershipWriters(int $zoneId): bool
+    {
+        $domains = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domains WHERE id = :id" . DbCompat::rowLock($this->db_type));
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) !== [];
+    }
+
+    /**
      * Add owner to zone
      *
      * @param int $zoneId The zone ID
@@ -880,6 +902,40 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
+        $transaction = $this->transaction();
+        if ($transaction->inTransaction()) {
+            return $this->insertOwnerRow($zoneId, $userId);
+        }
+
+        // A lost lock race rolls the whole transaction back, so it is replayed whole
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $userId): bool {
+            $transaction->begin();
+            try {
+                $added = $this->insertOwnerRow($zoneId, $userId);
+                $transaction->commit();
+
+                return $added;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    /**
+     * Adds the owner row once the writers ahead have finished, so a concurrent request for the
+     * same user cannot store a second row. A user who already owns the zone counts as added.
+     */
+    private function insertOwnerRow(int $zoneId, int $userId): bool
+    {
+        if (!$this->queueOwnershipWriters($zoneId)) {
+            return false;
+        }
+        if ($this->isUserZoneOwner($zoneId, $userId)) {
+            return true;
+        }
 
         // Get the zone_templ_id from an existing zone record for this domain
         $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE domain_id = :domain_id LIMIT 1";
@@ -890,19 +946,25 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $zoneTemplId = $templateResult ? $templateResult['zone_templ_id'] : 0;
 
-        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_templ_id)";
+        // The check sits in the insert: its read is current even where the transaction's snapshot predates the owner row
+        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id)
+                  SELECT :domain_id, :owner, :zone_templ_id
+                  WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = :existing_domain_id AND owner = :existing_owner)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
+        $stmt->bindValue(':existing_domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':existing_owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $added = $stmt->rowCount() > 0;
-        if ($added) {
-            $this->ensureNamed($zoneId);
-            $this->syncZoneAccount($zoneId);
+        if ($stmt->rowCount() === 0) {
+            // A concurrent request stored the owner first
+            return true;
         }
-        return $added;
+        $this->ensureNamed($zoneId);
+        $this->syncZoneAccount($zoneId);
+        return true;
     }
 
     /**
@@ -974,6 +1036,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->transaction()->begin();
 
         try {
+            // First, so the lock order matches the owner writers' and they cannot deadlock with this delete
+            $this->queueOwnershipWriters($zoneId);
             foreach (
                 [
                     // Comment links are Poweradmin-native, so no cascade reaches them.

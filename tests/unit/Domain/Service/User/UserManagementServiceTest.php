@@ -102,6 +102,29 @@ class UserManagementServiceTest extends TestCase
         $this->assertSame([10, 11], $forgotten);
     }
 
+    #[Test]
+    public function testDeleteUserWithZoneDecisionsReassignsZonesInAscendingOrder(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('deleteUser')->willReturn(true);
+        $this->permissionService->method('canEditZoneMeta')->willReturn(true);
+        $added = [];
+        $this->domainManager->method('addOwnerToZone')
+            ->willReturnCallback(function (int $zoneId, int $userId) use (&$added): ZoneWriteResult {
+                $added[] = [$zoneId, $userId];
+                return ZoneWriteResult::ok($zoneId);
+            });
+
+        $this->service->deleteUserWithZoneDecisions(9, 1, [
+            ['zid' => 30, 'target' => 'new_owner', 'newowner' => 2],
+            ['zid' => 7, 'target' => 'new_owner', 'newowner' => 3],
+            ['zid' => 12, 'target' => 'new_owner', 'newowner' => 2],
+        ]);
+
+        $this->assertSame([[7, 3], [12, 2], [30, 2]], $added);
+    }
+
     // ========== getUserById tests ==========
 
     #[Test]

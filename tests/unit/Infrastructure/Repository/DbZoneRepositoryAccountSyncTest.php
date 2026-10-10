@@ -50,6 +50,7 @@ class DbZoneRepositoryAccountSyncTest extends SqliteIntegrationTestCase
 
         $this->createZoneTables();
         $this->createDomainsTable();
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::ZONE . ", 'sync.example', 'NATIVE')");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES
             (" . self::ALICE . ", 'alice', 1), (" . self::BOB . ", 'bob', 1)");
 
@@ -99,6 +100,15 @@ class DbZoneRepositoryAccountSyncTest extends SqliteIntegrationTestCase
             [['domain_id' => self::ZONE, 'owner' => self::ALICE, 'zone_templ_id' => 0]],
             $this->zoneRows()
         );
+    }
+
+    #[Test]
+    public function aZoneThatNoLongerExistsGetsNoOwnerRow(): void
+    {
+        $this->backendProvider->expects($this->never())->method('updateZoneAccount');
+
+        $this->assertFalse($this->repository(true)->addOwnerToZone(self::ZONE + 1, self::ALICE));
+        $this->assertSame([], $this->zoneRows());
     }
 
     #[Test]

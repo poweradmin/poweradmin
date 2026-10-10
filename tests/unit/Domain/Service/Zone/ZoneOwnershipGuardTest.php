@@ -227,6 +227,34 @@ class ZoneOwnershipGuardTest extends TestCase
         $this->assertSame(['lock owners', 'lock groups', 'read owners', 'delete'], $calls);
     }
 
+    public function testDeletingAGroupLocksItsZonesInAscendingOrder(): void
+    {
+        $locked = [];
+        $zoneRepository = $this->createMock(ZoneOwnershipRepositoryInterface::class);
+        $zoneRepository->method('lockZoneOwners')->willReturnCallback(function (int $zoneId) use (&$locked): void {
+            $locked[] = $zoneId;
+        });
+        $zoneRepository->method('getZoneOwners')->willReturn([['id' => 5]]);
+
+        $zoneGroupRepository = $this->createMock(ZoneGroupRepositoryInterface::class);
+        $zoneGroupRepository->method('findByGroupId')->willReturn([
+            new ZoneGroup(null, 30, 3, null, 'c.example'),
+            new ZoneGroup(null, 7, 3, null, 'a.example'),
+            new ZoneGroup(null, 12, 3, null, 'b.example'),
+        ]);
+        $zoneGroupRepository->method('findByDomainId')->willReturn([ZoneGroup::create(self::ZONE_ID, 3)]);
+
+        $guard = new ZoneOwnershipGuard(
+            $zoneRepository,
+            $zoneGroupRepository,
+            new ZoneOwnershipModeService(new FakeConfiguration(['dns' => ['zone_ownership_mode' => 'both']])),
+            $this->createMock(TransactionInterface::class)
+        );
+
+        $this->assertTrue($guard->deleteGroup(3, static fn(): bool => true));
+        $this->assertSame([7, 12, 30], $locked);
+    }
+
     public function testDeletingAGroupThatIsTheLastOwnerIsRefusedAndRolledBack(): void
     {
         $transaction = $this->createMock(TransactionInterface::class);

@@ -150,6 +150,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testAddingAnOwnerTwiceKeepsOneRowAndStillSucceeds(): void
     {
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::NEW_DOMAIN_ID . ", 'twice.example', 'NATIVE')");
         $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ", 9)");
         $manager = $this->makeDomainManager($this->dnsBackendStub(false));
 

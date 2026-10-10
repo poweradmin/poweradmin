@@ -85,6 +85,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         }
         $this->createZoneTables();
         $this->createDomainsTable();
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (10, 'reassign.example', 'NATIVE')");
     }
 
     #[RunInSeparateProcess]

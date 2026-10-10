@@ -48,6 +48,9 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
     /** @var ZoneOwnershipRepositoryInterface&MockObject */
     private ZoneOwnershipRepositoryInterface $zoneRepository;
 
+    /** Whether the zone is still there when a refused write looks again */
+    private bool $zoneExistsAfterWrite = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -90,6 +93,63 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
         $this->assertSame('1 owner(s) added, 1 at their zone limit', $this->messageOf($response));
     }
 
+    public function testASingleAddRefusedBecauseTheZoneWasDeletedIsNotFoundAndNotAudited(): void
+    {
+        $this->zoneRepository->method('addOwnerToZone')->willReturn(false);
+        $this->zoneExistsAfterWrite = false;
+
+        $response = $this->addOwner(['user_id' => 6]);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Zone not found', $this->messageOf($response));
+    }
+
+    public function testASingleAddRefusedWithTheZoneStillThereFails(): void
+    {
+        $this->zoneRepository->method('addOwnerToZone')->willReturn(false);
+
+        $response = $this->addOwner(['user_id' => 6]);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('Failed to add owner', $this->messageOf($response));
+    }
+
+    public function testABatchKeepsTheOwnersAddedBeforeAFailedWrite(): void
+    {
+        $this->zoneRepository->method('addOwnerToZone')->willReturnCallback(static fn(int $zone, int $user): bool => $user !== 8);
+        $this->zoneExistsAfterWrite = true;
+
+        $response = $this->addOwner(['user_ids' => [6, 8]]);
+
+        $this->assertSame(201, $response->getStatusCode());
+        $data = $this->decode($response)['data'];
+        $this->assertSame([6], $data['added']);
+        $this->assertSame([8], $data['failed']);
+        $this->assertSame('1 owner(s) added, 1 failed', $this->messageOf($response));
+    }
+
+    public function testABatchWhoseEveryWriteFailedIsAnError(): void
+    {
+        $this->zoneRepository->method('addOwnerToZone')->willReturn(false);
+        $this->zoneExistsAfterWrite = true;
+
+        $response = $this->addOwner(['user_ids' => [6]]);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertSame('Failed to add owner', $this->messageOf($response));
+    }
+
+    public function testABatchRefusedBecauseTheZoneWasDeletedIsNotFound(): void
+    {
+        $this->zoneRepository->method('addOwnerToZone')->willReturn(false);
+        $this->zoneExistsAfterWrite = false;
+
+        $response = $this->addOwner(['user_ids' => [6, 8]]);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame('Zone not found', $this->messageOf($response));
+    }
+
     /**
      * @param array<string, mixed> $body
      */
@@ -105,7 +165,7 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canEditZoneMeta')->willReturn(true);
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
-        $domainRepository->method('zoneIdExists')->willReturn(true);
+        $domainRepository->method('zoneIdExists')->willReturnOnConsecutiveCalls(true, $this->zoneExistsAfterWrite);
         $domainRepository->method('getDomainNameById')->willReturn('example.com');
         $users = $this->createMock(UserLookupInterface::class);
         $users->method('getUserById')->willReturnCallback(static fn(int $id): array => ['id' => $id, 'username' => 'user' . $id]);

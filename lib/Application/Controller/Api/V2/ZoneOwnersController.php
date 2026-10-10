@@ -237,6 +237,7 @@ class ZoneOwnersController extends PublicApiController
                         new OA\Property(property: 'skipped', type: 'array', items: new OA\Items(type: 'integer'), example: [7]),
                         new OA\Property(property: 'not_found', type: 'array', items: new OA\Items(type: 'integer'), example: []),
                         new OA\Property(property: 'over_limit', type: 'array', items: new OA\Items(type: 'integer'), example: [], description: 'Users not added because they own as many zones as their zone limit allows'),
+                        new OA\Property(property: 'failed', type: 'array', items: new OA\Items(type: 'integer'), example: [], description: 'Users the write failed for; the others in the batch are unaffected'),
                     ],
                     type: 'object',
                     nullable: true
@@ -245,7 +246,7 @@ class ZoneOwnersController extends PublicApiController
             type: 'object'
         )
     )]
-    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped or not found)')]
+    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped, not found or over their zone limit)')]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
@@ -310,6 +311,9 @@ class ZoneOwnersController extends PublicApiController
             if ($added instanceof ZoneLimitBreach) {
                 return $this->returnApiError($added->message(), RefusalStatus::of(Refusal::CONFLICT));
             }
+            if ($added === false) {
+                return $this->addOwnerFailure($zoneId);
+            }
 
             $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
@@ -319,6 +323,19 @@ class ZoneOwnersController extends PublicApiController
             // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
             return $this->handleException($e, 'ZoneOwnersController::addOwner', 'Failed to add owner');
         }
+    }
+
+    /**
+     * The answer when the repository refused the write: the zone was deleted since the
+     * existence check, or the write itself failed.
+     */
+    private function addOwnerFailure(int $zoneId): JsonResponse
+    {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
+            return $this->returnApiError('Zone not found', 404);
+        }
+
+        return $this->returnApiError('Failed to add owner', 500);
     }
 
     /**
@@ -342,6 +359,7 @@ class ZoneOwnersController extends PublicApiController
         $skipped = [];
         $notFound = [];
         $overLimit = [];
+        $failed = [];
         $zoneName = $this->auditZoneName($zoneId);
         $ownershipLimit = $this->services()->zoneOwnershipLimit();
 
@@ -367,6 +385,14 @@ class ZoneOwnersController extends PublicApiController
                 $overLimit[] = $userId;
                 continue;
             }
+            if ($granted === false) {
+                // Earlier owners of this batch went with a deleted zone; otherwise only this user failed
+                if (!$this->domainRepository->zoneIdExists($zoneId)) {
+                    return $this->returnApiError('Zone not found', 404);
+                }
+                $failed[] = $userId;
+                continue;
+            }
 
             $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
@@ -374,6 +400,11 @@ class ZoneOwnersController extends PublicApiController
 
         if ($added !== []) {
             $this->services()->permissionService()->forgetZone($zoneId);
+        }
+
+        // Nothing was decided but failures: a plain error, not a success that added nobody
+        if ($failed !== [] && $added === [] && $skipped === [] && $notFound === [] && $overLimit === []) {
+            return $this->returnApiError('Failed to add owner', 500);
         }
 
         $message = count($added) . ' owner(s) added';
@@ -386,10 +417,13 @@ class ZoneOwnersController extends PublicApiController
         if (!empty($overLimit)) {
             $message .= ', ' . count($overLimit) . ' at their zone limit';
         }
+        if (!empty($failed)) {
+            $message .= ', ' . count($failed) . ' failed';
+        }
 
         // 201 only when something was actually created; a batch that added nothing is a plain 200.
         return $this->returnApiResponse(
-            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound, 'over_limit' => $overLimit],
+            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound, 'over_limit' => $overLimit, 'failed' => $failed],
             true,
             $message,
             empty($added) ? 200 : 201
