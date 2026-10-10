@@ -348,7 +348,7 @@ class AddRecordController extends BaseController
             'form_data' => $formData,
             'saved_records' => $savedRecords,
             'api_escape_warning' => DnsBackendProviderFactory::isApiBackend($this->getConfig()),
-            'api_escape_rrsets' => $this->apiEscapeRiskRrsets($zone_id, $zone_name),
+            'api_escape_rrsets' => $zone_name !== null ? $this->apiEscapeRiskRrsets($zone_id, $zone_name) : [],
         ]);
     }
 
