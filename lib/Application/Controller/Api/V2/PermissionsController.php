@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -34,6 +36,9 @@ use OpenApi\Attributes as OA;
  */
 class PermissionsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /permissions */
+    private const PERMISSION_SORT_FIELDS = ['id', 'name'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -73,6 +78,36 @@ class PermissionsController extends PublicApiController
         summary: 'Get list of available permissions',
         tags: ['permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the permission name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zone')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name. Default: name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'name:desc')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -81,6 +116,17 @@ class PermissionsController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
+                        'pagination' => new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         'data' => new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -102,6 +148,7 @@ class PermissionsController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
@@ -120,8 +167,17 @@ class PermissionsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view permissions', 403);
             }
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::PERMISSION_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
-            return $this->returnApiResponse(['permissions' => $permissions]);
+            $permissions = ListPaging::filterContains($permissions, (string)$this->request->query->get('q', ''), static fn(array $p): array => [$p['name'], $p['descr']]);
+            [$permissions, $extra] = ListPaging::paginate($sort->sortRows($permissions), $page, $perPage);
+
+            return $this->returnApiResponse(['permissions' => $permissions], true, null, 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionsController::listPermissions', 'Failed to fetch permissions');
         }

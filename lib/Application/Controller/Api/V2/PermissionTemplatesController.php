@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
@@ -36,6 +38,9 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
  */
 class PermissionTemplatesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /permission-templates */
+    private const TEMPLATE_SORT_FIELDS = ['id', 'name', 'template_type'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -80,6 +85,43 @@ class PermissionTemplatesController extends PublicApiController
         summary: 'Get list of permission templates',
         tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the template name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zone')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, template_type. Default: name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'template_type,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            ),
+            new OA\Parameter(
+                name: 'type',
+                in: 'query',
+                description: 'Only templates of this type',
+                required: false,
+                schema: new OA\Schema(type: 'string', enum: ['user', 'group'])
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -88,6 +130,17 @@ class PermissionTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
+                        'pagination' => new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         'data' => new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -110,6 +163,7 @@ class PermissionTemplatesController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort or type parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
@@ -129,10 +183,23 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view permission templates', 403);
             }
 
-            $templates = $this->permissionTemplateRepository->listPermissionTemplates();
-            return $this->returnApiResponse(['templates' => $templates]);
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::TEMPLATE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            $type = trim((string)$this->request->query->get('type', ''));
+            if ($type !== '' && !PermissionTemplateType::isValid($type)) {
+                return $this->returnApiError('Invalid type. Must be either "user" or "group"', 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
+            $templates = $this->permissionTemplateRepository->listPermissionTemplates($type === '' ? null : $type);
+            $templates = ListPaging::filterContains($templates, (string)$this->request->query->get('q', ''), static fn(array $t): array => [$t['name'], $t['descr']]);
+            [$templates, $extra] = ListPaging::paginate($sort->sortRows($templates), $page, $perPage);
+
+            return $this->returnApiResponse(['templates' => $templates], true, null, 200, $extra);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission templates: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::listPermissionTemplates', 'Failed to fetch permission templates');
         }
     }
 
@@ -224,7 +291,7 @@ class PermissionTemplatesController extends PublicApiController
 
             return $this->returnApiResponse(['template' => $template]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission template: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::getPermissionTemplate', 'Failed to fetch permission template');
         }
     }
 
