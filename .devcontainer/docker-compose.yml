@@ -21,6 +21,7 @@ x-app-volumes:
   - &vol-nginx-template ./conf/nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
   - &vol-xdebug ./conf/xdebug.ini:/usr/local/etc/php/conf.d/zz-xdebug.ini
   - &vol-error-reporting ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+  - &vol-fpm-pool ./conf/fpm-pool.conf:/usr/local/etc/php-fpm.d/zz-pool.conf:ro
 
 services:
   # =============================================================================
@@ -42,6 +43,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       # VS Code opens the workspace here; the E2E sweep recipe also serves worktrees from it
       - ../..:/workspaces:cached
       - ./conf/settings-mysql-sql.php:/etc/poweradmin/settings.php:ro
@@ -64,6 +66,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       # Read-only: only the E2E sweep recipe serves worktrees through this instance
       - ../..:/workspaces:ro
       - sqlite_data:/data
@@ -81,6 +84,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       - ./conf/settings-mysql-api.php:/etc/poweradmin/settings.php:ro
     depends_on:
       mysql:
@@ -101,6 +105,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       # Read-only: only the E2E sweep recipe serves worktrees through this instance
       - ../..:/workspaces:ro
       - ./conf/settings-pgsql-api.php:/etc/poweradmin/settings.php:ro
@@ -117,6 +122,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       - sqlite_data:/data
       - ./conf/settings-sqlite-api.php:/etc/poweradmin/settings.php:ro
     depends_on:
@@ -132,6 +138,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       - ./conf/settings-mysql-subfolder.php:/etc/poweradmin/settings.php:ro
     depends_on:
       mysql:
@@ -152,6 +159,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       - ./conf/settings-mysql-sql-de.php:/etc/poweradmin/settings.php:ro
     depends_on:
       mysql:
@@ -166,6 +174,7 @@ services:
       - *vol-app
       - *vol-xdebug
       - *vol-error-reporting
+      - *vol-fpm-pool
       - ./conf/settings-mysql-sql-remote-user.php:/etc/poweradmin/settings.php:ro
     depends_on:
       mysql:
