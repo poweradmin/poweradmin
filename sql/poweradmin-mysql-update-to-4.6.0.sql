@@ -108,3 +108,7 @@ SET @repair = IF(@has_groups_max_zones = 0,
 PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
+
+-- An encoded API record id holds the zone name twice plus the content, so an SOA
+-- in a long zone outgrew varchar(255) and zone creation from a template failed
+ALTER TABLE `records_zone_templ_api` MODIFY `record_id` text NOT NULL;

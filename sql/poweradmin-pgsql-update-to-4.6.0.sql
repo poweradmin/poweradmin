@@ -134,3 +134,7 @@ CREATE INDEX IF NOT EXISTS "idx_zones_owner" ON "public"."zones" USING btree ("o
 -- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
 ALTER TABLE "public"."users" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
 ALTER TABLE "public"."user_groups" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
+
+-- An encoded API record id holds the zone name twice plus the content, so an SOA
+-- in a long zone outgrew varchar(255) and zone creation from a template failed
+ALTER TABLE "public"."records_zone_templ_api" ALTER COLUMN "record_id" TYPE text;

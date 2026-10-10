@@ -665,9 +665,6 @@ class DatabaseStructureHelper
                     ),
                     'record_id' => array(
                         'notnull' => 1,
-                        'fixed' => 0,
-                        'default' => '',
-                        'length' => 255,
                         'type' => 'text',
                         'name' => 'record_id',
                         'table' => 'records_zone_templ_api',
