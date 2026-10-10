@@ -1672,6 +1672,7 @@ return array(
     'Poweradmin\\Infrastructure\\Database\\DatabaseCredentialMapper' => $baseDir . '/lib/Infrastructure/Database/DatabaseCredentialMapper.php',
     'Poweradmin\\Infrastructure\\Database\\DatabaseSchemaService' => $baseDir . '/lib/Infrastructure/Database/DatabaseSchemaService.php',
     'Poweradmin\\Infrastructure\\Database\\DbDriver' => $baseDir . '/lib/Infrastructure/Database/DbDriver.php',
+    'Poweradmin\\Infrastructure\\Database\\DeadlockRetry' => $baseDir . '/lib/Infrastructure/Database/DeadlockRetry.php',
     'Poweradmin\\Infrastructure\\Database\\DebugPDO' => $baseDir . '/lib/Infrastructure/Database/DebugPDO.php',
     'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => $baseDir . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
     'Poweradmin\\Infrastructure\\Database\\PdoTransaction' => $baseDir . '/lib/Infrastructure/Database/PdoTransaction.php',

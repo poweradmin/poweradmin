@@ -2082,6 +2082,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Database\\DatabaseCredentialMapper' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DatabaseCredentialMapper.php',
         'Poweradmin\\Infrastructure\\Database\\DatabaseSchemaService' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DatabaseSchemaService.php',
         'Poweradmin\\Infrastructure\\Database\\DbDriver' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DbDriver.php',
+        'Poweradmin\\Infrastructure\\Database\\DeadlockRetry' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DeadlockRetry.php',
         'Poweradmin\\Infrastructure\\Database\\DebugPDO' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DebugPDO.php',
         'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
         'Poweradmin\\Infrastructure\\Database\\PdoTransaction' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PdoTransaction.php',
