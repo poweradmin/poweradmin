@@ -3841,16 +3841,16 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v7.4.18",
+            "version": "v7.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "ddd558991e98f693ae6bf5063cc1b0362c6bbec3"
+                "reference": "2bacb72be5eadeaf9874d5accb75bfb33d21c74b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/ddd558991e98f693ae6bf5063cc1b0362c6bbec3",
-                "reference": "ddd558991e98f693ae6bf5063cc1b0362c6bbec3",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/2bacb72be5eadeaf9874d5accb75bfb33d21c74b",
+                "reference": "2bacb72be5eadeaf9874d5accb75bfb33d21c74b",
                 "shasum": ""
             },
             "require": {
@@ -3902,7 +3902,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v7.4.18"
+                "source": "https://github.com/symfony/routing/tree/v7.4.20"
             },
             "funding": [
                 {
@@ -3922,7 +3922,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-17T13:12:36+00:00"
+            "time": "2026-09-28T19:09:50+00:00"
         },
         {
             "name": "symfony/security-bundle",
@@ -4297,16 +4297,16 @@
         },
         {
             "name": "symfony/serializer",
-            "version": "v7.4.19",
+            "version": "v7.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/serializer.git",
-                "reference": "d631b82e0db971444651c4e6a076040d20878caa"
+                "reference": "67c5b0b2ef39863835f43b9c34dcb3af80b892cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/serializer/zipball/d631b82e0db971444651c4e6a076040d20878caa",
-                "reference": "d631b82e0db971444651c4e6a076040d20878caa",
+                "url": "https://api.github.com/repos/symfony/serializer/zipball/67c5b0b2ef39863835f43b9c34dcb3af80b892cf",
+                "reference": "67c5b0b2ef39863835f43b9c34dcb3af80b892cf",
                 "shasum": ""
             },
             "require": {
@@ -4377,7 +4377,7 @@
             "description": "Handles serializing and deserializing data structures, including object graphs, into array structures or other formats like XML and JSON.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/serializer/tree/v7.4.19"
+                "source": "https://github.com/symfony/serializer/tree/v7.4.20"
             },
             "funding": [
                 {
@@ -4397,7 +4397,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-08T13:28:43+00:00"
+            "time": "2026-09-28T09:39:38+00:00"
         },
         {
             "name": "symfony/service-contracts",
@@ -4959,16 +4959,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v7.4.19",
+            "version": "v7.4.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "a6d275d96d107fb2000dae04ab23b2e0c29ceb66"
+                "reference": "75a30e116016554477f662e106fd8e337f0c4dac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/a6d275d96d107fb2000dae04ab23b2e0c29ceb66",
-                "reference": "a6d275d96d107fb2000dae04ab23b2e0c29ceb66",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/75a30e116016554477f662e106fd8e337f0c4dac",
+                "reference": "75a30e116016554477f662e106fd8e337f0c4dac",
                 "shasum": ""
             },
             "require": {
@@ -5039,7 +5039,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v7.4.19"
+                "source": "https://github.com/symfony/validator/tree/v7.4.20"
             },
             "funding": [
                 {
@@ -5059,7 +5059,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-09T19:50:33+00:00"
+            "time": "2026-09-29T12:35:16+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -5540,16 +5540,16 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.10.0",
+            "version": "6.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "66a3b923188f69b7ad3a35986d34c16b673678c5"
+                "reference": "f998f7e712658fba61f86fccbdcf8e301a982175"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/66a3b923188f69b7ad3a35986d34c16b673678c5",
-                "reference": "66a3b923188f69b7ad3a35986d34c16b673678c5",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/f998f7e712658fba61f86fccbdcf8e301a982175",
+                "reference": "f998f7e712658fba61f86fccbdcf8e301a982175",
                 "shasum": ""
             },
             "require": {
@@ -5617,7 +5617,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.10.0"
+                "source": "https://github.com/zircote/swagger-php/tree/6.11.0"
             },
             "funding": [
                 {
@@ -5625,7 +5625,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-21T23:32:10+00:00"
+            "time": "2026-09-26T07:11:30+00:00"
         }
     ],
     "packages-dev": [
@@ -6588,16 +6588,16 @@
         },
         {
             "name": "composer/semver",
-            "version": "3.5.0",
+            "version": "3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/semver.git",
-                "reference": "f7a296f4c4cf8cb8bb83e35d6951a406bb11afa5"
+                "reference": "528948210cc46f967a4b98e83b19e76f2b504993"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/f7a296f4c4cf8cb8bb83e35d6951a406bb11afa5",
-                "reference": "f7a296f4c4cf8cb8bb83e35d6951a406bb11afa5",
+                "url": "https://api.github.com/repos/composer/semver/zipball/528948210cc46f967a4b98e83b19e76f2b504993",
+                "reference": "528948210cc46f967a4b98e83b19e76f2b504993",
                 "shasum": ""
             },
             "require": {
@@ -6649,7 +6649,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/semver/issues",
-                "source": "https://github.com/composer/semver/tree/3.5.0"
+                "source": "https://github.com/composer/semver/tree/3.5.1"
             },
             "funding": [
                 {
@@ -6661,7 +6661,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-24T14:38:51+00:00"
+            "time": "2026-10-05T13:12:12+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -10695,16 +10695,16 @@
         },
         {
             "name": "vimeo/psalm",
-            "version": "6.18.1",
+            "version": "6.19.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "79465b8dc674127f442ae31ea114c11bc4dd7ed6"
+                "reference": "e2ca44251c1f1aa2e35452d426895746b47de64e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/79465b8dc674127f442ae31ea114c11bc4dd7ed6",
-                "reference": "79465b8dc674127f442ae31ea114c11bc4dd7ed6",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/e2ca44251c1f1aa2e35452d426895746b47de64e",
+                "reference": "e2ca44251c1f1aa2e35452d426895746b47de64e",
                 "shasum": ""
             },
             "require": {
@@ -10809,20 +10809,20 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm"
             },
-            "time": "2026-09-23T10:02:42+00:00"
+            "time": "2026-09-29T09:38:04+00:00"
         },
         {
             "name": "webmozart/assert",
-            "version": "2.4.1",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozarts/assert.git",
-                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70"
+                "reference": "8a163706bbcac613733dba03f51e13b5eb1bb819"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozarts/assert/zipball/2ccb7c2e821038c03a3e6e1700c570c158c55f70",
-                "reference": "2ccb7c2e821038c03a3e6e1700c570c158c55f70",
+                "url": "https://api.github.com/repos/webmozarts/assert/zipball/8a163706bbcac613733dba03f51e13b5eb1bb819",
+                "reference": "8a163706bbcac613733dba03f51e13b5eb1bb819",
                 "shasum": ""
             },
             "require": {
@@ -10873,9 +10873,9 @@
             ],
             "support": {
                 "issues": "https://github.com/webmozarts/assert/issues",
-                "source": "https://github.com/webmozarts/assert/tree/2.4.1"
+                "source": "https://github.com/webmozarts/assert/tree/2.5.0"
             },
-            "time": "2026-06-15T15:31:57+00:00"
+            "time": "2026-10-05T23:14:19+00:00"
         }
     ],
     "aliases": [],
