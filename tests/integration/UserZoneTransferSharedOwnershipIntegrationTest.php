@@ -36,10 +36,19 @@ use TestHelpers\FakeConfiguration;
  */
 class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
 {
-    private const MYSQL_DB = 'poweradmin_it_transfer';
-    private const PGSQL_SCHEMA = 'poweradmin_it_transfer';
     private const FROM = 1;
     private const TO = 2;
+
+    /** Per-process names, so parallel suite runs do not drop each other's scratch data. */
+    private static function pgsqlSchema(): string
+    {
+        return 'poweradmin_it_transfer_' . getmypid();
+    }
+
+    private static function mysqlDb(): string
+    {
+        return 'poweradmin_it_transfer_' . getmypid();
+    }
 
     /** @return array<string, array{string}> */
     public static function engines(): array
@@ -53,14 +62,14 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
         try {
             if ($engine === 'mysql') {
                 $db = new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser', $options);
-                $db->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_DB);
-                $db->exec('CREATE DATABASE ' . self::MYSQL_DB);
-                $db->exec('USE ' . self::MYSQL_DB);
+                $db->exec('DROP DATABASE IF EXISTS ' . self::mysqlDb());
+                $db->exec('CREATE DATABASE ' . self::mysqlDb());
+                $db->exec('USE ' . self::mysqlDb());
             } elseif ($engine === 'pgsql') {
                 $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-                $db->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
-                $db->exec('CREATE SCHEMA ' . self::PGSQL_SCHEMA);
-                $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+                $db->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
+                $db->exec('CREATE SCHEMA ' . self::pgsqlSchema());
+                $db->exec('SET search_path TO ' . self::pgsqlSchema());
             } else {
                 $db = new PDO('sqlite::memory:', null, null, $options);
             }
@@ -76,11 +85,11 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
     protected function tearDown(): void
     {
         try {
-            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_DB);
+            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::mysqlDb());
         } catch (PDOException) {
         }
         try {
-            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
+            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
         } catch (PDOException) {
         }
     }

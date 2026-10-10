@@ -49,7 +49,6 @@ use TestHelpers\FakeConfiguration;
 class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
 {
     private const ZONE_ID = 42;
-    private const SCHEMA = 'pa_ownership_guard_test';
 
     private ?PDO $pgsql = null;
 
@@ -59,10 +58,16 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
         return ['sqlite' => ['sqlite'], 'pgsql' => ['pgsql']];
     }
 
+    /** Per-process name, so parallel suite runs do not drop each other's scratch data. */
+    private static function schema(): string
+    {
+        return 'pa_ownership_guard_test_' . getmypid();
+    }
+
     protected function tearDown(): void
     {
         if ($this->pgsql !== null) {
-            $this->pgsql->exec('DROP SCHEMA IF EXISTS ' . self::SCHEMA . ' CASCADE');
+            $this->pgsql->exec('DROP SCHEMA IF EXISTS ' . self::schema() . ' CASCADE');
             $this->pgsql = null;
         }
     }
@@ -126,7 +131,7 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
         $this->seedOwners($pgsql, [5, 6]);
 
         $other = $this->connectPgsql();
-        $other->exec("SET search_path TO " . self::SCHEMA);
+        $other->exec("SET search_path TO " . self::schema());
         $other->exec("SET lock_timeout = '300ms'");
 
         $config = new FakeConfiguration(['database' => ['type' => 'pgsql']]);
@@ -168,8 +173,8 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
             'poweradmin',
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
-        $db->exec('CREATE SCHEMA IF NOT EXISTS ' . self::SCHEMA);
-        $db->exec('SET search_path TO ' . self::SCHEMA);
+        $db->exec('CREATE SCHEMA IF NOT EXISTS ' . self::schema());
+        $db->exec('SET search_path TO ' . self::schema());
 
         return $db;
     }

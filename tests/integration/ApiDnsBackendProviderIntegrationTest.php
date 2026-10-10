@@ -61,7 +61,6 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private const DB_PASS = 'poweradmin';
     private const ROOT_USER = 'root';
     private const ROOT_PASS = 'uberuser';
-    private const SCRATCH_DB = 'poweradmin_it_api_provider';
 
     protected function setUp(): void
     {
@@ -129,23 +128,29 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             self::ROOT_PASS,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
-        $root->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
-        $root->exec('CREATE DATABASE ' . self::SCRATCH_DB);
+        $root->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
+        $root->exec('CREATE DATABASE ' . self::scratchDb());
         try {
             foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
-                $root->exec('CREATE TABLE ' . self::SCRATCH_DB . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
+                $root->exec('CREATE TABLE ' . self::scratchDb() . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
             }
 
             return new PDO(
-                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::SCRATCH_DB,
+                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::scratchDb(),
                 self::ROOT_USER,
                 self::ROOT_PASS,
                 [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
             );
         } catch (PDOException $e) {
-            $root->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
+            $root->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
             throw $e;
         }
+    }
+
+    /** Per-process name, so parallel suite runs do not drop each other's scratch data. */
+    private static function scratchDb(): string
+    {
+        return 'poweradmin_it_api_provider_' . getmypid();
     }
 
     /**
@@ -198,7 +203,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
 
         if ($this->poweradminDb !== null) {
             try {
-                $this->poweradminDb->exec('DROP DATABASE IF EXISTS ' . self::SCRATCH_DB);
+                $this->poweradminDb->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
             } catch (Exception $e) {
                 // Ignore cleanup errors
             }

@@ -53,8 +53,9 @@ use TestHelpers\FakeConfiguration;
  */
 class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
 {
-    private const MYSQL_SCRATCH = 'poweradmin_it_api_owners';
-    private const PGSQL_SCHEMA = 'poweradmin_it_api_owners';
+    // Per-process names, so parallel suite runs do not drop each other's scratch data;
+    // set before forking, which the workers inherit
+    private static string $scratch = '';
     private const ROUNDS = 40;
     private const ZONE_ID = 1;
 
@@ -63,16 +64,17 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
         if (!function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl is not available');
         }
+        self::$scratch = 'poweradmin_it_api_owners_' . getmypid();
     }
 
     protected function tearDown(): void
     {
         try {
-            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_SCRATCH);
+            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::$scratch);
         } catch (PDOException) {
         }
         try {
-            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
+            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::$scratch . ' CASCADE');
         } catch (PDOException) {
         }
     }
@@ -81,10 +83,10 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
     {
         $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
         if ($engine === 'mysql') {
-            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::MYSQL_SCRATCH, 'root', 'uberuser', $options);
+            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::$scratch, 'root', 'uberuser', $options);
         }
         $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-        $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+        $db->exec('SET search_path TO ' . self::$scratch);
 
         return $db;
     }
@@ -100,16 +102,16 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
         try {
             if ($engine === 'mysql') {
                 $root = new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                $root->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_SCRATCH);
-                $root->exec('CREATE DATABASE ' . self::MYSQL_SCRATCH);
+                $root->exec('DROP DATABASE IF EXISTS ' . self::$scratch);
+                $root->exec('CREATE DATABASE ' . self::$scratch);
                 foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings', 'users', 'records_zone_templ', 'records_zone_templ_api', 'perm_templ', 'perm_templ_items', 'perm_items', 'user_groups', 'user_group_members'] as $table) {
-                    $root->exec('CREATE TABLE ' . self::MYSQL_SCRATCH . ".$table LIKE poweradmin.$table");
+                    $root->exec('CREATE TABLE ' . self::$scratch . ".$table LIKE poweradmin.$table");
                 }
                 $db = self::connect('mysql');
             } else {
                 $admin = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                $admin->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
-                $admin->exec('CREATE SCHEMA ' . self::PGSQL_SCHEMA);
+                $admin->exec('DROP SCHEMA IF EXISTS ' . self::$scratch . ' CASCADE');
+                $admin->exec('CREATE SCHEMA ' . self::$scratch);
                 $db = self::connect('pgsql');
                 $db->exec("CREATE TABLE zones (id SERIAL PRIMARY KEY, domain_id INT NULL, owner INT NULL, comment VARCHAR(1024) NULL,
                     zone_templ_id INT NOT NULL DEFAULT 0, zone_name VARCHAR(255) NULL, zone_type VARCHAR(8) NULL, zone_master VARCHAR(255) NULL)");

@@ -37,9 +37,21 @@ use Poweradmin\Infrastructure\Database\BackendModeMarker;
  */
 class BackendModeMarkerCrossEngineIntegrationTest extends TestCase
 {
-    private const MYSQL_DB = 'poweradmin_it_marker';
-    private const MYSQL_PDNS_DB = 'poweradmin_it_marker_pdns';
-    private const PGSQL_SCHEMA = 'poweradmin_it_marker';
+    /** Per-process names, so parallel suite runs do not drop each other's scratch data. */
+    private static function pgsqlSchema(): string
+    {
+        return 'poweradmin_it_marker_' . getmypid();
+    }
+
+    private static function mysqlDb(): string
+    {
+        return 'poweradmin_it_marker_' . getmypid();
+    }
+
+    private static function mysqlPdnsDb(): string
+    {
+        return 'poweradmin_it_marker_pdns_' . getmypid();
+    }
 
     /** @return array<string, array{string}> */
     public static function engines(): array
@@ -55,17 +67,17 @@ class BackendModeMarkerCrossEngineIntegrationTest extends TestCase
         try {
             if ($engine === 'mysql') {
                 $db = new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser', $options);
-                foreach ([self::MYSQL_DB, self::MYSQL_PDNS_DB] as $name) {
+                foreach ([self::mysqlDb(), self::mysqlPdnsDb()] as $name) {
                     $db->exec("DROP DATABASE IF EXISTS $name");
                     $db->exec("CREATE DATABASE $name");
                 }
-                $db->exec('USE ' . self::MYSQL_DB);
-                $domains = self::MYSQL_PDNS_DB . '.domains';
+                $db->exec('USE ' . self::mysqlDb());
+                $domains = self::mysqlPdnsDb() . '.domains';
             } elseif ($engine === 'pgsql') {
                 $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-                $db->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
-                $db->exec('CREATE SCHEMA ' . self::PGSQL_SCHEMA);
-                $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+                $db->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
+                $db->exec('CREATE SCHEMA ' . self::pgsqlSchema());
+                $db->exec('SET search_path TO ' . self::pgsqlSchema());
             } else {
                 $db = new PDO('sqlite::memory:', null, null, $options);
             }
@@ -85,12 +97,12 @@ class BackendModeMarkerCrossEngineIntegrationTest extends TestCase
     {
         try {
             $db = new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser');
-            $db->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_DB);
-            $db->exec('DROP DATABASE IF EXISTS ' . self::MYSQL_PDNS_DB);
+            $db->exec('DROP DATABASE IF EXISTS ' . self::mysqlDb());
+            $db->exec('DROP DATABASE IF EXISTS ' . self::mysqlPdnsDb());
         } catch (PDOException) {
         }
         try {
-            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
+            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
         } catch (PDOException) {
         }
     }
