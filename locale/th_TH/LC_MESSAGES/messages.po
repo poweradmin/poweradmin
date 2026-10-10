@@ -14924,3 +14924,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "ข้อมูลเรคคอร์ดทั่วไปต้องอยู่ในรูปแบบ \"\\# <length> <hex>\" โดยความยาวต้องตรงกับข้อมูลฐานสิบหก"
+
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "ไม่สามารถนำสิทธิ์ผู้ดูแลระบบสูงสุดออกจากผู้ใช้ผู้ดูแลระบบสูงสุดคนสุดท้ายที่เหลืออยู่ได้"

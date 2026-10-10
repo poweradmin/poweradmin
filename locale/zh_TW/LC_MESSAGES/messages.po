@@ -14602,3 +14602,7 @@ msgstr "設定地區設定失敗。所選的地區設定可能不受此系統支
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "通用記錄資料必須為 \"\\# <length> <hex>\"，且長度須與十六進位資料相符。"
+
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "無法移除最後一位超級管理員使用者的超級管理員權限。"

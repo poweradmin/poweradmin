@@ -16189,3 +16189,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Les données d'enregistrement génériques doivent être de la forme \"\\# <length> <hex>\", la longueur correspondant aux données hexadécimales."
+
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Impossible de retirer le rôle de super administrateur au dernier super administrateur restant."

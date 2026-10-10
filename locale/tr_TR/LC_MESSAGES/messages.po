@@ -15664,3 +15664,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Genel kayıt verisi \"\\# <length> <hex>\" biçiminde olmalı ve uzunluk onaltılık veriyle eşleşmelidir."
+
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Kalan son süper yönetici kullanıcısından süper yönetici yetkisi kaldırılamaz."

@@ -38,13 +38,16 @@ class UserManagementService
 {
     private UserRepository $userRepository;
     private UserProfileAssembler $profileAssembler;
+    private bool $protectLastAdminOnEdit;
 
     public function __construct(
         UserRepository $userRepository,
         PermissionService $permissionService,
-        UserGroupRepositoryInterface $groupRepository
+        UserGroupRepositoryInterface $groupRepository,
+        bool $protectLastAdminOnEdit = false
     ) {
         $this->userRepository = $userRepository;
+        $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
         $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
     }
 
@@ -346,6 +349,24 @@ class UserManagementService
                 ];
             }
             $userData['perm_templ'] = $permTemplId;
+        }
+
+        // Same guard as assignPermissionTemplate(): API PUT must not move the last
+        // super admin to a template without the super admin permission. Opt-in
+        // through security.protect_last_admin_on_edit, so existing installs keep
+        // today's behaviour until they turn it on.
+        if (
+            $this->protectLastAdminOnEdit
+            && array_key_exists('perm_templ', $userData)
+            && $this->userRepository->isUberuser($userId)
+            && $this->userRepository->countUberusers() <= 1
+            && !$this->userRepository->templateGrantsUberuser((int)$userData['perm_templ'])
+        ) {
+            return [
+                'success' => false,
+                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                'status' => 409
+            ];
         }
 
         // Check if trying to disable the last remaining uberuser

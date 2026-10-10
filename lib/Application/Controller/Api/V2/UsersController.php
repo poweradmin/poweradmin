@@ -99,7 +99,8 @@ class UsersController extends PublicApiController
         $this->userManagementService = new UserManagementService(
             $this->userRepository,
             $permissionService,
-            $this->groupRepository
+            $this->groupRepository,
+            (bool)$this->config->get('security', 'protect_last_admin_on_edit', false)
         );
         $this->membershipService = new GroupMembershipService(
             $this->createUserGroupMemberRepository(),

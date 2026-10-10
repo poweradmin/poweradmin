@@ -826,6 +826,78 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testUpdateUserBlocksDemotingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->serviceProtectingLastAdminOnEdit()->updateUser(1, ['perm_templ' => 5]);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot remove super admin from the last remaining super admin', $result['message']);
+        $this->assertSame(409, $result['status']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsLastUberuserToKeepASuperAdminTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('templateGrantsUberuser')->with(1)->willReturn(true);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $result = $this->serviceProtectingLastAdminOnEdit()->updateUser(1, ['perm_templ' => 1]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsDemotionWhenOtherUberusersExistWithTheEditGuardOn(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(2);
+        $this->userRepository->method('templateGrantsUberuser')->willReturn(false);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $this->assertTrue($this->serviceProtectingLastAdminOnEdit()->updateUser(1, ['perm_templ' => 5])['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserKeepsTodaysBehaviourWhenTheEditGuardIsOff(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isUberuser')->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('templateGrantsUberuser')->willReturn(false);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $this->assertTrue($this->service->updateUser(1, ['perm_templ' => 5])['success']);
+    }
+
+    private function serviceProtectingLastAdminOnEdit(): UserManagementService
+    {
+        return new UserManagementService(
+            $this->userRepository,
+            $this->permissionService,
+            $this->groupRepository,
+            true
+        );
+    }
+
+    #[Test]
     public function testUpdateUserAllowsDisablingNonLastUberuser(): void
     {
         $this->userRepository->method('getUserById')

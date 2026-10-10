@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\PermissionService;
@@ -43,6 +44,7 @@ class UserManager
     private MessageService $messageService;
     private ?PermissionService $permissionService = null;
     private ?ApiPermissionService $apiPermissionService = null;
+    private ?UserRepository $userRepository = null;
 
     public function __construct(PDO $db, ConfigurationManager $config)
     {
@@ -117,6 +119,34 @@ class UserManager
         }
 
         $this->messageService->addSystemError($error);
+
+        return true;
+    }
+
+    /**
+     * Refuse moving the last active super admin to a template without super admin.
+     *
+     * Same check as UserManagementService::assignPermissionTemplate(). Opt-in through
+     * security.protect_last_admin_on_edit, so existing installs keep today's behaviour
+     * until they turn it on.
+     */
+    private function lastAdminDemotionRejected(int $targetUserId, int $newTemplId): bool
+    {
+        if (!$this->config->get('security', 'protect_last_admin_on_edit', false)) {
+            return false;
+        }
+
+        $this->userRepository ??= new DbUserRepository($this->db, $this->config);
+
+        if (
+            !$this->userRepository->isUberuser($targetUserId)
+            || $this->userRepository->countUberusers() > 1
+            || $this->userRepository->templateGrantsUberuser($newTemplId)
+        ) {
+            return false;
+        }
+
+        $this->messageService->addSystemError(_('Cannot remove super admin from the last remaining super admin user.'));
 
         return true;
     }
@@ -305,6 +335,10 @@ class UserManager
             $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
             if ($mayAssignTemplate) {
                 if ($this->templateAssignmentRejected((int)$usercheck['perm_templ'], (int)$perm_templ, $id)) {
+                    return false;
+                }
+
+                if ($this->lastAdminDemotionRejected($id, (int)$perm_templ)) {
                     return false;
                 }
 

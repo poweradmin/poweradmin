@@ -16046,3 +16046,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Caithfidh sonraí cineálacha an taifid a bheith ina \"\\# <length> <hex>\", agus an fad ag teacht leis na sonraí heics."
+
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Ní féidir sár-riarthóir a bhaint den úsáideoir sár-riarthóra deireanach atá fágtha."
