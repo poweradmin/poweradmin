@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -34,6 +36,9 @@ use OpenApi\Attributes as OA;
  */
 class ZoneTemplatesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zone-templates */
+    private const TEMPLATE_SORT_FIELDS = ['id', 'name', 'zones_linked'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -73,6 +78,36 @@ class ZoneTemplatesController extends PublicApiController
         summary: 'Get list of zone templates',
         tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the template name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, zones_linked. Default: name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zones_linked:desc,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -81,6 +116,17 @@ class ZoneTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -105,7 +151,9 @@ class ZoneTemplatesController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -117,6 +165,12 @@ class ZoneTemplatesController extends PublicApiController
             if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
                 return $this->returnApiError('You do not have permission to view zone templates', 403);
             }
+
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::TEMPLATE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
@@ -133,7 +187,11 @@ class ZoneTemplatesController extends PublicApiController
                 ];
             }, $templates);
 
-            return $this->returnApiResponse(['templates' => $formatted]);
+            // A user sees few templates, all loaded already, so filter, sort and page the formatted list
+            $formatted = ListPaging::filterContains($formatted, (string)$this->request->query->get('q', ''), static fn(array $t): array => [$t['name'], $t['description']]);
+            [$formatted, $extra] = ListPaging::paginate($sort->sortRows($formatted), $page, $perPage);
+
+            return $this->returnApiResponse(['templates' => $formatted], true, null, 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::listZoneTemplates', 'Failed to fetch zone templates');
         }

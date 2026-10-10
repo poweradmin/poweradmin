@@ -23,6 +23,8 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -35,6 +37,9 @@ use OpenApi\Attributes as OA;
  */
 class ZoneTemplateRecordsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zone-templates/{id}/records */
+    private const RECORD_SORT_FIELDS = ['name', 'type', 'content', 'ttl', 'priority'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -156,6 +161,48 @@ class ZoneTemplateRecordsController extends PublicApiController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'type',
+                in: 'query',
+                description: 'Filter by record type (case-insensitive exact match)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'MX')
+            ),
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
+                name: 'content',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record content',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: '[NS1]')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'type,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
             )
         ],
         responses: [
@@ -166,6 +213,17 @@ class ZoneTemplateRecordsController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -190,6 +248,7 @@ class ZoneTemplateRecordsController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Zone template not found'),
@@ -201,6 +260,11 @@ class ZoneTemplateRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $templateId = (int)$this->pathParameters['id'];
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             if (!$this->repository->zoneTemplateExists($templateId)) {
                 return $this->returnApiError('Zone template not found', 404);
@@ -213,7 +277,16 @@ class ZoneTemplateRecordsController extends PublicApiController
             $records = $this->repository->getZoneTemplateRecords($templateId);
             $formattedRecords = array_map([$this, 'formatRecord'], $records);
 
-            return $this->returnApiResponse(['records' => array_values($formattedRecords)]);
+            // Filter, sort and page the values the client sees, like the zone record list
+            $type = trim((string)$this->request->query->get('type', ''));
+            if ($type !== '') {
+                $formattedRecords = array_filter($formattedRecords, static fn(array $r): bool => strcasecmp($r['type'], $type) === 0);
+            }
+            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
+            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('content', ''), static fn(array $r): array => [$r['content']]);
+            [$formattedRecords, $extra] = ListPaging::paginate($sort->sortRows($formattedRecords), $page, $perPage);
+
+            return $this->returnApiResponse(['records' => $formattedRecords], true, null, 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::listRecords', 'Failed to fetch zone template records');
         }
