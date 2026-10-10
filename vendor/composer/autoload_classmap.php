@@ -1408,6 +1408,7 @@ return array(
     'Poweradmin\\Domain\\Port\\RecordReadBackendInterface' => $baseDir . '/lib/Domain/Port/RecordReadBackendInterface.php',
     'Poweradmin\\Domain\\Port\\RecordSearchInterface' => $baseDir . '/lib/Domain/Port/RecordSearchInterface.php',
     'Poweradmin\\Domain\\Port\\RecordWriteBackendInterface' => $baseDir . '/lib/Domain/Port/RecordWriteBackendInterface.php',
+    'Poweradmin\\Domain\\Port\\ReportsWriteRejection' => $baseDir . '/lib/Domain/Port/ReportsWriteRejection.php',
     'Poweradmin\\Domain\\Port\\ReverseZoneSorterInterface' => $baseDir . '/lib/Domain/Port/ReverseZoneSorterInterface.php',
     'Poweradmin\\Domain\\Port\\SearchBackendInterface' => $baseDir . '/lib/Domain/Port/SearchBackendInterface.php',
     'Poweradmin\\Domain\\Port\\SerialBackendInterface' => $baseDir . '/lib/Domain/Port/SerialBackendInterface.php',

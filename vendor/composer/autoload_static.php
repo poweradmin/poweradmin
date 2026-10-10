@@ -1818,6 +1818,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Port\\RecordReadBackendInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/RecordReadBackendInterface.php',
         'Poweradmin\\Domain\\Port\\RecordSearchInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/RecordSearchInterface.php',
         'Poweradmin\\Domain\\Port\\RecordWriteBackendInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/RecordWriteBackendInterface.php',
+        'Poweradmin\\Domain\\Port\\ReportsWriteRejection' => __DIR__ . '/../..' . '/lib/Domain/Port/ReportsWriteRejection.php',
         'Poweradmin\\Domain\\Port\\ReverseZoneSorterInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/ReverseZoneSorterInterface.php',
         'Poweradmin\\Domain\\Port\\SearchBackendInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/SearchBackendInterface.php',
         'Poweradmin\\Domain\\Port\\SerialBackendInterface' => __DIR__ . '/../..' . '/lib/Domain/Port/SerialBackendInterface.php',
