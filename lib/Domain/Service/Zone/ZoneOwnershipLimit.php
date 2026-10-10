@@ -53,7 +53,9 @@ class ZoneOwnershipLimit
         private readonly ZoneGroupRepositoryInterface $zoneGroups,
         private readonly PermissionService $permissions,
         private readonly ConfigurationInterface $config,
-        private readonly ?TransactionInterface $transaction = null
+        private readonly ?TransactionInterface $transaction = null,
+        /** @var (callable(callable(): mixed): mixed)|null Replays a whole transaction the database rolled back on a lock race */
+        private readonly mixed $retry = null
     ) {
     }
 
@@ -178,6 +180,26 @@ class ZoneOwnershipLimit
      * @return ZoneLimitBreach|T
      */
     private function guarded(array $userIds, array $groupIds, callable $decide, callable $write, ?callable $keep = null): mixed
+    {
+        $limited = array_filter($userIds, fn(int $id): bool => $this->userLimit($id) !== null) !== []
+            || array_filter($groupIds, fn(int $id): bool => $this->groupLimit($id) !== null) !== [];
+        // Unlimited owners skip the retry here: the repository write already retries on its own
+        if ($limited && $this->transaction !== null && $this->retry !== null && !$this->transaction->inTransaction()) {
+            // Only a transaction opened here is replayed; a joined one belongs to its caller
+            return ($this->retry)(fn(): mixed => $this->guardedOnce($userIds, $groupIds, $decide, $write, $keep));
+        }
+
+        return $this->guardedOnce($userIds, $groupIds, $decide, $write, $keep);
+    }
+
+    /**
+     * @template T
+     * @param list<int> $userIds
+     * @param list<int> $groupIds
+     * @param callable(): T $write
+     * @return ZoneLimitBreach|T
+     */
+    private function guardedOnce(array $userIds, array $groupIds, callable $decide, callable $write, ?callable $keep): mixed
     {
         // Read before the transaction: on MySQL a plain read inside it would fix the snapshot before the lock
         $userIds = array_values(array_filter($userIds, fn(int $id): bool => $this->userLimit($id) !== null));

@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Auth\ZoneListPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
@@ -130,7 +131,8 @@ final class ZoneServices
             $this->zoneGroupRepository(),
             $this->services->permissionService(),
             $this->config,
-            $this->services->transaction()
+            $this->services->transaction(),
+            static fn(callable $attempt): mixed => DeadlockRetry::run($attempt)
         );
     }
 
