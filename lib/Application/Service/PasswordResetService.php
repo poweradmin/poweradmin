@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -376,18 +376,38 @@ class PasswordResetService
         $user = $validationResult['user'];
         $tokenId = $validationResult['token_id'];
 
-        // Hash the new password
+        // Hash first: a failure here must not touch the token.
         $hashedPassword = $this->authService->hashPassword($newPassword);
 
-        // Update user password
-        $success = $this->userRepository->updatePassword($user['id'], $hashedPassword);
+        // With single_use_claim, the token is claimed before the password changes, so a
+        // second request with the same token cannot also set a password. If the update
+        // then fails, the claim is released so the same link can be retried.
+        $claimFirst = (bool)$this->config->get('security', 'password_reset.single_use_claim', false);
+        if ($claimFirst && !$this->tokenRepository->markAsUsed($tokenId)) {
+            $this->logger->warning('Password reset token was already used', [
+                'user_id' => $user['id'],
+                'token_id' => $tokenId,
+            ]);
+            return false;
+        }
+
+        try {
+            $success = $this->userRepository->updatePassword($user['id'], $hashedPassword);
+        } catch (\Throwable $e) {
+            if ($claimFirst) {
+                $this->tokenRepository->releaseClaim($tokenId);
+            }
+            throw $e;
+        }
+
+        if (!$success && $claimFirst) {
+            $this->tokenRepository->releaseClaim($tokenId);
+        }
 
         if ($success) {
-            // Mark token as used
-            $this->tokenRepository->markAsUsed($tokenId);
-
-            // Alternative: Delete the used token immediately
-            // $this->tokenRepository->deleteById($tokenId);
+            if (!$claimFirst) {
+                $this->tokenRepository->markAsUsed($tokenId);
+            }
 
             $this->logger->info('Password reset completed successfully', [
                 'user_id' => $user['id'],

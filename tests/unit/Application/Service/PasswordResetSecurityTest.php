@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -624,5 +624,130 @@ class PasswordResetSecurityTest extends TestCase
 
         $this->assertTrue($result['allowed']);
         $this->assertArrayNotHasKey('auth_method', $result);
+    }
+
+    /**
+     * When the token was already claimed by another request, the password must stay unchanged.
+     */
+    public function testResetPasswordRefusesTokenAlreadyClaimed(): void
+    {
+        $token = str_repeat('b', 64);
+        $this->givenValidToken(11, $token);
+        $this->tokenRepository->expects($this->once())->method('markAsUsed')->with(11)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updatePassword');
+
+        $this->assertFalse($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+    }
+
+    public function testAFailedPasswordSaveReleasesTheClaimSoTheLinkCanBeRetried(): void
+    {
+        $token = str_repeat('e', 64);
+        $this->givenValidToken(14, $token);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturn(true);
+        $this->userRepository->method('updatePassword')->willReturn(false);
+        $this->tokenRepository->expects($this->once())->method('releaseClaim')->with(14);
+
+        $this->assertFalse($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+    }
+
+    public function testAThrowingPasswordSaveReleasesTheClaim(): void
+    {
+        $token = str_repeat('a', 64);
+        $this->givenValidToken(16, $token);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturn(true);
+        $this->userRepository->method('updatePassword')->willThrowException(new \RuntimeException('db down'));
+        $this->tokenRepository->expects($this->once())->method('releaseClaim')->with(16);
+
+        $this->expectException(\RuntimeException::class);
+        $this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!');
+    }
+
+    public function testAHashingFailureLeavesTheTokenUntouched(): void
+    {
+        $token = str_repeat('f', 64);
+        $this->givenValidToken(15, $token);
+        $this->authService->method('hashPassword')->willThrowException(new \RuntimeException('hash failed'));
+        $this->tokenRepository->expects($this->never())->method('markAsUsed');
+
+        $this->expectException(\RuntimeException::class);
+        $this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!');
+    }
+
+    public function testWithoutSingleUseClaimThePasswordChangesBeforeTheTokenIsMarked(): void
+    {
+        $token = str_repeat('d', 64);
+        $calls = [];
+        $this->givenValidToken(13, $token);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'claim';
+            return false;
+        });
+        $this->userRepository->method('updatePassword')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'update';
+            return true;
+        });
+        $this->tokenRepository->expects($this->never())->method('releaseClaim');
+
+        $this->assertTrue($this->passwordResetService->resetPassword($token, 'N3w-Passw0rd!'));
+        $this->assertSame(['update', 'claim'], $calls);
+    }
+
+    public function testResetPasswordClaimsTokenBeforeChangingPassword(): void
+    {
+        $token = str_repeat('c', 64);
+        $calls = [];
+        $this->givenValidToken(12, $token);
+        $this->authService->method('hashPassword')->willReturn('hashed');
+        $this->tokenRepository->method('markAsUsed')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'claim';
+            return true;
+        });
+        $this->userRepository->method('updatePassword')->willReturnCallback(function () use (&$calls) {
+            $calls[] = 'update';
+            return true;
+        });
+
+        $this->assertTrue($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
+        $this->assertSame(['claim', 'update'], $calls);
+    }
+
+    /**
+     * On this branch validateToken() scans the active tokens and compares the raw value.
+     */
+    private function givenValidToken(int $tokenId, string $token): void
+    {
+        $email = 'sql@example.com';
+        $this->tokenRepository->method('findActiveTokens')->willReturn([[
+            'id' => $tokenId,
+            'token' => $token,
+            'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'used' => 0,
+        ]]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 7, 'username' => 'sql', 'email' => $email, 'auth_method' => 'sql',
+        ]);
+    }
+
+    private function serviceWithSingleUseClaim(): PasswordResetService
+    {
+        $this->mockConfigurationManager([
+            'security' => [
+                'password_reset' => [
+                    'enabled' => true,
+                    'token_lifetime' => 3600,
+                    'single_use_claim' => true,
+                ]
+            ],
+            'interface' => [
+                'application_url' => 'https://test.example'
+            ]
+        ]);
+
+        return $this->passwordResetService;
     }
 }

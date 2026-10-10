@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -101,7 +101,7 @@ class ResetPasswordController extends BaseController
                 'user_agent' => $this->userAgentService->getUserAgent(),
                 'browser' => $this->userAgentService->getBrowserInfo(),
                 'is_bot' => $this->userAgentService->isBot(),
-                'token' => $this->token ?? 'none',
+                'token_fingerprint' => $this->tokenFingerprint(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $this->showErrorMessage('Password reset functionality is disabled.');
@@ -114,7 +114,7 @@ class ResetPasswordController extends BaseController
                 'user_id' => $this->userContextService->getLoggedInUserId(),
                 'username' => $this->userContextService->getLoggedInUsername(),
                 'ip' => $this->ipRetriever->getClientIp(),
-                'token' => $this->token ?? 'none',
+                'token_fingerprint' => $this->tokenFingerprint(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $redirectService = new RedirectService();
@@ -144,7 +144,7 @@ class ResetPasswordController extends BaseController
                 'user_agent' => $this->userAgentService->getUserAgent(),
                 'browser' => $this->userAgentService->getBrowserInfo(),
                 'is_bot' => $this->userAgentService->isBot(),
-                'token_received' => $this->token,
+                'token_fingerprint' => $this->tokenFingerprint(),
                 'token_length' => strlen($this->token),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
@@ -259,6 +259,15 @@ class ResetPasswordController extends BaseController
             ]);
             $this->showPasswordResetForm($tokenData, 'Failed to reset password. Please try again.');
         }
+    }
+
+    /**
+     * A short hash that lets log lines about the same link be matched without
+     * putting a usable token into the logs.
+     */
+    private function tokenFingerprint(): string
+    {
+        return $this->token ? substr(hash('sha256', $this->token), 0, 12) : 'none';
     }
 
     private function showPasswordResetForm(array $tokenData, string $error = '', array $policyErrors = []): void
