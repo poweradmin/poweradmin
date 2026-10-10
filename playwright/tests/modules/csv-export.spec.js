@@ -6,6 +6,7 @@
 
 import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { uniqueName } from '../../helpers/zones.js';
 
 test.describe('CSV Export Module', () => {
   test('should show Export dropdown on zone edit page', async ({ page, tempZone }) => {
@@ -75,6 +76,32 @@ test.describe('CSV Export Module', () => {
     // The header row is capitalised: Name,Type,Content,Priority,TTL,Disabled,Comment
     expect(body).toMatch(/^﻿?Name,Type,Content/m);
     expect(body).toContain('SOA');
+  });
+
+  test('should export the record comment in the Comment column', async ({ page, tempZone }, testInfo) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    const label = uniqueName('csvcmt', testInfo);
+    const comment = `csv comment ${label}`;
+
+    await page.goto(`/zones/${tempZone.id}/records/add`);
+    const commentField = page.locator('input[name="records[0][comment]"]');
+    test.skip(await commentField.count() === 0, 'record comments are disabled on this instance');
+
+    await page.locator('input[name="records[0][name]"]').fill(label);
+    await page.locator('select[name="records[0][type]"]').selectOption('A');
+    await page.locator('input[name="records[0][content]"]').fill('192.0.2.77');
+    await commentField.fill(comment);
+    await page.locator('button[name="commit"]').click();
+    await page.waitForURL(url => !url.pathname.endsWith('/records/add'), { timeout: 15000 });
+
+    const response = await page.request.get(`/zones/${tempZone.id}/export/csv`);
+    expect(response.ok()).toBeTruthy();
+    const lines = (await response.text()).split('\n');
+
+    expect(lines[0]).toMatch(/^\uFEFF?Name,Type,Content,Priority,TTL,Disabled,Comment\s*$/);
+    const row = lines.find(line => line.startsWith(`${label}.${tempZone.name},A,`));
+    expect(row).toBeDefined();
+    expect(row.trimEnd()).toMatch(new RegExp(`,"?${comment}"?$`));
   });
 
   test('should deny CSV export for non-authenticated users', async ({ page }) => {

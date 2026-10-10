@@ -23,6 +23,8 @@
 namespace Poweradmin\Module\CsvExport\Controller;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 
 /**
@@ -61,7 +63,7 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $records = $this->moduleServices()->recordRepository()->getRecordsFromDomainId($zone_id);
+        $records = $this->fetchZoneRecords($zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));
@@ -82,9 +84,44 @@ class CsvExportController extends BaseController
         // Add BOM for UTF-8
         fputs($output, "\xEF\xBB\xBF");
 
-        $header = ['Name', 'Type', 'Content', 'Priority', 'TTL', 'Disabled'];
+        $this->writeCsv($output, $records);
 
-        if ($this->getConfig()->get('interface', 'show_record_comments', false)) {
+        fclose($output);
+        exit();
+    }
+
+    private function commentsEnabled(): bool
+    {
+        return (bool)$this->getConfig()->get('interface', 'show_record_comments', false);
+    }
+
+    /**
+     * Comments are only loaded when the Comment column is exported.
+     *
+     * @return list<RecordRow>
+     */
+    private function fetchZoneRecords(int $zoneId): array
+    {
+        return $this->moduleServices()->recordRepository()->getRecordsFromDomainId(
+            $zoneId,
+            0,
+            Constants::DEFAULT_MAX_ROWS,
+            'name',
+            'ASC',
+            $this->commentsEnabled()
+        );
+    }
+
+    /**
+     * @param resource $output
+     * @param list<RecordRow> $records
+     */
+    private function writeCsv($output, array $records): void
+    {
+        $withComments = $this->commentsEnabled();
+
+        $header = ['Name', 'Type', 'Content', 'Priority', 'TTL', 'Disabled'];
+        if ($withComments) {
             $header[] = 'Comment';
         }
 
@@ -101,14 +138,11 @@ class CsvExportController extends BaseController
                 $record['disabled'] ? 'Yes' : 'No'
             ];
 
-            if ($this->getConfig()->get('interface', 'show_record_comments', false)) {
+            if ($withComments) {
                 $row[] = $record['comment'] ?? '';
             }
 
             fputcsv($output, $escaper->escapeRow($row), ',', '"', '');
         }
-
-        fclose($output);
-        exit();
     }
 }
