@@ -128,4 +128,28 @@ class PermissionListsTest extends V2ControllerTestCase
         $this->assertSame(400, $this->listTemplates(['type' => 'admins'])->getStatusCode());
         $this->assertSame(400, $this->listTemplates(['sort' => 'owner'])->getStatusCode());
     }
+
+    public function testAFailingTemplateListOrLookupDoesNotLeakTheException(): void
+    {
+        $repository = $this->createMock(PermissionTemplateRepositoryInterface::class);
+        $repository->method('listPermissionTemplates')->willThrowException(new \PDOException('SQLSTATE[42S02]: perm_templ missing'));
+        $repository->method('getPermissionTemplateDetails')->willThrowException(new \PDOException('SQLSTATE[42S02]: perm_templ missing'));
+
+        $list = $this->call(PermissionTemplatesController::class, 'listPermissionTemplates', $repository);
+        $this->assertSame(500, $list->getStatusCode());
+        $this->assertSame('Failed to fetch permission templates', $this->messageOf($list));
+
+        $controller = $this->bareController(PermissionTemplatesController::class);
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('userHasPermission')->willReturn(true);
+        $this->injectBaseCollaborators($controller);
+        $this->inject($controller, 'apiPermissionService', $permissions);
+        $this->inject($controller, 'permissionTemplateRepository', $repository);
+        $this->inject($controller, 'pathParameters', ['id' => 1]);
+        $this->inject($controller, 'authenticatedUserId', 1);
+
+        $single = $this->callHandler($controller, 'getPermissionTemplate');
+        $this->assertSame(500, $single->getStatusCode());
+        $this->assertSame('Failed to fetch permission template', $this->messageOf($single));
+    }
 }
