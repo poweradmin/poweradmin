@@ -53,4 +53,33 @@ class SortHelperTest extends TestCase
     {
         $this->assertSame('z.zone_name ASC', SortHelper::naturalSortOrder('z.zone_name', 'other', 'sideways'));
     }
+
+    public function testOrderByMapsEachKeyToItsColumnAndAppendsTheTiebreaker(): void
+    {
+        $columns = [
+            'name' => fn(string $direction): string => "natural(name) $direction",
+            'type' => 't.type',
+        ];
+        $sort = [['field' => 'type', 'desc' => true], ['field' => 'name', 'desc' => false]];
+
+        $this->assertSame('t.type DESC, natural(name) ASC, t.id', SortHelper::orderBy($sort, $columns, 't.id', 't.name'));
+    }
+
+    public function testOrderByWithoutKeysKeepsTheDefaultOrder(): void
+    {
+        $this->assertSame('t.name', SortHelper::orderBy([], ['type' => 't.type'], 't.id', 't.name'));
+    }
+
+    public function testAColumnNamedLikeAPhpFunctionIsNotCalled(): void
+    {
+        // Only closures are called, so a column such as "date" stays a column
+        $this->assertSame('date ASC, id', SortHelper::orderBy([['field' => 'date', 'desc' => false]], ['date' => 'date'], 'id', 'id'));
+    }
+
+    public function testAnUnmappedFieldIsAProgrammingError(): void
+    {
+        $this->expectException(\LogicException::class);
+
+        SortHelper::orderBy([['field' => 'owner', 'desc' => false]], ['name' => 't.name'], 't.id', 't.name');
+    }
 }

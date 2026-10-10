@@ -25,7 +25,6 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
-use LogicException;
 use PDO;
 use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneSummary;
@@ -1228,23 +1227,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     private function zoneListOrder(array $sort): string
     {
-        if ($sort === []) {
-            return 'd.name';
-        }
-
-        $clauses = [];
-        foreach ($sort as $key) {
-            $direction = $key['desc'] ? 'DESC' : 'ASC';
-            $clauses[] = match ($key['field']) {
-                'name' => SortHelper::getNaturalSortOrder('d', $this->db_type, $direction),
-                'type' => "d.type $direction",
-                'id' => "d.id $direction",
-                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
-            };
-        }
-        $clauses[] = 'd.id';
-
-        return implode(', ', $clauses);
+        return SortHelper::orderBy($sort, [
+            'name' => fn(string $direction): string => SortHelper::getNaturalSortOrder('d', $this->db_type, $direction),
+            'type' => 'd.type',
+            'id' => 'd.id',
+        ], 'd.id', 'd.name');
     }
 
     /**

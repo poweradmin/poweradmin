@@ -27,7 +27,6 @@ use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
-use LogicException;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
@@ -41,6 +40,7 @@ use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
  * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
@@ -627,20 +627,12 @@ class DbUserRepository implements UserRepositoryInterface
      */
     private static function userListOrder(array $sort): string
     {
-        $clauses = [];
-        foreach ($sort as $key) {
-            $direction = $key['desc'] ? 'DESC' : 'ASC';
-            $clauses[] = match ($key['field']) {
-                'id' => "users.id $direction",
-                'username' => "LOWER(users.username) $direction",
-                'fullname' => "LOWER(users.fullname) $direction",
-                'email' => "LOWER(users.email) $direction",
-                default => throw new LogicException("Unknown sort field '{$key['field']}'"),
-            };
-        }
-        $clauses[] = 'users.id';
-
-        return implode(', ', $clauses);
+        return SortHelper::orderBy($sort, [
+            'id' => 'users.id',
+            'username' => 'LOWER(users.username)',
+            'fullname' => 'LOWER(users.fullname)',
+            'email' => 'LOWER(users.email)',
+        ], 'users.id', 'users.id');
     }
 
     /**
