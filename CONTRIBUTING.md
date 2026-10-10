@@ -5,9 +5,8 @@ Thank you for your interest in contributing to Poweradmin! We welcome contributi
 ## Where to Start
 
 - **Bug reports and small UI fixes** are always welcome.
-- **Good first issues**: filter the [issue tracker](https://github.com/poweradmin/poweradmin/issues) by the `good first issue` label.
 - **Translations**: edit the `.po` file for your language and open a pull request - see [Translations](#translations). No PHP knowledge required.
-- **Larger features**: open an issue first to discuss approach and target branch before writing code.
+- **Larger features**: open an issue first to discuss the approach before writing code.
 
 ## Project Architecture
 
@@ -71,26 +70,31 @@ This creates `admin`, `manager`, `client`, `viewer`, `noperm`, and `inactive` ac
 
 ### Branch Targeting
 
-Poweradmin maintains multiple release branches (see [Version Support](README.md#version-support) in the README). Target your PR appropriately:
+Open every pull request against `master` (the default branch), whether it is a bug fix, a feature or a translation.
 
-| Change type | Target branch |
-|-------------|---------------|
-| 3.x LTS bug fix or security update | `release/3.x` |
-| Current stable bug fix | `release/4.2.x` |
-| Pre-release stabilization | `release/4.3.x` |
-| New feature (next release) | `master` |
-| Experimental / breaking | `develop` |
+A temporary `develop` branch holds 4.6.0 work and will be removed after 4.5.0 is released. You don't need to target it - the maintainer moves changes between the two.
 
-Stable branches accept bug fixes and security updates only - no breaking changes and no new features. When in doubt, open an issue first.
+Bug fixes are backported to the supported release branches (see [Version Support](README.md#version-support)) by the maintainer, so there is no need to open a separate PR per branch.
 
 ### Code Quality
 
 ```bash
 composer check:all       # Lint (PHPCS)
 composer format:all      # Auto-fix style
-composer analyse:all     # PHPStan + Psalm
+composer analyse:all     # PHPCS + PHPStan + project lint rules (lint:*)
 composer compat:8.2      # PHP compatibility check (also :8.3, :8.4, :8.5)
 ```
+
+### Adding Classes or Dependencies
+
+`vendor/` is committed as a no-dev tree, and its optimized classmap also covers `lib/`. After adding or removing a class under `lib/` or `install/helpers/`, or changing dependencies, regenerate it or the **Vendor Integrity** check fails. For a dependency change, run `composer require` or `composer update <package>` first so `composer.lock` is refreshed, then:
+
+```bash
+composer install --no-dev --prefer-dist
+composer dump-autoload --optimize --no-dev
+```
+
+Commit the resulting `vendor/` changes (`vendor/composer/installed.php` can be skipped), then run `composer install` again to get the dev tools back. Do not commit the `vendor/` changes that this second install makes.
 
 ### Testing
 
@@ -109,7 +113,7 @@ Translations are gettext catalogues in `locale/<locale>/LC_MESSAGES/messages.po`
 1. Open the `.po` file for your language in a PO editor such as [Poedit](https://poedit.net/), or any text editor
 2. Fix or add translations, keeping `%s`/`%d` placeholders and HTML tags intact
 3. Rebuild the compiled catalogue: `msgfmt locale/<locale>/LC_MESSAGES/messages.po -o locale/<locale>/LC_MESSAGES/messages.mo`
-4. Open a pull request against `develop` with both the `.po` and `.mo` files
+4. Open a pull request against `master` with both the `.po` and `.mo` files
 
 See the [translations guide](https://docs.poweradmin.org/contributing/translations/) for details on plural forms and format strings.
 
@@ -142,9 +146,9 @@ docs(readme): link php.net supported-versions for PHP support policy
 
 ### Pull Request Process
 
-1. Target the correct branch (see [Branch Targeting](#branch-targeting))
+1. Target `master` (see [Branch Targeting](#branch-targeting))
 2. Add tests for new functionality
-3. Run code quality checks: `composer check:all && composer analyse:all`
+3. Run code quality checks: `composer analyse:all && composer compat:8.2`
 4. Ensure all tests pass: `composer tests`
 5. Submit pull request with a clear description and reference related issues
 
