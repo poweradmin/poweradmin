@@ -216,10 +216,10 @@ class UserZoneTransferSharedOwnershipIntegrationTest extends TestCase
     {
         $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
         if ($engine === 'mysql') {
-            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::MYSQL_DB, 'root', 'uberuser', $options);
+            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::mysqlDb(), 'root', 'uberuser', $options);
         }
         $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-        $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+        $db->exec('SET search_path TO ' . self::pgsqlSchema());
 
         return $db;
     }
