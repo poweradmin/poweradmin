@@ -17,7 +17,7 @@ docker run -d --name poweradmin -p 8080:80 -e DB_TYPE=sqlite -e PA_CREATE_ADMIN=
 
 ## Features
 
-- All zone types (master, native, and slave), supermasters, and zone templates
+- All zone types (master, native, slave, producer and consumer), catalog zone membership, supermasters, and zone templates
 - Native PowerDNS API backend mode - manage zones without direct access to the PowerDNS database
 - Version-aware interface that adapts record types, metadata kinds, and terminology to the connected PowerDNS version
 - DNSSEC operations, plus a zone metadata editor for PowerDNS `domainmetadata`
