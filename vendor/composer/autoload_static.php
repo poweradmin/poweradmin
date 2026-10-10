@@ -1001,6 +1001,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'OpenApi\\Specification' => __DIR__ . '/..' . '/zircote/swagger-php/src/Specification.php',
         'OpenApi\\Specification\\ComponentIndex' => __DIR__ . '/..' . '/zircote/swagger-php/src/Specification/ComponentIndex.php',
         'OpenApi\\Specification\\ComponentName' => __DIR__ . '/..' . '/zircote/swagger-php/src/Specification/ComponentName.php',
+        'OpenApi\\Specification\\PathItemHierarchy' => __DIR__ . '/..' . '/zircote/swagger-php/src/Specification/PathItemHierarchy.php',
         'OpenApi\\Specification\\Walker' => __DIR__ . '/..' . '/zircote/swagger-php/src/Specification/Walker.php',
         'OpenApi\\TypeResolverInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/TypeResolverInterface.php',
         'OpenApi\\Type\\AbstractTypeResolver' => __DIR__ . '/..' . '/zircote/swagger-php/src/Type/AbstractTypeResolver.php',

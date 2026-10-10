@@ -591,6 +591,7 @@ return array(
     'OpenApi\\Specification' => $vendorDir . '/zircote/swagger-php/src/Specification.php',
     'OpenApi\\Specification\\ComponentIndex' => $vendorDir . '/zircote/swagger-php/src/Specification/ComponentIndex.php',
     'OpenApi\\Specification\\ComponentName' => $vendorDir . '/zircote/swagger-php/src/Specification/ComponentName.php',
+    'OpenApi\\Specification\\PathItemHierarchy' => $vendorDir . '/zircote/swagger-php/src/Specification/PathItemHierarchy.php',
     'OpenApi\\Specification\\Walker' => $vendorDir . '/zircote/swagger-php/src/Specification/Walker.php',
     'OpenApi\\TypeResolverInterface' => $vendorDir . '/zircote/swagger-php/src/TypeResolverInterface.php',
     'OpenApi\\Type\\AbstractTypeResolver' => $vendorDir . '/zircote/swagger-php/src/Type/AbstractTypeResolver.php',
