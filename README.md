@@ -104,7 +104,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 * PHP 8.2 or higher (including 8.3, 8.4, 8.5, etc.)
 * PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
-* PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
+* PowerDNS Authoritative Server 4.x or 5.x, tested from 4.5 (see [Platform Lifecycle](https://docs.poweradmin.org/getting-started/lifecycle/) for support dates)
 
 ## Tested on
 
