@@ -794,22 +794,14 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
     {
         $transaction = new PdoTransaction($this->db);
         if ($transaction->inTransaction()) {
-            $syncRowId = null;
-            $added = $this->insertOwnerRow($zoneId, $userId, $syncRowId);
-            if ($syncRowId !== null) {
-                $this->syncZoneAccount($syncRowId);
-            }
-
-            return $added;
+            return $this->insertOwnerRow($zoneId, $userId);
         }
 
         // A lost lock race rolls the whole transaction back, so it is replayed whole
-        $syncRowId = null;
-        $added = DeadlockRetry::run(function () use ($transaction, $zoneId, $userId, &$syncRowId): bool {
-            $syncRowId = null;
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $userId): bool {
             $transaction->begin();
             try {
-                $added = $this->insertOwnerRow($zoneId, $userId, $syncRowId);
+                $added = $this->insertOwnerRow($zoneId, $userId);
                 $transaction->commit();
 
                 return $added;
@@ -820,20 +812,13 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 throw $e;
             }
         });
-        // PowerDNS is told only once the lock is released and the row is committed
-        if ($syncRowId !== null) {
-            $this->syncZoneAccount($syncRowId);
-        }
-
-        return $added;
     }
 
     /**
      * Adds the owner row once the writers ahead have finished, so a concurrent request for the
      * same user cannot store a second row. A user who already owns the zone counts as added.
-     * $syncRowId gets the zones row whose PowerDNS account the caller must refresh once it may.
      */
-    private function insertOwnerRow(int $zoneId, int $userId, ?int &$syncRowId): bool
+    private function insertOwnerRow(int $zoneId, int $userId): bool
     {
         $this->queueOwnershipWriters();
         $canonical = $this->resolveCanonicalRow($zoneId);
@@ -870,7 +855,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->execute();
 
         if ($stmt->rowCount() > 0) {
-            $syncRowId = $cid;
+            $this->syncZoneAccountAfterCommit($cid);
         }
 
         return true;
@@ -907,7 +892,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
-            $this->syncZoneAccount($cid);
+            $this->syncZoneAccountAfterCommit($cid);
             return true;
         }
 
@@ -921,7 +906,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $removed = $stmt->rowCount() > 0;
         if ($removed) {
-            $this->syncZoneAccount($cid);
+            $this->syncZoneAccountAfterCommit($cid);
         }
         return $removed;
     }
@@ -1212,6 +1197,22 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             'account' => '',
             'record_count' => $this->backendProvider->countZoneRecords($zoneId),
         ];
+    }
+
+    /**
+     * PowerDNS is told only after the surrounding transaction commits, so no HTTP call waits
+     * on the ownership locks it holds; nothing is sent if it rolls back.
+     */
+    private function syncZoneAccountAfterCommit(int $cid): void
+    {
+        (new PdoTransaction($this->db))->afterCommit('zone-account:' . $cid, function () use ($cid): void {
+            // The owner change is already committed; a failed push must not report it as failed or replay it
+            try {
+                $this->syncZoneAccount($cid);
+            } catch (\Throwable $e) {
+                error_log(sprintf('Zone account sync for zone %d failed after the owner change: %s', $cid, $e->getMessage()));
+            }
+        });
     }
 
     private function syncZoneAccount(int $cid): void

@@ -40,6 +40,14 @@ final class PdoTransaction implements TransactionInterface
      */
     private static ?WeakMap $rawTransactions = null;
 
+    /**
+     * Work waiting for the transaction on a handle to commit, keyed by connection for the
+     * same reason as above.
+     *
+     * @var WeakMap<PDO, array<string, callable(): void>>|null
+     */
+    private static ?WeakMap $afterCommit = null;
+
     public function __construct(private readonly PDO $db)
     {
     }
@@ -53,6 +61,11 @@ final class PdoTransaction implements TransactionInterface
      */
     public function begin(): void
     {
+        // Work queued by a transaction the server rolled back (a deadlock victim) must not leak into this one
+        if (isset(self::deferred()[$this->db]) && !$this->inTransaction()) {
+            unset(self::deferred()[$this->db]);
+        }
+
         if ($this->isSqlite() && !$this->inTransaction()) {
             $this->db->exec('BEGIN IMMEDIATE');
             self::tracker()[$this->db] = true;
@@ -68,11 +81,31 @@ final class PdoTransaction implements TransactionInterface
         if ($this->ownsRawTransaction()) {
             $this->db->exec('COMMIT');
             unset(self::tracker()[$this->db]);
+        } else {
+            $this->db->commit();
+        }
+
+        $this->runDeferred();
+    }
+
+    /**
+     * Runs $work once the open transaction commits, and never if it rolls back; at once when
+     * none is open. A repeated $key replaces the earlier work, so a zone is pushed once however
+     * many writes touched it. For calls that must not run while locks are held, such as HTTP.
+     *
+     * @param callable(): void $work
+     */
+    public function afterCommit(string $key, callable $work): void
+    {
+        if (!$this->inTransaction()) {
+            $work();
 
             return;
         }
 
-        $this->db->commit();
+        $queue = self::deferred()[$this->db] ?? [];
+        $queue[$key] = $work;
+        self::deferred()[$this->db] = $queue;
     }
 
     public function rollBack(): void
@@ -80,11 +113,11 @@ final class PdoTransaction implements TransactionInterface
         if ($this->ownsRawTransaction()) {
             $this->db->exec('ROLLBACK');
             unset(self::tracker()[$this->db]);
-
-            return;
+        } else {
+            $this->db->rollBack();
         }
 
-        $this->db->rollBack();
+        unset(self::deferred()[$this->db]);
     }
 
     /**
@@ -105,6 +138,30 @@ final class PdoTransaction implements TransactionInterface
     private function isSqlite(): bool
     {
         return $this->db->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite';
+    }
+
+    private function runDeferred(): void
+    {
+        $queue = self::deferred()[$this->db] ?? [];
+        unset(self::deferred()[$this->db]);
+
+        $failure = null;
+        foreach ($queue as $work) {
+            try {
+                $work();
+            } catch (\Throwable $e) {
+                $failure ??= $e;
+            }
+        }
+        if ($failure !== null) {
+            throw $failure;
+        }
+    }
+
+    /** @return WeakMap<PDO, array<string, callable(): void>> */
+    private static function deferred(): WeakMap
+    {
+        return self::$afterCommit ??= new WeakMap();
     }
 
     /** @return WeakMap<PDO, bool> */
