@@ -92,4 +92,37 @@ class PasswordResetTokenExpiryClockTest extends TestCase
 
         $this->assertNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('stale-token')));
     }
+
+    public function testTokenCanBeClaimedOnlyOnce(): void
+    {
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'one-shot',
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+        ]);
+        $id = (int) $repo->findByToken(DbPasswordResetTokenRepository::hashToken('one-shot'))['id'];
+
+        $this->assertTrue($repo->markAsUsed($id));
+        $this->assertFalse($repo->markAsUsed($id), 'A second redemption of the same token must not succeed.');
+        $this->assertNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('one-shot')));
+    }
+
+    public function testAReleasedClaimMakesTheLinkUsableAgain(): void
+    {
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'retry',
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+        ]);
+        $id = (int) $repo->findByToken(DbPasswordResetTokenRepository::hashToken('retry'))['id'];
+
+        $this->assertTrue($repo->markAsUsed($id));
+        $this->assertTrue($repo->releaseClaim($id));
+        $this->assertNotNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('retry')));
+        $this->assertTrue($repo->markAsUsed($id));
+    }
 }

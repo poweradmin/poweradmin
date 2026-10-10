@@ -106,6 +106,7 @@ return [
             'rate_limit_attempts' => 5,                 // Max reset attempts per time window
             'rate_limit_window' => 3600,                // Rate limit window in seconds (1 hour)
             'min_time_between_requests' => 60,          // Minimum seconds between requests (1 minute)
+            'single_use_claim' => false,                // Claim the link before the password changes, so one link sets one password even under parallel requests (added in 4.5.0)
         ],
         /**
          * Username Recovery Settings
