@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -1112,5 +1113,45 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient->method('makeRequest')->willThrowException(new ApiErrorException('connection refused'));
 
         $this->assertFalse($this->apiClient->flushZoneCache('example.com'));
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: bool}>
+     */
+    public static function zoneListCatalogVersions(): array
+    {
+        return [
+            '4.6 has no catalog zones' => ['4.6.4', false],
+            '4.7 leaves the list empty' => ['4.7.5', true],
+            '4.8 leaves the list empty' => ['4.8.5', true],
+            '4.9 fills the list' => ['4.9.12', false],
+            '5.1 fills the list' => ['5.1.4', false],
+            'unknown version' => ['', false],
+        ];
+    }
+
+    #[DataProvider('zoneListCatalogVersions')]
+    public function testZoneListOmitsCatalogOnlyOnPowerDns47And48(string $version, bool $expected): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willReturn(['responseCode' => 200, 'data' => ['version' => $version]]);
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+
+        $this->assertSame($expected, $client->zoneListOmitsCatalog());
+    }
+
+    public function testZoneCatalogNameIsReadOnceUntilAWrite(): void
+    {
+        $this->mockHttpClient->expects($this->exactly(3))
+            ->method('makeRequest')
+            ->willReturnOnConsecutiveCalls(
+                ['responseCode' => 200, 'data' => ['name' => 'member.example.com.', 'catalog' => 'Producer.Example.com.']],
+                ['responseCode' => 204, 'data' => []],
+                ['responseCode' => 200, 'data' => ['name' => 'member.example.com.', 'catalog' => '']]
+            );
+
+        $this->assertSame('producer.example.com', $this->apiClient->getZoneCatalogName('member.example.com.'));
+        $this->assertSame('producer.example.com', $this->apiClient->getZoneCatalogName('member.example.com.'));
+        $this->apiClient->updateZoneProperties('member.example.com.', ['catalog' => '']);
+        $this->assertSame('', $this->apiClient->getZoneCatalogName('member.example.com.'));
     }
 }

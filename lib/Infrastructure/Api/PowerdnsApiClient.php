@@ -46,6 +46,9 @@ class PowerdnsApiClient
     /** Filtered zone reads only return disabled records from this version on */
     private const RRSET_FILTER_MIN_VERSION = '5.0.0';
 
+    /** The zone list reports each zone's catalog from this version on; 4.7 and 4.8 leave it empty */
+    private const ZONE_LIST_CATALOG_MIN_VERSION = '4.9.0';
+
     private HttpClient $httpClient;
     private string $serverName;
     private LoggerInterface $logger;
@@ -64,6 +67,12 @@ class PowerdnsApiClient
 
     /** @var bool|null Whether this server's filtered reads keep disabled records; probed once per request */
     private ?bool $rrsetFilterIsSafe = null;
+
+    /** @var array<string, string> Catalog per zone from single zone reads, for servers whose zone list leaves it empty */
+    private array $zoneCatalogCache = [];
+
+    /** @var bool|null Whether this server's zone list leaves catalog empty; probed once per request */
+    private ?bool $zoneListOmitsCatalog = null;
 
     /** @var string|null PowerDNS version, when the caller supplied one instead of leaving it to be probed */
     private ?string $serverVersion = null;
@@ -98,6 +107,7 @@ class PowerdnsApiClient
             $this->lastZone = null;
             $this->narrowedZoneCache = [];
             $this->searchCache = [];
+            $this->zoneCatalogCache = [];
         }
 
         return $this->httpClient->makeRequest($method, $endpoint, $data);
@@ -857,6 +867,34 @@ class PowerdnsApiClient
         }
 
         return $this->getZone($zoneName, true, $filters);
+    }
+
+    /**
+     * PowerDNS 4.7 and 4.8 have catalog zones but leave the catalog field of the
+     * zone list empty; only a single zone read reports it.
+     */
+    public function zoneListOmitsCatalog(): bool
+    {
+        if ($this->zoneListOmitsCatalog === null) {
+            $version = $this->serverVersion ?? (string)($this->getServerInfo()['version'] ?? '');
+            // An unreadable version keeps the bulk list rather than reading every zone
+            $this->zoneListOmitsCatalog = $version !== ''
+                && version_compare($version, '4.7.0', '>=')
+                && version_compare($version, self::ZONE_LIST_CATALOG_MIN_VERSION, '<');
+        }
+
+        return $this->zoneListOmitsCatalog;
+    }
+
+    /**
+     * A zone's catalog from a single zone read, canonicalised like getAllZoneKinds().
+     * Kept for the request because the zone read cache holds only a few bodies.
+     */
+    public function getZoneCatalogName(string $zoneName): string
+    {
+        return $this->zoneCatalogCache[$zoneName] ??= self::canonicalZoneName(
+            (string)($this->getZone($zoneName, false)['catalog'] ?? '')
+        );
     }
 
     /**

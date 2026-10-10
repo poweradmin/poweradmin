@@ -315,7 +315,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     {
         return array_map(
             fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'kind' => $zone['kind']],
-            $this->zonesMatching(fn(array $zone): bool => $zone['catalog'] === $catalogName)
+            $this->zonesMatching(fn(array $zone): bool => $zone['catalog'] === $catalogName, null)
         );
     }
 
@@ -325,7 +325,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         return array_map(
             fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'catalog' => $zone['catalog']],
-            $this->zonesMatching(fn(array $zone): bool => $zone['kind'] === $wanted)
+            $this->zonesMatching(fn(array $zone): bool => $zone['kind'] === $wanted, $wanted)
         );
     }
 
@@ -333,18 +333,26 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
      * Zones from the bulk list that satisfy $match, name-sorted.
      *
      * @param callable(array{id: int, name: string, kind: string, catalog: string}): bool $match
+     * @param string|null $kind Only zones of this kind, checked before any per-zone catalog read
      * @return array<int, array{id: int, name: string, kind: string, catalog: string}>
      */
-    private function zonesMatching(callable $match): array
+    private function zonesMatching(callable $match, ?string $kind): array
     {
+        $readsCatalogPerZone = $this->client->zoneListOmitsCatalog();
         $zones = [];
         foreach ($this->readZoneKinds() as $apiName => $entry) {
+            if ($kind !== null && $entry['kind'] !== $kind) {
+                continue;
+            }
             $name = rtrim($apiName, '.');
             $zone = [
                 'id' => $this->localIdForZoneName($name),
                 'name' => $name,
                 'kind' => $entry['kind'],
-                'catalog' => $entry['catalog'],
+                // Producers and consumers cannot be members, so their catalog is never read
+                'catalog' => $readsCatalogPerZone && !in_array($entry['kind'], [ZoneType::PRODUCER, ZoneType::CONSUMER], true)
+                    ? $this->client->getZoneCatalogName($apiName)
+                    : $entry['catalog'],
             ];
 
             if ($match($zone)) {
