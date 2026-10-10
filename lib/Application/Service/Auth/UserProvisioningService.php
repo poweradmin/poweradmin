@@ -150,6 +150,14 @@ class UserProvisioningService
 
                 if ($existingUserId) {
                     $this->logger->info('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
+                    if (!array_key_exists('email_verified', $userInfo->getRawData())) {
+                        // Allowed by default, but only as safe as the provider's control over
+                        // who may set which address; require_verified_email closes this path.
+                        $this->logger->warning(
+                            'Matched {method} identity to existing account {id} by email although the provider sent no email_verified claim; set require_verified_email to refuse such matches',
+                            ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                        );
+                    }
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
                     $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;

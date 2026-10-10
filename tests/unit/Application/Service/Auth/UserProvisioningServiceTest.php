@@ -284,7 +284,8 @@ class UserProvisioningServiceTest extends TestCase
 
     private function createServiceWithMocks(
         ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null,
-        ?UserRepositoryInterface $userRepository = null
+        ?UserRepositoryInterface $userRepository = null,
+        ?\Poweradmin\Infrastructure\Logger\Logger $logger = null
     ): UserProvisioningService {
         if ($userRepository === null) {
             $userRepository = $this->createMock(UserRepositoryInterface::class);
@@ -293,7 +294,7 @@ class UserProvisioningServiceTest extends TestCase
 
         return new UserProvisioningService(
             $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class),
-            $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class),
+            $logger ?? $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class),
             $userRepository,
             $this->createMock(ExternalIdentityRepositoryInterface::class),
             $this->createMock(UserGroupLookupInterface::class),
@@ -669,6 +670,59 @@ class UserProvisioningServiceTest extends TestCase
         $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1');
 
         $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testLinkingByEmailWithoutAVerifiedClaimIsLoggedAsAWarning(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true]);
+        $config->method('get')->willReturnCallback(static fn($group, $key, $default = null) => $default);
+
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findActiveUserIdByEmail')->with('john@example.com')->willReturn(42);
+        $repository->method('hasAdminPermission')->willReturn(false);
+
+        $warnings = [];
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        // The service wraps its logger in ClassContextLogger, which forwards through log()
+        $logger->method('log')->willReturnCallback(function ($level, $message, array $context = []) use (&$warnings): void {
+            if ($level === 'warning') {
+                $warnings[] = [(string)$message, $context];
+            }
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository, $logger);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1');
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+        $this->assertCount(1, $warnings, print_r($warnings, true));
+        $this->assertStringContainsString('no email_verified claim', $warnings[0][0]);
+        $this->assertSame(42, $warnings[0][1]['id']);
+    }
+
+    public function testLinkingByEmailWithAVerifiedClaimIsNotWarned(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true]);
+        $config->method('get')->willReturnCallback(static fn($group, $key, $default = null) => $default);
+
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findActiveUserIdByEmail')->willReturn(42);
+        $repository->method('hasAdminPermission')->willReturn(false);
+
+        $warnings = [];
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $logger->method('log')->willReturnCallback(function ($level, $message) use (&$warnings): void {
+            if ($level === 'warning') {
+                $warnings[] = (string)$message;
+            }
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository, $logger);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+        $this->assertSame([], $warnings);
     }
 
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
