@@ -199,7 +199,7 @@ class PermissionTemplatesController extends PublicApiController
 
             return $this->returnApiResponse(['templates' => $templates], true, null, 200, $extra);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission templates: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::listPermissionTemplates', 'Failed to fetch permission templates');
         }
     }
 
@@ -291,7 +291,7 @@ class PermissionTemplatesController extends PublicApiController
 
             return $this->returnApiResponse(['template' => $template]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission template: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::getPermissionTemplate', 'Failed to fetch permission template');
         }
     }
 
