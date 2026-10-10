@@ -25,6 +25,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Model\Permission;
@@ -43,6 +45,9 @@ use Exception;
  */
 class GroupZonesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups/{id}/zones */
+    private const ZONE_SORT_FIELDS = ['zone_id', 'zone_name', 'zone_type', 'created_at'];
+
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
     private DomainRepositoryInterface $domainRepository;
@@ -95,6 +100,34 @@ class GroupZonesController extends PublicApiController
             )
         ]
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the zone name',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'example')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: zone_id, zone_name, zone_type, created_at. Default: newest assignment first',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'zone_name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Zones retrieved successfully',
@@ -102,6 +135,17 @@ class GroupZonesController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     type: 'object',
@@ -125,8 +169,10 @@ class GroupZonesController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Group not found')]
     private function listZones(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
@@ -134,6 +180,12 @@ class GroupZonesController extends PublicApiController
         }
 
         try {
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::ZONE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
             $groupId = (int)$this->pathParameters['id'];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
@@ -152,7 +204,11 @@ class GroupZonesController extends PublicApiController
                 ];
             }
 
-            return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
+            // Filtered after the scope check, so the total never counts a hidden zone
+            $zonesData = ListPaging::filterContains($zonesData, (string)$this->request->query->get('q', ''), static fn(array $z): array => [$z['zone_name']]);
+            [$zonesData, $extra] = ListPaging::paginate($sort->sortRows($zonesData), $page, $perPage);
+
+            return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
