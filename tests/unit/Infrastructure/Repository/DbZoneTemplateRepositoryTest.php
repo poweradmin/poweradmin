@@ -186,6 +186,17 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame(['aaa', 'bbb'], $page);
     }
 
+    public function testGetZoneTemplateRecordsSortsByPriority(): void
+    {
+        $templateId = $this->repository->createZoneTemplate('sorted', '', 0, 1);
+        foreach (['aaa' => 30, 'bbb' => 10, 'ccc' => 20] as $name => $prio) {
+            $this->repository->addRecord($templateId, $name, 'MX', 'mail.example.com', 60, $prio);
+        }
+
+        $names = array_column($this->repository->getZoneTemplateRecords($templateId, 0, 9999, 'prio'), 'name');
+        $this->assertSame(['[ZONE]', 'bbb', 'ccc', 'aaa'], $names);
+    }
+
     public function testGetZoneTemplateRecordsIgnoresAnUnknownSortColumn(): void
     {
         $templateId = $this->repository->createZoneTemplate('sorted', '', 0, 1);

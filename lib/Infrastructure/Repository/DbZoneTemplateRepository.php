@@ -273,7 +273,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         int $rowAmount = Constants::DEFAULT_MAX_ROWS,
         string $sortBy = 'name'
     ): array {
-        $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
+        $allowedSortColumns = ['name', 'type', 'content', 'prio', 'ttl'];
         $sortBy = in_array($sortBy, $allowedSortColumns) ? htmlspecialchars($sortBy) : 'name';
 
         $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortBy;
