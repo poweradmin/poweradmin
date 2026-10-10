@@ -971,8 +971,62 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function transferUserZones(int $fromUserId, int $toUserId): bool
     {
-        $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
-        return $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+        $transaction = $this->transaction();
+        $owns = !$transaction->inTransaction();
+        if ($owns) {
+            $transaction->begin();
+        }
+
+        try {
+            $this->dropSharedOwnerships($fromUserId, $toUserId);
+            $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
+            $moved = $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+            if ($owns) {
+                $transaction->commit();
+            }
+
+            return $moved;
+        } catch (\Throwable $e) {
+            if ($owns && $transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Clears the ownership a transfer would duplicate, so the receiver ends up with one row per zone.
+     * The derived tables keep MySQL from refusing a subquery on the table being deleted from.
+     */
+    private function dropSharedOwnerships(int $fromUserId, int $toUserId): void
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        // Extra rows (no zone_name) are the only ones API mode may delete; the canonical row carries the zone
+        $senderRows = $this->isApiBackend ? ' AND zone_name IS NULL' : '';
+
+        // The sender holds the named row: drop the receiver's unnamed row so the move below hands the name over
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :toUserId AND zone_name IS NULL
+               AND domain_id IN (
+                   SELECT zone_id FROM (
+                       SELECT $canonicalId AS zone_id FROM zones
+                       WHERE owner = :fromUserId AND zone_name IS NOT NULL
+                   ) AS sender_zones
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :fromUserId$senderRows
+               AND $canonicalId IN (
+                   SELECT zone_id FROM (
+                       SELECT $canonicalId AS zone_id FROM zones WHERE owner = :toUserId
+                   ) AS receiver_zones
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
     }
 
     /**

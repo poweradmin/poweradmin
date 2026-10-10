@@ -692,13 +692,20 @@ class DbUserRepositoryTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
 
+        $prepared = [];
         $this->db->method('prepare')
-            ->with($this->stringContains('UPDATE zones SET owner'))
-            ->willReturn($stmt);
+            ->willReturnCallback(function (string $sql) use ($stmt, &$prepared) {
+                $prepared[] = $sql;
+                return $stmt;
+            });
 
         $result = $this->repository->transferUserZones(1, 2);
 
         $this->assertTrue($result);
+        $this->assertStringContainsString('DELETE FROM zones', $prepared[0]);
+        $this->assertStringContainsString('DELETE FROM zones', $prepared[1]);
+        $this->assertStringContainsString('UPDATE zones SET owner', $prepared[2]);
+        $this->assertCount(3, $prepared);
     }
 
     // ========== assignPermissionTemplate tests ==========
