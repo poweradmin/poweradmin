@@ -186,7 +186,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             new OA\Parameter(
                 name: 'sort',
                 in: 'query',
-                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: name',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: name in database order (sort=name uses natural, case-insensitive order)',
                 required: false,
                 schema: new OA\Schema(type: 'string', example: 'type,name')
             ),

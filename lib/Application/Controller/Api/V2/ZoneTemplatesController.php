@@ -89,7 +89,7 @@ class ZoneTemplatesController extends PublicApiController
             new OA\Parameter(
                 name: 'sort',
                 in: 'query',
-                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, zones_linked. Default: name',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, zones_linked. Default: name in database order (sort=name uses natural, case-insensitive order)',
                 required: false,
                 schema: new OA\Schema(type: 'string', example: 'zones_linked:desc,name')
             ),

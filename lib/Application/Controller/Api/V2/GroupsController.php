@@ -112,7 +112,7 @@ class GroupsController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'sort',
-        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, member_count, zone_count, created_at. Default: name',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, member_count, zone_count, created_at. Default: name in database order (sort=name uses natural, case-insensitive order)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string', example: 'zone_count:desc,name')

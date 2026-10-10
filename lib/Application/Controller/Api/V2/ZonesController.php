@@ -123,7 +123,7 @@ class ZonesController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'sort',
-        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, id. Default: name',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, id. Default: name in database order (sort=name sorts numeric prefixes numerically, then by name)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string', example: 'type,name:desc')
