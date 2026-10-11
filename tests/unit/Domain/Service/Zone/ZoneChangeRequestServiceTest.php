@@ -163,6 +163,29 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(0, $this->repository->count([]));
     }
 
+    public function testAnEditOfALowercaseStoredRowIsValidatedAndFiledUppercase(): void
+    {
+        $this->stored['5']['type'] = 'a';
+        $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
+        $this->validator->expects($this->once())->method('validateRecord')
+            ->with($this->anything(), self::ZONE_ID, 'A')
+            ->willReturn(ValidationResult::success([]));
+
+        $result = $this->makeService()->fileRecordEdits($this->submission([new ZoneEditRow('5', 'www', 'a', '192.0.2.9', 3600, 0, false, null)]));
+
+        $this->assertTrue($result->success);
+        $this->assertSame('A', $this->repository->find($result->requestId)->actions[0]['after']['type']);
+    }
+
+    public function testAnUntouchedLowercaseStoredRowFilesNothing(): void
+    {
+        $this->stored['5']['type'] = 'a';
+
+        $result = $this->makeService()->fileRecordEdits($this->submission([new ZoneEditRow('5', 'www', 'a', '192.0.2.1', 3600, 0, false, null)], zoneComment: 'old comment'));
+
+        $this->assertSame(ZoneChangeRequestResult::CODE_NO_CHANGES, $result->code);
+    }
+
     public function testValidationFailureRefusesFiling(): void
     {
         $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);

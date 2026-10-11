@@ -241,6 +241,8 @@ class ZoneEditService
     public function writeRow(ZoneEditSubmission $submission, ZoneEditRowChange $change): RecordWriteResult
     {
         $record = $change->record;
+        // Uppercased only here, after the change check, so an untouched lowercase row is not rewritten
+        $record['type'] = strtoupper(trim((string)$record['type']));
         $log = $change->log;
 
         $newComment = (string)($record['comment'] ?? '');

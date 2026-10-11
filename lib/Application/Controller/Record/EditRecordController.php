@@ -285,7 +285,8 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        $type = (string)$this->httpRequest->getPostParam('type', '');
+        // The form re-posts the stored type, which an SQL tool may have written lowercase
+        $type = strtoupper(trim((string)$this->httpRequest->getPostParam('type', '')));
         $content = (string)$this->httpRequest->getPostParam('content', '');
         // Let users type a serial placeholder like [SERIAL] in the SOA form;
         // non-placeholder content passes through unchanged and the service

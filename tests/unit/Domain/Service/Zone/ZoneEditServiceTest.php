@@ -322,6 +322,31 @@ class ZoneEditServiceTest extends TestCase
         $this->assertTrue($result->serialBumped);
     }
 
+    public function testAnEditedLowercaseRowIsWrittenAndCommentedUnderItsUppercaseType(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn(['type' => 'a'] + $this->stored('5', 'www', '192.0.2.1'));
+        $this->comments->method('findCommentByRecordId')->willReturn(null);
+        $this->comments->method('findComment')->willReturn(null);
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'hello', 5, 'alice');
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->callback(fn(array $record): bool => $record['type'] === 'A'))
+            ->willReturn(RecordWriteResult::ok());
+        $row = new ZoneEditRow('5', 'www', 'a', '192.0.2.2', 3600, 0, false, 'hello');
+
+        $result = $this->makeService(['interface' => ['show_record_comments' => true]])->save($this->submission([$row]));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+    }
+
+    public function testAnUntouchedLowercaseRowIsNotRewritten(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn(['type' => 'a'] + $this->stored('5', 'www', '192.0.2.1'));
+        $this->recordManager->expects($this->never())->method('editRecord');
+
+        $this->makeService()->save($this->submission([new ZoneEditRow('5', 'www', 'a', '192.0.2.1', 3600, 0, false, null)]));
+    }
+
     /** @param array<string, array<string, mixed>> $overrides */
     private function makeService(array $overrides = []): ZoneEditService
     {

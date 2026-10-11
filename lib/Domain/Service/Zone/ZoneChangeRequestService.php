@@ -132,6 +132,8 @@ class ZoneChangeRequestService
             }
 
             $row = $change->record;
+            // Uppercased after the change check, as the direct save does, so a lowercase stored type validates
+            $row['type'] = strtoupper(trim((string)$row['type']));
             $row['content'] = $this->formatter->formatContent((string)$row['type'], (string)$row['content']);
             $error = $this->validate($row['rid'], $submission->zoneId, $row);
             if ($error !== null) {

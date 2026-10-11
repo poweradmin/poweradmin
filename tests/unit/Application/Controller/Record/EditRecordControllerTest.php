@@ -468,6 +468,31 @@ class EditRecordControllerTest extends SeamControllerTestCase
         );
     }
 
+    public function testALowercaseStoredSoaIsSavedAsSoaWithItsSerialHandling(): void
+    {
+        $this->storedRecord = [
+            'id' => self::RECORD_ID,
+            'name' => 'example.com',
+            'type' => 'soa',
+            'content' => 'ns1.example.com hostmaster.example.com 2026010101 10800 3600 604800 3600',
+            'ttl' => 3600,
+            'prio' => 0,
+        ];
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $this->post([
+            'rid' => (string)self::RECORD_ID,
+            'name' => 'example.com',
+            'type' => 'soa',
+            'content' => 'ns1.example.com hostmaster.example.com [SERIAL] 10800 3600 604800 3600',
+            'ttl' => '3600',
+        ]);
+
+        $this->haltOf($this->makeController());
+
+        $this->assertSame('SOA', $this->editedRecord['type']);
+        $this->assertStringContainsString('2026010101', $this->editedRecord['content']);
+    }
+
     public function testAnUnchangedSoaSaveIsNotBumpedWhenTheInstallOptedOut(): void
     {
         $content = 'ns1.example.com hostmaster.example.com 2026010101 10800 3600 604800 3600';
