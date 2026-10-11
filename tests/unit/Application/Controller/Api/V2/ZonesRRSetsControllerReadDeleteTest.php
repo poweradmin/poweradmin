@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -41,7 +42,9 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Characterization of the read and delete halves of ZonesRRSetsController: how
@@ -296,6 +299,32 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertSame('You do not have permission to delete this record type', $this->messageOf($response));
     }
 
+    public function testDeletingAnUnknownRecordTypeIs400LikeCreateAndReplace(): void
+    {
+        $this->records->expects($this->never())->method('getRRSetRecords');
+
+        $response = $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'aaaaa']);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Invalid record type.', $this->messageOf($response));
+    }
+
+    public function testATypeIsMatchedCaseInsensitivelyOnDelete(): void
+    {
+        $this->records->expects($this->once())->method('getRRSetRecords')
+            ->with(self::ZONE_ID, 'www.example.com', 'TXT')
+            ->willReturn([]);
+
+        $this->assertSame(404, $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'txt'])->getStatusCode());
+    }
+
+    public function testAnUnknownTypeIsOnlyReportedAfterTheZoneAndPermissionChecks(): void
+    {
+        $this->zoneRow = null;
+
+        $this->assertSame(404, $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'BOGUS'])->getStatusCode());
+    }
+
     public function testDeletingAnRRSetThatHoldsNoRecordsIs404(): void
     {
         $this->records->method('getRRSetRecords')->willReturn([]);
@@ -414,6 +443,9 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $factory->method('domainRepository')->willReturn($domains);
         $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
         $factory->method('soaRecordManager')->willReturn($this->createMock(SOARecordManagerInterface::class));
+        $factory->method('dnsValidatorRegistry')->willReturn(
+            new DnsValidatorRegistry(new FakeConfiguration(), $this->createMock(DnsBackendProviderInterface::class))
+        );
 
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
         $ttlResolver->method('resolveTtlForType')->willReturn(3600);

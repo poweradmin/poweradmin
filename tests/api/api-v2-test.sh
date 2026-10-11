@@ -319,6 +319,8 @@ test_rrsets() {
 
     # Test 11: Delete non-existent RRSet
     api_request_v2 "DELETE" "/zones/$TEST_ZONE_ID/rrsets/nonexistent/A" "" 404 "Delete non-existent RRSet returns 404"
+    api_request_v2 "DELETE" "/zones/$TEST_ZONE_ID/rrsets/www/AAAAA" "" 400 "Delete with an unknown record type returns 400"
+    assert_json "Unknown type answers like create and replace" "$LAST_RESPONSE_BODY" '.message' "Invalid record type."
 
     # Test 12: Invalid RRSet creation (empty records)
     local invalid_rrset='{"name":"invalid","type":"A","ttl":3600,"records":[]}'
