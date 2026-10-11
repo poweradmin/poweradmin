@@ -447,7 +447,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         // A plain Exception, not an ApiErrorException, so the generic 500 arm answers.
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertSame('Bulk operations failed: Failed to update record', $this->messageOf($response));
+        $this->assertSame('Bulk operations failed', $this->messageOf($response));
     }
 
     /**

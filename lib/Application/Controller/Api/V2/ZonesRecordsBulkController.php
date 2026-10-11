@@ -269,8 +269,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
             return $this->returnApiError('Bulk operations failed: ' . $e->getMessage(), $statusCode);
         } catch (\Throwable $e) {
-            // Server errors - return 500
-            return $this->returnApiError('Bulk operations failed: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'ZonesRecordsBulkController::bulkRecordOperations', 'Bulk operations failed');
         }
     }
 

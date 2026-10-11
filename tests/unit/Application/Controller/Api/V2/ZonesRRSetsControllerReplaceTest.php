@@ -563,14 +563,14 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
-    public function testAnExceptionFromTheServiceIs500WithItsMessage(): void
+    public function testAnExceptionFromTheServiceIs500WithoutItsMessage(): void
     {
         $this->replacer->method('replace')->willThrowException(new \RuntimeException('connection lost'));
 
         $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1']]]);
 
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertSame('Failed to replace RRSet: connection lost', $this->messageOf($response));
+        $this->assertSame('Failed to replace RRSet', $this->messageOf($response));
     }
 
     /**

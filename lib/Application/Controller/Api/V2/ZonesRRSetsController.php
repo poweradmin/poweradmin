@@ -641,7 +641,7 @@ class ZonesRRSetsController extends PublicApiController
                 );
             }
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to replace RRSet: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'ZonesRRSetsController::replaceRRSet', 'Failed to replace RRSet');
         }
     }
 
@@ -795,7 +795,7 @@ class ZonesRRSetsController extends PublicApiController
                 throw $e;
             }
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to delete RRSet: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'ZonesRRSetsController::deleteRRSet', 'Failed to delete RRSet');
         }
     }
 
