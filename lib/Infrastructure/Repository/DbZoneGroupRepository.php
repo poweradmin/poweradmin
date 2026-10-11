@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use PDO;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
@@ -146,6 +147,13 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             $stmt->execute([':domain_id' => $domainId, ':group_id' => $groupId]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $this->mapRowToEntity($row);
+        }
+
+        if (!$this->isApiBackend) {
+            // A zone owned only through groups has no owner row; named now, it keeps its id when the API backend takes over.
+            // Named before the grant is stored, so a naming failure leaves no grant behind
+            $domainsTable = $this->tableNameService?->getTable(PdnsTable::DOMAINS) ?? 'domains';
+            SqlZoneNames::ensureNamed($this->db, $domainsTable, $domainId, true);
         }
 
         $query = "INSERT INTO zones_groups (domain_id, group_id, created_at)

@@ -196,8 +196,9 @@ final class AuthServices
     {
         if ($this->apiKeyRepository === null) {
             // Every scope read goes through this repository, so scopes are canonical before the first one
-            $ready = (new ApiKeyZoneScopeMigration($this->db, DnsBackendProviderFactory::isApiBackend($this->config), $this->logger))->runOnce();
-            $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config, null, $ready);
+            $isApiBackend = DnsBackendProviderFactory::isApiBackend($this->config);
+            $ready = (new ApiKeyZoneScopeMigration($this->db, $isApiBackend, $this->logger))->runOnce();
+            $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config, null, $ready, $isApiBackend);
         }
 
         return $this->apiKeyRepository;

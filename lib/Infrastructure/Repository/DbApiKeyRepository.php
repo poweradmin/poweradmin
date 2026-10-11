@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Domain\Port\TransactionInterface;
 use DateTime;
 use Exception;
@@ -31,6 +32,8 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -53,9 +56,15 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     /**
      * @param bool $zoneScopesReady False while the one-time scope migration has not run (see ApiKeyZoneScopeMigration)
+     * @param bool $isApiBackend Whether zones are served by the PowerDNS API; under the SQL backend a scoped zone gets a named zones row
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, private readonly bool $zoneScopesReady = true)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null,
+        private readonly bool $zoneScopesReady = true,
+        private readonly bool $isApiBackend = false
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
@@ -397,13 +406,13 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void
     {
+        $unique = array_values(array_unique(array_map('intval', $zoneIds)));
         $this->transaction()->begin();
         try {
             $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
             $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
             $delete->execute();
 
-            $unique = array_values(array_unique(array_map('intval', $zoneIds)));
             if ($unique !== []) {
                 $insert = $this->db->prepare("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (:apiKeyId, :zoneId)");
                 foreach ($unique as $zoneId) {
@@ -417,6 +426,28 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
         } catch (Exception $e) {
             $this->transaction()->rollBack();
             throw $e;
+        }
+
+        if ($unique !== [] && !$this->isApiBackend) {
+            $this->nameScopedZones($unique);
+        }
+    }
+
+    /**
+     * Gives each scoped zone a named row so it keeps its id when the API backend takes over.
+     * Runs after the scope commits: a naming failure must not roll back the scope and leave the key unrestricted.
+     *
+     * @param int[] $zoneIds
+     */
+    private function nameScopedZones(array $zoneIds): void
+    {
+        $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+        foreach ($zoneIds as $zoneId) {
+            try {
+                SqlZoneNames::ensureNamed($this->db, $domainsTable, $zoneId, true);
+            } catch (\Throwable $e) {
+                $this->logger->warning('[DbApiKeyRepository] Could not name scoped zone {zone}: {error}', ['zone' => $zoneId, 'error' => $e->getMessage()]);
+            }
         }
     }
 
