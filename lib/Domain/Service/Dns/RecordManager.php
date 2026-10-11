@@ -336,6 +336,8 @@ class RecordManager implements RecordManagerInterface
             return false;
         }
         $record['zid'] = (int)$recordDetails['zid'];
+        // The edit form posts the stored type verbatim, and SQL tools can store it lowercase
+        $record['type'] = strtoupper(trim((string)$record['type']));
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);

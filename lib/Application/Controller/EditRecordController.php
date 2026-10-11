@@ -200,6 +200,10 @@ class EditRecordController extends BaseController
         }
 
         $postData = $_POST;
+        if (isset($postData['type'])) {
+            // The form re-posts the stored type, which an SQL tool may have written lowercase
+            $postData['type'] = strtoupper(trim((string)$postData['type']));
+        }
 
         // Convert IDN record name and content to punycode
         if (isset($postData['name'])) {
