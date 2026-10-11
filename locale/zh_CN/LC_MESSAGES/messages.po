@@ -13380,3 +13380,28 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "通用记录数据必须为 \"\\# <length> <hex>\"，且长度与十六进制数据一致。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "无法删除最后一个所有者: 区域将不再有任何所有权。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "请先添加另一个所有者或组。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "请先添加另一个组或用户所有者。"
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "您无权为其他用户创建区域。"
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "您没有编辑此区域的权限。"

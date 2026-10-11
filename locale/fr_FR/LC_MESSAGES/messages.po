@@ -14846,3 +14846,28 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Les données d'enregistrement génériques doivent être de la forme \"\\# <length> <hex>\", la longueur correspondant aux données hexadécimales."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Impossible de supprimer le dernier propriétaire : la zone n'aurait plus de propriété."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "Ajoutez d'abord un autre propriétaire ou un groupe."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "Ajoutez d'abord un autre groupe ou un utilisateur propriétaire."
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "Vous n'avez pas la permission de créer des zones pour d'autres utilisateurs."
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "Vous n'avez pas la permission de modifier cette zone."

@@ -14347,3 +14347,28 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "汎用レコードデータは \"\\# <length> <hex>\" の形式で、長さが 16 進データと一致している必要があります。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "最後の所有者を削除できません: ゾーンの所有者がいなくなります。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "最初に別の所有者またはグループを追加してください。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "最初に別のグループまたは所有者ユーザーを追加してください。"
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "他のユーザー用にゾーンを作成する権限がありません。"
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "このゾーンを編集する権限がありません。"

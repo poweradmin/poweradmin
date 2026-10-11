@@ -13586,3 +13586,28 @@ msgstr "Kunde inte ställa in locale. Det valda locale-värdet stöds kanske int
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Generiska postdata måste vara \"\\# <length> <hex>\" där längden matchar hexdata."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Kan inte ta bort den sista ägaren: zonen skulle bli utan ägare."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "Lägg till en annan ägare eller grupp först."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "Lägg till en annan grupp eller en användare som ägare först."
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "Du har inte behörighet att skapa zoner för andra användare."
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "Du har inte behörighet att redigera denna zon."

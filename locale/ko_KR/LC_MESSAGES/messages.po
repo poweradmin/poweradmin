@@ -13503,3 +13503,28 @@ msgstr "로케일을 설정하지 못했습니다. 선택한 로케일이 이 �
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "일반 레코드 데이터는 \"\\# <length> <hex>\" 형식이어야 하며 길이가 16진수 데이터와 일치해야 합니다."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "마지막 소유자를 제거할 수 없습니다: 존의 소유자가 없어집니다."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "먼저 다른 소유자 또는 그룹을 추가하세요."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "먼저 다른 그룹 또는 소유자 사용자를 추가하세요."
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "이 존을 편집할 권한이 없습니다."

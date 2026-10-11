@@ -13663,3 +13663,28 @@ msgstr "Gagal menyetel locale. Locale yang dipilih mungkin tidak didukung pada s
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Data record generik harus berupa \"\\# <length> <hex>\" dengan panjang yang sesuai dengan data heksadesimal."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Tidak dapat menghapus pemilik terakhir: zona akan tertinggal tanpa kepemilikan."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "Tambahkan pemilik lain atau grup terlebih dahulu."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "Tambahkan grup lain atau pengguna pemilik terlebih dahulu."
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "Anda tidak memiliki izin untuk membuat zona untuk pengguna lain."
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "Anda tidak memiliki izin untuk mengedit zona ini."

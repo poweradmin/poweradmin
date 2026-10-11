@@ -13614,3 +13614,28 @@ msgstr "Không thể thiết lập locale. Locale đã chọn có thể không �
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Dữ liệu bản ghi chung phải có dạng \"\\# <length> <hex>\" với độ dài khớp với dữ liệu hex."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:97
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Không thể xóa chủ sở hữu cuối cùng: vùng sẽ không còn chủ sở hữu."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:207
+msgid "Add another owner or a group first."
+msgstr "Vui lòng thêm một chủ sở hữu khác hoặc một nhóm trước."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:98
+#: lib/Application/Controller/ZoneOwnershipController.php:254
+msgid "Add another group or a user owner first."
+msgstr "Vui lòng thêm một nhóm khác hoặc một người dùng sở hữu trước."
+
+#: lib/Application/Controller/AddZoneMasterController.php:146
+#: lib/Application/Controller/AddZoneSlaveController.php:134
+#: lib/Application/Controller/BulkRegistrationController.php:118
+msgid "You do not have permission to create zones for other users."
+msgstr "Bạn không có quyền tạo vùng cho người dùng khác."
+
+#: lib/Application/Controller/EditController.php:586
+msgid "You do not have the permission to edit this zone."
+msgstr "Bạn không có quyền chỉnh sửa vùng này."
