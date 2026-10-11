@@ -180,14 +180,14 @@ class GroupZonesController extends PublicApiController
         }
 
         try {
+            $groupId = (int)$this->pathParameters['id'];
+            $zones = $this->zoneGroupService->listGroupZones($groupId);
+
             $sort = ListSort::fromQuery($this->request->query->get('sort'), self::ZONE_SORT_FIELDS);
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
             [$page, $perPage] = $this->pagingParameters();
-
-            $groupId = (int)$this->pathParameters['id'];
-            $zones = $this->zoneGroupService->listGroupZones($groupId);
 
             // Do not disclose zones outside a zone-scoped key's allowlist.
             $scope = $this->getApiKeyScope();

@@ -207,11 +207,6 @@ class ZonesRecordsController extends PublicApiController
             $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
-            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
-            if ($sort->error !== null) {
-                return $this->returnApiError($sort->error, 400);
-            }
-            [$page, $perPage] = $this->pagingParameters();
 
             if (($scopeError = $this->enforceApiKeyZoneScope((int)$zoneId)) !== null) {
                 return $scopeError;
@@ -227,6 +222,12 @@ class ZonesRecordsController extends PublicApiController
             if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
+
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);

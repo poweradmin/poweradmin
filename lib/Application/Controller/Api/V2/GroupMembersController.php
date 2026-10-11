@@ -180,14 +180,14 @@ class GroupMembersController extends PublicApiController
         }
 
         try {
+            $groupId = (int)$this->pathParameters['id'];
+            $members = $this->membershipService->listGroupMembers($groupId);
+
             $sort = ListSort::fromQuery($this->request->query->get('sort'), self::MEMBER_SORT_FIELDS);
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
             [$page, $perPage] = $this->pagingParameters();
-
-            $groupId = (int)$this->pathParameters['id'];
-            $members = $this->membershipService->listGroupMembers($groupId);
 
             $membersData = array_map(fn($m) => [
                 'user_id' => $m->getUserId(),

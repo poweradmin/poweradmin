@@ -90,6 +90,14 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
         $this->assertSame('You do not have permission to view this zone', $this->messageOf($response));
     }
 
+    public function testAMissingPermissionIs403EvenWithAnInvalidSort(): void
+    {
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canViewZone')->willReturn(false);
+
+        $this->assertSame(403, $this->invokeHandler('listRecords', [], ['sort' => 'owner'])->getStatusCode());
+    }
+
     public function testTheTypeQueryFilterReachesTheRepository(): void
     {
         $this->records->expects($this->once())

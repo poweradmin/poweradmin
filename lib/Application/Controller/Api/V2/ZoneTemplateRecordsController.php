@@ -267,12 +267,6 @@ class ZoneTemplateRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $templateId = (int)$this->pathParameters['id'];
-            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
-            if ($sort->error !== null) {
-                return $this->returnApiError($sort->error, 400);
-            }
-            [$page, $perPage] = $this->pagingParameters();
-
             if (!$this->repository->zoneTemplateExists($templateId)) {
                 return $this->returnApiError('Zone template not found', 404);
             }
@@ -280,6 +274,12 @@ class ZoneTemplateRecordsController extends PublicApiController
             if (!$this->canViewTemplate($userId, $templateId)) {
                 return $this->returnApiError('You do not have permission to view this zone template', 403);
             }
+
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
 
             $records = $this->repository->getZoneTemplateRecords($templateId);
             $formattedRecords = array_map([$this, 'formatRecord'], $records);
