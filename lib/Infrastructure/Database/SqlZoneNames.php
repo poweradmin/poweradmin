@@ -97,8 +97,11 @@ final class SqlZoneNames
             $stmt = $db->prepare("UPDATE zones SET zone_name = :name WHERE id = :id");
             $stmt->bindValue(':id', (int)$target['id'], PDO::PARAM_INT);
         } elseif ($createRow) {
-            $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name) VALUES (:id, NULL, 0, :name)");
+            // The check sits in the insert to narrow the race of two first grants; the unique name index settles the rest
+            $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
+                SELECT :id, NULL, 0, :name WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = :existing_id)");
             $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+            $stmt->bindValue(':existing_id', $domainId, PDO::PARAM_INT);
         } else {
             return;
         }
