@@ -13239,3 +13239,41 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "通用记录数据必须为 \"\\# <length> <hex>\"，且长度与十六进制数据一致。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/ZoneOwnershipController.php:201
+#: lib/Application/Controller/ZoneOwnershipController.php:246
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "无法删除最后一个所有者: 区域将不再有任何所有权。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php:201
+msgid "Add another owner or a group first."
+msgstr "请先添加另一个所有者或组。"
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:92
+#: lib/Application/Controller/ZoneOwnershipController.php:246
+msgid "Add another group or a user owner first."
+msgstr "请先添加另一个组或用户所有者。"
+
+#: lib/Application/Controller/AddZoneMasterController.php:143
+#: lib/Application/Controller/AddZoneSlaveController.php:129
+#: lib/Application/Controller/BulkRegistrationController.php:113
+msgid "You do not have permission to create zones for other users."
+msgstr "您无权为其他用户创建区域。"
+
+#: lib/Domain/Service/Dns/RecordManager.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:231
+msgid "You do not have the permission to add LUA record."
+msgstr "您没有添加 LUA 记录的权限。"
+
+#: lib/Domain/Service/Dns/RecordManager.php:357
+msgid "You do not have the permission to edit this LUA record."
+msgstr "您没有编辑此 LUA 记录的权限。"
+
+#: lib/Domain/Service/Dns/RecordManager.php:459
+msgid "You do not have the permission to delete LUA records."
+msgstr "您没有删除 LUA 记录的权限。"
+
+#: lib/Application/Controller/EditController.php:600
+msgid "You do not have the permission to edit this zone."
+msgstr "您没有编辑此区域的权限。"

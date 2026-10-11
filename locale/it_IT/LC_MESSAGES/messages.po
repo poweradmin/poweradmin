@@ -14462,3 +14462,41 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "I dati generici del record devono essere \"\\# <length> <hex>\", con una lunghezza corrispondente ai dati esadecimali."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:91
+#: lib/Application/Controller/ZoneOwnershipController.php:201
+#: lib/Application/Controller/ZoneOwnershipController.php:246
+msgid "Cannot remove the last owner: this would leave the zone with no ownership."
+msgstr "Impossibile rimuovere l'ultimo proprietario: la zona resterebbe senza proprietà."
+
+#: lib/Application/Controller/ZoneOwnershipController.php:201
+msgid "Add another owner or a group first."
+msgstr "Aggiungi prima un altro proprietario o un gruppo."
+
+#: lib/Application/Controller/QuickRemoveGroupZoneController.php:92
+#: lib/Application/Controller/ZoneOwnershipController.php:246
+msgid "Add another group or a user owner first."
+msgstr "Aggiungi prima un altro gruppo o un utente proprietario."
+
+#: lib/Application/Controller/AddZoneMasterController.php:143
+#: lib/Application/Controller/AddZoneSlaveController.php:129
+#: lib/Application/Controller/BulkRegistrationController.php:113
+msgid "You do not have permission to create zones for other users."
+msgstr "Non hai il permesso di creare zone per altri utenti."
+
+#: lib/Domain/Service/Dns/RecordManager.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:231
+msgid "You do not have the permission to add LUA record."
+msgstr "Non hai il permesso di aggiungere record LUA."
+
+#: lib/Domain/Service/Dns/RecordManager.php:357
+msgid "You do not have the permission to edit this LUA record."
+msgstr "Non hai il permesso di modificare questo record LUA."
+
+#: lib/Domain/Service/Dns/RecordManager.php:459
+msgid "You do not have the permission to delete LUA records."
+msgstr "Non hai il permesso di eliminare record LUA."
+
+#: lib/Application/Controller/EditController.php:600
+msgid "You do not have the permission to edit this zone."
+msgstr "Non hai il permesso di modificare questa zona."
