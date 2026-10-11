@@ -137,6 +137,12 @@ class ZoneTemplateListsTest extends V2ControllerTestCase
         $this->assertSame([11], array_column($this->decode($this->listRecords(['content' => '[hostmaster]']))['data']['records'], 'id'));
     }
 
+    public function testTemplateRecordsQMatchesTheNameOrTheContent(): void
+    {
+        $this->assertSame([14], array_column($this->decode($this->listRecords(['q' => 'WWW']))['data']['records'], 'id'));
+        $this->assertSame([13], array_column($this->decode($this->listRecords(['q' => 'mx1']))['data']['records'], 'id'));
+    }
+
     public function testTemplateRecordsSortAndPageAfterFiltering(): void
     {
         $body = $this->decode($this->listRecords(['type' => 'MX', 'sort' => 'priority', 'per_page' => 1]));

@@ -184,6 +184,13 @@ class ZoneTemplateRecordsController extends PublicApiController
                 schema: new OA\Schema(type: 'string', example: '[NS1]')
             ),
             new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record name or content',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
                 name: 'sort',
                 in: 'query',
                 description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: name in database order (sort=name uses natural, case-insensitive order)',
@@ -284,6 +291,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             }
             $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
             $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('content', ''), static fn(array $r): array => [$r['content']]);
+            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('q', ''), static fn(array $r): array => [$r['name'], $r['content']]);
             [$formattedRecords, $extra] = ListPaging::paginate($sort->sortRows($formattedRecords), $page, $perPage);
 
             return $this->returnApiResponse(['records' => $formattedRecords], true, null, 200, $extra);

@@ -120,6 +120,23 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertTrue($rrsets[1]['records'][0]['disabled']);
     }
 
+    public function testQKeepsRRSetsWhoseNameOrAnyContentMatches(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+            ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+            ['id' => 3, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => 0],
+        ]);
+
+        $byName = $this->decode($this->invokeHandler('listRRSets', [], ['q' => 'WWW']))['data']['rrsets'];
+        $byContent = $this->decode($this->invokeHandler('listRRSets', [], ['q' => '192.0.2.2']))['data']['rrsets'];
+        $bySecondRecord = $this->decode($this->invokeHandler('listRRSets', [], ['q' => 'mail']))['data']['rrsets'];
+
+        $this->assertSame(['A'], array_column($byName, 'type'));
+        $this->assertSame(['A'], array_column($byContent, 'type'));
+        $this->assertSame(['MX'], array_column($bySecondRecord, 'type'));
+    }
+
     public function testTheListingBodyIsTheDocumentedEnvelope(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([
@@ -383,10 +400,10 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     /**
      * @param array<string, mixed> $extraPathParameters
      */
-    private function invokeHandler(string $handler, array $extraPathParameters = []): JsonResponse
+    private function invokeHandler(string $handler, array $extraPathParameters = [], array $query = []): JsonResponse
     {
         $controller = $this->bareController(ZonesRRSetsController::class);
-        $this->injectBaseCollaborators($controller, $handler === 'deleteRRSet' ? 'DELETE' : 'GET');
+        $this->injectBaseCollaborators($controller, $handler === 'deleteRRSet' ? 'DELETE' : 'GET', null, $query);
 
         $this->zones->method('getZoneById')->willReturn($this->zoneRow);
 

@@ -157,6 +157,13 @@ class ZonesRRSetsController extends PublicApiController
         schema: new OA\Schema(type: 'string', example: '192.0.2.')
     )]
     #[OA\Parameter(
+        name: 'q',
+        in: 'query',
+        description: 'Case-insensitive substring filter: keeps RRSets whose name or any record content matches',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'www')
+    )]
+    #[OA\Parameter(
         name: 'sort',
         in: 'query',
         description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, ttl. Default: type, then name (PowerDNS order in API backend mode)',
@@ -268,6 +275,7 @@ class ZonesRRSetsController extends PublicApiController
             // paging happen here and behave the same for every backend.
             $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
             $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('content', ''), static fn(array $r): array => array_column($r['records'], 'content'));
+            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('q', ''), static fn(array $r): array => [$r['name'], ...array_column($r['records'], 'content')]);
             [$rrsets, $extra] = ListPaging::paginate($sort->sortRows($rrsets), $page, $perPage);
 
             return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);

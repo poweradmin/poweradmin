@@ -372,6 +372,10 @@ test_record_listing() {
     assert_json "Name filter keeps the two www records" "$LAST_RESPONSE_BODY" '.data.records | length' "2"
     api_request_v2 "GET" "${base}/records?content=db8" "" 200 "Filter records by content"
     assert_json "Content filter finds the AAAA record" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | unique | join(",")' "AAAA"
+    api_request_v2 "GET" "${base}/records?q=MAIL" "" 200 "Filter records with q on the name"
+    assert_json "q finds the mail record by name" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7"
+    api_request_v2 "GET" "${base}/records?q=db8" "" 200 "Filter records with q on the content"
+    assert_json "q finds the AAAA record by content" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | unique | join(",")' "AAAA"
 
     # Sorting
     api_request_v2 "GET" "${base}/records?type=A&sort=ttl,content:desc" "" 200 "Sort A records by ttl, content desc"
@@ -394,6 +398,8 @@ test_record_listing() {
     # RRSets
     api_request_v2 "GET" "${base}/rrsets?content=192.0.2.2" "" 200 "Filter RRSets by member content"
     assert_json "Content filter keeps the whole www RRSet" "$LAST_RESPONSE_BODY" '[.data.rrsets[] | select(.type == "A") | .records | length] | join(",")' "2"
+    api_request_v2 "GET" "${base}/rrsets?q=198.51" "" 200 "Filter RRSets with q on the content"
+    assert_json "q keeps only the mail RRSet" "$LAST_RESPONSE_BODY" '[.data.rrsets[].records[].content] | join(",")' "198.51.100.7"
     api_request_v2 "GET" "${base}/rrsets?type=A&sort=ttl:desc&per_page=1" "" 200 "First page of A RRSets by ttl desc"
     assert_json "Highest TTL first" "$LAST_RESPONSE_BODY" '.data.rrsets[0].ttl' "3600"
     assert_json "RRSet pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"

@@ -100,6 +100,18 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
         $this->assertSame(200, $this->invokeHandler('listRecords', [], ['type' => 'MX'])->getStatusCode());
     }
 
+    public function testQMatchesTheRecordNameOrContent(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600],
+            ['id' => 2, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600],
+            ['id' => 3, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600],
+        ]);
+
+        $this->assertSame([2, 3], array_column($this->decode($this->invokeHandler('listRecords', [], ['q' => 'MAIL']))['data']['records'], 'id'));
+        $this->assertSame([1], array_column($this->decode($this->invokeHandler('listRecords', [], ['q' => '192.0.2.1']))['data']['records'], 'id'));
+    }
+
     public function testDroppedEntRowsLeaveNoGapsSoRecordsStaySerializedAsAnArray(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([
