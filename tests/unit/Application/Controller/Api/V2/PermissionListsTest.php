@@ -39,8 +39,9 @@ class PermissionListsTest extends V2ControllerTestCase
 {
     /**
      * @param array<string, mixed> $query
+     * @param array<string, mixed> $pathParameters
      */
-    private function call(string $class, string $handler, PermissionTemplateRepositoryInterface $repository, array $query = []): JsonResponse
+    private function call(string $class, string $handler, PermissionTemplateRepositoryInterface $repository, array $query = [], array $pathParameters = []): JsonResponse
     {
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('userHasPermission')->willReturn(true);
@@ -49,6 +50,7 @@ class PermissionListsTest extends V2ControllerTestCase
         $this->injectBaseCollaborators($controller, 'GET', null, $query);
         $this->inject($controller, 'apiPermissionService', $permissions);
         $this->inject($controller, 'permissionTemplateRepository', $repository);
+        $this->inject($controller, 'pathParameters', $pathParameters);
         $this->inject($controller, 'authenticatedUserId', 1);
 
         return $this->callHandler($controller, $handler);
@@ -139,16 +141,7 @@ class PermissionListsTest extends V2ControllerTestCase
         $this->assertSame(500, $list->getStatusCode());
         $this->assertSame('Failed to fetch permission templates', $this->messageOf($list));
 
-        $controller = $this->bareController(PermissionTemplatesController::class);
-        $permissions = $this->createMock(ApiPermissionService::class);
-        $permissions->method('userHasPermission')->willReturn(true);
-        $this->injectBaseCollaborators($controller);
-        $this->inject($controller, 'apiPermissionService', $permissions);
-        $this->inject($controller, 'permissionTemplateRepository', $repository);
-        $this->inject($controller, 'pathParameters', ['id' => 1]);
-        $this->inject($controller, 'authenticatedUserId', 1);
-
-        $single = $this->callHandler($controller, 'getPermissionTemplate');
+        $single = $this->call(PermissionTemplatesController::class, 'getPermissionTemplate', $repository, [], ['id' => 1]);
         $this->assertSame(500, $single->getStatusCode());
         $this->assertSame('Failed to fetch permission template', $this->messageOf($single));
     }
