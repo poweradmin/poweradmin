@@ -264,14 +264,14 @@ class UsersController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'username',
-        description: 'Filter by username (optional)',
+        description: 'Look up one user by username; the list then holds only that user or is empty, page and per_page are ignored, and sort is checked but not applied (optional)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string')
     )]
     #[OA\Parameter(
         name: 'email',
-        description: 'Filter by email (optional)',
+        description: 'Look up one user by email address, like username, which wins when both are given (optional)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string')
@@ -291,6 +291,7 @@ class UsersController extends PublicApiController
         schema: new OA\Schema(type: 'string', example: 'username')
     )]
     #[OA\Response(response: 400, description: 'Invalid sort parameter')]
+    #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(
         response: 200,
         description: 'Users retrieved successfully',
