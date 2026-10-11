@@ -1149,7 +1149,7 @@ class UsersController extends PublicApiController
                 ]
             );
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to assign permission template: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'UsersController::assignPermissionTemplate', 'Failed to assign permission template');
         }
     }
 

@@ -272,7 +272,7 @@ class ZonesRRSetsController extends PublicApiController
 
             return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to retrieve RRSets: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'ZonesRRSetsController::listRRSets', 'Failed to retrieve RRSets');
         }
     }
 
@@ -394,7 +394,7 @@ class ZonesRRSetsController extends PublicApiController
 
             return $this->returnApiResponse(['rrset' => $rrset], true, 'RRSet retrieved successfully', 200);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to retrieve RRSet: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'ZonesRRSetsController::getRRSet', 'Failed to retrieve RRSet');
         }
     }
 
