@@ -1730,6 +1730,52 @@ test_permission_listing() {
 }
 
 ##############################################################################
+# Test: Zone create reports hidden parent records (gh #1641)
+##############################################################################
+
+cleanup_existing_shadow_test_zones() {
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones" 2>/dev/null \
+        | jq -r '.data.zones[]? | select(.name | IN("shadow-test.example.com", "sub.shadow-test.example.com", "other.shadow-test.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_create_shadowed_records() {
+    print_section "Zone Create Shadowed Records Tests (gh #1641)"
+
+    cleanup_existing_shadow_test_zones
+
+    local parent_id sub_id other_id
+    if api_request_v2 "POST" "/zones" '{"name":"shadow-test.example.com","type":"MASTER"}' 201 "Create parent zone"; then
+        parent_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create parent zone - skipping shadowed record tests"
+        return 1
+    fi
+    assert_json "A zone without a parent reports nothing hidden" "$LAST_RESPONSE_BODY" '.data | has("shadowed_records")' "false"
+    api_request_v2 "PUT" "/zones/${parent_id}/rrsets" '{"name":"www.sub","type":"A","ttl":300,"records":[{"content":"192.0.2.10","disabled":false}]}' 200 "Add a record the subzone will hide"
+
+    if api_request_v2 "POST" "/zones" '{"name":"sub.shadow-test.example.com","type":"MASTER"}' 201 "Create subzone under the record"; then
+        sub_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    assert_json "The parent zone is named" "$LAST_RESPONSE_BODY" '.data.shadowed_records.parent_zone' "shadow-test.example.com"
+    assert_json "The hidden record is listed" "$LAST_RESPONSE_BODY" '[.data.shadowed_records.records[] | select(.name == "www.sub.shadow-test.example.com") | .type] | join(",")' "A"
+
+    if api_request_v2 "POST" "/zones" '{"name":"other.shadow-test.example.com","type":"MASTER"}' 201 "Create subzone that hides nothing"; then
+        other_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    assert_json "A subzone that hides nothing reports nothing" "$LAST_RESPONSE_BODY" '.data | has("shadowed_records")' "false"
+
+    local id
+    for id in "$sub_id" "$other_id" "$parent_id"; do
+        if [[ -n "$id" ]]; then
+            api_request_v2 "DELETE" "/zones/${id}" "" 204 "Delete shadowed record test zone" || true
+        fi
+    done
+}
+
+##############################################################################
 # Test: Zone Template Listing (q filter, sort, paging)
 ##############################################################################
 
@@ -3960,6 +4006,7 @@ main() {
     test_users_crud || true
     test_zone_templates || true
     test_zone_template_listing || true
+    test_zone_create_shadowed_records || true
     test_permission_listing || true
     test_users_ldap_sync || true
     test_users_perm_templ_validation || true
