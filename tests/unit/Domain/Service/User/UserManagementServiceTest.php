@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Psr\Log\LoggerInterface;
 
 #[CoversClass(UserManagementService::class)]
 class UserManagementServiceTest extends TestCase
@@ -53,6 +54,7 @@ class UserManagementServiceTest extends TestCase
     private PermissionService&MockObject $permissionService;
     private UserGroupRepositoryInterface&MockObject $groupRepository;
     private DomainManagerInterface&MockObject $domainManager;
+    private LoggerInterface&MockObject $logger;
 
     protected function setUp(): void
     {
@@ -62,6 +64,7 @@ class UserManagementServiceTest extends TestCase
         $this->permissionService = $this->createMock(PermissionService::class);
         $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
         $this->domainManager = $this->createMock(DomainManagerInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $passwordPolicy = $this->createMock(PasswordPolicyService::class);
         $passwordPolicy->method('validatePassword')->willReturn([]);
@@ -73,7 +76,8 @@ class UserManagementServiceTest extends TestCase
             $passwordPolicy,
             false,
             $this->domainManager,
-            $this->createMock(ZoneManagementService::class)
+            $this->createMock(ZoneManagementService::class),
+            logger: $this->logger
         );
     }
 
@@ -542,7 +546,24 @@ class UserManagementServiceTest extends TestCase
         ]);
 
         $this->assertFalse($result['success']);
-        $this->assertStringContainsString('Database error', $result['message']);
+        $this->assertSame('Failed to create user', $result['message']);
+    }
+
+    #[Test]
+    public function testAWriteExceptionIsLoggedAndKeptOutOfTheMessage(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->willReturn([]);
+        $this->userRepository->method('deleteUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23000]: Integrity constraint violation'));
+        $this->logger->expects($this->once())->method('error')
+            ->with($this->anything(), $this->callback(static fn(array $context): bool => str_contains($context['message'], 'SQLSTATE')));
+
+        $result = $this->service->deleteUser(1);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Failed to delete user', $result['message']);
     }
 
     #[Test]

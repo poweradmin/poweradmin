@@ -35,6 +35,8 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Domain service for user management operations
@@ -77,6 +79,7 @@ class UserManagementService
     private ?ZoneOwnershipLimit $ownershipLimit;
     private DomainManagerInterface $domainManager;
     private ZoneManagementService $zones;
+    private LoggerInterface $logger;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
@@ -89,7 +92,8 @@ class UserManagementService
         ZoneManagementService $zones,
         bool $remoteUserEnabled = false,
         ?ZoneOwnershipLimit $ownershipLimit = null,
-        bool $protectLastAdminOnEdit = false
+        bool $protectLastAdminOnEdit = false,
+        ?LoggerInterface $logger = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -102,6 +106,7 @@ class UserManagementService
         $this->remoteUserEnabled = $remoteUserEnabled;
         $this->domainManager = $domainManager;
         $this->zones = $zones;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -313,9 +318,10 @@ class UserManagementService
                 'user_id' => $userId
             ];
         } catch (Exception $e) {
+            $this->logFailure('create user', $e);
             return [
                 'success' => false,
-                'message' => 'Failed to create user: ' . $e->getMessage(),
+                'message' => 'Failed to create user',
                 'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
@@ -496,9 +502,10 @@ class UserManagementService
                 'user_id' => $userId
             ];
         } catch (Exception $e) {
+            $this->logFailure('update user', $e);
             return [
                 'success' => false,
-                'message' => 'Failed to update user: ' . $e->getMessage(),
+                'message' => 'Failed to update user',
                 'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
@@ -614,9 +621,10 @@ class UserManagementService
                 'zones_affected' => $zoneCount
             ];
         } catch (Exception $e) {
+            $this->logFailure('delete user', $e);
             return [
                 'success' => false,
-                'message' => 'Failed to delete user: ' . $e->getMessage(),
+                'message' => 'Failed to delete user',
                 'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
@@ -799,6 +807,16 @@ class UserManagementService
             'success' => true,
             'message' => 'Permission template assigned successfully'
         ];
+    }
+
+    /** The exception text can hold SQL details, so it goes to the log and the caller gets a plain message */
+    private function logFailure(string $action, Exception $e): void
+    {
+        $this->logger->error('Failed to {action}: {class}: {message}', [
+            'action' => $action,
+            'class' => get_class($e),
+            'message' => $e->getMessage(),
+        ]);
     }
 
     /** The error for a request that asks for LDAP while it is disabled, or null. */
