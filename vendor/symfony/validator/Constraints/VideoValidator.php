@@ -43,6 +43,7 @@ class VideoValidator extends FileValidator
             && null === $constraint->minPixels && null === $constraint->maxPixels
             && null === $constraint->minRatio && null === $constraint->maxRatio
             && $constraint->allowSquare && $constraint->allowLandscape && $constraint->allowPortrait
+            && !$constraint->allowedCodecs && !$constraint->allowedContainers
         ) {
             return;
         }
@@ -54,6 +55,7 @@ class VideoValidator extends FileValidator
             '-show_entries', 'stream=index,codec_type,codec_name,width,height',
             '-show_entries', 'format=format_name',
             '-of', 'json',
+            '--',
             (string) $value,
         ]);
         $process->run();
@@ -105,7 +107,7 @@ class VideoValidator extends FileValidator
 
         if ($constraint->allowedContainers && !array_intersect($formats, $constraint->allowedContainers)) {
             $this->context->buildViolation($constraint->unsupportedContainerMessage)
-                ->setParameter('{{ container }}', $formats[0])
+                ->setParameter('{{ container }}', implode(', ', $formats))
                 ->setCode(Video::UNSUPPORTED_VIDEO_CONTAINER_ERROR)
                 ->addViolation();
 
