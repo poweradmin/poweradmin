@@ -357,8 +357,8 @@ class UsersController extends PublicApiController
             }
 
             // Get filter parameters
-            $username = $this->request->query->get('username');
-            $email = $this->request->query->get('email');
+            $username = (string)$this->request->query->get('username', '');
+            $email = (string)$this->request->query->get('email', '');
             $search = trim((string)$this->request->query->get('q', ''));
             $search = $search === '' ? null : $search;
             $sort = ListSort::fromQuery($this->request->query->get('sort'), self::USER_SORT_FIELDS);
@@ -367,15 +367,15 @@ class UsersController extends PublicApiController
             }
 
             // Handle filtering
-            if ($username || $email) {
+            if ($username !== '' || $email !== '') {
                 $users = [];
 
-                if ($username) {
+                if ($username !== '') {
                     $user = $this->userManagementService->getUserByUsername($username);
                     if ($user) {
                         $users[] = $user;
                     }
-                } elseif ($email) {
+                } else {
                     $user = $this->userManagementService->getUserByEmail($email);
                     if ($user) {
                         $users[] = $user;

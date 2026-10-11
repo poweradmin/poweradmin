@@ -139,6 +139,26 @@ class UsersControllerListTest extends V2ControllerTestCase
         $this->assertSame("Invalid sort field 'password'. Allowed fields: id, username, fullname, email", $this->messageOf($response));
     }
 
+    public function testAUsernameOfZeroIsLookedUpInsteadOfListingEveryUser(): void
+    {
+        $this->users->expects($this->once())->method('getUserByUsername')->with('0')->willReturn(['user_id' => 7, 'username' => '0']);
+        $this->users->expects($this->never())->method('getUsersPage');
+
+        $body = json_decode((string)$this->listUsers(['username' => '0'])->getContent(), true);
+
+        $this->assertSame(['0'], array_column($body['data']['users'], 'username'));
+    }
+
+    public function testUsernameWinsOverEmail(): void
+    {
+        $this->users->expects($this->once())->method('getUserByUsername')->with('alice')->willReturn(null);
+        $this->users->expects($this->never())->method('getUserByEmail');
+
+        $body = json_decode((string)$this->listUsers(['username' => 'alice', 'email' => 'bob@example.com'])->getContent(), true);
+
+        $this->assertSame([], $body['data']['users']);
+    }
+
     /**
      * @param array<string, mixed> $query
      */
