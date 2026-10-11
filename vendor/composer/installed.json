@@ -2156,17 +2156,17 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v6.4.46",
-            "version_normalized": "6.4.46.0",
+            "version": "v6.4.47",
+            "version_normalized": "6.4.47.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "496589b7ac1be8ed2da92310f65f05e3989baef4"
+                "reference": "022729aef78cefd4ac8b745f557abd57dc910204"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/496589b7ac1be8ed2da92310f65f05e3989baef4",
-                "reference": "496589b7ac1be8ed2da92310f65f05e3989baef4",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/022729aef78cefd4ac8b745f557abd57dc910204",
+                "reference": "022729aef78cefd4ac8b745f557abd57dc910204",
                 "shasum": ""
             },
             "require": {
@@ -2207,7 +2207,7 @@
                 "symfony/translation": "^5.4.35|~6.3.12|^6.4.3|^7.0.3",
                 "symfony/yaml": "^5.4|^6.0|^7.0"
             },
-            "time": "2026-09-09T10:57:39+00:00",
+            "time": "2026-09-29T11:58:14+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2236,7 +2236,7 @@
             "description": "Provides tools to validate values",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/validator/tree/v6.4.46"
+                "source": "https://github.com/symfony/validator/tree/v6.4.47"
             },
             "funding": [
                 {
