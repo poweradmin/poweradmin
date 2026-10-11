@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2\Resource;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\Resource\ZoneResource;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 
 class ZoneResourceTest extends TestCase
 {
@@ -75,5 +76,15 @@ class ZoneResourceTest extends TestCase
         $this->assertNull($detail['created_at']);
 
         $this->assertNull(ZoneResource::detail(['id' => 81, 'name' => 'example.com'], null)['description']);
+    }
+
+    public function testShadowedRecordsNameTheParentZoneAndOnlyNameAndType(): void
+    {
+        $shadowed = new ShadowedRecords(12, 'example.com', [['name' => 'www.shop.example.com', 'type' => 'A']]);
+
+        $this->assertSame(
+            ['parent_zone' => 'example.com', 'records' => [['name' => 'www.shop.example.com', 'type' => 'A']]],
+            ZoneResource::shadowedRecords($shadowed)
+        );
     }
 }

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api\V2\Resource;
 
 use Poweradmin\Domain\Model\ZoneSummary;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 
 /**
  * The JSON shape of a zone on /api/v2: the listing carries a summary, the
@@ -73,6 +74,22 @@ final class ZoneResource
             'account' => $account !== '' ? $account : null,
             'description' => ($comment !== null && $comment !== '') ? $comment : null,
             'created_at' => $zone['created_at'] ?? null,
+        ];
+    }
+
+    /**
+     * The parent-zone records a newly created zone hides, as POST /zones reports them.
+     *
+     * @return array{parent_zone: string, records: list<array{name: string, type: string}>}
+     */
+    public static function shadowedRecords(ShadowedRecords $shadowed): array
+    {
+        return [
+            'parent_zone' => $shadowed->parentZoneName,
+            'records' => array_map(
+                static fn(array $record): array => ['name' => $record['name'], 'type' => $record['type']],
+                $shadowed->records
+            ),
         ];
     }
 }
