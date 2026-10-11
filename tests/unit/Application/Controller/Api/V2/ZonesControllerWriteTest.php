@@ -31,6 +31,11 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
+use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -82,6 +87,56 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
             'Forbidden: this API key is restricted to specific zones and cannot create new zones',
             $this->messageOf($response)
         );
+    }
+
+    protected function stubServiceFactory(): ControllerServiceFactory
+    {
+        $resolver = $this->createMock(ZoneCreateOwnershipResolver::class);
+        $resolver->method('resolve')->willReturn(ZoneOwnershipResolution::success(self::USER_ID, []));
+
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('userRepository')->willReturn($this->stubUsers());
+        $factory->method('zoneCreateOwnershipResolver')->willReturn($resolver);
+
+        return $factory;
+    }
+
+    public function testACreateThatHidesParentRecordsReportsThem(): void
+    {
+        $this->zoneManagement->method('createZone')->willReturn([
+            'success' => true, 'zone_id' => 90, 'domain' => 'shop.example.com', 'type' => 'MASTER', 'dnssec' => null,
+            'shadowed' => new ShadowedRecords(12, 'example.com', [
+                ['name' => 'www.shop.example.com', 'type' => 'A'],
+                ['name' => 'shop.example.com', 'type' => 'MX'],
+            ]),
+        ]);
+
+        $response = $this->invokeHandler('createZone', 'POST', ['name' => 'shop.example.com']);
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame([
+            'zone_id' => 90,
+            'shadowed_records' => [
+                'parent_zone' => 'example.com',
+                'records' => [
+                    ['name' => 'www.shop.example.com', 'type' => 'A'],
+                    ['name' => 'shop.example.com', 'type' => 'MX'],
+                ],
+            ],
+        ], $this->decode($response)['data']);
+    }
+
+    public function testACreateThatHidesNothingHasNoShadowedRecordsField(): void
+    {
+        $this->zoneManagement->method('createZone')->willReturn([
+            'success' => true, 'zone_id' => 91, 'domain' => 'other.test', 'type' => 'MASTER', 'dnssec' => null, 'shadowed' => null,
+        ]);
+
+        $response = $this->invokeHandler('createZone', 'POST', ['name' => 'other.test']);
+
+        $this->assertSame(201, $response->getStatusCode());
+        $this->assertSame(['zone_id' => 91], $this->decode($response)['data']);
     }
 
     public function testAScalarBodyOnCreateIs400(): void

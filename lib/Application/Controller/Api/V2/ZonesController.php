@@ -424,7 +424,27 @@ class ZonesController extends PublicApiController
                     property: 'data',
                     properties: [
                         new OA\Property(property: 'zone_id', type: 'integer', example: 123),
-                        new OA\Property(property: 'dnssec', type: 'string', example: 'signed', description: 'Only when enable_dnssec was requested: the signing outcome, e.g. signed, server_disabled or secure_failed')
+                        new OA\Property(property: 'dnssec', type: 'string', example: 'signed', description: 'Only when enable_dnssec was requested: the signing outcome, e.g. signed, server_disabled or secure_failed'),
+                        new OA\Property(
+                            property: 'shadowed_records',
+                            description: 'Only when the new zone hides records of an existing parent zone and the caller may view that zone: '
+                                . 'the parent zone and the records it no longer serves. Make sure the new zone serves them, then delete them from the parent.',
+                            properties: [
+                                new OA\Property(property: 'parent_zone', type: 'string', example: 'example.com'),
+                                new OA\Property(
+                                    property: 'records',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'name', type: 'string', example: 'www.shop.example.com'),
+                                            new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                        ],
+                                        type: 'object'
+                                    )
+                                ),
+                            ],
+                            type: 'object'
+                        )
                     ],
                     type: 'object'
                 ),
@@ -591,6 +611,10 @@ class ZonesController extends PublicApiController
             $payload = ['zone_id' => $zoneId];
             if ($result['dnssec'] !== null) {
                 $payload['dnssec'] = $result['dnssec']->outcome->value;
+            }
+            // Only set when the caller may view the parent zone, as in the web form warning
+            if ($result['shadowed'] !== null) {
+                $payload['shadowed_records'] = ZoneResource::shadowedRecords($result['shadowed']);
             }
 
             return $this->returnApiResponse($payload, true, 'Zone created successfully', 201);
