@@ -99,7 +99,7 @@ class ZonesController extends PublicApiController
         name: 'page',
         description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 1)
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',

@@ -131,7 +131,7 @@ class ZonesRecordsController extends PublicApiController
     #[OA\Parameter(
         name: 'sort',
         in: 'query',
-        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: backend order',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: type, then name (PowerDNS order in API backend mode)',
         required: false,
         schema: new OA\Schema(type: 'string', example: 'type,name')
     )]

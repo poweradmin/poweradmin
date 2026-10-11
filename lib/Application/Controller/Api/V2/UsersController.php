@@ -254,7 +254,7 @@ class UsersController extends PublicApiController
         name: 'page',
         description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 1)
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
@@ -285,7 +285,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'sort',
-        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, username, fullname, email. Default: id',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, username, fullname, email. Text fields sort case-insensitively but not naturally (user10 before user9). Default: id',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string', example: 'username')

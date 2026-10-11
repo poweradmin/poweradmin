@@ -159,7 +159,7 @@ class ZonesRRSetsController extends PublicApiController
     #[OA\Parameter(
         name: 'sort',
         in: 'query',
-        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, ttl. Default: backend order',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, ttl. Default: type, then name (PowerDNS order in API backend mode)',
         required: false,
         schema: new OA\Schema(type: 'string', example: 'name,type')
     )]

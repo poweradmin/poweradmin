@@ -28,8 +28,9 @@ namespace Poweradmin\Application\Http;
  * from the PowerDNS API in API backend mode; isPastEnd() and extra() also serve
  * lists paged in SQL, such as change requests.
  *
- * Paging follows GET /change-requests: nothing is paged without per_page (or
- * with 0); with it, page starts at 1 and per_page is capped.
+ * Nothing is paged without per_page (or with 0); with it, page starts at 1 and
+ * per_page is capped. GET /change-requests also caps an unpaged list and then
+ * adds the pagination object, since its history keeps growing.
  */
 final class ListPaging
 {
