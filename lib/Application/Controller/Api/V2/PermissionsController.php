@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -172,11 +171,10 @@ class PermissionsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
-            $permissions = ListPaging::filterContains($permissions, (string)$this->request->query->get('q', ''), static fn(array $p): array => [$p['name'], $p['descr']]);
-            [$permissions, $extra] = ListPaging::paginate($sort->sortRows($permissions), $page, $perPage);
+            [$permissions, $extra] = $this->filterSortAndPage($permissions, $sort, [
+                'q' => static fn(array $p): array => [$p['name'], $p['descr']],
+            ]);
 
             return $this->returnApiResponse(['permissions' => $permissions], true, null, 200, $extra);
         } catch (\Throwable $e) {

@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
 use Poweradmin\Application\Service\Auth\ApiKeyActor;
 use Poweradmin\Application\Service\Backend\PdnsVersionService;
@@ -383,6 +384,24 @@ abstract class PublicApiController extends AbstractApiController
             $this->request->query->get('per_page', 0),
             self::MAX_PAGE_SIZE
         );
+    }
+
+    /**
+     * Filter, sort and page a list that is already loaded. Each filter maps a query
+     * parameter to the values of a row it searches as a case-insensitive substring.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @param array<string, callable> $filters
+     * @return array{0: list<mixed>, 1: array<string, mixed>} [rows of the page, extra response fields]
+     */
+    protected function filterSortAndPage(array $rows, ListSort $sort, array $filters): array
+    {
+        foreach ($filters as $parameter => $values) {
+            $rows = ListPaging::filterContains($rows, (string)$this->request->query->get($parameter, ''), $values);
+        }
+        [$page, $perPage] = $this->pagingParameters();
+
+        return ListPaging::paginate($sort->sortRows($rows), $page, $perPage);
     }
 
     /**

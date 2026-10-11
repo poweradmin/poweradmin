@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -170,8 +169,6 @@ class ZoneTemplatesController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $templates = $this->repository->listZoneTemplates($userId, $isUeberuser);
@@ -188,8 +185,9 @@ class ZoneTemplatesController extends PublicApiController
             }, $templates);
 
             // A user sees few templates, all loaded already, so filter, sort and page the formatted list
-            $formatted = ListPaging::filterContains($formatted, (string)$this->request->query->get('q', ''), static fn(array $t): array => [$t['name'], $t['description']]);
-            [$formatted, $extra] = ListPaging::paginate($sort->sortRows($formatted), $page, $perPage);
+            [$formatted, $extra] = $this->filterSortAndPage($formatted, $sort, [
+                'q' => static fn(array $t): array => [$t['name'], $t['description']],
+            ]);
 
             return $this->returnApiResponse(['templates' => $formatted], true, null, 200, $extra);
         } catch (\Throwable $e) {

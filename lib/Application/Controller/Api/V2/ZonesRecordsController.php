@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
@@ -227,8 +226,6 @@ class ZonesRecordsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
@@ -246,10 +243,11 @@ class ZonesRecordsController extends PublicApiController
             // Records come from the database or the PowerDNS API depending on the
             // backend, so filtering, sorting and paging happen here, on the values
             // the client sees, and behave the same for both.
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('content', ''), static fn(array $r): array => [$r['content']]);
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('q', ''), static fn(array $r): array => [$r['name'], $r['content']]);
-            [$formattedRecords, $extra] = ListPaging::paginate($sort->sortRows($formattedRecords), $page, $perPage);
+            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
+                'name' => static fn(array $r): array => [$r['name']],
+                'content' => static fn(array $r): array => [$r['content']],
+                'q' => static fn(array $r): array => [$r['name'], $r['content']],
+            ]);
 
             return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {

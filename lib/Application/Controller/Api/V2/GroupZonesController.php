@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Application\Http\RefusalStatus;
@@ -187,8 +186,6 @@ class GroupZonesController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             // Do not disclose zones outside a zone-scoped key's allowlist.
             $scope = $this->getApiKeyScope();
             $zonesData = [];
@@ -205,8 +202,9 @@ class GroupZonesController extends PublicApiController
             }
 
             // Filtered after the scope check, so the total never counts a hidden zone
-            $zonesData = ListPaging::filterContains($zonesData, (string)$this->request->query->get('q', ''), static fn(array $z): array => [$z['zone_name']]);
-            [$zonesData, $extra] = ListPaging::paginate($sort->sortRows($zonesData), $page, $perPage);
+            [$zonesData, $extra] = $this->filterSortAndPage($zonesData, $sort, [
+                'q' => static fn(array $z): array => [$z['zone_name']],
+            ]);
 
             return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {

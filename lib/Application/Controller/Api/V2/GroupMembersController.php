@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Domain\Model\Permission;
@@ -187,8 +186,6 @@ class GroupMembersController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             $membersData = array_map(fn($m) => [
                 'user_id' => $m->getUserId(),
                 'username' => $m->getUsername(),
@@ -196,8 +193,9 @@ class GroupMembersController extends PublicApiController
                 'email' => $m->getEmail(),
                 'joined_at' => $m->getCreatedAt(),
             ], $members);
-            $membersData = ListPaging::filterContains($membersData, (string)$this->request->query->get('q', ''), static fn(array $m): array => [$m['username'], $m['fullname'], $m['email']]);
-            [$membersData, $extra] = ListPaging::paginate($sort->sortRows($membersData), $page, $perPage);
+            [$membersData, $extra] = $this->filterSortAndPage($membersData, $sort, [
+                'q' => static fn(array $m): array => [$m['username'], $m['fullname'], $m['email']],
+            ]);
 
             return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {

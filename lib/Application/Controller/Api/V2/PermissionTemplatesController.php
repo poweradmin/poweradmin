@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -191,11 +190,10 @@ class PermissionTemplatesController extends PublicApiController
             if ($type !== '' && !PermissionTemplateType::isValid($type)) {
                 return $this->returnApiError('Invalid type. Must be either "user" or "group"', 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             $templates = $this->permissionTemplateRepository->listPermissionTemplates($type === '' ? null : $type);
-            $templates = ListPaging::filterContains($templates, (string)$this->request->query->get('q', ''), static fn(array $t): array => [$t['name'], $t['descr']]);
-            [$templates, $extra] = ListPaging::paginate($sort->sortRows($templates), $page, $perPage);
+            [$templates, $extra] = $this->filterSortAndPage($templates, $sort, [
+                'q' => static fn(array $t): array => [$t['name'], $t['descr']],
+            ]);
 
             return $this->returnApiResponse(['templates' => $templates], true, null, 200, $extra);
         } catch (\Throwable $e) {

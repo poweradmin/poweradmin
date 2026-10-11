@@ -23,7 +23,6 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
@@ -279,8 +278,6 @@ class ZoneTemplateRecordsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             $records = $this->repository->getZoneTemplateRecords($templateId);
             $formattedRecords = array_map([$this, 'formatRecord'], $records);
 
@@ -289,10 +286,11 @@ class ZoneTemplateRecordsController extends PublicApiController
             if ($type !== '') {
                 $formattedRecords = array_filter($formattedRecords, static fn(array $r): bool => strcasecmp($r['type'], $type) === 0);
             }
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('content', ''), static fn(array $r): array => [$r['content']]);
-            $formattedRecords = ListPaging::filterContains($formattedRecords, (string)$this->request->query->get('q', ''), static fn(array $r): array => [$r['name'], $r['content']]);
-            [$formattedRecords, $extra] = ListPaging::paginate($sort->sortRows($formattedRecords), $page, $perPage);
+            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
+                'name' => static fn(array $r): array => [$r['name']],
+                'content' => static fn(array $r): array => [$r['content']],
+                'q' => static fn(array $r): array => [$r['name'], $r['content']],
+            ]);
 
             return $this->returnApiResponse(['records' => $formattedRecords], true, null, 200, $extra);
         } catch (\Throwable $e) {

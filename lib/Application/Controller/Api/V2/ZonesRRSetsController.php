@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
@@ -264,8 +263,6 @@ class ZonesRRSetsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            [$page, $perPage] = $this->pagingParameters();
-
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
@@ -274,10 +271,11 @@ class ZonesRRSetsController extends PublicApiController
 
             // Records may come from the PowerDNS API, so filtering, sorting and
             // paging happen here and behave the same for every backend.
-            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('name', ''), static fn(array $r): array => [$r['name']]);
-            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('content', ''), static fn(array $r): array => array_column($r['records'], 'content'));
-            $rrsets = ListPaging::filterContains($rrsets, (string)$this->request->query->get('q', ''), static fn(array $r): array => [$r['name'], ...array_column($r['records'], 'content')]);
-            [$rrsets, $extra] = ListPaging::paginate($sort->sortRows($rrsets), $page, $perPage);
+            [$rrsets, $extra] = $this->filterSortAndPage($rrsets, $sort, [
+                'name' => static fn(array $r): array => [$r['name']],
+                'content' => static fn(array $r): array => array_column($r['records'], 'content'),
+                'q' => static fn(array $r): array => [$r['name'], ...array_column($r['records'], 'content')],
+            ]);
 
             return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
