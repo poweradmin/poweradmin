@@ -91,6 +91,28 @@ class ChangeRequestsControllerTest extends TestCase
         $this->assertSame(['current_page' => 1, 'per_page' => 25, 'total' => 2, 'last_page' => 1], $body['pagination']);
     }
 
+    public function testAnUnpagedListHasNoPaginationWhileItFitsUnderTheCap(): void
+    {
+        $this->permissions->method('getReviewableZoneIds')->willReturn(null);
+        $this->requests->method('count')->willReturn(10000);
+        $this->requests->expects($this->once())->method('list')->with($this->anything(), 0, 10000)->willReturn([]);
+
+        $body = $this->body($this->call('listChangeRequests'));
+
+        $this->assertArrayNotHasKey('pagination', $body);
+    }
+
+    public function testAnUnpagedListCutAtTheCapSaysSoWithAPaginationObject(): void
+    {
+        $this->permissions->method('getReviewableZoneIds')->willReturn(null);
+        $this->requests->method('count')->willReturn(10001);
+        $this->requests->expects($this->once())->method('list')->with($this->anything(), 0, 10000)->willReturn([]);
+
+        $body = $this->body($this->call('listChangeRequests'));
+
+        $this->assertSame(['current_page' => 1, 'per_page' => 10000, 'total' => 10001, 'last_page' => 2], $body['pagination']);
+    }
+
     public function testAZoneFilterStaysWithinTheKeysZoneScope(): void
     {
         $this->permissions->method('getReviewableZoneIds')->willReturn(null);

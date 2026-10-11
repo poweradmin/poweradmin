@@ -158,7 +158,7 @@ class ChangeRequestsController extends PublicApiController
             new OA\Parameter(name: 'status', in: 'query', description: 'pending (default), approved, rejected, cancelled, failed or all', schema: new OA\Schema(type: 'string', example: 'pending')),
             new OA\Parameter(name: 'zone_id', in: 'query', description: 'Only requests for this zone', schema: new OA\Schema(type: 'integer')),
             new OA\Parameter(name: 'page', in: 'query', description: 'Page number, used when per_page is given', schema: new OA\Schema(type: 'integer', example: 1)),
-            new OA\Parameter(name: 'per_page', in: 'query', description: 'Requests per page; omit to return every match', schema: new OA\Schema(type: 'integer', example: 25)),
+            new OA\Parameter(name: 'per_page', in: 'query', description: 'Requests per page (max 10000). Omit for up to 10000 matches, newest first; more than that adds a pagination object', schema: new OA\Schema(type: 'integer', example: 25)),
         ],
         responses: [
             new OA\Response(
@@ -176,7 +176,7 @@ class ChangeRequestsController extends PublicApiController
                         ),
                         new OA\Property(
                             property: 'pagination',
-                            description: 'Present when per_page was given',
+                            description: 'Present when per_page was given, or when a list without per_page was cut at 10000',
                             properties: [
                                 new OA\Property(property: 'current_page', type: 'integer', example: 1),
                                 new OA\Property(property: 'per_page', type: 'integer', example: 25),
@@ -211,13 +211,12 @@ class ChangeRequestsController extends PublicApiController
             $total = $this->requests->count($filters);
             if ($perPage === 0) {
                 $requests = $this->requests->list($filters, 0, self::MAX_PAGE_SIZE);
-            } elseif (ListPaging::isPastEnd($page, $perPage, $total)) {
-                $requests = [];
+                // History keeps growing, so an unpaged list stops at the cap and says so
+                $extra = $total > self::MAX_PAGE_SIZE ? ListPaging::extra(1, self::MAX_PAGE_SIZE, $total) : [];
             } else {
-                $requests = $this->requests->list($filters, ($page - 1) * $perPage, $perPage);
+                $requests = ListPaging::isPastEnd($page, $perPage, $total) ? [] : $this->requests->list($filters, ($page - 1) * $perPage, $perPage);
+                $extra = ListPaging::extra($page, $perPage, $total);
             }
-
-            $extra = ListPaging::extra($page, $perPage, $total);
 
             return $this->returnApiResponse(
                 ['change_requests' => array_map($this->serialize(...), $requests)],
