@@ -308,7 +308,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             }
 
             $name = trim($data['name']);
-            $type = trim($data['type']);
+            $type = strtoupper(trim($data['type']));
             $content = trim($data['content']);
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$this->config->get('dns', 'ttl');
             $priority = isset($data['priority']) ? (int)$data['priority'] : 0;
@@ -507,7 +507,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             }
 
             $name = trim($data['name']);
-            $type = trim($data['type']);
+            $type = strtoupper(trim($data['type']));
             $content = trim($data['content']);
             $ttl = isset($data['ttl']) ? (int)$data['ttl'] : (int)$record['ttl'];
             $priority = isset($data['priority']) ? (int)$data['priority'] : (int)($record['prio'] ?? 0);
