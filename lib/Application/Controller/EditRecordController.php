@@ -211,6 +211,10 @@ class EditRecordController extends BaseController
         }
 
         $postData = $this->request->getPostParams();
+        if (isset($postData['type'])) {
+            // The form re-posts the stored type, which an SQL tool may have written lowercase
+            $postData['type'] = strtoupper(trim((string)$postData['type']));
+        }
 
         // Convert IDN record name and content to punycode
         if (isset($postData['name'])) {
@@ -362,7 +366,7 @@ class EditRecordController extends BaseController
             return;
         }
 
-        $oldType = (string)($oldRecord['type'] ?? '');
+        $oldType = strtoupper(trim((string)($oldRecord['type'] ?? '')));
         $newType = (string)($postData['type'] ?? '');
         if (!in_array($oldType, ['A', 'AAAA'], true) && !in_array($newType, ['A', 'AAAA'], true)) {
             return;

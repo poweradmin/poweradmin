@@ -828,6 +828,8 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
+                    // Uppercased after the change check, so an untouched lowercase row is not rewritten
+                    $record['type'] = strtoupper(trim((string)$record['type']));
                     $edit_record = $this->dnsRecordManager->editRecord($record, $showRecordComments ? [
                         'content' => (string)($record['comment'] ?? ''),
                         'account' => $this->userContextService->getLoggedInUsername() ?? '',
