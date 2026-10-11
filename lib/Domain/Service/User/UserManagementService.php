@@ -785,28 +785,20 @@ class UserManagementService
             ];
         }
 
-        try {
-            // Assign permission template
-            if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
-                return [
-                    'success' => false,
-                    'message' => 'Failed to assign permission template',
-                    'refusal' => Refusal::BACKEND_FAILURE
-                ];
-            }
-            $this->permissions->forgetUser($userId);
-
-            return [
-                'success' => true,
-                'message' => 'Permission template assigned successfully'
-            ];
-        } catch (Exception $e) {
+        // A database exception propagates so the caller logs it instead of handing it to the client
+        if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
             return [
                 'success' => false,
-                'message' => 'Failed to assign permission template: ' . $e->getMessage(),
+                'message' => 'Failed to assign permission template',
                 'refusal' => Refusal::BACKEND_FAILURE
             ];
         }
+        $this->permissions->forgetUser($userId);
+
+        return [
+            'success' => true,
+            'message' => 'Permission template assigned successfully'
+        ];
     }
 
     /** The error for a request that asks for LDAP while it is disabled, or null. */

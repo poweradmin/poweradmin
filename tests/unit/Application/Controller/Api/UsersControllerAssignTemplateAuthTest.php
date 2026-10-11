@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -77,6 +78,31 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
         $response = $this->invokeAssign($controller);
 
         $this->assertSame(200, $response->getStatusCode());
+    }
+
+    #[DataProvider('controllerProvider')]
+    public function testDatabaseErrorIsLoggedButNotSentToTheClient(string $controllerClass): void
+    {
+        $permission = $this->createMock(ApiPermissionService::class);
+        $permission->method('canEditUser')->willReturn(true);
+        $permission->method('canEditPermissionTemplates')->willReturn(true);
+
+        $userService = $this->createMock(UserManagementService::class);
+        $userService->method('assignPermissionTemplate')
+            ->willThrowException(new \PDOException('SQLSTATE[HY000]: General error: users table locked'));
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error');
+
+        $controller = $this->makeController($controllerClass, 1, 5, $permission, $userService);
+        $this->setProperty($controller, 'request', Request::create('/', 'PATCH', [], [], [], [], '{"perm_templ": 4}'));
+        $this->setProperty($controller, 'logger', $logger);
+
+        $response = $this->invokeAssign($controller);
+
+        $this->assertSame(500, $response->getStatusCode());
+        $this->assertStringContainsString('Failed to assign permission template', (string)$response->getContent());
+        $this->assertStringNotContainsString('SQLSTATE', (string)$response->getContent());
     }
 
     private function makeController(

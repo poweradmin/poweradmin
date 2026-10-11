@@ -1347,4 +1347,16 @@ class UserManagementServiceTest extends TestCase
 
         $this->assertTrue($result['success']);
     }
+
+    #[Test]
+    public function testAssignPermissionTemplateLetsADatabaseErrorPropagate(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->method('assignPermissionTemplate')
+            ->willThrowException(new \PDOException('SQLSTATE[HY000]: General error'));
+
+        $this->expectException(\PDOException::class);
+        $this->service->assignPermissionTemplate(1, 2);
+    }
 }
