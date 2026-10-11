@@ -691,6 +691,10 @@ class ZonesRRSetsController extends PublicApiController
         description: 'RRSet deleted successfully'
     )]
     #[OA\Response(
+        response: 400,
+        description: 'Unknown record type'
+    )]
+    #[OA\Response(
         response: 404,
         description: 'RRSet not found'
     )]
@@ -723,6 +727,11 @@ class ZonesRRSetsController extends PublicApiController
 
             if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
                 return $approval;
+            }
+
+            // Same check as create and replace, so a misspelled type is a 400 rather than "RRSet not found"
+            if (!$this->services()->dnsValidatorRegistry()->isKnownType($type)) {
+                return $this->returnApiError('Invalid record type.', 400);
             }
 
             // Get zone name
