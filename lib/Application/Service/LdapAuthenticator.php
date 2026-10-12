@@ -236,7 +236,7 @@ class LdapAuthenticator extends LoggingService
         // Directory usernames are accent-sensitive, so a folding collation here would
         // let a look-alike directory account resolve to another user's local row.
         $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
         $stmt->execute([
             'username' => $username
         ]);
@@ -274,6 +274,7 @@ class LdapAuthenticator extends LoggingService
             // This prevents API requests from bypassing MFA by checking isAuthenticated()
             $this->userContextService->setSessionData('pending_userid', $rowObj['id']);
             $this->userContextService->setSessionData('pending_name', $rowObj['fullname']);
+            $this->userContextService->setSessionData('pending_email', $rowObj['email']);
             $this->userContextService->setSessionData('pending_auth_used', 'ldap');
 
             // Use our centralized MFA session manager to set MFA required
@@ -302,6 +303,7 @@ class LdapAuthenticator extends LoggingService
             // NOW it's safe to set userid since MFA is not required
             $this->userContextService->setSessionData('userid', $rowObj['id']);
             $this->userContextService->setSessionData('name', $rowObj['fullname']);
+            $this->userContextService->setSessionData('email', $rowObj['email']);
             $this->userContextService->setSessionData('auth_used', 'ldap');
             $this->userContextService->setSessionData('authenticated', true);
             $this->userContextService->setSessionData('mfa_required', false);
