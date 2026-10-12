@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -387,7 +387,7 @@ class ApiKeyService
                     return false;
                 }
 
-                // Set session variables for the authenticated user
+                // Legacy permission code reads these; the public API starts no session, so they stay request-local
                 $_SESSION['userid'] = $keyData['created_by'];
                 $_SESSION['auth_used'] = 'api_key';
 
@@ -418,7 +418,7 @@ class ApiKeyService
         // Update the last used timestamp
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
 
-        // Set session variables for the authenticated user
+        // Legacy permission code reads these; the public API starts no session, so they stay request-local
         $_SESSION['userid'] = $apiKey->getCreatedBy();
         $_SESSION['auth_used'] = 'api_key';
 

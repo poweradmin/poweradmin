@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ class BasicAuthenticationMiddleware
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
-                // Set session for compatibility with legacy code (DomainManager)
+                // Legacy permission code reads these; the public API starts no session, so they stay request-local
                 $_SESSION['userid'] = $userModel->getId();
                 $_SESSION['auth_used'] = 'basic_auth';
                 return $userModel->getId();
@@ -216,7 +216,7 @@ class BasicAuthenticationMiddleware
 
         // Fall back to SQL authentication for non-LDAP users
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
-            // Set session for compatibility with legacy code (DomainManager)
+            // Legacy permission code reads these; the public API starts no session, so they stay request-local
             $_SESSION['userid'] = $userModel->getId();
             $_SESSION['auth_used'] = 'basic_auth';
             return $userModel->getId();

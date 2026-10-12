@@ -37,7 +37,13 @@ CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($conf
 
 // Initialize timezone and session
 initializeTimezone($configManager);
-initializeSession();
+// The public API authenticates every request itself; a browser's cookie session must not carry over
+if (!isPublicApiRequest()) {
+    initializeSession();
+} elseif (session_status() === PHP_SESSION_ACTIVE) {
+    session_unset();
+    session_abort();
+}
 
 // Create and process routes
 $router = new SymfonyRouter();

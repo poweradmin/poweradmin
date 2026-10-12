@@ -272,6 +272,28 @@ class StartupHelpersTest extends TestCase
         date_default_timezone_set($originalTz);
     }
 
+    public function testThePublicApiIsEveryVersionedPathAndNothingElse(): void
+    {
+        $originalUri = $_SERVER['REQUEST_URI'] ?? null;
+
+        try {
+            foreach (['/api/v1/zones', '/api/v2', '/api/v2/zones/1/records', '/poweradmin/api/v2/zones', '/api/v2/zones?x=1', '/api/v%32/zones', '/api%2Fv2/zones'] as $uri) {
+                $_SERVER['REQUEST_URI'] = $uri;
+                $this->assertTrue(isPublicApiRequest(), "Expected public API for $uri");
+            }
+            foreach (['/api/internal/zones', '/api/docs', '/api/docs/v2/json', '/zones', '/index.php?return=/api/v2/zones', '/settings/api/v2things'] as $uri) {
+                $_SERVER['REQUEST_URI'] = $uri;
+                $this->assertFalse(isPublicApiRequest(), "Expected no public API for $uri");
+            }
+        } finally {
+            if ($originalUri === null) {
+                unset($_SERVER['REQUEST_URI']);
+            } else {
+                $_SERVER['REQUEST_URI'] = $originalUri;
+            }
+        }
+    }
+
     /**
      * Helper method to create deep stack trace for testing
      */

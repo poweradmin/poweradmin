@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,6 +55,18 @@ function initializeSession(): void
     ]);
 
     session_start();
+}
+
+/**
+ * Whether the request targets the versioned public API (/api/v1, /api/v2, ...), which
+ * authenticates every request by key or Basic credentials and keeps no session.
+ * Decoded as the router decodes it, and unanchored so subfolder installs still match.
+ */
+function isPublicApiRequest(): bool
+{
+    $path = rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '');
+
+    return preg_match('#/api/v\d+(/|$)#', $path) === 1;
 }
 
 /**
