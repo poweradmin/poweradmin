@@ -27,7 +27,7 @@ namespace Poweradmin\Application\Boot;
  */
 enum BootOptions
 {
-    /** index.php: a session unless the install is headless or a probe is asking; the database on first use */
+    /** index.php: a session unless the install is headless, the public API or a probe is asking; the database on first use */
     case Web;
 
     /** dynamic_update.php and bin/poweradmin: no session, the database opened up front */

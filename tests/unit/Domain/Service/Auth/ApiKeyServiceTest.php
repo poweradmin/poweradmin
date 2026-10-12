@@ -32,17 +32,14 @@ use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
 use Poweradmin\Domain\Service\Auth\PermissionService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
-use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(ApiKeyService::class)]
 class ApiKeyServiceTest extends PermissionServiceTestCase
 {
-    private ArraySession $session;
 
     private ApiKeyService $service;
     private ApiKeyRepositoryInterface&MockObject $apiKeyRepository;
@@ -52,7 +49,6 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->session = new ArraySession();
 
         $this->apiKeyRepository = $this->createMock(ApiKeyRepositoryInterface::class);
         $this->users = $this->createMock(UserLookupInterface::class);
@@ -125,8 +121,6 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
 
         $result = $this->service->authenticate('pwa_valid_key');
         $this->assertTrue($result);
-        $this->assertEquals(42, $this->session->get('userid'));
-        $this->assertEquals('api_key', $this->session->get('auth_used'));
     }
 
     #[Test]
@@ -281,7 +275,6 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
         $this->apiKeyRepository->expects($this->never())->method('updateLastUsed');
 
         $this->assertFalse($this->service->authenticate('pwa_valid_key'));
-        $this->assertFalse($this->session->has('userid'));
     }
 
     #[Test]
@@ -338,8 +331,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->users,
             $this->config,
             $this->createMock(PermissionService::class),
-            StubActor::nobody(),
-            new UserContextService($this->session)
+            StubActor::nobody()
         );
     }
 
@@ -360,8 +352,7 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
             $this->users,
             $this->config,
             $this->buildPermissionService(permissionsByUser: [7 => $permissions], adminUserIds: $isAdmin ? [7] : []),
-            new StubActor(7),
-            new UserContextService($this->session)
+            new StubActor(7)
         );
     }
 

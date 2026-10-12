@@ -44,7 +44,6 @@ use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\MfaService;
-use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
@@ -211,8 +210,7 @@ final class AuthServices
             $this->services->userRepository(),
             $this->config,
             $this->services->permissionService(),
-            $this->services->actor(),
-            new UserContextService($this->services->session())
+            $this->services->actor()
         );
     }
 
@@ -223,7 +221,7 @@ final class AuthServices
 
     public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware
     {
-        return new BasicAuthenticationMiddleware($this->db, $this->config, $this->services->session());
+        return new BasicAuthenticationMiddleware($this->db, $this->config);
     }
 
     public function passwordResetTokenRepository(): PasswordResetTokenRepositoryInterface

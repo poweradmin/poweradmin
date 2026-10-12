@@ -25,8 +25,6 @@ namespace Poweradmin\Application\Service\Auth;
 use PDO;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Port\SessionInterface;
-use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
@@ -43,7 +41,6 @@ class BasicAuthenticationMiddleware
 {
     private PDO $db;
     private ConfigurationInterface $config;
-    private SessionInterface $session;
     private LoginAttemptService $loginAttemptService;
     private ?UserRepositoryInterface $userRepository = null;
     private ?UserAuthenticationService $authService = null;
@@ -54,11 +51,10 @@ class BasicAuthenticationMiddleware
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration manager
      */
-    public function __construct(PDO $db, ConfigurationInterface $config, SessionInterface $session)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->session = $session;
         $this->loginAttemptService = new LoginAttemptService(new DbLoginAttemptRepository($db, $this->config), $this->config);
     }
 
@@ -188,9 +184,6 @@ class BasicAuthenticationMiddleware
      */
     private function onAuthSuccess(int $userId): int
     {
-        // Set session for compatibility with legacy code (DomainManager)
-        $this->session->set(SessionKeys::USERID, $userId);
-        $this->session->set(SessionKeys::AUTH_USED, 'basic_auth');
         return $userId;
     }
 

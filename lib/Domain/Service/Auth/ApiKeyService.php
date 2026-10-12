@@ -45,7 +45,6 @@ class ApiKeyService
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ActorInterface $actor;
-    private UserContextService $session;
     private PermissionService $permissionService;
 
     /**
@@ -56,7 +55,6 @@ class ApiKeyService
      * @param ConfigurationInterface $config The configuration manager
      * @param PermissionService $permissionService Decides who may see and manage other users' keys
      * @param ActorInterface $actor The user the owner checks are about
-     * @param UserContextService $session Where a successful key authentication records the user
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
@@ -64,7 +62,6 @@ class ApiKeyService
         ConfigurationInterface $config,
         PermissionService $permissionService,
         ActorInterface $actor,
-        UserContextService $session,
         ?LoggerInterface $logger = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
@@ -73,7 +70,6 @@ class ApiKeyService
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
         $this->actor = $actor;
-        $this->session = $session;
     }
 
     /**
@@ -322,8 +318,6 @@ class ApiKeyService
         }
 
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
-        $this->session->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
-        $this->session->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
         return true;
     }

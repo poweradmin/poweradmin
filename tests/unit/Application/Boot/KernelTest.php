@@ -23,9 +23,11 @@
 namespace Poweradmin\Tests\Unit\Application\Boot;
 
 use PDO;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Boot\BootOptions;
 use Poweradmin\Application\Boot\Kernel;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use RuntimeException;
 
 class KernelTest extends TestCase
@@ -101,6 +103,21 @@ class KernelTest extends TestCase
         $this->assertFalse(BootOptions::Installer->skipsSessionWhenHeadless());
         $this->assertFalse(BootOptions::Installer->connectsDatabase());
         $this->assertFalse(BootOptions::Installer->guardsConfiguration());
+    }
+
+    /**
+     * A public API request is authenticated by key or Basic credentials each time: it
+     * opens no cookie session, and what its services write stays in this request.
+     */
+    #[RunInSeparateProcess]
+    public function testAPublicApiRequestBootsWithoutACookieSession(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
+
+        $context = Kernel::boot(BootOptions::Web);
+
+        $this->assertSame(PHP_SESSION_NONE, session_status());
+        $this->assertInstanceOf(ArraySession::class, $context->session);
     }
 
     /**

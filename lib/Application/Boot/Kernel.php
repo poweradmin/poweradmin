@@ -40,6 +40,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
 
@@ -68,8 +69,13 @@ final class Kernel
         $config->initialize();
         Bootstrap::initializeTimezone($config);
 
-        if ($options->startsSession() && !self::sessionIsPointless($options, $config)) {
+        $sessionStarted = $options->startsSession() && !self::sessionIsPointless($options, $config);
+        if ($sessionStarted) {
             Bootstrap::initializeSession($config);
+        } elseif ($options->startsSession() && RequestContext::isPublicApiRequest() && session_status() === PHP_SESSION_ACTIVE) {
+            // session.auto_start opened the caller's cookie session; drop it unsaved
+            session_unset();
+            session_abort();
         }
 
         $logger = Logger::fromConfig($config);
@@ -82,7 +88,8 @@ final class Kernel
         $registry = new ModuleRegistry($config);
         $registry->loadModules();
 
-        $context = new BootContext($config, $logger, $registry, new PhpSession());
+        // Without a session (the public API, probes), a cookie session someone opened anyway is never touched
+        $context = new BootContext($config, $logger, $registry, $sessionStarted || !$options->startsSession() ? new PhpSession() : new ArraySession());
         if ($options->connectsDatabase()) {
             $context->database();
         }
@@ -148,6 +155,7 @@ final class Kernel
         }
 
         return !$config->get('interface', 'web_enabled', true)
+            || RequestContext::isPublicApiRequest()
             || RequestContext::isHealthProbeRequest((string) $config->get('interface', 'base_url_prefix', ''));
     }
 
