@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -270,6 +271,43 @@ class StartupHelpersTest extends TestCase
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
 
         date_default_timezone_set($originalTz);
+    }
+
+    public static function publicApiPathProvider(): array
+    {
+        return [
+            'v1 zones' => ['/api/v1/zones', true],
+            'v2 root' => ['/api/v2', true],
+            'v2 nested' => ['/api/v2/zones/1/records', true],
+            'subfolder install' => ['/poweradmin/api/v2/zones', true],
+            'query string' => ['/api/v2/zones?x=1', true],
+            'encoded version digit' => ['/api/v%32/zones', true],
+            'encoded slash' => ['/api%2Fv2/zones', true],
+            'internal api' => ['/api/internal/zones', false],
+            'docs' => ['/api/docs', false],
+            'docs json' => ['/api/docs/v2/json', false],
+            'web page' => ['/zones', false],
+            'api path in query only' => ['/index.php?return=/api/v2/zones', false],
+            'web page with api segment' => ['/settings/api/v2things', false],
+        ];
+    }
+
+    #[DataProvider('publicApiPathProvider')]
+    public function testIsPublicApiRequest(string $uri, bool $expected): void
+    {
+        $hadUri = array_key_exists('REQUEST_URI', $_SERVER);
+        $originalUri = $_SERVER['REQUEST_URI'] ?? null;
+        $_SERVER['REQUEST_URI'] = $uri;
+
+        try {
+            $this->assertSame($expected, isPublicApiRequest());
+        } finally {
+            if ($hadUri) {
+                $_SERVER['REQUEST_URI'] = $originalUri;
+            } else {
+                unset($_SERVER['REQUEST_URI']);
+            }
+        }
     }
 
     /**
