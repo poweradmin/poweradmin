@@ -203,8 +203,8 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('networkidle');
 
-      // Verify it exists
-      await page.goto('/zones/forward?letter=all');
+      // Verify it exists; the letter filter keeps it off a second page of the list
+      await page.goto('/zones/forward?letter=v');
       let bodyText = await page.locator('body').textContent();
       expect(bodyText).toContain(verifyZone);
 
@@ -223,7 +223,7 @@ test.describe('Bulk Zone Delete Confirmation (Issue #971)', () => {
       }
 
       // Verify it's gone (even if error message showed)
-      await page.goto('/zones/forward?letter=all');
+      await page.goto('/zones/forward?letter=v');
       bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toContain(verifyZone);
     });
