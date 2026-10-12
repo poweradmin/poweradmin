@@ -1567,7 +1567,7 @@ test_users_crud() {
 
     increment_test
     local user_count
-    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)
+    user_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data.users | length' 2>/dev/null)
     if [[ "$user_count" -ge 1 ]]; then
         print_pass "Users list contains at least 1 user ($user_count)"
     else
@@ -1587,7 +1587,7 @@ test_users_crud() {
 
         increment_test
         local username
-        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.username' 2>/dev/null)
+        username=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.username' 2>/dev/null)
         if [[ "$username" == "api_crud_test_user" ]]; then
             print_pass "User data matches (username: $username)"
         else
@@ -1605,7 +1605,7 @@ test_users_crud() {
 
         increment_test
         local fullname
-        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.fullname' 2>/dev/null)
+        fullname=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.fullname' 2>/dev/null)
         if [[ "$fullname" == "API CRUD Updated" ]]; then
             print_pass "User fullname updated correctly"
         else
@@ -1850,7 +1850,7 @@ test_users_perm_templ_validation() {
 
     # Listing must include the freshly created user (the JOIN fix surfaces broken rows too).
     api_request_v2 "GET" "/users" "" 200 "List users after create"
-    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
+    if ! echo "$LAST_RESPONSE_BODY" | jq -e '.data.users[] | select(.username == "perm_templ_valid_user")' >/dev/null 2>&1; then
         increment_test
         print_fail "Created user not present in GET /users response"
     fi
