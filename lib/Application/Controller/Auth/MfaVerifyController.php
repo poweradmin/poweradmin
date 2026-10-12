@@ -119,8 +119,7 @@ class MfaVerifyController extends BaseController
         }
 
         // Check if we have the necessary session data
-        // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->getUserContextService()->getLoggedInUserId() ?? $this->getUserContextService()->getSessionData(SessionKeys::PENDING_USERID);
+        $userId = $this->challengedUserId();
         if (!$this->getUserContextService()->getLoggedInUsername() || !$userId || !$this->getUserContextService()->hasSessionData(AuthFlowSessionKeys::MFA_REQUIRED)) {
             $this->redirect('/');
         }
@@ -148,14 +147,20 @@ class MfaVerifyController extends BaseController
         $this->logger->debug('[MfaVerifyController] Verification attempt started');
 
         $code = $this->httpRequest->getPostParam('mfa_code', '');
-        // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->getUserContextService()->getLoggedInUserId() ?? $this->getUserContextService()->getSessionData(SessionKeys::PENDING_USERID);
+        $userId = $this->challengedUserId();
         $mfaToken = $this->httpRequest->getPostParam('mfa_token', '');
 
         // Validate CSRF token for security
         if (!$this->csrfTokenService()->validateToken($mfaToken, AuthFlowSessionKeys::MFA_TOKEN)) {
             $this->logger->warning('[MfaVerifyController] Invalid CSRF token for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('Invalid security token. Please try again.'), 'danger');
+            return;
+        }
+
+        // Only a factor the account has finished enrolling counts, codes and recovery codes alike
+        if (!$this->mfaService()->isMfaEnabled((int)$userId)) {
+            $this->logger->warning('[MfaVerifyController] MFA is not enabled for user ID: {user_id}', ['user_id' => $userId]);
+            $this->displayMfaForm(_('No MFA record found. Please contact administrator.'), 'danger');
             return;
         }
 
@@ -209,7 +214,7 @@ class MfaVerifyController extends BaseController
             // After successful verification, update the MFA secret for both app and email based auth
             try {
                 // Get the user's email from session if available (for email-based MFA)
-                $email = $this->getUserContextService()->getSessionData(SessionKeys::EMAIL);
+                $email = $this->challengedEmail();
 
                 // Update the MFA secret only for email-based MFA (app-based MFA must keep the same secret)
                 $mfaType = $this->mfaService()->getMfaType($userId);
@@ -285,6 +290,44 @@ class MfaVerifyController extends BaseController
     }
 
     /**
+     * The account whose second factor this page checks: the pending login when there is
+     * one, since that is the account the session is promoted to. A session that also
+     * holds a different signed-in user is ended, so one account's code never promotes another.
+     */
+    private function challengedUserId(): ?int
+    {
+        $context = $this->getUserContextService();
+        $pending = $context->getSessionData(SessionKeys::PENDING_USERID);
+        $signedIn = $context->getLoggedInUserId();
+        if ($pending === null || $pending === '') {
+            return $signedIn;
+        }
+
+        if ($signedIn !== null && $signedIn !== (int)$pending) {
+            $this->logger->warning('[MfaVerifyController] Pending login {pending} on the session of user {user_id}, ending the session', ['pending' => $pending, 'user_id' => $signedIn]);
+            $this->session()->regenerateId(true);
+            $this->session()->clear();
+            $this->getUserContextService()->setSessionData(SessionKeys::LOGIN_MESSAGE, _('Session expired, please login again.'));
+            $this->getUserContextService()->setSessionData(SessionKeys::LOGIN_MESSAGE_TYPE, 'danger');
+            $this->redirect('/login');
+        }
+
+        return (int)$pending;
+    }
+
+    /**
+     * The address of the account challenged by challengedUserId().
+     */
+    private function challengedEmail(): ?string
+    {
+        $context = $this->getUserContextService();
+        $key = $context->hasSessionData(SessionKeys::PENDING_USERID) ? SessionKeys::PENDING_EMAIL : SessionKeys::EMAIL;
+        $email = $context->getSessionData($key);
+
+        return is_string($email) ? $email : null;
+    }
+
+    /**
      * Whether the second factor is currently refusing attempts for this account.
      *
      * The MFA stage is counted separately from the password stage, so second-factor
@@ -328,9 +371,9 @@ class MfaVerifyController extends BaseController
     private function displayMfaForm(?string $message = null, ?string $type = null): void
     {
         // During MFA verification, userid is stored as pending_userid to prevent API bypass
-        $userId = $this->getUserContextService()->getLoggedInUserId() ?? $this->getUserContextService()->getSessionData(SessionKeys::PENDING_USERID) ?? 0;
+        $userId = $this->challengedUserId() ?? 0;
         $username = $this->getUserContextService()->getLoggedInUsername() ?? '';
-        $email = $this->getUserContextService()->getSessionData(SessionKeys::EMAIL) ?? $this->getUserContextService()->getSessionData(SessionKeys::PENDING_EMAIL) ?? '';
+        $email = $this->challengedEmail() ?? '';
 
         // Generate a new CSRF token
         $mfaToken = $this->csrfTokenService()->generateToken();

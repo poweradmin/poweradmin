@@ -333,15 +333,17 @@ final class OidcService
 
                 $this->logger->info('Using database username for session: {username}', ['username' => $databaseUsername]);
 
+                // A new sign-in starts from an empty session, so nothing of an earlier login carries over:
+                // a pending identity layered on another user's session would be promoted by the MFA step
+                $this->session->regenerateId(true);
+                $this->session->clear();
+                $this->logger->info('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
+
                 // Set userlogin for MFA verification page
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
                 $this->auditService->logLoginSuccess(AuthMethod::OIDC);
-
-                // Rotate session id before binding the user - matches SqlAuthenticator.
-                $this->session->regenerateId(true);
-                $this->logger->info('Session ID regenerated for OIDC user {username}', ['username' => $databaseUsername]);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();

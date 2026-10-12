@@ -67,6 +67,10 @@ class SessionService
         if ($this->session->has(SessionKeys::USERPWD)) {
             $this->session->remove(SessionKeys::USERPWD);
         }
+        $this->session->remove(SessionKeys::PENDING_USERID);
+        $this->session->remove(SessionKeys::PENDING_NAME);
+        $this->session->remove(SessionKeys::PENDING_EMAIL);
+        $this->session->remove(SessionKeys::PENDING_AUTH_USED);
 
         // Regenerate session ID and unset all variables only if session is active
         if ($this->session->isActive()) {

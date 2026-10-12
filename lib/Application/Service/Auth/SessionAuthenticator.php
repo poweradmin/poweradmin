@@ -209,6 +209,15 @@ final class SessionAuthenticator
             }
 
             if ($credentials->password !== '') {
+                // Every login starts from an empty session: a pending login layered on another
+                // user's session would be promoted by the MFA step, and the login token is spent
+                $signedOutOfWebServer = $this->session->get(AuthFlowSessionKeys::REMOTE_USER_SIGNED_OUT);
+                $this->services->sessionService()->endSession();
+                if ($signedOutOfWebServer !== null) {
+                    // A failed login must not hand the session back to the web server's user
+                    $this->session->set(AuthFlowSessionKeys::REMOTE_USER_SIGNED_OUT, $signedOutOfWebServer);
+                }
+
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
                 $this->session->set(SessionKeys::USERPWD, $passwordEncryptionService->encrypt($credentials->password));
                 $this->logger->debug('Password encrypted for user {username}', ['username' => $credentials->username]);
