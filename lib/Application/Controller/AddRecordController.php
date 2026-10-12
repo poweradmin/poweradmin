@@ -276,6 +276,10 @@ class AddRecordController extends BaseController
     {
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
         // Pre-fill with the plain dns.ttl; JS updateTtlForType() swaps in dns.ttl_reverse
