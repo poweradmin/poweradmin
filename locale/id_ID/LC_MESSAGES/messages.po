@@ -8475,7 +8475,7 @@ msgstr "Nama"
 
 #: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
-msgstr "Berhasil mengubah pemilik untuk %d zone."
+msgstr ""
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"

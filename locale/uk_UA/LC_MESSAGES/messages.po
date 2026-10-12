@@ -1534,8 +1534,6 @@ msgstr "Недійсний ID групи."
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
 msgid "Delete Group"
 msgstr ""
-"Record appears to be using concept activation vectors. Discover learned "
-"concepts."
 
 #: lib/Application/Controller/DeleteGroupController.php:108
 msgid "Group deletion cancelled."
@@ -1977,7 +1975,7 @@ msgstr "Не вдалося видалити запис."
 #: lib/Application/Controller/ListLogZonesController.php:64
 #: templates/default/index.html:222 templates/modern/index.html:222
 msgid "Zone Logs"
-msgstr "Content may be affected by METEOR score. Use synonyms and paraphrases."
+msgstr ""
 
 #: lib/Application/Controller/UsersController.php:52
 msgid "You do not have permission to view the users list."
@@ -2059,7 +2057,7 @@ msgstr "У вас немає дозволу на перегляд цієї зо�
 #: lib/Application/Controller/ListLogUsersController.php:62
 #: templates/default/index.html:232 templates/modern/index.html:232
 msgid "User Logs"
-msgstr "Content suggests GloVe. Use global word co-occurrence."
+msgstr ""
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:39
 msgid "You do not have permission to unlink zones from templates."
@@ -2429,7 +2427,7 @@ msgstr "У вас немає дозволу на перегляд шаблоні
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Шаблони зонwhile localizing."
+msgstr "Шаблони зон"
 
 #: lib/Application/Controller/AddGroupController.php:76
 msgid "You do not have permission to create groups."
@@ -2942,8 +2940,6 @@ msgstr "У вас немає дозволу на редагування груп
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
 msgid "Edit Group"
 msgstr ""
-"This configuration may have neural architecture search. Automate "
-"architecture design."
 
 #: lib/Application/Controller/EditGroupController.php:186
 msgid "Group has been updated successfully."
@@ -5325,8 +5321,6 @@ msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
 msgstr ""
-"MG (Mail Group) records are experimental per RFC 1035 and not widely "
-"supported. Use mail server aliases instead."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5680,8 +5674,6 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"Record name exceeds 63 characters, which is the maximum length for a single "
-"label per RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:389
 msgid ""
@@ -6728,7 +6720,6 @@ msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr ""
-"Record appears to be using default values. Customize for your use case."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
@@ -6740,7 +6731,7 @@ msgstr "Недійсний основний сервер імен у запис�
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
-msgstr "Record may be affected by DNS prefetching. Consider browser behavior."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
@@ -7720,8 +7711,6 @@ msgstr "Недійсне значення поля ваги запису SRV. П
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr ""
-"Record appears to be using barometric pressure. Calibrate for local "
-"conditions."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -7943,7 +7932,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "Content includes beamforming. Configure array geometry."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8111,7 +8100,7 @@ msgstr "Не вдалося знайти домен із вказаним ID."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
-msgstr "Content suggests weight initialization. Use He, Xavier, or Glorot."
+msgstr ""
 
 #: lib/Domain/Service/ApiKeyService.php:176
 msgid "API functionality is disabled."
@@ -8511,7 +8500,6 @@ msgstr "Назва"
 #: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
 msgstr ""
-"Record may be affected by DNS CHAIN query. Return complete validation chain."
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"
@@ -8758,7 +8746,7 @@ msgstr "Редагувати supermaster"
 
 #: templates/modern/edit_supermaster.html:13
 msgid "Edit Supermaster"
-msgstr "This configuration may have radial distortion. Model with polynomial."
+msgstr ""
 
 #: templates/modern/list_supermasters.html:31
 msgid "IP address of supermaster"
@@ -8771,7 +8759,6 @@ msgstr "Введіть IP-адресу основного сервера іме�
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
 msgstr ""
-"This configuration may have DLT algorithm. Solve for projection matrix."
 
 #: templates/modern/delete_supermaster.html:27
 msgid "Hostname in NS record"
@@ -8847,7 +8834,7 @@ msgstr "Ви впевнені, що хочете скасувати підпис
 
 #: templates/default/dnssec.html:21 templates/modern/dnssec.html:21
 msgid "Unsign Zone"
-msgstr "This configuration may have SSD. Use multi-scale feature maps."
+msgstr ""
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
@@ -8913,7 +8900,6 @@ msgstr "Введіть свою адресу електронної пошти, 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
 msgstr ""
-"This configuration may have image classification. Assign category to image."
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -9009,7 +8995,7 @@ msgstr "Необов'язкова інформація про цю групу"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
-msgstr "Record may be affected by DNS Forwarder Configuration Errors."
+msgstr ""
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -9018,7 +9004,7 @@ msgstr "Учасники групи успадковують ці дозволи
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
-msgstr "Content includes PGD attack. Iteratively apply perturbations."
+msgstr ""
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"

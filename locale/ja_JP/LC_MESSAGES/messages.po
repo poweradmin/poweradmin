@@ -2188,7 +2188,7 @@ msgstr "レコードが正常に追加されました。一致するPTRレコー
 
 #: lib/Application/Controller/AddRecordController.php:249
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "レコードは正常に追加されましたが、PTRレコードの作成に失敗しました："
+msgstr "レコードは正常に追加されましたが、PTRレコードの作成に失敗しました： "
 
 #: lib/Application/Controller/AddRecordController.php:253
 msgid "The record was successfully added, but PTR record creation failed."
@@ -2450,7 +2450,7 @@ msgstr "ゾーンキーの削除に失敗しました。"
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:123
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "DNSSECキーの削除中にエラーが発生しました："
+msgstr "DNSSECキーの削除中にエラーが発生しました： "
 
 #: lib/Application/Controller/ListPermTemplController.php:46
 msgid "Permission Templates"
@@ -2893,7 +2893,7 @@ msgstr "新しいDNSSECキーの追加に失敗しました。"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:168
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "DNSSECキーの追加中にエラーが発生しました："
+msgstr "DNSSECキーの追加中にエラーが発生しました： "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:172
 msgid "Please select both algorithm and bits"
@@ -3141,19 +3141,19 @@ msgstr "有効なユーザー名を入力してください。"
 
 #: lib/Domain/Model/ZoneTemplate.php:240 lib/Domain/Model/ZoneTemplate.php:821
 msgid "Error creating zone template: "
-msgstr "ゾーンテンプレートの作成エラー："
+msgstr "ゾーンテンプレートの作成エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:276
 msgid "Error adding default SOA record to template: "
-msgstr "テンプレートへのデフォルトSOAレコード追加エラー："
+msgstr "テンプレートへのデフォルトSOAレコード追加エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:335
 msgid "Error deleting zone template: "
-msgstr "ゾーンテンプレートの削除エラー："
+msgstr "ゾーンテンプレートの削除エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:359
 msgid "Error deleting user zone templates: "
-msgstr "ユーザーゾーンテンプレートの削除エラー："
+msgstr "ユーザーゾーンテンプレートの削除エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:476
 msgid "You do not have the permission to add a record to this zone template."
@@ -3184,7 +3184,7 @@ msgstr "このレコードはこのゾーンテンプレートに属していま
 
 #: lib/Domain/Model/ZoneTemplate.php:650
 msgid "Error updating zone template record: "
-msgstr "ゾーンテンプレートレコードの更新エラー："
+msgstr "ゾーンテンプレートレコードの更新エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:678
 #, auto-english-fallback
@@ -3197,11 +3197,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:687
 msgid "Error deleting zone template record: "
-msgstr "ゾーンテンプレートレコードの削除エラー："
+msgstr "ゾーンテンプレートレコードの削除エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:709
 msgid "Error checking template ownership: "
-msgstr "テンプレート所有権の確認エラー："
+msgstr "テンプレート所有権の確認エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:813
 #, auto-english-fallback
@@ -3215,11 +3215,11 @@ msgstr ""
 
 #: lib/Domain/Model/ZoneTemplate.php:952
 msgid "Error retrieving zones using template: "
-msgstr "テンプレートを使用するゾーンの取得エラー："
+msgstr "テンプレートを使用するゾーンの取得エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1052
 msgid "Failed to get list of zones using template: "
-msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました："
+msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1070
 msgid "You do not have the permission to edit a zone template."
@@ -3227,15 +3227,15 @@ msgstr "ゾーンテンプレートを編集する権限がありません。"
 
 #: lib/Domain/Model/ZoneTemplate.php:1114
 msgid "Error unlinking zone from template: "
-msgstr "テンプレートからのゾーン解除エラー："
+msgstr "テンプレートからのゾーン解除エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1163
 msgid "Error retrieving zones: "
-msgstr "ゾーンの取得エラー："
+msgstr "ゾーンの取得エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1182
 msgid "Error checking template name existence: "
-msgstr "テンプレート名の存在確認エラー："
+msgstr "テンプレート名の存在確認エラー： "
 
 #: lib/Domain/Model/ZoneTemplate.php:1203
 msgid "Error looking up template by name: "
@@ -3243,7 +3243,7 @@ msgstr "テンプレート名による検索エラー: "
 
 #: lib/Domain/Model/ZoneTemplate.php:1226
 msgid "Error checking template existence: "
-msgstr "テンプレートの存在確認エラー："
+msgstr "テンプレートの存在確認エラー： "
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:101
 msgid "All zones have owners"
@@ -4564,15 +4564,15 @@ msgstr "HINFOレコードには正確に2つのフィールドが必要です：
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
-msgstr "HINFO内の無効な引用符"
+msgstr "HINFO内の無効な引用符 "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:229
 msgid "HINFO "
-msgstr "HINFO"
+msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:224
 msgid "Invalid quote marks within HINFO "
-msgstr "HINFO内の無効な引用符"
+msgstr "HINFO内の無効な引用符 "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
@@ -4910,7 +4910,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERTタイプ値"
+msgstr "CERTタイプ値 "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
@@ -4948,7 +4948,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "アルゴリズム"
+msgstr "アルゴリズム "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
@@ -4957,7 +4957,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "証明書データは"
+msgstr "証明書データは "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
@@ -8522,7 +8522,7 @@ msgstr "ENUMレコードは、URI出力を示すために「U」フラグを持�
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:442
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR正規表現に潜在的に危険なパターンが含まれています："
+msgstr "NAPTR正規表現に潜在的に危険なパターンが含まれています： "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:449
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
