@@ -30,6 +30,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The API-mode existence and name lookups answer from the local zones row and never ask PowerDNS.
@@ -54,7 +55,8 @@ class ApiDomainRepositoryLookupsTest extends TestCase
         $this->repository = new ApiDomainRepository(
             $this->createStub(PDO::class),
             new FakeConfiguration(),
-            $this->backend
+            $this->backend,
+            new ArraySession()
         );
     }
 

@@ -51,6 +51,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Deleting a user through the web decides zone by zone: refuse the last super
@@ -223,7 +224,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
             new PdoTransaction($this->db),
             $config,
             $domainRepository,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             $backend,
             $this->permissionService($config, $backend->allocatesZoneIdsLocally()),
             new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally()),

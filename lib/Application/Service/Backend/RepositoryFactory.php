@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\PdnsTable;
@@ -64,17 +65,20 @@ class RepositoryFactory implements RepositoryFactoryInterface
     private PDO $db;
     private ConfigurationInterface $config;
     private DnsBackendProviderInterface $backendProvider;
+    private SessionInterface $session;
     private ?LoggerInterface $logger;
 
     public function __construct(
         PDO $db,
         ConfigurationInterface $config,
         DnsBackendProviderInterface $backendProvider,
+        SessionInterface $session,
         ?LoggerInterface $logger = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->backendProvider = $backendProvider;
+        $this->session = $session;
         $this->logger = $logger;
     }
 
@@ -90,7 +94,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type');
-            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config);
+            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config, $this->session);
         }
         return new DbZoneRepository($this->db, $this->config, $this->backendProvider);
     }
@@ -101,7 +105,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
             // Reuse the provider's client so comment reads share its caches; the
             // fallback covers a test double that reports API mode without being one
             $apiClient = DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-                ?? DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+                ?? DnsBackendProviderFactory::createApiClient($this->config, $this->session, $this->logger);
             if ($apiClient !== null) {
                 return new ApiRecordCommentRepository($apiClient, $this->backendProvider);
             }
@@ -120,7 +124,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
     public function createDomainRepository(): DomainRepositoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
-            return new ApiDomainRepository($this->db, $this->config, $this->backendProvider);
+            return new ApiDomainRepository($this->db, $this->config, $this->backendProvider, $this->session);
         }
         return new SqlDomainRepository($this->db, $this->config);
     }

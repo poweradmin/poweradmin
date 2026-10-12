@@ -29,8 +29,8 @@ use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneCountService;
 use Poweradmin\Domain\Port\RecordSearchInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
-use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
@@ -55,6 +55,7 @@ class DnsDataService
         DnsBackendProviderInterface $backendProvider,
         PDO $db,
         ActorInterface $actor,
+        SessionInterface $session,
         ?AccountOwnerLookup $accountOwners = null
     ) {
         $this->repositoryFactory = $repositoryFactory;
@@ -62,7 +63,7 @@ class DnsDataService
         $this->actor = $actor;
 
         if ($backendProvider->isApiBackend()) {
-            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, new PhpSession(), accountOwners: $accountOwners);
+            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, $session, accountOwners: $accountOwners);
         }
     }
 

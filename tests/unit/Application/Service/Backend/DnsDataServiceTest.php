@@ -49,7 +49,7 @@ class DnsDataServiceTest extends TestCase
 
     private function createService(): DnsDataService
     {
-        return new DnsDataService(new RepositoryFactory($this->mockDb, $this->mockConfig, $this->mockBackend), $this->mockBackend, $this->mockDb, new SessionActor(new ArraySession()));
+        return new DnsDataService(new RepositoryFactory($this->mockDb, $this->mockConfig, $this->mockBackend, new ArraySession()), $this->mockBackend, $this->mockDb, new SessionActor(new ArraySession()), new ArraySession());
     }
 
     // ---------------------------------------------------------------
@@ -640,5 +640,21 @@ class DnsDataServiceTest extends TestCase
         $byId = array_column($result, null, 'id');
         $this->assertSame('web box', $byId[10]['comment']);
         $this->assertSame('', $byId[11]['comment']);
+    }
+
+    public function testApiModeKeepsTheZoneSyncThrottleInTheInjectedSession(): void
+    {
+        $_SESSION = [];
+        $session = new ArraySession();
+        $this->mockBackend->method('isApiBackend')->willReturn(true);
+        $this->mockBackend->method('getZones')->willReturn([]);
+        // The repository's own sync stays throttled so only the service's sync can write
+        $repositories = new RepositoryFactory($this->mockDb, $this->mockConfig, $this->mockBackend, new ArraySession(['zone_sync_last' => time()]));
+        $service = new DnsDataService($repositories, $this->mockBackend, $this->mockDb, new SessionActor(new ArraySession()), $session);
+
+        $service->getReverseZoneCounts('all', 1);
+
+        $this->assertIsInt($session->get('zone_sync_last'));
+        $this->assertSame([], $_SESSION);
     }
 }

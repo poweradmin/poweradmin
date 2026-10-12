@@ -44,6 +44,8 @@ use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Owners added to and removed from one zone at the same moment on the API backend.
@@ -157,15 +159,15 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
             'dns' => ['zone_ownership_mode' => 'both'],
         ]);
         // PowerDNS accepts every zone delete, so the test never reaches a real server
-        $client = new class (new HttpClient('http://localhost:8181', 'unused'), 'localhost') extends PowerdnsApiClient {
+        $client = new class (new HttpClient('http://localhost:8181', 'unused'), 'localhost', new ApiStatusService(new ArraySession())) extends PowerdnsApiClient {
             public function deleteZone(Zone $zone): bool
             {
                 return true;
             }
         };
-        $provider = new ApiDnsBackendProvider($client, $db, $config, new NullLogger());
+        $provider = new ApiDnsBackendProvider($client, $db, $config, new ApiStatusService(new ArraySession()), new NullLogger());
 
-        return new ApiZoneRepository($db, $provider, $engine, $config);
+        return new ApiZoneRepository($db, $provider, $engine, $config, new ArraySession());
     }
 
     private function guard(PDO $db, string $engine, ApiZoneRepository $repository): ZoneOwnershipGuard

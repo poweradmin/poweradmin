@@ -13,6 +13,9 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 
 #[CoversClass(ApiDnsBackendProvider::class)]
 class ApiDnsBackendProviderTest extends TestCase
@@ -32,6 +35,7 @@ class ApiDnsBackendProviderTest extends TestCase
             $this->mockClient,
             $this->mockDb,
             $this->mockConfig,
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
     }
@@ -2606,5 +2610,20 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->mockClient->expects($this->never())->method('patchZoneRRsets');
 
         $this->assertFalse($this->provider->replaceSoaContent(7, 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1'));
+    }
+
+    #[BackupGlobals(true)]
+    public function testAFailedZoneListIsRecordedInTheInjectedStatusNotTheGlobalSession(): void
+    {
+        $_SESSION = [];
+        $session = new ArraySession();
+        $this->mockClient->method('getAllZones')
+            ->willThrowException(new ApiErrorException('down', 500, null, ['http_code' => 500]));
+        $provider = new ApiDnsBackendProvider($this->mockClient, $this->mockDb, $this->mockConfig, new ApiStatusService($session), new NullLogger());
+
+        $this->assertSame([], $provider->getZones());
+
+        $this->assertSame('zones', $session->get('pdns_api_last_error')['context']['endpoint']);
+        $this->assertSame([], $_SESSION);
     }
 }

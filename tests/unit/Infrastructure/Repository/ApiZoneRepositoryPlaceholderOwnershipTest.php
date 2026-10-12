@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Extra owners live in `zones` rows with a NULL zone_name, keyed by the canonical
@@ -69,7 +70,8 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
             $this->db,
             $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
-            new FakeConfiguration()
+            new FakeConfiguration(),
+            new ArraySession()
         );
     }
 
@@ -147,7 +149,8 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
             $this->db,
             $backend,
             'sqlite',
-            new FakeConfiguration()
+            new FakeConfiguration(),
+            new ArraySession()
         );
 
         $this->assertTrue($repository->deleteZone(4));
@@ -170,7 +173,8 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
             $this->db,
             $backend,
             'sqlite',
-            new FakeConfiguration()
+            new FakeConfiguration(),
+            new ArraySession()
         );
 
         $this->assertTrue($repository->deleteZone(4));

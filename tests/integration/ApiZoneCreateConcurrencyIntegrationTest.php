@@ -36,6 +36,8 @@ use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Two zones created at the same moment on the API backend. The creators run as separate
@@ -67,7 +69,7 @@ class ApiZoneCreateConcurrencyIntegrationTest extends TestCase
     protected function tearDown(): void
     {
         try {
-            $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost');
+            $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost', new ApiStatusService(new ArraySession()));
             foreach ($this->createdZones as $name) {
                 $client->deleteZone(new Zone($name . '.'));
             }
@@ -257,13 +259,13 @@ class ApiZoneCreateConcurrencyIntegrationTest extends TestCase
 
     private function providerFor(PDO $db): ApiDnsBackendProvider
     {
-        $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost');
+        $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost', new ApiStatusService(new ArraySession()));
         $config = new FakeConfiguration([
             'pdns_api' => ['url' => self::PDNS_API_URL, 'key' => self::PDNS_API_KEY, 'server_name' => 'localhost', 'backend' => 'api'],
             'database' => ['pdns_db_name' => ''],
         ]);
 
-        return new ApiDnsBackendProvider($client, $db, $config, new NullLogger());
+        return new ApiDnsBackendProvider($client, $db, $config, new ApiStatusService(new ArraySession()), new NullLogger());
     }
 
     private function requirePowerDns(): void

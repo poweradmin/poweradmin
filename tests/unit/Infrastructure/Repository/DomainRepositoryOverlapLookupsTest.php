@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The overlap-guard lookups read the domains table in SQL mode and the local
@@ -72,7 +73,7 @@ class DomainRepositoryOverlapLookupsTest extends TestCase
         $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('allocatesZoneIdsLocally')->willReturn(true);
 
-        return new ApiDomainRepository($db, new FakeConfiguration(), $provider);
+        return new ApiDomainRepository($db, new FakeConfiguration(), $provider, new ArraySession());
     }
 
     /** @return iterable<string, array{0: callable(self): DomainRepositoryInterface}> */

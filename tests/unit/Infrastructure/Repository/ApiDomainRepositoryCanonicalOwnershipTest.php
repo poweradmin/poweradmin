@@ -29,6 +29,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The zone list is keyed by canonical id, so the ownership map has to be too. Keying it on
@@ -88,7 +89,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 11, 'name' => 'alice.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 12, 'name' => 'bob.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -106,7 +107,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 21, 'name' => 'null.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 300, 'name' => 'migrated.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -125,7 +126,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
 
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 31, 'name' => 'shared.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -144,7 +145,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 41, 'name' => 'mine.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 42, 'name' => 'theirs.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('own', 1, 'all', 0, 100, 'name', 'ASC', false, true);
 

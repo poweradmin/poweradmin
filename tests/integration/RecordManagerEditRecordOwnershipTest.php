@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -179,7 +180,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
             $validation,
             $soa,
             $domainRepository,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),

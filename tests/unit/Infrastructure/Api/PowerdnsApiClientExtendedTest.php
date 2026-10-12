@@ -6,6 +6,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(PowerdnsApiClient::class)]
 class PowerdnsApiClientExtendedTest extends TestCase
@@ -16,7 +18,7 @@ class PowerdnsApiClientExtendedTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHttpClient = $this->createMock(HttpClient::class);
-        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService(new ArraySession()));
     }
 
     // ---------------------------------------------------------------

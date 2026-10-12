@@ -86,12 +86,12 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             'database' => ['type' => 'sqlite'],
         ]);
 
-        $backend = DnsBackendProviderFactory::create($this->db, $config);
+        $backend = DnsBackendProviderFactory::create($this->db, $config, new ArraySession());
 
         return new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
             fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor($this->session), new ArraySession()))->domainManager(),
@@ -166,11 +166,11 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
             return PdnsCapabilities::fromVersion('4.7.0');
         };
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
-        $backend = DnsBackendProviderFactory::create($this->db, $config);
+        $backend = DnsBackendProviderFactory::create($this->db, $config, new ArraySession());
         $service = new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             $this->permissionService($config),
             $this->createMock(RecordChangeWriterInterface::class),
             fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor($this->session), new ArraySession()))->domainManager(),

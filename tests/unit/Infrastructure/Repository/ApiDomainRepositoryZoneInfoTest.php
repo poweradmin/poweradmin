@@ -67,7 +67,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
             ['id' => 100, 'name' => 'One.example.com.', 'type' => 'NATIVE'],
         ]);
 
-        $zones = (new ApiDomainRepository($this->db, $this->config, $backend))->listZoneNames();
+        $zones = (new ApiDomainRepository($this->db, $this->config, $backend, new ArraySession()))->listZoneNames();
 
         $this->assertSame([
             ['id' => 100, 'name' => 'One.example.com', 'type' => 'NATIVE'],
@@ -93,7 +93,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
             ->method('countZoneRecords')
             ->willReturnMap([[100, 5], [101, 9], [102, 2]]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, new ArraySession());
         $result = $repo->getZoneInfoFromIds([100, 101, 102]);
 
         $this->assertCount(3, $result);
@@ -119,7 +119,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         // The unknown id must not trigger a lookup for a zone that isn't there
         $backend->expects($this->once())->method('countZoneRecords')->with(100)->willReturn(42);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, new ArraySession());
         $result = $repo->getZoneInfoFromIds([100, 999]);
 
         $this->assertCount(1, $result);
@@ -133,7 +133,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $backend->expects($this->never())->method('getZones');
         $backend->expects($this->never())->method('countZoneRecords');
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, new ArraySession());
 
         $this->assertSame([], $repo->getZoneInfoFromIds([]));
     }
@@ -145,7 +145,7 @@ class ApiDomainRepositoryZoneInfoTest extends TestCase
         $backend->method('getZoneById')->with(100)->willReturn(null);
         $backend->expects($this->never())->method('countZoneRecords');
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, new ArraySession());
 
         $this->assertSame([], $repo->getZoneInfoFromId(100));
     }

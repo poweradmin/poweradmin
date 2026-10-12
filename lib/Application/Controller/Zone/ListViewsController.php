@@ -48,7 +48,7 @@ class ListViewsController extends BaseController
             return;
         }
 
-        $apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->logger);
+        $apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->session(), $this->logger);
         if ($apiClient === null) {
             $this->showError(_('Views are only available with the PowerDNS API backend.'));
             return;

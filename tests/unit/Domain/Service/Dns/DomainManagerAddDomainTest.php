@@ -50,6 +50,7 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * addDomain() drives zone creation end to end: refusal before any write,
@@ -617,7 +618,7 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
             new PdoTransaction($this->db),
             $this->config,
             $this->createMock(DomainRepositoryInterface::class),
-            new RepositoryFactory($this->db, $this->config, $this->backend),
+            new RepositoryFactory($this->db, $this->config, $this->backend, new ArraySession()),
             $this->backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => $callerPermissions]),
             $this->createMock(UserRepositoryInterface::class),

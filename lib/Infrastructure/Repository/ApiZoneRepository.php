@@ -33,6 +33,7 @@ use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -43,7 +44,6 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
-use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
@@ -59,7 +59,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         private PDO $db,
         private DnsBackendProviderInterface $backendProvider,
         private string $dbType,
-        private ConfigurationInterface $config
+        private ConfigurationInterface $config,
+        private SessionInterface $session
     ) {
         $this->tableNameService = new TableNameService($config);
     }
@@ -154,7 +155,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // the Forward Zones page first. Throttled to once per 5 minutes. Reads
         // the same zone-list variant as the stats call below so both share one
         // response.
-        (new ZoneSyncService($this->db, $this->backendProvider, new PhpSession(), accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config)))->syncIfStale($needsDnssec);
+        (new ZoneSyncService($this->db, $this->backendProvider, $this->session, accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config)))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {

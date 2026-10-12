@@ -127,12 +127,12 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             }
         );
 
-        $backend = DnsBackendProviderFactory::create($this->db, $config);
+        $backend = DnsBackendProviderFactory::create($this->db, $config, new ArraySession());
 
         return new ZoneManagementService(
             $this->createMock(ZoneRepositoryInterface::class),
             $config,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
             new RecordChangeLogger($this->db, $config, new SessionActor(new ArraySession())),
             fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new ArraySession()), new ArraySession()))->domainManager(),

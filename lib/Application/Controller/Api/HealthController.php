@@ -31,6 +31,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
@@ -155,10 +156,11 @@ class HealthController
     protected function checkPowerdnsApi(): string
     {
         try {
-            // Short timeout, not the interactive pdns_api.timeout: HttpClient retries a
-            // GET once, so a 10s default could hold this unauthenticated request ~20s.
+            // Short timeout (HttpClient retries a GET once, so 10s could hold this ~20s);
+            // a probe keeps no session, so the client records into a throwaway one
             $client = DnsBackendProviderFactory::createApiClient(
                 $this->config(),
+                new ArraySession(),
                 null,
                 (int) $this->config()->get('health', 'pdns_timeout', 2)
             );

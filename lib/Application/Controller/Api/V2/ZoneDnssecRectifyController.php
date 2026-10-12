@@ -58,7 +58,7 @@ class ZoneDnssecRectifyController extends PublicApiController
         $this->domainRepository = $this->services()->domainRepository();
         $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->dnssecProvider = $this->services()->dnssecProvider();
-        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->session(), $this->logger);
     }
 
     public function run(): void

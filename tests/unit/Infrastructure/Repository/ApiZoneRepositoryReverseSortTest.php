@@ -31,6 +31,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The reverse zone list offers Type as a sortable column, so the API-mode
@@ -42,6 +43,7 @@ use TestHelpers\FakeConfiguration;
 class ApiZoneRepositoryReverseSortTest extends TestCase
 {
     private PDO $db;
+    private ArraySession $session;
     private DnsBackendProviderInterface $backend;
 
     protected function setUp(): void
@@ -49,7 +51,7 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
         // Hold the sync throttle closed: this test drives the listing only, and
         // a sync against a stubbed provider would see zero API zones and delete
         // every local row as orphaned
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
@@ -71,14 +73,9 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
         $this->backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(): ApiZoneRepository
     {
-        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration());
+        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration(), $this->session);
     }
 
     /** @return list<ZoneSummary> */
@@ -126,5 +123,17 @@ class ApiZoneRepositoryReverseSortTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $this->repository()->getReverseZones('all', 1, 'all', 0, 25, 'name', 'ASC; DROP TABLE zones');
+    }
+
+    #[Test]
+    public function theZoneSyncThrottleIsKeptInTheInjectedSession(): void
+    {
+        $_SESSION = [];
+        $this->session = new ArraySession();
+
+        $this->reverseZones('name', 'ASC');
+
+        $this->assertIsInt($this->session->get('zone_sync_last'));
+        $this->assertSame([], $_SESSION);
     }
 }

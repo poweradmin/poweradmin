@@ -81,7 +81,7 @@ class ZoneDnssecController extends PublicApiController
 
         // DNSSEC works whenever the PowerDNS API is configured, independent of the
         // dns.backend setting; createApiClient() returns null when it is not.
-        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->session(), $this->logger);
     }
 
     public function run(): void

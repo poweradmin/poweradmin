@@ -130,7 +130,7 @@ class PdnsVersionService
         }
         $cache->set(SessionKeys::PDNS_VERSION_LAST_ATTEMPT, time());
         try {
-            $apiClient = DnsBackendProviderFactory::createApiClient($config, $logger);
+            $apiClient = DnsBackendProviderFactory::createApiClient($config, $cache, $logger);
             if ($apiClient !== null) {
                 (new self($apiClient, $logger, $cache))->detect();
             }

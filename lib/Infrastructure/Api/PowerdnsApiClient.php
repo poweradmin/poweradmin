@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Typed wrapper over the PowerDNS /api/v1 server endpoints: zones, RRsets, DNSSEC keys, metadata, TSIG, views.
@@ -80,18 +79,23 @@ class PowerdnsApiClient
     /** PowerDNS's own explanation for the last rejected RRset PATCH. */
     private ?string $lastWriteRejection = null;
 
+    private ApiStatusRecorderInterface $apiStatus;
+
     /**
+     * @param ApiStatusRecorderInterface $apiStatus Holds the outage banner state, in the request's own session
      * @param string|null $serverVersion Skips the capability probe when the caller
      *        already knows the PowerDNS version
      */
     public function __construct(
         HttpClient $httpClient,
         string $serverName,
+        ApiStatusRecorderInterface $apiStatus,
         ?LoggerInterface $logger = null,
         ?string $serverVersion = null
     ) {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
+        $this->apiStatus = $apiStatus;
         $this->logger = $logger ?? new NullLogger();
         $this->serverVersion = $serverVersion;
     }
@@ -999,7 +1003,7 @@ class PowerdnsApiClient
             if ($response && $response['responseCode'] === 200) {
                 // Mirror getZones(): a successful read clears any stale API error
                 // so the outage banner doesn't linger after the API recovers.
-                (new ApiStatusService(new PhpSession()))->clearError();
+                $this->apiStatus->clearError();
                 // Only a complete body may stand in for a different, narrower read
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
@@ -1016,7 +1020,7 @@ class PowerdnsApiClient
             // apart from a genuinely empty zone. A 404 just means the zone is gone.
             $httpCode = $e->getDetail('http_code', $e->getCode());
             if ($httpCode !== 404) {
-                (new ApiStatusService(new PhpSession()))->recordError($e->getMessage(), [
+                $this->apiStatus->recordError($e->getMessage(), [
                     'endpoint' => 'zone',
                     'http_code' => $httpCode,
                     'url' => $e->getDetail('url'),

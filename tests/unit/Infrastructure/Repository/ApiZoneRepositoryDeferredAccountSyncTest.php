@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * PowerDNS is told about an owner change only after the transaction that holds the
@@ -82,7 +83,7 @@ class ApiZoneRepositoryDeferredAccountSyncTest extends TestCase
 
         $this->config = new FakeConfiguration(['dns' => ['sync_zone_owner_to_account' => true]]);
         $this->transaction = new PdoTransaction($this->db);
-        $this->repository = new ApiZoneRepository($this->db, $provider, 'sqlite', $this->config);
+        $this->repository = new ApiZoneRepository($this->db, $provider, 'sqlite', $this->config, new ArraySession());
     }
 
     private function guard(): ZoneOwnershipGuard

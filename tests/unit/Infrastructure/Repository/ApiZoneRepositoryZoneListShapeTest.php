@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The exact rows the reverse zone list and the internal zone list receive from
@@ -39,6 +40,7 @@ use TestHelpers\FakeConfiguration;
 class ApiZoneRepositoryZoneListShapeTest extends TestCase
 {
     private PDO $db;
+    private ArraySession $session;
 
     protected function setUp(): void
     {
@@ -46,7 +48,7 @@ class ApiZoneRepositoryZoneListShapeTest extends TestCase
 
         // Hold the sync throttle closed: a sync against the stubbed provider would
         // reconcile the local rows against the mock's zone list
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach (
@@ -71,11 +73,6 @@ class ApiZoneRepositoryZoneListShapeTest extends TestCase
         }
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(bool $signedSerial): ApiZoneRepository
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
@@ -93,7 +90,7 @@ class ApiZoneRepositoryZoneListShapeTest extends TestCase
             'database' => ['type' => 'sqlite'],
             'dnssec' => ['enabled' => true],
             'interface' => ['display_signed_serial_in_zone_list' => $signedSerial],
-        ]));
+        ]), $this->session);
     }
 
     public function testReverseListWithEveryColumnEnabled(): void

@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOverlapService;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration tests for ZoneOverlapService against a real MariaDB.
@@ -180,7 +181,7 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             $repository->method('getUserPermissions')->willReturn([]);
             $repository->method('hasAdminPermission')->willReturn(false);
             $repository->method('userOwnsZone')->willReturn(false);
-            $zones = new ApiDomainRepository($pwDb, $config, $this->createMock(DnsBackendProviderInterface::class));
+            $zones = new ApiDomainRepository($pwDb, $config, $this->createMock(DnsBackendProviderInterface::class), new ArraySession());
             $service = new ZoneOverlapService($zones, $config, new PermissionService($repository));
 
             $conflict = $service->findConflictingZone('child.' . $parent, self::USER_ID);

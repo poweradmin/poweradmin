@@ -34,6 +34,7 @@ use ReflectionClass;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 /**
  * Tests for EditController::handleZoneMetadataPost(), which dispatches the
@@ -316,7 +317,7 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $factory->method('domainManager')->willReturn($domainManager);
         $config = $this->primeConfig($configOverrides);
         $factory->method('dnsBackendProvider')->willReturn($config->get('dns', 'backend') === 'api'
-            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $this->createMock(PDO::class), $config, new NullLogger())
+            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $this->createMock(PDO::class), $config, new ApiStatusService(new ArraySession()), new NullLogger())
             : new SqlDnsBackendProvider($this->createMock(PDO::class), $config, new NullLogger(), null, $sqlApiClient ? $this->createMock(PowerdnsApiClient::class) : null));
         $this->setBaseProperty($controller, 'serviceFactory', $factory);
 

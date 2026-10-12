@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service\Backend;
 use Exception;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
@@ -34,6 +35,7 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Port\ActorInterface;
 
 /**
@@ -45,9 +47,10 @@ class DnssecProviderFactory
      * Get the PowerDNS version if available
      *
      * @param ConfigurationInterface $config Configuration object
+     * @param SessionInterface $session The request's session
      * @return string The PowerDNS version or empty string if not available
      */
-    public static function getPowerDnsVersion(ConfigurationInterface $config): string
+    public static function getPowerDnsVersion(ConfigurationInterface $config, SessionInterface $session): string
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
@@ -66,7 +69,7 @@ class DnssecProviderFactory
         $serverNameFromConfig = $config->get('pdns_api', 'server_name');
         $serverName = $serverNameFromConfig ?: 'localhost';
 
-        $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+        $apiClient = new PowerdnsApiClient($httpClient, $serverName, new ApiStatusService($session));
 
         try {
             $serverInfo = $apiClient->getServerInfo();
@@ -93,12 +96,13 @@ class DnssecProviderFactory
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
      * @param ActorInterface $actor Named in the syslog audit line of every DNSSEC operation
+     * @param SessionInterface $session The request's session, for a client built here
      * @param PowerdnsApiClient|null $apiClient Reuse a caller's client and its
      *        per-request caches; one is built from config when omitted
      * @return DnssecProviderInterface DNSSEC provider instance
      * @throws Exception When PowerDNS API is not configured
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ActorInterface $actor, ?PowerdnsApiClient $apiClient = null): DnssecProviderInterface
+    public static function create(PDO $db, ConfigurationInterface $config, ActorInterface $actor, SessionInterface $session, ?PowerdnsApiClient $apiClient = null): DnssecProviderInterface
     {
         $pdnsApiUrl = $config->get('pdns_api', 'url');
         $pdnsApiKey = $config->get('pdns_api', 'key');
@@ -120,7 +124,7 @@ class DnssecProviderFactory
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
 
-            $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+            $apiClient = new PowerdnsApiClient($httpClient, $serverName, new ApiStatusService($session));
         }
 
         // DNSSEC operations are audited to syslog only; without it they are not recorded.

@@ -39,6 +39,7 @@ use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * editZoneComment() updates the zones row of the zone, and creates one for a
@@ -112,7 +113,7 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
             $this->createMock(DnsRecordValidationServiceInterface::class),
             $this->createMock(SOARecordManagerInterface::class),
             $domainRepository,
-            new RepositoryFactory($this->db, $this->config, $backend),
+            new RepositoryFactory($this->db, $this->config, $backend, new ArraySession()),
             fn() => $this->createMock(ZoneRectifierInterface::class),
             $backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]]),

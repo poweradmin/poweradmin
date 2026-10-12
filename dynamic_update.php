@@ -19,7 +19,7 @@ $config = $context->config;
 // provider, repositories and permission cache are built once
 $services = $context->services(new SessionActor($context->session));
 $repository = $services->repositoryFactory()->createDynamicDnsRepository($services->soaRecordManager());
-$updateService = DynamicDnsRequestFactory::createUpdateService($context->database(), $config, $repository, $services->permissionService(), zoneCacheFlusher: $services->zoneCacheFlusher());
+$updateService = DynamicDnsRequestFactory::createUpdateService($context->database(), $config, $repository, $services->permissionService(), $services->auditService(), $services->zoneCacheFlusher());
 
 $result = $updateService->processUpdate(DynamicDnsRequestFactory::fromHttpRequest($request, $config));
 echo DynamicDnsHelper::statusMessage($result, $request->query->has('verbose'));

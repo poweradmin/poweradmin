@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Zones come from the backend, ownership from the local zones tables, and the
@@ -44,7 +45,7 @@ class ApiZoneRepositoryCountZonesTest extends TestCase
         ]);
         $config = new FakeConfiguration();
 
-        return new ApiZoneRepository($this->db, $backend, 'sqlite', $config);
+        return new ApiZoneRepository($this->db, $backend, 'sqlite', $config, new ArraySession());
     }
 
     public function testCountsForwardZonesForAll(): void

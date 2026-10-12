@@ -114,7 +114,7 @@ final class BackendServices
      */
     public function dnsBackendProvider(): DnsBackendProviderInterface
     {
-        return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config, $this->logger);
+        return $this->dnsBackendProvider ??= DnsBackendProviderFactory::create($this->db, $this->config, $this->session, $this->logger);
     }
 
     /**
@@ -161,7 +161,7 @@ final class BackendServices
         if (!$this->zoneCacheFlusherResolved) {
             $this->zoneCacheFlusherResolved = true;
             // A short timeout: the flush only saves a cache wait, so it must not hold up a save
-            $client = $this->dnsBackendProvider()->isApiBackend() ? null : DnsBackendProviderFactory::createApiClient($this->config, $this->logger, self::ZONE_CACHE_FLUSH_TIMEOUT);
+            $client = $this->dnsBackendProvider()->isApiBackend() ? null : DnsBackendProviderFactory::createApiClient($this->config, $this->session, $this->logger, self::ZONE_CACHE_FLUSH_TIMEOUT);
             $this->zoneCacheFlusher = $client === null ? null : new PdnsApiZoneCacheFlusher($client, $this->logger);
         }
 
@@ -175,9 +175,9 @@ final class BackendServices
         // Handing back the shared provider must not build a second factory. Compare
         // the property, not the accessor, so an explicit provider never forces one
         if ($backendProvider !== null && $backendProvider !== $this->dnsBackendProvider) {
-            return new RepositoryFactory($this->db, $this->config, $backendProvider, $this->logger);
+            return new RepositoryFactory($this->db, $this->config, $backendProvider, $this->session, $this->logger);
         }
-        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->dnsBackendProvider(), $this->logger);
+        return $this->repositoryFactory ??= new RepositoryFactory($this->db, $this->config, $this->dnsBackendProvider(), $this->session, $this->logger);
     }
 
     public function zoneRepository(): ZoneRepositoryInterface
@@ -204,8 +204,8 @@ final class BackendServices
     {
         if ($this->dnssecProvider === null) {
             // SQL mode has no backend client; build one that honours pdns_api.timeout and logs to the app log
-            $apiClient = $this->apiClient() ?? DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
-            $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, $this->actor, $apiClient);
+            $apiClient = $this->apiClient() ?? DnsBackendProviderFactory::createApiClient($this->config, $this->session, $this->logger);
+            $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, $this->actor, $this->session, $apiClient);
         }
 
         return $this->dnssecProvider;
@@ -213,7 +213,7 @@ final class BackendServices
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor, $this->accountOwnerLookup());
+        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor, $this->session, $this->accountOwnerLookup());
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface
@@ -238,7 +238,7 @@ final class BackendServices
 
     public function powerdnsStatusService(): PowerdnsStatusService
     {
-        return $this->powerdnsStatusService ??= new PowerdnsStatusService($this->config, $this->logger);
+        return $this->powerdnsStatusService ??= new PowerdnsStatusService($this->config, $this->session, $this->logger);
     }
 
     /**

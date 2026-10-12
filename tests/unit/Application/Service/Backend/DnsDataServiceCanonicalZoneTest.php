@@ -62,7 +62,7 @@ class DnsDataServiceCanonicalZoneTest extends TestCase
 
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
 
-        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor(new ArraySession()));
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend, new ArraySession()), $backend, $this->db, new SessionActor(new ArraySession()), new ArraySession());
     }
 
     public function testStrandedZoneKeepsItsOwnerWhenTheRowIdIsCanonical(): void

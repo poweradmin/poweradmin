@@ -24,12 +24,14 @@ namespace Poweradmin\Application\Service\Backend;
 
 use Poweradmin\Domain\Enum\DnsBackendKind;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -47,10 +49,11 @@ final class DnsBackendProviderFactory
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration object
+     * @param SessionInterface $session The request's session, which holds the API outage banner state
      * @param LoggerInterface|null $logger PSR-3 logger
      * @return DnsBackendProviderInterface
      */
-    public static function create(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null): DnsBackendProviderInterface
+    public static function create(PDO $db, ConfigurationInterface $config, SessionInterface $session, ?LoggerInterface $logger = null): DnsBackendProviderInterface
     {
         $logger = $logger ?? new NullLogger();
 
@@ -75,13 +78,14 @@ final class DnsBackendProviderFactory
             );
             $serverNameFromConfig = $config->get('pdns_api', 'server_name');
             $serverName = $serverNameFromConfig ?: 'localhost';
-            $apiClient = new PowerdnsApiClient($httpClient, $serverName, $logger);
+            $apiStatus = new ApiStatusService($session);
+            $apiClient = new PowerdnsApiClient($httpClient, $serverName, $apiStatus, $logger);
 
-            return new ApiDnsBackendProvider($apiClient, $db, $config, $logger);
+            return new ApiDnsBackendProvider($apiClient, $db, $config, $apiStatus, $logger);
         }
 
         // The PowerDNS API, when configured, lets the SQL backend trigger NOTIFY and zone retrieval
-        return new SqlDnsBackendProvider($db, $config, $logger, null, self::createApiClient($config, $logger));
+        return new SqlDnsBackendProvider($db, $config, $logger, null, self::createApiClient($config, $session, $logger));
     }
 
     /**
@@ -98,6 +102,7 @@ final class DnsBackendProviderFactory
 
     public static function createApiClient(
         ConfigurationInterface $config,
+        SessionInterface $session,
         ?LoggerInterface $logger = null,
         ?int $timeout = null
     ): ?PowerdnsApiClient {
@@ -121,7 +126,7 @@ final class DnsBackendProviderFactory
         );
         $serverName = $config->get('pdns_api', 'server_name') ?: 'localhost';
 
-        return new PowerdnsApiClient($httpClient, $serverName, $logger);
+        return new PowerdnsApiClient($httpClient, $serverName, new ApiStatusService($session), $logger);
     }
 
     /**

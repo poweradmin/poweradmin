@@ -8,6 +8,7 @@ use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class PowerdnsStatusServiceTest extends TestCase
 {
@@ -16,7 +17,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new PowerdnsStatusService(new FakeConfiguration());
+        $this->service = new PowerdnsStatusService(new FakeConfiguration(), new ArraySession());
         $this->reflection = new ReflectionClass($this->service);
     }
 
@@ -26,13 +27,13 @@ class PowerdnsStatusServiceTest extends TestCase
             'url' => 'http://127.0.0.1:8081/api',
             'key' => 'secret',
             'display_name' => '  Edge  ',
-        ]]));
+        ]]), new ArraySession());
 
         $this->assertTrue($service->isApiEnabled());
         $displayName = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('displayName');
         $this->assertSame('Edge', $displayName->getValue($service));
         $this->assertSame('http://127.0.0.1:8081/api/metrics', $this->invokePrivate($service, 'buildMetricsUrl'));
-        $this->assertFalse((new PowerdnsStatusService(new FakeConfiguration()))->isApiEnabled());
+        $this->assertFalse((new PowerdnsStatusService(new FakeConfiguration(), new ArraySession()))->isApiEnabled());
     }
 
     #[DataProvider('displayNameProvider')]
@@ -151,7 +152,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testFastAutoprimaryProbesAllRunWithinBudget(): void
     {
-        $service = new class (new FakeConfiguration()) extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration(), new ArraySession()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): ?string
@@ -171,7 +172,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testSlowAutoprimaryProbesStopAtTheBudgetAndRestAreSkipped(): void
     {
-        $service = new class (new FakeConfiguration()) extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration(), new ArraySession()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): string
@@ -208,7 +209,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testServerStatusSkipsThePrometheusEndpoint(): void
     {
-        $service = new class (self::apiConfig()) extends PowerdnsStatusService {
+        $service = new class (self::apiConfig(), new ArraySession()) extends PowerdnsStatusService {
             public int $prometheusFetches = 0;
 
             protected function fetchMetricsWithAuth(string $url): string
@@ -229,7 +230,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testDetailedServerStatusAttachesDescriptionsWithoutDuplicatingMetrics(): void
     {
-        $service = new class (self::apiConfig()) extends PowerdnsStatusService {
+        $service = new class (self::apiConfig(), new ArraySession()) extends PowerdnsStatusService {
             protected function fetchMetricsWithAuth(string $url): string
             {
                 return "# HELP pdns_auth_udp_queries Number of UDP queries received\n"

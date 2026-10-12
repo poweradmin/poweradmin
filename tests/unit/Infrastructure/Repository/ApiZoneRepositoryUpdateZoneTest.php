@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * In API mode, updateZone() must only mirror a change into the local zones cache
@@ -53,7 +54,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
             ->method('updateZoneType')
             ->with(10, 'MASTER')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(1, ['type' => 'MASTER']));
     }
@@ -65,7 +66,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(1, ['master' => '192.0.2.1']));
     }
@@ -74,7 +75,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER']));
         // The API rejected the change, so local state must stay as it was.
@@ -88,7 +89,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
         $backend->expects($this->never())->method('updateZoneMaster');
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER', 'master' => '192.0.2.1']));
         $this->assertSame('', (string) $this->db->query("SELECT zone_master FROM zones WHERE id = 1")->fetchColumn());
@@ -107,7 +108,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(10, ['master' => '192.0.2.1']));
     }
@@ -126,7 +127,7 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
             ->method('updateZoneMaster')
             ->with(20, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration());
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(20, ['master' => '192.0.2.1']));
     }

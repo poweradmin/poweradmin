@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Defense-in-depth coverage for DomainManager::changeZoneType() and
@@ -242,7 +243,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
             new PdoTransaction($this->db),
             $config,
             $repo,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             $backend,
             $this->permissionService($config, $backend->allocatesZoneIdsLocally()),
             new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally()),

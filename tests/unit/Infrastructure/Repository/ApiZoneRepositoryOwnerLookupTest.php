@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * getOwnerIdsByZoneIds() drives the owner column and the edit/delete controls of
@@ -56,7 +57,8 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
             $this->db,
             $backend,
             'sqlite',
-            new FakeConfiguration()
+            new FakeConfiguration(),
+            new ArraySession()
         );
     }
 

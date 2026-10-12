@@ -27,6 +27,7 @@ use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Infrastructure\Network\ProxyContext;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -51,7 +52,7 @@ class PowerdnsStatusService
     private string $webserverPassword;
     private LoggerInterface $logger;
 
-    public function __construct(ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    public function __construct(ConfigurationInterface $config, SessionInterface $session, ?LoggerInterface $logger = null)
     {
         $this->logger = $logger ?? new NullLogger();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
@@ -63,7 +64,7 @@ class PowerdnsStatusService
 
         // The factory returns null on missing url/key, which is exactly the
         // condition that leaves this service disabled.
-        $apiClient = DnsBackendProviderFactory::createApiClient($config, $this->logger);
+        $apiClient = DnsBackendProviderFactory::createApiClient($config, $session, $this->logger);
         $this->apiEnabled = $apiClient !== null;
 
         if ($apiClient !== null) {

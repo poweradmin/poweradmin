@@ -9,6 +9,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(DnsBackendProviderFactory::class)]
 class DnsBackendProviderFactoryTest extends TestCase
@@ -32,7 +33,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertInstanceOf(SqlDnsBackendProvider::class, $provider);
         $this->assertFalse($provider->isApiBackend());
@@ -48,7 +49,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertInstanceOf(SqlDnsBackendProvider::class, $provider);
     }
@@ -63,7 +64,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertInstanceOf(ApiDnsBackendProvider::class, $provider);
         $this->assertTrue($provider->isApiBackend());
@@ -82,7 +83,7 @@ class DnsBackendProviderFactoryTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('pdns_api.url');
 
-        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
     }
 
     public function testApiBackendWithoutKeyThrows(): void
@@ -98,7 +99,7 @@ class DnsBackendProviderFactoryTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('pdns_api.key');
 
-        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
     }
 
     public function testIsApiBackendReturnsTrueWhenBackendIsApi(): void
@@ -122,7 +123,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertInstanceOf(ApiDnsBackendProvider::class, $provider);
     }
@@ -137,7 +138,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['database', 'pdns_db_name', null, ''],
         ]);
 
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertInstanceOf(ApiDnsBackendProvider::class, $provider);
     }
@@ -150,7 +151,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['pdns_api', 'key', null, 'secret-api-key'],
             ['database', 'pdns_db_name', null, ''],
         ]);
-        $this->assertTrue(DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig)->supportsZoneNotify());
+        $this->assertTrue(DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession())->supportsZoneNotify());
     }
 
     public function testSqlBackendWithoutApiConfigOffersNoZoneKicks(): void
@@ -161,7 +162,7 @@ class DnsBackendProviderFactoryTest extends TestCase
             ['pdns_api', 'key', null, ''],
             ['database', 'pdns_db_name', null, ''],
         ]);
-        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig);
+        $provider = DnsBackendProviderFactory::create($this->mockDb, $this->mockConfig, new ArraySession());
 
         $this->assertFalse($provider->supportsZoneNotify());
         $this->assertFalse($provider->supportsZoneRetrieve());

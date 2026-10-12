@@ -31,6 +31,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * `zones_groups.domain_id` stores the canonical zone id, COALESCE(zones.domain_id,
@@ -46,13 +47,14 @@ use TestHelpers\FakeConfiguration;
 class ApiZoneRepositoryGroupOwnershipTest extends TestCase
 {
     private PDO $db;
+    private ArraySession $session;
     private DnsBackendProviderInterface $backend;
 
     protected function setUp(): void
     {
         // Hold the sync throttle closed; a sync against a stubbed provider would
         // see zero API zones and delete every local row as orphaned.
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
@@ -69,14 +71,9 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(): ApiZoneRepository
     {
-        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration());
+        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration(), $this->session);
     }
 
     /** @return string[] */

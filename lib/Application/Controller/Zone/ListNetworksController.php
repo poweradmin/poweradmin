@@ -47,7 +47,7 @@ class ListNetworksController extends BaseController
             return;
         }
 
-        $apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->logger);
+        $apiClient = DnsBackendProviderFactory::createApiClient($this->getConfig(), $this->session(), $this->logger);
         if ($apiClient === null) {
             $this->showError(_('Network views are only available with the PowerDNS API backend.'));
             return;

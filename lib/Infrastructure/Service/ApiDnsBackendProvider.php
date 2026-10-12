@@ -28,7 +28,7 @@ use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
-use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\RecordType;
@@ -41,7 +41,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * PowerDNS REST API-based DNS backend provider.
@@ -57,14 +56,16 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     private TransactionInterface $transaction;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
+    private ApiStatusRecorderInterface $apiStatus;
 
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
 
     private ?string $lastWriteRejection = null;
 
-    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
+    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ApiStatusRecorderInterface $apiStatus, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
+        $this->apiStatus = $apiStatus;
         $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->client = $client;
         $this->db = $db;
@@ -1037,19 +1038,18 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
     public function getZones(bool $withDnssec = true): array
     {
-        $statusService = new ApiStatusService(new PhpSession());
         try {
             $apiZones = $this->client->getAllZones($withDnssec);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
-            $statusService->recordError($e->getMessage(), [
+            $this->apiStatus->recordError($e->getMessage(), [
                 'endpoint' => 'zones',
                 'http_code' => $e->getDetail('http_code', $e->getCode()),
                 'url' => $e->getDetail('url'),
             ]);
             return [];
         }
-        $statusService->clearError();
+        $this->apiStatus->clearError();
 
         // Pull kind/masters from the same /zones list response so type stays in
         // sync when changed externally (e.g. pdnsutil set-kind). Reading the

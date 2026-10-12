@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Every single write ends by bumping the serial; a batch caller (bulk operations,
@@ -170,7 +171,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
             $validation,
             $soa,
             $domainRepository,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),

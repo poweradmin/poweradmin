@@ -31,6 +31,8 @@ use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FlakyMarkerLockPdo;
 use RuntimeException;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * createZone() writes the zones row and backfills its domain_id. Committed apart, an
@@ -71,6 +73,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
             $client,
             $db ?? $this->db,
             $this->createMock(ConfigurationInterface::class),
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
     }
@@ -227,7 +230,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
 
     private function providerWithClient(PowerdnsApiClient $client, PDO $db, ?\Psr\Log\LoggerInterface $logger = null): ApiDnsBackendProvider
     {
-        return new ApiDnsBackendProvider($client, $db, $this->createMock(ConfigurationInterface::class), $logger ?? new NullLogger());
+        return new ApiDnsBackendProvider($client, $db, $this->createMock(ConfigurationInterface::class), new ApiStatusService(new ArraySession()), $logger ?? new NullLogger());
     }
 
     public function testADeadlockVictimIsRetriedAndNoZoneIsRemovedFromPowerDns(): void

@@ -32,6 +32,8 @@ use Poweradmin\Infrastructure\Repository\ApiRecordSearch;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Comment search over a real PowerDNS API: the RRset's records come back only
@@ -65,7 +67,7 @@ class ApiRecordSearchCommentsIntegrationTest extends TestCase
             $this->markTestSkipped('PowerDNS API not available at ' . self::PDNS_API_URL);
         }
 
-        $this->client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost');
+        $this->client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost', new ApiStatusService(new ArraySession()));
 
         $this->zone = 'comment-search-' . uniqid() . '.example.com';
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -89,6 +91,7 @@ class ApiRecordSearchCommentsIntegrationTest extends TestCase
             $this->client,
             $this->db,
             new FakeConfiguration(['pdns_api' => ['backend' => 'api'], 'database' => ['pdns_db_name' => '']]),
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
         $zones = $this->createStub(ZoneRepositoryInterface::class);

@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * DomainManager write methods report refusals through the result (status and
@@ -212,7 +213,7 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
             $transaction ?? new PdoTransaction($this->db),
             $config,
             $domainRepository,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             $backend,
             $this->permissionService($config, $backend->allocatesZoneIdsLocally()),
             new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally()),

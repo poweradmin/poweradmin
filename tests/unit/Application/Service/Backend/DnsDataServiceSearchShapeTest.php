@@ -84,7 +84,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
     {
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]);
 
-        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend), $backend, $this->db, new SessionActor($this->session));
+        return new DnsDataService(new RepositoryFactory($this->db, $config, $backend, new ArraySession()), $backend, $this->db, new SessionActor($this->session), new ArraySession());
     }
 
     private function sqlService(): DnsDataService

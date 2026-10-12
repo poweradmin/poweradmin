@@ -38,6 +38,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * A refused validation reaches the caller with the field the validator named,
@@ -112,7 +113,7 @@ class RecordManagerValidationFieldTest extends SqliteIntegrationTestCase
             $validation,
             $this->createMock(SOARecordManagerInterface::class),
             $domainRepository,
-            new RepositoryFactory($this->db, $config, $backend),
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
             fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
             $this->permissionService($config),

@@ -34,14 +34,11 @@ use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\Config\ConfigurationInterface;
-use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
-use Poweradmin\Infrastructure\Session\SessionActor;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Application\Service\Web\AuditService;
-use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 
 /**
@@ -53,14 +50,13 @@ class DynamicDnsRequestFactory
 {
     /**
      * Wires the update service from the live database connection and configuration.
-     * A controller passes its memoised AuditService; the dyndns2 script has none to share.
      */
     public static function createUpdateService(
         PDO $db,
         ConfigurationInterface $config,
         DynamicDnsRepositoryInterface $repository,
         PermissionService $permissions,
-        ?AuditService $auditService = null,
+        AuditService $auditService,
         ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ): DynamicDnsUpdateService {
         $client = ClientContext::fromServer($_SERVER, $config);
@@ -73,7 +69,7 @@ class DynamicDnsRequestFactory
                 new LoginAttemptService(new DbLoginAttemptRepository($db, $config), $config)
             ),
             $repository,
-            $auditService ?? new AuditService(new AuditLogWriter($db, $config), $client, new SessionActor(new PhpSession())),
+            $auditService,
             $client->ip,
             self::requiresApproval($config, $permissions),
             $zoneCacheFlusher

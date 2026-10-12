@@ -27,6 +27,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class PowerdnsApiClientWriteRejectionTest extends TestCase
 {
@@ -35,7 +37,7 @@ class PowerdnsApiClientWriteRejectionTest extends TestCase
         $http = $this->createMock(HttpClient::class);
         $http->method('makeRequest')->willThrowException($e);
 
-        return new PowerdnsApiClient($http, 'localhost', null, '4.9.0');
+        return new PowerdnsApiClient($http, 'localhost', new ApiStatusService(new ArraySession()), null, '4.9.0');
     }
 
     private function rejection(int $status, array $response): ApiErrorException

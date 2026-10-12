@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Zone 5 was created here (domain_id = its own id) and migrated zone 12 carries domain_id 5,
@@ -45,11 +46,12 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     private const GROUP_MEMBER = 4;
 
     private PDO $db;
+    private ArraySession $session;
 
     protected function setUp(): void
     {
         // Hold the sync throttle closed so the stubbed provider never prunes local rows
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
@@ -70,11 +72,6 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (4, 7)");
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(): ApiZoneRepository
     {
         $backend = $this->createMock(DnsBackendProviderInterface::class);
@@ -90,7 +87,7 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
 
-        return new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration());
+        return new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration(), $this->session);
     }
 
     /** @param ZoneSummary[] $zones @return string[] */

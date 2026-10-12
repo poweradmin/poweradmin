@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 /**
  * Shared fixture for controllers built through the ControllerEnvironment seam:
@@ -206,7 +207,7 @@ abstract class SeamControllerTestCase extends TestCase
     private function backendProvider(ConfigurationInterface $config, PDO $db): DnsBackendProviderInterface
     {
         if ($config->get('dns', 'backend') === 'api') {
-            return new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new NullLogger());
+            return new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new ApiStatusService(new ArraySession()), new NullLogger());
         }
 
         return new SqlDnsBackendProvider($db, $config, new NullLogger());

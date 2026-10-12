@@ -31,6 +31,8 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The kind and master lookups serve the cached zones row for any zone kind; PowerDNS
@@ -65,6 +67,7 @@ class ApiDnsBackendProviderZoneMasterTest extends TestCase
             $this->client,
             $db,
             $this->createMock(ConfigurationInterface::class),
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
     }

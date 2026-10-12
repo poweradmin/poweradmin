@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * getZone() in API mode returns the same key set as the SQL repository, with
@@ -69,7 +70,8 @@ class ApiZoneRepositoryGetZoneTest extends TestCase
             $this->db,
             $provider,
             'sqlite',
-            new FakeConfiguration()
+            new FakeConfiguration(),
+            new ArraySession()
         );
     }
 

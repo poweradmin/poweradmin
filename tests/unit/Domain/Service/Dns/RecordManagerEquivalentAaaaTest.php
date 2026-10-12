@@ -40,6 +40,7 @@ use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
 use TestHelpers\FakeConfiguration;
 use TestHelpers\PermissionServiceTestCase;
 use TestHelpers\StubActor;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * An AAAA record is a duplicate when the address is the same, whichever way it is written.
@@ -105,7 +106,7 @@ class RecordManagerEquivalentAaaaTest extends PermissionServiceTestCase
             $validation,
             $this->createMock(SOARecordManagerInterface::class),
             $domainRepository,
-            new RepositoryFactory($this->db, $this->config, $backend),
+            new RepositoryFactory($this->db, $this->config, $backend, new ArraySession()),
             fn() => $this->createMock(ZoneRectifierInterface::class),
             $backend,
             $this->buildPermissionService(permissionsByUser: [self::CALLER_ID => [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]]),

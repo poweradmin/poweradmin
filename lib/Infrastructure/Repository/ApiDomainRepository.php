@@ -31,6 +31,7 @@ use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -40,7 +41,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
-use Poweradmin\Infrastructure\Session\PhpSession;
 
 /**
  * Domain lookups for the API backend mode, read through PowerDNS.
@@ -51,10 +51,12 @@ final class ApiDomainRepository implements DomainRepositoryInterface
     private ConfigurationInterface $config;
     private HostnameValidator $hostnameValidator;
     private ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider;
+    private SessionInterface $session;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider)
+    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider, SessionInterface $session)
     {
         $this->db = $db;
+        $this->session = $session;
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->backendProvider = $backendProvider;
@@ -138,7 +140,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
-        $syncService = new ZoneSyncService($this->db, $this->backendProvider, new PhpSession(), accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config));
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider, $this->session, accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config));
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);

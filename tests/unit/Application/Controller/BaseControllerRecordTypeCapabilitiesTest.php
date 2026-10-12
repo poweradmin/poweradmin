@@ -35,6 +35,7 @@ use Psr\Log\NullLogger;
 use ReflectionClass;
 use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 /**
  * Covers BaseController::getRecordTypeCapabilities(), which decides whether
@@ -118,7 +119,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         // The backend question goes through the service factory's provider
         $db = $this->createMock(PDO::class);
         $provider = $config->get('dns', 'backend') === 'api'
-            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new NullLogger())
+            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new ApiStatusService(new ArraySession()), new NullLogger())
             : new SqlDnsBackendProvider($db, $config, new NullLogger());
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('dnsBackendProvider')->willReturn($provider);

@@ -11,6 +11,8 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[CoversClass(PowerdnsApiClient::class)]
 class PowerdnsApiClientKeyImportTest extends TestCase
@@ -32,7 +34,7 @@ class PowerdnsApiClientKeyImportTest extends TestCase
                 'dnskey' => '257 3 13 AAAA', 'ds' => ['1 13 2 AB'],
             ]]);
 
-        $key = (new PowerdnsApiClient($http, 'localhost'))->createZoneKeyFromPrivateKey(new Zone('example.com.'), 'csk', self::ISC_KEY, true);
+        $key = (new PowerdnsApiClient($http, 'localhost', new ApiStatusService(new ArraySession())))->createZoneKeyFromPrivateKey(new Zone('example.com.'), 'csk', self::ISC_KEY, true);
 
         $this->assertInstanceOf(CryptoKey::class, $key);
         $this->assertSame(4, $key->getId());
@@ -57,7 +59,7 @@ class PowerdnsApiClientKeyImportTest extends TestCase
         $http = $this->createMock(HttpClient::class);
         $http->method('makeRequest')->willThrowException(new ApiErrorException('error', $status));
 
-        $result = (new PowerdnsApiClient($http, 'localhost'))->createZoneKeyFromPrivateKey(new Zone('example.com.'), 'csk', self::ISC_KEY);
+        $result = (new PowerdnsApiClient($http, 'localhost', new ApiStatusService(new ArraySession())))->createZoneKeyFromPrivateKey(new Zone('example.com.'), 'csk', self::ISC_KEY);
 
         $this->assertSame($expected, $result);
     }

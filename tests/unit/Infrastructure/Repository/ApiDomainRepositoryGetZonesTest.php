@@ -10,12 +10,14 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 #[BackupGlobals(true)]
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryGetZonesTest extends TestCase
 {
     private PDO $db;
+    private ArraySession $session;
     private FakeConfiguration $config;
 
     protected function setUp(): void
@@ -49,7 +51,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $this->config = new FakeConfiguration();
 
         // A fresh sync would call the backend a second time; these tests count backend calls.
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
     }
 
     /**
@@ -87,7 +89,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'fresh.example.com.'      => ['dnssec' => false, 'serial' => 0, 'edited_serial' => null, 'notified_serial' => 0],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
         // Primary with serial ahead of notified_serial -> pending
@@ -124,7 +126,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'legacy.example.com.' => ['dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => null],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
         $this->assertArrayNotHasKey('notify_pending', $result['legacy.example.com']);
@@ -143,7 +145,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertArrayHasKey('signed.example.com', $result);
@@ -163,7 +165,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
@@ -188,7 +190,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             default => ['is_disabled' => false, 'is_missing_soa' => false],
         });
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['is_disabled']);
@@ -214,7 +216,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'unsigned.example.com.' => ['dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
@@ -235,7 +237,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertArrayNotHasKey('signed_serial', $result['signed.example.com']);
@@ -272,7 +274,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
                 return $id;
             });
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertCount(25, $result);
@@ -292,7 +294,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('getZoneStats')->willReturn([]);
         $backend->expects($this->never())->method('countZoneRecords');
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC', false, null, null, true, false);
 
         $this->assertSame(0, $result['signed.example.com']['count_records']);
@@ -312,7 +314,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('getZoneStats')->willReturn([]);
         $backend->method('countZoneRecords')->willReturnMap([[100, 9], [101, 1]]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'count_records', 'ASC');
 
         $this->assertSame(['signed.example.com', 'unsigned.example.com'], array_keys($result));
@@ -333,7 +335,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
     }
 
@@ -351,7 +353,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
@@ -373,9 +375,25 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'signed.example.com.' => ['dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
+    }
+
+    #[Test]
+    public function getZonesKeepsTheZoneSyncThrottleInTheInjectedSession(): void
+    {
+        $_SESSION = [];
+        $session = new ArraySession();
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn([]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+
+        (new ApiDomainRepository($this->db, $this->config, $backend, $session))->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertIsInt($session->get('zone_sync_last'));
+        $this->assertSame([], $_SESSION);
     }
 }

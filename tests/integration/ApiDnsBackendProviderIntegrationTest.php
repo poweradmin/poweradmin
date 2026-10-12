@@ -32,6 +32,8 @@ use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration tests for the API DNS backend provider against a real PowerDNS instance.
@@ -103,7 +105,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         }
 
         $httpClient = new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY);
-        $this->client = new PowerdnsApiClient($httpClient, 'localhost');
+        $this->client = new PowerdnsApiClient($httpClient, 'localhost', new ApiStatusService(new ArraySession()));
 
         $config = new FakeConfiguration([
             'pdns_api' => [
@@ -117,7 +119,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             ],
         ]);
 
-        $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new NullLogger());
+        $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new ApiStatusService(new ArraySession()), new NullLogger());
     }
 
     private function createScratchPoweradminDatabase(): PDO

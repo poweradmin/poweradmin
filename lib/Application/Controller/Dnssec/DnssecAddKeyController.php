@@ -88,7 +88,7 @@ class DnssecAddKeyController extends DnssecKeyController
         $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
 
         // Check PowerDNS version to determine if CSK should be the default
-        $pdnsVersion = DnssecProviderFactory::getPowerDnsVersion($this->getConfig());
+        $pdnsVersion = DnssecProviderFactory::getPowerDnsVersion($this->getConfig(), $this->session());
         $supportsCsk = DnssecProviderFactory::supportsDefaultCsk($pdnsVersion);
 
         // If no key type is selected yet and PowerDNS 4.0+ is detected, default to CSK

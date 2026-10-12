@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Repository\ApiZoneSearch;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\ZoneSearch;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The search implementation follows the backend the same way the repositories do.
@@ -42,7 +43,7 @@ class RepositoryFactorySearchTest extends TestCase
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('isApiBackend')->willReturn($api);
 
-        return new RepositoryFactory($this->createMock(PDO::class), new FakeConfiguration(['database' => ['type' => 'mysql']]), $backend);
+        return new RepositoryFactory($this->createMock(PDO::class), new FakeConfiguration(['database' => ['type' => 'mysql']]), $backend, new ArraySession());
     }
 
     public function testSqlBackendGetsTheSqlSearches(): void

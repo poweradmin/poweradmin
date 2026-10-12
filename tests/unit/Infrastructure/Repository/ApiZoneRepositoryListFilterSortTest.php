@@ -28,6 +28,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The q filter and sort of GET /api/v2/zones in API backend mode, where the list
@@ -60,7 +61,7 @@ class ApiZoneRepositoryListFilterSortTest extends TestCase
         $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('allocatesZoneIdsLocally')->willReturn(true);
 
-        return new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration());
+        return new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration(), new ArraySession());
     }
 
     /** @return string[] */
