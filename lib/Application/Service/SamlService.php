@@ -320,15 +320,17 @@ class SamlService extends LoggingService
 
                 $this->logInfo('Using database username for session: {username}', ['username' => $databaseUsername]);
 
+                // A new sign-in starts from an empty session, so nothing of an earlier login carries over:
+                // a pending identity layered on another user's session would be promoted by the MFA step
+                session_regenerate_id(true);
+                session_unset();
+                $this->logInfo('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
+
                 // Set userlogin for MFA verification page
                 $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Log successful authentication to database
                 $this->userEventLogger->logSuccessfulAuth(AuthMethod::SAML);
-
-                // Rotate session id before binding the user - matches SqlAuthenticator.
-                session_regenerate_id(true);
-                $this->logInfo('Session ID regenerated for SAML user {username}', ['username' => $databaseUsername]);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();

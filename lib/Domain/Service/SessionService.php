@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -59,6 +59,10 @@ class SessionService
         if (isset($_SESSION[SessionKeys::USERPWD])) {
             unset($_SESSION[SessionKeys::USERPWD]);
         }
+        unset($_SESSION[SessionKeys::PENDING_USERID]);
+        unset($_SESSION[SessionKeys::PENDING_NAME]);
+        unset($_SESSION[SessionKeys::PENDING_EMAIL]);
+        unset($_SESSION[SessionKeys::PENDING_AUTH_USED]);
 
         // Regenerate session ID and unset all variables only if session is active
         if (session_status() === PHP_SESSION_ACTIVE) {
