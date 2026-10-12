@@ -751,9 +751,10 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                 return false;
             }
         }
-        // Delete local group ownership for this zone
+        // Group ownership is keyed by the canonical zone id; matching on the row's
+        // own id leaves the rows behind.
         $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
-        $stmt->bindValue(':domain_id', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', self::externalZoneId($canonical), PDO::PARAM_INT);
         $stmt->execute();
         // Delete the canonical row plus any extra ownership rows linked to it
         $stmt = $this->db->prepare(

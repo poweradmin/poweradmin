@@ -147,4 +147,18 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(1, $count);
         $this->assertCount(1, $this->visibleTo(2));
     }
+
+    #[Test]
+    public function deletingAZoneAlsoRemovesItsGroupOwnership(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, '1.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 5)");
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('deleteZone')->willReturn(true);
+        $repository = new ApiZoneRepository($this->db, $backend, 'sqlite');
+
+        $this->assertTrue($repository->deleteZone(4011));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+    }
 }
