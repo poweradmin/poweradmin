@@ -1529,7 +1529,7 @@ msgstr "Недійсний ID групи."
 #: lib/Application/Controller/DeleteGroupController.php:84
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
 msgid "Delete Group"
-msgstr ""
+msgstr "Delete Group"
 
 #: lib/Application/Controller/DeleteGroupController.php:99
 msgid "Group deletion cancelled."
@@ -1891,7 +1891,7 @@ msgstr "Не вдалося видалити запис."
 #: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
-msgstr ""
+msgstr "Zone Logs"
 
 #: lib/Application/Controller/ListLogUsersController.php:68
 msgid "Invalid page number."
@@ -1985,7 +1985,7 @@ msgstr "У вас немає дозволу на перегляд цієї зо�
 #: lib/Application/Controller/ListLogUsersController.php:59
 #: templates/default/index.html:253 templates/default/index.html:257
 msgid "User Logs"
-msgstr ""
+msgstr "User Logs"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:38
 msgid "You do not have permission to unlink zones from templates."
@@ -2858,7 +2858,7 @@ msgstr "У вас немає дозволу на редагування груп
 #: lib/Application/Controller/EditGroupController.php:93
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
 msgid "Edit Group"
-msgstr ""
+msgstr "Edit Group"
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -5239,7 +5239,7 @@ msgstr "Обмін записами TKEY має бути захищеним - а
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr ""
+msgstr "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is recommended."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5592,7 +5592,7 @@ msgstr "Це недійсний запис. CNAME із таким іменем �
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
-msgstr ""
+msgstr "CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
@@ -6636,7 +6636,7 @@ msgstr "Параметри перевірки SOA не задано. Споча�
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
-msgstr ""
+msgstr "Invalid value for name field of SOA record. It should be the name of the zone."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
@@ -6648,7 +6648,7 @@ msgstr "Недійсний основний сервер імен у запис�
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
-msgstr ""
+msgstr "Invalid email address in SOA record."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
@@ -7623,7 +7623,7 @@ msgstr "Недійсне значення поля ваги запису SRV. П
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr ""
+msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -7845,7 +7845,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr ""
+msgstr "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain alphanumeric characters, hyphens, colons, or plus signs (max 32 chars each)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8010,7 +8010,7 @@ msgstr "Не вдалося знайти домен із вказаним ID."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
-msgstr ""
+msgstr "Unknown record type."
 
 #: lib/Domain/Service/ApiKeyService.php:172
 msgid "API functionality is disabled."
@@ -8332,7 +8332,7 @@ msgstr "Назва"
 
 #: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
-msgstr ""
+msgstr "Please provide a name for this API key"
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"
@@ -8579,7 +8579,7 @@ msgstr "Редагувати supermaster"
 
 #: templates/modern/edit_supermaster.html:13
 msgid "Edit Supermaster"
-msgstr ""
+msgstr "Edit Supermaster"
 
 #: templates/modern/list_supermasters.html:18
 msgid "IP address of supermaster"
@@ -8591,7 +8591,7 @@ msgstr "Введіть IP-адресу основного сервера іме�
 
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
-msgstr ""
+msgstr "Provide ip address"
 
 #: templates/modern/delete_supermaster.html:27
 msgid "Hostname in NS record"
@@ -8667,7 +8667,7 @@ msgstr "Ви впевнені, що хочете скасувати підпис
 
 #: templates/default/dnssec.html:21 templates/modern/dnssec.html:21
 msgid "Unsign Zone"
-msgstr ""
+msgstr "Unsign Zone"
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
@@ -8732,7 +8732,7 @@ msgstr "Введіть свою адресу електронної пошти, 
 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
-msgstr ""
+msgstr "Email Address"
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -8828,7 +8828,7 @@ msgstr "Необов'язкова інформація про цю групу"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
-msgstr ""
+msgstr "Access template"
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8837,7 +8837,7 @@ msgstr "Учасники групи успадковують ці дозволи
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
-msgstr ""
+msgstr "Select an access template"
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -8974,19 +8974,19 @@ msgstr "Офлайн"
 
 #: templates/default/index.html:26
 msgid "Server running"
-msgstr ""
+msgstr "Server running"
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
-msgstr ""
+msgstr "Check PowerDNS server status"
 
 #: templates/default/index.html:32
 msgid "View Server Status"
-msgstr ""
+msgstr "View Server Status"
 
 #: templates/default/index.html:33
 msgid "Server Status"
-msgstr ""
+msgstr "Server Status"
 
 #: templates/default/index.html:46
 msgid "My Profile"
@@ -8994,7 +8994,7 @@ msgstr "Мій профіль"
 
 #: templates/default/index.html:47
 msgid "Edit your account details"
-msgstr ""
+msgstr "Edit your account details"
 
 #: templates/modern/header.html:329
 msgid "Edit profile"
@@ -9002,33 +9002,31 @@ msgstr "Редагувати профіль"
 
 #: templates/default/index.html:50
 msgid "Profile"
-msgstr ""
-"This configuration may have temporal graph network. Handle time-evolving "
-"graphs."
+msgstr "Profile"
 
 #: templates/default/index.html:64 templates/modern/index.html:82
 msgid "Find zones and records"
-msgstr ""
+msgstr "Find zones and records"
 
 #: templates/default/index.html:66
 msgid "Search zones"
-msgstr ""
+msgstr "Search zones"
 
 #: templates/default/index.html:81 templates/modern/index.html:60
 msgid "Manage forward DNS zones"
-msgstr ""
+msgstr "Manage forward DNS zones"
 
 #: templates/default/index.html:83
 msgid "List forward zones"
-msgstr ""
+msgstr "List forward zones"
 
 #: templates/default/index.html:99 templates/modern/index.html:104
 msgid "Manage reverse DNS zones"
-msgstr ""
+msgstr "Manage reverse DNS zones"
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
-msgstr ""
+msgstr "List reverse zones"
 
 #: templates/modern/header.html:254
 msgid "Templates"
@@ -9036,7 +9034,7 @@ msgstr "Шаблони"
 
 #: templates/default/index.html:117 templates/modern/index.html:148
 msgid "Manage zone templates"
-msgstr ""
+msgstr "Manage zone templates"
 
 #: templates/modern/header.html:260
 msgid "List zone templates"
@@ -9044,11 +9042,11 @@ msgstr "Список шаблонів зон"
 
 #: templates/default/index.html:134
 msgid "Manage supermaster servers"
-msgstr ""
+msgstr "Manage supermaster servers"
 
 #: templates/default/index.html:136
 msgid "List supermasters"
-msgstr ""
+msgstr "List supermasters"
 
 #: templates/default/index.html:150 templates/modern/index.html:37
 msgid "Master Zone"
@@ -9056,7 +9054,7 @@ msgstr "Основна зона"
 
 #: templates/default/index.html:151 templates/modern/index.html:38
 msgid "Create new master zone"
-msgstr ""
+msgstr "Create new master zone"
 
 #: templates/modern/add_zone_master.html:11 templates/modern/header.html:126
 msgid "Add master zone"
@@ -9064,7 +9062,7 @@ msgstr "Додати основну зону"
 
 #: templates/default/index.html:154
 msgid "Add Master"
-msgstr "Content suggests memory network. Use external memory."
+msgstr "Add Master"
 
 #: templates/default/index.html:167 templates/modern/index.html:125
 msgid "Slave Zone"
@@ -9072,7 +9070,7 @@ msgstr "Підпорядкована зона"
 
 #: templates/default/index.html:168 templates/modern/index.html:126
 msgid "Add new slave zone"
-msgstr ""
+msgstr "Add new slave zone"
 
 #: templates/modern/add_zone_slave.html:11 templates/modern/header.html:133
 msgid "Add slave zone"
@@ -9080,7 +9078,7 @@ msgstr "Додати підпорядковану зону"
 
 #: templates/default/index.html:171
 msgid "Add Slave"
-msgstr "Record appears to be using pointer network. Point to input positions."
+msgstr "Add Slave"
 
 #: templates/default/index.html:184 templates/default/index.html:188
 msgid "Supermaster"
@@ -9088,7 +9086,7 @@ msgstr "Supermaster"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
-msgstr ""
+msgstr "Add new supermaster server"
 
 #: templates/modern/list_supermasters.html:63
 msgid "Add supermaster"
@@ -9096,16 +9094,15 @@ msgstr "Додати supermaster"
 
 #: templates/default/index.html:202 templates/modern/index.html:170
 msgid "Register multiple domains at once"
-msgstr ""
+msgstr "Register multiple domains at once"
 
 #: templates/default/index.html:204
 msgid "Bulk domain registration"
-msgstr ""
+msgstr "Bulk domain registration"
 
 #: templates/default/index.html:205
 msgid "Registration"
-msgstr ""
-"This configuration may have causal language model. Use left-to-right context."
+msgstr "Registration"
 
 #: templates/modern/index.html:277
 msgid "PTR Records"
@@ -9113,23 +9110,23 @@ msgstr "Записи PTR"
 
 #: templates/default/index.html:219 templates/modern/index.html:278
 msgid "Manage reverse DNS records"
-msgstr ""
+msgstr "Manage reverse DNS records"
 
 #: templates/default/index.html:236
 msgid "View zone change history"
-msgstr ""
+msgstr "View zone change history"
 
 #: templates/default/index.html:238
 msgid "View zone logs"
-msgstr ""
+msgstr "View zone logs"
 
 #: templates/default/index.html:254
 msgid "View user activity history"
-msgstr ""
+msgstr "View user activity history"
 
 #: templates/default/index.html:256
 msgid "View user logs"
-msgstr ""
+msgstr "View user logs"
 
 #: templates/modern/add_user.html:39 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
@@ -9138,7 +9135,7 @@ msgstr "Пароль"
 
 #: templates/default/index.html:272 templates/modern/index.html:214
 msgid "Update your account password"
-msgstr ""
+msgstr "Update your account password"
 
 #: templates/modern/change_password.html:49 templates/modern/header.html:341
 msgid "Change password"
@@ -9150,15 +9147,15 @@ msgstr "Налаштування"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
 msgid "Customize your interface settings"
-msgstr ""
+msgstr "Customize your interface settings"
 
 #: templates/default/index.html:290
 msgid "User preferences"
-msgstr ""
+msgstr "User preferences"
 
 #: templates/default/index.html:304 templates/modern/index.html:192
 msgid "Manage system users and access"
-msgstr ""
+msgstr "Manage system users and access"
 
 #: templates/modern/index.html:199 templates/modern/header.html:173
 msgid "List users"
@@ -9166,11 +9163,11 @@ msgstr "Список користувачів"
 
 #: templates/modern/header.html:229
 msgid "Access"
-msgstr "Content includes BART. Combine bidirectional and autoregressive."
+msgstr "Access"
 
 #: templates/default/index.html:321
 msgid "Manage access templates"
-msgstr ""
+msgstr "Manage access templates"
 
 #: templates/modern/header.html:399
 msgid "Logout"
@@ -9178,27 +9175,27 @@ msgstr "Вийти"
 
 #: templates/default/index.html:337
 msgid "End your session"
-msgstr ""
+msgstr "End your session"
 
 #: templates/default/index.html:369
 msgid "Manage API access keys"
-msgstr ""
+msgstr "Manage API access keys"
 
 #: templates/default/index.html:371
 msgid "Manage API Keys"
-msgstr ""
+msgstr "Manage API Keys"
 
 #: templates/default/index.html:386
 msgid "Check database integrity"
-msgstr ""
+msgstr "Check database integrity"
 
 #: templates/default/index.html:388
 msgid "Check Database"
-msgstr ""
+msgstr "Check Database"
 
 #: templates/default/index.html:389
 msgid "Check DB"
-msgstr "Record may be part of question answering. Extract or generate answers."
+msgstr "Check DB"
 
 #: templates/modern/edit_comment.html:18 templates/modern/edit.html:504
 msgid "Edit comment"
@@ -9303,7 +9300,7 @@ msgstr "Усього записів журналу"
 
 #: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
-msgstr ""
+msgstr "Search logs by domain"
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
