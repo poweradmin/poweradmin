@@ -309,9 +309,10 @@ class OidcService extends LoggingService
             } elseif ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
-                // Issue a fresh session ID on successful login, matching the local
-                // login flow, so a pre-authentication session cannot be reused.
+                // Issue a fresh, empty session on successful login: a pending identity layered on
+                // another user's session would be promoted by the MFA step
                 session_regenerate_id(true);
+                $_SESSION = [];
 
                 // Get the actual database username (important for existing users linked by email)
                 $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
