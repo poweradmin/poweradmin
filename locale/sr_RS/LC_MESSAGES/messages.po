@@ -23,7 +23,7 @@ msgstr ""
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
-msgstr ""
+msgstr "No configuration file found at %s. Please use the <a href=\"install/\">installer</a> to create one, or create the configuration file manually."
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
