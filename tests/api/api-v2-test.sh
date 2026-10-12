@@ -530,7 +530,11 @@ test_bulk_operations() {
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
 
     increment_test
-    if [[ ! "$LAST_RESPONSE_BODY" =~ "192.0.2.20" ]]; then
+    if [[ "${DNS_BACKEND:-sql}" == "api" ]]; then
+        # Writes go straight to PowerDNS over REST, which no PDO transaction can
+        # undo, so the controller deliberately skips one. A partial batch is expected here.
+        print_info "Atomic rollback is not available on the API backend - skipping"
+    elif [[ ! "$LAST_RESPONSE_BODY" =~ "192.0.2.20" ]]; then
         print_pass "Transaction rolled back correctly (no partial records)"
     else
         print_fail "Rollback failed - found record that should have been rolled back"
