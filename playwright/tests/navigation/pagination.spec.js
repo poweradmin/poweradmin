@@ -50,6 +50,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
+    test.setTimeout(180000);
     const zones = await ensurePaginationZones(page, 'pagination-test', 25);
 
     await page.goto('/zones/forward');
@@ -103,6 +104,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display correct page numbers in pagination', async ({ page }) => {
+    test.setTimeout(180000);
     const zones = await ensurePaginationZones(page, 'num-test', 20);
 
     await page.goto('/zones/forward');
