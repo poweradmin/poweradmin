@@ -154,6 +154,18 @@ class RequestContextTest extends TestCase
         $this->assertNotV2('/settings/api/v2things');
     }
 
+    public function testThePublicApiIsEveryVersionedPathAndNothingElse(): void
+    {
+        foreach (['/api/v1/zones', '/api/v2', '/api/v2/zones/1/records', '/poweradmin/api/v2/zones', '/api/v2/zones?x=1', '/api/v%32/zones', '/api%2Fv2/zones'] as $uri) {
+            $_SERVER['REQUEST_URI'] = $uri;
+            $this->assertTrue(RequestContext::isPublicApiRequest(), "Expected public API for $uri");
+        }
+        foreach (['/api/internal/zones', '/api/docs', '/api/docs/v2/json', '/api/health', '/zones', '/index.php?return=/api/v2/zones', '/settings/api/v2things'] as $uri) {
+            $_SERVER['REQUEST_URI'] = $uri;
+            $this->assertFalse(RequestContext::isPublicApiRequest(), "Expected no public API for $uri");
+        }
+    }
+
     private function assertV2(string $requestUri): void
     {
         $_SERVER['REQUEST_URI'] = $requestUri;

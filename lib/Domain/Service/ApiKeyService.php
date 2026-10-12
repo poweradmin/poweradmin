@@ -402,8 +402,6 @@ class ApiKeyService
         }
 
         $this->apiKeyRepository->updateLastUsed($apiKey->getId());
-        $this->userContextService->setSessionData(SessionKeys::USERID, $apiKey->getCreatedBy());
-        $this->userContextService->setSessionData(SessionKeys::AUTH_USED, 'api_key');
 
         return true;
     }

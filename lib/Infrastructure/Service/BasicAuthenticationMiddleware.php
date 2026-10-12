@@ -27,7 +27,6 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
-use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -197,9 +196,6 @@ class BasicAuthenticationMiddleware
      */
     private function onAuthSuccess(int $userId): int
     {
-        // Set session for compatibility with legacy code (DomainManager)
-        $_SESSION[SessionKeys::USERID] = $userId;
-        $_SESSION[SessionKeys::AUTH_USED] = 'basic_auth';
         return $userId;
     }
 

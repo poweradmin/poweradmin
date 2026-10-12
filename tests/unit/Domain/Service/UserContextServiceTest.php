@@ -37,15 +37,15 @@ class UserContextServiceTest extends TestCase
         $this->assertTrue($service->isAuthenticated());
     }
 
-    public function testSessionTakesPrecedenceOverApiContext(): void
+    public function testApiContextTakesPrecedenceOverACookieSession(): void
     {
         $_SESSION['userid'] = 7;
         $_SESSION['userlogin'] = 'web-alice';
         UserContextService::setApiUserContext(99, 'api-bob');
 
         $service = new UserContextService();
-        $this->assertSame(7, $service->getLoggedInUserId());
-        $this->assertSame('web-alice', $service->getLoggedInUsername());
+        $this->assertSame(99, $service->getLoggedInUserId());
+        $this->assertSame('api-bob', $service->getLoggedInUsername());
     }
 
     public function testClearApiUserContextRevertsToNull(): void

@@ -98,6 +98,56 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
+     * The public API authenticates every request by key or Basic credentials; starting
+     * the caller's cookie session there let a key owner's id leak into a web login.
+     */
+    public function testThePublicApiStartsNoSession(): void
+    {
+        $this->assertSame([], $this->sessionFilesAfterRequest('/api/v2/zones'));
+        $this->assertSame([], $this->sessionFilesAfterRequest('/api/v%32/zones'));
+        // Control: a web page still gets one, so the empty result above is not the harness
+        $this->assertCount(1, $this->sessionFilesAfterRequest('/zones'));
+    }
+
+    /**
+     * @return list<string> Session files the front controller left behind
+     */
+    private function sessionFilesAfterRequest(string $requestUri): array
+    {
+        $repositoryRoot = dirname(__DIR__, 2);
+        $savePath = sys_get_temp_dir() . '/pa-session-' . bin2hex(random_bytes(6));
+        mkdir($savePath);
+
+        $process = proc_open(
+            [PHP_BINARY, '-d', 'session.save_path=' . $savePath, $repositoryRoot . '/index.php'],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+            $repositoryRoot,
+            [
+                'PATH' => getenv('PATH'),
+                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/unreachable-db-settings.php',
+                'REQUEST_METHOD' => 'GET',
+                'REQUEST_URI' => $requestUri,
+                'HTTP_ACCEPT' => 'application/json',
+                'SERVER_NAME' => 'localhost',
+                'SERVER_PORT' => '80',
+            ]
+        );
+        $this->assertIsResource($process, 'Failed to start the front controller subprocess');
+        stream_get_contents($pipes[1]);
+        stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($process);
+
+        $files = glob($savePath . '/sess_*') ?: [];
+        array_map('unlink', $files);
+        rmdir($savePath);
+
+        return $files;
+    }
+
+    /**
      * Test session initialization function
      */
     public function testSessionInitialization(): void

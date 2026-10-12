@@ -42,11 +42,17 @@ try {
 
     // Neither a headless install nor the monitoring probes have any use for a session,
     // and starting one per scrape would leave a session file behind on every request.
+    $isPublicApi = RequestContext::isPublicApiRequest();
     if (
         $configManager->get('interface', 'web_enabled', true)
+        && !$isPublicApi
         && !RequestContext::isHealthProbeRequest((string) $configManager->get('interface', 'base_url_prefix', ''))
     ) {
         initializeSession($configManager);
+    } elseif ($isPublicApi && session_status() === PHP_SESSION_ACTIVE) {
+        // session.auto_start opened the caller's cookie session; drop it unsaved
+        session_unset();
+        session_abort();
     }
 
     // A v2 HEAD request is dispatched through the GET handler (see PublicApiController),

@@ -48,7 +48,8 @@ final class RequestContext
      */
     private static function path(): string
     {
-        return parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+        // Decoded as the router decodes it, or /api/v%32/zones would pass as a web page
+        return rawurldecode(parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '');
     }
 
     /**
@@ -84,6 +85,16 @@ final class RequestContext
     public static function isV2ApiRequest(): bool
     {
         return preg_match('#/api/v2(/|$)#', self::path()) === 1;
+    }
+
+    /**
+     * Whether the request targets the versioned public API (/api/v1, /api/v2, ...), which
+     * authenticates every request by key or Basic credentials and keeps no session.
+     * Unanchored, so it still matches when a proxy leaves base_url_prefix in or out.
+     */
+    public static function isPublicApiRequest(): bool
+    {
+        return preg_match('#/api/v\d+(/|$)#', self::path()) === 1;
     }
 
     /**

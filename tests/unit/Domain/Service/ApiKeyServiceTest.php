@@ -158,8 +158,8 @@ class ApiKeyServiceTest extends TestCase
 
         $result = $this->service->authenticate('pwa_valid_key');
         $this->assertTrue($result);
-        $this->assertEquals(42, $_SESSION['userid']);
-        $this->assertEquals('api_key', $_SESSION['auth_used']);
+        $this->assertArrayNotHasKey('userid', $_SESSION);
+        $this->assertArrayNotHasKey('auth_used', $_SESSION);
     }
 
     #[Test]
