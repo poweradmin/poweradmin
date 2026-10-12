@@ -86,8 +86,8 @@ test.describe('Zone Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        const hasCancelBtn = await cancelBtn.count() > 0;
-        expect(hasCancelBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(cancelBtn.first()).toBeAttached();
       }
     });
 
@@ -422,8 +422,8 @@ test.describe('Supermaster Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(buttons.first()).toBeAttached();
       }
     });
 
@@ -498,8 +498,8 @@ test.describe('Zone Template Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(buttons.first()).toBeAttached();
       }
     });
 
@@ -574,8 +574,8 @@ test.describe('Permission Template Delete Confirmation', () => {
         await deleteLinks.first().click();
 
         const buttons = page.locator('a.btn');
-        const hasButtons = await buttons.count() > 0;
-        expect(hasButtons).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(buttons.first()).toBeAttached();
       }
     });
 
@@ -609,8 +609,8 @@ test.describe('Common Delete Confirmation Elements', () => {
         await deleteLinks.first().click();
 
         const dangerBtn = page.locator('.btn-danger');
-        const hasDangerBtn = await dangerBtn.count() > 0;
-        expect(hasDangerBtn).toBeTruthy();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(dangerBtn.first()).toBeAttached();
       }
     });
 
