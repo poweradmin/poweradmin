@@ -424,3 +424,18 @@ export async function ensureAnyZoneExists(page) {
 
 // Export zones fixture for direct access
 export { zones };
+
+/**
+ * Ports of the instances configured with dns.backend = 'api'
+ */
+export const API_MODE_PORTS = ['8083', '8084', '8085'];
+
+/**
+ * Whether a base URL points at an API-backend instance.
+ *
+ * @param {string} baseURL - Base URL under test
+ * @returns {boolean} - True when the instance runs the API backend
+ */
+export function isApiModeInstance(baseURL) {
+  return API_MODE_PORTS.some((port) => (baseURL || '').includes(`:${port}`));
+}

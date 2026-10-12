@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Patterns rendered by PHP/PDO when a query, type assertion, or FK constraint
@@ -86,6 +87,9 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
   });
 
   test.describe('Create Zone with Template', () => {
+    // Linking template records to API-backend record ids needs storage added in 4.5.0
+    test.skip(({ baseURL }) => isApiModeInstance(baseURL), 'zone creation from a template is not supported on the API backend');
+
     test('should create a zone using the test template', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
@@ -236,7 +240,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       }
     });
 
-    test('should handle update with multiple zones linked to template', async ({ page }) => {
+    test('should handle update with multiple zones linked to template', async ({ page, baseURL }) => {
+      test.skip(isApiModeInstance(baseURL), 'zone creation from a template is not supported on the API backend');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
 
