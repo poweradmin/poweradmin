@@ -23,7 +23,7 @@ msgstr ""
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
-msgstr "Config %s."
+msgstr ""
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -402,7 +402,7 @@ msgstr "Procent aplicare politică"
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "%%."
+msgstr "Procentul mesajelor cărora li se aplică politica (100 = toate mesajele). Utilizați valori mai mici în timpul implementării politicii."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -2313,7 +2313,7 @@ msgstr "Există deja o zonă cu acest nume."
 msgid ""
 "Zone was created successfully, but DNSSEC signing was skipped due to "
 "validation errors:"
-msgstr "Creat, DNSSEC skipped."
+msgstr "Zona a fost creată cu succes, dar semnarea DNSSEC a fost omisă din cauza următoarelor erori de validare:"
 
 #: lib/Application/Controller/AddZoneMasterController.php:286
 msgid ""
@@ -3729,7 +3729,7 @@ msgstr "Caractere invalide în numele gazdă."
 msgid ""
 "Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), "
 "ensure:"
-msgstr "Format SRV."
+msgstr "Numele pare a fi în formatul unei înregistrări SRV. Pentru TLSA cu SRV (RFC 7673), asigurați-vă că:"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
@@ -4372,7 +4372,7 @@ msgstr "Conținutul înregistrării NID nu poate fi gol."
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr "NID format."
+msgstr "Conținutul înregistrării NID trebuie să fie în formatul xxxx:xxxx:xxxx:xxxx, cu 4 grupuri de câte 4 cifre hexazecimale."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
@@ -4382,13 +4382,13 @@ msgstr "NID 4 grupuri hex."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr "NID 64-bit."
+msgstr "Conținutul înregistrării NID trebuie să fie o valoare hexazecimală pe 64 de biți (16 caractere hexazecimale sau formatul xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr "NID format."
+msgstr "Înregistrările NID ar trebui să folosească formatul de prezentare din RFC 6742 (xxxx:xxxx:xxxx:xxxx), cu două puncte, pentru o citire mai ușoară."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
@@ -5204,7 +5204,7 @@ msgstr "TKEY start Unix/YYYYMMDDHHmmSS."
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr "TKEY expirare."
+msgstr "Momentul de expirare TKEY trebuie să fie o marcă temporală Unix validă sau în formatul YYYYMMDDHHmmSS."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
@@ -6083,25 +6083,25 @@ msgstr "EUI-64 privacy."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 cratime."
+msgstr "Înregistrarea EUI64 folosește două puncte ca separator (xx:xx:xx:xx:xx:xx:xx:xx), dar are nevoie de cratime (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr "EUI64 format."
+msgstr "Înregistrării EUI64 îi lipsesc separatorii. Formatul trebuie să fie xx-xx-xx-xx-xx-xx-xx-xx, cu cratime între octeți."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64 format."
+msgstr "Înregistrarea EUI64 pare să fie în format cu puncte. Formatul trebuie să fie xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "EUI64 format."
+msgstr "Înregistrarea EUI64 trebuie să fie o adresă EUI-64 validă în formatul xx-xx-xx-xx-xx-xx-xx-xx (unde x este o cifră hexazecimală)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6383,13 +6383,13 @@ msgstr "EUI-48 privacy."
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48 cratime."
+msgstr "Înregistrarea EUI48 folosește două puncte ca separator (xx:xx:xx:xx:xx:xx), dar are nevoie de cratime (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr "EUI48 format."
+msgstr "Înregistrării EUI48 îi lipsesc separatorii. Formatul trebuie să fie xx-xx-xx-xx-xx-xx, cu cratime între octeți."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
@@ -6400,7 +6400,7 @@ msgstr "EUI48: xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr "EUI48 MAC."
+msgstr "Înregistrarea EUI48 trebuie să fie o adresă MAC validă în formatul xx-xx-xx-xx-xx-xx (unde x este o cifră hexazecimală)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
@@ -8545,7 +8545,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "SOA tip."
+msgstr "Sfat: pentru înregistrările SOA, folosiți <code>[ZONE]</code> ca nume și <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> ca conținut. Înregistrările SOA sunt necesare pentru funcționarea corectă a zonei DNS."
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -9522,7 +9522,7 @@ msgstr "Transfer proprietate zonă"
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr "Utilizator deține zone."
+msgstr "Acest utilizator este proprietarul următoarelor zone. Decideți ce doriți să faceți cu fiecare zonă:"
 
 #: templates/modern/delete_records.html:39
 msgid "Zone"
@@ -9644,7 +9644,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "No 100%%."
+msgstr "Deși depunem eforturi pentru a menține disponibilitatea sistemului, nu putem garanta o funcționare neîntreruptă 100% din timp. Utilizatorii nu ar trebui să se bazeze exclusiv pe acest sistem pentru operațiuni DNS critice, fără copii de rezervă și monitorizare adecvate."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -9920,7 +9920,7 @@ msgstr "Tipuri de chei explicate"
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
-msgstr "CSK."
+msgstr "Cheie combinată de semnare - servește atât ca KSK, cât și ca ZSK (recomandat pentru PowerDNS 4.0+)"
 
 #: templates/modern/dnssec_add_key.html:196
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
@@ -12151,7 +12151,7 @@ msgstr "folosind șablon personalizat"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Remove custom."
+msgstr "Pentru a reveni la șabloanele standard, ștergeți sau redenumiți fișierele de șablon personalizate din <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:88
 msgid "Custom Templates"
@@ -12162,7 +12162,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Custom dir."
+msgstr "Puteți crea șabloane de e-mail personalizate plasându-le în <code>templates/emails/custom/</code>, pentru a înlocui aceste șabloane standard cu propriile dumneavoastră modele."
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"
@@ -12606,13 +12606,13 @@ msgstr "Utilizatori vs grupuri"
 msgid ""
 "When assigned to <strong>users</strong>: Permissions apply globally across "
 "the system."
-msgstr "Utilizatori: global."
+msgstr "Când este atribuit unor <strong>utilizatori</strong>: permisiunile se aplică global, în întregul sistem."
 
 #: templates/default/edit_perm_templ.html:78
 msgid ""
 "When assigned to <strong>groups</strong>: Permissions apply only to zones "
 "owned by that group."
-msgstr "Groups: doar zone."
+msgstr "Când este atribuit unor <strong>grupuri</strong>: permisiunile se aplică numai zonelor deținute de grupul respectiv."
 
 #: templates/modern/edit_perm_templ.html:77
 msgid "Permission Groups"

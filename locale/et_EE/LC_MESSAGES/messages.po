@@ -4414,7 +4414,7 @@ msgstr "NID-kirje sisu peab olema täpselt 4 heksagruppi."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr "NID sisu peab olema 64-bitine hex väärtus."
+msgstr "NID-kirje sisu peab olema 64-bitine kuueteistkümnendväärtus (16 hex-märki või vormingus xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -4687,7 +4687,7 @@ msgstr "HINFO-kirjel peab olema täpselt kaks välja: CPU tüüp ja OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
-msgstr "Vigane tsiteerimine HINFO"
+msgstr "Vigane tsiteerimine HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:229
 msgid "HINFO "
@@ -4695,7 +4695,7 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:224
 msgid "Invalid quote marks within HINFO "
-msgstr "Vigased jutumärgid HINFO"
+msgstr "Vigased jutumärgid HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
@@ -6154,7 +6154,7 @@ msgstr "RFC 7043 soovitab mitte avaldada EUI-64 aadresse avalikus DNS-is."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 kasutab koolonid, aga peab olema sidekriipsud."
+msgstr "EUI64-kirjes on eraldajaks koolonid (xx:xx:xx:xx:xx:xx:xx:xx), kuid eraldajad peavad olema sidekriipsud (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -6172,7 +6172,7 @@ msgstr "EUI64 tundub punktivormingus. Vorming: xx-xx-xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr "EUI64 kirje peab olema kehtiv EUI-64 aadress."
+msgstr "EUI64-kirje peab olema kehtiv EUI-64 aadress vormingus xx-xx-xx-xx-xx-xx-xx-xx (kus x on kuueteistkümnendnumber)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
@@ -6460,7 +6460,7 @@ msgstr "RFC 7043 soovitab mitte avaldada EUI-48 aadresse avalikus DNS-is."
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48 kasutab koolonid, aga peab olema sidekriipsud."
+msgstr "EUI48-kirjes on eraldajaks koolonid (xx:xx:xx:xx:xx:xx), kuid eraldajad peavad olema sidekriipsud (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -8671,7 +8671,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "Nõuanne: SOA kirjetele <code>[ZONE]</code> nimena."
+msgstr "Nõuanne: SOA-kirjete puhul kasutage nimena <code>[ZONE]</code> ja sisuna <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>. SOA-kirjed on vajalikud DNS-tsooni korrektseks toimimiseks."
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -9775,7 +9775,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Püüame tagada kättesaadavust, kuid ei garanteeri 100%%."
+msgstr "Kuigi püüame hoida süsteemi kättesaadavana, ei saa me tagada 100% tööaega. Kasutajad ei tohiks kriitiliste DNS-toimingute puhul tugineda ainult sellele süsteemile, vaid peaksid kasutama ka sobivaid varukoopiaid ja seiret."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -12297,7 +12297,7 @@ msgstr "kohandatud malli abil"
 msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
-msgstr "Standardmallidele naasmiseks eemaldage kohandatud failid."
+msgstr "Standardmallide juurde naasmiseks eemaldage või nimetage ümber kohandatud mallifailid kaustas <code>templates/emails/custom/</code>."
 
 #: templates/modern/email_previews.html:88
 msgid "Custom Templates"
@@ -12308,7 +12308,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Saate luua kohandatud mallid kataloogis templates/emails/custom/."
+msgstr "Saate luua kohandatud e-kirjade mallid, paigutades need kausta <code>templates/emails/custom/</code>, et asendada need standardmallid oma kujundustega."
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"

@@ -22,7 +22,7 @@ msgstr ""
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
-msgstr "Chýba konfig %s."
+msgstr ""
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -4375,7 +4375,7 @@ msgstr "Obsah NID musí mať presne 4 hex skupiny."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr "NID 64-bit hex."
+msgstr "Obsah záznamu NID musí byť 64-bitová hexadecimálna hodnota (16 hexadecimálnych znakov alebo formát xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -6076,7 +6076,7 @@ msgstr "RFC 7043 EUI-64 súkromie."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 pomlčky, nie dvojbodky."
+msgstr "Záznam EUI64 používa ako oddeľovače dvojbodky (xx:xx:xx:xx:xx:xx:xx:xx), no vyžaduje oddeľovače pomlčkami (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -6088,7 +6088,7 @@ msgstr "EUI64 xx-xx-xx-xx-xx-xx-xx-xx."
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr "EUI64 v bodkovanom formáte."
+msgstr "Zdá sa, že záznam EUI64 je v bodkovanom formáte. Formát musí byť xx-xx-xx-xx-xx-xx-xx-xx."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
@@ -6376,7 +6376,7 @@ msgstr "RFC 7043 EUI-48 súkromie."
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48: pomlčky, nie dvojbodky."
+msgstr "Záznam EUI48 používa ako oddeľovače dvojbodky (xx:xx:xx:xx:xx:xx), no vyžaduje spojovníky (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -8537,7 +8537,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "SOA tip: [ZONE] meno."
+msgstr "Tip: Pri záznamoch SOA použite ako meno <code>[ZONE]</code> a ako obsah <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>. Záznamy SOA sú potrebné pre správnu funkčnosť DNS zóny."
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -9636,7 +9636,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Bez 100%%."
+msgstr "Hoci sa snažíme udržiavať dostupnosť systému, nemôžeme zaručiť 100% dostupnosť. Používatelia by sa pri kritických DNS operáciách nemali spoliehať výhradne na tento systém bez primeraných záloh a monitorovania."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -11950,7 +11950,7 @@ msgstr "Reverzné"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr "Filter: type:txt, wildcard %%."
+msgstr "Syntax filtra: type:txt content:spf. Zástupné znaky pridajú do hľadania %. Reverzné prevedie IP adresy do formátu PTR (napr. 192.168.1.1 na 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:120 templates/modern/search.html:120
 msgid "Zones found"
@@ -12153,7 +12153,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Vlastné šablóny: templates/emails/custom/."
+msgstr "Vlastné e-mailové šablóny môžete vytvoriť tak, že ich umiestnite do <code>templates/emails/custom/</code>, čím tieto štandardné šablóny prepíšete vlastným dizajnom."
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"

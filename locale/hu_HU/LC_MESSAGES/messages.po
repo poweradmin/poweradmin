@@ -22,7 +22,7 @@ msgstr ""
 msgid ""
 "No configuration file found at %s. Please use the <a href=\"install/"
 "\">installer</a> to create one, or create the configuration file manually."
-msgstr "Config %s hiányzik."
+msgstr ""
 
 #: lib/Module/DnsWizard/Controller/DnsWizardSelectController.php:57
 msgid "DNS wizards are not enabled."
@@ -401,7 +401,7 @@ msgstr "Házirend alkalmazási százalék"
 msgid ""
 "Percentage of messages to which the policy should apply (100 = all "
 "messages). Use lower values during policy rollout."
-msgstr "%-s alkalmazás (100 = összes)."
+msgstr "Az üzenetek hány százalékára vonatkozzon a házirend (100 = az összes üzenet). A házirend bevezetése idején használjon alacsonyabb értéket."
 
 #: lib/Module/DnsWizard/Service/DMARCWizard.php:101
 msgid "Reporting Settings"
@@ -4372,7 +4372,7 @@ msgstr "A NID rekord pontosan 4 hex csoport."
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr "NID 64-bit hex."
+msgstr "A NID rekord tartalmának 64 bites hexadecimális értéknek kell lennie (16 hexadecimális karakter vagy xxxx:xxxx:xxxx:xxxx formátum)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
@@ -6073,7 +6073,7 @@ msgstr "RFC 7043 EUI-64 privacy."
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
-msgstr "EUI64 kötőjel, nem kettőspont."
+msgstr "Az EUI64 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx:xx:xx), pedig kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
@@ -6373,7 +6373,7 @@ msgstr "RFC 7043 EUI-48 privacy."
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr "EUI48: kötőjel, nem kettőspont."
+msgstr "Az EUI48 rekord kettőspontos elválasztást használ (xx:xx:xx:xx:xx:xx), pedig kötőjeles elválasztás szükséges (xx-xx-xx-xx-xx-xx)."
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
@@ -8534,7 +8534,7 @@ msgid ""
 "Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] "
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
-msgstr "SOA tip: [ZONE] name."
+msgstr "Tipp: SOA rekordoknál a név <code>[ZONE]</code>, a tartalom pedig <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> legyen. Az SOA rekordok szükségesek a DNS zóna helyes működéséhez."
 
 #: templates/modern/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -9634,7 +9634,7 @@ msgid ""
 "While we strive to maintain system availability, we cannot guarantee 100% "
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
-msgstr "Nincs 100%%."
+msgstr "Bár törekszünk a rendszer folyamatos elérhetőségére, 100% üzemidőt nem tudunk garantálni. A felhasználók ne hagyatkozzanak kizárólag erre a rendszerre a kritikus DNS műveletek során, megfelelő biztonsági mentések és felügyelet nélkül."
 
 #: templates/modern/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -11952,7 +11952,7 @@ msgstr "Fordított"
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
-msgstr "Filter: type:txt, wildcard %%."
+msgstr "Szűrő szintaxisa: type:txt content:spf. A helyettesítő karakter % jelet fűz a kereséshez. A fordított átalakítás PTR formátumúvá alakítja az IP címeket (például a 192.168.1.1 címből 1.1.168.192.in-addr.arpa lesz)"
 
 #: templates/default/search.html:120 templates/modern/search.html:120
 msgid "Zones found"
@@ -12155,7 +12155,7 @@ msgid ""
 "You can create custom email templates by placing them in <code>templates/"
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
-msgstr "Custom sablonok: templates/emails/custom/."
+msgstr "Saját e-mail sablonokat is létrehozhat: helyezze őket a <code>templates/emails/custom/</code> könyvtárba, így a szabványos sablonokat a saját kialakításúakra cserélheti."
 
 #: templates/modern/email_previews.html:94
 msgid "About Email Previews"
