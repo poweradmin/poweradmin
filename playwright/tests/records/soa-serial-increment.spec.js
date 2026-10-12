@@ -21,7 +21,8 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
-    await page.goto('/zones/forward?letter=all');
+    // The letter filter keeps the new zone off a later page of a long list
+    await page.goto('/zones/forward?letter=s');
     const row = page.locator('tr', { hasText: zoneName }).first();
     const editLink = row.locator('a[href*="/edit"]').first();
     if (await editLink.count() > 0) {
