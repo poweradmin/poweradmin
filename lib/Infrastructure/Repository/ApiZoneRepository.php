@@ -709,7 +709,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneIdByName(string $zoneName): ?int
     {
-        $query = "SELECT COALESCE(domain_id, id) FROM zones WHERE zone_name = :name";
+        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
         $stmt->execute();
