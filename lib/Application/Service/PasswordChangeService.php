@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,10 +43,13 @@ class PasswordChangeService
 
     public function changePassword(string $oldPassword, string $newPassword): array
     {
+        // The signed-in account, not the login name: a session past the password but still
+        // waiting for its second factor carries the name without a user id
+        $userId = $this->userContextService->getLoggedInUserId();
         $username = $this->userContextService->getLoggedInUsername();
-        $user = $this->userRepository->findByUsername($username);
+        $user = $userId !== null && $username !== null ? $this->userRepository->findByUsername($username) : null;
 
-        if ($user === null) {
+        if ($user === null || $user->getId() !== $userId) {
             return [false, _(self::ERROR_MESSAGES['user_not_found'])];
         }
 

@@ -62,6 +62,7 @@ class SessionAuthenticator extends LoggingService
     private LoginAttemptService $loginAttemptService;
     private RecaptchaService $recaptchaService;
     private RedirectService $redirectService;
+    private SessionService $sessionService;
 
     public function __construct(PDOCommon $connection, ConfigurationManager $configManager)
     {
@@ -72,9 +73,9 @@ class SessionAuthenticator extends LoggingService
         $this->db = $connection;
         $this->configManager = $configManager;
 
-        $sessionService = new SessionService();
+        $this->sessionService = new SessionService();
         $this->redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $this->redirectService);
+        $this->authService = new AuthenticationService($this->sessionService, $this->redirectService);
         $this->csrfTokenService = new CsrfTokenService();
 
         $this->userEventLogger = new UserEventLogger($connection);
@@ -160,6 +161,10 @@ class SessionAuthenticator extends LoggingService
             }
 
             if ($_POST['password'] != '') {
+                // Every login starts from an empty session: a pending login layered on another
+                // user's session would be promoted by the MFA step, and the login token is spent
+                $this->sessionService->endSession();
+
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);
                 $_SESSION["userpwd"] = $passwordEncryptionService->encrypt($_POST['password']);
                 $this->logDebug('Password encrypted for user {username}', ['username' => $_POST["username"]]);
