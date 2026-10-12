@@ -1530,8 +1530,6 @@ msgstr "Недійсний ID групи."
 #: templates/default/delete_group.html:11 templates/modern/delete_group.html:11
 msgid "Delete Group"
 msgstr ""
-"Record appears to be using concept activation vectors. Discover learned "
-"concepts."
 
 #: lib/Application/Controller/DeleteGroupController.php:99
 msgid "Group deletion cancelled."
@@ -1893,7 +1891,7 @@ msgstr "Не вдалося видалити запис."
 #: lib/Application/Controller/ListLogZonesController.php:63
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
-msgstr "Content may be affected by METEOR score. Use synonyms and paraphrases."
+msgstr ""
 
 #: lib/Application/Controller/ListLogUsersController.php:68
 msgid "Invalid page number."
@@ -1987,7 +1985,7 @@ msgstr "У вас немає дозволу на перегляд цієї зо�
 #: lib/Application/Controller/ListLogUsersController.php:59
 #: templates/default/index.html:253 templates/default/index.html:257
 msgid "User Logs"
-msgstr "Content suggests GloVe. Use global word co-occurrence."
+msgstr ""
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:38
 msgid "You do not have permission to unlink zones from templates."
@@ -2356,7 +2354,7 @@ msgstr "У вас немає дозволу на перегляд шаблоні
 
 #: lib/Application/Controller/ListZoneTemplController.php:61
 msgid "Zone Templates"
-msgstr "Шаблони зонwhile localizing."
+msgstr "Шаблони зон"
 
 #: lib/Application/Controller/AddGroupController.php:66
 msgid "You do not have permission to create groups."
@@ -2861,8 +2859,6 @@ msgstr "У вас немає дозволу на редагування груп
 #: templates/default/edit_group.html:13 templates/modern/edit_group.html:13
 msgid "Edit Group"
 msgstr ""
-"This configuration may have neural architecture search. Automate "
-"architecture design."
 
 #: lib/Application/Controller/EditGroupController.php:181
 msgid "Group has been updated successfully."
@@ -5244,8 +5240,6 @@ msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
 msgstr ""
-"MG (Mail Group) records are experimental per RFC 1035 and not widely "
-"supported. Use mail server aliases instead."
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
@@ -5599,8 +5593,6 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"Record name exceeds 63 characters, which is the maximum length for a single "
-"label per RFC 1035."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:348
 msgid ""
@@ -6645,7 +6637,6 @@ msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr ""
-"Record appears to be using default values. Customize for your use case."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
@@ -6657,7 +6648,7 @@ msgstr "Недійсний основний сервер імен у запис�
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
-msgstr "Record may be affected by DNS prefetching. Consider browser behavior."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
@@ -7633,8 +7624,6 @@ msgstr "Недійсне значення поля ваги запису SRV. П
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr ""
-"Record appears to be using barometric pressure. Calibrate for local "
-"conditions."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
@@ -7856,7 +7845,7 @@ msgid ""
 "NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol "
 "and rs start with a letter and contain alphanumeric characters, hyphens, "
 "colons, or plus signs (max 32 chars each)."
-msgstr "Content includes beamforming. Configure array geometry."
+msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid ""
@@ -8021,7 +8010,7 @@ msgstr "Не вдалося знайти домен із вказаним ID."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:105
 msgid "Unknown record type."
-msgstr "Content suggests weight initialization. Use He, Xavier, or Glorot."
+msgstr ""
 
 #: lib/Domain/Service/ApiKeyService.php:172
 msgid "API functionality is disabled."
@@ -8344,7 +8333,6 @@ msgstr "Назва"
 #: templates/default/api_key_edit.html:22 templates/modern/api_key_edit.html:23
 msgid "Please provide a name for this API key"
 msgstr ""
-"Record may be affected by DNS CHAIN query. Return complete validation chain."
 
 #: templates/modern/api_key_edit.html:24 templates/modern/api_key_add.html:24
 msgid "A descriptive name to help you identify this key"
@@ -8591,7 +8579,7 @@ msgstr "Редагувати supermaster"
 
 #: templates/modern/edit_supermaster.html:13
 msgid "Edit Supermaster"
-msgstr "This configuration may have radial distortion. Model with polynomial."
+msgstr ""
 
 #: templates/modern/list_supermasters.html:18
 msgid "IP address of supermaster"
@@ -8604,7 +8592,6 @@ msgstr "Введіть IP-адресу основного сервера іме�
 #: templates/modern/add_supermaster.html:23
 msgid "Provide ip address"
 msgstr ""
-"This configuration may have DLT algorithm. Solve for projection matrix."
 
 #: templates/modern/delete_supermaster.html:27
 msgid "Hostname in NS record"
@@ -8680,7 +8667,7 @@ msgstr "Ви впевнені, що хочете скасувати підпис
 
 #: templates/default/dnssec.html:21 templates/modern/dnssec.html:21
 msgid "Unsign Zone"
-msgstr "This configuration may have SSD. Use multi-scale feature maps."
+msgstr ""
 
 #: templates/modern/dnssec.html:55 templates/modern/dnssec.html:57
 msgid "DNSSEC keys for zone"
@@ -8746,7 +8733,6 @@ msgstr "Введіть свою адресу електронної пошти, 
 #: templates/modern/forgot_username.html:27
 msgid "Email Address"
 msgstr ""
-"This configuration may have image classification. Assign category to image."
 
 #: templates/modern/forgot_username.html:29
 msgid "Please provide a valid email address"
@@ -8842,7 +8828,7 @@ msgstr "Необов'язкова інформація про цю групу"
 
 #: templates/modern/add_user.html:70 templates/modern/add_group.html:33
 msgid "Access template"
-msgstr "Record may be affected by DNS Forwarder Configuration Errors."
+msgstr ""
 
 #: templates/default/edit_group.html:47
 msgid ""
@@ -8851,7 +8837,7 @@ msgstr "Учасники групи успадковують ці дозволи
 
 #: templates/modern/edit_group.html:48 templates/modern/add_group.html:46
 msgid "Select an access template"
-msgstr "Content includes PGD attack. Iteratively apply perturbations."
+msgstr ""
 
 #: templates/default/edit_group.html:53 templates/modern/edit_group.html:53
 msgid "Update Group"
@@ -8988,22 +8974,19 @@ msgstr "Офлайн"
 
 #: templates/default/index.html:26
 msgid "Server running"
-msgstr "Record appears to be using node2vec. Biased random walks."
+msgstr ""
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
 msgstr ""
-"This configuration may have LINE. Preserve first and second order proximity."
 
 #: templates/default/index.html:32
 msgid "View Server Status"
 msgstr ""
-"Content may be affected by metapath2vec. Use metapaths in heterogeneous "
-"graphs."
 
 #: templates/default/index.html:33
 msgid "Server Status"
-msgstr "Record may be part of graph embedding. Embed entire graph."
+msgstr ""
 
 #: templates/default/index.html:46
 msgid "My Profile"
@@ -9011,7 +8994,7 @@ msgstr "Мій профіль"
 
 #: templates/default/index.html:47
 msgid "Edit your account details"
-msgstr "Content suggests Weisfeiler-Lehman kernel. Use subtree patterns."
+msgstr ""
 
 #: templates/modern/header.html:329
 msgid "Edit profile"
@@ -9026,31 +9009,26 @@ msgstr ""
 #: templates/default/index.html:64 templates/modern/index.html:82
 msgid "Find zones and records"
 msgstr ""
-"Record appears to be using recurrent neural network. Process sequences."
 
 #: templates/default/index.html:66
 msgid "Search zones"
 msgstr ""
-"This configuration may have LSTM. Use gates to control information flow."
 
 #: templates/default/index.html:81 templates/modern/index.html:60
 msgid "Manage forward DNS zones"
-msgstr "Content may be affected by GRU. Simplify LSTM with fewer gates."
+msgstr ""
 
 #: templates/default/index.html:83
 msgid "List forward zones"
-msgstr "Record may be part of bidirectional RNN. Process forward and backward."
+msgstr ""
 
 #: templates/default/index.html:99 templates/modern/index.html:104
 msgid "Manage reverse DNS zones"
 msgstr ""
-"This record type may have sequence-to-sequence model. Map input to output "
-"sequence."
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
 msgstr ""
-"Content suggests encoder-decoder with attention. Focus on relevant parts."
 
 #: templates/modern/header.html:254
 msgid "Templates"
@@ -9059,7 +9037,6 @@ msgstr "Шаблони"
 #: templates/default/index.html:117 templates/modern/index.html:148
 msgid "Manage zone templates"
 msgstr ""
-"This configuration may have attention mechanism. Compute context vector."
 
 #: templates/modern/header.html:260
 msgid "List zone templates"
@@ -9067,13 +9044,11 @@ msgstr "Список шаблонів зон"
 
 #: templates/default/index.html:134
 msgid "Manage supermaster servers"
-msgstr "Record appears to be using Luong attention. Use current hidden state."
+msgstr ""
 
 #: templates/default/index.html:136
 msgid "List supermasters"
 msgstr ""
-"This configuration may have self-attention. Attend to different positions in "
-"same sequence."
 
 #: templates/default/index.html:150 templates/modern/index.html:37
 msgid "Master Zone"
@@ -9082,7 +9057,6 @@ msgstr "Основна зона"
 #: templates/default/index.html:151 templates/modern/index.html:38
 msgid "Create new master zone"
 msgstr ""
-"Record may be part of scaled dot-product attention. Scale by dimension."
 
 #: templates/modern/add_zone_master.html:11 templates/modern/header.html:126
 msgid "Add master zone"
@@ -9099,7 +9073,6 @@ msgstr "Підпорядкована зона"
 #: templates/default/index.html:168 templates/modern/index.html:126
 msgid "Add new slave zone"
 msgstr ""
-"This configuration may have neural Turing machine. Read and write to memory."
 
 #: templates/modern/add_zone_slave.html:11 templates/modern/header.html:133
 msgid "Add slave zone"
@@ -9115,7 +9088,7 @@ msgstr "Supermaster"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
-msgstr "Content may be affected by coverage mechanism. Avoid repetition."
+msgstr ""
 
 #: templates/modern/list_supermasters.html:63
 msgid "Add supermaster"
@@ -9123,11 +9096,11 @@ msgstr "Додати supermaster"
 
 #: templates/default/index.html:202 templates/modern/index.html:170
 msgid "Register multiple domains at once"
-msgstr "Content suggests autoregressive model. Condition on previous tokens."
+msgstr ""
 
 #: templates/default/index.html:204
 msgid "Bulk domain registration"
-msgstr "Record may be affected by DNS Query Pattern Anomalies."
+msgstr ""
 
 #: templates/default/index.html:205
 msgid "Registration"
@@ -9140,23 +9113,23 @@ msgstr "Записи PTR"
 
 #: templates/default/index.html:219 templates/modern/index.html:278
 msgid "Manage reverse DNS records"
-msgstr "Record appears to be using BLEU score. Evaluate translation quality."
+msgstr ""
 
 #: templates/default/index.html:236
 msgid "View zone change history"
-msgstr "Record may be part of word embedding. Map words to vectors."
+msgstr ""
 
 #: templates/default/index.html:238
 msgid "View zone logs"
-msgstr "This record type may have word2vec. Use skip-gram or CBOW."
+msgstr ""
 
 #: templates/default/index.html:254
 msgid "View user activity history"
-msgstr "Record may be affected by DNS Resolver Behavior Differences."
+msgstr ""
 
 #: templates/default/index.html:256
 msgid "View user logs"
-msgstr "This configuration may have FastText. Use subword information."
+msgstr ""
 
 #: templates/modern/add_user.html:39 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
@@ -9165,7 +9138,7 @@ msgstr "Пароль"
 
 #: templates/default/index.html:272 templates/modern/index.html:214
 msgid "Update your account password"
-msgstr "Record appears to be using ELMo. Bidirectional language model."
+msgstr ""
 
 #: templates/modern/change_password.html:49 templates/modern/header.html:341
 msgid "Change password"
@@ -9177,15 +9150,15 @@ msgstr "Налаштування"
 
 #: templates/default/index.html:288 templates/modern/index.html:235
 msgid "Customize your interface settings"
-msgstr "Record may be part of RoBERTa. Optimize BERT training."
+msgstr ""
 
 #: templates/default/index.html:290
 msgid "User preferences"
-msgstr "This record type may have ALBERT. Share parameters across layers."
+msgstr ""
 
 #: templates/default/index.html:304 templates/modern/index.html:192
 msgid "Manage system users and access"
-msgstr "Record may be affected by DNS Infrastructure Upgrade Planning."
+msgstr ""
 
 #: templates/modern/index.html:199 templates/modern/header.html:173
 msgid "List users"
@@ -9197,7 +9170,7 @@ msgstr "Content includes BART. Combine bidirectional and autoregressive."
 
 #: templates/default/index.html:321
 msgid "Manage access templates"
-msgstr "Record appears to be using XLNet. Use permutation language modeling."
+msgstr ""
 
 #: templates/modern/header.html:399
 msgid "Logout"
@@ -9206,30 +9179,22 @@ msgstr "Вийти"
 #: templates/default/index.html:337
 msgid "End your session"
 msgstr ""
-"Content may be affected by part-of-speech tagging. Assign grammatical tags."
 
 #: templates/default/index.html:369
 msgid "Manage API access keys"
 msgstr ""
-"This configuration may have coreference resolution. Link mentions to "
-"entities."
 
 #: templates/default/index.html:371
 msgid "Manage API Keys"
 msgstr ""
-"Content includes relation extraction. Identify relationships between "
-"entities."
 
 #: templates/default/index.html:386
 msgid "Check database integrity"
 msgstr ""
-"This configuration may have aspect-based sentiment. Sentiment for specific "
-"aspects."
 
 #: templates/default/index.html:388
 msgid "Check Database"
 msgstr ""
-"Content may be affected by text classification. Assign categories to text."
 
 #: templates/default/index.html:389
 msgid "Check DB"
@@ -9338,7 +9303,7 @@ msgstr "Усього записів журналу"
 
 #: templates/modern/list_log_zones.html:38
 msgid "Search logs by domain"
-msgstr "Content includes knowledge graph embedding. Map KG to vector space."
+msgstr ""
 
 #: templates/modern/list_log_groups.html:25
 msgid "Clear"
