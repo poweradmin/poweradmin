@@ -59,6 +59,7 @@ return [
      */
     'interface' => [
         'language' => 'de_DE',
+        'theme' => 'modern',
         'enabled_languages' => 'de_DE',
         'title' => 'Poweradmin (MySQL + SQL, German)',
         'show_pdns_status' => true,
