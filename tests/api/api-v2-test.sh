@@ -40,6 +40,8 @@ TEST_ZONE_TEMPLATE_ID=""
 TEST_ZONE_TEMPLATE_RECORD_ID=""
 TEST_OWNER_ZONE_ID=""
 TEST_OWNER_USER_ID=""
+TEST_GROUP_ZONE_ID=""
+ADMIN_USER_ID=""
 CREATED_REVERSE_ZONE=false
 
 ##############################################################################
@@ -157,6 +159,18 @@ extract_json_field() {
     local json="$1"
     local field="$2"
     echo "$json" | grep -o "\"$field\":[^,}]*" | head -1 | sed 's/.*://; s/"//g; s/ //g'
+}
+
+# Ids differ per database backend, so resolve the admin user instead of assuming id 1
+resolve_admin_user_id() {
+    ADMIN_USER_ID=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data[]? | select(.username == "admin") | .user_id' 2>/dev/null || true)
+    if [[ -n "$ADMIN_USER_ID" ]]; then
+        print_info "Resolved admin user ID: $ADMIN_USER_ID"
+    else
+        print_fail "Could not resolve the admin user ID from /api/v2/users"
+        exit 1
+    fi
 }
 
 ##############################################################################
@@ -641,6 +655,12 @@ test_groups() {
         print_fail "Failed to create group (HTTP $http_code)"
     fi
 
+    # Zone created here so the assignment tests do not depend on existing zone ids
+    if api_request_v2 "POST" "/zones" '{"name":"group-assign-test.example.com","type":"MASTER"}' 201 "Create test zone for group assignment"; then
+        TEST_GROUP_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+        print_info "Created zone ID: $TEST_GROUP_ZONE_ID"
+    fi
+
     # Test 2: List groups
     api_request_v2 "GET" "/groups" "" 200 "List all groups" || true
 
@@ -691,8 +711,11 @@ test_groups() {
     fi
 
     # Test 6: Add member to group
-    if [[ -n "$TEST_GROUP_ID" ]]; then
-        TEST_USER_ID=1  # Assume user ID 1 exists (admin user)
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -z "$ADMIN_USER_ID" ]]; then
+        increment_test
+        print_fail "Add member to group skipped: admin user ID not resolved"
+    elif [[ -n "$TEST_GROUP_ID" ]]; then
+        TEST_USER_ID="$ADMIN_USER_ID"
         increment_test
         print_test "Add member to group"
         response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/members" "{\"user_id\": ${TEST_USER_ID}}")
@@ -742,8 +765,11 @@ test_groups() {
     fi
 
     # Test 10: Assign zone to group
-    if [[ -n "$TEST_GROUP_ID" ]]; then
-        local TEST_ZONE_ASSIGN_ID=1  # Assume zone ID 1 exists
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -z "$TEST_GROUP_ZONE_ID" ]]; then
+        increment_test
+        print_fail "Assign zone to group skipped: test zone not created"
+    elif [[ -n "$TEST_GROUP_ID" ]]; then
+        local TEST_ZONE_ASSIGN_ID="$TEST_GROUP_ZONE_ID"
         increment_test
         print_test "Assign zone to group"
         response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/zones" "{\"zone_id\": ${TEST_ZONE_ASSIGN_ID}}")
@@ -771,8 +797,11 @@ test_groups() {
     fi
 
     # Test 12: Unassign zone from group
-    if [[ -n "$TEST_GROUP_ID" ]]; then
-        local TEST_ZONE_ASSIGN_ID=1
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -z "$TEST_GROUP_ZONE_ID" ]]; then
+        increment_test
+        print_fail "Unassign zone from group skipped: test zone not created"
+    elif [[ -n "$TEST_GROUP_ID" ]]; then
+        local TEST_ZONE_ASSIGN_ID="$TEST_GROUP_ZONE_ID"
         increment_test
         print_test "Unassign zone from group"
         response=$(api_request_groups DELETE "/groups/${TEST_GROUP_ID}/zones/${TEST_ZONE_ASSIGN_ID}")
@@ -1086,7 +1115,7 @@ test_zone_owners() {
     # Test 8b: Batch add owners using user_ids
     increment_test
     print_test "Batch add owners using user_ids"
-    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, ${ADMIN_USER_ID}]}")
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
@@ -1105,7 +1134,7 @@ test_zone_owners() {
     # Test 8c: Batch add with already assigned users (should skip them)
     increment_test
     print_test "Batch add with already assigned owners (skipped)"
-    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, ${ADMIN_USER_ID}]}")
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
@@ -1178,7 +1207,7 @@ test_zone_owners() {
     # Test 13: Add owner to non-existent zone (should return 404)
     increment_test
     print_test "Add owner to non-existent zone"
-    response=$(api_request_groups POST "/zones/999999/owners" '{"user_id": 1}')
+    response=$(api_request_groups POST "/zones/999999/owners" "{\"user_id\": ${ADMIN_USER_ID}}")
     http_code=$(echo "$response" | tail -n1)
 
     if [[ "$http_code" == "404" ]]; then
@@ -1190,7 +1219,7 @@ test_zone_owners() {
     # Test 14: Remove owner from non-existent zone (should return 404)
     increment_test
     print_test "Remove owner from non-existent zone"
-    response=$(api_request_groups DELETE "/zones/999999/owners/1")
+    response=$(api_request_groups DELETE "/zones/999999/owners/${ADMIN_USER_ID}")
     http_code=$(echo "$response" | tail -n1)
 
     if [[ "$http_code" == "404" ]]; then
@@ -1223,6 +1252,11 @@ cleanup() {
     if [[ -n "$TEST_REVERSE_ZONE_ID" && "${CREATED_REVERSE_ZONE:-false}" == "true" ]]; then
         print_info "Deleting reverse zone $TEST_REVERSE_ZONE_ID..."
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
+    fi
+
+    if [[ -n "$TEST_GROUP_ZONE_ID" ]]; then
+        print_info "Deleting group assignment test zone $TEST_GROUP_ZONE_ID..."
+        api_request_v2 "DELETE" "/zones/$TEST_GROUP_ZONE_ID" "" 204 "Delete group assignment test zone" || true
     fi
 
     # Delete zone owner test zone and user
@@ -1281,6 +1315,7 @@ cleanup_existing_test_zones() {
         "bad-template-test.example.com"
         "name-template-test.example.com"
         "owner-test.example.com"
+        "group-assign-test.example.com"
     )
 
     local all_zones
@@ -1429,6 +1464,7 @@ main() {
     print_header "PowerAdmin API v2 Test Suite"
 
     load_config
+    resolve_admin_user_id
 
     # Clean up leftover zones from previous test runs
     cleanup_existing_test_zones
