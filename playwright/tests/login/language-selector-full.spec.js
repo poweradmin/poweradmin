@@ -1,53 +1,43 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 
 /**
- * Tests for full language configuration (all 20 languages enabled).
+ * Tests for the full language configuration (all default languages enabled).
  *
  * These tests verify the complete set of supported languages when
- * `enabled_languages` uses the default (all languages). Designed for
- * the MySQL devcontainer instance (port 8080).
+ * `enabled_languages` uses the default. Designed for the MySQL
+ * devcontainer instance (port 8080).
  *
  * Run with: BASE_URL=http://localhost:8080 npx playwright test language-selector-full
  */
 
-const ORIGINAL_LOCALES = [
-  'en_EN', 'de_DE', 'fr_FR', 'es_ES', 'nl_NL', 'pl_PL',
-  'cs_CZ', 'it_IT', 'ja_JP', 'ru_RU', 'zh_CN', 'tr_TR',
-  'lt_LT', 'nb_NO', 'pt_PT',
+// Mirrors interface.enabled_languages in config/settings.defaults.php.
+// Keep both in sync when adding or removing a locale.
+const SUPPORTED_LOCALES = [
+  'cs_CZ', 'de_DE', 'en_EN', 'es_ES', 'fr_FR', 'id_ID', 'it_IT', 'ja_JP',
+  'ko_KR', 'lt_LT', 'nb_NO', 'nl_NL', 'pl_PL', 'pt_PT', 'ru_RU', 'sv_SE',
+  'tr_TR', 'uk_UA', 'vi_VN', 'zh_CN',
 ];
-
-const NEW_LOCALES = ['id_ID', 'ko_KR', 'sv_SE', 'uk_UA', 'vi_VN'];
-
-const ALL_LOCALES = [...ORIGINAL_LOCALES, ...NEW_LOCALES];
 
 test.describe('Language Selector - Full Configuration', () => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
-  test.skip(baseUrl.includes('8082'), 'This test requires a non-SQLite instance with all languages enabled');
+  // Both SQLite instances (8082 SQL mode, 8085 API mode) ship a reduced language list
+  test.skip(baseUrl.includes('8082') || baseUrl.includes('8085'), 'This test requires a non-SQLite instance with all languages enabled');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
   });
 
-  test('should have all 20 supported languages', async ({ page }) => {
+  test('should have all supported languages', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const count = await items.count();
-    expect(count).toBe(ALL_LOCALES.length);
+    expect(count).toBe(SUPPORTED_LOCALES.length);
   });
 
-  test('should contain all original languages', async ({ page }) => {
+  test('should contain every supported language', async ({ page }) => {
     const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
-    for (const locale of ORIGINAL_LOCALES) {
-      expect(values).toContain(locale);
-    }
-  });
-
-  test('should contain all newly added languages', async ({ page }) => {
-    const items = page.locator('#langSwitcher + .dropdown-menu .dropdown-item');
-    const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
-
-    for (const locale of NEW_LOCALES) {
+    for (const locale of SUPPORTED_LOCALES) {
       expect(values).toContain(locale);
     }
   });
@@ -57,7 +47,7 @@ test.describe('Language Selector - Full Configuration', () => {
     const values = await items.evaluateAll(els => els.map(el => el.dataset.lang));
 
     for (const value of values) {
-      expect(ALL_LOCALES).toContain(value);
+      expect(SUPPORTED_LOCALES).toContain(value);
     }
   });
 });
