@@ -40,6 +40,7 @@ TEST_ZONE_TEMPLATE_ID=""
 TEST_ZONE_TEMPLATE_RECORD_ID=""
 TEST_OWNER_ZONE_ID=""
 TEST_OWNER_USER_ID=""
+ADMIN_USER_ID=""
 CREATED_REVERSE_ZONE=false
 
 ##############################################################################
@@ -162,6 +163,18 @@ extract_json_field() {
     local json="$1"
     local field="$2"
     echo "$json" | grep -o "\"$field\":[^,}]*" | head -1 | sed 's/.*://; s/"//g; s/ //g' || true
+}
+
+# Ids differ per database backend, so resolve the admin user instead of assuming id 1
+resolve_admin_user_id() {
+    ADMIN_USER_ID=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null | jq -r '.data.users[]? | select(.username == "admin") | .user_id' 2>/dev/null || true)
+    if [[ -n "$ADMIN_USER_ID" ]]; then
+        print_info "Resolved admin user ID: $ADMIN_USER_ID"
+    else
+        print_fail "Could not resolve the admin user ID from /api/v2/users"
+        exit 1
+    fi
 }
 
 # Assert a jq expression evaluates to expected value
@@ -1102,8 +1115,11 @@ test_groups() {
     fi
 
     # Test 6: Add member to group
-    if [[ -n "$TEST_GROUP_ID" ]]; then
-        TEST_USER_ID=1  # Assume user ID 1 exists (admin user)
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -z "$ADMIN_USER_ID" ]]; then
+        increment_test
+        print_fail "Add member to group skipped: admin user ID not resolved"
+    elif [[ -n "$TEST_GROUP_ID" ]]; then
+        TEST_USER_ID="$ADMIN_USER_ID"
         increment_test
         print_test "Add member to group"
         response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/members" "{\"user_id\": ${TEST_USER_ID}}")
@@ -1556,7 +1572,7 @@ test_zone_owners() {
     # Test 8b: Batch add owners using user_ids
     increment_test
     print_test "Batch add owners using user_ids"
-    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, ${ADMIN_USER_ID}]}")
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
@@ -1575,7 +1591,7 @@ test_zone_owners() {
     # Test 8c: Batch add with already assigned users (should skip them)
     increment_test
     print_test "Batch add with already assigned owners (skipped)"
-    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, 1]}")
+    response=$(api_request_groups POST "/zones/${TEST_OWNER_ZONE_ID}/owners" "{\"user_ids\": [${TEST_OWNER_USER_ID}, ${ADMIN_USER_ID}]}")
     http_code=$(echo "$response" | tail -n1)
     body=$(echo "$response" | sed '$d')
 
@@ -1650,7 +1666,7 @@ test_zone_owners() {
     # Test 13: Add owner to non-existent zone (should return 404)
     increment_test
     print_test "Add owner to non-existent zone"
-    response=$(api_request_groups POST "/zones/999999/owners" '{"user_id": 1}')
+    response=$(api_request_groups POST "/zones/999999/owners" "{\"user_id\": ${ADMIN_USER_ID}}")
     http_code=$(echo "$response" | tail -n1)
 
     if [[ "$http_code" == "404" ]]; then
@@ -1662,7 +1678,7 @@ test_zone_owners() {
     # Test 14: Remove owner from non-existent zone (should return 404)
     increment_test
     print_test "Remove owner from non-existent zone"
-    response=$(api_request_groups DELETE "/zones/999999/owners/1")
+    response=$(api_request_groups DELETE "/zones/999999/owners/${ADMIN_USER_ID}")
     http_code=$(echo "$response" | tail -n1)
 
     if [[ "$http_code" == "404" ]]; then
@@ -3069,6 +3085,7 @@ main() {
     print_header "PowerAdmin API v2 Test Suite"
 
     load_config
+    resolve_admin_user_id
 
     # Clean up leftover data from previous test runs
     cleanup_existing_test_zones
