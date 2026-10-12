@@ -52,6 +52,8 @@ final class SamlService
     private MfaService $mfaService;
     private SessionInterface $session;
     private AuditService $auditService;
+    /** The OneLogin Auth to use instead of one built from the provider config, for tests */
+    private ?Auth $auth;
 
     public function __construct(
         ConfigurationInterface $configManager,
@@ -62,7 +64,8 @@ final class SamlService
         AuditService $auditService,
         MfaService $mfaService,
         SessionInterface $session,
-        ?Request $request = null
+        ?Request $request = null,
+        ?Auth $auth = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -76,6 +79,7 @@ final class SamlService
         $this->csrfTokenService = new CsrfTokenService($session);
         $this->auditService = $auditService;
         $this->mfaService = $mfaService;
+        $this->auth = $auth;
     }
 
 
@@ -515,6 +519,10 @@ final class SamlService
 
     private function createAuth(string $providerId): ?Auth
     {
+        if ($this->auth !== null) {
+            return $this->auth;
+        }
+
         try {
             $settings = $this->samlConfigurationService->generateOneLoginSettings($providerId);
             return new Auth($settings);

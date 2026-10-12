@@ -60,6 +60,8 @@ final class OidcService
     private MfaService $mfaService;
     private SessionInterface $session;
     private AuditService $auditService;
+    /** The provider to use instead of one built from the provider config, for tests */
+    private ?GenericProvider $provider;
 
     public function __construct(
         ConfigurationInterface $configManager,
@@ -70,7 +72,8 @@ final class OidcService
         AuditService $auditService,
         MfaService $mfaService,
         SessionInterface $session,
-        ?Request $request = null
+        ?Request $request = null,
+        ?GenericProvider $provider = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -84,6 +87,7 @@ final class OidcService
         $this->csrfTokenService = new CsrfTokenService($session);
         $this->auditService = $auditService;
         $this->mfaService = $mfaService;
+        $this->provider = $provider;
     }
 
 
@@ -444,6 +448,10 @@ final class OidcService
 
     private function createProvider(string $providerId): ?GenericProvider
     {
+        if ($this->provider !== null) {
+            return $this->provider;
+        }
+
         $config = $this->oidcConfigurationService->getProviderConfig($providerId);
         if (!$config) {
             return null;
