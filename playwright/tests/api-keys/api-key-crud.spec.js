@@ -260,12 +260,8 @@ test.describe('API Key Created', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
-        const bodyText = await page.locator('body').textContent();
-
-        const hasSuccess = bodyText.toLowerCase().includes('created') ||
-                           bodyText.toLowerCase().includes('success') ||
-                           bodyText.toLowerCase().includes('api key');
-        expect(hasSuccess).toBeTruthy();
+        // Auto-retrying assertion: the submit navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/created|success|api key/i);
       }
     });
 
@@ -282,13 +278,8 @@ test.describe('API Key Created', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
-        const keyInput = page.locator('input#api-key-value, input[readonly]');
-        const bodyText = await page.locator('body').textContent();
-
-        const hasKeyDisplay = await keyInput.count() > 0;
-        const hasApiKeyContent = bodyText.toLowerCase().includes('api key');
-
-        expect(hasKeyDisplay || hasApiKeyContent).toBeTruthy();
+        // Auto-retrying assertion: the submit navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/api key/i);
       }
     });
 
@@ -305,10 +296,9 @@ test.describe('API Key Created', () => {
         const submitBtn = page.locator('button[type="submit"]');
         await submitBtn.click();
 
+        // Auto-retrying assertion: the submit navigation may still be in flight
         const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
-        const hasCopyBtn = await copyBtn.count() > 0;
-
-        expect(hasCopyBtn).toBeTruthy();
+        await expect(copyBtn.first()).toBeVisible();
       }
     });
 
@@ -388,10 +378,9 @@ test.describe('Delete API Key', () => {
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
 
+        // Auto-retrying assertion: the click navigation may still be in flight
         const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
-        const hasConfirmBtn = await confirmBtn.count() > 0;
-
-        expect(hasConfirmBtn).toBeTruthy();
+        await expect(confirmBtn.first()).toBeAttached();
       }
     });
 
