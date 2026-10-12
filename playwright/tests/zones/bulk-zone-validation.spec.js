@@ -15,7 +15,8 @@ test.describe('Bulk Zone Registration Validation', () => {
   // Helper to clean up a zone
   async function cleanupZone(page, zoneName) {
     try {
-      await page.goto('/zones/forward?letter=all');
+      // The letter filter keeps the zone off a later page of a long list
+      await page.goto(`/zones/forward?letter=${/[a-z]/.test(zoneName[0]) ? zoneName[0] : '1'}`);
       const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
       if (await zoneRow.count() > 0) {
         await zoneRow.locator('a[href*="/delete"]').first().click();

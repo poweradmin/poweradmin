@@ -301,7 +301,8 @@ test.describe('Input Validation Edge Cases', () => {
     });
 
     test('should clean up test zone', async ({ page }) => {
-      await page.goto('/zones/forward?letter=all');
+      // The letter filter keeps the zone off a later page of a long list
+      await page.goto(`/zones/forward?letter=${/[a-z]/.test(testZoneName[0]) ? testZoneName[0] : '1'}`);
       await page.waitForLoadState('networkidle');
 
       const zoneRow = page.locator(`tr:has-text("${testZoneName}")`);
