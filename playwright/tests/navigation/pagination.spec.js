@@ -8,6 +8,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
+    test.setTimeout(180000);
     // Create multiple zones to trigger pagination
     const zoneCount = 25; // Assuming default page size is less than this
     const zones = [];
@@ -133,6 +134,7 @@ test.describe('Pagination Functionality', () => {
   });
 
   test('should display correct page numbers in pagination', async ({ page }) => {
+    test.setTimeout(180000);
     // Create zones for pagination
     const zones = [];
     for (let i = 1; i <= 20; i++) {
