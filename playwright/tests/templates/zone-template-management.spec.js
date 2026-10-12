@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { isApiModeInstance } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone Template Management', () => {
@@ -92,7 +93,9 @@ test.describe('Zone Template Management', () => {
     }
   });
 
-  test('should apply a zone template when creating a zone', async ({ page }) => {
+  test('should apply a zone template when creating a zone', async ({ page, baseURL }) => {
+    // Linking template records to API-backend record ids needs storage added in 4.5.0
+    test.skip(isApiModeInstance(baseURL), 'zone creation from a template is not supported on the API backend');
     // Navigate to add master zone
     await page.goto('/zones/add/master');
     await page.waitForLoadState('networkidle');
