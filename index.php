@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,7 +34,13 @@ $configManager->initialize();
 
 // Initialize timezone and session
 initializeTimezone($configManager);
-initializeSession();
+// The public API authenticates each request itself; a browser cookie session must not be read or written
+if (!isPublicApiRequest()) {
+    initializeSession();
+} elseif (session_status() === PHP_SESSION_ACTIVE) {
+    session_unset();
+    session_abort();
+}
 
 // Create and process routes
 $router = new SymfonyRouter();
