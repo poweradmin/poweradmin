@@ -381,8 +381,12 @@ class IndexEntryPointTest extends TestCase
         }
 
         // RequestContext JSON detection
-        $_SERVER['REQUEST_URI'] = '/api/test';
+        // The path has to name a real API family; other pages under /api/ still get HTML
+        $_SERVER['REQUEST_URI'] = '/api/v2/zones';
         $this->assertTrue(RequestContext::expectsJson());
+
+        $_SERVER['REQUEST_URI'] = '/api/test';
+        $this->assertFalse(RequestContext::expectsJson());
 
         $_SERVER['REQUEST_URI'] = '/dashboard';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
