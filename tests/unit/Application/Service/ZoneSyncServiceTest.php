@@ -83,6 +83,39 @@ class ZoneSyncServiceTest extends TestCase
         $this->assertSame(0, $result['updated']);
     }
 
+    public function testSyncRemovesOrphanedZoneGrantsByCanonicalId(): void
+    {
+        $this->mockBackend->method('getZones')->willReturn([
+            ['name' => 'kept.com', 'type' => 'NATIVE', 'master' => null],
+        ]);
+
+        // A zone migrated from the SQL backend keeps its old PowerDNS id in domain_id
+        $localStmt = $this->createMock(PDOStatement::class);
+        $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 1, 'domain_id' => 1, 'zone_name' => 'kept.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
+            ['id' => 2, 'domain_id' => 77, 'zone_name' => 'orphan.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($localStmt);
+
+        $executed = [];
+        $this->mockDb->method('prepare')->willReturnCallback(function (string $sql) use (&$executed) {
+            $stmt = $this->createMock(PDOStatement::class);
+            $stmt->method('execute')->willReturnCallback(function (?array $params = null) use ($sql, &$executed) {
+                $executed[] = [$sql, $params];
+                return true;
+            });
+            return $stmt;
+        });
+
+        $result = $this->service->sync();
+
+        $this->assertSame(1, $result['removed']);
+        $this->assertContains(['DELETE FROM zones_groups WHERE domain_id = :id', [':id' => 77]], $executed);
+        $this->assertContains(['DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id', [':id' => 2]], $executed);
+        $this->assertContains(['DELETE FROM zones WHERE id = :id', [':id' => 2]], $executed);
+    }
+
     public function testSyncUpdatesChangedMetadata(): void
     {
         $this->mockBackend->method('getZones')->willReturn([
