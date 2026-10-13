@@ -59,7 +59,7 @@ CREATE SEQUENCE IF NOT EXISTS records_zone_templ_api_id_seq INCREMENT 1 MINVALUE
 CREATE TABLE IF NOT EXISTS "public"."records_zone_templ_api" (
     "id" integer DEFAULT nextval('records_zone_templ_api_id_seq') NOT NULL,
     "domain_id" integer NOT NULL,
-    "record_id" character varying(255) NOT NULL,
+    "record_id" text NOT NULL,
     "zone_templ_id" integer NOT NULL,
     CONSTRAINT "records_zone_templ_api_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);

@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `log_record_changes` (
 CREATE TABLE IF NOT EXISTS `records_zone_templ_api` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `domain_id` int(11) NOT NULL,
-    `record_id` varchar(255) NOT NULL,
+    `record_id` text NOT NULL,
     `zone_templ_id` int(11) NOT NULL,
     PRIMARY KEY (`id`),
     KEY `idx_records_zone_templ_api_domain_id` (`domain_id`),
