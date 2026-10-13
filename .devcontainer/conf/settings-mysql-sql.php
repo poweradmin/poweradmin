@@ -109,6 +109,7 @@ return [
     'api' => [
         'enabled' => true,
         'docs_enabled' => true,
+        'basic_auth_enabled' => true,
     ],
 
     /**
