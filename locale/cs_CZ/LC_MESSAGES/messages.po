@@ -3313,6 +3313,10 @@ msgstr "Ověření selhalo: Žádný autorizační kód"
 msgid "Authentication failed: Invalid session"
 msgstr "Ověření selhalo: Neplatná relace"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Ověření selhalo: přihlášení nebylo zahájeno z tohoto prohlížeče nebo trvalo příliš dlouho. Zkuste to prosím znovu."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Ověření selhalo: Nelze vytvořit nebo aktualizovat uživatelský účet"

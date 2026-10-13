@@ -3306,6 +3306,10 @@ msgstr "فشل التوثيق: لا يوجد رمز ترخيص"
 msgid "Authentication failed: Invalid session"
 msgstr "فشل التوثيق: الجلسة غير صالحة"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "فشل التوثيق: لم يبدأ تسجيل الدخول من هذا المتصفح أو استغرق وقتًا طويلًا. يرجى المحاولة مرة أخرى."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "فشل التوثيق: عدم القدرة على إنشاء حساب للمستعمل أو تحديثه"

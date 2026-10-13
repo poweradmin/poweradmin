@@ -3247,6 +3247,10 @@ msgstr "प्रमाणीकरण विफल रहा: कोई प्�
 msgid "Authentication failed: Invalid session"
 msgstr "प्रमाणीकरण विफल रहा: अवैध सत्र"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "प्रमाणीकरण विफल रहा: साइन-इन इस ब्राउज़र से शुरू नहीं हुआ या इसमें बहुत अधिक समय लगा। कृपया पुनः प्रयास करें।"
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "प्रमाणीकरण विफल रहा: उपयोगकर्ता खाता बनाने या अद्यतन करने में असमर्थ"

@@ -3295,6 +3295,10 @@ msgstr "Autentisering misslyckades: Ingen auktoriseringskod"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentisering misslyckades: Ogiltig session"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentisering misslyckades: inloggningen startades inte från den här webbläsaren eller tog för lång tid. Försök igen."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

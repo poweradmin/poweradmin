@@ -3338,6 +3338,10 @@ msgstr "Overovitev ni uspela: ni avtorizacijske kode"
 msgid "Authentication failed: Invalid session"
 msgstr "Overovitev ni uspela: neveljavna seja"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Overovitev ni uspela: prijava ni bila začeta v tem brskalniku ali je trajala predolgo. Poskusite znova."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

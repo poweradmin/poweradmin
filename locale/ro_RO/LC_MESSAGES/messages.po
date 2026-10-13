@@ -3382,6 +3382,10 @@ msgstr "Autentificare eșuată: Fără cod de autorizare"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentificare eșuată: Sesiune invalidă"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentificare eșuată: conectarea nu a fost pornită din acest browser sau a durat prea mult. Încercați din nou."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

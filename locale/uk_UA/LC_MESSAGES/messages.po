@@ -3319,6 +3319,10 @@ msgstr "Помилка автентифікації: відсутній код �
 msgid "Authentication failed: Invalid session"
 msgstr "Помилка автентифікації: недійсна сесія"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Помилка автентифікації: вхід не було розпочато в цьому браузері або він тривав занадто довго. Спробуйте ще раз."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

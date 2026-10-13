@@ -3160,6 +3160,10 @@ msgstr "身份验证失败：没有授权码"
 msgid "Authentication failed: Invalid session"
 msgstr "身份验证失败：无效的会话"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "身份验证失败：登录不是从此浏览器发起的，或耗时过长。请重试。"
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "身份验证失败：无法创建或更新用户账户"

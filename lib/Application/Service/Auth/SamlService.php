@@ -29,6 +29,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -42,6 +43,12 @@ use Poweradmin\Domain\Port\SessionInterface;
  */
 final class SamlService
 {
+    // Carries the AuthnRequest ID across the IdP's cross-site POST to the ACS, which the
+    // SameSite=Lax session cookie does not survive; __Host- stops a sibling host planting one
+    private const FLOW_COOKIE_NAME = '__Host-saml_flow';
+    // Longer than OIDC's 300 s: an IdP sign-in with its own second factor often takes a while
+    private const FLOW_COOKIE_TTL = 600;
+
     private LoggerInterface $logger;
     private ConfigurationInterface $configManager;
     private AuthenticationService $authenticationService;
@@ -169,6 +176,7 @@ final class SamlService
 
             // Initiate SSO and get the redirect URL (stay=true prevents immediate redirect and returns URL)
             $redirectUrl = $auth->login(self::relayStateFor($providerId), [], false, false, true);
+            $this->setFlowCookie((string) $auth->getLastRequestID(), $providerId);
 
             $this->logger->info('Generated SAML SSO URL: {url}', ['url' => $redirectUrl]);
 
@@ -199,7 +207,9 @@ final class SamlService
     {
         $this->logger->info('Processing SAML assertion');
 
-        $providerId = $this->getSessionValue('saml_provider', '');
+        // Single-use: a replayed POST finds no cookie and no request ID to match
+        $flow = $this->takeFlowCookie();
+        $providerId = $flow['provider'] ?? $this->getSessionValue('saml_provider', '');
 
         // If provider ID not in session, try to get it from RelayState
         $relayStateParam = $this->request->getPostParam('RelayState');
@@ -225,7 +235,7 @@ final class SamlService
         }
 
         try {
-            return $this->withProxyServerVars(fn() => $this->processAssertion($providerId));
+            return $this->withProxyServerVars(fn() => $this->processAssertion($providerId, $flow['request_id'] ?? null));
         } catch (\Exception $e) {
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
@@ -241,21 +251,33 @@ final class SamlService
     /**
      * Processes the posted SAML response for $providerId: validates it, provisions the
      * user and finishes the login. Runs with the proxy server variables in place.
+     * $requestId is the AuthnRequest this browser started; the response must answer it
+     * unless the provider allows IdP-initiated sign-in.
      * Returns the path to redirect to when MFA is owed, null otherwise.
      */
-    private function processAssertion(string $providerId): ?string
+    private function processAssertion(string $providerId, ?string $requestId): ?string
     {
         $auth = $this->createAuth($providerId);
         if (!$auth) {
             throw new \RuntimeException("Provider {$providerId} not found");
         }
 
+        $allowIdpInitiated = !empty($this->samlConfigurationService->getProviderConfig($providerId)['allow_idp_initiated']);
+        if ($requestId === null && !$allowIdpInitiated) {
+            $this->logger->warning('SAML response for {provider} refused: no sign-in was started from this browser, or it expired', [
+                'provider' => $providerId,
+            ]);
+            $sessionEntity = new FlashMessage(_('Authentication failed: the sign-in was not started from this browser or took too long. Please try again.'), 'danger');
+            $this->authenticationService->auth($sessionEntity);
+            return null;
+        }
+
         // Debug SAML response
         $this->logger->info('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($this->request->getPostParams())]);
         $this->logger->info('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
-        // Process the SAML response
-        $auth->processResponse();
+        // Process the SAML response; with a request ID php-saml rejects a missing or different InResponseTo
+        $auth->processResponse($allowIdpInitiated ? null : $requestId);
 
         $errors = $auth->getErrors();
         if (!empty($errors)) {
@@ -598,6 +620,79 @@ final class SamlService
         // For display purposes, only require basic URL configuration
         // Certificate validation will happen during actual authentication
         return !empty($config['entity_id']) && !empty($config['sso_url']);
+    }
+
+    private function setFlowCookie(string $requestId, string $providerId): void
+    {
+        $acsUrl = $this->getAcsUrl();
+        if (parse_url($acsUrl, PHP_URL_SCHEME) !== 'https' && !in_array(parse_url($acsUrl, PHP_URL_HOST), ['localhost', '127.0.0.1', '::1', '[::1]'], true)) {
+            $this->logger->warning(
+                'SAML ACS URL {url} is not HTTPS, so the browser drops the sign-in cookie and the response will be refused; serve Poweradmin over HTTPS or set allow_idp_initiated for provider {provider}',
+                ['url' => $acsUrl, 'provider' => $providerId]
+            );
+        }
+
+        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId], JSON_THROW_ON_ERROR);
+        $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
+    }
+
+    /**
+     * Reads and clears the flow cookie. Returns its provider and request ID, or null
+     * when there is none or it cannot be decrypted.
+     *
+     * @return array{provider: string, request_id: string}|null
+     */
+    private function takeFlowCookie(): ?array
+    {
+        $rawCookie = $_COOKIE[self::FLOW_COOKIE_NAME] ?? '';
+        if (!is_string($rawCookie) || $rawCookie === '') {
+            return null;
+        }
+
+        $this->writeFlowCookie('', time() - 3600);
+
+        try {
+            $payload = json_decode($this->flowEncryptionService()->decrypt($rawCookie), true);
+        } catch (\Throwable $e) {
+            $this->logger->warning('Failed to decrypt SAML flow cookie: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+
+        $provider = is_array($payload) ? ($payload['provider'] ?? null) : null;
+        $requestId = is_array($payload) ? ($payload['request_id'] ?? null) : null;
+        if (!is_string($provider) || $provider === '' || !is_string($requestId) || $requestId === '') {
+            $this->logger->warning('SAML flow cookie has an invalid payload');
+            return null;
+        }
+
+        return ['provider' => $provider, 'request_id' => $requestId];
+    }
+
+    private function writeFlowCookie(string $value, int $expires): void
+    {
+        setcookie(self::FLOW_COOKIE_NAME, $value, [
+            'expires' => $expires,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None',
+        ]);
+    }
+
+    private function getAcsUrl(): string
+    {
+        try {
+            $acsUrl = $this->samlConfigurationService->getServiceProviderConfig()['assertion_consumer_service_url'] ?? '';
+        } catch (\RuntimeException) {
+            return '';
+        }
+
+        return is_string($acsUrl) ? $acsUrl : '';
+    }
+
+    private function flowEncryptionService(): PasswordEncryptionService
+    {
+        return new PasswordEncryptionService((string) $this->configManager->get('security', 'session_key', ''));
     }
 
     /**

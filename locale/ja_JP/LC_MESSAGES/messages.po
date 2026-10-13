@@ -3272,6 +3272,10 @@ msgstr "認証に失敗しました: 認証コードがありません"
 msgid "Authentication failed: Invalid session"
 msgstr "認証に失敗しました: 無効なセッション"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "認証に失敗しました: サインインがこのブラウザーから開始されていないか、時間がかかりすぎました。もう一度お試しください。"
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "認証に失敗しました: ユーザーアカウントを作成または更新できません"

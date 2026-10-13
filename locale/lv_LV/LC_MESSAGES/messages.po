@@ -3282,6 +3282,10 @@ msgstr "Autentifikācija neizdevās: Nav autorizācijas koda"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentifikācija neizdevās: Nederīga sesija"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentifikācija neizdevās: pieteikšanās netika sākta šajā pārlūkprogrammā vai ilga pārāk ilgi. Lūdzu, mēģiniet vēlreiz."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentifikācija neizdevās: Nevar izveidot vai atjaunināt kontu"

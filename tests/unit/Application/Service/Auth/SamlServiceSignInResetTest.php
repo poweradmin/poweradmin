@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\Auth\SamlService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\ArraySession;
 use Psr\Log\NullLogger;
@@ -45,20 +46,31 @@ use TestHelpers\FakeConfiguration;
 final class SamlServiceSignInResetTest extends TestCase
 {
     private const USER_ID = 7;
+    private const SESSION_KEY = 'test-session-key';
 
     /** @var array<string, mixed> */
     private array $server;
 
+    /** @var array<string, mixed> */
+    private array $cookie;
+
     protected function setUp(): void
     {
         $this->server = $_SERVER;
+        $this->cookie = $_COOKIE;
         // No proxy headers, so the assertion is processed with the server variables as they are
         $_SERVER = ['REQUEST_METHOD' => 'POST'];
+        // The sign-in was started from this browser
+        $_COOKIE = ['__Host-saml_flow' => (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
+            'provider' => 'test',
+            'request_id' => 'request-1',
+        ]))];
     }
 
     protected function tearDown(): void
     {
         $_SERVER = $this->server;
+        $_COOKIE = $this->cookie;
     }
 
     public function testASignInOwingASecondFactorKeepsNoIdentityOfTheEarlierUser(): void
@@ -123,7 +135,7 @@ final class SamlServiceSignInResetTest extends TestCase
         $mfa->method('isMfaEnabled')->willReturn($mfaEnabled);
 
         $service = new SamlService(
-            new FakeConfiguration(['security' => ['mfa' => ['enabled' => true]]]),
+            new FakeConfiguration(['security' => ['mfa' => ['enabled' => true], 'session_key' => self::SESSION_KEY]]),
             $this->createMock(SamlConfigurationService::class),
             $provisioning,
             new NullLogger(),

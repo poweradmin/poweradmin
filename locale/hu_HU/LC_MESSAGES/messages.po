@@ -3316,6 +3316,10 @@ msgstr "Hitelesítés sikertelen: Nincs jogosultsági kód"
 msgid "Authentication failed: Invalid session"
 msgstr "Hitelesítés sikertelen: Érvénytelen munkamenet"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Hitelesítés sikertelen: a bejelentkezés nem ebből a böngészőből indult, vagy túl sokáig tartott. Próbálja újra."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Hitelesítés sikertelen: fiók létrehozása/frissítése nem lehetséges"

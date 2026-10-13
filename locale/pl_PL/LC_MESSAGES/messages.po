@@ -3337,6 +3337,10 @@ msgstr "Uwierzytelnianie nie powiodło się: Brak kodu autoryzacji"
 msgid "Authentication failed: Invalid session"
 msgstr "Uwierzytelnianie nie powiodło się: Nieprawidłowa sesja"
 
+#: lib/Application/Service/Auth/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Uwierzytelnianie nie powiodło się: logowanie nie zostało rozpoczęte w tej przeglądarce lub trwało zbyt długo. Spróbuj ponownie."
+
 #: lib/Application/Service/Auth/SamlService.php:371
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
