@@ -230,7 +230,7 @@ final class OidcService
         $receivedState = $this->request->getParam('state');
         $sessionState = $this->getSessionValue('oidc_state');
 
-        if (empty($receivedState) || $receivedState !== $sessionState) {
+        if (!is_string($receivedState) || $receivedState === '' || !is_string($sessionState) || !hash_equals($sessionState, $receivedState)) {
             $this->logger->warning('Invalid state parameter in OIDC callback');
             $sessionEntity = new FlashMessage(_('Authentication failed: Invalid state parameter'), 'danger');
             $this->authenticationService->auth($sessionEntity);
