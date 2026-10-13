@@ -292,8 +292,8 @@ WHERE d.`name` = '168.192.in-addr.arpa' AND u.`username` = 'admin'
 -- =============================================================================
 
 -- Swedish IDN (översätt.info) owned by manager
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'xn--verstt-eua3l.info' AND u.`username` = 'manager'
@@ -302,8 +302,8 @@ WHERE d.`name` = 'xn--verstt-eua3l.info' AND u.`username` = 'manager'
   );
 
 -- German IDN (münchen.de) owned by admin
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'xn--mnchen-3ya.de' AND u.`username` = 'admin'
@@ -312,8 +312,8 @@ WHERE d.`name` = 'xn--mnchen-3ya.de' AND u.`username` = 'admin'
   );
 
 -- Russian IDN (автоэлектрик.net) owned by manager
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'xn--80aejmjbdxvpe2k.net' AND u.`username` = 'manager'
@@ -322,8 +322,8 @@ WHERE d.`name` = 'xn--80aejmjbdxvpe2k.net' AND u.`username` = 'manager'
   );
 
 -- Korean IDN (베스트공포닷컴.com) owned by client
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u.`username` = 'client'
@@ -332,8 +332,8 @@ WHERE d.`name` = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u.`username` = 'client'
   );
 
 -- Vietnamese IDN (chợtânbiên.vn) owned by viewer
-INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
-SELECT d.`id`, u.`id`, 0
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`)
+SELECT d.`id`, u.`id`, 0, d.`name`
 FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'xn--chtnbin-rwa9e0573b.vn' AND u.`username` = 'viewer'
