@@ -454,6 +454,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_API_BASIC_AUTH_REALM` | Realm name for HTTP Basic Authentication | `Poweradmin API` | No |
 | `PA_API_DOCS_ENABLED` | Enable API documentation at /api/docs | `false` | No |
 | `PA_API_MAX_KEYS_PER_USER` | Maximum API keys per user (admins unlimited) | `5` | No |
+| `PA_API_BULK_MAX_OPERATIONS` | Maximum operations in one bulk records request (0 = no limit) | `1000` | No |
 | `CORS_ALLOW_ORIGIN` | Value of `Access-Control-Allow-Origin` on `/api/*` responses and preflights (the web UI never sends CORS headers) | `*` | No |
 
 ### Health Endpoints

@@ -169,7 +169,7 @@ class ZonesRecordsBulkController extends PublicApiController
     )]
     #[OA\Response(
         response: 400,
-        description: 'Invalid request data'
+        description: 'Invalid request data, or more operations than api.bulk_max_operations allows (1000 by default)'
     )]
     private function bulkRecordOperations(): JsonResponse
     {
@@ -208,6 +208,12 @@ class ZonesRecordsBulkController extends PublicApiController
 
             if (empty($input['operations'])) {
                 return $this->returnApiError("At least one operation is required", 400);
+            }
+
+            // One request runs every operation in a single transaction, so an unbounded list ties up the database
+            $maxOperations = (int)$this->getConfig()->get('api', 'bulk_max_operations', 1000);
+            if ($maxOperations > 0 && count($input['operations']) > $maxOperations) {
+                return $this->returnApiError(sprintf('Too many operations: at most %d per request', $maxOperations), 400);
             }
 
             // The HTTP method (POST) does not determine the operation here: each item

@@ -168,6 +168,11 @@ final class ConfigValidator
         if (!is_int($maxLifetime) || $maxLifetime < 0) {
             $this->errors['interface.session_max_lifetime'] = 'session_max_lifetime must be 0 (off) or a positive integer (seconds)';
         }
+
+        $bulkMaxOperations = $this->getSetting('api', 'bulk_max_operations', 1000);
+        if (!is_int($bulkMaxOperations) || $bulkMaxOperations < 0) {
+            $this->errors['api.bulk_max_operations'] = 'bulk_max_operations must be 0 (no limit) or a positive integer';
+        }
     }
 
     /**

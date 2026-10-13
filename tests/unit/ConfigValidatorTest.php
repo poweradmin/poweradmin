@@ -299,6 +299,43 @@ class ConfigValidatorTest extends TestCase
         ];
     }
 
+    #[DataProvider('bulkMaxOperationsProvider')]
+    public function testApiBulkMaxOperations(mixed $value, bool $valid): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 1800,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'api' => ['bulk_max_operations' => $value],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertSame($valid, $validator->validate());
+        $this->assertSame(!$valid, array_key_exists('api.bulk_max_operations', $validator->getErrors()));
+    }
+
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function bulkMaxOperationsProvider(): array
+    {
+        return [
+            'no limit' => [0, true],
+            'default' => [1000, true],
+            'negative' => [-5, false],
+            'string' => ['1000', false],
+        ];
+    }
+
     public function testInterfaceRowsPerPageIsInteger(): void
     {
         $config = [

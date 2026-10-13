@@ -426,6 +426,7 @@ return [
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
         'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
         'max_keys_per_user' => 5,                      // Maximum number of API keys per user (admin users have no limit)
+        'bulk_max_operations' => 1000,                 // Maximum operations in one bulk records request; 0 = no limit (added in 4.6.0)
     ],
 
     /**

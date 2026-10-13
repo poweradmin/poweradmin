@@ -1452,6 +1452,7 @@ return [
         'basic_auth_realm' => $(php_sq "${PA_API_BASIC_AUTH_REALM:-Poweradmin API}"),
         'docs_enabled' => ${api_docs_enabled},
         'max_keys_per_user' => $(php_num PA_API_MAX_KEYS_PER_USER "${PA_API_MAX_KEYS_PER_USER:-5}" 5),
+        'bulk_max_operations' => $(php_num PA_API_BULK_MAX_OPERATIONS "${PA_API_BULK_MAX_OPERATIONS:-1000}" 1000),
     ],
     'health' => [
         'enabled' => ${health_enabled},

@@ -71,6 +71,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     private bool $localTransactions = true;
     /** Canonical id the backend reports for the zone, as for a zone moved from SQL to API mode */
     private ?int $canonicalZoneId = null;
+    private ?FakeConfiguration $config = null;
 
     protected function setUp(): void
     {
@@ -156,6 +157,35 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('At least one operation is required', $this->messageOf($response));
+    }
+
+    public function testMoreOperationsThanTheLimitAreRefusedBeforeAnythingIsWritten(): void
+    {
+        $this->config = new FakeConfiguration(['api' => ['bulk_max_operations' => 2]]);
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['operations' => [$this->createOperation(), $this->createOperation(), $this->createOperation()]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Too many operations: at most 2 per request', $this->messageOf($response));
+    }
+
+    public function testTheDefaultLimitIsAThousandOperations(): void
+    {
+        $response = $this->bulk(['operations' => array_fill(0, 1001, ['action' => 'delete', 'id' => 3])]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Too many operations: at most 1000 per request', $this->messageOf($response));
+    }
+
+    public function testALimitOfZeroLetsAnyNumberOfOperationsThrough(): void
+    {
+        $this->config = new FakeConfiguration(['api' => ['bulk_max_operations' => 0]]);
+
+        $response = $this->bulk(['operations' => array_fill(0, 1001, ['action' => 'delete'])]);
+
+        // Reaches the per-operation checks instead of the limit
+        $this->assertSame("Operation 0 (delete): Field 'id' is required for delete operation", $this->decode($response)['data']['errors'][0]);
     }
 
     public function testAnApiKeyWithoutTheDeleteOperationIsRefusedBeforeAnythingIsWritten(): void
@@ -466,6 +496,9 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     {
         $controller = $this->bareController(ZonesRecordsBulkController::class);
         $this->injectBaseCollaborators($controller, 'POST');
+        if ($this->config !== null) {
+            $this->inject($controller, 'config', $this->config);
+        }
         $this->inject($controller, 'request', Request::create(
             '/api/v2/zones/' . self::ZONE_ID . '/records/bulk',
             'POST',
