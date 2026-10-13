@@ -1905,7 +1905,7 @@ cleanup_existing_self_edit_test_data() {
 
     local templ_id
     templ_id=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
+        "${API_BASE_URL}/api/v2/permission-templates" 2>/dev/null | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id' 2>/dev/null)
     if [[ -n "$templ_id" ]]; then
         curl -s -X DELETE -H "X-API-Key: $API_KEY" \
             "${API_BASE_URL}/api/v2/permission-templates/$templ_id" >/dev/null 2>&1 || true
@@ -1929,7 +1929,7 @@ test_users_self_edit_guard() {
     # The create response carries no id - look it up by name.
     api_request_v2 "GET" "/permission-templates" "" 200 "List templates to find self-edit template id"
     local templ_id
-    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data[]? | select(.name == "self_edit_test_templ") | .id')
+    templ_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.templates[]? | select(.name == "self_edit_test_templ") | .id')
     if [[ -z "$templ_id" || "$templ_id" == "null" ]]; then
         increment_test
         print_fail "Could not resolve self_edit_test_templ id - skipping suite"
