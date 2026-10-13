@@ -46,7 +46,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
 
   // Helper to find zone ID by name
   async function findZoneIdByName(page, name) {
-    await page.goto('/zones/forward?letter=all');
+    // The letter filter keeps the zone off a later page of a long list
+    await page.goto(`/zones/forward?letter=${name[0]}`);
     const row = page.locator(`tr:has-text("${name}")`);
     if (await row.count() > 0) {
       const editLink = row.locator('a[href*="/edit"]').first();
@@ -153,7 +154,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       await expect(page.locator('body')).not.toContainText(FATAL_ERROR_PATTERN);
     });
 
-    test('should update zones from template without fatal error (issue #944/#945)', async ({ page }) => {
+    test('should update zones from template without fatal error (issue #944/#945)', async ({ page, baseURL }) => {
+      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
       test.skip(!zoneId, 'Zone was not created');
@@ -186,7 +188,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       }
     });
 
-    test('should verify zone records after template update', async ({ page }) => {
+    test('should verify zone records after template update', async ({ page, baseURL }) => {
+      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!zoneId, 'Zone was not created');
 
@@ -236,7 +239,8 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
       }
     });
 
-    test('should handle update with multiple zones linked to template', async ({ page }) => {
+    test('should handle update with multiple zones linked to template', async ({ page, baseURL }) => {
+      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
 
