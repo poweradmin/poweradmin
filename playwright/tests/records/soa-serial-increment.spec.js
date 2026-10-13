@@ -24,7 +24,8 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     }
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
-    await page.goto('/zones/forward?letter=all');
+    // The letter filter keeps the zone off a later page of a long list
+    await page.goto('/zones/forward?letter=s');
     const row = page.locator('tr', { hasText: zoneName }).first();
     // Auto-retrying: on the API backend the new zone can take a moment to show
     // up in the list, and a one-shot count() read races it under load.

@@ -15,7 +15,8 @@ test.describe('Bulk Zone Registration Validation', () => {
   // Helper to clean up a zone
   async function cleanupZone(page, zoneName) {
     try {
-      await page.goto('/zones/forward?letter=all');
+      // The letter filter keeps the zone off a later page of a long list
+      await page.goto(`/zones/forward?letter=${zoneName[0]}`);
       const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
       if (await zoneRow.count() > 0) {
         await zoneRow.locator('a[href*="/delete"]').first().click();
@@ -40,7 +41,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zone was created by checking zones list
-    await page.goto('/zones/forward?letter=all');
+    await page.goto(`/zones/forward?letter=${zoneName[0]}`);
     await expect(page.locator(`tr:has-text("${zoneName}")`)).toBeVisible();
 
     // Cleanup
@@ -60,7 +61,8 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zones were created
-    await page.goto('/zones/forward?letter=all');
+    // All three names start with 'b'
+    await page.goto('/zones/forward?letter=b');
     for (const zone of zones) {
       await expect(page.locator(`tr:has-text("${zone}")`)).toBeVisible();
     }
