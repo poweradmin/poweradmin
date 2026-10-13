@@ -1405,6 +1405,7 @@ return [
         'language' => $(php_sq "${PA_DEFAULT_LANGUAGE:-en_EN}"),
         'enabled_languages' => $(php_sq "${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}"),
         'session_timeout' => $(php_num PA_SESSION_TIMEOUT "${PA_SESSION_TIMEOUT:-1800}" 1800),
+        'session_max_lifetime' => $(php_num PA_SESSION_MAX_LIFETIME "${PA_SESSION_MAX_LIFETIME:-0}" 0),
         'rows_per_page' => $(php_num PA_ROWS_PER_PAGE "${PA_ROWS_PER_PAGE:-10}" 10),
         'theme' => $(php_sq "${PA_THEME:-default}"),
         'style' => $(php_sq "${PA_STYLE:-light}"),

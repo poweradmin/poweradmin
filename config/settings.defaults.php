@@ -146,6 +146,7 @@ return [
         'enabled_languages' => 'ar_SA,bg_BG,bs_BA,cs_CZ,da_DK,de_DE,el_GR,en_EN,es_ES,et_EE,fa_IR,fi_FI,fr_FR,ga_IE,he_IL,hi_IN,hr_HR,hu_HU,id_ID,it_IT,ja_JP,ko_KR,lt_LT,lv_LV,ms_MY,nb_NO,nl_NL,pl_PL,pt_BR,pt_PT,ro_RO,ru_RU,sk_SK,sl_SI,sq_AL,sr_RS,sv_SE,th_TH,tr_TR,uk_UA,vi_VN,zh_CN,zh_TW', // Added in 3.8.0
         'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes); must be above 0, the timeout cannot be disabled
+        'session_max_lifetime' => 0,          // End a session this many seconds after sign-in, however active; 0 = off (added in 4.6.0)
         'rows_per_page' => 10,
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
         'style' => 'light',                   // UI Style options: 'light', 'dark' (added in 4.0.0)

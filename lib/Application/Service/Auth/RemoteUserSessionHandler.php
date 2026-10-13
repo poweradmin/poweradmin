@@ -154,6 +154,8 @@ final class RemoteUserSessionHandler
         $email = $profile['email'] ?? '';
 
         $this->session->regenerateId(true);
+        // The maximum session lifetime counts from this sign-in, not an earlier one in the same session
+        $this->session->remove(SessionKeys::SIGNED_IN_AT);
         $this->session->set(SessionKeys::USERLOGIN, $username);
         $this->session->set(SessionKeys::REMOTE_USER_IDENTITY, $identity->getUsername());
         $this->session->set(SessionKeys::LASTMOD, time());

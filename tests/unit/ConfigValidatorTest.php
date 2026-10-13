@@ -262,6 +262,43 @@ class ConfigValidatorTest extends TestCase
         $this->assertTrue($validator->validate());
     }
 
+    #[DataProvider('sessionMaxLifetimeProvider')]
+    public function testInterfaceSessionMaxLifetime(mixed $value, bool $valid): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 1800,
+                'session_max_lifetime' => $value,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertSame($valid, $validator->validate());
+        $this->assertSame(!$valid, array_key_exists('interface.session_max_lifetime', $validator->getErrors()));
+    }
+
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function sessionMaxLifetimeProvider(): array
+    {
+        return [
+            'off' => [0, true],
+            'twelve hours' => [43200, true],
+            'negative' => [-1, false],
+            'string' => ['43200', false],
+        ];
+    }
+
     public function testInterfaceRowsPerPageIsInteger(): void
     {
         $config = [

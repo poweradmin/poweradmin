@@ -61,6 +61,7 @@ final class SessionKeys
     public const NAME = 'name';
     public const EMAIL = 'email';
     public const LASTMOD = 'lastmod';
+    public const SIGNED_IN_AT = 'signed_in_at';
 
     // Pending identity (held during MFA verification, promoted on success)
     public const PENDING_USERID = 'pending_userid';

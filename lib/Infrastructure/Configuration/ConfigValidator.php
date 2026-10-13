@@ -163,6 +163,11 @@ final class ConfigValidator
         if (!is_int($sessionTimeout) || $sessionTimeout <= 0) {
             $this->errors['interface.session_timeout'] = 'session_timeout must be a positive integer (seconds); the timeout cannot be disabled';
         }
+
+        $maxLifetime = $this->getSetting('interface', 'session_max_lifetime', 0);
+        if (!is_int($maxLifetime) || $maxLifetime < 0) {
+            $this->errors['interface.session_max_lifetime'] = 'session_max_lifetime must be 0 (off) or a positive integer (seconds)';
+        }
     }
 
     /**

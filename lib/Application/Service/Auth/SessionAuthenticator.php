@@ -258,6 +258,14 @@ final class SessionAuthenticator
             return;
         }
 
+        if ($this->sessionLifetimeExceeded()) {
+            $this->logger->info('Session of user {userid} reached its maximum lifetime', ['userid' => $this->session->get(SessionKeys::USERID)]);
+
+            $this->auditService()->logSessionExpired();
+            $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
+            return;
+        }
+
         // If the session hasn't expired yet, give our session a fresh new timestamp.
         $this->session->set(SessionKeys::LASTMOD, time());
         $this->logger->debug('Session timestamp updated for user {username}', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
@@ -525,6 +533,27 @@ final class SessionAuthenticator
 
         $this->logger->warning('Ending web server session of {username}: the account no longer signs in through the web server', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
         $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
+    }
+
+    /**
+     * interface.session_max_lifetime ends a session that long after its first signed-in
+     * request, however active it stays; 0 leaves only the idle timeout. Every sign-in
+     * starts from a session without the timestamp, so it counts from that sign-in.
+     */
+    private function sessionLifetimeExceeded(): bool
+    {
+        $maxLifetime = (int)$this->configManager->get('interface', 'session_max_lifetime', 0);
+        if ($maxLifetime <= 0 || !$this->session->has(SessionKeys::USERID)) {
+            return false;
+        }
+
+        $signedInAt = $this->session->get(SessionKeys::SIGNED_IN_AT);
+        if (!is_int($signedInAt)) {
+            $this->session->set(SessionKeys::SIGNED_IN_AT, time());
+            return false;
+        }
+
+        return time() - $signedInAt > $maxLifetime;
     }
 
     private function endSessionOfDisabledAccount(): void
