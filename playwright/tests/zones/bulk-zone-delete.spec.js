@@ -207,8 +207,8 @@ test.describe('Bulk Zone Deletion', () => {
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone2);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Go to zones list and select for deletion
-      await page.goto('/zones/forward?letter=all');
+      // Go to zones list and select for deletion; the letter filter keeps them on one page
+      await page.goto('/zones/forward?letter=t');
 
       const checkbox1 = page.locator(`tr:has-text("${tempZone1}") input[type="checkbox"]`).first();
       const checkbox2 = page.locator(`tr:has-text("${tempZone2}") input[type="checkbox"]`).first();
