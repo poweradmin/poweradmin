@@ -149,11 +149,11 @@ class ZoneSyncService
     /**
      * Get all zones from local table indexed by zone_name.
      *
-     * @return array<string, array{id: int, zone_type: string|null, zone_master: string|null}>
+     * @return array<string, array{id: int, canonical_id: int, zone_type: string|null, zone_master: string|null}>
      */
     private function getLocalZones(): array
     {
-        $stmt = $this->db->query("SELECT id, zone_name, zone_type, zone_master FROM zones WHERE zone_name IS NOT NULL");
+        $stmt = $this->db->query("SELECT id, domain_id, zone_name, zone_type, zone_master FROM zones WHERE zone_name IS NOT NULL");
         if (!$stmt) {
             return [];
         }
@@ -161,6 +161,7 @@ class ZoneSyncService
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $zones[$row['zone_name']] = [
                 'id' => (int)$row['id'],
+                'canonical_id' => (int)(($row['domain_id'] ?? 0) ?: $row['id']),
                 'zone_type' => $row['zone_type'],
                 'zone_master' => $row['zone_master'],
             ];
@@ -243,10 +244,13 @@ class ZoneSyncService
         $count = 0;
         foreach ($orphaned as $name => $local) {
             $zoneId = $local['id'];
+            $canonicalId = $local['canonical_id'] ?? $zoneId;
 
-            // Delete group associations
+            // Group grants and extra owners are keyed by the canonical zone id, as in zone delete
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-            $stmt->execute([':id' => $zoneId]);
+            $stmt->execute([':id' => $canonicalId]);
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
 
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
