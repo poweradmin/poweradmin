@@ -14,9 +14,9 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Zone Deletion', () => {
   const testZones = [
-    `bulk-del-1-${Date.now()}.example.com`,
-    `bulk-del-2-${Date.now()}.example.com`,
-    `bulk-del-3-${Date.now()}.example.com`
+    `q-del-1-${Date.now()}.example.com`,
+    `q-del-2-${Date.now()}.example.com`,
+    `q-del-3-${Date.now()}.example.com`
   ];
 
   test.beforeAll(async ({ browser }) => {
@@ -34,6 +34,31 @@ test.describe('Bulk Zone Deletion', () => {
     await page.close();
   });
 
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.goto('/zones/forward?letter=q');
+      let ticked = 0;
+      for (const zone of testZones) {
+        const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
+        if (await checkbox.count() > 0) {
+          await checkbox.check();
+          ticked++;
+        }
+      }
+      if (ticked > 0) {
+        await page.locator('#delete-zones-btn').click();
+        await page.locator('button[type="submit"]:has-text("Yes")').first().click();
+        await page.waitForLoadState('networkidle');
+      }
+      // The session letter is shared with later tests in this worker
+      await page.goto('/zones/forward?letter=all');
+    } finally {
+      await page.close();
+    }
+  });
+
   test.describe('Bulk Delete Page', () => {
     /**
      * Tick this spec's own zones and open the bulk confirmation page.
@@ -41,7 +66,8 @@ test.describe('Bulk Zone Deletion', () => {
      */
     async function openBulkDeleteConfirmation(page, zones) {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
+      // The rarely used q bucket keeps this spec's zones on the first list page
+      await page.goto('/zones/forward?letter=q');
 
       for (const zone of zones) {
         const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
@@ -104,8 +130,8 @@ test.describe('Bulk Zone Deletion', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       // Create temporary zones for deletion test
-      const tempZone1 = `temp-bulk-1-${Date.now()}.example.com`;
-      const tempZone2 = `temp-bulk-2-${Date.now()}.example.com`;
+      const tempZone1 = `q-bulk-1-${Date.now()}.example.com`;
+      const tempZone2 = `q-bulk-2-${Date.now()}.example.com`;
 
       // Create zones
       await page.goto('/zones/add/master');
@@ -116,8 +142,8 @@ test.describe('Bulk Zone Deletion', () => {
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(tempZone2);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Go to zones list and select for deletion; the letter filter keeps them on one page
-      await page.goto('/zones/forward?letter=t');
+      // Go to zones list and select for deletion; the rarely used q bucket keeps them on one page
+      await page.goto('/zones/forward?letter=q');
 
       for (const zone of [tempZone1, tempZone2]) {
         const checkbox = page.locator(`tr:has-text("${zone}") input[type="checkbox"][name="zone_id[]"]`).first();
@@ -142,7 +168,7 @@ test.describe('Bulk Zone Deletion', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
       // Create temporary zone for deletion test
-      const tempZone = `issue971-${Date.now()}.example.com`;
+      const tempZone = `q-issue971-${Date.now()}.example.com`;
 
       // Create zone
       await page.goto('/zones/add/master');
@@ -150,8 +176,8 @@ test.describe('Bulk Zone Deletion', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('networkidle');
 
-      // Go to zones list and select for deletion
-      await page.goto('/zones/forward?letter=all');
+      // Go to zones list and select for deletion; the rarely used q bucket keeps it on one page
+      await page.goto('/zones/forward?letter=q');
       await page.waitForLoadState('networkidle');
 
       const checkbox = page.locator(`tr:has-text("${tempZone}") input[type="checkbox"]`).first();
@@ -185,9 +211,9 @@ test.describe('Bulk Zone Deletion', () => {
       const successAlert = page.locator('.alert-success');
       expect(await successAlert.count()).toBeGreaterThan(0);
 
-      // Verify zone is deleted
-      const zoneRow = page.locator(`tr:has-text("${tempZone}")`);
-      expect(await zoneRow.count()).toBe(0);
+      // Verify zone is deleted; the all view also resets the session letter for later tests
+      await page.goto('/zones/forward?letter=all');
+      await expect(page.locator(`tr:has-text("${tempZone}")`)).toHaveCount(0);
     });
   });
 
