@@ -41,7 +41,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zone was created by checking zones list
-    await page.goto('/zones/forward?letter=all');
+    await page.goto(`/zones/forward?letter=${zoneName[0]}`);
     await expect(page.locator(`tr:has-text("${zoneName}")`)).toBeVisible();
 
     // Cleanup
@@ -61,7 +61,8 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
 
     // Verify zones were created
-    await page.goto('/zones/forward?letter=all');
+    // All three names start with 'b'
+    await page.goto('/zones/forward?letter=b');
     for (const zone of zones) {
       await expect(page.locator(`tr:has-text("${zone}")`)).toBeVisible();
     }

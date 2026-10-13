@@ -185,7 +185,8 @@ test.describe('DNS Record Types Management', () => {
   test('should cleanup test zone', async ({ page }) => {
     test.skip(!zoneCreated, 'Zone not created');
 
-    await page.goto('/zones/forward?letter=all');
+    // The letter filter keeps the zone off a later page of a long list
+    await page.goto(`/zones/forward?letter=${testDomain[0]}`);
     await page.locator(`tr:has-text("${testDomain}")`).locator('a[href*="/delete"]').first().click();
 
     const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
