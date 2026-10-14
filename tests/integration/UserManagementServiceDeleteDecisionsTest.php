@@ -243,6 +243,53 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->assertSame(1, $this->rows('zones WHERE id = 71 AND owner = 6'));
     }
 
+    #[RunInSeparateProcess]
+    public function testAZoneHandedToTheUserBeingDeletedIsRefusedBeforeAnythingChanges(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . "), (11, " . self::TARGET . "), (12, " . self::TARGET . ")");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->expects($this->never())->method('deleteZone');
+
+        // A valid handover on a lower zone id comes first, so a late refusal would leave it applied
+        $decisions = [
+            ['zid' => 10, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+            ['zid' => 11, 'target' => 'new_owner', 'newowner' => self::TARGET],
+            ['zid' => 12, 'target' => 'delete'],
+        ];
+        $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_TRANSFER_TARGET, $result['code']);
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(3, $this->rows('zones WHERE domain_id IN (10, 11, 12) AND owner = ' . self::TARGET));
+        $this->assertSame(0, $this->rows('zones WHERE owner = ' . self::ADMIN_USER_ID));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAZoneHandedToTheUserBeingDeletedInApiModeIsRefusedAndKeepsItsRow(): void
+    {
+        $this->createApiModeTables();
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES
+            (12, 12, " . self::TARGET . ", 'b.example'), (13, 13, " . self::TARGET . ", 'c.example'), (14, 14, " . self::TARGET . ", 'd.example')");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->expects($this->never())->method('deleteZone');
+
+        $decisions = [
+            ['zid' => 12, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+            ['zid' => 13, 'target' => 'new_owner', 'newowner' => self::TARGET],
+            ['zid' => 14, 'target' => 'delete'],
+        ];
+        $result = $this->service(true)->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_TRANSFER_TARGET, $result['code']);
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(3, $this->rows("zones WHERE id IN (12, 13, 14) AND zone_name IS NOT NULL AND owner = " . self::TARGET));
+        $this->assertSame(0, $this->rows('zones WHERE owner = ' . self::ADMIN_USER_ID));
+    }
+
     private function createApiModeTables(): void
     {
         $this->db->exec("CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");

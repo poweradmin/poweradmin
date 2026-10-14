@@ -16422,3 +16422,7 @@ msgstr "A megjegyzésekben talált egyezések 50 zónára lettek korlátozva; sz
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "A kulcs zónakorlátozását a zóna ID-k frissítése nem tudta átvinni, ezért egyetlen zónára sem illeszkedik. Válassza ki újra a zónát."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "A kiválasztott felhasználó már birtokolja a zónát."

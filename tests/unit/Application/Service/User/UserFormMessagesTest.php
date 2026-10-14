@@ -58,6 +58,13 @@ class UserFormMessagesTest extends TestCase
         $this->assertSame('Cannot remove super admin from the last remaining super admin user.', UserFormMessages::errorMessage(['code' => UserManagementService::ERR_LAST_ADMIN_DEMOTE]));
     }
 
+    public function testAZoneHandedToTheUserBeingDeletedIsWordedForThePage(): void
+    {
+        $result = ['message' => 'Cannot transfer zones to the user being deleted.', 'code' => UserManagementService::ERR_TRANSFER_TARGET];
+
+        $this->assertSame('The selected user already owns the zone.', UserFormMessages::deleteErrorMessage($result));
+    }
+
     public function testPolicyMessagesPassThrough(): void
     {
         $result = ['message' => 'Password must be at least 8 characters long', 'code' => UserManagementService::ERR_PASSWORD_POLICY];

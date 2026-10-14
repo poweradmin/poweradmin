@@ -16346,3 +16346,7 @@ msgstr "Збіги в коментарях обмежено 50 зонами; у�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Обмеження цього ключа за зоною не вдалося перенести під час оновлення ID зон, тому воно не відповідає жодній зоні. Виберіть зону знову."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Вибраний користувач уже є власником зони."

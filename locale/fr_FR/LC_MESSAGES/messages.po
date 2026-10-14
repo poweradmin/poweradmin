@@ -16812,3 +16812,7 @@ msgstr "Les correspondances dans les commentaires ont été limitées à 50 zone
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "La restriction de zone de cette clé n'a pas pu être reprise lors de la mise à niveau des ID de zone ; elle ne correspond donc à aucune zone. Sélectionnez à nouveau la zone."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "L'utilisateur sélectionné possède déjà la zone."

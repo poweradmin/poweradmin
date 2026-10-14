@@ -42,6 +42,17 @@ class DeleteUserZoneDecisionsTest extends TestCase
     }
 
     #[Test]
+    public function leavesTheUserBeingDeletedOutOfTheNewOwnerList(): void
+    {
+        $users = [['id' => 3, 'username' => 'heir'], ['id' => '7', 'username' => 'leaving'], ['id' => 9, 'username' => 'other']];
+
+        $this->assertSame(
+            [['id' => 3, 'username' => 'heir'], ['id' => 9, 'username' => 'other']],
+            DeleteUserController::newOwnerCandidates($users, 7)
+        );
+    }
+
+    #[Test]
     public function returnsEmptyArrayForEmptyDecisionList(): void
     {
         $this->assertSame([], DeleteUserController::parseZoneDecisions('[]'));

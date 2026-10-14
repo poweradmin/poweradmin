@@ -15190,3 +15190,7 @@ msgstr "备注匹配结果已限制为 50 个区域；请缩小搜索范围以�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "区域 ID 升级未能沿用此密钥的区域限制，因此它不匹配任何区域。请重新选择区域。"
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "选定的用户已拥有该区域。"

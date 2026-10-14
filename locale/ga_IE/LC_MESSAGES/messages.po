@@ -16682,3 +16682,7 @@ msgstr "Cuireadh teorainn de 50 crios leis na hiarrachtaí comhoiriúnaithe i n�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Níorbh fhéidir srian crios na heochrach seo a thabhairt anonn le huasghrádú na nIDanna crios, mar sin ní mheaitseálann sé crios ar bith. Roghnaigh an crios arís."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Is leis an úsáideoir roghnaithe cheana féin an crios."

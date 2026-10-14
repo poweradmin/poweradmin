@@ -16302,3 +16302,7 @@ msgstr "Komentaruose rasti atitikmenys apriboti iki 50 zonų; patikslinkite paie
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Šio rakto zonos apribojimo nepavyko perkelti atnaujinant zonų ID, todėl jis neatitinka jokios zonos. Pasirinkite zoną iš naujo."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Pasirinktas naudotojas jau valdo zoną."

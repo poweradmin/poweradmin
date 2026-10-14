@@ -15787,3 +15787,7 @@ msgstr "ההתאמות בהערות הוגבלו ל-50 אזורים; צמצם א
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "לא ניתן היה להעביר את הגבלת האזור של מפתח זה בשדרוג מזהי האזורים, ולכן היא אינה תואמת אף אזור. בחרו שוב את האזור."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "המשתמש הנבחר כבר הבעלים של האזור."

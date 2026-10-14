@@ -16040,3 +16040,7 @@ msgstr "Подударања у коментарима ограничена су
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Ограничење зоне овог кључа није могло да се пренесе надоградњом ID-ова зона, па не одговара ниједној зони. Поново изаберите зону."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Изабрани корисник већ поседује зону."

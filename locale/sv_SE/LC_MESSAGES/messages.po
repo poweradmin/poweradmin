@@ -16237,3 +16237,7 @@ msgstr "Kommentarsträffar begränsades till 50 zoner; förfina din sökning fö
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Den här nyckelns zonbegränsning kunde inte föras över vid uppgraderingen av zon-ID:n, så den matchar ingen zon. Välj zonen igen."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Den valda användaren äger redan zonen."

@@ -16168,3 +16168,7 @@ msgstr "Zhody v komentároch boli obmedzené na 50 zón; spresnite vyhľadávani
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Obmedzenie tohto kľúča na zónu sa pri aktualizácii ID zón nepodarilo preniesť, takže nezodpovedá žiadnej zóne. Vyberte zónu znova."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Vybraný používateľ už vlastní zónu."

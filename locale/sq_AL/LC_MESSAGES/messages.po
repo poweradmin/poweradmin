@@ -16572,3 +16572,7 @@ msgstr "Përputhjet në komente u kufizuan në 50 zona; përmirësoni kërkimin 
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Kufizimi i zonës për këtë çelës nuk mund të bartej nga përditësimi i ID-ve të zonave, ndaj nuk përputhet me asnjë zonë. Zgjidhni përsëri zonën."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Përdoruesi i zgjedhur tashmë e zotëron zonën."

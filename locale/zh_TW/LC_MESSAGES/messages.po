@@ -15207,3 +15207,7 @@ msgstr "備註符合結果已限制為 50 個區域；請縮小搜尋範圍以�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "區域 ID 升級未能沿用此金鑰的區域限制，因此它不符合任何區域。請重新選擇區域。"
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "選定的使用者已擁有該區域。"

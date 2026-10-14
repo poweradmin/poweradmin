@@ -16230,3 +16230,7 @@ msgstr "コメントの一致結果は50ゾーンまでに制限されていま�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "このキーのゾーン制限はゾーンIDのアップグレードで引き継げなかったため、どのゾーンにも一致しません。ゾーンを選択し直してください。"
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "選択されたユーザーは既にゾーンを所有しています。"

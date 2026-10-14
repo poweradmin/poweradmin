@@ -657,6 +657,10 @@ class UserManagementService
             if ($decision['target'] === 'delete' && !$this->permissions->canDeleteZoneById($actingUserId, $zoneId)) {
                 return ['success' => false, 'message' => 'You do not have permission to delete zone ' . $zoneId, 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_ZONE_DELETE_FORBIDDEN];
             }
+            // A zone handed to the user being deleted would go with them
+            if ($decision['target'] === 'new_owner' && (int)($decision['newowner'] ?? 0) === $userId) {
+                return ['success' => false, 'message' => 'Cannot transfer zones to the user being deleted.', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_TRANSFER_TARGET];
+            }
             if ($decision['target'] === 'new_owner' && !$this->permissions->canEditZoneMeta($actingUserId, $zoneId)) {
                 return ['success' => false, 'message' => 'You do not have permission to reassign zone ' . $zoneId, 'refusal' => Refusal::FORBIDDEN, 'code' => self::ERR_ZONE_META_FORBIDDEN];
             }

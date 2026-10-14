@@ -16162,3 +16162,7 @@ msgstr "Kết quả khớp trong bình luận đã bị giới hạn ở 50 vùn
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Không thể chuyển giới hạn vùng của khóa này khi nâng cấp ID vùng, nên khóa không khớp với vùng nào. Hãy chọn lại vùng."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Người dùng đã chọn vốn đã sở hữu vùng này."

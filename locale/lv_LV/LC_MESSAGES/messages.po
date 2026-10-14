@@ -15993,3 +15993,7 @@ msgstr "Komentāru atbilstības tika ierobežotas līdz 50 zonām; precizējiet 
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Šīs atslēgas zonas ierobežojumu zonu ID jauninājums nevarēja pārnest, tāpēc tas neatbilst nevienai zonai. Atlasiet zonu vēlreiz."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Atlasītais lietotājs jau ir zonas īpašnieks."

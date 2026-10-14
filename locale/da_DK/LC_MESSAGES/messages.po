@@ -16265,3 +16265,7 @@ msgstr "Match i bemærkninger blev begrænset til 50 zoner; præciser din søgni
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Denne nøgles zonebegrænsning kunne ikke overføres af opgraderingen af zone-ID'er, så den matcher ingen zone. Vælg zonen igen."
+
+#: lib/Application/Service/User/UserFormMessages.php:71
+msgid "The selected user already owns the zone."
+msgstr "Den valgte bruger ejer allerede zonen."
