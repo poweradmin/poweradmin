@@ -436,6 +436,25 @@ class DnsDataService
         return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
+    /**
+     * Drop the results of a zone whose canonical id another zone shares and opens (see SharedZoneIds).
+     *
+     * @param array<int, array<string, mixed>> $items
+     * @return array<int, array<string, mixed>>
+     */
+    private function keepOpenedZones(array $items, string $idKey, string $nameKey): array
+    {
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames === [] || $items === []) {
+            return $items;
+        }
+
+        return array_values(array_filter($items, fn(array $item): bool => SharedZoneIds::isOpenedZone(
+            $openedNames,
+            ['id' => $item[$idKey] ?? 0, 'name' => $item[$nameKey] ?? '']
+        )));
+    }
+
     // ---------------------------------------------------------------
     // Private: Zone enrichment
     // ---------------------------------------------------------------
@@ -700,6 +719,9 @@ class DnsDataService
             }
         }
 
+        // Two zones can share an id; list only the one it opens, as the zone list does
+        $zones = $this->keepOpenedZones($zones, 'id', 'name');
+
         if (empty($zones)) {
             return [];
         }
@@ -821,6 +843,8 @@ class DnsDataService
                 }
             }
         }
+
+        $records = $this->keepOpenedZones($records, 'domain_id', 'zone_name');
 
         if (empty($records)) {
             return [];
