@@ -165,4 +165,32 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(4011, $zones[0]['id']);
         $this->assertSame(['admin', 'member'], $zones[0]['owners']);
     }
+
+    #[Test]
+    public function zoneListsReportTheCanonicalIdAsTheId(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
+
+        $filtered = array_column($this->repository()->getAllZonesFiltered(null, null, null, null, null), null, 'name');
+        $listed = array_column(array_values($this->repository()->listZones(1, true)), null, 'name');
+
+        foreach ([$filtered, $listed] as $byName) {
+            $this->assertSame(4011, (int)$byName['migrated.example']['id']);
+            $this->assertSame(8, (int)$byName['native.example']['id']);
+        }
+        $this->assertSame(4011, $this->repository()->getZoneById(7)['id'] ?? null, 'A zone addressed by its row id reports its canonical id');
+    }
+
+    #[Test]
+    public function zoneIdFiltersMatchTheCanonicalId(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
+
+        $this->assertSame(['migrated.example'], array_column($this->repository()->getAllZonesFiltered([4011], null, null, null, null), 'name'));
+        $this->assertSame(1, $this->repository()->getZoneCountFiltered([4011], null, null));
+        // The row id names no zone: scopes and visible ids are canonical
+        $this->assertSame(0, $this->repository()->getZoneCountFiltered([7], null, null));
+    }
 }

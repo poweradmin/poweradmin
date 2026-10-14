@@ -77,6 +77,7 @@ class ZoneCountServiceApiOwnershipTest extends TestCase
         $zones = [['id' => 40, 'name' => 'created.example.'], ['id' => 40, 'name' => 'migrated.example.']];
 
         $this->assertSame(2, $this->service($zones)->countZones('own'));
+        $this->assertSame(4, $this->service($zones)->countZones('all'), 'The zone id 40 does not open is not counted');
     }
 
     /** @param array<int, array{id: int, name: string}>|null $extraZones */

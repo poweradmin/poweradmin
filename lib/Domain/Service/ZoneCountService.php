@@ -175,20 +175,14 @@ class ZoneCountService
             $ownedIds = SharedZoneIds::filterOwned($this->db, (int)$userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
 
             $allZones = array_filter($allZones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
-            // For a shared id only the rows the user owns directly (see SharedZoneIds)
-            $sharedIds = SharedZoneIds::sharedAmong($this->db, $ownedIds);
-            if ($sharedIds !== []) {
-                $stmt = $this->db->prepare(
-                    "SELECT zone_name FROM zones WHERE zone_name IS NOT NULL AND owner = :uid AND " . CanonicalZoneSql::canonicalIdColumn() . " IN (" . implode(',', $sharedIds) . ")"
-                );
-                $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-                $stmt->execute();
-                $ownedNames = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                $allZones = array_filter($allZones, fn($z) => !in_array((int)($z['id'] ?? 0), $sharedIds, true)
-                    || in_array(rtrim((string)($z['name'] ?? ''), '.'), $ownedNames, true));
-            }
         } elseif ($perm !== 'all') {
             return 0;
+        }
+
+        // As in the lists: a shared id counts only the zone it opens (see SharedZoneIds)
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames !== []) {
+            $allZones = array_filter($allZones, fn(array $zone): bool => SharedZoneIds::isOpenedZone($openedNames, $zone));
         }
 
         // Filter by letter
