@@ -57,12 +57,15 @@
 
                     <div class="mb-4">
                         <label for="zones" class="form-label">{% trans %}Zone access{% endtrans %}</label>
-                        <select multiple class="form-select" id="zones" name="zones[]" size="8">
+                        <select multiple class="form-select" id="zones" name="zones[]"{% if not zone_scopes_ready %} disabled{% endif %} size="8">
                             {% for zone in available_zones %}
                                 <option value="{{ zone.id }}" {% if zone.id in selected_zones %}selected{% endif %}>{{ zone.utf8_name }}</option>
                             {% endfor %}
                         </select>
                         <div class="form-text">{% trans %}Leave empty to allow access to all zones available to you.{% endtrans %}</div>
+                        {% if not zone_scopes_ready %}
+                            <div class="alert alert-warning py-2 mt-2 mb-0 small">{% trans %}Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log.{% endtrans %}</div>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between">

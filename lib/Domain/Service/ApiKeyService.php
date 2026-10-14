@@ -270,9 +270,13 @@ class ApiKeyService
             return null;
         }
 
-        if ($zoneIds !== null && $zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
-            $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
-            return null;
+        if ($zoneIds !== null && !$this->apiKeyRepository->zoneScopesReady()) {
+            if ($zoneIds !== []) {
+                $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
+                return null;
+            }
+            // The form cannot show unmigrated restrictions, so an empty list must not clear them
+            $zoneIds = null;
         }
 
         // Update the API key
@@ -560,6 +564,15 @@ class ApiKeyService
         $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
 
         return $valid === [] ? null : $valid;
+    }
+
+    /**
+     * Whether zone restrictions can be shown and changed; false until the one-time scope
+     * move has run (see ApiKeyRepositoryInterface::zoneScopesReady()).
+     */
+    public function zoneScopesReady(): bool
+    {
+        return $this->apiKeyRepository->zoneScopesReady();
     }
 
     private static function zoneScopesNotReadyMessage(): string

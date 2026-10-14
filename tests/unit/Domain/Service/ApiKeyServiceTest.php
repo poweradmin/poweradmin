@@ -527,4 +527,24 @@ class ApiKeyServiceTest extends TestCase
 
         $this->assertNull($this->service->createApiKey('scoped', null, false, null, [5]));
     }
+
+    #[Test]
+    public function testAnEditWithNoZonesKeepsUnmigratedRestrictions(): void
+    {
+        // The form shows no zone selected while restrictions are unmigrated, so [] must not clear them
+        $this->config->method('get')->willReturnMap([
+            ['api', 'enabled', false, true],
+        ]);
+        $this->grantPermissions(['user_is_ueberuser']);
+        $apiKey = $this->createMock(ApiKey::class);
+        $apiKey->method('getId')->willReturn(5);
+        $apiKey->method('getCreatedBy')->willReturn(7);
+        $this->apiKeyRepository->method('findById')->with(5)->willReturn($apiKey);
+        $this->apiKeyRepository->method('getZoneIds')->with(5)->willReturn([0]);
+        $this->apiKeyRepository->method('zoneScopesReady')->willReturn(false);
+        $this->apiKeyRepository->method('save')->willReturn($apiKey);
+        $this->apiKeyRepository->expects($this->never())->method('saveZoneIds');
+
+        $this->assertSame($apiKey, $this->service->updateApiKey(5, 'renamed', null, false, false, null, []));
+    }
 }
