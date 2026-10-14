@@ -139,11 +139,14 @@ class ZoneSearch extends BaseSearch
         // Build WHERE conditions
         $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $params);
 
+        // Set correct alias for outer sort.
+        $sort_zones_by_outer = str_replace($domains_table, 'd', $sort_zones_by);
+
         $zonesQuery = "
             SELECT
-                $domains_table.id,
-                $domains_table.name,
-                $domains_table.type,
+                d.id,
+                d.name,
+                d.type,
                 z.id as zone_id,
                 z.domain_id,
                 z.owner,
@@ -152,15 +155,23 @@ class ZoneSearch extends BaseSearch
                 u.username,
                 record_count.count_records
                 $comment_field
-            FROM
-                $domains_table
-            LEFT JOIN zones z on $domains_table.id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
-            WHERE
-                " . $whereConditions .
-            ' ORDER BY ' . $sort_zones_by .
-            ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
+            FROM (
+                -- Subquery: filtra e pagina solo sui domini per garantire risultati unici
+                SELECT id, name, type
+                FROM $domains_table
+                WHERE " . $whereConditions . "
+                ORDER BY " . $sort_zones_by . "
+                LIMIT " . $iface_rowamount . " OFFSET " . $offset . "
+            ) d
+            LEFT JOIN zones z ON d.id = z.domain_id
+            LEFT JOIN users u ON z.owner = u.id
+            LEFT JOIN (
+                SELECT COUNT(domain_id) AS count_records, domain_id
+                FROM $records_table
+                WHERE type IS NOT NULL
+                GROUP BY domain_id
+            ) record_count ON record_count.domain_id = d.id
+            ORDER BY " . $sort_zones_by_outer;
 
         $stmt = $this->db->prepare($zonesQuery);
         $stmt->execute($params);
