@@ -825,6 +825,81 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         });
     }
 
+    public function handOverNamedZoneRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        if ($fromUserId === $toUserId) {
+            return null;
+        }
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            return $this->moveNamedRow($zoneId, $fromUserId, $toUserId);
+        }
+
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $fromUserId, $toUserId): ?bool {
+            $transaction->begin();
+            try {
+                $moved = $this->moveNamedRow($zoneId, $fromUserId, $toUserId);
+                $transaction->commit();
+
+                return $moved;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    private function moveNamedRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        $this->queueOwnershipWriters();
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :owner AND zone_name IS NOT NULL AND " . $this->canonicalId() . " = :zone_id");
+        $stmt->bindValue(':owner', $fromUserId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $namedRows = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        if ($namedRows === []) {
+            return null;
+        }
+        if (SharedZoneIds::isShared($this->db, $zoneId)) {
+            // Ownership of a shared id is checked on the row it opens, so only that row may move
+            $stmt = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id, owner'));
+            CanonicalZoneSql::bindZoneId($stmt, $zoneId);
+            $stmt->execute();
+            $opened = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!is_array($opened) || (int)$opened['owner'] !== $fromUserId) {
+                return false;
+            }
+            $namedRows = [(int)$opened['id']];
+        }
+
+        // Conditioned on the owner: the UPDATE reads the current row even where the snapshot predates a change
+        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE id = :id AND owner = :from_owner");
+        $moved = false;
+        foreach ($namedRows as $rowId) {
+            $stmt->bindValue(':owner', $toUserId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+            $stmt->bindValue(':from_owner', $fromUserId, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $moved = true;
+                $this->syncZoneAccountAfterCommit($rowId);
+            }
+        }
+        if (!$moved) {
+            return null;
+        }
+
+        // The new owner's unnamed row would duplicate the named row it now holds
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id AND owner = :owner");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $toUserId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return true;
+    }
+
     /**
      * Adds the owner row once the writers ahead have finished, so a concurrent request for the
      * same user cannot store a second row. A user who already owns the zone counts as added.

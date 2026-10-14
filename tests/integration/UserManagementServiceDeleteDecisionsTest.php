@@ -191,6 +191,64 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->assertSame(1, $this->rows('zones WHERE domain_id = 10 AND owner = ' . self::ADMIN_USER_ID));
     }
 
+    #[RunInSeparateProcess]
+    public function testAZoneHandedToANewOwnerInApiModeKeepsItsRowAndId(): void
+    {
+        $this->createApiModeTables();
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . "), (6, 'other', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        // b.example is the target's; the new owner already holds an unnamed row on it; c.example is someone else's
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES
+            (12, 12, " . self::TARGET . ", 'b.example'), (41, 12, " . self::ADMIN_USER_ID . ", NULL), (20, 20, 6, 'c.example')");
+
+        $decisions = [['zid' => 12, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID]];
+        $result = $this->service(true)->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(0, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(1, $this->rows("zones WHERE id = 12 AND domain_id = 12 AND zone_name = 'b.example' AND owner = " . self::ADMIN_USER_ID));
+        $this->assertSame(0, $this->rows('zones WHERE id = 41'));
+        $this->assertSame(1, $this->rows("zones WHERE id = 20 AND owner = 6"));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAHandoverOnASharedIdMovesTheZoneTheIdOpensWhenItIsTheUsers(): void
+    {
+        $this->createApiModeTables();
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . "), (6, 'other', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        // Id 70 opens q.example (the target's); p.example of another user shares the id
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, 6, 'p.example'), (71, 70, " . self::TARGET . ", 'q.example')");
+
+        $decisions = [['zid' => 70, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID]];
+        $result = $this->service(true)->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(1, $this->rows('zones WHERE id = 71 AND owner = ' . self::ADMIN_USER_ID));
+        $this->assertSame(1, $this->rows('zones WHERE id = 70 AND owner = 6'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAHandoverOnASharedIdOfAZoneItDoesNotOpenIsRefused(): void
+    {
+        $this->createApiModeTables();
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . "), (6, 'other', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        // Id 70 opens q.example (user 6's); p.example of the target shares the id
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, " . self::TARGET . ", 'p.example'), (71, 70, 6, 'q.example')");
+
+        $decisions = [['zid' => 70, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID]];
+        $result = $this->service(true)->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(0, $this->rows('zones WHERE domain_id = 70 AND owner = ' . self::ADMIN_USER_ID));
+        $this->assertSame(1, $this->rows('zones WHERE id = 71 AND owner = 6'));
+    }
+
+    private function createApiModeTables(): void
+    {
+        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
+        $this->db->exec("ALTER TABLE zones ADD COLUMN comment TEXT");
+    }
+
     /**
      * @param array<int, string> $extraPermissions perm_items id => name granted on top of user_edit_others
      */
@@ -208,17 +266,17 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::USER_ADMIN . ", 'useradmin', 20), (" . self::TARGET . ", 'target', 20)");
     }
 
-    private function service(): UserManagementService
+    private function service(bool $apiBackend = false): UserManagementService
     {
         // Refusal tests never reach the zone service; a bare mock fails loudly if they do
         $this->zoneService ??= $this->createMock(ZoneManagementService::class);
         $config = $this->sqliteConfiguration();
-        $userRepository = new DbUserRepository($this->db, $config, false);
+        $userRepository = new DbUserRepository($this->db, $config, $apiBackend);
         $permissions = new PermissionService($userRepository);
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainNameById')->willReturn('zone.example');
-        $backend = $this->dnsBackendStub(false);
+        $backend = $this->dnsBackendStub($apiBackend);
         $backend->method('deleteZone')->willReturn(true);
         $domainManager = new DomainManager(
             new PdoTransaction($this->db),

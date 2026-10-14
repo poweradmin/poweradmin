@@ -88,7 +88,7 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('isLastUberuser')->willReturn(false);
         $this->userRepository->method('deleteUser')->willReturn(true);
         $this->permissionService->method('canEditZoneMeta')->willReturn(true);
-        $this->domainManager->method('addOwnerToZone')
+        $this->domainManager->method('handOverZone')
             ->willReturnCallback(fn(int $zoneId): ZoneWriteResult => ZoneWriteResult::ok($zoneId));
 
         $forgotten = [];
@@ -114,8 +114,8 @@ class UserManagementServiceTest extends TestCase
         $this->userRepository->method('deleteUser')->willReturn(true);
         $this->permissionService->method('canEditZoneMeta')->willReturn(true);
         $added = [];
-        $this->domainManager->method('addOwnerToZone')
-            ->willReturnCallback(function (int $zoneId, int $userId) use (&$added): ZoneWriteResult {
+        $this->domainManager->method('handOverZone')
+            ->willReturnCallback(function (int $zoneId, int $fromUserId, int $userId) use (&$added): ZoneWriteResult {
                 $added[] = [$zoneId, $userId];
                 return ZoneWriteResult::ok($zoneId);
             });

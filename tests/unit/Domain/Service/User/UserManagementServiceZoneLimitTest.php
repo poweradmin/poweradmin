@@ -122,7 +122,7 @@ class UserManagementServiceZoneLimitTest extends TestCase
         $this->limit->expects($this->once())->method('reassignZones')
             ->with([2 => [11, 13], 3 => [12]])
             ->willReturn(new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'carol', 1, 1));
-        $this->domainManager->expects($this->never())->method('addOwnerToZone');
+        $this->domainManager->expects($this->never())->method('handOverZone');
         $this->zones->expects($this->never())->method('deleteZone');
         $this->userRepository->expects($this->never())->method('deleteUser');
 
@@ -144,8 +144,8 @@ class UserManagementServiceZoneLimitTest extends TestCase
         $this->permissionService->method('canDeleteZoneById')->willReturn(true);
         $calls = [];
         $this->limit->method('reassignZones')->willReturnCallback(fn(array $zonesByUser, callable $write): bool => $write());
-        $this->domainManager->expects($this->exactly(2))->method('addOwnerToZone')
-            ->willReturnCallback(function (int $zoneId, int $userId) use (&$calls): ZoneWriteResult {
+        $this->domainManager->expects($this->exactly(2))->method('handOverZone')
+            ->willReturnCallback(function (int $zoneId, int $fromUserId, int $userId) use (&$calls): ZoneWriteResult {
                 $calls[] = "assign $zoneId to $userId";
                 return ZoneWriteResult::ok($zoneId);
             });
@@ -175,7 +175,7 @@ class UserManagementServiceZoneLimitTest extends TestCase
             $written = $write();
             return $written;
         });
-        $this->domainManager->method('addOwnerToZone')->willReturn(ZoneWriteResult::limitReached($breach));
+        $this->domainManager->method('handOverZone')->willReturn(ZoneWriteResult::limitReached($breach));
         $this->zones->expects($this->never())->method('deleteZone');
         $this->userRepository->expects($this->never())->method('deleteUser');
 

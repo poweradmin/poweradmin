@@ -83,6 +83,12 @@ interface DomainManagerInterface
     public function addOwnerToZone(int $zone_id, int $user_id): ZoneWriteResult;
 
     /**
+     * Give a zone of a user being deleted to another user; where the user's row carries the
+     * zone (API backend) it changes owner, otherwise the new owner is added
+     */
+    public function handOverZone(int $zone_id, int $from_user_id, int $to_user_id): ZoneWriteResult;
+
+    /**
      * Apply a zone template to a zone, or unlink it with template id 0.
      *
      * @param int $dns_ttl Default TTL

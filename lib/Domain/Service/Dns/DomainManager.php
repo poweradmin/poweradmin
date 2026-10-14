@@ -639,6 +639,23 @@ final class DomainManager implements DomainManagerInterface
         return ZoneWriteResult::ok($zone_id);
     }
 
+    public function handOverZone(int $zone_id, int $from_user_id, int $to_user_id): ZoneWriteResult
+    {
+        if (!$this->userCanEditZoneMetadata($zone_id) || $this->userRepository->getUserById($to_user_id) === null) {
+            return $this->addOwnerToZone($zone_id, $to_user_id);
+        }
+
+        $moved = $this->repositoryFactory->createZoneRepository()->handOverNamedZoneRow($zone_id, $from_user_id, $to_user_id);
+        if ($moved === null) {
+            return $this->addOwnerToZone($zone_id, $to_user_id);
+        }
+        if (!$moved) {
+            return ZoneWriteResult::failure(_('Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them.'), Refusal::CONFLICT);
+        }
+
+        return ZoneWriteResult::ok($zone_id);
+    }
+
     /**
      * Add a user as an owner of a zone. An existing owner is left as is and
      * reported as success.

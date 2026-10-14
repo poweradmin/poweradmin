@@ -671,7 +671,7 @@ class UserManagementService
 
         // Reassignments go first and all at once, so a refusal comes before any zone is deleted
         $failure = null;
-        $reassign = function () use ($zonesByNewOwner, &$failure): bool {
+        $reassign = function () use ($zonesByNewOwner, $userId, &$failure): bool {
             // Ascending zone order, so two requests locking overlapping zones queue instead of deadlocking
             $reassignments = [];
             foreach ($zonesByNewOwner as $newOwnerId => $zoneIds) {
@@ -681,7 +681,7 @@ class UserManagementService
             }
             usort($reassignments, static fn(array $a, array $b): int => $a[0] <=> $b[0]);
             foreach ($reassignments as [$zoneId, $newOwnerId]) {
-                $result = $this->domainManager->addOwnerToZone($zoneId, $newOwnerId);
+                $result = $this->domainManager->handOverZone($zoneId, $userId, $newOwnerId);
                 if (!$result->success) {
                     $failure = $result;
                     return false;

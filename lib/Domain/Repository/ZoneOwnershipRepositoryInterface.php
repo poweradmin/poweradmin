@@ -69,6 +69,13 @@ interface ZoneOwnershipRepositoryInterface
     public function addOwnerToZone(int $zoneId, int $userId): bool;
 
     /**
+     * Give the named zone row a user being deleted holds to another user, so the zone stays.
+     * Null when the backend keeps no such row or the user holds none (add an owner instead);
+     * false when the id is shared and the row it opens is not that user's.
+     */
+    public function handOverNamedZoneRow(int $zoneId, int $fromUserId, int $toUserId): ?bool;
+
+    /**
      * Remove owner from zone
      *
      * @param int $zoneId The zone ID

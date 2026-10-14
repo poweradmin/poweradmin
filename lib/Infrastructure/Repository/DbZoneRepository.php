@@ -999,6 +999,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return false;
     }
 
+    public function handOverNamedZoneRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        // SQL mode keeps the zone in the domains table, so an added owner is enough
+        return null;
+    }
+
     /**
      * Check if user is already an owner of the zone
      *
