@@ -1538,6 +1538,7 @@ return array(
     'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => $baseDir . '/lib/Infrastructure/Repository/SqlRecordRepository.php',
     'Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider' => $baseDir . '/lib/Infrastructure/Service/ApiDnsBackendProvider.php',
     'Poweradmin\\Infrastructure\\Service\\ApiKeyAuthenticationMiddleware' => $baseDir . '/lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php',
+    'Poweradmin\\Infrastructure\\Service\\ApiKeyZoneScopeMigration' => $baseDir . '/lib/Infrastructure/Service/ApiKeyZoneScopeMigration.php',
     'Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware' => $baseDir . '/lib/Infrastructure/Service/BasicAuthenticationMiddleware.php',
     'Poweradmin\\Infrastructure\\Service\\DnsSecApiProvider' => $baseDir . '/lib/Infrastructure/Service/DnsSecApiProvider.php',
     'Poweradmin\\Infrastructure\\Service\\DnsServiceFactory' => $baseDir . '/lib/Infrastructure/Service/DnsServiceFactory.php',

@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -203,7 +203,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Create API key service to validate the key against the database
         $config = $this->getConfig();
-        $apiKeyRepository = new DbApiKeyRepository($this->db, $config);
+        $apiKeyRepository = DbApiKeyRepository::withCanonicalZoneScopes($this->db, $config);
         $messageService = new MessageService();
         $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config, $messageService);
 

@@ -1948,6 +1948,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Repository\\SqlRecordRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Repository/SqlRecordRepository.php',
         'Poweradmin\\Infrastructure\\Service\\ApiDnsBackendProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiDnsBackendProvider.php',
         'Poweradmin\\Infrastructure\\Service\\ApiKeyAuthenticationMiddleware' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php',
+        'Poweradmin\\Infrastructure\\Service\\ApiKeyZoneScopeMigration' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/ApiKeyZoneScopeMigration.php',
         'Poweradmin\\Infrastructure\\Service\\BasicAuthenticationMiddleware' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/BasicAuthenticationMiddleware.php',
         'Poweradmin\\Infrastructure\\Service\\DnsSecApiProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/DnsSecApiProvider.php',
         'Poweradmin\\Infrastructure\\Service\\DnsServiceFactory' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/DnsServiceFactory.php',

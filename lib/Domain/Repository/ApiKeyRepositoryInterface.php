@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -121,4 +121,10 @@ interface ApiKeyRepositoryInterface
      * @return void
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void;
+
+    /**
+     * Whether stored zone scopes hold the canonical zone ids the checks compare. While they
+     * do not, a restricted key matches no zone and new restrictions must not be saved.
+     */
+    public function zoneScopesReady(): bool;
 }

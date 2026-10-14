@@ -510,4 +510,21 @@ class ApiKeyServiceTest extends TestCase
 
         $this->assertSame($saved, $this->service->createApiKey('my-key'));
     }
+
+    #[Test]
+    public function testZoneRestrictionsAreRefusedUntilStoredScopesAreCanonical(): void
+    {
+        $this->config->method('get')->willReturnMap([
+            ['api', 'enabled', false, true],
+            ['api', 'max_keys_per_user', 5, 5],
+        ]);
+        $this->grantPermissions(['user_is_ueberuser']);
+        $this->apiKeyRepository->method('zoneScopesReady')->willReturn(false);
+        $this->apiKeyRepository->expects($this->never())->method('save');
+        $this->apiKeyRepository->expects($this->never())->method('saveZoneIds');
+        $this->messageService->expects($this->once())->method('addSystemError')
+            ->with('Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log.');
+
+        $this->assertNull($this->service->createApiKey('scoped', null, false, null, [5]));
+    }
 }

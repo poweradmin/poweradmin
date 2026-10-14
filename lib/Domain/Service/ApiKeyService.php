@@ -215,6 +215,11 @@ class ApiKeyService
             return null;
         }
 
+        if ($zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
+            $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
+            return null;
+        }
+
         // Create and save the new API key
         $apiKey = new ApiKey(
             $name,
@@ -262,6 +267,11 @@ class ApiKeyService
             !$this->currentUserHasPermission('api_manage_keys')
         ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
+            return null;
+        }
+
+        if ($zoneIds !== null && $zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
+            $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
             return null;
         }
 
@@ -550,5 +560,10 @@ class ApiKeyService
         $valid = array_values(array_intersect(ApiKeyScope::OPERATIONS, $operations));
 
         return $valid === [] ? null : $valid;
+    }
+
+    private static function zoneScopesNotReadyMessage(): string
+    {
+        return _('Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log.');
     }
 }

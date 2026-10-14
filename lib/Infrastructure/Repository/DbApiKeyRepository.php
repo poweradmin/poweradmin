@@ -29,6 +29,8 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
+use Poweradmin\Infrastructure\Service\ApiKeyZoneScopeMigration;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -51,12 +53,30 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      * @param PDO $db The PDO database layer
      * @param ConfigurationManager $config The configuration manager
      * @param LoggerInterface|null $logger The logger instance
+     * @param bool $zoneScopesReady False while the one-time scope migration has not run (see ApiKeyZoneScopeMigration)
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null, private readonly bool $zoneScopesReady = true)
     {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
+    }
+
+    /**
+     * The repository every request uses: it moves stored zone scopes to canonical zone ids
+     * first, once, so no scope is read or saved before that (see ApiKeyZoneScopeMigration).
+     */
+    public static function withCanonicalZoneScopes(PDO $db, ConfigurationManager $config): self
+    {
+        $isApiBackend = $config->get('dns', 'backend') === 'api';
+        $ready = (new ApiKeyZoneScopeMigration($db, $isApiBackend, new PhpErrorLogPsrLogger()))->runOnce();
+
+        return new self($db, $config, null, $ready);
+    }
+
+    public function zoneScopesReady(): bool
+    {
+        return $this->zoneScopesReady;
     }
 
     /**
@@ -383,8 +403,10 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         $stmt = $this->db->prepare("SELECT zone_id FROM api_key_zones WHERE api_key_id = :apiKeyId ORDER BY zone_id");
         $stmt->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
         $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        // Unmigrated values could name another zone; a restricted key then reaches none
+        return $this->zoneScopesReady || $zoneIds === [] ? $zoneIds : [0];
     }
 
     /**

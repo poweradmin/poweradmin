@@ -52,7 +52,7 @@ class ApiKeyAuthenticationMiddleware
     public function __construct(PDO $db, ConfigurationManager $config)
     {
         $this->config = $config;
-        $apiKeyRepository = new DbApiKeyRepository($db, $config);
+        $apiKeyRepository = DbApiKeyRepository::withCanonicalZoneScopes($db, $config);
         $messageService = new MessageService();
         $this->apiKeyService = new ApiKeyService($apiKeyRepository, $db, $config, $messageService);
     }

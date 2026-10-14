@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -64,7 +64,7 @@ class ApiKeysController extends BaseController
         parent::__construct($request);
 
         $this->routeName = (string)($request['page'] ?? '');
-        $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->config);
+        $this->apiKeyRepository = DbApiKeyRepository::withCanonicalZoneScopes($this->db, $this->config);
         $this->apiKeyService = new ApiKeyService(
             $this->apiKeyRepository,
             $this->db,
