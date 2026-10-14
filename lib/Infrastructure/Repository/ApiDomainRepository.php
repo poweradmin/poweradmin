@@ -41,6 +41,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Psr\Log\LoggerInterface;
 
 /**
  * Domain lookups for the API backend mode, read through PowerDNS.
@@ -52,9 +53,11 @@ final class ApiDomainRepository implements DomainRepositoryInterface
     private HostnameValidator $hostnameValidator;
     private ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider;
     private SessionInterface $session;
+    private ?LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider, SessionInterface $session)
+    public function __construct(PDO $db, ConfigurationInterface $config, ZoneReadBackendInterface&BackendCapabilitiesInterface $backendProvider, SessionInterface $session, ?LoggerInterface $logger = null)
     {
+        $this->logger = $logger;
         $this->db = $db;
         $this->session = $session;
         $this->config = $config;
@@ -140,7 +143,7 @@ final class ApiDomainRepository implements DomainRepositoryInterface
         $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
-        $syncService = new ZoneSyncService($this->db, $this->backendProvider, $this->session, accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config));
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider, $this->session, 300, $this->logger, accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config));
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);

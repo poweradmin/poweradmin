@@ -124,7 +124,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
     public function createDomainRepository(): DomainRepositoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
-            return new ApiDomainRepository($this->db, $this->config, $this->backendProvider, $this->session);
+            return new ApiDomainRepository($this->db, $this->config, $this->backendProvider, $this->session, $this->logger);
         }
         return new SqlDomainRepository($this->db, $this->config);
     }

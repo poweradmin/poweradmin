@@ -213,7 +213,7 @@ final class BackendServices
 
     public function dnsDataService(): DnsDataService
     {
-        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor, $this->session, $this->accountOwnerLookup());
+        return $this->dnsDataService ??= new DnsDataService($this->repositoryFactory(), $this->dnsBackendProvider(), $this->db, $this->actor, $this->session, $this->accountOwnerLookup(), $this->logger);
     }
 
     public function zoneMetadataStore(): ZoneMetadataStoreInterface

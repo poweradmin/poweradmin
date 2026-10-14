@@ -32,6 +32,7 @@ use Poweradmin\Domain\Port\RecordSearchInterface;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Psr\Log\LoggerInterface;
 
 /**
  * Orchestration service for DNS data reads.
@@ -56,14 +57,15 @@ class DnsDataService
         PDO $db,
         ActorInterface $actor,
         SessionInterface $session,
-        ?AccountOwnerLookup $accountOwners = null
+        ?AccountOwnerLookup $accountOwners = null,
+        ?LoggerInterface $logger = null
     ) {
         $this->repositoryFactory = $repositoryFactory;
         $this->backendProvider = $backendProvider;
         $this->actor = $actor;
 
         if ($backendProvider->isApiBackend()) {
-            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, $session, accountOwners: $accountOwners);
+            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, $session, 300, $logger, accountOwners: $accountOwners);
         }
     }
 
