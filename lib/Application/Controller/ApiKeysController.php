@@ -268,8 +268,8 @@ class ApiKeysController extends BaseController
                 }
             }
 
-            // Update the API key
-            $apiKey = $this->apiKeyService->updateApiKey(
+            // Kept apart from $apiKey, so a refused edit re-renders the stored key
+            $updated = $this->apiKeyService->updateApiKey(
                 $id,
                 $name,
                 $expiresAtDate,
@@ -279,13 +279,13 @@ class ApiKeysController extends BaseController
                 $scope['zones']
             );
 
-            if ($apiKey !== null) {
+            if ($updated !== null) {
                 $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_edit key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     $this->getUserContextService()->getLoggedInUsername(),
                     $id,
-                    $apiKey->getName()
+                    $updated->getName()
                 ));
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
