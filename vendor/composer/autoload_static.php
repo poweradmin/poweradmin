@@ -1894,6 +1894,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Configuration\\ConfigurationRegistry' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigurationRegistry.php',
         'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
         'Poweradmin\\Infrastructure\\Configuration\\ThemePathResolver' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ThemePathResolver.php',
+        'Poweradmin\\Infrastructure\\Database\\CanonicalZoneIdAllocator' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/CanonicalZoneIdAllocator.php',
         'Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/CanonicalZoneSql.php',
         'Poweradmin\\Infrastructure\\Database\\DbCompat' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DbCompat.php',
         'Poweradmin\\Infrastructure\\Database\\DbDriver' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DbDriver.php',

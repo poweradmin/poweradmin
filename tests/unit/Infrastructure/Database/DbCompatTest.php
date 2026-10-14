@@ -277,4 +277,12 @@ class DbCompatTest extends TestCase
         $this->assertSame('CAST(records.id AS TEXT)', DbCompat::castToString('sqlite', 'records.id'));
         $this->assertSame('CAST(records.id AS VARCHAR)', DbCompat::castToString('pgsql', 'records.id'));
     }
+
+    public function testRowLockLocksOnServerBackendsOnly(): void
+    {
+        $this->assertSame(' FOR UPDATE', DbCompat::rowLock('mysql'));
+        $this->assertSame(' FOR UPDATE', DbCompat::rowLock('pgsql'));
+        $this->assertSame('', DbCompat::rowLock('sqlite'));
+        $this->assertSame('', DbCompat::rowLock('unknown'));
+    }
 }

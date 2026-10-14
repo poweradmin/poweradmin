@@ -1484,6 +1484,7 @@ return array(
     'Poweradmin\\Infrastructure\\Configuration\\ConfigurationRegistry' => $baseDir . '/lib/Infrastructure/Configuration/ConfigurationRegistry.php',
     'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => $baseDir . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
     'Poweradmin\\Infrastructure\\Configuration\\ThemePathResolver' => $baseDir . '/lib/Infrastructure/Configuration/ThemePathResolver.php',
+    'Poweradmin\\Infrastructure\\Database\\CanonicalZoneIdAllocator' => $baseDir . '/lib/Infrastructure/Database/CanonicalZoneIdAllocator.php',
     'Poweradmin\\Infrastructure\\Database\\CanonicalZoneSql' => $baseDir . '/lib/Infrastructure/Database/CanonicalZoneSql.php',
     'Poweradmin\\Infrastructure\\Database\\DbCompat' => $baseDir . '/lib/Infrastructure/Database/DbCompat.php',
     'Poweradmin\\Infrastructure\\Database\\DbDriver' => $baseDir . '/lib/Infrastructure/Database/DbDriver.php',

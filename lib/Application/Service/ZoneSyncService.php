@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -206,15 +208,19 @@ class ZoneSyncService
         }
 
         $count = 0;
+        $allocator = null;
         try {
             foreach ($missing as $name => $zone) {
                 $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
                 if ($insertStmt->execute()) {
-                    // Set domain_id = id (self-referencing for API mode compatibility)
-                    $id = $this->db->lastInsertId('zones_id_seq');
-                    $updateStmt->execute([':did' => $id, ':id' => $id]);
+                    // The canonical id: the row id, unless another zone or grant already uses that number
+                    $id = (int)$this->db->lastInsertId('zones_id_seq');
+                    $allocator ??= new CanonicalZoneIdAllocator($this->db);
+                    $updateStmt->bindValue(':did', $allocator->allocate($id), PDO::PARAM_INT);
+                    $updateStmt->bindValue(':id', $id, PDO::PARAM_INT);
+                    $updateStmt->execute();
                     $count++;
                 }
             }
@@ -251,7 +257,8 @@ class ZoneSyncService
             $zoneId = $local['id'];
             $canonicalId = $local['canonical_id'] ?? $zoneId;
 
-            // Group grants and extra owners are keyed by the canonical zone id, as in zone delete
+            // Grants and extra owners are keyed by the canonical id; on an id another zone shares
+            // they cannot be attributed, so they go too rather than falling to that zone
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
             $stmt->execute([':id' => $canonicalId]);
             $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");

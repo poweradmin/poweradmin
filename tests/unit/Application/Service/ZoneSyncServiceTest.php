@@ -45,7 +45,11 @@ class ZoneSyncServiceTest extends TestCase
         $updateStmt = $this->createMock(PDOStatement::class);
         $updateStmt->method('execute')->willReturn(true);
 
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($insertStmt, $updateStmt);
+        // The allocator reads zone ids, group assignments and key scopes (none)
+        $idsStmt = $this->createMock(PDOStatement::class);
+        $idsStmt->method('fetchAll')->willReturn([]);
+
+        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($insertStmt, $updateStmt, $idsStmt, $idsStmt, $idsStmt);
         $this->mockDb->method('lastInsertId')->willReturn('1');
 
         $result = $this->service->sync();
@@ -110,6 +114,41 @@ class ZoneSyncServiceTest extends TestCase
 
         $result = $this->service->sync();
 
+        $this->assertSame(1, $result['removed']);
+        $this->assertContains(['DELETE FROM zones_groups WHERE domain_id = :id', [':id' => 77]], $executed);
+        $this->assertContains(['DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id', [':id' => 77]], $executed);
+        $this->assertContains(['DELETE FROM zones WHERE id = :id', [':id' => 2]], $executed);
+    }
+
+    public function testSyncDropsGrantsOnACanonicalIdAnotherZoneShares(): void
+    {
+        $this->mockBackend->method('getZones')->willReturn([
+            ['name' => 'kept.com', 'type' => 'NATIVE', 'master' => null],
+        ]);
+
+        // kept.com was created here with id 77; the vanished migrated zone carries domain_id 77 too
+        $localStmt = $this->createMock(PDOStatement::class);
+        $localStmt->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 77, 'domain_id' => 77, 'zone_name' => 'kept.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
+            ['id' => 2, 'domain_id' => 77, 'zone_name' => 'orphan.com', 'zone_type' => 'NATIVE', 'zone_master' => null],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($localStmt);
+
+        $executed = [];
+        $this->mockDb->method('prepare')->willReturnCallback(function (string $sql) use (&$executed) {
+            $stmt = $this->createMock(PDOStatement::class);
+            $stmt->method('execute')->willReturnCallback(function (?array $params = null) use ($sql, &$executed) {
+                $executed[] = [$sql, $params];
+                return true;
+            });
+            $stmt->method('fetchColumn')->willReturn(str_starts_with($sql, 'SELECT COUNT(*) FROM zones') ? 2 : false);
+            return $stmt;
+        });
+
+        $result = $this->service->sync();
+
+        // Grants on 77 cannot be told apart, so they go rather than passing to kept.com
         $this->assertSame(1, $result['removed']);
         $this->assertContains(['DELETE FROM zones_groups WHERE domain_id = :id', [':id' => 77]], $executed);
         $this->assertContains(['DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id', [':id' => 77]], $executed);

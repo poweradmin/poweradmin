@@ -104,6 +104,18 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to the clause that locks the selected rows for
+     * the rest of the transaction. SQLite serialises writers, so it needs none.
+     */
+    private const ROW_LOCK_CLAUSES = [
+        'mysql' => ' FOR UPDATE',
+        'mysqli' => ' FOR UPDATE',
+        'pgsql' => ' FOR UPDATE',
+        'sqlite' => '',
+        'default' => ''
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -112,6 +124,17 @@ final class DbCompat
     public static function substr(string $db_type): string
     {
         return self::SUBSTRING_FUNCTIONS[$db_type] ?? self::SUBSTRING_FUNCTIONS['default'];
+    }
+
+    /**
+     * Returns the clause that locks the selected rows until the transaction ends.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The row-locking clause, empty for database types that have none.
+     */
+    public static function rowLock(string $db_type): string
+    {
+        return self::ROW_LOCK_CLAUSES[$db_type] ?? self::ROW_LOCK_CLAUSES['default'];
     }
 
     /**
