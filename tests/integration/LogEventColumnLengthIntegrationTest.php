@@ -38,8 +38,16 @@ use Poweradmin\Infrastructure\Logger\DbZoneLogger;
  */
 class LogEventColumnLengthIntegrationTest extends TestCase
 {
-    private const MYSQL_DB = 'poweradmin_it';
-    private const PGSQL_SCHEMA = 'poweradmin_it';
+    /** Per-process names, so parallel suite runs do not drop each other's scratch data. */
+    private static function pgsqlSchema(): string
+    {
+        return 'poweradmin_it_' . getmypid();
+    }
+
+    private static function mysqlDb(): string
+    {
+        return 'poweradmin_it_' . getmypid();
+    }
 
     private mixed $savedConfigInstance = null;
 
@@ -49,11 +57,6 @@ class LogEventColumnLengthIntegrationTest extends TestCase
         $property = new \ReflectionProperty(ConfigurationManager::class, 'instance');
         $this->savedConfigInstance = $property->getValue();
         $property->setValue(null, null);
-    }
-
-    protected function tearDown(): void
-    {
-        (new \ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
     }
 
     /** @return array<string, array{string}> */
@@ -68,17 +71,17 @@ class LogEventColumnLengthIntegrationTest extends TestCase
         try {
             if ($engine === 'mysql') {
                 $db = new PDO('mysql:host=127.0.0.1;port=3306;charset=utf8mb4', 'root', 'uberuser', $options);
-                $db->exec('CREATE DATABASE IF NOT EXISTS ' . self::MYSQL_DB);
-                $db->exec('USE ' . self::MYSQL_DB);
+                $db->exec('CREATE DATABASE IF NOT EXISTS ' . self::mysqlDb());
+                $db->exec('USE ' . self::mysqlDb());
                 $db->exec("SET SESSION sql_mode = 'STRICT_ALL_TABLES'");
                 $id = 'id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY';
                 $tail = 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
                 $created = 'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
             } else {
                 $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-                $db->exec('DROP SCHEMA IF EXISTS ' . self::PGSQL_SCHEMA . ' CASCADE');
-                $db->exec('CREATE SCHEMA ' . self::PGSQL_SCHEMA);
-                $db->exec('SET search_path TO ' . self::PGSQL_SCHEMA);
+                $db->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
+                $db->exec('CREATE SCHEMA ' . self::pgsqlSchema());
+                $db->exec('SET search_path TO ' . self::pgsqlSchema());
                 $id = 'id SERIAL PRIMARY KEY';
                 $tail = '';
                 $created = 'created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP';
@@ -95,6 +98,19 @@ class LogEventColumnLengthIntegrationTest extends TestCase
         $db->exec("CREATE TABLE log_zones ($id, event VARCHAR(2048) NOT NULL, $created, priority INT NOT NULL$zoneColumn) $tail");
 
         return $db;
+    }
+
+    protected function tearDown(): void
+    {
+        (new \ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
+        try {
+            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::mysqlDb());
+        } catch (PDOException) {
+        }
+        try {
+            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::pgsqlSchema() . ' CASCADE');
+        } catch (PDOException) {
+        }
     }
 
     private function longMessage(): string
