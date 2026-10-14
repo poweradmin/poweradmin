@@ -235,6 +235,14 @@ class UserManager
 
             return false;
         } else {
+            // A zone handed to the user being deleted would go with them; refuse before any zone is touched
+            foreach ($zones as $zone) {
+                if (is_array($zone) && ($zone['target'] ?? null) === 'new_owner' && (int)($zone['newowner'] ?? 0) === $uid) {
+                    $this->messageService->addSystemError(_('The selected user already owns the zone.'));
+                    return false;
+                }
+            }
+
             $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {

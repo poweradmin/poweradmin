@@ -14,6 +14,7 @@
 
 namespace Poweradmin\Tests\Integration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PDO;
 use Poweradmin\Domain\Model\UserManager;
@@ -242,13 +243,25 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
-    public function testHandingAZoneToTheUserBeingDeletedSaysTheyAlreadyOwnIt(): void
+    #[DataProvider('backends')]
+    public function testHandingAZoneToTheUserBeingDeletedIsRefusedBeforeAnythingChanges(string $backend): void
     {
-        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+        $zonesBefore = $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
+
+        $this->assertFalse((new UserManager($this->db, $this->primeConfig($backend)))->deleteUser(self::B_OWNER, [
             ['zid' => 5, 'target' => 'new_owner', 'newowner' => self::B_OWNER],
-        ]);
+        ]));
 
         $this->assertStringContainsString('already owns the zone', json_encode($_SESSION['messages'] ?? []));
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM users WHERE id = " . self::B_OWNER)->fetchColumn());
+        $this->assertSame($zonesBefore, $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC));
+        $this->assertSame([1 => [5], 2 => [3], 3 => [30]], $this->keyScopes());
+    }
+
+    /** @return array<string, array{string}> */
+    public static function backends(): array
+    {
+        return ['sql' => ['sql'], 'api' => ['api']];
     }
 
     #[RunInSeparateProcess]

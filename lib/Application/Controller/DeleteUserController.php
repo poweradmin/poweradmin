@@ -178,6 +178,17 @@ class DeleteUserController extends BaseController
         return array_values($zones);
     }
 
+    /**
+     * The users a zone of the user being deleted can be handed to: everyone but that user.
+     *
+     * @param array<int, array<string, mixed>> $users
+     * @return list<array<string, mixed>>
+     */
+    public static function newOwnerCandidates(array $users, int $uid): array
+    {
+        return array_values(array_filter($users, static fn(array $user): bool => (int)($user['id'] ?? 0) !== $uid));
+    }
+
     public function showQuestion(string $uid): void
     {
         $name = $this->createUserRepository()->getFullNameById((int)$uid);
@@ -191,7 +202,7 @@ class DeleteUserController extends BaseController
 
         $users = [];
         if (count($zones) > 0) {
-            $users = $this->createUserRepository()->getUsersWithZoneCounts();
+            $users = self::newOwnerCandidates($this->createUserRepository()->getUsersWithZoneCounts(), (int)$uid);
         }
 
         $this->render('delete_user.html', [
