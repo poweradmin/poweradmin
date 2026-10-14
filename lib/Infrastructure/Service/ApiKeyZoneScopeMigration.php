@@ -40,7 +40,7 @@ final class ApiKeyZoneScopeMigration
 {
     public const MARKER = 'migration.api_key_zones_canonical_ids';
 
-    /** Scope value for a stored id that could name two zones: it matches no zone. */
+    /** Scope value for a stored id whose meaning is unknown: it matches no zone. */
     private const UNREACHABLE_ZONE_ID = 0;
 
     public function __construct(
@@ -139,7 +139,7 @@ final class ApiKeyZoneScopeMigration
             foreach ($stored as $zoneId) {
                 $target = $this->targetFor($zoneId, $canonicalByRowId, $rowIdsByCanonical);
                 if ($target === self::UNREACHABLE_ZONE_ID) {
-                    $this->logger->warning('API key {key}: zone scope {zone} could name two zones and now matches none; re-select the zone on the key', ['key' => $keyId, 'zone' => $zoneId]);
+                    $this->logger->warning('API key {key}: zone scope {zone} names no zone row and now matches none; re-select the zone on the key', ['key' => $keyId, 'zone' => $zoneId]);
                 }
                 $targets[$target] = true;
             }
@@ -168,28 +168,21 @@ final class ApiKeyZoneScopeMigration
     }
 
     /**
-     * The canonical id a stored scope value meant. A stored value is the row id the form
-     * offered. A value that is no zone's row id but some zone's canonical id could be a
-     * scope saved in SQL mode or a deleted zone's row id, so it matches nothing afterwards;
-     * one that names no zone at all is kept, as it can widen nothing.
+     * The canonical id a stored scope value meant. The API-mode form only ever stored row
+     * ids, so a row id maps to its zone's canonical id even when another zone's canonical id
+     * is the same number. A value that is no zone's row id but some zone's canonical id could
+     * be a scope saved in SQL mode or a deleted zone's row id, so it matches nothing
+     * afterwards; one that names no zone at all is kept, as it can widen nothing.
      *
      * @param array<int, int> $canonicalByRowId
      * @param array<int, int[]> $rowIdsByCanonical
      */
     private function targetFor(int $stored, array $canonicalByRowId, array $rowIdsByCanonical): int
     {
-        if (!isset($canonicalByRowId[$stored])) {
-            return isset($rowIdsByCanonical[$stored]) ? self::UNREACHABLE_ZONE_ID : $stored;
-        }
-        $canonicalId = $canonicalByRowId[$stored];
-        if ($canonicalId === $stored) {
-            return $stored;
-        }
-        // Row id of one zone and canonical id of another: which one the key meant is unknown
-        if (isset($rowIdsByCanonical[$stored])) {
-            return self::UNREACHABLE_ZONE_ID;
+        if (isset($canonicalByRowId[$stored])) {
+            return $canonicalByRowId[$stored];
         }
 
-        return $canonicalId;
+        return isset($rowIdsByCanonical[$stored]) ? self::UNREACHABLE_ZONE_ID : $stored;
     }
 }

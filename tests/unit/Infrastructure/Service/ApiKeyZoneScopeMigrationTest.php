@@ -79,14 +79,14 @@ class ApiKeyZoneScopeMigrationTest extends TestCase
         $this->assertSame([30, 999, 4011], $this->scopes(1));
     }
 
-    public function testARowIdThatIsAlsoAnotherZonesCanonicalIdMatchesNoZoneAfterwards(): void
+    public function testARowIdIsTrustedEvenWhenAnotherZonesCanonicalIdIsTheSameNumber(): void
     {
-        // 14 is reverse.example's row id and group.example's canonical id
+        // 14 is reverse.example's row id and group.example's canonical id; the form stored row ids
         $this->scope(2, 14);
 
         $this->migrate();
 
-        $this->assertSame([0], $this->scopes(2), 'The key stays restricted instead of opening either zone');
+        $this->assertSame([12], $this->scopes(2));
     }
 
     public function testAValueThatIsOnlySomeZonesCanonicalIdMatchesNothingAfterwards(): void
@@ -151,8 +151,8 @@ class ApiKeyZoneScopeMigrationTest extends TestCase
 
         $this->migrate();
 
-        $this->assertSame([0, 4011], $this->scopes(7));
-        $this->assertSame([0, 4011], $this->scopes(8));
+        $this->assertSame([4011, 5000], $this->scopes(7));
+        $this->assertSame([4011, 5000], $this->scopes(8));
     }
 
     public function testAFailedRunLeavesApiModeScopesUntrusted(): void
