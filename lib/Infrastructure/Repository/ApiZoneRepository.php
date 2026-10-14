@@ -821,6 +821,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         if ($canonical === null) {
             return false;
         }
+        SharedZoneIds::forget($this->db);
         $cid = (int)$canonical['id'];
         $canonicalId = self::canonicalIdOf($canonical);
         $zoneName = $canonical['zone_name'] ?? null;

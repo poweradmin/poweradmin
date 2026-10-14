@@ -197,30 +197,26 @@ class ZoneSyncService
             "INSERT INTO zones (domain_id, owner, zone_templ_id, comment, zone_name, zone_type, zone_master)
              VALUES (NULL, 0, 0, '', :zone_name, :zone_type, :zone_master)"
         );
-        $updateStmt = $this->db->prepare("UPDATE zones SET domain_id = :did WHERE id = :id");
 
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
-        // this each INSERT+UPDATE pair is auto-committed individually.
+        // this each insert and its canonical id would be auto-committed individually.
         $ownsTransaction = !$this->db->inTransaction();
         if ($ownsTransaction) {
             $this->db->beginTransaction();
         }
 
         $count = 0;
-        $allocator = null;
         try {
+            // Locks the zones rows before any insert, so a concurrent zone create waits
+            $allocator = new CanonicalZoneIdAllocator($this->db);
             foreach ($missing as $name => $zone) {
                 $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
                 if ($insertStmt->execute()) {
                     // The canonical id: the row id, unless another zone or grant already uses that number
-                    $id = (int)$this->db->lastInsertId('zones_id_seq');
-                    $allocator ??= new CanonicalZoneIdAllocator($this->db);
-                    $updateStmt->bindValue(':did', $allocator->allocate($id), PDO::PARAM_INT);
-                    $updateStmt->bindValue(':id', $id, PDO::PARAM_INT);
-                    $updateStmt->execute();
+                    $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
                     $count++;
                 }
             }
@@ -253,6 +249,7 @@ class ZoneSyncService
         }
 
         $count = 0;
+        SharedZoneIds::forget($this->db);
         foreach ($orphaned as $name => $local) {
             $zoneId = $local['id'];
             $canonicalId = $local['canonical_id'] ?? $zoneId;

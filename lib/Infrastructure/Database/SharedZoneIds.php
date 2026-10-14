@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
+use WeakMap;
 
 /**
  * Ownership under a zone id collision in API backend mode.
@@ -35,6 +36,36 @@ use PDO;
  */
 final class SharedZoneIds
 {
+    /**
+     * Shared ids and opened names per connection, so a page reads them once. Kept per PDO
+     * object and dropped with it; forget() after creating, deleting or re-keying zone rows.
+     *
+     * @var WeakMap<PDO, array{all?: int[], opened?: array<int, string>}>|null
+     */
+    private static ?WeakMap $cache = null;
+
+    public static function forget(PDO $db): void
+    {
+        if (self::$cache !== null) {
+            unset(self::$cache[$db]);
+        }
+    }
+
+    /** @return array{all?: int[], opened?: array<int, string>} */
+    private static function cached(PDO $db): array
+    {
+        self::$cache ??= new WeakMap();
+
+        return self::$cache[$db] ?? [];
+    }
+
+    /** @param array{all?: int[], opened?: array<int, string>} $entry */
+    private static function store(PDO $db, array $entry): void
+    {
+        self::$cache ??= new WeakMap();
+        self::$cache[$db] = $entry;
+    }
+
     /**
      * Whether more than one named zone has this canonical id.
      */
@@ -81,10 +112,15 @@ final class SharedZoneIds
      */
     public static function all(PDO $db): array
     {
-        $stmt = $db->prepare(self::sharedIdsSql());
-        $stmt->execute();
+        $entry = self::cached($db);
+        if (!isset($entry['all'])) {
+            $stmt = $db->prepare(self::sharedIdsSql());
+            $stmt->execute();
+            $entry['all'] = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            self::store($db, $entry);
+        }
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return $entry['all'];
     }
 
     /**
@@ -95,6 +131,11 @@ final class SharedZoneIds
      */
     public static function openedNames(PDO $db): array
     {
+        $entry = self::cached($db);
+        if (isset($entry['opened'])) {
+            return $entry['opened'];
+        }
+
         $names = [];
         foreach (self::all($db) as $sharedId) {
             $stmt = $db->prepare(CanonicalZoneSql::selectByZoneId('zone_name'));
@@ -102,6 +143,9 @@ final class SharedZoneIds
             $stmt->execute();
             $names[$sharedId] = (string)$stmt->fetchColumn();
         }
+        $entry = self::cached($db);
+        $entry['opened'] = $names;
+        self::store($db, $entry);
 
         return $names;
     }
@@ -143,16 +187,7 @@ final class SharedZoneIds
             return [];
         }
 
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
-        $idList = implode(',', array_map('intval', $zoneIds));
-        $stmt = $db->prepare(
-            "SELECT $canonicalId FROM zones
-             WHERE zone_name IS NOT NULL AND $canonicalId IN ($idList)
-             GROUP BY $canonicalId HAVING COUNT(*) > 1"
-        );
-        $stmt->execute();
-
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return array_values(array_intersect(self::all($db), array_map('intval', $zoneIds)));
     }
 
     /**
