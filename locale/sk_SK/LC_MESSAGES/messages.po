@@ -15568,3 +15568,8 @@ msgstr "K tejto zóne nie je možné priradiť skupiny: jej ID zdieľa s inou z�
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Obmedzenia zón nie je možné uložiť, kým neprebehne aktualizácia ID zón. Skontrolujte denník chýb."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Obmedzenie tohto kľúča na zónu sa pri aktualizácii ID zón nepodarilo preniesť, takže nezodpovedá žiadnej zóne. Vyberte zónu znova."

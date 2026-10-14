@@ -16002,3 +16002,8 @@ msgstr "Dieser Zone können keine Gruppen zugewiesen werden: Ihre ID wird mit ei
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Zonenbeschränkungen können erst gespeichert werden, wenn das Upgrade der Zonen-IDs gelaufen ist. Prüfen Sie das Fehlerprotokoll."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Die Zonenbeschränkung dieses Schlüssels konnte beim Upgrade der Zonen-IDs nicht übernommen werden und passt daher auf keine Zone. Wählen Sie die Zone erneut aus."

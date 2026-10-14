@@ -278,6 +278,10 @@ class ApiKeyService
             // The form cannot show unmigrated restrictions, so an empty list must not clear them
             $zoneIds = null;
         }
+        // Nor one the upgrade could not map (stored as 0): saved with no zone, the key would become unrestricted
+        if ($zoneIds === [] && self::hasUnmappedZoneScope($apiKey)) {
+            $zoneIds = null;
+        }
 
         // Update the API key
         $apiKey->setName($name);
@@ -573,6 +577,15 @@ class ApiKeyService
     public function zoneScopesReady(): bool
     {
         return $this->apiKeyRepository->zoneScopesReady();
+    }
+
+    /**
+     * Whether the key keeps a zone restriction the zone id upgrade could not map; it is stored as
+     * zone id 0, which matches no zone, and the edit form cannot show it as selected.
+     */
+    public static function hasUnmappedZoneScope(ApiKey $apiKey): bool
+    {
+        return in_array(0, array_map('intval', $apiKey->getZoneIds() ?? []), true);
     }
 
     private static function zoneScopesNotReadyMessage(): string

@@ -16066,3 +16066,8 @@ msgstr "Ní féidir grúpaí a shannadh don chrios seo: tá a ID roinnte le crio
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Ní féidir srianta crios a shábháil go dtí go rithfear uasghrádú na nIDanna crios. Seiceáil an loga earráidí."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Níorbh fhéidir srian crios na heochrach seo a thabhairt anonn le huasghrádú na nIDanna crios, mar sin ní mheaitseálann sé crios ar bith. Roghnaigh an crios arís."

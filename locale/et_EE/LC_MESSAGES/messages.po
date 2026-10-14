@@ -15338,3 +15338,8 @@ msgstr "Sellele tsoonile ei saa gruppe määrata: selle ID on jagatud teise tsoo
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Tsoonipiiranguid ei saa salvestada enne, kui tsooni ID-de uuendus on tehtud. Kontrollige vealogi."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Selle võtme tsoonipiirangut ei õnnestunud tsooni ID-de uuendusel üle kanda, seega ei vasta see ühelegi tsoonile. Valige tsoon uuesti."

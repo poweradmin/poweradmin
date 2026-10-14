@@ -14606,3 +14606,8 @@ msgstr "无法为此区域分配组：其 ID 与另一个区域共用。请让�
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "在区域 ID 升级运行之前，无法保存区域限制。请检查错误日志。"
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "区域 ID 升级未能沿用此密钥的区域限制，因此它不匹配任何区域。请重新选择区域。"

@@ -15764,3 +15764,8 @@ msgstr "Kumpulan tidak boleh diumpukkan pada zon ini: ID-nya dikongsi dengan zon
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Sekatan zon tidak boleh disimpan sehingga naik taraf ID zon dijalankan. Semak log ralat."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia tidak sepadan dengan mana-mana zon. Pilih zon itu semula."

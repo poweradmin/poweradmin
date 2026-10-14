@@ -15450,3 +15450,8 @@ msgstr "Tälle alueelle ei voi määrittää ryhmiä: sen tunnus on yhteinen toi
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Aluerajoituksia ei voi tallentaa ennen kuin alueiden tunnusten päivitys on ajettu. Tarkista virheloki."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Tämän avaimen aluerajoitusta ei voitu siirtää alueiden tunnusten päivityksessä, joten se ei vastaa mitään aluetta. Valitse alue uudelleen."

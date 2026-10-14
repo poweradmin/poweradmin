@@ -15893,3 +15893,8 @@ msgstr "Não é possível atribuir grupos a esta zona: o ID dela é compartilhad
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "As restrições de zona não podem ser salvas até que a atualização dos IDs de zona seja executada. Verifique o log de erros."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "A restrição de zona desta chave não pôde ser mantida na atualização dos IDs de zona, por isso não corresponde a nenhuma zona. Selecione a zona novamente."

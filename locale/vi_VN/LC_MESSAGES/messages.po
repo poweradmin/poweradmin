@@ -15574,3 +15574,8 @@ msgstr "Không thể gán nhóm cho vùng này: ID của vùng được dùng ch
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Không thể lưu giới hạn vùng cho đến khi nâng cấp ID vùng được chạy. Hãy kiểm tra nhật ký lỗi."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Không thể chuyển giới hạn vùng của khóa này khi nâng cấp ID vùng, nên khóa không khớp với vùng nào. Hãy chọn lại vùng."

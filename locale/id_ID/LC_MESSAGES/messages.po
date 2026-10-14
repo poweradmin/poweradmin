@@ -15790,3 +15790,8 @@ msgstr "Grup tidak dapat ditetapkan ke zona ini: ID-nya dipakai bersama zona lai
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Batasan zona tidak dapat disimpan sampai pembaruan ID zona dijalankan. Periksa log kesalahan."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehingga tidak cocok dengan zona mana pun. Pilih zona lagi."

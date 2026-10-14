@@ -15684,3 +15684,8 @@ msgstr "Bu bölgeye grup atanamaz: kimliği başka bir bölgeyle paylaşılıyor
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Bölge kimliği yükseltmesi çalışana kadar bölge kısıtlamaları kaydedilemez. Hata günlüğünü kontrol edin."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Bu anahtarın bölge kısıtlaması bölge kimliği yükseltmesinde aktarılamadı, bu nedenle hiçbir bölgeyle eşleşmiyor. Bölgeyi yeniden seçin."

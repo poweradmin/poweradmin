@@ -15437,3 +15437,8 @@ msgstr "이 존에 그룹을 할당할 수 없습니다: ID가 다른 존과 공
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "존 ID 업그레이드가 실행될 때까지 존 제한을 저장할 수 없습니다. 오류 로그를 확인하세요."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "이 키의 존 제한을 존 ID 업그레이드에서 옮기지 못해 어떤 존과도 일치하지 않습니다. 존을 다시 선택하세요."

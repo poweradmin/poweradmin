@@ -15703,3 +15703,8 @@ msgstr "Šiai zonai negalima priskirti grupių: jos ID bendras su kita zona. Pap
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Zonų apribojimų negalima išsaugoti, kol neatliktas zonų ID atnaujinimas. Patikrinkite klaidų žurnalą."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Šio rakto zonos apribojimo nepavyko perkelti atnaujinant zonų ID, todėl jis neatitinka jokios zonos. Pasirinkite zoną iš naujo."

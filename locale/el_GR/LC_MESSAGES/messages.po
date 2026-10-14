@@ -16180,3 +16180,8 @@ msgstr "Δεν μπορούν να ανατεθούν ομάδες σε αυτή
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Οι περιορισμοί ζωνών δεν μπορούν να αποθηκευτούν μέχρι να ολοκληρωθεί η αναβάθμιση των ID ζωνών. Ελέγξτε το αρχείο σφαλμάτων."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Ο περιορισμός ζώνης αυτού του κλειδιού δεν μπόρεσε να μεταφερθεί κατά την αναβάθμιση των ID ζωνών, οπότε δεν αντιστοιχεί σε καμία ζώνη. Επιλέξτε ξανά τη ζώνη."

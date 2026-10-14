@@ -15670,3 +15670,8 @@ msgstr "Der kan ikke tildeles grupper til denne zone: dens ID deles med en anden
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Zonebegrænsninger kan ikke gemmes, før opgraderingen af zone-ID'er er kørt. Tjek fejlloggen."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Denne nøgles zonebegrænsning kunne ikke overføres af opgraderingen af zone-ID'er, så den matcher ingen zone. Vælg zonen igen."

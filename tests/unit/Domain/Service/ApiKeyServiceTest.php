@@ -547,4 +547,58 @@ class ApiKeyServiceTest extends TestCase
 
         $this->assertSame($apiKey, $this->service->updateApiKey(5, 'renamed', null, false, false, null, []));
     }
+
+    private function editableKey(array $storedZoneIds): ApiKey
+    {
+        $this->config->method('get')->willReturnMap([
+            ['api', 'enabled', false, true],
+        ]);
+        $this->grantPermissions(['user_is_ueberuser']);
+        $apiKey = new ApiKey('scoped', 'secret', 7, null, null, false, null, 5);
+        $this->apiKeyRepository->method('findById')->with(5)->willReturn($apiKey);
+        $this->apiKeyRepository->method('getZoneIds')->with(5)->willReturn($storedZoneIds);
+        $this->apiKeyRepository->method('zoneScopesReady')->willReturn(true);
+        $this->apiKeyRepository->method('save')->willReturn($apiKey);
+
+        return $apiKey;
+    }
+
+    #[Test]
+    public function testAnEditWithNoZonesKeepsARestrictionTheUpgradeCouldNotMap(): void
+    {
+        // Zone id 0 is shown as nothing selected, so [] would otherwise make the key unrestricted
+        $apiKey = $this->editableKey([0]);
+        $this->apiKeyRepository->expects($this->never())->method('saveZoneIds');
+
+        $this->assertSame($apiKey, $this->service->updateApiKey(5, 'renamed', null, false, false, null, []));
+    }
+
+    #[Test]
+    public function testAnEditSelectingAZoneReplacesARestrictionTheUpgradeCouldNotMap(): void
+    {
+        $this->editableKey([0]);
+        $this->apiKeyRepository->expects($this->once())->method('saveZoneIds')->with(5, [12]);
+
+        $this->assertNotNull($this->service->updateApiKey(5, 'renamed', null, false, false, null, [12]));
+    }
+
+    #[Test]
+    public function testAnEditWithNoZonesStillClearsAMappedRestriction(): void
+    {
+        $this->editableKey([12]);
+        $this->apiKeyRepository->expects($this->once())->method('saveZoneIds')->with(5, []);
+
+        $this->assertNotNull($this->service->updateApiKey(5, 'renamed', null, false, false, null, []));
+    }
+
+    #[Test]
+    public function testDetectsARestrictionTheUpgradeCouldNotMap(): void
+    {
+        $apiKey = new ApiKey('scoped', 'secret', 7);
+        $this->assertFalse(ApiKeyService::hasUnmappedZoneScope($apiKey));
+        $apiKey->setZoneIds([12, 0]);
+        $this->assertTrue(ApiKeyService::hasUnmappedZoneScope($apiKey));
+        $apiKey->setZoneIds([12]);
+        $this->assertFalse(ApiKeyService::hasUnmappedZoneScope($apiKey));
+    }
 }

@@ -15562,3 +15562,8 @@ msgstr "Groups cannot be assigned to this zone: its ID is shared with another zo
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."

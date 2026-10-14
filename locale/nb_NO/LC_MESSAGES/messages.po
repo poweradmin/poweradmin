@@ -15586,3 +15586,8 @@ msgstr "Kan ikke tilordne grupper til denne sonen: ID-en deles med en annen sone
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Sonebegrensninger kan ikke lagres før oppgraderingen av sone-ID-er har kjørt. Sjekk feilloggen."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Sonebegrensningen for denne nøkkelen kunne ikke overføres av oppgraderingen av sone-ID-er, så den samsvarer ikke med noen sone. Velg sonen på nytt."

@@ -15524,3 +15524,8 @@ msgstr "نمی‌توان گروه‌ها را به این منطقه اختصا
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "محدودیت‌های منطقه تا اجرای ارتقای شناسه‌های منطقه قابل ذخیره نیستند. گزارش خطاها را بررسی کنید."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "محدودیت منطقه این کلید در ارتقای شناسه‌های منطقه منتقل نشد، بنابراین با هیچ منطقه‌ای مطابقت ندارد. منطقه را دوباره انتخاب کنید."

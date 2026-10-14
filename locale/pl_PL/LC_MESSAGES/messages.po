@@ -15802,3 +15802,8 @@ msgstr "Do tej strefy nie można przypisać grup: jej ID jest współdzielone z 
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Ograniczeń stref nie można zapisać, dopóki nie zostanie wykonana aktualizacja ID stref. Sprawdź dziennik błędów."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Ograniczenia strefy tego klucza nie udało się przenieść podczas aktualizacji ID stref, więc nie pasuje do żadnej strefy. Wybierz strefę ponownie."

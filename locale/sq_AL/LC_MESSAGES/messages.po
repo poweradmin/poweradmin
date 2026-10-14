@@ -15976,3 +15976,8 @@ msgstr "Nuk mund të caktohen grupe në këtë zonë: ID-ja e saj ndahet me një
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Kufizimet e zonave nuk mund të ruhen derisa të kryhet përditësimi i ID-ve të zonave. Kontrolloni regjistrin e gabimeve."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Kufizimi i zonës për këtë çelës nuk mund të bartej nga përditësimi i ID-ve të zonave, ndaj nuk përputhet me asnjë zonë. Zgjidhni përsëri zonën."

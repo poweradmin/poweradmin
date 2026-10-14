@@ -15693,3 +15693,8 @@ msgstr "Tej coni ni mogoče dodeliti skupin: njen ID si deli z drugo cono. Prosi
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Omejitev con ni mogoče shraniti, dokler se ne izvede nadgradnja ID-jev con. Preverite dnevnik napak."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Omejitve cone tega ključa ni bilo mogoče prenesti z nadgradnjo ID-jev con, zato se ne ujema z nobeno cono. Znova izberite cono."

@@ -15747,3 +15747,8 @@ msgstr "Цій зоні не можна призначити групи: її ID
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "Обмеження за зонами не можна зберегти, доки не виконано оновлення ID зон. Перевірте журнал помилок."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Обмеження цього ключа за зоною не вдалося перенести під час оновлення ID зон, тому воно не відповідає жодній зоні. Виберіть зону знову."

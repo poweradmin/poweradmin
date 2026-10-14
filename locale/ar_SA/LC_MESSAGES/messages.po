@@ -15357,3 +15357,8 @@ msgstr "لا يمكن تعيين مجموعات لهذه المنطقة: معر�
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "لا يمكن حفظ قيود المناطق حتى تكتمل ترقية معرّفات المناطق. تحقق من سجل الأخطاء."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "تعذّر نقل قيد المنطقة لهذا المفتاح أثناء ترقية معرّفات المناطق، لذا فهو لا يطابق أي منطقة. اختر المنطقة مرة أخرى."

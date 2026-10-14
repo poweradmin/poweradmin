@@ -15642,3 +15642,8 @@ msgstr "このゾーンにグループを割り当てられません。IDが別�
 #: templates/modern/api_key_edit.html
 msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
 msgstr "ゾーンIDのアップグレードが完了するまで、ゾーン制限は保存できません。エラーログを確認してください。"
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "このキーのゾーン制限はゾーンIDのアップグレードで引き継げなかったため、どのゾーンにも一致しません。ゾーンを選択し直してください。"

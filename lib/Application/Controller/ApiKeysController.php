@@ -304,6 +304,7 @@ class ApiKeysController extends BaseController
             'selected_zones' => $apiKey->getZoneIds() ?? [],
             'selected_operations' => $apiKey->getAllowedOperations() ?? [],
             'zone_scopes_ready' => $this->apiKeyService->zoneScopesReady(),
+            'zone_scope_unmapped' => ApiKeyService::hasUnmappedZoneScope($apiKey),
         ]);
     }
 
