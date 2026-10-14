@@ -16353,3 +16353,8 @@ msgstr[0] "%d ahli"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Padanan komen dihadkan kepada 50 zon; perhalusi carian anda untuk melihat lebih banyak."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia tidak sepadan dengan mana-mana zon. Pilih zon itu semula."

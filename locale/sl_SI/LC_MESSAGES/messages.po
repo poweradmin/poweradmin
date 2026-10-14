@@ -16295,3 +16295,8 @@ msgstr[3] "%d članov"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Zadetki v opombah so omejeni na 50 con; natančneje opredelite iskanje, da vidite več."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Omejitve cone tega ključa ni bilo mogoče prenesti z nadgradnjo ID-jev con, zato se ne ujema z nobeno cono. Znova izberite cono."

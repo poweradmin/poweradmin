@@ -15963,3 +15963,8 @@ msgstr[5] "%d عضو"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "اقتصرت نتائج التعليقات على 50 منطقة؛ دقّق بحثك لعرض المزيد."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "تعذّر نقل قيد المنطقة لهذا المفتاح أثناء ترقية معرّفات المناطق، لذا فهو لا يطابق أي منطقة. اختر المنطقة مرة أخرى."

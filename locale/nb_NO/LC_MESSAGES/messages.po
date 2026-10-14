@@ -16178,3 +16178,8 @@ msgstr[1] "%d medlemmer"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Kommentartreff ble begrenset til 50 soner; avgrens søket for å se flere."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Sonebegrensningen for denne nøkkelen kunne ikke overføres av oppgraderingen av sone-ID-er, så den samsvarer ikke med noen sone. Velg sonen på nytt."

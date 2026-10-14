@@ -16157,3 +16157,8 @@ msgstr[0] "%d thành viên"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Kết quả khớp trong bình luận đã bị giới hạn ở 50 vùng; hãy tinh chỉnh tìm kiếm để xem thêm."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Không thể chuyển giới hạn vùng của khóa này khi nâng cấp ID vùng, nên khóa không khớp với vùng nào. Hãy chọn lại vùng."

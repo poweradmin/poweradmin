@@ -15515,3 +15515,8 @@ msgstr[0] "สมาชิก %d คน"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "ผลการค้นหาที่ตรงกันในหมายเหตุถูกจำกัดไว้ที่ 50 โซน โปรดปรับการค้นหาให้แคบลงเพื่อดูเพิ่มเติม"
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "การอัปเกรดรหัสโซนไม่สามารถย้ายข้อจำกัดโซนของคีย์นี้ได้ จึงไม่ตรงกับโซนใดเลย โปรดเลือกโซนอีกครั้ง"

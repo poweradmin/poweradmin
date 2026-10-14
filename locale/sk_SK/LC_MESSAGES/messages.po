@@ -16163,3 +16163,8 @@ msgstr[2] "%d členov"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Zhody v komentároch boli obmedzené na 50 zón; spresnite vyhľadávanie, aby ste videli viac."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Obmedzenie tohto kľúča na zónu sa pri aktualizácii ID zón nepodarilo preniesť, takže nezodpovedá žiadnej zóne. Vyberte zónu znova."

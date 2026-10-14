@@ -16260,3 +16260,8 @@ msgstr[1] "%d medlemmer"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Match i bemærkninger blev begrænset til 50 zoner; præciser din søgning for at se flere."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Denne nøgles zonebegrænsning kunne ikke overføres af opgraderingen af zone-ID'er, så den matcher ingen zone. Vælg zonen igen."

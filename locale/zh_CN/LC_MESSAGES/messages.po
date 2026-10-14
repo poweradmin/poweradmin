@@ -15185,3 +15185,8 @@ msgstr[1] "%d 名成员"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "备注匹配结果已限制为 50 个区域；请缩小搜索范围以查看更多。"
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "区域 ID 升级未能沿用此密钥的区域限制，因此它不匹配任何区域。请重新选择区域。"

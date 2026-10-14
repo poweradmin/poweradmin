@@ -16384,3 +16384,8 @@ msgstr[1] "%d anggota"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Kecocokan komentar dibatasi pada 50 zona; perhalus pencarian Anda untuk melihat lebih banyak."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehingga tidak cocok dengan zona mana pun. Pilih zona lagi."

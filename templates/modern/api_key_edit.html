@@ -65,6 +65,8 @@
                         <div class="form-text">{% trans %}Leave empty to allow access to all zones available to you.{% endtrans %}</div>
                         {% if not zone_scopes_ready %}
                             <div class="alert alert-warning py-2 mt-2 mb-0 small">{% trans %}Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log.{% endtrans %}</div>
+                        {% elseif zone_scope_unmapped %}
+                            <div class="alert alert-warning py-2 mt-2 mb-0 small">{% trans %}This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again.{% endtrans %}</div>
                         {% endif %}
                     </div>
 

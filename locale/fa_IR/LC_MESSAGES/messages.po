@@ -16113,3 +16113,8 @@ msgstr[1] "%d عضو"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "نتایج مطابق در نظرات به 50 منطقه محدود شد؛ برای دیدن موارد بیشتر جستجوی خود را دقیق‌تر کنید."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "محدودیت منطقه این کلید در ارتقای شناسه‌های منطقه منتقل نشد، بنابراین با هیچ منطقه‌ای مطابقت ندارد. منطقه را دوباره انتخاب کنید."

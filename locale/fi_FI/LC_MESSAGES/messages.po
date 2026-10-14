@@ -16041,3 +16041,8 @@ msgstr[1] "%d jäsentä"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Kommenttien osumat rajattiin 50 alueeseen; tarkenna hakua nähdäksesi lisää."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Tämän avaimen aluerajoitusta ei voitu siirtää alueiden tunnusten päivityksessä, joten se ei vastaa mitään aluetta. Valitse alue uudelleen."

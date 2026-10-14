@@ -15966,3 +15966,8 @@ msgstr[1] "%d सदस्य"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "टिप्पणियों में मिले परिणाम 50 ज़ोन तक सीमित थे; और देखने के लिए अपनी खोज को परिष्कृत करें।"
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "ज़ोन आईडी अपग्रेड इस कुंजी का ज़ोन प्रतिबंध आगे नहीं ले जा सका, इसलिए यह किसी भी ज़ोन से मेल नहीं खाता। ज़ोन फिर से चुनें।"

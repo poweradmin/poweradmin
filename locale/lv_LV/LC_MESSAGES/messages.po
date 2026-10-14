@@ -15988,3 +15988,8 @@ msgstr[2] "%d dalībnieku"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Komentāru atbilstības tika ierobežotas līdz 50 zonām; precizējiet meklēšanu, lai redzētu vairāk."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Šīs atslēgas zonas ierobežojumu zonu ID jauninājums nevarēja pārnest, tāpēc tas neatbilst nevienai zonai. Atlasiet zonu vēlreiz."

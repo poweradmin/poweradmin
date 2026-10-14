@@ -16015,3 +16015,8 @@ msgstr[0] "구성원 %d명"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "주석 일치 항목이 50개 존으로 제한되었습니다. 더 보려면 검색을 세분화하세요."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "이 키의 존 제한을 존 ID 업그레이드에서 옮기지 못해 어떤 존과도 일치하지 않습니다. 존을 다시 선택하세요."

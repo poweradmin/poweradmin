@@ -16780,3 +16780,8 @@ msgstr[1] "%d μέλη"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Τα αποτελέσματα στα σχόλια περιορίστηκαν σε 50 ζώνες. Διευκρινίστε την αναζήτησή σας για να δείτε περισσότερα."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Ο περιορισμός ζώνης αυτού του κλειδιού δεν μπόρεσε να μεταφερθεί κατά την αναβάθμιση των ID ζωνών, οπότε δεν αντιστοιχεί σε καμία ζώνη. Επιλέξτε ξανά τη ζώνη."

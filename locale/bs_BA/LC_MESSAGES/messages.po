@@ -15885,3 +15885,8 @@ msgstr[2] "%d članova"
 msgid ""
 "Comment matches were limited to 50 zones; refine your search to see more."
 msgstr "Podudaranja u komentarima ograničena su na 50 zona; precizirajte pretragu da vidite više."
+
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_edit.html
+msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgstr "Ograničenje zone za ovaj ključ nije moglo biti preneseno nadogradnjom ID-ova zona, pa ne odgovara nijednoj zoni. Ponovo odaberite zonu."
