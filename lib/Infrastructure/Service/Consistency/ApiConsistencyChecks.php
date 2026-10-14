@@ -33,6 +33,8 @@ use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Consistency checks for the API backend: zone and record state comes from the
@@ -54,7 +56,8 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         private readonly ApiStatusInterface $apiStatus,
         ZoneOwnerRepair $ownerRepair,
         DefaultSoaBuilder $defaultSoa,
-        ?AccountOwnerLookup $accountOwners = null
+        ?AccountOwnerLookup $accountOwners = null,
+        private readonly LoggerInterface $logger = new NullLogger()
     ) {
         parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
     }
@@ -259,6 +262,11 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
 
         $this->transaction()->begin();
         try {
+            $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id AND zone_name IS NOT NULL");
+            $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+            SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 

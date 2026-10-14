@@ -633,6 +633,12 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function deleteZoneShell(int $domainId): void
     {
+        // A creation that reused a row may be undone here; an id it opens may open another zone once it goes
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :did AND zone_name IS NOT NULL");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger ?? new NullLogger());
+
         $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :did");
         $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
         $stmt->execute();

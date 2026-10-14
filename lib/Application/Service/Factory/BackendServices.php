@@ -229,7 +229,7 @@ final class BackendServices
     {
         $provider = $this->dnsBackendProvider();
         if ($provider->isApiBackend()) {
-            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup());
+            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $this->logger);
         }
         $tableNames = new TableNameService($this->config);
 

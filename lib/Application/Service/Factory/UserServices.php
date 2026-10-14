@@ -83,7 +83,7 @@ final class UserServices
 
     public function userRepository(): UserRepositoryInterface
     {
-        return new DbUserRepository($this->db, $this->config, $this->isApiBackend());
+        return new DbUserRepository($this->db, $this->config, $this->isApiBackend(), $this->logger);
     }
 
     /**

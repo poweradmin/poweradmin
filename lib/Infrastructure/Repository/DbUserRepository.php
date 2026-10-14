@@ -41,6 +41,8 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
@@ -51,6 +53,7 @@ class DbUserRepository implements UserRepositoryInterface
     private ?TransactionInterface $transactionPort = null;
     private ConfigurationInterface $config;
     private bool $isApiBackend;
+    private LoggerInterface $logger;
 
     /**
      * @param object $db Database connection
@@ -58,11 +61,12 @@ class DbUserRepository implements UserRepositoryInterface
      * @param bool $isApiBackend Whether zone ids are allocated from the zones table, so a
      *                           row without a domain_id is keyed by zones.id instead
      */
-    public function __construct($db, ConfigurationInterface $config, bool $isApiBackend)
+    public function __construct($db, ConfigurationInterface $config, bool $isApiBackend, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->isApiBackend = $isApiBackend;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function findByUsername(string $username): ?User
@@ -896,6 +900,12 @@ class DbUserRepository implements UserRepositoryInterface
             $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :userId AND domain_id IS NOT NULL");
             $stmt->execute([':userId' => $userId]);
             $ownedZoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            if ($this->isApiBackend) {
+                // The user's named rows carry zones in API mode; an id one opens may open another zone once it goes
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :userId AND zone_name IS NOT NULL");
+                $stmt->execute([':userId' => $userId]);
+                SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+            }
 
             // Memberships and ownership rows are cleared explicitly: the FK cascade
             // is not guaranteed on every schema.

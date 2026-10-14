@@ -229,12 +229,17 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
         // Id 60 opens b60.example by domain_id; without it, id 60 opens c61.example by row id
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
-            (60, 61, 'c61.example', 'MASTER', '', '', 2, 0), (70, 60, 'b60.example', 'MASTER', '', '', 2, 0)");
+            (60, 61, 'c61.example', 'MASTER', '', '', 2, 0), (70, 60, 'b60.example', 'MASTER', '', '', 2, 0),
+            (71, 60, NULL, NULL, NULL, '', 3, 0)");
         $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (4, 60)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (60, 8), (61, 9)");
 
         $this->assertTrue($this->repository()->deleteZone(60));
 
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [0]], $this->keyScopes());
+        // The grant and extra owner on 60 were b60.example's and go with it
+        $this->assertSame([5, 61], array_map('intval', $this->db->query("SELECT domain_id FROM zones_groups ORDER BY domain_id")->fetchAll(PDO::FETCH_COLUMN)));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 60")->fetchColumn());
     }
 
     #[Test]
