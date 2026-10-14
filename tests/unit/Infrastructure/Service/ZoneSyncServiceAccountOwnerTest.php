@@ -69,6 +69,22 @@ class ZoneSyncServiceAccountOwnerTest extends TestCase
         $this->assertSame([7], array_map('intval', $this->db->query('SELECT domain_id FROM zones_groups')->fetchAll(PDO::FETCH_COLUMN)));
     }
 
+    public function testAZoneGoneFromPowerDnsTakesTheGrantsOnAnIdItSharesWithAnotherZone(): void
+    {
+        // Migrated row 7 (canonical 4011) is gone; row 4011 was created here and kept the same id
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES
+            (7, 4011, 4, 'gone.example'), (8, 4011, 5, NULL), (4011, 4011, 6, 'kept.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 1)");
+        $backend = $this->createMock(ZoneReadBackendInterface::class);
+        $backend->method('getZones')->willReturn([['id' => 4011, 'name' => 'kept.example', 'type' => 'MASTER', 'master' => '', 'account' => '']]);
+
+        (new ZoneSyncService($this->db, $backend, new ArraySession()))->sync();
+
+        // Grants on a shared id cannot be told apart, so they go rather than passing to kept.example
+        $this->assertSame([4011], array_map('intval', $this->db->query('SELECT id FROM zones ORDER BY id')->fetchAll(PDO::FETCH_COLUMN)));
+        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM zones_groups')->fetchColumn());
+    }
+
     /**
      * @return array<string, int>
      */

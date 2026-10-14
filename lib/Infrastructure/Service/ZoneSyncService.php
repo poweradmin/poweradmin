@@ -317,14 +317,12 @@ class ZoneSyncService
             $zoneId = $local['id'];
             $canonicalId = $local['canonical_id'] ?? $zoneId;
 
-            // Grants and extra owners are keyed by the canonical id; on an id another zone
-            // shares they cannot be attributed, so they stay (see SharedZoneIds)
-            if (!SharedZoneIds::isShared($this->db, $canonicalId)) {
-                $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
-                $stmt->execute([':id' => $canonicalId]);
-                $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
-                $stmt->execute([':id' => $canonicalId]);
-            }
+            // Grants and extra owners are keyed by the canonical id; on an id another zone shares
+            // they cannot be attributed, so they go too rather than falling to that zone
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
 
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
