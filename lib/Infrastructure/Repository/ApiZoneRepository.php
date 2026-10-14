@@ -166,7 +166,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
         // appears in the list, not just the primary owner.
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment
+        // Listed under the canonical id, the identifier the rest of the application
+        // (links, ownership, zones_groups) uses; the row id only serves the template lookup
+        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+                         z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
@@ -220,13 +223,13 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 // the health check reuse it instead of fetching the zone twice.
                 // Bounded by page size, and skipped for callers that render
                 // neither (e.g. PTR batch dropdown).
-                $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['id']) : 0;
+                $countRecords = $includeRecordCount ? $this->backendProvider->countZoneRecords((int)$row['canonical_id']) : 0;
                 $soaHealth = $includeHealth
                     ? $this->backendProvider->getZoneSoaHealth($name, $kind)
                     : null;
 
                 $zones[$name] = [
-                    'id' => $row['id'],
+                    'id' => (int)$row['canonical_id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $kind,
@@ -266,7 +269,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $this->enrichZonesWithOwnership($zones);
+        $this->enrichZonesWithOwnership($zones, true);
 
         return $zones;
     }
@@ -327,8 +330,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     /**
      * Fill in every assigned user as an owner for each zone, including
      * additional users beyond the primary owner. Mutates $zones.
+     *
+     * @param bool $canonicalIds Whether $zones carry canonical ids rather than zones.id
      */
-    private function enrichZonesWithOwnership(array &$zones): void
+    private function enrichZonesWithOwnership(array &$zones, bool $canonicalIds = false): void
     {
         if (empty($zones)) {
             return;
@@ -351,7 +356,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $ownership = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $key = $row['zone_name'] !== null ? (int)$row['id'] : (int)$row['domain_id'];
+            // Extra ownership rows (no zone_name) always point at the canonical id
+            $key = $row['zone_name'] !== null && !$canonicalIds ? (int)$row['id'] : self::canonicalIdOf($row);
             if (!isset($ownership[$key])) {
                 $ownership[$key] = ['owners' => [], 'full_names' => []];
             }
