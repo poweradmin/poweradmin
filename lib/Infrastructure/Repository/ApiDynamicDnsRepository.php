@@ -93,7 +93,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         // only returned when the owner's template (the user's for direct ownership, or the
         // owning group's) grants zone_content_edit_*.
         $query = $this->db->prepare("
-            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id
+            SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, 'user' AS source
             FROM zones z
             INNER JOIN users u ON u.id = z.owner
             WHERE z.owner = :user_id
@@ -106,7 +106,7 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
             UNION
 
-            SELECT DISTINCT zg.domain_id
+            SELECT DISTINCT zg.domain_id, 'group' AS source
             FROM zones_groups zg
             INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
             INNER JOIN user_groups ug ON ug.id = zg.group_id
@@ -123,8 +123,17 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
             ':user_id2' => $user->getId(),
         ]);
 
+        $bySource = ['user' => [], 'group' => []];
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $bySource[$row['source']][] = (int)$row['domain_id'];
+        }
+        // Group grants on a shared zone id are not honoured, so they never supply the edit right there
+        $zoneIds = array_unique(array_merge(
+            SharedZoneIds::filterOwned($this->db, $user->getId(), $bySource['user']),
+            array_diff($bySource['group'], SharedZoneIds::sharedAmong($this->db, $bySource['group']))
+        ));
+
         $zones = [];
-        $zoneIds = SharedZoneIds::filterOwned($this->db, $user->getId(), array_map('intval', $query->fetchAll(PDO::FETCH_COLUMN)));
         foreach ($zoneIds as $zoneId) {
             $name = $this->backendProvider->getZoneNameById($zoneId);
             if ($name !== null) {
