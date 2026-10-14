@@ -28,6 +28,8 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -137,6 +139,11 @@ class ApiPermissionService
      */
     public function userOwnsZone(int $userId, int $zoneId): bool
     {
+        // For a shared id only the resolved zone's direct owner counts (see SharedZoneIds)
+        if (DnsBackendProviderFactory::isApiBackend(ConfigurationManager::getInstance()) && SharedZoneIds::isShared($this->db, $zoneId)) {
+            return SharedZoneIds::ownsResolvedZone($this->db, $userId, $zoneId);
+        }
+
         // Check direct ownership
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
         $stmt = $this->db->prepare("
@@ -864,7 +871,9 @@ class ApiPermissionService
                 WHERE ugm.user_id = :user_id2
             ");
             $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
-            return array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+            $zoneIds = array_map('intval', $stmt->fetchAll(\PDO::FETCH_COLUMN));
+
+            return DnsBackendProviderFactory::isApiBackend(ConfigurationManager::getInstance()) ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds;
         }
 
         // No view permissions - return empty array

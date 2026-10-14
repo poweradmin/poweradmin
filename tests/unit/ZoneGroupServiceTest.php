@@ -48,6 +48,50 @@ class ZoneGroupServiceTest extends TestCase
     }
 
     #[Test]
+    public function addGroupToZoneRefusesAZoneIdTwoZonesShare(): void
+    {
+        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
+        $zoneRepo->method('isSharedZoneId')->with(100)->willReturn(true);
+        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo);
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->zoneGroupRepo->expects($this->never())->method('add');
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('its ID is shared with another zone');
+
+        $service->addGroupToZone(100, 1);
+    }
+
+    #[Test]
+    public function bulkAddZonesSkipsZoneIdsTwoZonesShare(): void
+    {
+        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
+        $zoneRepo->method('isSharedZoneId')->willReturnCallback(fn(int $zoneId): bool => $zoneId === 100);
+        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo);
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->zoneGroupRepo->expects($this->once())->method('add')->with(200, 1)->willReturn(ZoneGroup::create(200, 1));
+
+        $result = $service->bulkAddZones(1, [100, 200]);
+
+        $this->assertSame([200], $result['success']);
+        $this->assertArrayHasKey(100, $result['failed']);
+    }
+
+    #[Test]
+    public function removingAGroupGrantOnASharedZoneIdIsNeverRefused(): void
+    {
+        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
+        $zoneRepo->method('isSharedZoneId')->willReturn(true);
+        $zoneRepo->method('getZoneOwners')->willReturn([]);
+        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo, $this->createMock(ZoneOwnershipModeService::class));
+        $this->zoneGroupRepo->method('findByDomainId')->willReturn([ZoneGroup::create(100, 1)]);
+
+        $this->assertNull($service->getGroupRemovalRefusal(100, 1));
+    }
+
+    #[Test]
     public function addGroupToZoneGroupNotFoundThrows(): void
     {
         $this->groupRepo->method('findById')->with(999)->willReturn(null);

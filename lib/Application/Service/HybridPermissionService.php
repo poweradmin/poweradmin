@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Hybrid Permission Resolution Service
@@ -75,9 +77,13 @@ class HybridPermissionService
 
         $allPermissions = [];
         $sources = [];
+        // For a shared id only the resolved zone's direct owner counts (see SharedZoneIds)
+        $shared = DnsBackendProviderFactory::isApiBackend(ConfigurationManager::getInstance()) && SharedZoneIds::isShared($this->db, $domainId);
 
         // Source 1: Direct user ownership
-        $directPermissions = $this->getDirectUserPermissions($userId, $domainId);
+        $directPermissions = $shared && !SharedZoneIds::ownsResolvedZone($this->db, $userId, $domainId)
+            ? []
+            : $this->getDirectUserPermissions($userId, $domainId);
         if (!empty($directPermissions)) {
             $allPermissions = array_merge($allPermissions, $directPermissions);
             $sources[] = [
@@ -88,7 +94,7 @@ class HybridPermissionService
         }
 
         // Source 2: Group memberships
-        $groupPermissions = $this->getGroupPermissions($userId, $domainId);
+        $groupPermissions = $shared ? [] : $this->getGroupPermissions($userId, $domainId);
         foreach ($groupPermissions as $groupPerm) {
             $allPermissions = array_merge($allPermissions, $groupPerm['permissions']);
             $sources[] = [

@@ -186,6 +186,10 @@ class ZoneOwnershipController extends BaseController
                 $this->setMessage('zone-ownership', 'error', _('User does not exist.'));
                 return;
             }
+            if ($this->zoneRepository->isSharedZoneId($zone_id)) {
+                $this->setMessage('zone-ownership', 'error', _('Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them.'));
+                return;
+            }
             if ($this->zoneRepository->isUserZoneOwner($zone_id, $newOwnerId)) {
                 $this->setMessage('zone-ownership', 'error', _('The selected user already owns the zone.'));
                 return;
@@ -212,7 +216,8 @@ class ZoneOwnershipController extends BaseController
             // the message tells the operator what kind of replacement is allowed.
             $currentOwners = $this->zoneRepository->getZoneOwners($zone_id);
             $zoneGroupRepo = $this->createZoneGroupRepository();
-            $currentGroups = $zoneGroupRepo->findByDomainId($zone_id);
+            // Group grants on a shared zone id are not honoured, so they keep no one in charge
+            $currentGroups = $this->zoneRepository->isSharedZoneId($zone_id) ? [] : $zoneGroupRepo->findByDomainId($zone_id);
             $deleteUserId = (int)$delete_owner;
             $isCurrentOwner = false;
             foreach ($currentOwners as $o) {
@@ -273,6 +278,10 @@ class ZoneOwnershipController extends BaseController
                     return;
                 }
             }
+            if ($this->zoneRepository->isSharedZoneId($zone_id)) {
+                $this->setMessage('zone-ownership', 'error', _('Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them.'));
+                return;
+            }
 
             $zoneGroupRepo = $this->createZoneGroupRepository();
             $zoneGroupRepo->add($zone_id, $groupId);
@@ -296,6 +305,10 @@ class ZoneOwnershipController extends BaseController
                     $isCurrentGroup = true;
                     break;
                 }
+            }
+            // Group grants on a shared zone id are not honoured, so removing one strands no one
+            if ($this->zoneRepository->isSharedZoneId($zone_id)) {
+                $isCurrentGroup = false;
             }
             $wouldRemoveLastGroup = $isCurrentGroup && count($currentGroups) <= 1;
             if ($wouldRemoveLastGroup && count($currentOwners) === 0) {

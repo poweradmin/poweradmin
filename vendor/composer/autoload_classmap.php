@@ -1490,6 +1490,7 @@ return array(
     'Poweradmin\\Infrastructure\\Database\\DebugPDO' => $baseDir . '/lib/Infrastructure/Database/DebugPDO.php',
     'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => $baseDir . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
     'Poweradmin\\Infrastructure\\Database\\PdnsTable' => $baseDir . '/lib/Infrastructure/Database/PdnsTable.php',
+    'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => $baseDir . '/lib/Infrastructure/Database/SharedZoneIds.php',
     'Poweradmin\\Infrastructure\\Database\\TableNameService' => $baseDir . '/lib/Infrastructure/Database/TableNameService.php',
     'Poweradmin\\Infrastructure\\Database\\ZoneHealthSql' => $baseDir . '/lib/Infrastructure/Database/ZoneHealthSql.php',
     'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',

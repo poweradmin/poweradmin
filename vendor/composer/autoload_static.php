@@ -1900,6 +1900,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Database\\DebugPDO' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DebugPDO.php',
         'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
         'Poweradmin\\Infrastructure\\Database\\PdnsTable' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PdnsTable.php',
+        'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/SharedZoneIds.php',
         'Poweradmin\\Infrastructure\\Database\\TableNameService' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/TableNameService.php',
         'Poweradmin\\Infrastructure\\Database\\ZoneHealthSql' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/ZoneHealthSql.php',
         'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',

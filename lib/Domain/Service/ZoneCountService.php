@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -30,13 +30,14 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 /**
  * Zone counting service
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ZoneCountService
@@ -171,9 +172,21 @@ class ZoneCountService
             $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
             $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
             $stmt->execute();
-            $ownedIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            $ownedIds = SharedZoneIds::filterOwned($this->db, (int)$userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
 
             $allZones = array_filter($allZones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
+            // For a shared id only the rows the user owns directly (see SharedZoneIds)
+            $sharedIds = SharedZoneIds::sharedAmong($this->db, $ownedIds);
+            if ($sharedIds !== []) {
+                $stmt = $this->db->prepare(
+                    "SELECT zone_name FROM zones WHERE zone_name IS NOT NULL AND owner = :uid AND " . CanonicalZoneSql::canonicalIdColumn() . " IN (" . implode(',', $sharedIds) . ")"
+                );
+                $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+                $stmt->execute();
+                $ownedNames = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                $allZones = array_filter($allZones, fn($z) => !in_array((int)($z['id'] ?? 0), $sharedIds, true)
+                    || in_array(rtrim((string)($z['name'] ?? ''), '.'), $ownedNames, true));
+            }
         } elseif ($perm !== 'all') {
             return 0;
         }

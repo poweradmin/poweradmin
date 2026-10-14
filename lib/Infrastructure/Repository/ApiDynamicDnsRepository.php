@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 /**
  * API-backend dynamic DNS repository.
@@ -123,8 +124,8 @@ readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         ]);
 
         $zones = [];
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zoneId = (int)$row['domain_id'];
+        $zoneIds = SharedZoneIds::filterOwned($this->db, $user->getId(), array_map('intval', $query->fetchAll(PDO::FETCH_COLUMN)));
+        foreach ($zoneIds as $zoneId) {
             $name = $this->backendProvider->getZoneNameById($zoneId);
             if ($name !== null) {
                 $zones[$zoneId] = $name;

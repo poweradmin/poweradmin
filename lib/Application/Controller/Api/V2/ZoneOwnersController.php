@@ -258,6 +258,10 @@ class ZoneOwnersController extends PublicApiController
         }
 
         try {
+            if ($this->zoneRepository->isSharedZoneId($zoneId)) {
+                return $this->returnApiError('Owners cannot be added to this zone: its ID is shared with another zone', 409);
+            }
+
             $data = json_decode($this->request->getContent(), true);
 
             // Batch mode: user_ids array
@@ -416,7 +420,8 @@ class ZoneOwnersController extends PublicApiController
             if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
                 $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
                 $zoneGroupRepo = $this->createZoneGroupRepository();
-                $remainingGroups = count($zoneGroupRepo->findByDomainId($zoneId));
+                // Group grants on a shared zone id are not honoured, so they keep no one in charge
+                $remainingGroups = $this->zoneRepository->isSharedZoneId($zoneId) ? 0 : count($zoneGroupRepo->findByDomainId($zoneId));
                 $wouldRemoveLast = $remainingOwners <= 1;
                 $ownershipMode = new ZoneOwnershipModeService($this->config);
 

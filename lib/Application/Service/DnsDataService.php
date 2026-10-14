@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 /**
  * Orchestration service for DNS data reads.
@@ -432,7 +433,7 @@ class DnsDataService
         $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
     // ---------------------------------------------------------------
@@ -450,13 +451,24 @@ class DnsDataService
 
         // Query Poweradmin's zones table for ownership and comments
         $stmt = $this->db->query(
-            "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, z.comment, u.username, u.fullname
+            "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS domain_id, z.owner, z.comment, u.username, u.fullname
              FROM zones z
              LEFT JOIN users u ON z.owner = u.id"
         );
+        $resolvedRows = [];
+        foreach (SharedZoneIds::all($this->db) as $sharedId) {
+            $resolved = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id'));
+            CanonicalZoneSql::bindZoneId($resolved, $sharedId);
+            $resolved->execute();
+            $resolvedRows[$sharedId] = (int)$resolved->fetchColumn();
+        }
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $domainId = (int)$row['domain_id'];
+            // For a shared id only the resolved zone's own row names an owner (see SharedZoneIds)
+            if (isset($resolvedRows[$domainId]) && (int)$row['id'] !== $resolvedRows[$domainId]) {
+                continue;
+            }
             // Match by ID
             foreach ($zones as $i => &$zone) {
                 if (($zone['id'] ?? 0) === $domainId) {

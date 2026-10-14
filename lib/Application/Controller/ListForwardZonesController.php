@@ -47,6 +47,7 @@ use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 class ListForwardZonesController extends BaseController
 {
@@ -244,9 +245,14 @@ class ListForwardZonesController extends BaseController
             ? $userGroupRepo->getGroupIdsForUser($userId)
             : [];
 
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        $sharedZoneIds = $isApiBackend ? SharedZoneIds::sharedAmong($this->db, array_column($zones, 'id')) : [];
+
         foreach ($zones as &$zone) {
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
-            $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
+            $zoneGroupIds = in_array((int)$zone['id'], $sharedZoneIds, true)
+                ? []
+                : array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
             $zone['groups'] = array_map(function ($zg) use ($allGroups) {
                 $groupId = $zg->getGroupId();
                 foreach ($allGroups as $group) {

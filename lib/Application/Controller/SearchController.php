@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Module\ModuleRegistry;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 class SearchController extends BaseController
 {
@@ -437,6 +438,9 @@ class SearchController extends BaseController
         ))));
         $zoneGroupMap = $this->fetchZoneGroupOwnership($zoneIds);
         $zoneOwnerMap = $this->fetchDirectZoneOwners($zoneIds);
+        if (DnsBackendProviderFactory::isApiBackend($this->getConfig())) {
+            [$zoneGroupMap, $zoneOwnerMap] = $this->withoutSharedZoneIdGrants($zoneIds, $zoneGroupMap, $zoneOwnerMap);
+        }
 
         $userGroupIds = $ownershipViewPermission === 'own' && !empty($zones)
             ? $userGroupRepo->getGroupIdsForUser($userId)
@@ -552,6 +556,26 @@ class SearchController extends BaseController
             $map[(int)$row['domain_id']][] = (int)$row['owner'];
         }
         return $map;
+    }
+
+    /**
+     * For a zone id two zones share in API backend mode, only the direct owner of the zone
+     * the id resolves to counts; its group grants and extra owners are not honoured.
+     *
+     * @param int[] $zoneIds
+     * @param array<int, int[]> $zoneGroupMap
+     * @param array<int, int[]> $zoneOwnerMap
+     * @return array{0: array<int, int[]>, 1: array<int, int[]>}
+     */
+    private function withoutSharedZoneIdGrants(array $zoneIds, array $zoneGroupMap, array $zoneOwnerMap): array
+    {
+        foreach (SharedZoneIds::sharedAmong($this->db, $zoneIds) as $sharedId) {
+            unset($zoneGroupMap[$sharedId]);
+            $owner = SharedZoneIds::resolvedOwner($this->db, $sharedId);
+            $zoneOwnerMap[$sharedId] = $owner === null ? [] : [$owner];
+        }
+
+        return [$zoneGroupMap, $zoneOwnerMap];
     }
 
     /**

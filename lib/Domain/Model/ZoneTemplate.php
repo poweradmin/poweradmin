@@ -42,6 +42,7 @@ use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 /**
  * Template functions
@@ -1166,7 +1167,9 @@ class ZoneTemplate
             $sql_add = '';
 
             if ($perm_edit != "all") {
-                $sql_add = " AND zones.owner = :userid";
+                // A shared id stays off the list: its rows cannot be told apart (see SharedZoneIds)
+                $sql_add = " AND zones.owner = :userid AND " . CanonicalZoneSql::canonicalIdColumn('zones')
+                    . " NOT IN (" . SharedZoneIds::sharedIdsSql() . ")";
                 $params[':userid'] = $userid;
             }
 

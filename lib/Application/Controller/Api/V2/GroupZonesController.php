@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -53,9 +53,9 @@ class GroupZonesController extends PublicApiController
 
         $zoneGroupRepository = $this->createZoneGroupRepository();
         $groupRepository = $this->createUserGroupRepository();
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
         $this->zoneRepository = $this->createZoneRepository();
+        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository, $this->zoneRepository);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -329,7 +329,8 @@ class GroupZonesController extends PublicApiController
                     break;
                 }
             }
-            if ($hasThisGroup) {
+            // Group grants on a shared zone id are not honoured, so removing one strands no one
+            if ($hasThisGroup && !$this->zoneRepository->isSharedZoneId($zoneId)) {
                 $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
                 $wouldRemoveLast = count($existingGroups) <= 1;
                 $ownershipMode = new ZoneOwnershipModeService($this->config);

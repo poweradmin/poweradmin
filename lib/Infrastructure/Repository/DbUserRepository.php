@@ -29,6 +29,8 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -112,6 +114,18 @@ class DbUserRepository implements UserRepository
 
     public function getZoneOwnerFullNames(int $domainId): string
     {
+        if (DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $domainId)) {
+            $owner = SharedZoneIds::resolvedOwner($this->db, $domainId);
+            if ($owner === null) {
+                return '';
+            }
+            $stmt = $this->db->prepare("SELECT fullname FROM users WHERE id = :id");
+            $stmt->bindValue(':id', $owner, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return (string)($stmt->fetchColumn() ?: '');
+        }
+
         // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
         $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
@@ -134,6 +148,10 @@ class DbUserRepository implements UserRepository
      */
     public function userOwnsZone(int $userId, int $domainId): bool
     {
+        if (DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $domainId)) {
+            return SharedZoneIds::ownsResolvedZone($this->db, $userId, $domainId);
+        }
+
         $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
         $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
         $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);

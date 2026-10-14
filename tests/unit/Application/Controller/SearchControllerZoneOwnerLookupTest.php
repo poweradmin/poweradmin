@@ -88,6 +88,27 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
         $this->assertSame([], $this->fetchDirectZoneOwners([]));
     }
 
+    public function testIgnoresGroupGrantsAndExtraOwnersOnASharedZoneId(): void
+    {
+        // A zone created in API mode whose row id is the migrated zone's canonical id 100
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES
+            (100, 100, 'created.example.com', 50),
+            (101, 100, NULL, 60)");
+
+        $method = new ReflectionMethod($this->controller, 'withoutSharedZoneIdGrants');
+        $method->setAccessible(true);
+        [$groups, $owners] = $method->invoke(
+            $this->controller,
+            [100, 55],
+            [100 => [7], 55 => [8]],
+            $this->fetchDirectZoneOwners([100, 55])
+        );
+
+        $this->assertSame([55 => [8]], $groups, 'a group grant on the shared id was honoured');
+        $this->assertSame([50], $owners[100], 'only the resolved zone\'s direct owner counts');
+        $this->assertSame([20], $owners[55]);
+    }
+
     public function testAggregatesSeveralOwnersOfOneZone(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (57, 55, NULL, 40)");

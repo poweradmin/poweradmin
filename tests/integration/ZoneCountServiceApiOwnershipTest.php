@@ -44,7 +44,7 @@ class ZoneCountServiceApiOwnershipTest extends TestCase
     {
         CanonicalZoneSql::setRowIdFallback(true);
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec('CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NOT NULL)');
+        $this->db->exec('CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT NULL, owner INTEGER NOT NULL)');
         $this->db->exec('CREATE TABLE zones_groups (domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)');
         $this->db->exec('CREATE TABLE user_group_members (user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)');
 
@@ -69,15 +69,26 @@ class ZoneCountServiceApiOwnershipTest extends TestCase
         $this->assertSame(3, $this->service()->countZones('all'));
     }
 
-    private function service(): ZoneCountService
+    public function testOwnScopeCountsASharedIdOnlyForTheResolvedZonesDirectOwner(): void
+    {
+        // Zone 40 was created here and migrated zone 41 also carries canonical id 40
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (40, 40, 'created.example', 7), (41, 40, 'migrated.example', " . self::USER_ID . ")");
+        $this->db->exec('INSERT INTO zones (id, domain_id, owner) VALUES (42, 40, ' . self::USER_ID . ')');
+        $zones = [['id' => 40, 'name' => 'created.example.'], ['id' => 40, 'name' => 'migrated.example.']];
+
+        $this->assertSame(2, $this->service($zones)->countZones('own'));
+    }
+
+    /** @param array<int, array{id: int, name: string}>|null $extraZones */
+    private function service(?array $extraZones = null): ZoneCountService
     {
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('isApiBackend')->willReturn(true);
-        $backend->method('getZones')->willReturn([
+        $backend->method('getZones')->willReturn(array_merge([
             ['id' => 10, 'name' => 'api-created.example.'],
             ['id' => 20, 'name' => 'mirrored.example.'],
             ['id' => 30, 'name' => 'someone-else.example.'],
-        ]);
+        ], $extraZones ?? []));
 
         $userContext = $this->createMock(UserContextService::class);
         $userContext->method('getLoggedInUserId')->willReturn(self::USER_ID);

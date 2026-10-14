@@ -46,6 +46,8 @@ class ZoneGroupService
     /** users_only mode: no group can go while the zone has no user owner. */
     public const REFUSAL_USERS_ONLY_NO_USER_OWNERS = 'users_only_no_user_owners';
 
+    private const SHARED_ZONE_ID = 'Groups cannot be assigned to this zone: its ID is shared with another zone';
+
     private ZoneGroupRepositoryInterface $zoneGroupRepository;
     private UserGroupRepositoryInterface $groupRepository;
     private ?ZoneRepositoryInterface $zoneRepository;
@@ -79,7 +81,8 @@ class ZoneGroupService
 
         $currentGroups = $this->zoneGroupRepository->findByDomainId($domainId);
         $isCurrentGroup = in_array($groupId, array_map(fn($zg) => $zg->getGroupId(), $currentGroups), true);
-        if (!$isCurrentGroup) {
+        // Group grants on a shared zone id are not honoured, so removing one strands no one
+        if (!$isCurrentGroup || $this->refusesNewGrants($domainId)) {
             return null;
         }
 
@@ -131,8 +134,20 @@ class ZoneGroupService
         if ($this->zoneGroupRepository->exists($domainId, $groupId)) {
             throw new InvalidArgumentException('Group already owns this zone');
         }
+        if ($this->refusesNewGrants($domainId)) {
+            throw new InvalidArgumentException(self::SHARED_ZONE_ID);
+        }
 
         return $this->zoneGroupRepository->add($domainId, $groupId);
+    }
+
+    /**
+     * Whether new groups would be granted nothing on this zone id, because two zones
+     * share it (see ZoneRepositoryInterface::isSharedZoneId()).
+     */
+    private function refusesNewGrants(int $domainId): bool
+    {
+        return $this->zoneRepository !== null && $this->zoneRepository->isSharedZoneId($domainId);
     }
 
     /**
@@ -212,7 +227,9 @@ class ZoneGroupService
 
         foreach ($domainIds as $domainId) {
             try {
-                if (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
+                if ($this->refusesNewGrants($domainId)) {
+                    $results['failed'][$domainId] = self::SHARED_ZONE_ID;
+                } elseif (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
                     $this->zoneGroupRepository->add($domainId, $groupId);
                     $results['success'][] = $domainId;
                 } else {

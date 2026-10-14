@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\ZoneSortingService;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -219,6 +220,9 @@ class ListReverseZonesController extends BaseController
             ? $userGroupRepo->getGroupIdsForUser($loggedInUserId)
             : [];
 
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        $sharedZoneIds = $isApiBackend ? SharedZoneIds::sharedAmong($this->db, array_column($reverse_zones, 'id')) : [];
+
         foreach ($reverse_zones as &$zone) {
             // Shorten IPv6 reverse zones for display
             if (isset($zone['utf8_name']) && str_ends_with($zone['utf8_name'], '.ip6.arpa')) {
@@ -227,7 +231,9 @@ class ListReverseZonesController extends BaseController
             }
 
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
-            $zoneGroupIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
+            $zoneGroupIds = in_array((int)$zone['id'], $sharedZoneIds, true)
+                ? []
+                : array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
             $zone['groups'] = array_map(function ($zg) use ($allGroups) {
                 $groupId = $zg->getGroupId();
                 foreach ($allGroups as $group) {
