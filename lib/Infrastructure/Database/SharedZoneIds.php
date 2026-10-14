@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Psr\Log\LoggerInterface;
 use WeakMap;
 
 /**
@@ -96,6 +97,78 @@ final class SharedZoneIds
         $owner = $stmt->fetchColumn();
 
         return $owner === false || $owner === null || (int)$owner <= 0 ? null : (int)$owner;
+    }
+
+    /**
+     * Whether $rowId is the zones row the id opens (see CanonicalZoneSql::selectByZoneId()).
+     */
+    public static function opensRow(PDO $db, int $zoneId, int $rowId): bool
+    {
+        $stmt = $db->prepare(CanonicalZoneSql::selectByZoneId('id'));
+        CanonicalZoneSql::bindZoneId($stmt, $zoneId);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() === $rowId;
+    }
+
+    /**
+     * Before the zones row $rowId is removed: when it is the zone an id opens and another row
+     * matches that id, point the API key scopes on the id at zone 0, which matches no zone.
+     * Once the row is gone the id opens that other zone, which those keys were never restricted to.
+     */
+    public static function unscopeApiKeysFromOpenedRow(PDO $db, int $zoneId, int $rowId, LoggerInterface $logger): void
+    {
+        if (!self::opensRow($db, $zoneId, $rowId) || !self::matchesAnotherRow($db, $zoneId, $rowId)) {
+            return;
+        }
+
+        $stmt = $db->prepare("SELECT api_key_id, zone_id FROM api_key_zones WHERE zone_id IN (0, :zone_id)");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $scoped = [];
+        $unmapped = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            if ((int)$row['zone_id'] === 0) {
+                $unmapped[(int)$row['api_key_id']] = true;
+            } else {
+                $scoped[] = (int)$row['api_key_id'];
+            }
+        }
+        if ($scoped === []) {
+            return;
+        }
+        sort($scoped);
+
+        // One statement per key, so no failure leaves a key with no scope row, which means unrestricted
+        $update = $db->prepare("UPDATE api_key_zones SET zone_id = 0 WHERE api_key_id = :key_id AND zone_id = :zone_id");
+        $delete = $db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :key_id AND zone_id = :zone_id");
+        foreach ($scoped as $keyId) {
+            $stmt = isset($unmapped[$keyId]) ? $delete : $update;
+            $stmt->bindValue(':key_id', $keyId, PDO::PARAM_INT);
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+        $logger->warning('API keys {keys}: zone scope {zone} named a removed zone whose id another zone shares and now matches no zone; re-select the zone on the key', [
+            'keys' => implode(', ', $scoped),
+            'zone' => $zoneId,
+        ]);
+    }
+
+    /**
+     * Whether a named row other than $rowId matches the id (the WHERE of CanonicalZoneSql::selectByZoneId()).
+     */
+    private static function matchesAnotherRow(PDO $db, int $zoneId, int $rowId): bool
+    {
+        $stmt = $db->prepare(
+            "SELECT 1 FROM zones
+             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL AND id <> :row_id"
+        );
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':row_id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
     }
 
     /**

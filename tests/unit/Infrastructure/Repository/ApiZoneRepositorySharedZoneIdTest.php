@@ -60,6 +60,10 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
+            zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
+        // Key 1 is restricted to the zone id 5 opens, key 2 already holds an unmapped 0, key 3 is unrelated
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 5), (2, 5), (2, 0), (2, 30), (3, 30)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES
             (1, 'creator', 'Creator'), (2, 'migrator', 'Migrator'), (3, 'extra', 'Extra'), (4, 'member', 'Member')");
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
@@ -186,6 +190,62 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
 
         $this->assertSame([5, 30, 31], array_map('intval', $this->db->query("SELECT id FROM zones ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)));
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+    }
+
+    /** @return array<int, int[]> */
+    private function keyScopes(): array
+    {
+        $scopes = [];
+        foreach ($this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $scopes[(int)$row['api_key_id']][] = (int)$row['zone_id'];
+        }
+
+        return $scopes;
+    }
+
+    #[Test]
+    public function deletingTheZoneASharedIdOpensLeavesItsApiKeysMatchingNoZone(): void
+    {
+        $this->assertTrue($this->repository()->deleteZone(5));
+
+        // Id 5 now opens 12.168.192.in-addr.arpa, which no key was restricted to
+        $this->assertSame([1 => [0], 2 => [0, 30], 3 => [30]], $this->keyScopes());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL
+            AND COALESCE(NULLIF(domain_id, 0), id) IN (SELECT zone_id FROM api_key_zones WHERE api_key_id = 1)")->fetchColumn());
+    }
+
+    #[Test]
+    public function deletingTheZoneASharedIdDoesNotOpenKeepsItsApiKeyScopes(): void
+    {
+        $this->assertTrue($this->repository()->deleteZone(12));
+
+        $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30]], $this->keyScopes());
+    }
+
+    #[Test]
+    public function deletingTheZoneAnIdOpensBeforeAnotherZonesRowIdLeavesItsApiKeysMatchingNoZone(): void
+    {
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
+        // Id 60 opens b60.example by domain_id; without it, id 60 opens c61.example by row id
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
+            (60, 61, 'c61.example', 'MASTER', '', '', 2, 0), (70, 60, 'b60.example', 'MASTER', '', '', 2, 0)");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (4, 60)");
+
+        $this->assertTrue($this->repository()->deleteZone(60));
+
+        $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [0]], $this->keyScopes());
+    }
+
+    #[Test]
+    public function deletingAZoneOnAnUnsharedIdKeepsItsApiKeyScopes(): void
+    {
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
+
+        $this->assertTrue($this->repository()->deleteZone(30));
+
+        $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30]], $this->keyScopes());
     }
 
     /** @param string[] $values @return string[] */

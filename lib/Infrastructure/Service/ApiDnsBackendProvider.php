@@ -210,6 +210,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             return false;
         }
 
+        SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $zoneId, $rowId, $this->logger);
         // Grants keyed by a shared id cannot be attributed, so they go too rather than
         // falling to the surviving zone, as in zone delete
         $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");

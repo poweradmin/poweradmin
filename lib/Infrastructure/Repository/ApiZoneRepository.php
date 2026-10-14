@@ -45,6 +45,8 @@ use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
@@ -60,7 +62,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         private DnsBackendProviderInterface $backendProvider,
         private string $dbType,
         private ConfigurationInterface $config,
-        private SessionInterface $session
+        private SessionInterface $session,
+        private ?LoggerInterface $logger = null
     ) {
         $this->tableNameService = new TableNameService($config);
     }
@@ -981,6 +984,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     private function deleteLocalZoneRows(int $cid, int $canonicalId, bool $shared): bool
     {
+        SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $canonicalId, $cid, $this->logger ?? new NullLogger());
         if ($shared) {
             // Grants keyed by a shared id cannot be attributed, so they go too rather than
             // falling to the surviving zone; its template links stay, being data, not access

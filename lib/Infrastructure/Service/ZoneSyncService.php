@@ -317,6 +317,7 @@ class ZoneSyncService
             $zoneId = $local['id'];
             $canonicalId = $local['canonical_id'] ?? $zoneId;
 
+            SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $canonicalId, $zoneId, $this->logger);
             // Grants and extra owners are keyed by the canonical id; on an id another zone shares
             // they cannot be attributed, so they go too rather than falling to that zone
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");

@@ -60,7 +60,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
             )"
         );
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
-        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
     }
 
@@ -144,6 +144,50 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
     private function idsOf(string $sql): array
     {
         return array_map('intval', $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /** @return array<int, int[]> */
+    private function keyScopes(): array
+    {
+        $scopes = [];
+        foreach ($this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $scopes[(int)$row['api_key_id']][] = (int)$row['zone_id'];
+        }
+
+        return $scopes;
+    }
+
+    public function testApiKeysOnAStaleRowASharedIdOpensMatchNoZoneOnceItIsReplaced(): void
+    {
+        // Id 7 opens the stale example.com row; a.example was migrated with domain_id 7
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 7, 1, 'example.com'), (20, 7, 2, 'a.example'), (30, 30, 1, 'c.example')");
+        // Key 2 already holds an unmapped 0; key 3 is unrelated
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 7), (2, 7), (2, 0), (2, 30), (3, 30)");
+
+        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+
+        // Id 7 now opens a.example, which no key was restricted to
+        $this->assertNotSame(7, $zoneId);
+        $this->assertSame([1 => [0], 2 => [0, 30], 3 => [30]], $this->keyScopes());
+    }
+
+    public function testApiKeysOnAStaleRowASharedIdDoesNotOpenAreKept(): void
+    {
+        // Id 4011 opens a.example, not the stale example.com row 7
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 4011, 1, 'example.com'), (4011, 4011, 2, 'a.example')");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 4011), (2, 4011), (2, 0), (3, 30)");
+
+        $this->assertNotSame(4011, $this->provider()->createZone('example.com', 'MASTER'));
+        $this->assertSame([1 => [4011], 2 => [0, 4011], 3 => [30]], $this->keyScopes());
+    }
+
+    public function testApiKeysOnAReusedUnsharedRowAreKept(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, 9, 'example.com')");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 9), (3, 30)");
+
+        $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
+        $this->assertSame([1 => [9], 3 => [30]], $this->keyScopes());
     }
 
     public function testNoZonesRowSurvivesAFailedBackfill(): void

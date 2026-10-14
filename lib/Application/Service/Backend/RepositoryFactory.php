@@ -94,7 +94,7 @@ class RepositoryFactory implements RepositoryFactoryInterface
     {
         if ($this->backendProvider->isApiBackend()) {
             $dbType = $this->config->get('database', 'type');
-            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config, $this->session);
+            return new ApiZoneRepository($this->db, $this->backendProvider, $dbType, $this->config, $this->session, $this->logger);
         }
         return new DbZoneRepository($this->db, $this->config, $this->backendProvider);
     }
