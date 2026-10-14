@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
@@ -153,6 +154,10 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
                 $stmt->execute([':name' => $domain]);
                 $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
+                if (is_array($existing) && $this->dropStaleSharedRow((int)$existing['id'], (int)($existing['domain_id'] ?: $existing['id']))) {
+                    $existing = false;
+                }
+
                 if (is_array($existing)) {
                     $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
                     $stmt->bindValue(':type', strtoupper($type));
@@ -192,6 +197,32 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         // A caller's transaction cannot be replayed from here, so only our own is retried
         return $ownsTransaction ? DeadlockRetry::run($attempt) : $attempt();
+    }
+
+    /**
+     * Delete the row a zone of this name already has when another zone shares its canonical
+     * id. PowerDNS has just accepted the zone, so that row is left from a zone deleted there,
+     * and the caller's owner update by canonical id would also rewrite the other zone.
+     */
+    private function dropStaleSharedRow(int $rowId, int $zoneId): bool
+    {
+        if (!SharedZoneIds::isShared($this->db, $zoneId)) {
+            return false;
+        }
+
+        // Grants keyed by a shared id cannot be attributed, so they go too rather than
+        // falling to the surviving zone, as in zone delete
+        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
+        $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return true;
     }
 
     private function removeOrphanedZone(string $apiName): void

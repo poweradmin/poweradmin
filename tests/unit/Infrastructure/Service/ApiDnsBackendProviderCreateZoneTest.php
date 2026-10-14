@@ -117,6 +117,35 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame(4011, $this->provider()->createZone('example.com', 'MASTER'));
     }
 
+    public function testAStaleRowOnASharedIdIsReplacedSoTheOtherZoneKeepsItsOwnerAndNoGrants(): void
+    {
+        // Row 7 was migrated with canonical id 4011; a.example was later created with row id 4011
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 4011, 1, 'example.com'), (4011, 4011, 2, 'a.example')");
+        // A group grant and an extra owner on 4011 cannot be told apart, so they must not pass to a.example
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 9), (5, 9)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (50, 4011, 3, NULL), (51, 5, 3, NULL)");
+
+        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+        // The owner update ApiZoneRepository::createZoneShell runs next, keyed by canonical id
+        $stmt = $this->db->prepare("UPDATE zones SET owner = 8 WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $this->assertNotSame(4011, $zoneId);
+        $this->assertSame([], $this->row(7), 'the stale row was kept');
+        $this->assertSame(8, (int)$this->db->query("SELECT owner FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertSame(2, (int)$this->db->query("SELECT owner FROM zones WHERE zone_name = 'a.example'")->fetchColumn(), 'a.example changed owner');
+        $this->assertSame([4011], $this->idsOf("SELECT id FROM zones WHERE domain_id = 4011"), 'only a.example keeps id 4011');
+        $this->assertSame([5], $this->idsOf("SELECT domain_id FROM zones_groups"), 'the grant on the shared id was kept');
+        $this->assertSame([51], $this->idsOf("SELECT id FROM zones WHERE zone_name IS NULL"), 'the extra owner on the shared id was kept');
+    }
+
+    /** @return int[] */
+    private function idsOf(string $sql): array
+    {
+        return array_map('intval', $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function testNoZonesRowSurvivesAFailedBackfill(): void
     {
         // The regression: the insert used to autocommit on its own, so a failure here left
