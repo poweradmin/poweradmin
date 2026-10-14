@@ -15535,3 +15535,19 @@ msgstr "Generički podaci zapisa moraju biti \"\\# <length> <hex>\", pri čemu d
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nije moguće ukloniti super administratora s posljednjeg preostalog korisnika super administratora."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ovoj zoni ne mogu se dodati vlasnici: njezin ID dijeli s drugom zonom. Zamolite administratora da ih razdvoji."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ovoj zoni ne mogu se dodijeliti grupe: njezin ID dijeli s drugom zonom. Zamolite administratora da ih razdvoji."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Ograničenja zona ne mogu se spremiti dok se ne izvrši nadogradnja ID-ova zona. Provjerite zapisnik pogrešaka."

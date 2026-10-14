@@ -15626,3 +15626,19 @@ msgstr "汎用レコードデータは \"\\# <length> <hex>\" の形式で、長
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "最後に残ったスーパー管理者ユーザーからスーパー管理者権限を削除することはできません。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "このゾーンに所有者を追加できません。IDが別のゾーンと共有されています。管理者に分離を依頼してください。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "このゾーンにグループを割り当てられません。IDが別のゾーンと共有されています。管理者に分離を依頼してください。"
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "ゾーンIDのアップグレードが完了するまで、ゾーン制限は保存できません。エラーログを確認してください。"

@@ -15861,3 +15861,19 @@ msgstr "Общите данни на записа трябва да са във 
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Не може да се премахне супер администраторът от последния останал потребител супер администратор."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Към тази зона не могат да се добавят собственици: нейният ID се споделя с друга зона. Помолете администратор да ги раздели."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Към тази зона не могат да се назначават групи: нейният ID се споделя с друга зона. Помолете администратор да ги раздели."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Ограниченията по зони не могат да се запазят, докато не завърши надграждането на ID на зоните. Проверете дневника с грешки."

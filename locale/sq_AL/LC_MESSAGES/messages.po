@@ -15960,3 +15960,19 @@ msgstr "Të dhënat e përgjithshme të regjistrimit duhet të jenë \"\\# <leng
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nuk mund të hiqet super administratori nga përdoruesi i fundit super administrator i mbetur."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Nuk mund të shtohen pronarë në këtë zonë: ID-ja e saj ndahet me një zonë tjetër. Kërkojini një administratori t'i ndajë."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Nuk mund të caktohen grupe në këtë zonë: ID-ja e saj ndahet me një zonë tjetër. Kërkojini një administratori t'i ndajë."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Kufizimet e zonave nuk mund të ruhen derisa të kryhet përditësimi i ID-ve të zonave. Kontrolloni regjistrin e gabimeve."

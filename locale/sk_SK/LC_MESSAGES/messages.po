@@ -15552,3 +15552,19 @@ msgstr "Všeobecné údaje záznamu musia mať tvar \"\\# <length> <hex>\" a dĺ
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nie je možné odobrať oprávnenie super administrátora poslednému zostávajúcemu super administrátorovi."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "K tejto zóne nie je možné pridať vlastníkov: jej ID zdieľa s inou zónou. Požiadajte správcu, aby ich oddelil."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "K tejto zóne nie je možné priradiť skupiny: jej ID zdieľa s inou zónou. Požiadajte správcu, aby ich oddelil."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Obmedzenia zón nie je možné uložiť, kým neprebehne aktualizácia ID zón. Skontrolujte denník chýb."

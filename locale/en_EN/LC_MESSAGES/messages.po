@@ -15546,3 +15546,19 @@ msgstr "Generic record data must be \"\\# <length> <hex>\" with the length match
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Cannot remove super admin from the last remaining super admin user."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."

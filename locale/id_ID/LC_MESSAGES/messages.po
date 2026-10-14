@@ -15774,3 +15774,19 @@ msgstr "Data record generik harus berupa \"\\# <length> <hex>\" dengan panjang y
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Tidak dapat menghapus super admin dari pengguna super admin terakhir yang tersisa."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Pemilik tidak dapat ditambahkan ke zona ini: ID-nya dipakai bersama zona lain. Minta administrator untuk memisahkannya."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Grup tidak dapat ditetapkan ke zona ini: ID-nya dipakai bersama zona lain. Minta administrator untuk memisahkannya."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Batasan zona tidak dapat disimpan sampai pembaruan ID zona dijalankan. Periksa log kesalahan."

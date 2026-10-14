@@ -16164,3 +16164,19 @@ msgstr "Τα γενικά δεδομένα εγγραφής πρέπει να έ
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Δεν είναι δυνατή η αφαίρεση του ρόλου υπερδιαχειριστή από τον τελευταίο εναπομείναντα υπερδιαχειριστή."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Δεν μπορούν να προστεθούν κάτοχοι σε αυτή τη ζώνη: το ID της είναι κοινό με άλλη ζώνη. Ζητήστε από έναν διαχειριστή να τις διαχωρίσει."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Δεν μπορούν να ανατεθούν ομάδες σε αυτή τη ζώνη: το ID της είναι κοινό με άλλη ζώνη. Ζητήστε από έναν διαχειριστή να τις διαχωρίσει."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Οι περιορισμοί ζωνών δεν μπορούν να αποθηκευτούν μέχρι να ολοκληρωθεί η αναβάθμιση των ID ζωνών. Ελέγξτε το αρχείο σφαλμάτων."

@@ -15626,3 +15626,19 @@ msgstr "Generiska postdata måste vara \"\\# <length> <hex>\" där längden matc
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Det går inte att ta bort superadministratörsbehörigheten från den sista kvarvarande superadministratören."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Det går inte att lägga till ägare i den här zonen: dess ID delas med en annan zon. Be en administratör att skilja dem åt."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Det går inte att tilldela grupper till den här zonen: dess ID delas med en annan zon. Be en administratör att skilja dem åt."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Zonbegränsningar kan inte sparas förrän uppgraderingen av zon-ID:n har körts. Kontrollera fellogg."

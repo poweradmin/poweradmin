@@ -14928,3 +14928,19 @@ msgstr "ข้อมูลเรคคอร์ดทั่วไปต้อง
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "ไม่สามารถนำสิทธิ์ผู้ดูแลระบบสูงสุดออกจากผู้ใช้ผู้ดูแลระบบสูงสุดคนสุดท้ายที่เหลืออยู่ได้"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "ไม่สามารถเพิ่มเจ้าของให้โซนนี้ได้: รหัสของโซนนี้ใช้ร่วมกับโซนอื่น โปรดขอให้ผู้ดูแลระบบแยกโซนทั้งสอง"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "ไม่สามารถกำหนดกลุ่มให้โซนนี้ได้: รหัสของโซนนี้ใช้ร่วมกับโซนอื่น โปรดขอให้ผู้ดูแลระบบแยกโซนทั้งสอง"
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "ไม่สามารถบันทึกข้อจำกัดโซนได้จนกว่าการอัปเกรดรหัสโซนจะทำงานเสร็จ โปรดตรวจสอบบันทึกข้อผิดพลาด"

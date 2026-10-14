@@ -15188,3 +15188,19 @@ msgstr "נתוני רשומה כלליים חייבים להיות בתבנית 
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "לא ניתן להסיר הרשאת מנהל-על מהמשתמש האחרון שנותר עם הרשאת מנהל-על."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "לא ניתן להוסיף בעלים לאזור זה: המזהה שלו משותף עם אזור אחר. בקשו ממנהל להפריד ביניהם."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "לא ניתן להקצות קבוצות לאזור זה: המזהה שלו משותף עם אזור אחר. בקשו ממנהל להפריד ביניהם."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "לא ניתן לשמור הגבלות אזורים עד שיסתיים שדרוג מזהי האזורים. בדקו את יומן השגיאות."

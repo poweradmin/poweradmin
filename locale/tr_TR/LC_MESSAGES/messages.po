@@ -15668,3 +15668,19 @@ msgstr "Genel kayıt verisi \"\\# <length> <hex>\" biçiminde olmalı ve uzunluk
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Kalan son süper yönetici kullanıcısından süper yönetici yetkisi kaldırılamaz."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Bu bölgeye sahip eklenemez: kimliği başka bir bölgeyle paylaşılıyor. Bir yöneticiden bunları ayırmasını isteyin."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Bu bölgeye grup atanamaz: kimliği başka bir bölgeyle paylaşılıyor. Bir yöneticiden bunları ayırmasını isteyin."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Bölge kimliği yükseltmesi çalışana kadar bölge kısıtlamaları kaydedilemez. Hata günlüğünü kontrol edin."

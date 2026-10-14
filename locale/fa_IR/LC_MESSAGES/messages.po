@@ -15508,3 +15508,19 @@ msgstr "داده‌های عمومی رکورد باید به شکل \"\\# <leng
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "نمی‌توان دسترسی مدیر ارشد را از آخرین کاربر مدیر ارشد باقی‌مانده حذف کرد."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "نمی‌توان به این منطقه مالک افزود: شناسه آن با منطقه دیگری مشترک است. از یک مدیر بخواهید آن‌ها را جدا کند."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "نمی‌توان گروه‌ها را به این منطقه اختصاص داد: شناسه آن با منطقه دیگری مشترک است. از یک مدیر بخواهید آن‌ها را جدا کند."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "محدودیت‌های منطقه تا اجرای ارتقای شناسه‌های منطقه قابل ذخیره نیستند. گزارش خطاها را بررسی کنید."

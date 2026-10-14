@@ -15930,3 +15930,19 @@ msgstr "I dati generici del record devono essere \"\\# <length> <hex>\", con una
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Impossibile rimuovere il ruolo di super amministratore dall'ultimo super amministratore rimasto."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Impossibile aggiungere proprietari a questa zona: il suo ID è condiviso con un'altra zona. Chiedi a un amministratore di separarle."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Impossibile assegnare gruppi a questa zona: il suo ID è condiviso con un'altra zona. Chiedi a un amministratore di separarle."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Le restrizioni di zona non possono essere salvate finché non è stato eseguito l'aggiornamento degli ID di zona. Controlla il registro degli errori."

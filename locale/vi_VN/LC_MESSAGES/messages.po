@@ -15558,3 +15558,19 @@ msgstr "Dữ liệu bản ghi chung phải có dạng \"\\# <length> <hex>\" v�
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Không thể gỡ quyền quản trị viên cấp cao khỏi người dùng quản trị viên cấp cao cuối cùng còn lại."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Không thể thêm chủ sở hữu cho vùng này: ID của vùng được dùng chung với vùng khác. Hãy yêu cầu quản trị viên tách chúng ra."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Không thể gán nhóm cho vùng này: ID của vùng được dùng chung với vùng khác. Hãy yêu cầu quản trị viên tách chúng ra."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Không thể lưu giới hạn vùng cho đến khi nâng cấp ID vùng được chạy. Hãy kiểm tra nhật ký lỗi."

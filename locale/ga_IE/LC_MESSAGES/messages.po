@@ -16050,3 +16050,19 @@ msgstr "Caithfidh sonraí cineálacha an taifid a bheith ina \"\\# <length> <hex
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Ní féidir sár-riarthóir a bhaint den úsáideoir sár-riarthóra deireanach atá fágtha."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ní féidir úinéirí a chur leis an gcrios seo: tá a ID roinnte le crios eile. Iarr ar riarthóir iad a scaradh."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ní féidir grúpaí a shannadh don chrios seo: tá a ID roinnte le crios eile. Iarr ar riarthóir iad a scaradh."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Ní féidir srianta crios a shábháil go dtí go rithfear uasghrádú na nIDanna crios. Seiceáil an loga earráidí."

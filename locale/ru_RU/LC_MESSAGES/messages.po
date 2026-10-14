@@ -15790,3 +15790,19 @@ msgstr "Общие данные записи должны иметь вид \"\\
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Нельзя снять права суперадминистратора с последнего оставшегося суперадминистратора."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Нельзя добавить владельцев к этой зоне: её ID совпадает с ID другой зоны. Попросите администратора разделить их."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Нельзя назначить группы этой зоне: её ID совпадает с ID другой зоны. Попросите администратора разделить их."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Ограничения по зонам нельзя сохранить, пока не выполнено обновление ID зон. Проверьте журнал ошибок."

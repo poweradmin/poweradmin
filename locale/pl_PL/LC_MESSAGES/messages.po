@@ -15786,3 +15786,19 @@ msgstr "Ogólne dane rekordu muszą mieć postać \"\\# <length> <hex>\", a dłu
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nie można odebrać uprawnień superadministratora ostatniemu pozostałemu superadministratorowi."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Do tej strefy nie można dodać właścicieli: jej ID jest współdzielone z inną strefą. Poproś administratora o ich rozdzielenie."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Do tej strefy nie można przypisać grup: jej ID jest współdzielone z inną strefą. Poproś administratora o ich rozdzielenie."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Ograniczeń stref nie można zapisać, dopóki nie zostanie wykonana aktualizacja ID stref. Sprawdź dziennik błędów."

@@ -14606,3 +14606,19 @@ msgstr "通用記錄資料必須為 \"\\# <length> <hex>\"，且長度須與十�
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "無法移除最後一位超級管理員使用者的超級管理員權限。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "無法為此區域新增擁有者：其 ID 與另一個區域共用。請聯絡管理員將它們分開。"
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "無法為此區域分配群組：其 ID 與另一個區域共用。請聯絡管理員將它們分開。"
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "在區域 ID 升級執行之前，無法儲存區域限制。請檢查錯誤日誌。"

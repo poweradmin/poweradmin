@@ -15986,3 +15986,19 @@ msgstr "Generische Eintragsdaten müssen \"\\# <length> <hex>\" lauten, wobei di
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Dem letzten verbleibenden Super-Administrator können die Super-Administrator-Rechte nicht entzogen werden."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Dieser Zone können keine Besitzer hinzugefügt werden: Ihre ID wird mit einer anderen Zone geteilt. Bitten Sie einen Administrator, sie zu trennen."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Dieser Zone können keine Gruppen zugewiesen werden: Ihre ID wird mit einer anderen Zone geteilt. Bitten Sie einen Administrator, sie zu trennen."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Zonenbeschränkungen können erst gespeichert werden, wenn das Upgrade der Zonen-IDs gelaufen ist. Prüfen Sie das Fehlerprotokoll."

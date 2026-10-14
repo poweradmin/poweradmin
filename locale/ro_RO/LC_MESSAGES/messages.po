@@ -16115,3 +16115,19 @@ msgstr "Datele generice ale înregistrării trebuie să fie \"\\# <length> <hex>
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nu se poate elimina rolul de super administrator de la ultimul super administrator rămas."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Nu se pot adăuga proprietari la această zonă: ID-ul ei este partajat cu o altă zonă. Cereți unui administrator să le separe."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Nu se pot atribui grupuri acestei zone: ID-ul ei este partajat cu o altă zonă. Cereți unui administrator să le separe."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "Restricțiile de zonă nu pot fi salvate până la rularea actualizării ID-urilor de zonă. Verificați jurnalul de erori."

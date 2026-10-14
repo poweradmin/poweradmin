@@ -15808,3 +15808,19 @@ msgstr "Az általános rekordadatoknak \"\\# <length> <hex>\" formátumúnak kel
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Az utolsó megmaradt szuperadminisztrátortól nem vonható meg a szuperadminisztrátori jog."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ehhez a zónához nem adhatók tulajdonosok: ID-ján egy másik zónával osztozik. Kérje meg a rendszergazdát, hogy válassza szét őket."
+
+#: lib/Application/Controller/ZoneOwnershipController.php
+msgid "Groups cannot be assigned to this zone: its ID is shared with another zone. Ask an administrator to separate them."
+msgstr "Ehhez a zónához nem rendelhetők csoportok: ID-ján egy másik zónával osztozik. Kérje meg a rendszergazdát, hogy válassza szét őket."
+
+#: lib/Domain/Service/ApiKeyService.php
+#: templates/default/api_key_add.html
+#: templates/default/api_key_edit.html
+#: templates/modern/api_key_add.html
+#: templates/modern/api_key_edit.html
+msgid "Zone restrictions cannot be saved until the zone ID upgrade has run. Check the error log."
+msgstr "A zónakorlátozások nem menthetők, amíg a zóna ID-k frissítése le nem futott. Ellenőrizze a hibanaplót."
