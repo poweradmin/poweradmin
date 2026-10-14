@@ -242,6 +242,16 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
+    public function testHandingAZoneToTheUserBeingDeletedSaysTheyAlreadyOwnIt(): void
+    {
+        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+            ['zid' => 5, 'target' => 'new_owner', 'newowner' => self::B_OWNER],
+        ]);
+
+        $this->assertStringContainsString('already owns the zone', json_encode($_SESSION['messages'] ?? []));
+    }
+
+    #[RunInSeparateProcess]
     public function testTheConsistencyCheckDeletingTheZoneAnIdOpensLeavesItsApiKeysMatchingNoZone(): void
     {
         $service = new DatabaseConsistencyService($this->db, $this->primeConfig('api'), $this->apiBackend());

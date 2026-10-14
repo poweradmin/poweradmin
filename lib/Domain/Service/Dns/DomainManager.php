@@ -935,8 +935,10 @@ class DomainManager implements DomainManagerInterface
     public static function handOverZone(PDO $db, int $zone_id, int $from_user_id, int $to_user_id): bool
     {
         $config = ConfigurationManager::getInstance();
+        // Handing a zone to its own owner keeps the "already owns" refusal of addOwnerToZone
         if (
-            !DnsBackendProviderFactory::isApiBackend($config)
+            $to_user_id === $from_user_id
+            || !DnsBackendProviderFactory::isApiBackend($config)
             || !self::currentUserCanEditZoneMeta($db, $zone_id)
             || (new DbUserRepository($db, $config))->getUserById($to_user_id) === null
         ) {
