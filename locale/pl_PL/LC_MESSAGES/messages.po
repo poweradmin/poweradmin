@@ -9383,7 +9383,7 @@ msgstr "Nie masz uprawnień do dodawania rekordu NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nie masz uprawnień do dodania rekordu LUA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
@@ -9403,7 +9403,7 @@ msgstr "Nie masz uprawnień do edycji tego rekordu NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nie masz uprawnień do edycji tego rekordu LUA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
@@ -9419,7 +9419,7 @@ msgstr "Nie masz uprawnień do usuwania rekordów NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nie masz uprawnień do usuwania rekordów LUA."
 
 #: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format

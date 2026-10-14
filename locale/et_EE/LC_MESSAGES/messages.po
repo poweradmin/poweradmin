@@ -8277,7 +8277,7 @@ msgstr "Teil pole õigust NS-kirjet lisada."
 
 #: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Teil pole õigust LUA kirjet lisada."
 
 #: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
@@ -8297,7 +8297,7 @@ msgstr "Teil pole õigust seda NS-kirjet muuta."
 
 #: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Teil pole õigust seda LUA kirjet muuta."
 
 #: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
@@ -8313,7 +8313,7 @@ msgstr "Teil pole õigust NS-kirjeid kustutada."
 
 #: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Teil pole õigust LUA kirjeid kustutada."
 
 #: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format

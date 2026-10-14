@@ -9430,7 +9430,7 @@ msgstr "Não tem permissão para adicionar registo NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Não tem permissão para adicionar um registo LUA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
@@ -9450,7 +9450,7 @@ msgstr "Não tem permissão para editar este registo NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Não tem permissão para editar este registo LUA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
@@ -9466,7 +9466,7 @@ msgstr "Não tem permissão para eliminar registos NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Não tem permissão para eliminar registos LUA."
 
 #: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format

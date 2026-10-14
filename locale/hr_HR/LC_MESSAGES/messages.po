@@ -8511,7 +8511,7 @@ msgstr "Nemate dozvolu za dodavanje NS zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "Nemate dozvolu za dodavanje LUA zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
@@ -8531,7 +8531,7 @@ msgstr "Nemate dozvolu za uređivanje ovog NS zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "Nemate dozvolu za uređivanje ovog LUA zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
@@ -8547,7 +8547,7 @@ msgstr "Nemate dozvolu za brisanje NS zapisa."
 
 #: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "Nemate dozvolu za brisanje LUA zapisa."
 
 #: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format

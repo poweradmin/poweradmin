@@ -8453,7 +8453,7 @@ msgstr "您没有添加 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:228
 msgid "You do not have the permission to add LUA record."
-msgstr "You do not have the permission to add LUA record."
+msgstr "您没有添加 LUA 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:273
 msgid "A record with this hostname, type, and content already exists."
@@ -8473,7 +8473,7 @@ msgstr "您没有编辑此 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:343
 msgid "You do not have the permission to edit this LUA record."
-msgstr "You do not have the permission to edit this LUA record."
+msgstr "您没有编辑此 LUA 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:393
 msgid "Failed to update record in DNS backend."
@@ -8489,7 +8489,7 @@ msgstr "您没有删除 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:436
 msgid "You do not have the permission to delete LUA records."
-msgstr "You do not have the permission to delete LUA records."
+msgstr "您没有删除 LUA 记录的权限。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:602
 #, php-format
