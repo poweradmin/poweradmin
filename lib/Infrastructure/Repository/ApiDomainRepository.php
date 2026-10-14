@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Psr\Log\LoggerInterface;
 
 /**
  * API-backend domain repository.
@@ -51,9 +52,11 @@ class ApiDomainRepository implements DomainRepositoryInterface
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private DnsBackendProvider $backendProvider;
+    private ?LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationManager $config, DnsBackendProvider $backendProvider)
+    public function __construct(PDO $db, ConfigurationManager $config, DnsBackendProvider $backendProvider, ?LoggerInterface $logger = null)
     {
+        $this->logger = $logger;
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
@@ -148,7 +151,7 @@ class ApiDomainRepository implements DomainRepositoryInterface
         $needsEditedSerial = (bool)$iface_zonelist_signed_serial;
 
         // Sync local zones table with PowerDNS API before listing
-        $syncService = new ZoneSyncService($this->db, $this->backendProvider);
+        $syncService = new ZoneSyncService($this->db, $this->backendProvider, 300, $this->logger);
         $syncService->syncIfStale($needsDnssec);
 
         $allZones = $this->backendProvider->getZones($needsDnssec);

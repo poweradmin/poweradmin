@@ -141,7 +141,7 @@ class ControllerServiceFactory
 
     public function dnsDataService(): DnsDataService
     {
-        return new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config);
+        return new DnsDataService($this->dnsBackendProvider(), $this->db, $this->config, $this->logger);
     }
 
     public function zoneRepository(): ZoneRepositoryInterface

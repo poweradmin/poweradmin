@@ -35,6 +35,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Psr\Log\LoggerInterface;
 
 /**
  * Orchestration service for DNS data reads.
@@ -55,15 +56,16 @@ class DnsDataService
     public function __construct(
         DnsBackendProvider $backendProvider,
         PDO $db,
-        ConfigurationInterface $config
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null
     ) {
         $this->backendProvider = $backendProvider;
         $this->db = $db;
         $this->config = $config;
-        $this->repositoryFactory = new RepositoryFactory($db, $config, $backendProvider);
+        $this->repositoryFactory = new RepositoryFactory($db, $config, $backendProvider, $logger);
 
         if ($backendProvider->isApiBackend()) {
-            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider);
+            $this->zoneSyncService = new ZoneSyncService($db, $backendProvider, 300, $logger);
         }
     }
 

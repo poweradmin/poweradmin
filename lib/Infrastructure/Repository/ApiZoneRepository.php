@@ -167,7 +167,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // the Forward Zones page first. Throttled to once per 5 minutes. Reads
         // the same zone-list variant as the stats call below so both share one
         // response.
-        (new ZoneSyncService($this->db, $this->backendProvider))->syncIfStale($needsDnssec);
+        (new ZoneSyncService($this->db, $this->backendProvider, 300, $this->logger))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {
