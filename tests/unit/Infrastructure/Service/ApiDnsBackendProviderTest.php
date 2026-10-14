@@ -196,17 +196,21 @@ class ApiDnsBackendProviderTest extends TestCase
             ->method('createZoneWithData')
             ->willReturn(['name' => 'newzone.com.']);
 
-        // First prepare: SELECT id FROM zones WHERE zone_name = :name -> false (not found)
+        // First two prepares: the queue row exists and is locked
+        $stmtQueue = $this->createMock(PDOStatement::class);
+        $stmtQueue->method('fetchColumn')->willReturn('api');
+
+        // SELECT id FROM zones WHERE zone_name = :name -> false (not found)
         $stmtSelect = $this->createMock(PDOStatement::class);
         $stmtSelect->method('execute');
         $stmtSelect->method('fetch')->willReturn(false);
 
-        // Second prepare: INSERT INTO zones
+        // INSERT INTO zones
         $stmtInsert = $this->createMock(PDOStatement::class);
         $stmtInsert->method('bindValue');
         $stmtInsert->method('execute');
 
-        // Next three prepares: the allocator reads zone ids, group assignments and key scopes (none)
+        // The allocator reads zone ids, group assignments and key scopes (none) before the lookup
         $stmtIds = $this->createMock(PDOStatement::class);
         $stmtIds->method('fetchAll')->willReturn([]);
 
@@ -216,11 +220,13 @@ class ApiDnsBackendProviderTest extends TestCase
         $stmtUpdate->method('execute');
 
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
+            $stmtQueue,
+            $stmtQueue,
+            $stmtIds,
+            $stmtIds,
+            $stmtIds,
             $stmtSelect,
             $stmtInsert,
-            $stmtIds,
-            $stmtIds,
-            $stmtIds,
             $stmtUpdate
         );
 

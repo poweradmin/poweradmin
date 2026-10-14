@@ -153,6 +153,9 @@ class DatabaseHelper
         if ($dbType === 'pgsql') {
             $this->db->exec("SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items))");
         }
+
+        // Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
+        $this->db->prepare("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES ('backend.zone_ids', 'sql', 'string')")->execute();
     }
 
     /**

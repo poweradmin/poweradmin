@@ -34,6 +34,7 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -94,23 +95,32 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return false;
         }
 
-        // Store zone_name in local zones table for API-mode identification.
-        // The caller (DomainManager) will insert into zones table with the returned ID
-        // as domain_id. We look up if there's already an entry with this zone_name.
-        $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
-        $stmt->execute([':name' => $domain]);
-        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (is_array($existing)) {
-            // Update existing entry
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
-            $stmt->bindValue(':type', strtoupper($type));
-            $stmt->bindValue(':master', $slaveMaster);
-            $stmt->bindValue(':id', (int)$existing['id'], PDO::PARAM_INT);
-            $stmt->execute();
-            // Callers address the zone by its canonical id, which differs from the row id on migrated rows
-            return (int)($existing['domain_id'] ?: $existing['id']);
+        // The zone now exists in PowerDNS; if its local row cannot be written it must not stay
+        // behind, or the user sees a failure and a retry then collides with the orphan
+        try {
+            $zonesId = $this->storeLocalZoneRow($domain, $type, $slaveMaster);
+        } catch (\Throwable $e) {
+            $this->logger->error('Zone {zone} was created in PowerDNS but its local row could not be stored: {error}', [
+                'zone' => $domain,
+                'error' => $e->getMessage(),
+            ]);
+            $this->removeOrphanedZone($apiName);
+            throw $e;
         }
+
+        // The lazy zone-id cache predates this row, so leave it to be rebuilt on next read.
+        $this->localZoneIds = null;
+
+        return $zonesId;
+    }
+
+    /**
+     * Records the zone in the local zones table and returns its canonical id. The caller
+     * (DomainManager) fills in the owner and template of the row.
+     */
+    private function storeLocalZoneRow(string $domain, string $type, string $slaveMaster): int
+    {
+        $queued = CanonicalZoneIdAllocator::ensureQueueRow($this->db);
 
         // The insert and its domain_id backfill must land together. Committed apart, an
         // interrupted request strands the row at a domain_id no canonical read resolves.
@@ -120,8 +130,24 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         try {
-            // Locks the zones rows before the insert, so concurrent creators queue instead of deadlocking
-            $allocator = new CanonicalZoneIdAllocator($this->db);
+            // Queues on one row before reading zones, so concurrent creators wait instead of deadlocking
+            $allocator = new CanonicalZoneIdAllocator($this->db, $queued);
+
+            // Read under the lock, so a zone a concurrent sync just adopted is found, not collided with
+            $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
+            $stmt->execute([':name' => $domain]);
+            $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (is_array($existing)) {
+                $zonesId = $this->reuseExistingRow((int)$existing['id'], (int)($existing['domain_id'] ?: $existing['id']), $type, $slaveMaster);
+                if ($zonesId !== null) {
+                    if ($ownsTransaction) {
+                        $this->db->commit();
+                    }
+
+                    return $zonesId;
+                }
+            }
 
             // Insert a placeholder entry. The caller will update it with owner/template info.
             $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
@@ -143,10 +169,55 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             throw $e;
         }
 
-        // The lazy zone-id cache predates this row, so leave it to be rebuilt on next read.
-        $this->localZoneIds = null;
-
         return $zonesId;
+    }
+
+    /**
+     * Reuse the row a zone of this name already has and return its canonical id, or null
+     * after deleting it. PowerDNS has just accepted the zone, so a row whose id another zone
+     * shares is left from a zone deleted there, and the caller's owner update by canonical id
+     * would also rewrite the other zone. Grants and extra owners on that id go with it.
+     */
+    private function reuseExistingRow(int $rowId, int $zoneId, string $type, string $slaveMaster): ?int
+    {
+        if (SharedZoneIds::isShared($this->db, $zoneId)) {
+            // Grants keyed by a shared id cannot be attributed, so they go too rather than
+            // falling to the surviving zone, as in zone delete
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return null;
+        }
+
+        // domain_id too, so a row stranded without one is found by the caller's owner update
+        $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master, domain_id = :zone_id WHERE id = :id");
+        $stmt->bindValue(':type', strtoupper($type));
+        $stmt->bindValue(':master', $slaveMaster);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Callers address the zone by its canonical id, which differs from the row id on migrated rows
+        return $zoneId;
+    }
+
+    private function removeOrphanedZone(string $apiName): void
+    {
+        try {
+            $removed = $this->client->deleteZone(new Zone($apiName));
+        } catch (\Throwable) {
+            $removed = false;
+        }
+        if (!$removed) {
+            $this->logger->error('Zone {zone} could not be removed from PowerDNS after its local row failed; delete it there by hand', ['zone' => $apiName]);
+        }
     }
 
     /**

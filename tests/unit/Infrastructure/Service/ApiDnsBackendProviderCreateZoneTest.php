@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
@@ -59,10 +60,12 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
     }
 
-    private function provider(?PDO $db = null): ApiDnsBackendProvider
+    private function provider(?PDO $db = null, ?PowerdnsApiClient $client = null): ApiDnsBackendProvider
     {
-        $client = $this->createMock(PowerdnsApiClient::class);
-        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        if ($client === null) {
+            $client = $this->createMock(PowerdnsApiClient::class);
+            $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        }
 
         return new ApiDnsBackendProvider(
             $client,
@@ -173,5 +176,62 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame(9, $zoneId);
         $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
         $this->assertFalse($this->db->inTransaction());
+    }
+
+    /** @return int[] */
+    private function idsOf(string $sql): array
+    {
+        return array_map('intval', $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function testAStrandedRowIsReusedWithItsOwnIdAsDomainId(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, NULL, 'example.com')");
+
+        $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
+        $this->assertSame(9, (int)$this->row(9)['domain_id'], 'the caller updates the owner by domain_id');
+    }
+
+    public function testAStaleRowOnASharedIdIsReplacedSoTheOtherZoneKeepsItsOwner(): void
+    {
+        // Row 7 was migrated with canonical id 4011; zone a.example was later created with row id 4011
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 4011, 1, 'example.com'), (4011, 4011, 2, 'a.example')");
+        // A group grant and an extra owner on 4011 cannot be told apart, so they must not pass to a.example
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 9), (5, 9)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (50, 4011, 3, NULL), (51, 5, 3, NULL)");
+
+        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+
+        $this->assertNotSame(4011, $zoneId);
+        $this->assertSame([], $this->row(7), 'the stale row was kept');
+        $this->assertSame($zoneId, (int)$this->db->query("SELECT domain_id FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertSame([4011], $this->idsOf("SELECT id FROM zones WHERE domain_id = 4011"), 'only a.example keeps id 4011');
+        $this->assertSame([5], $this->idsOf("SELECT domain_id FROM zones_groups"), 'the grant on the shared id was kept');
+        $this->assertSame([51], $this->idsOf("SELECT id FROM zones WHERE zone_name IS NULL"), 'the extra owner on the shared id was kept');
+    }
+
+    public function testTheQueueRowIsCreatedAndMarkedWhenMissing(): void
+    {
+        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
+        $this->db->exec("INSERT INTO app_settings (setting_key, setting_value) VALUES ('unrelated', 'x')");
+
+        $this->provider()->createZone('example.com', 'MASTER');
+        $this->db->exec("UPDATE app_settings SET setting_value = 'sql' WHERE setting_key = 'backend.zone_ids'");
+        $this->provider()->createZone('next.example.com', 'MASTER');
+
+        $this->assertSame('api', $this->db->query("SELECT setting_value FROM app_settings WHERE setting_key = 'backend.zone_ids'")->fetchColumn());
+    }
+
+    public function testTheZoneIsRemovedFromPowerDnsWhenItsLocalRowCannotBeStored(): void
+    {
+        $this->db->exec("DROP TABLE api_key_zones");
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->once())->method('deleteZone')
+            ->with($this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com.'))
+            ->willReturn(true);
+
+        $this->expectException(\PDOException::class);
+        $this->provider(null, $client)->createZone('example.com', 'MASTER');
     }
 }

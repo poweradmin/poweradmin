@@ -533,3 +533,6 @@ CREATE TABLE `app_settings` (
     `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
     PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
+INSERT INTO `app_settings` (`setting_key`, `setting_value`, `value_type`) VALUES ('backend.zone_ids', 'sql', 'string');

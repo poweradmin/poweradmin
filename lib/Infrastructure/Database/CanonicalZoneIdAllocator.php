@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
+use PDOException;
 
 /**
  * Settles the canonical id of zone rows this application creates in API backend mode.
@@ -31,21 +32,66 @@ use PDO;
  * an API key scope already uses that number as a zone id. Then the row itself moves to an
  * id above all of them, so it never takes over (or inherits the grants of) another zone's
  * id, and rows created after it get their own ids again. Build one per transaction before
- * inserting: the zones rows are read with a lock, so concurrent creators queue up.
+ * inserting: it locks the queue row first and then reads the zones rows, so concurrent
+ * creators queue up instead of deadlocking.
  */
 final class CanonicalZoneIdAllocator
 {
     /** Advisory lock key for zone id allocation on PostgreSQL (the issue that introduced it). */
     private const PGSQL_LOCK_KEY = 1559;
 
+    /** The app_settings row creators queue on. Its value records that zone ids were written in API mode. */
+    public const QUEUE_KEY = 'backend.zone_ids';
+
     /** @var array<int, true> */
     private array $used = [];
     private int $highest = 0;
     private string $driver;
 
-    public function __construct(private readonly PDO $db)
+    /**
+     * Creates the queue row when it is missing, as its own statement outside any transaction:
+     * an insert racing inside the creators' transactions would deadlock them. Returns whether
+     * the row can be locked; false when a transaction is already open or app_settings is missing.
+     */
+    public static function ensureQueueRow(PDO $db): bool
+    {
+        if ($db->inTransaction()) {
+            return false;
+        }
+
+        try {
+            $stmt = $db->prepare("SELECT 1 FROM app_settings WHERE setting_key = :key");
+            $stmt->execute([':key' => self::QUEUE_KEY]);
+            if ($stmt->fetchColumn() !== false) {
+                return true;
+            }
+
+            $values = "(setting_key, setting_value, value_type) VALUES (:key, 'api', 'string')";
+            $insert = match ((string)$db->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+                'mysql' => "INSERT IGNORE INTO app_settings $values",
+                'pgsql' => "INSERT INTO app_settings $values ON CONFLICT (setting_key) DO NOTHING",
+                default => "INSERT OR IGNORE INTO app_settings $values",
+            };
+            $db->prepare($insert)->execute([':key' => self::QUEUE_KEY]);
+
+            return true;
+        } catch (PDOException) {
+            return false;
+        }
+    }
+
+    /**
+     * @param bool $queue Whether ensureQueueRow() returned true; the queue row is then locked first
+     */
+    public function __construct(private readonly PDO $db, bool $queue = false)
     {
         $this->driver = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($queue) {
+            // An exclusive row lock on MySQL and a write-first transaction on SQLite, where
+            // busy_timeout then applies. Locking zones first deadlocks on InnoDB gap locks.
+            $lock = $db->prepare("UPDATE app_settings SET setting_value = 'api' WHERE setting_key = :key");
+            $lock->execute([':key' => self::QUEUE_KEY]);
+        }
         if ($this->driver === 'pgsql') {
             // Row locks only cover rows a statement sees; this serializes creators even with none
             $db->prepare("SELECT pg_advisory_xact_lock(" . self::PGSQL_LOCK_KEY . ")")->execute();

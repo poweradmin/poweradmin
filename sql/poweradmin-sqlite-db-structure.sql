@@ -451,3 +451,6 @@ CREATE TABLE app_settings (
     created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
+INSERT INTO "app_settings" ("setting_key", "setting_value", "value_type") VALUES ('backend.zone_ids', 'sql', 'string');

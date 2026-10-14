@@ -198,6 +198,8 @@ class ZoneSyncService
              VALUES (NULL, 0, 0, '', :zone_name, :zone_type, :zone_master)"
         );
 
+        $queued = CanonicalZoneIdAllocator::ensureQueueRow($this->db);
+
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
         // this each insert and its canonical id would be auto-committed individually.
@@ -208,8 +210,8 @@ class ZoneSyncService
 
         $count = 0;
         try {
-            // Locks the zones rows before any insert, so a concurrent zone create waits
-            $allocator = new CanonicalZoneIdAllocator($this->db);
+            // Queues on the same row as a zone create, so either waits for the other
+            $allocator = new CanonicalZoneIdAllocator($this->db, $queued);
             foreach ($missing as $name => $zone) {
                 $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
                 $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
