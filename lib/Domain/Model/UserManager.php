@@ -240,7 +240,7 @@ class UserManager
                 if ($zone ['target'] == "delete") {
                     $domainManager->deleteDomain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    DomainManager::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
+                    DomainManager::handOverZone($this->db, (int)$zone ['zid'], $uid, (int)$zone ['newowner']);
                 }
             }
 

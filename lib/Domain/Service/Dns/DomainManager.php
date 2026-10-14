@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -885,12 +886,7 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        $currentUserId = (new UserContextService())->getLoggedInUserId();
-        $permissionService = new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
-        $canEditMeta = $currentUserId !== null && ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_others')
-            || ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_own') && $permissionService->userOwnsZone($currentUserId, $zone_id)));
-
-        if ($canEditMeta) {
+        if (self::currentUserCanEditZoneMeta($db, $zone_id)) {
             $userRepository = new DbUserRepository($db, ConfigurationManager::getInstance());
             if ($userRepository->getUserById($user_id) !== null) {
                 $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
@@ -919,6 +915,90 @@ class DomainManager implements DomainManagerInterface
             }
         } else {
             return false;
+        }
+    }
+
+    private static function currentUserCanEditZoneMeta($db, int $zone_id): bool
+    {
+        $currentUserId = (new UserContextService())->getLoggedInUserId();
+        $permissionService = new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
+
+        return $currentUserId !== null && ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_others')
+            || ($permissionService->hasPermission($currentUserId, 'zone_meta_edit_own') && $permissionService->userOwnsZone($currentUserId, $zone_id)));
+    }
+
+    /**
+     * Give a zone of a user being deleted to a new owner. In API mode the user's named row
+     * carries the zone, so it changes owner rather than going with the user; otherwise, and
+     * when the user holds only an extra-owner row, the new owner is added as before.
+     */
+    public static function handOverZone(PDO $db, int $zone_id, int $from_user_id, int $to_user_id): bool
+    {
+        $config = ConfigurationManager::getInstance();
+        if (
+            !DnsBackendProviderFactory::isApiBackend($config)
+            || !self::currentUserCanEditZoneMeta($db, $zone_id)
+            || (new DbUserRepository($db, $config))->getUserById($to_user_id) === null
+        ) {
+            return self::addOwnerToZone($db, $zone_id, $to_user_id);
+        }
+
+        $stmt = $db->prepare("SELECT id FROM zones WHERE owner = :owner AND zone_name IS NOT NULL AND " . CanonicalZoneSql::canonicalIdColumn() . " = :zone_id");
+        $stmt->bindValue(':owner', $from_user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $namedRows = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        if ($namedRows !== [] && SharedZoneIds::isShared($db, $zone_id)) {
+            // The permission check saw the zone the id opens, so only that row may move
+            $stmt = $db->prepare(CanonicalZoneSql::selectByZoneId('id, owner'));
+            CanonicalZoneSql::bindZoneId($stmt, $zone_id);
+            $stmt->execute();
+            $opened = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!is_array($opened) || (int)$opened['owner'] !== $from_user_id) {
+                // An owner added on the id would go to the zone it opens, not to this user's zone
+                return false;
+            }
+            $namedRows = [(int)$opened['id']];
+        }
+        if ($namedRows === []) {
+            return self::addOwnerToZone($db, $zone_id, $to_user_id);
+        }
+
+        $ownsTransaction = !$db->inTransaction();
+        if ($ownsTransaction) {
+            $db->beginTransaction();
+        }
+        try {
+            // The new owner's extra row would duplicate the named row it now holds
+            $stmt = $db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id AND owner = :owner");
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->bindValue(':owner', $to_user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt = $db->prepare("UPDATE zones SET owner = :owner WHERE id = :id");
+            foreach ($namedRows as $rowId) {
+                $stmt->bindValue(':owner', $to_user_id, PDO::PARAM_INT);
+                $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            if ($ownsTransaction) {
+                $db->commit();
+            }
+        } catch (Throwable $e) {
+            if ($ownsTransaction) {
+                self::rollBackIfOpen($db);
+            }
+            throw $e;
+        }
+
+        self::syncZoneAccountStatic($db, $zone_id);
+        return true;
+    }
+
+    /** Some drivers end the transaction themselves when a statement fails. */
+    private static function rollBackIfOpen(PDO $db): void
+    {
+        if ($db->inTransaction()) {
+            $db->rollBack();
         }
     }
 

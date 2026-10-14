@@ -51,7 +51,11 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
 
-        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (7, 'bowner', 1), (8, 'cowner', 1)");
+        foreach (['fullname TEXT', 'email TEXT', 'description TEXT', 'active INTEGER DEFAULT 1', 'use_ldap INTEGER DEFAULT 0', 'auth_method TEXT'] as $column) {
+            $this->db->exec("ALTER TABLE users ADD COLUMN $column");
+        }
+        $this->db->exec("ALTER TABLE perm_templ ADD COLUMN template_type TEXT DEFAULT 'user'");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (7, 'bowner', 1), (8, 'cowner', 1), (10, 'heir', 1)");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name, zone_type) VALUES
             (12, 5, 7, 'b.example', 'MASTER'), (5, 3, 8, 'c.example', 'SLAVE'), (30, 30, 7, 'd.example', 'MASTER'),
             (40, 5, 9, NULL, NULL)");
@@ -178,6 +182,63 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $this->assertSame([12, 30, 40], $this->idsOf("SELECT id FROM zones ORDER BY id"));
         $this->assertSame([1 => [5], 2 => [3], 3 => [30]], $this->keyScopes());
         $this->assertSame([3, 5], $this->idsOf("SELECT domain_id FROM zones_groups ORDER BY domain_id"));
+    }
+
+    #[RunInSeparateProcess]
+    public function testHandingADeletedUsersZonesToANewOwnerKeepsTheirRowsAndIds(): void
+    {
+        // The heir already holds an extra-owner row on b.example
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (41, 5, 10, NULL)");
+
+        $this->assertTrue((new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+            ['zid' => 5, 'target' => 'new_owner', 'newowner' => 10],
+            ['zid' => 30, 'target' => 'new_owner', 'newowner' => self::C_OWNER],
+        ]));
+
+        $owners = [];
+        foreach ($this->db->query("SELECT id, owner FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $owners[(int)$row['id']] = (int)$row['owner'];
+        }
+        // b.example keeps row 12 and id 5 under the heir, with no duplicate extra row; c.example is untouched
+        $this->assertSame([5 => self::C_OWNER, 12 => 10, 30 => self::C_OWNER, 40 => 9], $owners);
+        $this->assertSame([1 => [5], 2 => [3], 3 => [30]], $this->keyScopes());
+        $this->assertSame([3, 5], $this->idsOf("SELECT domain_id FROM zones_groups ORDER BY domain_id"));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAHandoverOnASharedIdMovesOnlyTheZoneTheIdOpens(): void
+    {
+        // Id 70 opens q.example (user 20's); p.example of the deleted user shares it
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, 7, 'p.example'), (71, 70, 20, 'q.example')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (220, 'user_edit_others'), (221, 'zone_meta_edit_own')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (20, 'limited')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (20, 220), (20, 221)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'limited', 20)");
+        $_SESSION['userid'] = 20;
+
+        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+            ['zid' => 70, 'target' => 'new_owner', 'newowner' => 20],
+        ]);
+
+        // Owning q.example does not hand the user p.example
+        $this->assertSame([71], $this->idsOf("SELECT id FROM zones WHERE id IN (70, 71) ORDER BY id"));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name = 'p.example'")->fetchColumn());
+        $this->assertSame(20, (int)$this->db->query("SELECT owner FROM zones WHERE id = 71")->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
+    public function testAHandoverOfAZoneASharedIdDoesNotOpenAddsNoOwnerToTheZoneItOpens(): void
+    {
+        // Id 70 opens q.example (user 20's); p.example of the deleted user shares it
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, 7, 'p.example'), (71, 70, 20, 'q.example')");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'qowner', 1)");
+
+        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+            ['zid' => 70, 'target' => 'new_owner', 'newowner' => self::C_OWNER],
+        ]);
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 70 AND owner = " . self::C_OWNER)->fetchColumn());
+        $this->assertSame(20, (int)$this->db->query("SELECT owner FROM zones WHERE id = 71")->fetchColumn());
     }
 
     #[RunInSeparateProcess]
