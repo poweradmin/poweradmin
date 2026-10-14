@@ -38,6 +38,8 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
@@ -50,7 +52,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         private PDO $db,
         private DnsBackendProvider $backendProvider,
         private string $dbType,
-        private ConfigurationInterface $config
+        private ConfigurationInterface $config,
+        private ?LoggerInterface $logger = null
     ) {
         $this->tableNameService = new TableNameService($config);
     }
@@ -832,6 +835,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 return false;
             }
         }
+        SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $canonicalId, $cid, $this->logger ?? new NullLogger());
         if ($this->isSharedZoneId($zoneId)) {
             // Grants keyed by a shared id cannot be attributed, so they go too rather than
             // falling to the surviving zone; its template links stay, being data, not access
