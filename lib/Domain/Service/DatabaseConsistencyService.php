@@ -30,6 +30,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class DatabaseConsistencyService
 {
@@ -37,12 +40,14 @@ class DatabaseConsistencyService
     private TableNameService $tableNameService;
     private ?DnsBackendProvider $backendProvider;
     private bool $apiReadFailed = false;
+    private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     private function isApiBackend(): bool
@@ -623,6 +628,11 @@ class DatabaseConsistencyService
 
             $this->db->beginTransaction();
             try {
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id AND zone_name IS NOT NULL");
+                $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+                SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+
                 $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
 

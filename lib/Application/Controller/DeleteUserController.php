@@ -131,7 +131,7 @@ class DeleteUserController extends BaseController
             $zones = $zone;
         }
 
-        $legacyUsers = new UserManager($this->db, $this->getConfig());
+        $legacyUsers = new UserManager($this->db, $this->getConfig(), $this->logger);
         if ($legacyUsers->deleteUser((int)$uid, $zones)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_user target_user:%s',

@@ -99,15 +99,15 @@ final class SharedZoneIds
     }
 
     /**
-     * Whether $rowId is the zones row the id opens (see CanonicalZoneSql::selectByZoneId()).
+     * The id of the zones row the id opens (see CanonicalZoneSql::selectByZoneId()), or 0.
      */
-    public static function opensRow(PDO $db, int $zoneId, int $rowId): bool
+    private static function openedRowId(PDO $db, int $zoneId): int
     {
         $stmt = $db->prepare(CanonicalZoneSql::selectByZoneId('id'));
         CanonicalZoneSql::bindZoneId($stmt, $zoneId);
         $stmt->execute();
 
-        return (int)$stmt->fetchColumn() === $rowId;
+        return (int)$stmt->fetchColumn();
     }
 
     /**
@@ -117,10 +117,71 @@ final class SharedZoneIds
      */
     public static function unscopeApiKeysFromOpenedRow(PDO $db, int $zoneId, int $rowId, LoggerInterface $logger): void
     {
-        if (!self::opensRow($db, $zoneId, $rowId) || !self::matchesAnotherRow($db, $zoneId, $rowId)) {
-            return;
+        if (self::opensAnotherRowWithout($db, $zoneId, [$rowId])) {
+            self::unscopeApiKeys($db, $zoneId, $logger);
+        }
+    }
+
+    /**
+     * Before the named zones rows $rowIds are removed by a path that keeps the grants on their
+     * ids: an id one of them opens that another named row still matches opens that row
+     * afterwards, so its API key scopes move to zone 0 and its grants and extra owners go.
+     *
+     * @param int[] $rowIds
+     */
+    public static function releaseIdsOpenedByRows(PDO $db, array $rowIds, LoggerInterface $logger): void
+    {
+        $rowIds = array_values(array_unique(array_map('intval', $rowIds)));
+        $zoneIds = [];
+        $stmt = $db->prepare("SELECT id, domain_id FROM zones WHERE id = :id AND zone_name IS NOT NULL");
+        foreach ($rowIds as $rowId) {
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Only a row's canonical id can open it while another row matches the same id
+            if (is_array($row)) {
+                $zoneIds[(int)($row['domain_id'] ?: $row['id'])] = true;
+            }
         }
 
+        foreach (array_keys($zoneIds) as $zoneId) {
+            if (!self::opensAnotherRowWithout($db, $zoneId, $rowIds)) {
+                continue;
+            }
+            self::unscopeApiKeys($db, $zoneId, $logger);
+            $grants = $db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
+            $grants->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $grants->execute();
+            $owners = $db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
+            $owners->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $owners->execute();
+            $logger->warning('Zone id {zone} opens another zone once its row is removed; its group grants and extra owners were dropped', ['zone' => $zoneId]);
+        }
+    }
+
+    /**
+     * Whether the id opens one of $rowIds now and, once they are gone, another named row (the
+     * WHERE of CanonicalZoneSql::selectByZoneId() without them).
+     *
+     * @param int[] $rowIds
+     */
+    private static function opensAnotherRowWithout(PDO $db, int $zoneId, array $rowIds): bool
+    {
+        if (!in_array(self::openedRowId($db, $zoneId), $rowIds, true)) {
+            return false;
+        }
+
+        $stmt = $db->prepare("SELECT id FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_diff(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)), $rowIds) !== [];
+    }
+
+    /** Point the API key scopes on $zoneId at zone 0, which matches no zone. */
+    private static function unscopeApiKeys(PDO $db, int $zoneId, LoggerInterface $logger): void
+    {
         $stmt = $db->prepare("SELECT api_key_id, zone_id FROM api_key_zones WHERE zone_id IN (0, :zone_id)");
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
@@ -151,23 +212,6 @@ final class SharedZoneIds
             'keys' => implode(', ', $scoped),
             'zone' => $zoneId,
         ]);
-    }
-
-    /**
-     * Whether a named row other than $rowId matches the id (the WHERE of CanonicalZoneSql::selectByZoneId()).
-     */
-    private static function matchesAnotherRow(PDO $db, int $zoneId, int $rowId): bool
-    {
-        $stmt = $db->prepare(
-            "SELECT 1 FROM zones
-             WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL AND id <> :row_id"
-        );
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':row_id', $rowId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
     }
 
     /**

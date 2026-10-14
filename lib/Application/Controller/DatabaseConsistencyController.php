@@ -58,7 +58,7 @@ class DatabaseConsistencyController extends BaseController
 
         // Pass the backend provider so checks run against the PowerDNS API when the
         // API backend is configured, instead of querying tables that aren't local.
-        $consistencyService = new DatabaseConsistencyService($this->db, $this->config, $this->createDnsBackendProvider());
+        $consistencyService = new DatabaseConsistencyService($this->db, $this->config, $this->createDnsBackendProvider(), $this->logger);
 
         // Handle fix actions before the outage check below: owner assignment touches
         // only the local zones table, so it must still work when the API is briefly

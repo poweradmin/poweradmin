@@ -103,12 +103,16 @@ class ZoneSyncServiceSharedZoneIdApiKeyScopeTest extends TestCase
     {
         // Id 60 opens b60.example by domain_id; without it, id 60 opens c61.example by row id
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name, zone_type) VALUES
-            (60, 61, 1, 'c61.example', 'NATIVE'), (70, 60, 1, 'b60.example', 'NATIVE')");
+            (60, 61, 1, 'c61.example', 'NATIVE'), (70, 60, 1, 'b60.example', 'NATIVE'), (71, 60, 3, NULL, NULL)");
         $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (5, 60)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (60, 8), (61, 9)");
 
         $this->syncWith(['a.example', 'b.example', 'c.example', 'd.example', 'c61.example']);
 
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [40], 5 => [0]], $this->keyScopes());
+        // The grant and extra owner on 60 were b60.example's and go with it
+        $this->assertSame([61], array_map('intval', $this->db->query("SELECT domain_id FROM zones_groups ORDER BY domain_id")->fetchAll(PDO::FETCH_COLUMN)));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 60")->fetchColumn());
     }
 
     public function testRemovingAZoneOnAnUnsharedIdKeepsItsApiKeyScopes(): void

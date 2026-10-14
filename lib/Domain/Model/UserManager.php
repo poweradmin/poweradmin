@@ -36,6 +36,10 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 class UserManager
 {
@@ -45,12 +49,14 @@ class UserManager
     private ?PermissionService $permissionService = null;
     private ?ApiPermissionService $apiPermissionService = null;
     private ?UserRepository $userRepository = null;
+    private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -238,6 +244,12 @@ class UserManager
                 }
             }
 
+            if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+                // The user's named rows carry zones in API mode; an id one opens may open another zone once it goes
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :uid AND zone_name IS NOT NULL");
+                $stmt->execute([':uid' => $uid]);
+                SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+            }
             $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
             $stmt->execute([':uid' => $uid]);
 

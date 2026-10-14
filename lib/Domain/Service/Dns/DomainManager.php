@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -506,6 +507,7 @@ class DomainManager implements DomainManagerInterface
                     $syncService->cleanupZoneSyncRecords($zoneId);
                 }
 
+                $this->releaseIdsOpenedByRowsOf($id);
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
                 $stmt->execute();
@@ -592,6 +594,7 @@ class DomainManager implements DomainManagerInterface
                         $syncService->cleanupZoneSyncRecords($zoneId);
                     }
 
+                    $this->releaseIdsOpenedByRowsOf($id);
                     // Clean up Poweradmin-internal tables (always SQL)
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -692,6 +695,20 @@ class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Before the zones rows of $id go in API mode: an id one of them opens may open another zone afterwards.
+     */
+    private function releaseIdsOpenedByRowsOf(int $id): void
+    {
+        if (!$this->backendProvider->isApiBackend()) {
+            return;
+        }
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id AND zone_name IS NOT NULL");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+    }
+
+    /**
      * Clean up already-committed Poweradmin metadata for a zone.
      * Used when the transaction was committed early (API backend)
      * and a subsequent step fails.
@@ -699,6 +716,7 @@ class DomainManager implements DomainManagerInterface
     private function cleanupZoneMetadata(int $domainId): void
     {
         try {
+            $this->releaseIdsOpenedByRowsOf($domainId);
             $db = $this->db;
             $db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :did")->execute([':did' => $domainId]);
             $db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :did")->execute([':did' => $domainId]);
