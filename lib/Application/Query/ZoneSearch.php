@@ -156,7 +156,6 @@ class ZoneSearch extends BaseSearch
                 record_count.count_records
                 $comment_field
             FROM (
-                -- Subquery: filtra e pagina solo sui domini per garantire risultati unici
                 SELECT id, name, type
                 FROM $domains_table
                 WHERE " . $whereConditions . "
