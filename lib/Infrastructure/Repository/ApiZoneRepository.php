@@ -132,7 +132,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
         // appears in the list, not just the primary owner.
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.comment
+        $query = "SELECT z.id, z.domain_id, z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
                   WHERE z.zone_name IS NOT NULL";
@@ -192,7 +192,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'] ?? 'NATIVE',
-                    'count_records' => $this->resolveRecordCount($stats, (int)$row['id']),
+                    'count_records' => $this->resolveRecordCount($stats, self::externalZoneId($row)),
                     'comment' => $row['comment'] ?? '',
                     'secured' => $stats['dnssec'] ?? false,
                     'owners' => [],
@@ -210,6 +210,11 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         $this->enrichZonesWithOwnership($zones);
+
+        // Links on the page open zones by the id the zone pages resolve, not the local row id
+        foreach ($results as $row) {
+            $zones[(string)$row['name']]['id'] = self::externalZoneId($row);
+        }
 
         return $zones;
     }
