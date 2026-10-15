@@ -46,9 +46,9 @@ final class MfaVerificationMailer implements MfaVerificationMailerInterface
         return $this->mailService->isMailConfigurationValid();
     }
 
-    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): void
+    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): bool
     {
         $templates = $this->templateService->renderMfaVerificationEmail($code, $expiresAt, $timezone);
-        $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
+        return $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
     }
 }

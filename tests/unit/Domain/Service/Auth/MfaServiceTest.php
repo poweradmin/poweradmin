@@ -591,6 +591,63 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testAnUndeliveredEmailCodeIsNotLeftPending(): void
+    {
+        $userMfa = UserMfa::create(1, true, null, null, UserMfa::TYPE_EMAIL);
+        $this->configure(['mail' => ['enabled' => true]]);
+        $this->mailService->method('isMailConfigurationValid')->willReturn(true);
+        $this->mailService->method('sendVerificationCode')->willReturn(false);
+        $this->userMfaRepository->method('findByUserId')->willReturn($userMfa);
+
+        try {
+            $this->service->sendEmailVerificationCode(1, 'test@example.com');
+            $this->fail('A failed send must be reported');
+        } catch (RuntimeException $e) {
+            $this->assertSame('Could not send the verification code by email.', $e->getMessage());
+        }
+
+        // The stored code is spent, so the next refresh sends a new one instead of trusting it
+        $this->assertTrue($userMfa->getVerificationDataAsArray()['used']);
+        $this->assertFalse($this->service->verifyCode(1, (string)$userMfa->getSecret()));
+    }
+
+    #[Test]
+    public function testAFailedSendLeavesANewerCodeAlone(): void
+    {
+        $sending = UserMfa::create(1, true, null, null, UserMfa::TYPE_EMAIL);
+        // Another request stored and delivered its own code while this send was failing
+        $newer = UserMfa::create(1, true, '654321', null, UserMfa::TYPE_EMAIL, '{"code":"654321","expires_at":' . (time() + 600) . ',"used":false}');
+        $this->configure(['mail' => ['enabled' => true]]);
+        $this->mailService->method('isMailConfigurationValid')->willReturn(true);
+        $this->mailService->method('sendVerificationCode')->willReturn(false);
+        $this->userMfaRepository->method('findByUserId')->willReturnOnConsecutiveCalls($sending, $newer);
+        $this->userMfaRepository->expects($this->once())->method('save')->with($sending);
+
+        try {
+            $this->service->sendEmailVerificationCode(1, 'test@example.com');
+            $this->fail('A failed send must be reported');
+        } catch (RuntimeException) {
+        }
+
+        $this->assertFalse($newer->getVerificationDataAsArray()['used']);
+    }
+
+    #[Test]
+    public function testRefreshReportsAFailedSendInsteadOfReturningNull(): void
+    {
+        $userMfa = UserMfa::create(1, true, null, null, UserMfa::TYPE_EMAIL);
+        $this->configure(['mail' => ['enabled' => true]]);
+        $this->mailService->method('isMailConfigurationValid')->willReturn(true);
+        $this->mailService->method('sendVerificationCode')->willThrowException(new RuntimeException('SMTP down'));
+        $this->userMfaRepository->method('findByUserId')->willReturn($userMfa);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Could not send the verification code by email.');
+
+        $this->service->refreshEmailVerificationCodeIfNeeded(1, 'test@example.com');
+    }
+
+    #[Test]
     public function testGenerateQrCodeSvgReturnsSvgString(): void
     {
         $this->configure(['interface' => ['title' => 'TestApp']]);

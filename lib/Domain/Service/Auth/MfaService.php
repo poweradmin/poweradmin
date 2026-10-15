@@ -443,7 +443,7 @@ class MfaService
      * @param int $userId The user ID
      * @param string $email The email address to send the code to
      * @return string The generated verification code
-     * @throws RuntimeException when mail is disabled, misconfigured or the address is empty
+     * @throws RuntimeException when mail is disabled, misconfigured, the address is empty or the code could not be sent
      */
     public function sendEmailVerificationCode(int $userId, string $email): string
     {
@@ -500,9 +500,36 @@ class MfaService
 
         $timezone = $this->userTimezoneService?->getEffectiveTimezone($userId);
 
-        $this->mailer->sendVerificationCode($email, $verificationCode, $expiresAt, $timezone);
+        try {
+            $sent = $this->mailer->sendVerificationCode($email, $verificationCode, $expiresAt, $timezone);
+        } catch (Exception $e) {
+            $this->logger->error('Sending the verification code to user {userId} failed: {error}', ['userId' => $userId, 'error' => $e->getMessage()]);
+            $sent = false;
+        }
+
+        if (!$sent) {
+            $this->spendUndeliveredCode($userId, $verificationCode);
+            throw new RuntimeException('Could not send the verification code by email.');
+        }
 
         return $verificationCode;
+    }
+
+    /**
+     * Marks an undelivered email code used so the next attempt sends a new one. Works on a fresh
+     * read and only while that code is still stored, so a write made during the send survives.
+     */
+    private function spendUndeliveredCode(int $userId, #[\SensitiveParameter] string $code): void
+    {
+        $current = $this->getUserMfa($userId);
+        if ($current === null || !hash_equals($code, (string)$current->getSecret())) {
+            return;
+        }
+
+        $metadata = $current->getVerificationDataAsArray();
+        $metadata['used'] = true;
+        $current->setVerificationDataRaw((string)json_encode($metadata));
+        $this->userMfaRepository->save($current);
     }
 
     /**
@@ -514,6 +541,7 @@ class MfaService
      * @param int $userId The user ID
      * @param string $email The user's email address
      * @return string|null The new code if generated, null otherwise
+     * @throws RuntimeException when mail is unavailable or the code could not be sent
      */
     public function refreshEmailVerificationCodeIfNeeded(int $userId, string $email): ?string
     {
@@ -566,12 +594,8 @@ class MfaService
 
         if ($needsRefresh) {
             $this->logger->debug('Generating new email verification code for user {userId}', ['userId' => $userId]);
-            try {
-                return $this->sendEmailVerificationCode($userId, $email);
-            } catch (Exception $e) {
-                $this->logger->error('Failed to send verification code: {error}', ['error' => $e->getMessage()]);
-                return null;
-            }
+            // A failed send is the caller's to report; null means a code is still pending
+            return $this->sendEmailVerificationCode($userId, $email);
         }
 
         return null;

@@ -416,6 +416,7 @@ class MfaSetupController extends BaseController
             return $this->mfaService()->refreshEmailVerificationCodeIfNeeded($userId, $this->getUserContextService()->getUserEmail() ?? '') !== null;
         } catch (RuntimeException $e) {
             $this->logger->warning('[MfaSetupController] Could not send a step-up code to user {user_id}: {error}', ['user_id' => $userId, 'error' => $e->getMessage()]);
+            $this->addSystemMessage('warning', _('Could not send verification code to your email. Please use a recovery code instead.'));
             return false;
         }
     }

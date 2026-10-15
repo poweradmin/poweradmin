@@ -156,4 +156,18 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
 
         $this->submit(['disable_mfa' => '1', 'mfa_code' => '000000']);
     }
+
+    public function testAFailedEmailSendIsShownWithTheRecoveryCodeHint(): void
+    {
+        $this->enabledMfa(UserMfa::TYPE_EMAIL);
+        $this->mfa->method('refreshEmailVerificationCodeIfNeeded')->willThrowException(new \RuntimeException('Could not send the verification code by email.'));
+        $this->mfa->expects($this->never())->method('disableMfa');
+
+        $this->submit(['disable_mfa' => '1']);
+
+        $this->assertSame([
+            ['warning', 'Could not send verification code to your email. Please use a recovery code instead.'],
+            ['error', 'Verification code is required.'],
+        ], $this->messagesFor('system'));
+    }
 }

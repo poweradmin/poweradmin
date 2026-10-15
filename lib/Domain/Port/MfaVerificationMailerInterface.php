@@ -32,6 +32,7 @@ interface MfaVerificationMailerInterface
     /**
      * @param int $expiresAt Unix timestamp the code stops being accepted
      * @param string|null $timezone Timezone the expiry is shown in, or the server default
+     * @return bool Whether the mail was handed to the transport
      */
-    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): void;
+    public function sendVerificationCode(string $email, string $code, int $expiresAt, ?string $timezone): bool;
 }
