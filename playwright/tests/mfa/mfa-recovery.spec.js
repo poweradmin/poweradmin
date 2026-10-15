@@ -119,6 +119,7 @@ test.describe('MFA Recovery Codes Page', () => {
     const password = 'TestP@ssw0rd123';
     let userPage = null;
     let firstCodes = [];
+    let regeneratedCodes = [];
     let secret = '';
 
     // Enabling MFA mid-session makes the next request ask for a code, so answer it
@@ -208,8 +209,28 @@ test.describe('MFA Recovery Codes Page', () => {
       await expect(userPage.locator('button[name="disable_mfa"]')).toBeVisible();
     });
 
+    test('should refuse to regenerate codes without a verification code', async () => {
+      await openSetup();
+      // The browser blocks an empty required field, so drop the attribute to reach the server check
+      await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').evaluate(el => el.removeAttribute('required'));
+      await userPage.locator('button[name="regenerate_codes"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Verification code is required/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+    });
+
+    test('should refuse to disable MFA with a wrong code', async () => {
+      await openSetup();
+      await userPage.locator('[data-testid="disable-mfa-code"]').fill('000000');
+      await userPage.locator('button[name="disable_mfa"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Invalid verification code/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+    });
+
     test('should regenerate codes when clicking button', async () => {
       await openSetup();
+      await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').fill(firstCodes[0].trim());
       await userPage.locator('button[name="regenerate_codes"]').click();
 
       await expect(userPage.locator('body')).toContainText(/recovery|code|save|store/i);
@@ -220,6 +241,7 @@ test.describe('MFA Recovery Codes Page', () => {
       const regenerated = await codes.allTextContents();
       expect(regenerated.length).toBe(firstCodes.length);
       expect(regenerated).not.toEqual(firstCodes);
+      regeneratedCodes = regenerated;
     });
 
     test('should warn about one-time use of codes', async () => {
@@ -237,6 +259,15 @@ test.describe('MFA Recovery Codes Page', () => {
 
     test('should have download button', async () => {
       await expect(userPage.locator('button#download-btn')).toBeVisible();
+    });
+
+    test('should disable MFA with a recovery code', async () => {
+      await openSetup();
+      await userPage.locator('[data-testid="disable-mfa-code"]').fill(regeneratedCodes[0].trim());
+      await userPage.locator('button[name="disable_mfa"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/MFA has been disabled/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently disabled/i);
     });
   });
 });

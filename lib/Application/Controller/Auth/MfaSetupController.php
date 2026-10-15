@@ -26,6 +26,7 @@ use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use RuntimeException;
@@ -321,6 +322,11 @@ class MfaSetupController extends BaseController
             return;
         }
 
+        if ($userMfa->isEnabled() && !$this->confirmsCurrentFactor($userId)) {
+            $this->displayMfaSetup();
+            return;
+        }
+
         // Disable MFA
         $this->mfaService()->disableMfa($userId);
 
@@ -346,6 +352,11 @@ class MfaSetupController extends BaseController
             return;
         }
 
+        if (!$this->confirmsCurrentFactor($userId)) {
+            $this->displayMfaSetup();
+            return;
+        }
+
         // Generate new recovery codes
         $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
 
@@ -353,6 +364,60 @@ class MfaSetupController extends BaseController
 
         $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));
         $this->displayRecoveryCodes($recoveryCodes);
+    }
+
+    /**
+     * Whether the posted code proves the current second factor, so a hijacked session cannot
+     * switch MFA off or take new recovery codes. Counted apart from login, so failures here
+     * cannot lock the account out of signing in.
+     */
+    private function confirmsCurrentFactor(int $userId): bool
+    {
+        $username = $this->getUserContextService()->getLoggedInUsername() ?? '';
+        $ip = $this->services()->clientContext()->ip;
+        $attempts = $this->services()->loginAttemptService();
+        $stage = LoginAttemptService::STAGE_MFA_STEP_UP;
+
+        if ($attempts->isAccountLocked($username, $ip, $stage, $userId)) {
+            $this->addSystemMessage('error', _('Too many failed attempts. Please try again later.'));
+            return false;
+        }
+
+        $code = trim((string)$this->httpRequest->getPostParam('mfa_code', ''));
+        if ($code === '') {
+            // Email codes only exist once sent, so an empty submit asks for one
+            if ($this->mfaService()->getMfaType($userId) === UserMfa::TYPE_EMAIL && $this->sendStepUpEmailCode($userId)) {
+                $this->addSystemMessage('info', _('A new verification code has been sent to your email.'));
+            }
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            return false;
+        }
+
+        $isValid = $this->mfaService()->verifyCode($userId, $code);
+        $attempts->recordAttempt($username, $ip, $isValid, $stage, $userId);
+        if (!$isValid) {
+            $this->services()->auditService()->logMfaFailed($this->mfaService()->getMfaType($userId) ?? 'unknown');
+            if ($attempts->isAccountLocked($username, $ip, $stage, $userId)) {
+                // Same as the login step: the pending email code dies with the lockout
+                $this->mfaService()->invalidatePendingEmailCode($userId);
+            }
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+        }
+        return $isValid;
+    }
+
+    /**
+     * Sends a code only when none is pending, so repeated submits cannot flood the inbox or
+     * replace a code a login in progress is waiting for.
+     */
+    private function sendStepUpEmailCode(int $userId): bool
+    {
+        try {
+            return $this->mfaService()->refreshEmailVerificationCodeIfNeeded($userId, $this->getUserContextService()->getUserEmail() ?? '') !== null;
+        } catch (RuntimeException $e) {
+            $this->logger->warning('[MfaSetupController] Could not send a step-up code to user {user_id}: {error}', ['user_id' => $userId, 'error' => $e->getMessage()]);
+            return false;
+        }
     }
 
     private function displayMfaSetup(): void

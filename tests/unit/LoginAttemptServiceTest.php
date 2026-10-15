@@ -95,6 +95,26 @@ class LoginAttemptServiceTest extends TestCase
         $this->assertTrue($result, 'A whitelisted address must not exempt the second factor from throttling');
     }
 
+    public function testMfaStepUpStageCountsOnItsOwnLikeTheSecondFactor()
+    {
+        $service = $this->service([
+            'account_lockout' => [
+                'enable_lockout' => false,
+                'whitelist_ip_addresses' => ['192.168.1.1'],
+                'blacklist_ip_addresses' => [],
+            ],
+            'mfa' => ['max_verify_attempts' => 5, 'verify_lockout_duration' => 15],
+        ], ['type' => 'mysql']);
+
+        $this->attemptsMock->method('hasAttemptTypeColumn')->willReturn(true);
+        // Its own type, so step-up failures never lock the login step, and no address filter
+        $this->attemptsMock->expects($this->once())->method('countFailedAttempts')
+            ->with(1, $this->anything(), LoginAttemptService::STAGE_MFA_STEP_UP, null)
+            ->willReturn(5);
+
+        $this->assertTrue($service->isAccountLocked('testuser', '192.168.1.1', LoginAttemptService::STAGE_MFA_STEP_UP, 1));
+    }
+
     public function testWhitelistedIpIsNeverLocked()
     {
         $service = $this->service([
