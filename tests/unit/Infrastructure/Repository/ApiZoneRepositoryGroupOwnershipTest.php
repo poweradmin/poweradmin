@@ -149,4 +149,29 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->assertSame(1, $count);
         $this->assertCount(1, $this->visibleTo(2));
     }
+
+    #[Test]
+    public function listedIdIsTheIdTheZonePagesOpen(): void
+    {
+        // Edit and delete links use this id; zone 7 is opened as 4011, and 4011 would open another zone
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
+            (7, 4011, '1.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0),
+            (9, NULL, '2.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0)");
+
+        $zones = $this->repository()->getReverseZones('all', 1, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertSame(4011, $zones['1.168.192.in-addr.arpa']['id']);
+        $this->assertSame(9, $zones['2.168.192.in-addr.arpa']['id']);
+    }
+
+    #[Test]
+    public function ownersAreStillListedWhenTheIdsDiffer(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, '1.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0)");
+
+        $zones = $this->repository()->getReverseZones('all', 1, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertSame(['admin'], $zones['1.168.192.in-addr.arpa']['owners']);
+    }
 }
