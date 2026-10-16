@@ -92,6 +92,8 @@ class Bootstrap
             'httponly' => true,
             'samesite' => 'Lax',
         ]);
+        // Refuse session ids this server never issued, on top of the regeneration at every login
+        ini_set('session.use_strict_mode', '1');
 
         session_start();
     }
