@@ -192,11 +192,7 @@ class DeleteDomainsController extends BaseController
                 }
             }
 
-            if (str_starts_with($zones[$zone_id]['name'], "xn--")) {
-                $zones[$zone_id]['idn_zone_name'] = DnsIdnService::toUtf8($zones[$zone_id]['name']);
-            } else {
-                $zones[$zone_id]['idn_zone_name'] = "";
-            }
+            $zones[$zone_id]['idn_zone_name'] = DnsIdnService::toIdnAlias($zones[$zone_id]['name']);
         }
         return $zones;
     }

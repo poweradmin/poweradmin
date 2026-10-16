@@ -126,6 +126,24 @@ class DnsIdnServiceTest extends TestCase
         $this->assertEquals('münchen.de', DnsIdnService::toIdnAlias('xn--mnchen-3ya.de'));
     }
 
+    public function testANameWithOnlyAPunycodeTldIsDecoded(): void
+    {
+        // Only the TLD is punycode, so the first label alone does not tell
+        $this->assertSame('shop.рф', DnsIdnService::toDisplay('shop.xn--p1ai'));
+        $this->assertSame('shop.рф', DnsIdnService::toIdnAlias('shop.xn--p1ai'));
+    }
+
+    public function testAnUndecodableLabelGivesNoAlias(): void
+    {
+        $this->assertSame('', DnsIdnService::toIdnAlias('example.xn--a.com'));
+        $this->assertSame('example.xn--a.com', DnsIdnService::toDisplay('example.xn--a.com'));
+    }
+
+    public function testANameWithAPunycodeMiddleLabelIsDecoded(): void
+    {
+        $this->assertSame('www.münchen.de', DnsIdnService::toDisplay('www.xn--mnchen-3ya.de'));
+    }
+
     public function testToIdnAliasWithAsciiDomainReturnsEmptyString(): void
     {
         $this->assertSame('', DnsIdnService::toIdnAlias('example.com'));
@@ -146,12 +164,11 @@ class DnsIdnServiceTest extends TestCase
     }
 
     /**
-     * Malformed punycode still has the xn-- prefix, so it is aliased, and the
-     * fallback in toUtf8 keeps the result a string.
+     * Malformed punycode does not decode, so there is no alias to show beside the name.
      */
-    public function testToIdnAliasWithMalformedPunycodeReturnsOriginal(): void
+    public function testToIdnAliasWithMalformedPunycodeReturnsEmptyString(): void
     {
-        $this->assertEquals('xn--a.com', DnsIdnService::toIdnAlias('xn--a.com'));
+        $this->assertSame('', DnsIdnService::toIdnAlias('xn--a.com'));
     }
 
     /**

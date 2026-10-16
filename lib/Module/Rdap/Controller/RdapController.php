@@ -71,7 +71,7 @@ class RdapController extends BaseController
 
         $this->render('@rdap/rdap.html', [
             'domain' => $domain,
-            'utf8_domain' => str_starts_with($domain, 'xn--') ? DnsIdnService::toUtf8($domain) : $domain,
+            'utf8_domain' => DnsIdnService::toDisplay($domain),
             'result' => $result,
             'custom_server' => $this->getModuleConfig('rdap', 'default_server', '')
         ]);

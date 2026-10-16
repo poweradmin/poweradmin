@@ -156,11 +156,7 @@ class DeleteDomainController extends BaseController
             }
         }
 
-        if (str_starts_with($zone_info['name'], "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($zone_info['name']);
-        } else {
-            $idn_zone_name = "";
-        }
+        $idn_zone_name = DnsIdnService::toIdnAlias($zone_info['name']);
 
         $this->render('delete_domain.html', [
             'zone_id' => $zone_id,
