@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use PDO;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -139,14 +140,38 @@ class ZoneSearch extends BaseSearch
         // Build WHERE conditions
         $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $params);
 
-        // Set correct alias for outer sort.
-        $sort_zones_by_outer = str_replace($domains_table, 'd', $sort_zones_by);
+        $joins = "
+            LEFT JOIN zones z ON $domains_table.id = z.domain_id
+            LEFT JOIN users u ON z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id = $domains_table.id";
 
+        // Page over zones, not joined rows: a zone with several owners is one row per owner,
+        // so LIMIT on the joined rows gave short pages and split zones across pages
+        $pageSort = $sort_zones_by === 'fullname ' . $zone_sort_direction ? "MIN(u.fullname) $zone_sort_direction" : $sort_zones_by;
+        $pageQuery = "SELECT $domains_table.id FROM $domains_table $joins
+            WHERE $whereConditions
+            GROUP BY $domains_table.id, $domains_table.name, $domains_table.type, record_count.count_records
+            ORDER BY $pageSort, $domains_table.id
+            LIMIT $iface_rowamount OFFSET $offset";
+        $stmt = $this->db->prepare($pageQuery);
+        $stmt->execute($params);
+        $pageIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+        if ($pageIds === []) {
+            return [];
+        }
+
+        $idPlaceholders = [];
+        foreach ($pageIds as $i => $id) {
+            $idPlaceholders[] = ":page_id_$i";
+            $params[":page_id_$i"] = $id;
+        }
+
+        // The same conditions again, so each zone keeps exactly the owner rows the search allows
         $zonesQuery = "
             SELECT
-                d.id,
-                d.name,
-                d.type,
+                $domains_table.id,
+                $domains_table.name,
+                $domains_table.type,
                 z.id as zone_id,
                 z.domain_id,
                 z.owner,
@@ -155,31 +180,18 @@ class ZoneSearch extends BaseSearch
                 u.username,
                 record_count.count_records
                 $comment_field
-            FROM (
-                SELECT id, name, type
-                FROM $domains_table
-                WHERE " . $whereConditions . "
-                ORDER BY " . $sort_zones_by . "
-                LIMIT " . $iface_rowamount . " OFFSET " . $offset . "
-            ) d
-            LEFT JOIN zones z ON d.id = z.domain_id
-            LEFT JOIN users u ON z.owner = u.id
-            LEFT JOIN (
-                SELECT COUNT(domain_id) AS count_records, domain_id
-                FROM $records_table
-                WHERE type IS NOT NULL
-                GROUP BY domain_id
-            ) record_count ON record_count.domain_id = d.id
-            ORDER BY " . $sort_zones_by_outer;
+            FROM $domains_table $joins
+            WHERE ($whereConditions) AND $domains_table.id IN (" . implode(', ', $idPlaceholders) . ")
+            ORDER BY $sort_zones_by";
 
         $stmt = $this->db->prepare($zonesQuery);
         $stmt->execute($params);
-        $zonesResponse = $stmt;
 
-        $zones = [];
-        while ($zone = $zonesResponse->fetch()) {
-            $zones[$zone['id']][] = $zone;
+        $zones = array_fill_keys($pageIds, []);
+        while ($zone = $stmt->fetch()) {
+            $zones[(int)$zone['id']][] = $zone;
         }
+        $zones = array_filter($zones);
 
         return $this->prepareFoundZones($zones);
     }
