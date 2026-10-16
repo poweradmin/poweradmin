@@ -193,7 +193,7 @@ class EditZoneMetadataController extends BaseController
      */
     private function renderPage(int $zoneId, array $zone, array $metadataRows, bool $canEdit = true): void
     {
-        $idnZoneName = str_starts_with($zone['name'], 'xn--') ? DnsIdnService::toUtf8($zone['name']) : '';
+        $idnZoneName = DnsIdnService::toIdnAlias($zone['name']);
         if (empty($metadataRows)) {
             $metadataRows = [['kind' => '', 'content' => '']];
         }

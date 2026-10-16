@@ -38,7 +38,7 @@ class DnsIdnService
      */
     public static function toDisplay(string $domainName): string
     {
-        return str_starts_with($domainName, 'xn--') ? self::toUtf8($domainName) : $domainName;
+        return self::isIdn($domainName) ? self::toUtf8($domainName) : $domainName;
     }
 
     /**
@@ -47,11 +47,13 @@ class DnsIdnService
      */
     public static function toIdnAlias(?string $domainName): string
     {
-        if ($domainName === null || !str_starts_with($domainName, 'xn--')) {
+        if ($domainName === null || !self::isIdn($domainName)) {
             return '';
         }
 
-        return self::toUtf8($domainName);
+        // A label that does not decode leaves the name as is, and the alias would repeat it
+        $decoded = self::toUtf8($domainName);
+        return $decoded !== $domainName ? $decoded : '';
     }
 
     public static function toUtf8(string $domainName): string
