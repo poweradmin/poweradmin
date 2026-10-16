@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use PDO;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Database\TableNameService;
@@ -146,6 +147,33 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
         // Build WHERE conditions
         $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $userId, $params);
 
+        $joins = "
+            LEFT JOIN zones z ON $domains_table.id = z.domain_id
+            LEFT JOIN users u ON z.owner = u.id
+            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id = $domains_table.id";
+
+        // Page over zones, not joined rows: a zone with several owners is one row per owner,
+        // so LIMIT on the joined rows gave short pages and split zones across pages
+        $pageSort = $sort_zones_by === 'fullname ' . $zone_sort_direction ? "MIN(u.fullname) $zone_sort_direction" : $sort_zones_by;
+        $pageQuery = "SELECT $domains_table.id FROM $domains_table $joins
+            WHERE $whereConditions
+            GROUP BY $domains_table.id, $domains_table.name, $domains_table.type, record_count.count_records
+            ORDER BY $pageSort, $domains_table.id
+            LIMIT $iface_rowamount OFFSET $offset";
+        $stmt = $this->db->prepare($pageQuery);
+        $stmt->execute($params);
+        $pageIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN) ?: []);
+        if ($pageIds === []) {
+            return [];
+        }
+
+        $idPlaceholders = [];
+        foreach ($pageIds as $i => $id) {
+            $idPlaceholders[] = ":page_id_$i";
+            $params[":page_id_$i"] = $id;
+        }
+
+        // The same conditions again, so each zone keeps exactly the owner rows the search allows
         $zonesQuery = "
             SELECT
                 $domains_table.id,
@@ -159,24 +187,18 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
                 u.username,
                 record_count.count_records
                 $comment_field
-            FROM
-                $domains_table
-            LEFT JOIN zones z on $domains_table.id = z.domain_id
-            LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
-            WHERE
-                " . $whereConditions .
-            ' ORDER BY ' . $sort_zones_by .
-            ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
+            FROM $domains_table $joins
+            WHERE ($whereConditions) AND $domains_table.id IN (" . implode(', ', $idPlaceholders) . ")
+            ORDER BY $sort_zones_by";
 
         $stmt = $this->db->prepare($zonesQuery);
         $stmt->execute($params);
-        $zonesResponse = $stmt;
 
-        $zones = [];
-        while ($zone = $zonesResponse->fetch()) {
-            $zones[$zone['id']][] = $zone;
+        $zones = array_fill_keys($pageIds, []);
+        while ($zone = $stmt->fetch()) {
+            $zones[(int)$zone['id']][] = $zone;
         }
+        $zones = array_filter($zones);
 
         return $this->prepareFoundZones($zones);
     }
