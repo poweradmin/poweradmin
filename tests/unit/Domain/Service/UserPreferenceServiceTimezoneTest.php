@@ -80,7 +80,9 @@ class UserPreferenceServiceTimezoneTest extends TestCase
     public function testSetPreferenceAllowsClearingTimezone(): void
     {
         $repo = $this->createMock(UserPreferenceRepositoryInterface::class);
-        $repo->expects($this->exactly(2))->method('createOrUpdate');
+        // null is the default (no timezone), so it removes the stored row instead of saving one
+        $repo->expects($this->once())->method('deleteByUserIdAndKey')->with(7, UserPreference::KEY_TIMEZONE);
+        $repo->expects($this->once())->method('createOrUpdate')->with(7, UserPreference::KEY_TIMEZONE, '');
 
         $service = $this->makeService($repo);
         $service->setPreference(7, UserPreference::KEY_TIMEZONE, null);

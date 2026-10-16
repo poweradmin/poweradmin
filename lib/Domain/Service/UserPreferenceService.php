@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -77,6 +77,13 @@ class UserPreferenceService
             && !UserPreference::isValidTimezone($value)
         ) {
             throw new InvalidArgumentException("Invalid timezone: {$value}");
+        }
+
+        // A value equal to the site default is not stored, so a later change to settings.php
+        // still reaches every user who never picked anything else
+        if ($value === $this->getDefaultValue($key)) {
+            $this->resetPreference($userId, $key);
+            return;
         }
 
         $this->repository->createOrUpdate($userId, $key, $value);
