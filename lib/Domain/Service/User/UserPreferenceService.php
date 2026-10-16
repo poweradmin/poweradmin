@@ -83,6 +83,13 @@ class UserPreferenceService
             throw new InvalidArgumentException("Invalid timezone: {$value}");
         }
 
+        // A value equal to the site default is not stored, so a later change to settings.php
+        // still reaches every user who never picked anything else
+        if ($value === $this->getDefaultValue($key)) {
+            $this->resetPreference($userId, $key);
+            return;
+        }
+
         $this->repository->createOrUpdate($userId, $key, $value);
 
         $cacheKey = $userId . '_' . $key;
