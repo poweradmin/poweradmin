@@ -122,17 +122,8 @@ test.describe('MFA Recovery Codes Page', () => {
     let regeneratedCodes = [];
     let secret = '';
 
-    // Enabling MFA mid-session makes the next request ask for a code, so answer it
     async function openSetup() {
       await userPage.goto('/mfa/setup');
-      for (const offset of [0, 1, -1]) {
-        if (await userPage.locator('#mfa_code').count() === 0) {
-          break;
-        }
-        await userPage.locator('#mfa_code').fill(totp(secret, offset));
-        await userPage.locator('button[name="verify_mfa"]').first().click();
-        await userPage.goto('/mfa/setup');
-      }
     }
 
     test.beforeAll(async ({ browser }) => {
@@ -187,6 +178,13 @@ test.describe('MFA Recovery Codes Page', () => {
       for (const code of firstCodes) {
         expect(code.trim().length).toBeGreaterThan(0);
       }
+    });
+
+    test('should not ask for the code again after enabling MFA (#1737)', async () => {
+      await userPage.goto('/');
+
+      await expect(userPage).not.toHaveURL(/mfa\/verify/);
+      await expect(userPage.locator('#mfa_code')).toHaveCount(0);
     });
 
     test('should show recovery codes option when MFA enabled', async () => {

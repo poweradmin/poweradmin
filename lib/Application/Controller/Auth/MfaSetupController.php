@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use RuntimeException;
 
@@ -174,6 +175,8 @@ class MfaSetupController extends BaseController
         if ($this->mfaService()->verifyCode($userId, $code)) {
             // Enable MFA
             $this->mfaService()->enableMfa($userId);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
 
             $this->services()->auditService()->logMfaEnable('app');
 
@@ -288,6 +291,8 @@ class MfaSetupController extends BaseController
         if ($isValid) {
             // Enable MFA
             $this->mfaService()->enableMfa($userId, UserMfa::TYPE_EMAIL);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
 
             $this->services()->auditService()->logMfaEnable('email');
 
