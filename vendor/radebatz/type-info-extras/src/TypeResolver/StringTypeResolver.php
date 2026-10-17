@@ -36,6 +36,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use Radebatz\TypeInfoExtras\Type\Type;
 use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
+use Symfony\Component\TypeInfo\Exception\LogicException;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type as BaseType;
 use Symfony\Component\TypeInfo\Type\BackedEnumType;
@@ -62,6 +63,11 @@ final class StringTypeResolver implements TypeResolverInterface
      * @var array<string, bool>
      */
     private static array $classExistCache = [];
+
+    /**
+     * @var array<string, true>
+     */
+    private array $resolvingExtraTypeAliases = [];
 
     private readonly Lexer $lexer;
     private readonly TypeParser $parser;
@@ -395,7 +401,17 @@ final class StringTypeResolver implements TypeResolverInterface
         }
 
         if (isset($this->extraTypeAliases[$identifier])) {
-            return $this->resolve($this->extraTypeAliases[$identifier]);
+            if (isset($this->resolvingExtraTypeAliases[$identifier])) {
+                throw new LogicException(\sprintf('Cannot resolve "%s" type alias as it is recursive.', $identifier));
+            }
+
+            $this->resolvingExtraTypeAliases[$identifier] = true;
+
+            try {
+                return $this->resolve($this->extraTypeAliases[$identifier]);
+            } finally {
+                unset($this->resolvingExtraTypeAliases[$identifier]);
+            }
         }
 
         throw new \DomainException(\sprintf('Unhandled "%s" identifier.', $identifier));
