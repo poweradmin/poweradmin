@@ -134,6 +134,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
                 'comment' => 'first',
                 'owner_fullnames' => ['Alice'],
                 'owner_usernames' => ['alice'],
+                'punycode_name' => '',
             ],
             [
                 'id' => 2,
@@ -149,6 +150,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
                 'comment' => 'second',
                 'owner_fullnames' => [''],
                 'owner_usernames' => ['bob'],
+                'punycode_name' => '',
             ],
         ], $rows);
         $this->assertSame(2, $this->sqlService()->searchZonesTotalCount($this->parameters(true, false), 'all'));
@@ -172,8 +174,10 @@ class DnsDataServiceSearchShapeTest extends TestCase
         $rows = $this->sqlService()->searchRecords($this->parameters(false, true), 'all', 'name', 'ASC', false, 10, false, 1);
 
         $this->assertSame([
-            ['id' => 100, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => false, 'zone_id' => 11, 'owner' => 7, 'user_id' => 7, 'fullname' => 'Alice'],
-            ['id' => 101, 'domain_id' => 2, 'name' => 'www.example.net', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => true, 'zone_id' => 12, 'owner' => 8, 'user_id' => 8, 'fullname' => ''],
+            ['id' => 100, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => false, 'zone_id' => 11,
+                'owner' => 7, 'user_id' => 7, 'fullname' => 'Alice', 'punycode_name' => ''],
+            ['id' => 101, 'domain_id' => 2, 'name' => 'www.example.net', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => true, 'zone_id' => 12,
+                'owner' => 8, 'user_id' => 8, 'fullname' => '', 'punycode_name' => ''],
         ], $rows);
         $this->assertSame(2, $this->sqlService()->searchRecordsTotalCount($this->parameters(false, true), 'all', false));
     }
@@ -186,6 +190,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
             [
                 'id' => 1,
                 'name' => 'example.com',
+                'punycode_name' => '',
                 'type' => 'MASTER',
                 'count_records' => 10,
                 'user_id' => 7,
@@ -197,6 +202,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
             [
                 'id' => 2,
                 'name' => 'example.net',
+                'punycode_name' => '',
                 'type' => 'NATIVE',
                 'count_records' => 20,
                 'user_id' => 8,
@@ -214,8 +220,8 @@ class DnsDataServiceSearchShapeTest extends TestCase
         $rows = $this->apiService()->searchRecords($this->parameters(false, true), 'all', 'name', 'ASC', false, 10, false, 1);
 
         $this->assertSame([
-            ['id' => 'r1', 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => false, 'user_id' => 7, 'fullname' => 'Alice'],
-            ['id' => 'r2', 'domain_id' => 2, 'name' => 'www.example.net', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => true, 'user_id' => 8, 'fullname' => ''],
+            ['id' => 'r1', 'domain_id' => 1, 'name' => 'www.example.com', 'punycode_name' => '', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => false, 'user_id' => 7, 'fullname' => 'Alice'],
+            ['id' => 'r2', 'domain_id' => 2, 'name' => 'www.example.net', 'punycode_name' => '', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => true, 'user_id' => 8, 'fullname' => ''],
         ], $rows);
         $this->assertSame(2, $this->apiService()->searchRecordsTotalCount($this->parameters(false, true), 'all', false));
     }

@@ -145,7 +145,7 @@ interface ZoneReadRepositoryInterface
      *
      * @param string $permType Permission type ('all', 'own'); anything else counts nothing
      * @param int|null $userId User ID for 'own'; null counts nothing
-     * @param string $letterStart Single first letter, '1' for a leading digit, or 'all'
+     * @param string $letterStart Single first letter, '1' for a leading digit, 'idn' for punycode names, or 'all'
      * @param string $zoneType 'forward', 'reverse' or 'all'
      * @return int Number of matching zones
      */

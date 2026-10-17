@@ -36,7 +36,7 @@ use Poweradmin\Infrastructure\Repository\RecordSearch;
 #[CoversClass(RecordSearch::class)]
 class RecordSearchRowShapeTest extends TestCase
 {
-    private const ROW_KEYS = ['id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled', 'zone_id', 'owner', 'user_id', 'fullname'];
+    private const ROW_KEYS = ['id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled', 'zone_id', 'owner', 'user_id', 'fullname', 'punycode_name'];
 
     private PDO $db;
 

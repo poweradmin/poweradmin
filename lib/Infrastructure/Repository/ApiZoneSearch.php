@@ -144,6 +144,7 @@ final class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
             $formatted = [
                 'id' => $zone['id'] ?? 0,
                 'name' => DnsIdnService::toUtf8($zone['name'] ?? ''),
+                'punycode_name' => DnsIdnService::isIdn($zone['name'] ?? '') ? $zone['name'] : '',
                 'type' => $zone['type'] ?? '',
                 'count_records' => $zone['count_records'] ?? 0,
                 'user_id' => $zone['owner_ids'][0] ?? 0,

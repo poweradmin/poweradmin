@@ -168,6 +168,7 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
                 'id' => $record['id'] ?? 0,
                 'domain_id' => $record['domain_id'] ?? 0,
                 'name' => DnsIdnService::toUtf8($record['name'] ?? ''),
+                'punycode_name' => DnsIdnService::isIdn($record['name'] ?? '') ? $record['name'] : '',
                 'type' => $record['type'] ?? '',
                 'content' => $record['content'] ?? '',
                 'ttl' => $record['ttl'] ?? 0,

@@ -22,8 +22,10 @@
 
 namespace Poweradmin\Application\Presenter;
 
+use Poweradmin\Domain\Model\ZoneStartingLetter;
+
 /**
- * Describes the 0-9, a-z and "Show all" filter links on the forward zone list page.
+ * Describes the 0-9, a-z, IDN and "Show all" filter links on the forward zone list page.
  *
  * items() feeds templates/default/_partials/letters.html; present() is the pre-rendered
  * string still exposed as the `letters` template variable for theme forks.
@@ -31,8 +33,8 @@ namespace Poweradmin\Application\Presenter;
 final class ZoneStartingLettersPresenter
 {
     /**
-     * The digits bucket, a-z, any non-ASCII initials (IDN zones) and "Show all", in display order.
-     * `letter` is the raw filter value ('1' for the digits bucket, 'all' for the last item).
+     * The digits bucket, a-z, the IDN bucket for punycode zones and "Show all", in display order.
+     * `letter` is the raw filter value ('1' for the digits bucket, 'idn', 'all' for the last item).
      *
      * @return list<array{letter: string, label: string, url: ?string, active: bool, disabled: bool}>
      */
@@ -61,16 +63,11 @@ final class ZoneStartingLettersPresenter
             }
         }
 
-        // Non-ASCII initials only exist once IDN zones are present; they follow the alphabet.
-        foreach ($availableChars as $letter) {
-            if ($letter === '' || preg_match('/^[a-z0-9]$/', $letter)) {
-                continue;
-            }
-            if ($letter === $letterStart) {
-                $items[] = $this->item($letter, $letter, null, true, false);
-            } else {
-                $items[] = $this->item($letter, $letter, $url(rawurlencode($letter)), false, false);
-            }
+        // Punycode zones share one entry after the alphabet, shown only when there are any.
+        if ($letterStart === ZoneStartingLetter::IDN) {
+            $items[] = $this->item(ZoneStartingLetter::IDN, 'IDN', null, true, false);
+        } elseif (in_array(ZoneStartingLetter::IDN, $availableChars, true)) {
+            $items[] = $this->item(ZoneStartingLetter::IDN, 'IDN', $url(ZoneStartingLetter::IDN), false, false);
         }
 
         $items[] = $this->item('all', _('Show all'), $letterStart === 'all' ? null : $url('all'), $letterStart === 'all', false);

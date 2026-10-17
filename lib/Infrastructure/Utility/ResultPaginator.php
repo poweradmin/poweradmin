@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Model\ZoneStartingLetter;
+
 /**
  * In-memory sorting, filtering, and pagination for datasets.
  *
@@ -128,30 +130,17 @@ final class ResultPaginator
      * Filter dataset by starting letter of a field.
      *
      * @param array $data Dataset to filter
-     * @param string $letter Starting letter ('all' for no filter, '1' for digits)
+     * @param string $letter Starting letter ('all' for no filter, '1' for digits, 'idn' for punycode names)
      * @param string $field Field name to check
      * @return array Filtered dataset
      */
     public static function filterByLetter(array $data, string $letter, string $field = 'name'): array
     {
-        if ($letter === 'all' || $letter === '') {
+        if ($letter === ZoneStartingLetter::ALL || $letter === '') {
             return $data;
         }
 
-        return array_values(array_filter($data, function ($item) use ($letter, $field) {
-            $value = $item[$field] ?? '';
-            if ($value === '') {
-                return false;
-            }
-
-            $firstChar = strtolower($value[0]);
-
-            if ($letter === '1') {
-                return is_numeric($firstChar);
-            }
-
-            return $firstChar === strtolower($letter);
-        }));
+        return array_values(array_filter($data, fn($item) => ZoneStartingLetter::matches((string)($item[$field] ?? ''), $letter)));
     }
 
     /**

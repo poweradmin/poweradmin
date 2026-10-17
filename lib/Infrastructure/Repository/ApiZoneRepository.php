@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
@@ -110,26 +111,22 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $where .= $unreachable === null ? '' : " AND $unreachable";
 
 
-        // IDN zones are excluded here so they do not all register as "x"; they are
-        // resolved to their decoded initial below.
+        // Punycode zones are listed under one IDN entry, so they do not register as "x".
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
                   FROM zones z" . $where . " AND z.zone_name NOT LIKE 'xn--%' ORDER BY letter";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
-        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
+        $letters = array_values(array_unique(array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
-        });
-
-        $idnStmt = $this->db->prepare("SELECT DISTINCT z.zone_name FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%'");
-        $idnStmt->execute();
-
-        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
-            $letters[] = DnsIdnService::getFirstLetter($name);
-        }
-
-        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        })));
         sort($letters, SORT_STRING);
+
+        $idnStmt = $this->db->prepare("SELECT 1 FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%' LIMIT 1");
+        $idnStmt->execute();
+        if ($idnStmt->fetchColumn()) {
+            $letters[] = ZoneStartingLetter::IDN;
+        }
 
         return $letters;
     }
@@ -417,14 +414,8 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $zones = array_filter($zones, fn(array $zone): bool => SharedZoneIds::isOpenedZone($openedNames, $zone));
         }
 
-        if ($letterStart !== 'all') {
-            $zones = array_filter($zones, function ($z) use ($letterStart) {
-                $name = rtrim($z['name'] ?? '', '.');
-                if ($letterStart === '1') {
-                    return !empty($name) && is_numeric($name[0]);
-                }
-                return !empty($name) && strtolower($name[0]) === strtolower($letterStart);
-            });
+        if ($letterStart !== ZoneStartingLetter::ALL) {
+            $zones = array_filter($zones, fn($z) => ZoneStartingLetter::matches(rtrim($z['name'] ?? '', '.'), $letterStart));
         }
 
         if ($zoneType === 'forward') {

@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Zone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Application\Service\Backend\DnsDataService;
 use Poweradmin\Domain\Enum\AccessScope;
 use Poweradmin\Domain\Model\Permission;
@@ -140,10 +141,10 @@ class ListForwardZonesController extends BaseController
             $letter_start = 'a';
             $letter = $this->httpRequest->getQueryParam('letter');
             if ($letter !== null) {
-                $letter_start = $letter;
-                $this->session()->set(SessionKeys::LETTER, $letter);
+                $letter_start = ZoneStartingLetter::normalize($letter);
+                $this->session()->set(SessionKeys::LETTER, $letter_start);
             } elseif ($this->session()->has(SessionKeys::LETTER)) {
-                $letter_start = $this->session()->get(SessionKeys::LETTER);
+                $letter_start = ZoneStartingLetter::normalize($this->session()->get(SessionKeys::LETTER));
             }
         }
 

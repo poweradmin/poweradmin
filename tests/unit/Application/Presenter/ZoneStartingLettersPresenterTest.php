@@ -78,15 +78,23 @@ class ZoneStartingLettersPresenterTest extends TestCase
         $this->assertStringNotContainsString($this->link('all', 'Show all'), $html);
     }
 
-    public function testNonAsciiInitialsFollowTheAlphabetEscapedAndUrlEncoded(): void
+    public function testPunycodeZonesShareOneIdnEntryAfterTheAlphabet(): void
     {
         $presenter = new ZoneStartingLettersPresenter();
 
-        $html = $presenter->present(['a', 'ä', '<'], false, 'a');
-        $this->assertStringContainsString($this->disabled('z') . $this->link('%C3%A4', 'ä') . $this->link('%3C', '&lt;') . $this->link('all', 'Show all'), $html);
+        $html = $presenter->present(['a', 'idn'], false, 'a');
+        $this->assertStringContainsString($this->disabled('z') . $this->link('idn', 'IDN') . $this->link('all', 'Show all'), $html);
 
-        $html = $presenter->present(['ä'], false, 'ä');
-        $this->assertStringContainsString($this->disabled('z') . $this->active('ä') . $this->link('all', 'Show all'), $html);
+        $html = $presenter->present(['idn'], false, 'idn');
+        $this->assertStringContainsString($this->disabled('z') . $this->active('IDN') . $this->link('all', 'Show all'), $html);
+    }
+
+    public function testIdnEntryIsLeftOutWithoutPunycodeZones(): void
+    {
+        $html = (new ZoneStartingLettersPresenter())->present(['a', 'ä', '<'], false, 'a');
+
+        $this->assertStringContainsString($this->disabled('z') . $this->link('all', 'Show all'), $html);
+        $this->assertStringNotContainsString('IDN', $html);
     }
 
     public function testBlankInitialsAreIgnored(): void

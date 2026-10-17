@@ -105,6 +105,19 @@ class ResultPaginatorTest extends TestCase
         $this->assertCount(4, $result);
     }
 
+    public function testFilterByLetterListsPunycodeNamesOnlyUnderIdn(): void
+    {
+        $data = [
+            ['name' => 'xn--mnchen-3ya.de'],
+            ['name' => 'xray.com'],
+            ['name' => 'example.xn--p1ai'],
+        ];
+
+        $this->assertSame(['xn--mnchen-3ya.de'], array_column(ResultPaginator::filterByLetter($data, 'idn'), 'name'));
+        $this->assertSame(['xray.com'], array_column(ResultPaginator::filterByLetter($data, 'x'), 'name'));
+        $this->assertSame(['example.xn--p1ai'], array_column(ResultPaginator::filterByLetter($data, 'e'), 'name'));
+    }
+
     public function testFilterByLetterDigit(): void
     {
         $data = [

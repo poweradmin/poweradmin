@@ -94,7 +94,9 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
                 }
                 $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_displays);
                 $found_zone = $zones[$zone_id][0];
-                $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name'] ?? '');
+                $storedName = (string)($found_zone['name'] ?? '');
+                $found_zone['punycode_name'] = DnsIdnService::isIdn($storedName) ? $storedName : '';
+                $found_zone['name'] = DnsIdnService::toUtf8($storedName);
                 $foundZones[] = $found_zone;
             }
         }

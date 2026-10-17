@@ -242,6 +242,7 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
         $foundRecords = array();
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
+            $found_record['punycode_name'] = DnsIdnService::isIdn($found_record['name']) ? $found_record['name'] : '';
             $found_record['name'] = DnsIdnService::toUtf8($found_record['name']);
             $found_record['disabled'] = (bool)DbCompat::boolFromDb($found_record['disabled']);
             $foundRecords[] = $found_record;

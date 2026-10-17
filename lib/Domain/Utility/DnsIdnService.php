@@ -183,16 +183,4 @@ class DnsIdnService
     {
         return implode(' ', array_map([self::class, 'toPunycode'], $parts));
     }
-
-    /**
-     * Get the first letter of a domain name in UTF-8 format
-     *
-     * @param string $domainName The domain name to get the first letter from
-     * @return string The first letter of the domain in UTF-8 format
-     */
-    public static function getFirstLetter(string $domainName): string
-    {
-        $utf8name = self::toUtf8($domainName);
-        return mb_substr($utf8name, 0, 1, 'UTF-8');
-    }
 }

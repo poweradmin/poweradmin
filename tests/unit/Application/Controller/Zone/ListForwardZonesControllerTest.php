@@ -223,15 +223,33 @@ class ListForwardZonesControllerTest extends ZoneListControllerTestCase
         $this->assertSame('z', $this->renderedParams()['letter_start']);
     }
 
-    public function testAnySubmittedLetterIsTakenVerbatim(): void
+    public function testAnUnknownSubmittedLetterShowsAllZones(): void
     {
-        // No allow-list here: whatever arrives becomes the filter and is stored.
         $this->zoneCount = 11;
         $this->query(['letter' => '1 OR 1']);
 
         $this->runController();
-        $this->assertSame('1 OR 1', $this->renderedParams()['letter_start']);
-        $this->assertSame('1 OR 1', $this->session->get(SessionKeys::LETTER));
+        $this->assertSame('all', $this->renderedParams()['letter_start']);
+        $this->assertSame('all', $this->session->get(SessionKeys::LETTER));
+    }
+
+    public function testARememberedDecodedInitialFallsBackToAllZones(): void
+    {
+        // 4.5.0 listed IDN zones under their decoded initial and kept it in the session
+        $this->zoneCount = 11;
+        $this->session->set(SessionKeys::LETTER, 'ä');
+
+        $this->runController();
+        $this->assertSame('all', $this->renderedParams()['letter_start']);
+    }
+
+    public function testTheIdnLetterIsKept(): void
+    {
+        $this->zoneCount = 11;
+        $this->query(['letter' => 'idn']);
+
+        $this->runController();
+        $this->assertSame('idn', $this->renderedParams()['letter_start']);
     }
 
     public function testTheAllLetterFetchesEveryZone(): void

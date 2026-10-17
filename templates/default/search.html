@@ -201,7 +201,7 @@
                             <input class="form-check-input" type="checkbox" name="zone_id[]" value="{{ zone['id'] }}">
                             {% endif %}
                         </td>
-                        <td>{{ zone['name'] }}</td>
+                        <td>{{ zone['name'] }}{% if zone['punycode_name']|default('') != '' and zone['punycode_name'] != zone['name'] %} <small class="text-muted">({{ zone['punycode_name'] }})</small>{% endif %}</td>
                         <td><span class="badge {{ zone_type_class(zone['type']) }}">{{ zone_type_label(zone['type']) }}</span></td>
                         <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
                         {% if show_zone_owners %}
@@ -372,7 +372,7 @@
                             <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ record['id'] }}">
                             {% endif %}
                         </td>
-                        <td>{{ record['display_name'] }}</td>
+                        <td>{{ record['display_name'] }}{% if record['punycode_name']|default('') != '' and record['punycode_name'] != record['name'] %} <small class="text-muted">({{ record['punycode_name'] }})</small>{% endif %}</td>
                         <td><span class="badge {{ record_type_class(record['type']) }}">{{ record['type'] }}</span></td>
                         <td>{{ record['prio'] }}</td>
                         <td><code class="text-break">{{ record['content'] }}</code></td>
