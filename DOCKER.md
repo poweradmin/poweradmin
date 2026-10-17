@@ -427,6 +427,8 @@ default. Restrict them at your reverse proxy when enabling them.
 | `PA_HEALTH_PING_ENABLED` | Enable liveness endpoint at /ping (returns `ok`, checks nothing else) | `false` | No |
 | `PA_HEALTH_DB_TIMEOUT` | Database connect timeout in seconds used by the health check | `2` | No |
 | `PA_HEALTH_PDNS_TIMEOUT` | PowerDNS API timeout in seconds used by the health check | `2` | No |
+| `PA_HEALTH_TOKEN` | When set, /api/health answers only requests sending it in the `X-Health-Token` header (4.5.0+) | - | No |
+| `PA_HEALTH_CACHE_SECONDS` | Reuse the last /api/health result for this many seconds; `0` runs the checks on every request (4.5.0+) | `0` | No |
 
 The image's built-in `HEALTHCHECK` requests `/`, which succeeds even when the database is
 down. To have the container reflect real readiness, enable the endpoint and override the
@@ -443,6 +445,9 @@ services:
       timeout: 5s
       retries: 3
 ```
+
+With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
+`test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
 
 ### PowerDNS API Integration
 

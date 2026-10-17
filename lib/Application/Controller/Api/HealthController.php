@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
@@ -102,10 +103,24 @@ class HealthController
             ], 404, self::NO_STORE);
         }
 
-        $checks = [
-            'database' => $this->checkDatabase(),
-            'pdns_api' => $this->checkPowerdnsApi(),
-        ];
+        if (!$this->tokenAccepted()) {
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Forbidden',
+            ], 403, self::NO_STORE);
+        }
+
+        $cacheSeconds = max(0, (int) $this->config()->get('health', 'cache_seconds', 0));
+        $checks = $cacheSeconds > 0 ? $this->readCachedChecks($cacheSeconds) : null;
+        if ($checks === null) {
+            $checks = [
+                'database' => $this->checkDatabase(),
+                'pdns_api' => $this->checkPowerdnsApi(),
+            ];
+            if ($cacheSeconds > 0) {
+                $this->writeCachedChecks($checks);
+            }
+        }
 
         $healthy = !in_array(self::STATUS_DOWN, $checks, true);
 
@@ -113,6 +128,87 @@ class HealthController
             'status' => $healthy ? self::STATUS_OK : self::STATUS_ERROR,
             'checks' => $checks,
         ], $healthy ? 200 : 503, self::NO_STORE);
+    }
+
+    /**
+     * With health.token set, the probe answers only callers sending it in X-Health-Token,
+     * so an anonymous request makes no database or PowerDNS call.
+     */
+    private function tokenAccepted(): bool
+    {
+        $expected = (string) $this->config()->get('health', 'token', '');
+        if ($expected === '') {
+            return true;
+        }
+
+        $given = $this->submittedToken();
+
+        return $given !== null && hash_equals($expected, $given);
+    }
+
+    protected function submittedToken(): ?string
+    {
+        $token = (new Request())->getServerParam('HTTP_X_HEALTH_TOKEN');
+
+        return is_string($token) ? $token : null;
+    }
+
+    /**
+     * Per-installation file in the system temp directory, so concurrent probes share one result.
+     */
+    protected function cacheFile(): string
+    {
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'poweradmin-health-' . hash('sha256', __DIR__) . '.json';
+    }
+
+    /**
+     * @return array<string, string>|null
+     */
+    private function readCachedChecks(int $cacheSeconds): ?array
+    {
+        $file = $this->cacheFile();
+        // Ignore a file or symlink another account planted in a shared temp directory. getmyuid() is the
+        // script owner, not the process, so it is only the fallback without the posix extension.
+        $processUid = function_exists('posix_geteuid') ? posix_geteuid() : getmyuid();
+        if (@is_link($file) || !@is_file($file) || @fileowner($file) !== $processUid) {
+            return null;
+        }
+
+        $cached = json_decode((string) @file_get_contents($file), true);
+        if (!is_array($cached) || !is_int($cached['at'] ?? null) || !is_array($cached['checks'] ?? null)) {
+            return null;
+        }
+        if ($cached['at'] > time() || time() - $cached['at'] >= $cacheSeconds) {
+            return null;
+        }
+
+        $checks = [];
+        foreach (['database', 'pdns_api'] as $name) {
+            $status = $cached['checks'][$name] ?? null;
+            if (!in_array($status, [self::STATUS_OK, self::STATUS_DOWN, self::STATUS_SKIPPED], true)) {
+                return null;
+            }
+            $checks[$name] = $status;
+        }
+
+        return $checks;
+    }
+
+    /**
+     * Best effort: a temp directory that cannot be written only means the next probe runs the checks.
+     *
+     * @param array<string, string> $checks
+     */
+    private function writeCachedChecks(array $checks): void
+    {
+        $file = $this->cacheFile();
+        $temporary = @tempnam(dirname($file), 'poweradmin-health-');
+        if ($temporary === false) {
+            return;
+        }
+        if (@file_put_contents($temporary, json_encode(['at' => time(), 'checks' => $checks])) === false || !@rename($temporary, $file)) {
+            @unlink($temporary);
+        }
     }
 
     /**
