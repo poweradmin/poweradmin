@@ -29,19 +29,33 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionProperty;
 
 #[CoversClass(ApiPermissionService::class)]
 class ApiPermissionServiceTest extends TestCase
 {
     private ApiPermissionService $service;
     private PDO&MockObject $db;
+    private mixed $savedConfigInstance = null;
 
     protected function setUp(): void
     {
         parent::setUp();
 
+        // The service reads the backend mode from the config singleton; keep a local settings.php out of it
+        $property = new ReflectionProperty(ConfigurationManager::class, 'instance');
+        $this->savedConfigInstance = $property->getValue();
+        $property->setValue(null, $this->createMock(ConfigurationManager::class));
+
         $this->db = $this->createMock(PDO::class);
         $this->service = new ApiPermissionService($this->db);
+    }
+
+    protected function tearDown(): void
+    {
+        (new ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
+        parent::tearDown();
     }
 
     private function mockPermissionCheck(int $userId, string $permissionName, bool $hasPermission): void

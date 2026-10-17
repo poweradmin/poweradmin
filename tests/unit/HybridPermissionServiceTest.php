@@ -9,17 +9,30 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\HybridPermissionService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionProperty;
 
 #[CoversClass(HybridPermissionService::class)]
 class HybridPermissionServiceTest extends TestCase
 {
     private MockObject&PDO $db;
     private HybridPermissionService $service;
+    private mixed $savedConfigInstance = null;
 
     protected function setUp(): void
     {
+        // The service reads the backend mode from the config singleton; keep a local settings.php out of it
+        $property = new ReflectionProperty(ConfigurationManager::class, 'instance');
+        $this->savedConfigInstance = $property->getValue();
+        $property->setValue(null, $this->createMock(ConfigurationManager::class));
         $this->db = $this->createMock(PDO::class);
         $this->service = new HybridPermissionService($this->db);
+    }
+
+    protected function tearDown(): void
+    {
+        (new ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
+        parent::tearDown();
     }
 
     private function mockBothPermissions(array $directPerms, array $groupRows): void
