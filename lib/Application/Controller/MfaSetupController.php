@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -155,6 +156,8 @@ class MfaSetupController extends BaseController
         if ($this->mfaService->verifyCode($userId, $code)) {
             // Enable MFA
             $this->mfaService->enableMfa($userId);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            MfaSessionManager::setMfaVerified();
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_enable mfa_type:app',
@@ -273,6 +276,8 @@ class MfaSetupController extends BaseController
         if ($isValid) {
             // Enable MFA
             $this->mfaService->enableMfa($userId, UserMfa::TYPE_EMAIL);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            MfaSessionManager::setMfaVerified();
 
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_enable mfa_type:email',
