@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use RuntimeException;
@@ -149,6 +150,8 @@ class MfaSetupController extends BaseController
         if ($this->mfaService->verifyCode($userId, $code)) {
             // Enable MFA
             $this->mfaService->enableMfa($userId);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            MfaSessionManager::setMfaVerified();
 
             // Generate recovery codes if they don't exist
             $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
@@ -261,6 +264,8 @@ class MfaSetupController extends BaseController
         if ($isValid) {
             // Enable MFA
             $this->mfaService->enableMfa($userId, UserMfa::TYPE_EMAIL);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            MfaSessionManager::setMfaVerified();
 
             // Generate recovery codes
             $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
