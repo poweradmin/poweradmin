@@ -28,11 +28,13 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Auth\MfaSetupController;
+use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -169,5 +171,21 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
             ['warning', 'Could not send verification code to your email. Please use a recovery code instead.'],
             ['error', 'Verification code is required.'],
         ], $this->messagesFor('system'));
+    }
+
+    public function testASessionStillWaitingForItsSecondFactorIsSentToLogin(): void
+    {
+        // Password accepted, MFA pending: the user id is not set yet
+        $this->session->remove(SessionKeys::USERID);
+        $this->mfa->expects($this->never())->method('getOrCreateUserMfa');
+        $this->mfa->expects($this->never())->method('verifyCode');
+
+        try {
+            $this->submit(['setup_app' => '1']);
+            $this->fail('The page must not run without a logged-in user');
+        } catch (RequestHalted $halt) {
+            $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+            $this->assertSame('/login', $halt->target);
+        }
     }
 }
