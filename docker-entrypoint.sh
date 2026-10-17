@@ -1459,6 +1459,8 @@ return [
         'ping_enabled' => ${health_ping_enabled},
         'db_timeout' => $(php_num PA_HEALTH_DB_TIMEOUT "${PA_HEALTH_DB_TIMEOUT:-2}" 2),
         'pdns_timeout' => $(php_num PA_HEALTH_PDNS_TIMEOUT "${PA_HEALTH_PDNS_TIMEOUT:-2}" 2),
+        'token' => $(php_sq "${PA_HEALTH_TOKEN:-}"),
+        'cache_seconds' => $(php_num PA_HEALTH_CACHE_SECONDS "${PA_HEALTH_CACHE_SECONDS:-0}" 0),
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},

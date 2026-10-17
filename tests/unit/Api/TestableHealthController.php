@@ -17,6 +17,9 @@ class TestableHealthController extends HealthController
 {
     public ?string $databaseResult = 'ok';
     public ?string $pdnsResult = null;
+    public ?string $submitted = null;
+    public string $cachePath = '';
+    public int $databaseChecks = 0;
 
     public function __construct(private readonly ConfigurationInterface $stubConfig)
     {
@@ -29,11 +32,22 @@ class TestableHealthController extends HealthController
 
     protected function checkDatabase(): string
     {
+        $this->databaseChecks++;
         return $this->databaseResult ?? parent::checkDatabase();
     }
 
     protected function checkPowerdnsApi(): string
     {
         return $this->pdnsResult ?? parent::checkPowerdnsApi();
+    }
+
+    protected function submittedToken(): ?string
+    {
+        return $this->submitted;
+    }
+
+    protected function cacheFile(): string
+    {
+        return $this->cachePath !== '' ? $this->cachePath : parent::cacheFile();
     }
 }

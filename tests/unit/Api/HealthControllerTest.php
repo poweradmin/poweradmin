@@ -247,4 +247,73 @@ class HealthControllerTest extends TestCase
             unlink($file);
         }
     }
+
+    public function testATokenIsRequiredOnceConfigured(): void
+    {
+        $controller = new TestableHealthController($this->config(['health' => ['enabled' => true, 'token' => 's3cret']]));
+
+        $this->assertSame(403, $controller->buildResponse()->getStatusCode());
+        $controller->submitted = 'wrong';
+        $this->assertSame(403, $controller->buildResponse()->getStatusCode());
+        $this->assertSame(0, $controller->databaseChecks, 'A refused probe runs no check');
+
+        $controller->submitted = 's3cret';
+        $this->assertSame(200, $controller->buildResponse()->getStatusCode());
+    }
+
+    public function testNoTokenIsAskedForByDefault(): void
+    {
+        $controller = new TestableHealthController($this->config(['health' => ['enabled' => true]]));
+        $controller->submitted = 'anything';
+
+        $this->assertSame(200, $controller->buildResponse()->getStatusCode());
+    }
+
+    private function cachingController(string $file, int $seconds): TestableHealthController
+    {
+        $controller = new TestableHealthController($this->config(['health' => ['enabled' => true, 'cache_seconds' => $seconds]]));
+        $controller->cachePath = $file;
+
+        return $controller;
+    }
+
+    public function testACachedResultIsReusedWithinTheWindow(): void
+    {
+        $file = sys_get_temp_dir() . '/pa-health-cache-' . getmypid() . '.json';
+        @unlink($file);
+        try {
+            $first = $this->cachingController($file, 30);
+            $first->databaseResult = 'down';
+            $this->assertSame(503, $first->buildResponse()->getStatusCode());
+
+            $second = $this->cachingController($file, 30);
+            $second->databaseResult = 'ok';
+            $this->assertSame(503, $second->buildResponse()->getStatusCode(), 'The cached failure is served');
+            $this->assertSame(0, $second->databaseChecks);
+
+            $uncached = $this->cachingController($file, 0);
+            $this->assertSame(200, $uncached->buildResponse()->getStatusCode());
+            $this->assertSame(1, $uncached->databaseChecks);
+        } finally {
+            @unlink($file);
+        }
+    }
+
+    public function testAnExpiredOrTamperedCacheIsIgnored(): void
+    {
+        $file = sys_get_temp_dir() . '/pa-health-cache-' . getmypid() . '.json';
+        try {
+            file_put_contents($file, json_encode(['at' => time() - 60, 'checks' => ['database' => 'down', 'pdns_api' => 'skipped']]));
+            $controller = $this->cachingController($file, 30);
+            $this->assertSame(200, $controller->buildResponse()->getStatusCode());
+            $this->assertSame(1, $controller->databaseChecks);
+
+            file_put_contents($file, json_encode(['at' => time(), 'checks' => ['database' => '<b>', 'pdns_api' => 'skipped']]));
+            $controller = $this->cachingController($file, 30);
+            $this->assertSame(200, $controller->buildResponse()->getStatusCode());
+            $this->assertSame(1, $controller->databaseChecks);
+        } finally {
+            @unlink($file);
+        }
+    }
 }

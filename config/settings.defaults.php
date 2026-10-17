@@ -440,6 +440,8 @@ return [
         'ping_enabled' => false,                       // Enable unauthenticated liveness endpoint at /ping (added in 4.5.0)
         'db_timeout' => 2,                             // Database connect timeout in seconds used by the health check (added in 4.5.0)
         'pdns_timeout' => 2,                           // PowerDNS API timeout in seconds used by the health check (added in 4.5.0)
+        'token' => '',                                 // When set, /api/health answers only requests sending it in the X-Health-Token header (added in 4.6.0)
+        'cache_seconds' => 0,                          // Reuse the last /api/health result for this many seconds; 0 runs the checks on every request (added in 4.6.0)
     ],
 
     /**
