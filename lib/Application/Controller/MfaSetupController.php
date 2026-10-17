@@ -68,6 +68,12 @@ class MfaSetupController extends BaseController
             exit;
         }
 
+        // A session still waiting for its second factor has no user yet, so setup would run as user 0
+        if (!$this->userContextService->isAuthenticated()) {
+            $this->redirect('/login');
+            return;
+        }
+
         // Set the current page for navigation highlighting
         $this->setCurrentPage('mfa_setup');
         $this->setPageTitle(_('MFA Setup'));
