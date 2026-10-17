@@ -10,7 +10,7 @@ on:
 
 env:
   FORCE_COLOR: 2
-  NODE: 20
+  NODE: 24
 
 permissions:
   contents: read
@@ -21,12 +21,12 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "${{ env.NODE }}"
           cache: npm
@@ -36,16 +36,23 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Install Astro dependencies
+        run: npm ci --prefix astro
+
       - name: Build the icons
         run: npm run icons
 
       - name: Build and test docs
         run: npm run docs-test
 
+      - name: Validate release artifacts
+        run: npm run release-check
+
       - name: Run linkinator
-        uses: JustinBeckwith/linkinator-action@v1
+        uses: JustinBeckwith/linkinator-action@36a0bfbfecd5e237e8f8531537a693616c505faf # v2.4
         with:
           paths: _site
           recurse: true
           verbosity: error
           skip: "^(?!http://localhost)"
+          retryErrors: true
