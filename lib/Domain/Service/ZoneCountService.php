@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -106,8 +107,10 @@ class ZoneCountService
             }
         }
 
-        // Single letter filter (a through z) or numeric filter (1)
-        if ($letterstart !== 'all') {
+        // Single letter filter (a through z), numeric filter (1) or punycode names (idn)
+        if ($letterstart === ZoneStartingLetter::IDN) {
+            $conditions[] = "$domains_table.name LIKE 'xn--%'";
+        } elseif ($letterstart !== 'all') {
             if ($letterstart === '1') {
                 $db_type = $this->config->get('database', 'type');
                 $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
@@ -117,6 +120,7 @@ class ZoneCountService
                 // unescaped LIKE `_%` treating `_` as a single-char wildcard.
                 $db_type = $this->config->get('database', 'type');
                 $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) = ?";
+                $conditions[] = "$domains_table.name NOT LIKE 'xn--%'";
                 $params[] = $letterstart;
             }
         }
@@ -187,13 +191,7 @@ class ZoneCountService
 
         // Filter by letter
         if ($letterstart !== 'all') {
-            $allZones = array_filter($allZones, function ($z) use ($letterstart) {
-                $name = rtrim($z['name'] ?? '', '.');
-                if ($letterstart === '1') {
-                    return !empty($name) && is_numeric($name[0]);
-                }
-                return !empty($name) && strtolower($name[0]) === strtolower($letterstart);
-            });
+            $allZones = array_filter($allZones, fn($z) => ZoneStartingLetter::matches(rtrim($z['name'] ?? '', '.'), $letterstart));
         }
 
         // Filter by zone type

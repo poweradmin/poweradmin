@@ -35,6 +35,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\PaginationService;
@@ -159,10 +160,10 @@ class ListForwardZonesController extends BaseController
             $letter_start = 'a';
             $letter = $this->request->getQueryParam('letter');
             if ($letter !== null) {
-                $letter_start = htmlspecialchars($letter);
-                $_SESSION[SessionKeys::LETTER] = htmlspecialchars($letter);
+                $letter_start = ZoneStartingLetter::normalize($letter);
+                $_SESSION[SessionKeys::LETTER] = $letter_start;
             } elseif (isset($_SESSION[SessionKeys::LETTER])) {
-                $letter_start = $_SESSION[SessionKeys::LETTER];
+                $letter_start = ZoneStartingLetter::normalize($_SESSION[SessionKeys::LETTER]);
             }
         }
 

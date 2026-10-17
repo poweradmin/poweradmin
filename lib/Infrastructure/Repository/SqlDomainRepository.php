@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Permission;
@@ -152,57 +153,26 @@ class SqlDomainRepository implements DomainRepositoryInterface
     }
 
     /**
-     * SQL fragment restricting zones to a starting letter.
-     *
-     * Punycode zone names all begin with "x", so an IDN zone would only ever be
-     * reachable under that letter. Their decoded initials are resolved here and
-     * matched by name, keeping the comparison in step with the letter list.
+     * SQL fragment restricting zones to a starting letter (see ZoneStartingLetter).
      */
     private function buildLetterCondition(string $domains_table, string $db_type, string $letterstart, array &$params): string
     {
-        if ($letterstart === 'all') {
+        if ($letterstart === ZoneStartingLetter::ALL) {
             return '';
         }
 
-        if ($letterstart == 1) {
+        if ($letterstart === ZoneStartingLetter::IDN) {
+            return " AND $domains_table.name LIKE 'xn--%' ";
+        }
+
+        if ($letterstart === ZoneStartingLetter::DIGITS) {
             return " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
         }
 
-        $condition = " AND (" . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
         $params[':letterstart'] = $letterstart;
 
-        $idnNames = $this->idnNamesForLetter($domains_table, $letterstart);
-        if ($idnNames !== []) {
-            $placeholders = [];
-            foreach (array_values($idnNames) as $index => $name) {
-                $placeholder = ":idnletter$index";
-                $placeholders[] = $placeholder;
-                $params[$placeholder] = $name;
-            }
-            $condition .= " OR $domains_table.name IN (" . implode(', ', $placeholders) . ")";
-        }
-
-        return $condition . ") ";
-    }
-
-    /**
-     * Punycode zone names whose decoded first letter matches, bounded to IDN zones.
-     *
-     * @return string[]
-     */
-    private function idnNamesForLetter(string $domains_table, string $letterstart): array
-    {
-        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE name LIKE 'xn--%'");
-        $stmt->execute();
-
-        $matching = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
-            if (mb_strtolower(DnsIdnService::getFirstLetter($name), 'UTF-8') === mb_strtolower($letterstart, 'UTF-8')) {
-                $matching[] = $name;
-            }
-        }
-
-        return $matching;
+        return " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart"
+            . " AND $domains_table.name NOT LIKE 'xn--%' ";
     }
 
     public function getZones(

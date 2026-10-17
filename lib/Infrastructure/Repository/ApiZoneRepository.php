@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use LogicException;
 use PDO;
 use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -119,26 +120,22 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $unreachable = $this->unreachableSharedRowsCondition('z');
         $where .= $unreachable === null ? '' : " AND $unreachable";
 
-        // IDN zones are excluded here so they do not all register as "x"; they are
-        // resolved to their decoded initial below.
+        // Punycode zones are listed under one IDN entry, so they do not register as "x".
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
                   FROM zones z" . $where . " AND z.zone_name NOT LIKE 'xn--%' ORDER BY letter";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
-        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
+        $letters = array_values(array_unique(array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
-        });
-
-        $idnStmt = $this->db->prepare("SELECT DISTINCT z.zone_name FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%'");
-        $idnStmt->execute();
-
-        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
-            $letters[] = DnsIdnService::getFirstLetter($name);
-        }
-
-        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
+        })));
         sort($letters, SORT_STRING);
+
+        $idnStmt = $this->db->prepare("SELECT 1 FROM zones z" . $where . " AND z.zone_name LIKE 'xn--%' LIMIT 1");
+        $idnStmt->execute();
+        if ($idnStmt->fetchColumn()) {
+            $letters[] = ZoneStartingLetter::IDN;
+        }
 
         return $letters;
     }

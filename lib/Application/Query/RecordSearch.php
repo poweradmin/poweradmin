@@ -224,6 +224,7 @@ class RecordSearch extends BaseSearch
         $foundRecords = array();
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
+            $found_record['punycode_name'] = DnsIdnService::isIdn($found_record['name']) ? $found_record['name'] : '';
             $found_record['name'] = DnsIdnService::toUtf8($found_record['name']);
             $found_record['disabled'] = $found_record['disabled'] == '1' ? _('Yes') : _('No');
             $foundRecords[] = $found_record;

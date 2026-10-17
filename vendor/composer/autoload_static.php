@@ -1706,6 +1706,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Model\\UserPreference' => __DIR__ . '/../..' . '/lib/Domain/Model/UserPreference.php',
         'Poweradmin\\Domain\\Model\\Zone' => __DIR__ . '/../..' . '/lib/Domain/Model/Zone.php',
         'Poweradmin\\Domain\\Model\\ZoneGroup' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneGroup.php',
+        'Poweradmin\\Domain\\Model\\ZoneStartingLetter' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneStartingLetter.php',
         'Poweradmin\\Domain\\Model\\ZoneTemplate' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneTemplate.php',
         'Poweradmin\\Domain\\Model\\ZoneType' => __DIR__ . '/../..' . '/lib/Domain/Model/ZoneType.php',
         'Poweradmin\\Domain\\Repository\\ApiKeyRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/ApiKeyRepositoryInterface.php',

@@ -1296,6 +1296,7 @@ return array(
     'Poweradmin\\Domain\\Model\\UserPreference' => $baseDir . '/lib/Domain/Model/UserPreference.php',
     'Poweradmin\\Domain\\Model\\Zone' => $baseDir . '/lib/Domain/Model/Zone.php',
     'Poweradmin\\Domain\\Model\\ZoneGroup' => $baseDir . '/lib/Domain/Model/ZoneGroup.php',
+    'Poweradmin\\Domain\\Model\\ZoneStartingLetter' => $baseDir . '/lib/Domain/Model/ZoneStartingLetter.php',
     'Poweradmin\\Domain\\Model\\ZoneTemplate' => $baseDir . '/lib/Domain/Model/ZoneTemplate.php',
     'Poweradmin\\Domain\\Model\\ZoneType' => $baseDir . '/lib/Domain/Model/ZoneType.php',
     'Poweradmin\\Domain\\Repository\\ApiKeyRepositoryInterface' => $baseDir . '/lib/Domain/Repository/ApiKeyRepositoryInterface.php',

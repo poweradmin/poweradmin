@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -77,8 +78,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 . " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
         }
 
-        // IDN zones are excluded here so they do not all register as "x"; they are
-        // resolved to their decoded initial below.
+        // Punycode zones are listed under one IDN entry, so they do not register as "x".
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter"
             . " FROM $domains_table" . $join . $where
             . " AND $domains_table.name NOT LIKE 'xn--%' ORDER BY letter";
@@ -92,27 +92,21 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $stmt->execute();
 
-        $letters = array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
+        $letters = array_values(array_unique(array_filter($stmt->fetchAll(PDO::FETCH_COLUMN, 0), function ($letter) {
             return ctype_alpha($letter) || is_numeric($letter);
-        });
+        })));
+        sort($letters, SORT_STRING);
 
-        // Punycode zones all start with "x", so their real initial has to come from the
-        // decoded name. Bounded to the IDN zones rather than scanning every domain.
-        $idnQuery = "SELECT DISTINCT $domains_table.name FROM $domains_table" . $join . $where
-            . " AND $domains_table.name LIKE 'xn--%'";
-        $idnStmt = $this->db->prepare($idnQuery);
+        $idnStmt = $this->db->prepare("SELECT 1 FROM $domains_table" . $join . $where
+            . " AND $domains_table.name LIKE 'xn--%' LIMIT 1");
         if (!$viewOthers) {
             $idnStmt->bindValue(':userId', $userId, PDO::PARAM_INT);
             $idnStmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
         }
         $idnStmt->execute();
-
-        foreach ($idnStmt->fetchAll(PDO::FETCH_COLUMN, 0) as $name) {
-            $letters[] = DnsIdnService::getFirstLetter($name);
+        if ($idnStmt->fetchColumn()) {
+            $letters[] = ZoneStartingLetter::IDN;
         }
-
-        $letters = array_values(array_unique(array_filter($letters, fn($letter) => $letter !== '')));
-        sort($letters, SORT_STRING);
 
         return $letters;
     }

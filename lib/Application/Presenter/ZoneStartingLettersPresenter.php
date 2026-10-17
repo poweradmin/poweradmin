@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
  */
 
 namespace Poweradmin\Application\Presenter;
+
+use Poweradmin\Domain\Model\ZoneStartingLetter;
 
 class ZoneStartingLettersPresenter
 {
@@ -53,17 +55,11 @@ class ZoneStartingLettersPresenter
             }
         }
 
-        // Then any non-ASCII initials, which only exist once IDN zones are present.
-        foreach ($availableChars as $letter) {
-            if ($letter === '' || preg_match('/^[a-z0-9]$/', $letter)) {
-                continue;
-            }
-            $label = htmlspecialchars($letter, ENT_QUOTES, 'UTF-8');
-            if ($letter === $letterStart) {
-                $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $label . '</span></li>';
-            } else {
-                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=" . rawurlencode($letter) . $rowsPerPageParam . "\">" . $label . "</a></li>";
-            }
+        // Punycode zones share one entry after the alphabet, shown only when there are any.
+        if ($letterStart === ZoneStartingLetter::IDN) {
+            $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">IDN</span></li>';
+        } elseif (in_array(ZoneStartingLetter::IDN, $availableChars, true)) {
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=idn" . $rowsPerPageParam . "\">IDN</a></li>";
         }
 
         if ($letterStart === 'all') {
