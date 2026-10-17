@@ -93,4 +93,19 @@ test.describe('MFA enabled during a session', () => {
     await expect(userPage).not.toHaveURL(/mfa\/verify/);
     await expect(userPage.locator('#mfa_code')).toHaveCount(0);
   });
+
+  test('should not open MFA setup for a sign-in still waiting for the code', async ({ browser }) => {
+    const pending = await browser.newPage();
+    await pending.goto('/login');
+    await pending.locator('input[name="username"]').fill(username);
+    await pending.locator('input[name="password"]').fill(password);
+    await pending.locator('button[type="submit"]').first().click();
+    await expect(pending).toHaveURL(/mfa\/verify/);
+
+    await pending.goto('/mfa/setup');
+
+    await expect(pending).not.toHaveURL(/mfa\/setup/);
+    await expect(pending.locator('button[name="setup_app"]')).toHaveCount(0);
+    await pending.close();
+  });
 });
