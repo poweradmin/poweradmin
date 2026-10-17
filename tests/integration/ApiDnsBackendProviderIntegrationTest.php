@@ -58,6 +58,8 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private const DB_PORT = '3306';
     private const DB_NAME = 'pdns';
     private const POWERADMIN_DB_NAME = 'poweradmin';
+    private const ROOT_USER = 'root';
+    private const ROOT_PASS = 'uberuser';
     private const DB_USER = 'pdns';
     private const DB_PASS = 'poweradmin';
 
@@ -75,17 +77,12 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             $this->markTestSkipped('MariaDB not available: ' . $e->getMessage());
         }
 
-        // The provider writes Poweradmin-native `zones` rows, which live in a
-        // different database from the PowerDNS tables this test verifies against.
+        // The provider writes Poweradmin-native `zones` rows and the API backend marker, so they go
+        // to a scratch database: the shared poweradmin database serves the SQL-mode devcontainer app.
         try {
-            $this->poweradminDb = new PDO(
-                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::POWERADMIN_DB_NAME,
-                self::DB_USER,
-                self::DB_PASS,
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
+            $this->poweradminDb = $this->createScratchPoweradminDatabase();
         } catch (PDOException $e) {
-            $this->markTestSkipped('Poweradmin database not available: ' . $e->getMessage());
+            $this->markTestSkipped('Scratch Poweradmin database could not be set up (needs root credentials): ' . $e->getMessage());
         }
 
         // Try connecting to the PowerDNS API
@@ -139,6 +136,39 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         );
     }
 
+    private function createScratchPoweradminDatabase(): PDO
+    {
+        $root = new PDO(
+            'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT,
+            self::ROOT_USER,
+            self::ROOT_PASS,
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+        );
+        $root->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
+        $root->exec('CREATE DATABASE ' . self::scratchDb());
+        try {
+            foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
+                $root->exec('CREATE TABLE ' . self::scratchDb() . ".$table LIKE " . self::POWERADMIN_DB_NAME . ".$table");
+            }
+
+            return new PDO(
+                'mysql:host=' . self::DB_HOST . ';port=' . self::DB_PORT . ';dbname=' . self::scratchDb(),
+                self::ROOT_USER,
+                self::ROOT_PASS,
+                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+            );
+        } catch (PDOException $e) {
+            $root->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
+            throw $e;
+        }
+    }
+
+    /** Per-process name, so parallel suite runs do not drop each other's scratch data. */
+    private static function scratchDb(): string
+    {
+        return 'poweradmin_it_api_provider_' . getmypid();
+    }
+
     protected function tearDown(): void
     {
         // Clean up any zones created during tests
@@ -172,9 +202,18 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             }
         }
 
+        if ($this->poweradminDb !== null) {
+            try {
+                $this->poweradminDb->exec('DROP DATABASE IF EXISTS ' . self::scratchDb());
+            } catch (Exception $e) {
+                // Ignore cleanup errors
+            }
+        }
+
         $this->db = null;
         $this->client = null;
         $this->provider = null;
+        $this->poweradminDb = null;
     }
 
     private function uniqueZoneName(): string
