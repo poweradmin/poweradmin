@@ -16350,3 +16350,19 @@ msgstr "Обмеження цього ключа за зоною не вдало
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Вибраний користувач уже є власником зони."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Імена зон, що відрізняються лише регістром літер"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Немає двох зон, що відрізняються лише регістром літер"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "Імен зон, що використовуються в різному регістрі: %d"

@@ -15194,3 +15194,19 @@ msgstr "区域 ID 升级未能沿用此密钥的区域限制，因此它不匹�
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "选定的用户已拥有该区域。"
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "仅大小写不同的区域名称"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "没有仅大小写不同的两个区域"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d 个区域名称以不同大小写使用"

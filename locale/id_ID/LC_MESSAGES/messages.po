@@ -16393,3 +16393,19 @@ msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehing
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Pengguna yang dipilih sudah memiliki zona ini."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Nama zona yang hanya berbeda pada huruf besar/kecil"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Tidak ada dua zona yang hanya berbeda pada huruf besar/kecil"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d nama zona digunakan dengan huruf besar/kecil yang berbeda"

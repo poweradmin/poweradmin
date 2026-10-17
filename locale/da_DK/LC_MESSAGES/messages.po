@@ -16269,3 +16269,19 @@ msgstr "Denne nøgles zonebegrænsning kunne ikke overføres af opgraderingen af
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Den valgte bruger ejer allerede zonen."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Zonenavne der kun adskiller sig ved store/små bogstaver"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Ingen to zoner adskiller sig kun ved store/små bogstaver"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d zonenavne bruges med forskellige store/små bogstaver"

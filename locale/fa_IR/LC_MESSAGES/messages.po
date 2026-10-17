@@ -16122,3 +16122,19 @@ msgstr "محدودیت منطقه این کلید در ارتقای شناسه�
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "کاربر منتخب در حال حاضر دارای منطقه است."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "نام‌های منطقه که فقط در حروف بزرگ و کوچک تفاوت دارند"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "هیچ دو منطقه‌ای فقط در حروف بزرگ و کوچک تفاوت ندارند"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d نام منطقه با حروف بزرگ و کوچک متفاوت استفاده شده است"

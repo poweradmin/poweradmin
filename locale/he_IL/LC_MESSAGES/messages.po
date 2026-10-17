@@ -15791,3 +15791,19 @@ msgstr "לא ניתן היה להעביר את הגבלת האזור של מפת
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "המשתמש הנבחר כבר הבעלים של האזור."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "שמות אזורים שנבדלים רק באותיות גדולות/קטנות"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "אין שני אזורים שנבדלים רק באותיות גדולות/קטנות"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d שמות אזורים בשימוש באותיות גדולות/קטנות שונות"

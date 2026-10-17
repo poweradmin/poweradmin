@@ -132,6 +132,22 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::allClear(_('All group assignments use canonical zone IDs'));
     }
 
+    public function checkZoneNamesDifferingInCase(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT d.id, d.name FROM {$this->domainsTable} d
+             WHERE LOWER(d.name) IN (SELECT LOWER(n.name) FROM {$this->domainsTable} n GROUP BY LOWER(n.name) HAVING COUNT(*) > 1)
+             ORDER BY LOWER(d.name), d.name"
+        );
+
+        return ConsistencyReport::build(
+            $this->groupByLowerName($stmt->fetchAll(PDO::FETCH_ASSOC)),
+            _('No two zones differ only in letter case'),
+            'warning',
+            _('%d zone names are used in more than one letter case')
+        );
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         $stmt = $this->db->query("
@@ -225,6 +241,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
+            'zone_names_differing_in_case' => $this->checkZoneNamesDifferingInCase(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords(),

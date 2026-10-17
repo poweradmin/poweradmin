@@ -15939,3 +15939,19 @@ msgstr "Selle võtme tsoonipiirangut ei õnnestunud tsooni ID-de uuendusel üle 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Valitud kasutaja juba omab tsooni."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Tsoonide nimed, mis erinevad ainult suur- ja väiketähtede poolest"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Ei leitud tsoone, mille nimed erinevad ainult suur- ja väiketähtede poolest"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d tsooni nime on kasutusel erinevate suur- ja väiketähtedega"

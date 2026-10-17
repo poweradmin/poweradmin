@@ -16304,3 +16304,19 @@ msgstr "Omejitve cone tega ključa ni bilo mogoče prenesti z nadgradnjo ID-jev 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Izbrani uporabnik je že lastnik cone."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Imena con, ki se razlikujejo le po velikih/malih črkah"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Nobeni dve coni se ne razlikujeta le po velikih/malih črkah"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "Imena con, uporabljena z različnimi velikimi/malimi črkami: %d"

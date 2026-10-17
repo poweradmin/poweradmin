@@ -16686,3 +16686,19 @@ msgstr "Níorbh fhéidir srian crios na heochrach seo a thabhairt anonn le huasg
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Is leis an úsáideoir roghnaithe cheana féin an crios."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Ainmneacha crios nach bhfuil difriúil ach i gcás na litreacha"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Níl aon dá chrios difriúil ach i gcás na litreacha"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "Úsáidtear %d ainm crios i gcás litreacha éagsúla"

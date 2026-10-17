@@ -16426,3 +16426,19 @@ msgstr "A kulcs zónakorlátozását a zóna ID-k frissítése nem tudta átvinn
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "A kiválasztott felhasználó már birtokolja a zónát."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Csak kis- és nagybetűben eltérő zónanevek"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Nincs két zóna, amely csak kis- és nagybetűben tér el"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d zónanév eltérő kis- és nagybetűkkel is használatban van"

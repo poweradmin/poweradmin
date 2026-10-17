@@ -268,6 +268,7 @@ class SqlConsistencyChecksTest extends TestCase
             'zones_have_names',
             'shared_zone_ids',
             'group_grants_on_row_ids',
+            'zone_names_differing_in_case',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',
@@ -483,5 +484,26 @@ class SqlConsistencyChecksTest extends TestCase
 
         $owners = $this->db->query('SELECT domain_id, owner FROM zones ORDER BY domain_id')->fetchAll(PDO::FETCH_KEY_PAIR);
         $this->assertSame([1 => 9], array_map('intval', $owners));
+    }
+
+    public function testZoneNamesDifferingOnlyInCaseAreReportedOncePerName(): void
+    {
+        $this->domain(1, 'Example.com');
+        $this->domain(2, 'example.com');
+        $this->domain(3, 'other.example');
+        $this->domain(4, 'EXAMPLE.COM');
+
+        $result = $this->checker()->checkZoneNamesDifferingInCase();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame([['name' => 'example.com', 'zones' => 'EXAMPLE.COM, Example.com, example.com', 'ids' => '4, 1, 2']], $result['data']);
+    }
+
+    public function testZoneNamesInOneCaseOnlyPassTheCaseCheck(): void
+    {
+        $this->domain(1, 'example.com');
+        $this->domain(2, 'example.org');
+
+        $this->assertSame('success', $this->checker()->checkZoneNamesDifferingInCase()['status']);
     }
 }

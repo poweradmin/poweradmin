@@ -16612,3 +16612,19 @@ msgstr "Die Zonenbeschränkung dieses Schlüssels konnte beim Upgrade der Zonen-
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Der ausgewählte Benutzer besitzt bereits die Zone."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Zonennamen, die sich nur in der Groß-/Kleinschreibung unterscheiden"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Keine zwei Zonen unterscheiden sich nur in der Groß-/Kleinschreibung"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d Zonennamen werden in unterschiedlicher Groß-/Kleinschreibung verwendet"

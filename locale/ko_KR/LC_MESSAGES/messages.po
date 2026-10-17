@@ -16024,3 +16024,19 @@ msgstr "이 키의 존 제한을 존 ID 업그레이드에서 옮기지 못해 �
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "선택한 사용자가 이미 이 존을 소유하고 있습니다."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "대소문자만 다른 존 이름"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "대소문자만 다른 두 존은 없습니다"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d개의 존 이름이 대소문자를 달리하여 사용되고 있습니다"

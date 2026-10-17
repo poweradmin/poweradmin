@@ -16576,3 +16576,19 @@ msgstr "Kufizimi i zonës për këtë çelës nuk mund të bartej nga përditës
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Përdoruesi i zgjedhur tashmë e zotëron zonën."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Emra zonash që ndryshojnë vetëm nga shkronjat e mëdha/të vogla"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Asnjë dy zona nuk ndryshojnë vetëm nga shkronjat e mëdha/të vogla"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d emra zonash përdoren me shkronja të mëdha/të vogla të ndryshme"

@@ -16156,3 +16156,19 @@ msgstr "Ograničenje zone ovog ključa nije se moglo prenijeti nadogradnjom ID-o
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Odabrani korisnik već posjeduje zonu."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Nazivi zona koji se razlikuju samo po velikim/malim slovima"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Nema dviju zona koje se razlikuju samo po velikim/malim slovima"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d naziva zona koristi se s različitim velikim/malim slovima"

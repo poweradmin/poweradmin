@@ -16742,3 +16742,19 @@ msgstr "Restricția de zonă a acestei chei nu a putut fi preluată de actualiza
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Utilizatorul selectat deține deja zona."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Nume de zonă care diferă doar prin majuscule/minuscule"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Nu există două zone care să difere doar prin majuscule/minuscule"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d nume de zonă sunt folosite cu majuscule/minuscule diferite"

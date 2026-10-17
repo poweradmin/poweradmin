@@ -16444,3 +16444,19 @@ msgstr "De zonebeperking van deze sleutel kon niet worden overgenomen bij de upg
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "De geselecteerde gebruiker is al eigenaar van de zone."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Zonenamen die alleen in hoofdletters/kleine letters verschillen"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Geen twee zones verschillen alleen in hoofdletters/kleine letters"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d zonenamen worden met verschillende hoofdletters/kleine letters gebruikt"

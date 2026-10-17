@@ -16490,3 +16490,19 @@ msgstr "A restrição de zona desta chave não pôde ser mantida na atualizaçã
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "O utilizador selecionado já possui a zona."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Nomes de zona que diferem apenas em maiúsculas/minúsculas"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Nenhuma zona difere de outra apenas em maiúsculas/minúsculas"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d nomes de zona são usados com maiúsculas/minúsculas diferentes"

@@ -118,4 +118,31 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
             default => ['status' => 'error', 'message' => _('Invalid check type')],
         };
     }
+
+    /**
+     * One finding per zone name used by more than one zone in different letter case.
+     *
+     * @param list<array{id: int|string, name: string}> $zones
+     * @return list<array{name: string, zones: string, ids: string}>
+     */
+    protected function groupByLowerName(array $zones): array
+    {
+        $groups = [];
+        foreach ($zones as $zone) {
+            $name = rtrim((string)$zone['name'], '.');
+            $groups[strtolower($name)][] = ['id' => (int)$zone['id'], 'name' => $name];
+        }
+
+        $findings = [];
+        foreach ($groups as $key => $members) {
+            if (count($members) > 1) {
+                $findings[] = [
+                    'name' => $key,
+                    'zones' => implode(', ', array_column($members, 'name')),
+                    'ids' => implode(', ', array_column($members, 'id')),
+                ];
+            }
+        }
+        return $findings;
+    }
 }

@@ -16362,3 +16362,19 @@ msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Pengguna yang dipilih sudah memiliki zon ini."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Nama zon yang hanya berbeza pada huruf besar/kecil"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Tiada dua zon yang hanya berbeza pada huruf besar/kecil"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d nama zon digunakan dengan huruf besar/kecil yang berbeza"

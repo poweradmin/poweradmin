@@ -158,6 +158,11 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::build($grants, _('All group assignments use canonical zone IDs'), 'warning', _('%d group assignments use a zone row ID'));
     }
 
+    public function checkZoneNamesDifferingInCase(): array
+    {
+        return $this->caseReport($this->backend->getZones());
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         return $this->masterReport($this->backend->getZones());
@@ -199,6 +204,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
+            'zone_names_differing_in_case' => $this->caseReport($zones),
             'slave_zones_have_masters' => $this->masterReport($zones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->duplicateSoaReport($zones),
@@ -315,6 +321,19 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         $recordId = $this->backend->addRecordGetId($zoneId, $zoneName, 'SOA', $this->defaultSoa->content(), $this->defaultSoa->ttl(), 0);
 
         return $recordId !== null;
+    }
+
+    /** @param list<array<string, mixed>> $zones */
+    private function caseReport(array $zones): array
+    {
+        $rows = array_map(static fn(array $zone): array => ['id' => $zone['id'] ?? 0, 'name' => (string)($zone['name'] ?? '')], $zones);
+
+        return ConsistencyReport::build(
+            $this->groupByLowerName($rows),
+            _('No two zones differ only in letter case'),
+            'warning',
+            _('%d zone names are used in more than one letter case')
+        );
     }
 
     /** @param list<array<string, mixed>> $zones */

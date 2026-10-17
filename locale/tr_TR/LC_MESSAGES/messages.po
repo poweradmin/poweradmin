@@ -16283,3 +16283,19 @@ msgstr "Bu anahtarın bölge kısıtlaması bölge kimliği yükseltmesinde akta
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Seçilen kullanıcı zaten zonun sahibidir."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Yalnızca büyük/küçük harf farkı olan bölge adları"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Yalnızca büyük/küçük harf farkı olan iki bölge yok"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d bölge adı farklı büyük/küçük harflerle kullanılıyor"

@@ -59,6 +59,14 @@ interface ConsistencyCheckerInterface
      */
     public function checkGroupGrantsOnRowIds(): array;
 
+    /**
+     * Zone names that exist more than once in different letter case, such as Example.com and
+     * example.com, which PowerDNS treats as the same name. Report only.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkZoneNamesDifferingInCase(): array;
+
     /** @return array{status: string, message: string, data: array} */
     public function checkSlaveZonesHaveMasters(): array;
 

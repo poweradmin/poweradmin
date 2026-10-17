@@ -16166,3 +16166,19 @@ msgstr "Không thể chuyển giới hạn vùng của khóa này khi nâng cấ
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Người dùng đã chọn vốn đã sở hữu vùng này."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Tên vùng chỉ khác nhau về chữ hoa/chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Không có hai vùng nào chỉ khác nhau về chữ hoa/chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d tên vùng được dùng với chữ hoa/chữ thường khác nhau"

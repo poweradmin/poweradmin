@@ -16789,3 +16789,19 @@ msgstr "Ο περιορισμός ζώνης αυτού του κλειδιού 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
 msgstr "Ο επιλεγμένος χρήστης κατέχει ήδη τη ζώνη."
+
+#: templates/default/database_consistency.html
+#: templates/modern/database_consistency.html
+msgid "Zone Names Differing Only In Letter Case"
+msgstr "Ονόματα ζωνών που διαφέρουν μόνο σε κεφαλαία/πεζά"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+msgid "No two zones differ only in letter case"
+msgstr "Δεν υπάρχουν δύο ζώνες που διαφέρουν μόνο σε κεφαλαία/πεζά"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php
+#: lib/Infrastructure/Service/Consistency/ApiConsistencyChecks.php
+#, php-format
+msgid "%d zone names are used in more than one letter case"
+msgstr "%d ονόματα ζωνών χρησιμοποιούνται με διαφορετικά κεφαλαία/πεζά"
