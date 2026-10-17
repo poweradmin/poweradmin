@@ -106,6 +106,36 @@ load_config() {
 # API Request Functions
 ##############################################################################
 
+# Zones created through POST /zones, as "id name" pairs, removed by the exit trap. A SQL-mode and
+# an API-mode instance can share one PowerDNS backend, and a zone one of them leaves behind makes
+# the next run 409 on the same name.
+CREATED_ZONES=()
+
+track_created_zone() {
+    local name="$1" body="$2" id
+    id=$(echo "$body" | jq -r '.data.zone_id // empty' 2>/dev/null) || true
+    if [[ -n "$id" && -n "$name" ]]; then
+        CREATED_ZONES+=("$id $name")
+    fi
+    return 0
+}
+
+delete_created_zones() {
+    local entry id name current
+    for entry in ${CREATED_ZONES[@]+"${CREATED_ZONES[@]}"}; do
+        id="${entry%% *}"
+        name="${entry#* }"
+        # Only delete while the id still names the zone this run created
+        current=$(curl -s --max-time 10 -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+            "${API_BASE_URL}/api/v2/zones/${id}" 2>/dev/null | jq -r '.data.zone.name // empty' 2>/dev/null) || true
+        if [[ "${current%.}" == "${name%.}" ]]; then
+            curl -s --max-time 10 -X DELETE -H "X-API-Key: $API_KEY" \
+                "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+        fi
+    done
+    return 0
+}
+
 api_request_v2() {
     local method="$1"
     local endpoint="$2"
@@ -143,6 +173,10 @@ api_request_v2() {
     # Store response
     LAST_RESPONSE_BODY="$body"
     LAST_RESPONSE_CODE="$http_code"
+
+    if [[ "$method" == "POST" && "$endpoint" == "/zones" && "$http_code" == "201" ]]; then
+        track_created_zone "$(echo "$data" | jq -r '.name // empty' 2>/dev/null)" "$body"
+    fi
 
     if [[ "$http_code" -eq "$expected_status" ]]; then
         print_pass "$description (HTTP $http_code)"
@@ -363,6 +397,9 @@ test_ptr_autocreation() {
         -X POST -d "$reverse_zone" "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
     local rev_code=$(echo "$rev_response" | tail -1)
     local rev_body=$(echo "$rev_response" | sed '$d')
+    if [[ "$rev_code" == "201" ]]; then
+        track_created_zone "2.0.192.in-addr.arpa" "$rev_body"
+    fi
 
     if [[ "$rev_code" == "201" ]]; then
         TEST_REVERSE_ZONE_ID=$(echo "$rev_body" | grep -o '"zone_id":[^,}]*' | head -1 | sed 's/.*://; s/"//g; s/ //g')
@@ -972,6 +1009,7 @@ test_groups() {
             -d '{"name":"group-assign-test.example.com","type":"MASTER"}' --max-time 30)
         local TEST_ZONE_ASSIGN_ID
         TEST_ZONE_ASSIGN_ID=$(echo "$zone_assign_response" | sed '$d' | jq -r '.data.zone_id // empty')
+        track_created_zone "group-assign-test.example.com" "$(echo "$zone_assign_response" | sed '$d')"
         if [[ -z "$TEST_ZONE_ASSIGN_ID" ]]; then
             # Zone may already exist, look it up
             TEST_ZONE_ASSIGN_ID=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
@@ -1885,6 +1923,7 @@ test_users_perm_templ_validation() {
 }
 
 main() {
+    trap delete_created_zones EXIT
     print_header "PowerAdmin API v2 Test Suite"
 
     load_config
