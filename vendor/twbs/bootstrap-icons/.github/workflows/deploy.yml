@@ -8,7 +8,7 @@ on:
 
 env:
   FORCE_COLOR: 2
-  NODE: 20
+  NODE: 24
 
 permissions:
   contents: read
@@ -20,24 +20,27 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "${{ env.NODE }}"
-          cache: npm
+          package-manager-cache: false
 
       - name: Install npm dependencies
         run: npm ci
+
+      - name: Install Astro dependencies
+        run: npm ci --prefix astro
 
       - name: Prepare release
         run: npm run release
 
       - name: Deploy docs
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@84c30a85c19949d7eee79c4ff27748b70285e453 # v4.1.0
         with:
           allow_empty_commit: false
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
@@ -51,14 +54,15 @@ jobs:
 
     steps:
       - name: Clone repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: "${{ env.NODE }}"
           registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
 
       - name: Publish on npm
         run: npm publish
