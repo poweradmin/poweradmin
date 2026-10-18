@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Model;
 class TopLevelDomain
 {
 
-    // Updated on 2026-09-03 - 1438 TLDs
+    // Updated on 2026-10-18 - 1437 TLDs
     // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
     // for w in `cat tlds-alpha-by-domain.txt`; do echo -n "\"$w\", " | tr '[:upper:]' '[:lower:]'; done | fold -s -w 79 | sed -e 's/^/  /g'
     const TOP_LEVEL_DOMAINS = array(
@@ -112,7 +112,7 @@ class TopLevelDomain
         "ismaili", "ist", "istanbul", "it", "itau", "itv", "jaguar", "java",
         "jcb", "je", "jeep", "jetzt", "jewelry", "jio", "jll", "jm", "jmp",
         "jnj", "jo", "jobs", "joburg", "jot", "joy", "jp", "jpmorgan", "jprs",
-        "juegos", "juniper", "kaufen", "kddi", "ke", "kerryhotels",
+        "juegos", "kaufen", "kddi", "ke", "kerryhotels",
         "kerryproperties", "kfh", "kg", "kh", "ki", "kia", "kids", "kim",
         "kindle", "kitchen", "kiwi", "km", "kn", "koeln", "komatsu", "kosher",
         "kp", "kpmg", "kpn", "kr", "krd", "kred", "kuokgroup", "kw", "ky",
