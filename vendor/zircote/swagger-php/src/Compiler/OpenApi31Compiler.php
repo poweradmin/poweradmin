@@ -13,6 +13,7 @@ use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Specification\ComponentName;
 use OpenApi\Undefined;
+use OpenApi\Utils\SecurityRequirement;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -21,6 +22,11 @@ use Psr\Log\LoggerInterface;
 class OpenApi31Compiler implements CompilerInterface
 {
     protected const VERSIONS = ['3.1.0', '3.1.1', '3.1.2'];
+
+    /**
+     * The methods a path item has an operation field for.
+     */
+    protected const OPERATION_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 
     protected const OPERATION_REQUEST_BODY_METHODS = ['put', 'post', 'delete', 'patch'];
 
@@ -237,7 +243,7 @@ class OpenApi31Compiler implements CompilerInterface
         $paths = [];
 
         foreach ($operations as $operation) {
-            if ($operation->path === null || $operation->method === null) {
+            if ($operation->path === null || !in_array($operation->method, static::OPERATION_METHODS, true)) {
                 continue;
             }
 
@@ -279,7 +285,7 @@ class OpenApi31Compiler implements CompilerInterface
         $webhooks = [];
 
         foreach ($operations as $operation) {
-            if ($operation->webhook === null || $operation->method === null) {
+            if ($operation->webhook === null || !in_array($operation->method, static::OPERATION_METHODS, true)) {
                 continue;
             }
 
@@ -361,7 +367,7 @@ class OpenApi31Compiler implements CompilerInterface
     protected function compileParameter(OA\Parameter $parameter): array
     {
         if ($parameter->ref !== null) {
-            return ['$ref' => $parameter->ref];
+            return $this->compileReference($parameter);
         }
 
         $result = $this->filter([
@@ -392,7 +398,7 @@ class OpenApi31Compiler implements CompilerInterface
         }
 
         if ($body->ref !== null) {
-            return ['$ref' => $body->ref];
+            return $this->compileReference($body);
         }
 
         $result = $this->filter([
@@ -419,7 +425,7 @@ class OpenApi31Compiler implements CompilerInterface
     protected function compileResponse(OA\Response $response): array
     {
         if ($response->ref !== null) {
-            return ['$ref' => $response->ref];
+            return $this->compileReference($response);
         }
 
         return $this->filter([
@@ -436,7 +442,7 @@ class OpenApi31Compiler implements CompilerInterface
     protected function compileHeader(OA\Header $header): array
     {
         if ($header->ref !== null) {
-            return ['$ref' => $header->ref];
+            return $this->compileReference($header);
         }
 
         $result = $this->filter([
@@ -496,7 +502,7 @@ class OpenApi31Compiler implements CompilerInterface
     protected function compileLink(OA\Link $link): array
     {
         if ($link->ref !== null) {
-            return ['$ref' => $link->ref];
+            return $this->compileReference($link);
         }
 
         $result = $this->filter([
@@ -508,6 +514,21 @@ class OpenApi31Compiler implements CompilerInterface
         ], $link);
 
         return $this->withDefined($result, ['requestBody' => $link->requestBody]);
+    }
+
+    /**
+     * A Reference Object: the `$ref`, with the `summary` and `description` declared beside it.
+     *
+     * @return array<string,mixed>
+     */
+    protected function compileReference(OA\Parameter|OA\RequestBody|OA\Response|OA\Header|OA\Link|OA\Example|OA\Security\Scheme $attribute): array
+    {
+        // no attribute, so no extensions: a Reference Object takes none
+        return $this->filter([
+            '$ref' => $attribute->ref,
+            'summary' => $attribute instanceof OA\Example ? $attribute->summary : null,
+            'description' => $attribute->description,
+        ]);
     }
 
     /**
@@ -529,13 +550,10 @@ class OpenApi31Compiler implements CompilerInterface
                         ]),
                         ['type' => 'null'],
                     ],
-                ], $schema);
+                ], $schema) + $this->compileRefAnnotations($schema);
             }
 
-            return $this->filter([
-                '$ref' => $schema->ref,
-                'description' => $schema->description,
-            ], $schema);
+            return $this->filter(['$ref' => $schema->ref], $schema) + $this->compileRefAnnotations($schema);
         }
 
         $type = $schema->type;
@@ -619,6 +637,18 @@ class OpenApi31Compiler implements CompilerInterface
             'xml' => $schema->xml instanceof OA\Xml ? $this->compileXml($schema->xml) : null,
         ], $schema);
 
+        // without a type to add `null` to, null gets a branch of its own where there is a choice
+        if ($schema->nullable === true && $type === null) {
+            foreach (['oneOf', 'anyOf'] as $keyword) {
+                if (isset($result[$keyword])) {
+                    if (!in_array(['type' => 'null'], $result[$keyword], true)) {
+                        $result[$keyword][] = ['type' => 'null'];
+                    }
+                    break;
+                }
+            }
+        }
+
         $result = $this->withDefined($result, [
             'default' => $schema->default,
             'const' => $schema->const,
@@ -626,6 +656,31 @@ class OpenApi31Compiler implements CompilerInterface
         ]);
 
         return $result ?: new \stdClass();
+    }
+
+    /**
+     * The annotation keywords a `$ref` schema keeps: beside `$ref`, or on the wrapper of a nullable one.
+     *
+     * In 3.1 a Schema's `$ref` is an ordinary JSON Schema keyword, so its siblings are evaluated;
+     * the Reference Object's limit to `summary` and `description` does not apply to it.
+     *
+     * @return array<string,mixed>
+     */
+    protected function compileRefAnnotations(OA\Schema $schema): array
+    {
+        $result = $this->filter([
+            'title' => $schema->title,
+            'description' => $schema->description,
+            'examples' => $schema->examples,
+            'deprecated' => $schema->deprecated,
+            'readOnly' => $schema->readOnly,
+            'writeOnly' => $schema->writeOnly,
+        ]);
+
+        return $this->withDefined($result, [
+            'default' => $schema->default,
+            'example' => $schema->example,
+        ]);
     }
 
     /**
@@ -735,7 +790,7 @@ class OpenApi31Compiler implements CompilerInterface
                 return $item->toArray();
             }
 
-            return $item;
+            return SecurityRequirement::normalise($item);
         }, $security);
     }
 
@@ -744,6 +799,10 @@ class OpenApi31Compiler implements CompilerInterface
      */
     protected function compileSecurityScheme(OA\Security\Scheme $scheme): array
     {
+        if ($scheme->ref !== null) {
+            return $this->compileReference($scheme);
+        }
+
         return $this->filter([
             'type' => $scheme->type,
             'description' => $scheme->description,
@@ -792,7 +851,7 @@ class OpenApi31Compiler implements CompilerInterface
     protected function compileExample(OA\Example $example): array
     {
         if ($example->ref !== null) {
-            return ['$ref' => $example->ref];
+            return $this->compileReference($example);
         }
 
         $result = $this->filter([
@@ -936,6 +995,20 @@ class OpenApi31Compiler implements CompilerInterface
     protected function validateOperations(Specification $specification): void
     {
         $specification->getWalker()->visit(OA\Operation::class, function (OA\Operation $operation): void {
+            if ($operation->method === null) {
+                if ($operation->path !== null || $operation->webhook !== null) {
+                    $this->logger->warning('Operation without a method will be omitted in ' . $operation->getSourceLocation());
+                }
+
+                return;
+            }
+
+            if (!in_array($operation->method, static::OPERATION_METHODS, true)) {
+                $this->logger->warning("Method {$operation->method} is not supported in OpenAPI " . substr($this->getVersion(), 0, 3) . ' and will be omitted in ' . $operation->getSourceLocation());
+
+                return;
+            }
+
             if ($operation->requestBody instanceof OA\RequestBody && !in_array($operation->method, static::OPERATION_REQUEST_BODY_METHODS)) {
                 $this->logger->warning("Request body not supported for method {$operation->method} in " . $operation->getSourceLocation());
             }

@@ -11,6 +11,10 @@ use OpenApi\Assembler\OptionalPropertyAttributeTranslator;
 use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Contracts\AttributeTranslatorInterface;
 use OpenApi\OpenApiException;
+use OpenApi\Spec as OA;
+use OpenApi\Specification\ComponentName;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
 /**
  * Creates spec attribute instances from PHP reflectors.
@@ -20,8 +24,10 @@ use OpenApi\OpenApiException;
  * collection) and augmenter pipes that need to manufacture spec objects
  * from reflection (e.g. Augmenter\Inheritance for non-schema ancestor members).
  */
-class AttributeFactory
+class AttributeFactory implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /**
      * @var TypedList<AttributeTranslatorInterface>
      */
@@ -151,6 +157,8 @@ class AttributeFactory
             foreach ($constructor->getParameters() as $parameter) {
                 array_push($inner, ...$this->resolveNesting($this->readAttributes($parameter)));
             }
+
+            $this->reportConstructorAttributes($class, $constructor);
         }
 
         foreach ($class->getReflectionConstants() as $constant) {
@@ -292,6 +300,83 @@ class AttributeFactory
         }
 
         return $outer;
+    }
+
+    /**
+     * A component declared on a member is one only in a class carrying `OA\Components`. Without
+     * it, the key alone does not say which is meant: on a property the same schema is the
+     * property's own, and on a method it would be a component. So a keyed component left over
+     * from a member is dropped, and said so.
+     *
+     * A schema on a property arrives inside the `OA\Property` the shortcut adds, so its key is
+     * looked for there. Unkeyed attributes are left alone: a parent class without a schema leaves
+     * its properties unabsorbed on purpose, for `Augmenter\Inheritance` to read again.
+     *
+     * @param list<AttributeInterface> $outer    the class's own attributes
+     * @param list<AttributeInterface> $resolved the class's attributes after absorbing its members
+     *
+     * @return list<AttributeInterface>
+     */
+    public function withoutStrayComponents(array $outer, array $resolved): array
+    {
+        foreach ($outer as $attribute) {
+            if ($attribute instanceof OA\Components) {
+                return $resolved;
+            }
+        }
+
+        $kept = [];
+        foreach ($resolved as $attribute) {
+            $component = $attribute instanceof OA\Property ? $attribute->schema : $attribute;
+            $key = $component instanceof AttributeInterface && ($component->isRoot() || $attribute instanceof OA\Property)
+                ? ComponentName::of($component)
+                : null;
+
+            if ($key === null || in_array($attribute, $outer, true)) {
+                $kept[] = $attribute;
+                continue;
+            }
+
+            $this->logger?->warning(sprintf(
+                '%s "%s" ignored, a component declared on a member needs %s on its class, in %s',
+                $component::class,
+                $key,
+                OA\Components::class,
+                $attribute->getSourceLocation(),
+            ));
+        }
+
+        return $kept;
+    }
+
+    /**
+     * The constructor is not a place to declare anything: only its parameters, as promoted
+     * properties, are read. What sits on it is ignored, and said so; the class takes the same
+     * attributes.
+     *
+     * @param \ReflectionClass<object> $class
+     */
+    protected function reportConstructorAttributes(\ReflectionClass $class, \ReflectionMethod $constructor): void
+    {
+        // inherited or brought in by a trait, it is reported where it is declared
+        $scannerDetails = $this->tokenScanner->detailsFor($class);
+        if ($constructor->getDeclaringClass()->getName() !== $class->getName()
+            || ($scannerDetails && !in_array($constructor->getName(), $scannerDetails['methods'], true))
+        ) {
+            return;
+        }
+
+        $attributes = $constructor->getAttributes(AttributeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+        if ($attributes === []) {
+            return;
+        }
+
+        $this->logger?->warning(sprintf(
+            '%s ignored on a constructor, declare %s on the class in %s',
+            implode(', ', array_map(static fn (\ReflectionAttribute $attribute): string => $attribute->getName(), $attributes)),
+            count($attributes) === 1 ? 'it' : 'them',
+            SourceLocation::fromReflector($constructor),
+        ));
     }
 
     /**

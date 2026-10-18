@@ -23,9 +23,9 @@ use OpenApi\Undefined;
  *       new OA\Parameter\Query(name: 'status', schema: new OA\Schema(type: 'string', enum: ['active', 'sold'])),
  *   ])]
  *
- * Or as a reusable component (set `parameter` for the component key):
+ * Or as a reusable component (set `component` for the component key):
  *
- *   #[OA\Parameter\Path(parameter: 'petId', name: 'id', schema: new OA\Schema(type: 'integer'))]
+ *   #[OA\Parameter\Path(component: 'petId', name: 'id', schema: new OA\Schema(type: 'integer'))]
  *
  * Produces:
  *   components:
@@ -120,6 +120,7 @@ class Parameter extends AbstractAttribute
     public function contained(): array
     {
         return [
+            Components::class => 'parameters[]',
             Operation::class => 'parameters[]',
             PathItem::class => 'parameters[]',
         ];
