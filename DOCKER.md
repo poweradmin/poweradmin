@@ -488,6 +488,9 @@ services:
       retries: 3
 ```
 
+With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
+`test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
+
 ### PowerDNS API Integration
 
 | Variable | Description | Default | Required |

@@ -167,10 +167,10 @@ class HealthController
     private function readCachedChecks(int $cacheSeconds): ?array
     {
         $file = $this->cacheFile();
-        // Ignore a file another account planted in a shared temp directory. getmyuid() is the
+        // Ignore a file or symlink another account planted in a shared temp directory. getmyuid() is the
         // script owner, not the process, so it is only the fallback without the posix extension.
         $processUid = function_exists('posix_geteuid') ? posix_geteuid() : getmyuid();
-        if (!@is_file($file) || @fileowner($file) !== $processUid) {
+        if (@is_link($file) || !@is_file($file) || @fileowner($file) !== $processUid) {
             return null;
         }
 

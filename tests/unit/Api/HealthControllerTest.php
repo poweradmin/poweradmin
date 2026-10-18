@@ -316,4 +316,23 @@ class HealthControllerTest extends TestCase
             @unlink($file);
         }
     }
+
+    public function testASymlinkedCacheIsIgnored(): void
+    {
+        $target = sys_get_temp_dir() . '/pa-health-target-' . getmypid() . '.json';
+        $link = sys_get_temp_dir() . '/pa-health-link-' . getmypid() . '.json';
+        try {
+            file_put_contents($target, json_encode(['at' => time(), 'checks' => ['database' => 'down', 'pdns_api' => 'skipped']]));
+            @unlink($link);
+            if (!function_exists('symlink') || !@symlink($target, $link)) {
+                $this->markTestSkipped('symlinks are not available');
+            }
+            $controller = $this->cachingController($link, 30);
+            $this->assertSame(200, $controller->buildResponse()->getStatusCode());
+            $this->assertSame(1, $controller->databaseChecks);
+        } finally {
+            @unlink($link);
+            @unlink($target);
+        }
+    }
 }
