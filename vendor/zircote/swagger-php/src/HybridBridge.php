@@ -35,6 +35,8 @@ class HybridBridge
                 $annotation instanceof OA\Components => $this->convertComponents($annotation, $specification),
                 $annotation instanceof OA\Operation && !$annotation->_context->is('nested') => $specification->operations[] = $this->convertOperation($annotation, $this->val($annotation->path), $this->methodFromAnnotation($annotation)),
                 $annotation instanceof OA\Schema && !$this->isNestedSchemaType($annotation) && $annotation->_context->reflector instanceof \ReflectionClass && !$annotation->_context->is('nested') => $classSchemas[$annotation->_context->reflector->getName()][] = $annotation,
+                // on a method or property, a schema is a component only where it names itself, as in classic
+                $annotation instanceof OA\Schema && !$this->isNestedSchemaType($annotation) && ($annotation->_context->reflector instanceof \ReflectionMethod || $annotation->_context->reflector instanceof \ReflectionProperty) && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->schema) => $specification->schemas[] = $this->convertSchema($annotation),
                 $annotation instanceof OA\Property && $this->isClassMember($annotation) => $memberProperties[] = $annotation,
                 $annotation instanceof OA\Response && !$annotation->_context->is('nested') && !Undefined::isDefault($annotation->response) => $specification->responses[] = $this->convertResponse($annotation),
                 $annotation instanceof OA\RequestBody && !$annotation->_context->is('nested') && ($annotation->_context->reflector instanceof \ReflectionClass || !Undefined::isDefault($annotation->request)) => $specification->requestBodies[] = $this->convertRequestBody($annotation),
@@ -182,7 +184,7 @@ class HybridBridge
         );
 
         if (!Undefined::isDefault($openApi->security)) {
-            $spec->openapi->security = $this->convertSecurityRequirements($openApi->security);
+            $spec->openapi->security = $this->convertSecurityRequirements($openApi->security, $openApi);
         }
 
         if (!Undefined::isDefault($openApi->externalDocs)) {
@@ -389,7 +391,7 @@ class HybridBridge
 
         $security = null;
         if (!Undefined::isDefault($op->security)) {
-            $security = $this->convertSecurityRequirements($op->security);
+            $security = $this->convertSecurityRequirements($op->security, $op);
         }
 
         $result = new Spec\Operation(
@@ -866,16 +868,21 @@ class HybridBridge
     }
 
     /**
-     * @param array<mixed> $security classic security blocks: each entry is a scheme => scopes map
+     * @param array<mixed> $security classic security blocks: each entry is a scheme => scopes map,
+     *                               or a bare scheme name, which classic reads as that scheme with no scopes
      *
      * @return list<Spec\Security\Requirement>
      */
-    protected function convertSecurityRequirements(array $security): array
+    protected function convertSecurityRequirements(array $security, OA\AbstractAnnotation $owner): array
     {
         $requirements = [];
         foreach ($security as $item) {
             if (is_array($item)) {
                 $requirements[] = new Spec\Security\Requirement(schemes: $item);
+            } elseif (is_string($item)) {
+                // kept, as in classic, and reported, since spec drops it
+                $owner->_context->logger?->warning(sprintf('Security requirement "%s" is a bare scheme name, use [\'%s\' => []] in %s', $item, $item, $owner->_context));
+                $requirements[] = new Spec\Security\Requirement(scheme: $item);
             }
         }
 

@@ -304,6 +304,7 @@ class Builder
         $collecting = new CollectingLogger($this->getLogger());
 
         $attributeFactory = $this->getAttributeFactory();
+        $attributeFactory->setLogger($collecting);
         $assembler = new Assembler(attributeFactory: $attributeFactory);
 
         $sourceScanner = new SourceScanner($this->getLogger());
@@ -329,6 +330,16 @@ class Builder
         foreach ($sourceScanner->getReflectors() as $reflector) {
             if ($reflector instanceof \ReflectionClass) {
                 $this->collectSafely($assembler, $reflector);
+            } else {
+                $this->getLogger()->warning(sprintf(
+                    'Skipping %s source %s: only ReflectionClass sources are read',
+                    $reflector::class,
+                    match (true) {
+                        $reflector instanceof \ReflectionMethod, $reflector instanceof \ReflectionProperty => $reflector->class . '::' . $reflector->getName(),
+                        method_exists($reflector, 'getName') => $reflector->getName(),
+                        default => '',
+                    },
+                ));
             }
         }
 
@@ -342,6 +353,7 @@ class Builder
         // index is the first reader
         Specification\ComponentName::normalise($specification, deprecate: true);
 
+        $this->getResolver()->setLogger($this->getLogger());
         $this->getResolver()->resolve($assembler);
 
         if ($hybrid) {
@@ -385,8 +397,7 @@ class Builder
 
     protected function doHybridAssemble(Specification $specification): void
     {
-        $collectingLogger = new CollectingLogger($this->getLogger());
-        $generator = new Generator($collectingLogger);
+        $generator = new Generator($this->getLogger());
 
         if ($this->version !== null) {
             $generator->setVersion($this->version);
@@ -400,9 +411,25 @@ class Builder
 
         $analysis = new Analysis([], new Context([
             'version' => $generator->getVersion(),
-            'logger' => $collectingLogger,
+            'logger' => $this->getLogger(),
         ]));
         $generator->generate($this->sources, $analysis, validate: false);
+
+        // the generator scans files only, so a class passed as a reflector is analysed on its own
+        $analyser = $generator->getAnalyser();
+        $sourceScanner = new SourceScanner(new NullLogger());
+        $sourceScanner->scan($this->sources);
+        foreach ($sourceScanner->getReflectors() as $reflector) {
+            if (!$reflector instanceof \ReflectionClass) {
+                continue;
+            }
+
+            if ($analyser instanceof Analysers\ReflectionAnalyser) {
+                $analyser->fromFqdn($reflector->getName(), $analysis);
+            } else {
+                $this->getLogger()->warning(sprintf('Skipping %s for classic attributes: %s reads files only', $reflector->getName(), $analyser::class));
+            }
+        }
 
         $bridge = new HybridBridge();
         $bridge->fromAnalysis($analysis, $specification);
@@ -435,13 +462,17 @@ class Builder
         $mergers = $this->getMergers();
 
         return [
+            new Augmenter\TypeAliases(),
             new Augmenter\Inheritance(),
+            new Augmenter\OperationTags(),
             new Augmenter\Names(),
             new Augmenter\Enums(),
             new Augmenter\Shortcuts(),
+            new Augmenter\SecurityRequirements(),
             new Augmenter\PathItems(),
             new Augmenter\Types(),
             new Augmenter\Refs(),
+            new Augmenter\Parameters(),
             new Augmenter\Merge($mergers),
             new Augmenter\PathFilter(),
             new Augmenter\Cleanup(),
@@ -462,6 +493,7 @@ class Builder
     protected function getDefaultMergers(): array
     {
         return [
+            new Merge\Tags(),
             new Merge\LastWins(),
         ];
     }

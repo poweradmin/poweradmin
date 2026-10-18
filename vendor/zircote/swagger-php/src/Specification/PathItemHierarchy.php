@@ -33,6 +33,8 @@ class PathItemHierarchy
     /** @var array<string, list<OA\PathItem>> */
     protected array $chains = [];
 
+    protected ?ComponentIndex $componentIndex = null;
+
     public function __construct(
         protected Specification $specification,
     ) {
@@ -128,5 +130,77 @@ class PathItemHierarchy
         $reflector = $operation->getClassReflector();
 
         return $reflector instanceof \ReflectionClass ? $this->chainFor($reflector) : [];
+    }
+
+    /**
+     * The path prefix the chain governing an operation's class composes to, `''` for none.
+     *
+     * Each prefix is trimmed of slashes and the rest are joined outermost first, so `/api/v1`
+     * and `/users/` compose to `/api/v1/users`.
+     */
+    public function prefixFor(OA\Operation $operation): string
+    {
+        $parts = [];
+        foreach ($this->forOperation($operation) as $pathItem) {
+            if ($pathItem->prefix !== null && ($part = trim($pathItem->prefix, '/')) !== '') {
+                $parts[] = $part;
+            }
+        }
+
+        return $parts !== [] ? '/' . implode('/', $parts) : '';
+    }
+
+    /**
+     * The path an operation compiles to, its own path with `prefixFor()` in front, or null when
+     * it has no path.
+     *
+     * It reads the path as declared. `Augmenter\PathItems` writes this value back to the
+     * operation, so after that augmenter has run the prefix is already there and asking again
+     * adds it twice.
+     */
+    public function pathFor(OA\Operation $operation): ?string
+    {
+        if ($operation->path === null) {
+            return null;
+        }
+
+        $prefix = $this->prefixFor($operation);
+        if ($prefix === '') {
+            return $operation->path;
+        }
+
+        $path = ltrim($operation->path, '/');
+
+        return $path !== '' ? $prefix . '/' . $path : $prefix;
+    }
+
+    /**
+     * The parameters the chain governing an operation's class declares, keyed `in:name`.
+     *
+     * They are emitted at path level and apply to every operation under the path. Where two
+     * links of the chain declare the same parameter, the nearer one wins, as a subclass
+     * overrides its parent. The key is `ComponentIndex::parameterKey()`, so a parameter that is
+     * only a `ref` is keyed by its component's name and location. One with no identity at all is
+     * left out, since nothing could match it.
+     *
+     * The operation's own parameters are not included.
+     *
+     * @return array<string, OA\Parameter>
+     */
+    public function parametersFor(OA\Operation $operation): array
+    {
+        $index = $this->componentIndex ??= $this->specification->buildComponentIndex();
+
+        $parameters = [];
+        foreach ($this->forOperation($operation) as $pathItem) {
+            foreach ($pathItem->parameters ?? [] as $parameter) {
+                $key = $index->parameterKey($parameter);
+                if ($key !== null) {
+                    $parameters[$key] = $parameter;
+                }
+            }
+        }
+
+        return $parameters;
     }
 }

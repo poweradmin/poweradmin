@@ -17,9 +17,13 @@ namespace OpenApi\Spec;
  * wrapper remains for the historic spellings — a Header or Example keyed by `header`/`example`
  * — and for grouping several components on one class.
  *
+ * On a class it also makes a holder: each member declares a component of its own, and one
+ * without a key is named after the member, the way a class names its own. A component declared
+ * on a member needs the holder; without it, a keyed one is left out with a warning.
+ *
  *   #[Components]
  *   class SharedComponents {
- *       #[Parameter(parameter: 'tenant_id', name: 'tenant_id', in: 'path', schema: new Schema(type: 'string'))]
+ *       #[Parameter(component: 'tenant_id', name: 'tenant_id', in: 'path', schema: new Schema(type: 'string'))]
  *       public string $tenantId;
  *
  *       #[Header(header: 'X-Rate-Limit', schema: new Schema(type: 'integer'))]

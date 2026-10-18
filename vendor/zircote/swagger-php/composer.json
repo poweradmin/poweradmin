@@ -56,7 +56,8 @@
     },
     "autoload": {
         "psr-4": {
-            "OpenApi\\": "src"
+            "OpenApi\\": "src",
+            "OpenApi\\Rector\\": "rector/src"
         }
     },
     "autoload-dev": {
@@ -64,6 +65,7 @@
             "/tests/Fixtures"
         ],
         "psr-4": {
+            "OpenApi\\Rector\\Tests\\": "rector/tests/",
             "OpenApi\\Tools\\": "tools/src/",
             "OpenApi\\Tools\\Tests\\": "tools/tests/",
             "OpenApi\\Tests\\": "tests/",
@@ -72,10 +74,10 @@
     },
     "require-dev": {
         "doctrine/annotations": "^2.0",
-        "friendsofphp/php-cs-fixer": "3.95.23",
-        "phpstan/phpstan": "2.2.12",
+        "friendsofphp/php-cs-fixer": "3.95.27",
+        "phpstan/phpstan": "2.3.1",
         "phpunit/phpunit": "^11.5 || >=12.5.22",
-        "rector/rector": "2.6.5"
+        "rector/rector": "2.7.0"
     },
     "conflict": {
         "symfony/process": ">=6, <6.4.14"
@@ -100,7 +102,10 @@
             "@cs --dry-run",
             "@rector --dry-run"
         ],
-        "test": "export XDEBUG_MODE=off && phpunit --display-all-issues @additional_args",
+        "test": [
+            "export XDEBUG_MODE=off && phpunit --display-all-issues --exclude-testsuite 'Rector Test Suite' @additional_args",
+            "export XDEBUG_MODE=off && phpunit --display-all-issues --testsuite 'Rector Test Suite' @additional_args"
+        ],
         "performance": "export XDEBUG_MODE=off && phpunit --group performance",
         "analyse": [
             "export XDEBUG_MODE=off && phpstan clear-result-cache -q && phpstan analyse --memory-limit=3G"
