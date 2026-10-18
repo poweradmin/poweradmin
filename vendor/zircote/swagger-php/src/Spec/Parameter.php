@@ -1,0 +1,128 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Spec;
+
+use OpenApi\Undefined;
+
+/**
+ * Describes a single operation parameter.
+ *
+ * Typed subtypes pre-fill `in` (and `required` for path):
+ * - `OA\Parameter\Path` - path parameters (in: path, required: true)
+ * - `OA\Parameter\Query` - query string parameters (in: query)
+ * - `OA\Parameter\Header` - header parameters (in: header)
+ * - `OA\Parameter\Cookie` - cookie parameters (in: cookie)
+ *
+ * Inline on an operation:
+ *
+ *   #[OA\Operation\Get(path: '/pets', parameters: [
+ *       new OA\Parameter\Query(name: 'status', schema: new OA\Schema(type: 'string', enum: ['active', 'sold'])),
+ *   ])]
+ *
+ * Or as a reusable component (set `component` for the component key):
+ *
+ *   #[OA\Parameter\Path(component: 'petId', name: 'id', schema: new OA\Schema(type: 'integer'))]
+ *
+ * Produces:
+ *   components:
+ *     parameters:
+ *       petId:
+ *         name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: integer
+ *
+ * @see [Parameter Object](https://spec.openapis.org/oas/v3.1.1.html#parameter-object)
+ */
+#[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::TARGET_PARAMETER | \Attribute::IS_REPEATABLE)]
+class Parameter extends AbstractAttribute
+{
+    /** The key this attribute is filed under in `components`; null for an inline one. */
+    public ?string $component = null;
+
+    public ?string $in = null;
+
+    public ?string $style = null;
+
+    /** @var list<MediaType>|null */
+    public ?array $content = null;
+
+    /**
+     * @param string|null                    $parameter       Deprecated since 6.12, removed in 8.0 - use `component` instead
+     * @param string|null                    $name            The name of the parameter
+     * @param string|ParameterIn|null        $in              The location of the parameter (query, header, path, cookie)
+     * @param string|null                    $description     A brief description of the parameter (CommonMark syntax)
+     * @param bool|null                      $required        Whether the parameter is mandatory
+     * @param bool|null                      $deprecated      Whether the parameter is deprecated
+     * @param bool|null                      $allowEmptyValue Whether empty-valued parameters are allowed
+     * @param string|Schema\Ref|null         $ref             A JSON Reference to a reusable parameter
+     * @param string|ParameterStyle|null     $style           How the parameter value is serialized
+     * @param bool|null                      $explode         Whether arrays/objects generate separate parameters
+     * @param bool|null                      $allowReserved   Whether reserved characters are allowed without encoding
+     * @param Schema|null                    $schema          The schema defining the type for the parameter
+     * @param mixed                          $example         Example of the parameter's value
+     * @param list<Example>|null             $examples        Examples of the parameter's value
+     * @param MediaType|list<MediaType>|null $content         Content-type based parameter serialization
+     * @param string|null                    $component       The key this is filed under in `components`, which makes it a reusable component
+     * @param array<string,mixed>|null       $x               Vendor extensions (x-* properties)
+     * @param list<Attachable>|null          $attachables     Reusable custom attachable attributes
+     */
+    public function __construct(
+        public ?string $parameter = null,
+        public ?string $name = null,
+        string|ParameterIn|null $in = null,
+        public ?string $description = Undefined::UNDEFINED,
+        public ?bool $required = null,
+        public ?bool $deprecated = null,
+        public ?bool $allowEmptyValue = null,
+        public string|Schema\Ref|null $ref = null,
+        string|ParameterStyle|null $style = null,
+        public ?bool $explode = null,
+        public ?bool $allowReserved = null,
+        public ?Schema $schema = null,
+        public mixed $example = Undefined::UNDEFINED,
+        public ?array $examples = null,
+        MediaType|array|null $content = null,
+        ?string $component = null,
+        ?array $x = null,
+        ?array $attachables = null,
+    ) {
+        parent::__construct(x: $x, attachables: $attachables);
+        $this->component = $component;
+        if ($component === null && $this->parameter !== null) {
+            trigger_deprecation('zircote/swagger-php', '6.12', '`parameter` is deprecated as the component key of %s and will be removed in 8.0; use `component`', static::class);
+            $this->component = $this->parameter;
+        }
+        $this->in = $in instanceof \BackedEnum ? $in->value : $in;
+        $this->style = $style instanceof \BackedEnum ? $style->value : $style;
+        $this->content = self::wrapList($content);
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->ref === null && $this->component !== null;
+    }
+
+    public function merge(): array
+    {
+        return [
+            Components::class => 'parameters[]',
+            Operation::class => 'parameters[]',
+            PathItem::class => 'parameters[]',
+        ];
+    }
+
+    public function contained(): array
+    {
+        return [
+            Components::class => 'parameters[]',
+            Operation::class => 'parameters[]',
+            PathItem::class => 'parameters[]',
+        ];
+    }
+}

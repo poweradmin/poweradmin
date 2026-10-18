@@ -7,6 +7,8 @@
 namespace OpenApi\Utils;
 
 use PhpParser\Error;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -19,26 +21,43 @@ use PhpParser\ParserFactory;
 
 /**
  * High-level, PHP-token-based, scanner.
+ *
+ * @phpstan-type ScannerDetails array{
+ *     uses: array<string, class-string>,
+ *     interfaces: list<class-string>,
+ *     traits: list<class-string>,
+ *     enums: list<class-string>,
+ *     methods: list<string>,
+ *     properties: list<string>,
+ *     consts: list<string>,
+ * }
  */
 class TokenScanner
 {
+    /** @var array<string, array<class-string, ScannerDetails>> */
+    protected array $cache = [];
+
     /**
      * Scan a given file for all classes, interfaces, and traits.
      *
-     * @return array{
-     *     'uses': array<string, class-string>,
-     *     'interfaces': list<class-string>,
-     *     'traits': list<class-string>,
-     *     'enums': list<class-string>,
-     *     'methods': list<string>,
-     *     'properties': list<string>,
-     * } File details
+     * Results are cached by filename — repeated calls with the same path return the cached result.
+     *
+     * @return array<class-string, ScannerDetails>
      */
     public function scanFile(string $filename): array
     {
+        if (isset($this->cache[$filename])) {
+            return $this->cache[$filename];
+        }
+
+        $code = is_file($filename) && is_readable($filename) ? file_get_contents($filename) : false;
+        if (false === $code) {
+            throw new \RuntimeException("Unable to read {$filename}");
+        }
+
         $parser = (new ParserFactory())->createForNewestSupportedVersion();
         try {
-            $stmts = $parser->parse(file_get_contents($filename));
+            $stmts = $parser->parse($code) ?? [];
         } catch (Error $error) {
             throw new \RuntimeException($error->getMessage(), $error->getCode(), $error);
         }
@@ -53,19 +72,54 @@ class TokenScanner
             }
         }
 
+        $this->cache[$filename] = $result;
+
         return $result;
     }
 
+    /**
+     * Look up scan details for a specific FQDN.
+     *
+     * Scans the file on demand if not already cached.
+     *
+     * @param \ReflectionClass<object> $class
+     *
+     * @return ScannerDetails|null
+     */
+    public function detailsFor(\ReflectionClass $class): ?array
+    {
+        $filename = $class->getFileName();
+        // internal classes have no file, and a class from `eval()` names one that does not exist
+        if ($filename === false || !is_file($filename)) {
+            return null;
+        }
+
+        $results = $this->scanFile($filename);
+
+        return $results[$class->getName()] ?? null;
+    }
+
+    /**
+     * @param array<Stmt> $stmts
+     *
+     * @return array<class-string, ScannerDetails>
+     */
     protected function collect_stmts(array $stmts, string $namespace): array
     {
-        /** @var array $uses */
+        /** @var array<string, class-string> $uses */
         $uses = [];
-        $resolve = static function (string $name) use ($namespace, &$uses) {
+        /**
+         * @return class-string
+         */
+        $resolve = static function (string $name) use ($namespace, &$uses): string {
             if (array_key_exists($name, $uses)) {
                 return $uses[$name];
             }
 
-            return $namespace . '\\' . $name;
+            /** @var class-string $fqdn */
+            $fqdn = $namespace . '\\' . $name;
+
+            return $fqdn;
         };
         $details = static function () use (&$uses): array {
             return [
@@ -75,6 +129,7 @@ class TokenScanner
                 'enums' => [],
                 'methods' => [],
                 'properties' => [],
+                'consts' => [],
             ];
         };
         $result = [];
@@ -99,17 +154,29 @@ class TokenScanner
         return $result;
     }
 
+    /**
+     * @return array<string, class-string>
+     */
     protected function collect_uses(Use_ $stmt): array
     {
+        /** @var array<string, class-string> $uses */
         $uses = [];
 
         foreach ($stmt->uses as $use) {
-            $uses[(string) $use->getAlias()] = (string) $use->name;
+            /** @var class-string $name */
+            $name = (string) $use->name;
+            $uses[(string) $use->getAlias()] = $name;
         }
 
         return $uses;
     }
 
+    /**
+     * @param ScannerDetails                 $details
+     * @param callable(string): class-string $resolve
+     *
+     * @return array<class-string, ScannerDetails>
+     */
     protected function collect_classlike(ClassLike $stmt, array $details, callable $resolve): array
     {
         foreach ($stmt->getProperties() as $properties) {
@@ -128,11 +195,23 @@ class TokenScanner
             }
         }
 
+        foreach ($stmt->getConstants() as $const) {
+            foreach ($const->consts as $c) {
+                $details['consts'][] = (string) $c->name;
+            }
+        }
+
         return [
             $resolve($stmt->name->name) => $details,
         ];
     }
 
+    /**
+     * @param ScannerDetails                 $details
+     * @param callable(string): class-string $resolve
+     *
+     * @return array<class-string, ScannerDetails>
+     */
     protected function collect_class(Class_ $stmt, array $details, callable $resolve): array
     {
         foreach ($stmt->implements as $implement) {
@@ -142,7 +221,7 @@ class TokenScanner
         // promoted properties
         if (($ctor = $stmt->getMethod('__construct')) instanceof ClassMethod) {
             foreach ($ctor->getParams() as $param) {
-                if ($param->flags) {
+                if ($param->flags && $param->var instanceof Variable && is_string($param->var->name)) {
                     $details['properties'][] = $param->var->name;
                 }
             }
@@ -151,6 +230,12 @@ class TokenScanner
         return $this->collect_classlike($stmt, $details, $resolve);
     }
 
+    /**
+     * @param ScannerDetails                 $details
+     * @param callable(string): class-string $resolve
+     *
+     * @return array<class-string, ScannerDetails>
+     */
     protected function collect_interface(Interface_ $stmt, array $details, callable $resolve): array
     {
         foreach ($stmt->extends as $extend) {

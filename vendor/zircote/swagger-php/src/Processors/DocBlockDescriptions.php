@@ -47,7 +47,9 @@ class DocBlockDescriptions
             }
 
             if ($hasSummary && $hasDescription) {
-                $this->summaryAndDescription($annotation);
+                /** @var OA\Examples|OA\Info|OA\Operation|OA\PathItem|OA\Tag $summarised the property_exists() pair above is the guarantee */
+                $summarised = $annotation;
+                $this->summaryAndDescription($summarised);
             } elseif ($hasDescription) {
                 $this->description($annotation);
             }
@@ -60,9 +62,7 @@ class DocBlockDescriptions
     protected function description(OA\AbstractAnnotation $annotation): void
     {
         if (!Undefined::isDefault($annotation->description)) {
-            if ($annotation->description === null) {
-                $annotation->description = Undefined::UNDEFINED;
-            }
+            $annotation->description ??= Undefined::UNDEFINED;
 
             return;
         }
@@ -71,7 +71,10 @@ class DocBlockDescriptions
     }
 
     /**
-     * @param OA\Operation|OA\Property|OA\Parameter|OA\Schema $annotation
+     * The annotations carrying both `summary` and `description`; the caller reaches this only
+     * after `property_exists()` confirms both, and skips `Parameter`/`Property` outright.
+     *
+     * @param OA\Examples|OA\Info|OA\Operation|OA\PathItem|OA\Tag $annotation
      */
     protected function summaryAndDescription(OA\AbstractAnnotation $annotation): void
     {

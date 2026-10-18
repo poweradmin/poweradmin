@@ -1,0 +1,74 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Spec;
+
+/**
+ * Container for reusable component definitions.
+ *
+ * Place on a class to declare standalone components that go into the components section
+ * of the OpenAPI document. The Components attribute itself is not emitted — its children
+ * are promoted to their respective Specification buckets.
+ *
+ * Any attribute given a `component:` key is a root on its own and needs no wrapper. The
+ * wrapper remains for the historic spellings — a Header or Example keyed by `header`/`example`
+ * — and for grouping several components on one class.
+ *
+ * On a class it also makes a holder: each member declares a component of its own, and one
+ * without a key is named after the member, the way a class names its own. A component declared
+ * on a member needs the holder; without it, a keyed one is left out with a warning.
+ *
+ *   #[Components]
+ *   class SharedComponents {
+ *       #[Parameter(component: 'tenant_id', name: 'tenant_id', in: 'path', schema: new Schema(type: 'string'))]
+ *       public string $tenantId;
+ *
+ *       #[Header(header: 'X-Rate-Limit', schema: new Schema(type: 'integer'))]
+ *       public string $rateLimit;
+ *
+ *       #[Example(example: 'dog', summary: 'A dog', value: ['name' => 'Fido'])]
+ *       public string $dogExample;
+ *   }
+ */
+#[\Attribute(\Attribute::TARGET_CLASS)]
+class Components extends AbstractAttribute
+{
+    /**
+     * @param list<Schema>             $schemas
+     * @param list<Parameter>          $parameters
+     * @param list<Response>           $responses
+     * @param list<RequestBody>        $requestBodies
+     * @param list<Header>             $headers
+     * @param list<Security\Scheme>    $securitySchemes
+     * @param list<Link>               $links
+     * @param list<Example>            $examples
+     * @param list<PathItem>           $pathItems
+     * @param list<MediaType>          $mediaTypes      OpenAPI 3.2; earlier compilers omit them with a warning
+     * @param array<string,mixed>|null $x               Vendor extensions (x-* properties)
+     * @param list<Attachable>|null    $attachables     Reusable custom attachable attributes
+     */
+    public function __construct(
+        public array $schemas = [],
+        public array $parameters = [],
+        public array $responses = [],
+        public array $requestBodies = [],
+        public array $headers = [],
+        public array $securitySchemes = [],
+        public array $links = [],
+        public array $examples = [],
+        public array $pathItems = [],
+        public array $mediaTypes = [],
+        ?array $x = null,
+        ?array $attachables = null,
+    ) {
+        parent::__construct(x: $x, attachables: $attachables);
+    }
+
+    public function isRoot(): bool
+    {
+        return true;
+    }
+}

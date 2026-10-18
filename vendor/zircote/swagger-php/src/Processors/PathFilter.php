@@ -20,48 +20,24 @@ class PathFilter
 {
     use Concerns\AnnotationTrait;
 
+    /**
+     * @var array<string>
+     */
     protected array $tags;
 
+    /**
+     * @var array<string>
+     */
     protected array $paths;
 
+    /**
+     * @param array<string> $tags
+     * @param array<string> $paths
+     */
     public function __construct(array $tags = [], array $paths = [])
     {
         $this->tags = $tags;
         $this->paths = $paths;
-    }
-
-    public function getTags(): array
-    {
-        return $this->tags;
-    }
-
-    /**
-     * A list of regular expressions to match <code>tags</code> to include.
-     *
-     * @param array<string> $tags
-     */
-    public function setTags(array $tags): PathFilter
-    {
-        $this->tags = $tags;
-
-        return $this;
-    }
-
-    public function getPaths(): array
-    {
-        return $this->paths;
-    }
-
-    /**
-     * A list of regular expressions to match <code>paths</code> to include.
-     *
-     * @param array<string> $paths
-     */
-    public function setPaths(array $paths): PathFilter
-    {
-        $this->paths = $paths;
-
-        return $this;
     }
 
     public function __invoke(Analysis $analysis): void
@@ -99,5 +75,45 @@ class PathFilter
 
             $analysis->openapi->paths = $filtered;
         }
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * A list of regular expressions to match <code>tags</code> to include.
+     *
+     * @param array<string> $tags
+     */
+    public function setTags(array $tags): PathFilter
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getPaths(): array
+    {
+        return $this->paths;
+    }
+
+    /**
+     * A list of regular expressions to match <code>paths</code> to include.
+     *
+     * @param array<string> $paths
+     */
+    public function setPaths(array $paths): PathFilter
+    {
+        $this->paths = $paths;
+
+        return $this;
     }
 }

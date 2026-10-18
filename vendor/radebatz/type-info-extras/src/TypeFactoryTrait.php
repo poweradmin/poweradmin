@@ -13,7 +13,14 @@ trait TypeFactoryTrait
 {
     use BaseTypeFactoryTrait;
 
-    public static function explicit(TypeIdentifier|string $identifier, string $explicitType): ExplicitType
+    /**
+     * @template T of TypeIdentifier
+     *
+     * @param T $identifier
+     *
+     * @return ExplicitType<T>
+     */
+    public static function explicit(TypeIdentifier $identifier, string $explicitType): ExplicitType
     {
         return new ExplicitType($identifier, $explicitType);
     }

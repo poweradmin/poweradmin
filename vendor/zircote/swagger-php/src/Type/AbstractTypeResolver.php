@@ -11,7 +11,6 @@ use OpenApi\Annotations\AbstractAnnotation;
 use OpenApi\Annotations as OA;
 use OpenApi\TypeResolverInterface;
 use OpenApi\Undefined;
-use OpenApi\Utils\TypeMapper;
 
 abstract class AbstractTypeResolver implements TypeResolverInterface
 {
@@ -22,25 +21,17 @@ abstract class AbstractTypeResolver implements TypeResolverInterface
         $this->typeMapper = new TypeMapper();
     }
 
-    protected function type2ref(OA\Schema $schema, Analysis $analysis, string $sourceClass = OA\Schema::class): void
-    {
-        if (!Undefined::isDefault($schema->type) && !is_array($schema->type)) {
-            if (($typeSchema = $analysis->getAnnotationForSource($schema->type, $sourceClass)) instanceof AbstractAnnotation) {
-                $schema->type = Undefined::UNDEFINED;
-                $schema->ref = OA\Components::ref($typeSchema);
-            }
-        }
-    }
-
     /**
-     * @param string|array $type
+     * @param string|non-empty-array<string> $type
      */
     public function mapNativeType(OA\Schema $schema, $type): bool
     {
         if (is_array($type)) {
-            $schema->type = $this->typeMapper->toSpecTypes(
+            /** @var non-empty-array<string> $mapped neither array_map() nor toSpecTypes() drop elements */
+            $mapped = $this->typeMapper->toSpecTypes(
                 array_map(static fn ($t): string => strtolower((string) $t), $type)
             );
+            $schema->type = $mapped;
 
             return true;
         }
@@ -83,7 +74,21 @@ abstract class AbstractTypeResolver implements TypeResolverInterface
     }
 
     /**
+     * @param class-string<AbstractAnnotation> $sourceClass
+     */
+    protected function type2ref(OA\Schema $schema, Analysis $analysis, string $sourceClass = OA\Schema::class): void
+    {
+        if (!Undefined::isDefault($schema->type) && !is_array($schema->type)) {
+            if (($typeSchema = $analysis->getAnnotationForSource($schema->type, $sourceClass)) instanceof AbstractAnnotation) {
+                $schema->type = Undefined::UNDEFINED;
+                $schema->ref = OA\Components::ref($typeSchema);
+            }
+        }
+    }
+
+    /**
      * @param \ReflectionParameter|\ReflectionProperty|\ReflectionMethod $reflector
+     * @param class-string<AbstractAnnotation>                           $sourceClass
      */
     abstract protected function doAugment(Analysis $analysis, OA\Schema $schema, \Reflector $reflector, string $sourceClass = OA\Schema::class): void;
 }

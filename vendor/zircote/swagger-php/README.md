@@ -19,17 +19,16 @@ attributes and annotations.
 - Compatible with the OpenAPI **3.0**, **3.1** and **3.2** specification.
 - Extracts information from code and existing phpdoc comments.
 - Can be used programmatically or via command-line tool.
-- [Documentation site](https://zircote.github.io/swagger-php/) with a getting started guide.
 - Error reporting (with hints, context).
-- All metadata is configured via PHP attributes.
+- 🧪 **Spec attributes (beta)**: attributes that can also be built by hand and compiled without scanning, and a pipeline that reports when an attribute is wrong. See [Why spec attributes?](https://zircote.github.io/swagger-php/guide/why-spec).
 
 ## OpenAPI version support
 
-`swagger-php` allows to generate specs either for **OpenAPI 3.0.0**, **OpenAPI 3.1.0** and **OpenAPI 3.2.0**.
-By default, the spec will be in version `3.0.0`. The command line option `--version` may be used to change to
-any other supported version.
+`swagger-php` can generate specs for **OpenAPI 3.0.0**, **OpenAPI 3.1.0** and **OpenAPI 3.2.0**.
+Classic mode defaults to `3.0.0`, spec and hybrid mode to `3.1.0`.
 
-Programmatically, the method `Generator::setVersion()` can be used to change the version.
+The command line option `--version` selects a different version; programmatically, use
+`Builder::setVersion()`.
 
 ## Requirements
 
@@ -41,8 +40,9 @@ Programmatically, the method `Generator::setVersion()` can be used to change the
 composer require zircote/swagger-php
 ```
 
-For cli usage from anywhere, install swagger-php globally and make sure to place the `~/.composer/vendor/bin` directory
-in your PATH so the `openapi` executable can be located by your system.
+For cli usage from anywhere, install swagger-php globally and add Composer's global binary directory
+(`composer global config bin-dir --absolute`) to your PATH, so the `openapi` executable can be located by
+your system.
 
 ```shell
 composer global require zircote/swagger-php
@@ -83,6 +83,48 @@ Visit the [Documentation website](https://zircote.github.io/swagger-php/) for
 the [Getting started guide](https://zircote.github.io/swagger-php/guide) or look at
 the [examples directory](docs/examples) for more examples.
 
+### 🧪 Spec Attributes (Beta)
+
+*Available since 6.5.0*
+
+A new processing mode using typed attributes from the `OpenApi\Spec` namespace:
+
+```php
+use OpenApi\Spec as OA;
+
+#[OA\OpenApi(version: '3.1.0')]
+#[OA\Info(title: 'My API', version: '1.0')]
+class MyApi
+{
+    #[OA\Operation\Get(path: '/api/resource')]
+    #[OA\Response(response: 200, description: 'An example resource')]
+    public function getResource() {}
+}
+```
+
+```php
+$result = (new \OpenApi\Builder())
+    ->setMode(\OpenApi\Builder\Mode::SPEC)
+    ->addSource('src/')
+    ->build();
+```
+
+**Hybrid mode** works with your existing `OpenApi\Attributes` code, with no changes needed. It runs the classic scanner
+but uses the new augmenter pipeline and version-aware compilers, which are easier to extend.
+Switching to hybrid is also the easiest way to help test the new pipeline:
+
+```php
+$result = (new \OpenApi\Builder())
+    ->setMode(\OpenApi\Builder\Mode::HYBRID)
+    ->addSource('src/')
+    ->build();
+```
+
+Or from the CLI: `./vendor/bin/openapi src/ --mode hybrid`
+
+See the [Spec Attributes guide](https://zircote.github.io/swagger-php/guide/spec-attributes) and
+[Processing Modes](https://zircote.github.io/swagger-php/guide/modes) for full documentation.
+
 ### Usage from PHP
 
 Generate always-up-to-date documentation.
@@ -90,13 +132,15 @@ Generate always-up-to-date documentation.
 ```php
 <?php
 require("vendor/autoload.php");
-$openapi = (new \OpenApi\Generator())->generate(['/path/to/project']);
+$result = (new \OpenApi\Builder())
+    ->addSource(['/path/to/project'])
+    ->build();
 header('Content-Type: application/x-yaml');
-echo $openapi->toYaml();
+echo $result->toYaml();
 ```
 
-Documentation of how to use the `Generator` class can be found in
-the [Generator reference](https://zircote.github.io/swagger-php/reference/generator).
+Details on how to generate OpenApi specifications can be found
+in the [generate reference](https://zircote.github.io/swagger-php/guide/generating-openapi-documents).
 
 ### Usage from the Command Line Interface
 
@@ -109,9 +153,9 @@ The `openapi` command line interface can be used to generate the documentation t
 ## Automatic type resolution
 
 As of version 6, resolving of types is done using the `TypeInfoTypeResolver` class. It uses the `symfony/type-info`
-library under the hood which allows handling of complext types.
+library under the hood which allows handling of complex types.
 
-With this change, `swagger-php` supports all available native type-hints and also complext generic type-hints via phpdoc
+With this change, `swagger-php` supports all available native type-hints and also complex generic type-hints via phpdoc
 blocks.
 This simplifies the definition of schemas.
 
