@@ -24,21 +24,6 @@ class MergeIntoOpenApi
         $this->mergeComponents = $mergeComponents;
     }
 
-    public function isMergeComponents(): bool
-    {
-        return $this->mergeComponents;
-    }
-
-    /**
-     *  If set to <code>true</code> allow multiple `@OA\Components` annotations to be merged.
-     */
-    public function setMergeComponents(bool $mergeComponents): MergeIntoOpenApi
-    {
-        $this->mergeComponents = $mergeComponents;
-
-        return $this;
-    }
-
     public function __invoke(Analysis $analysis): void
     {
         // Auto-create the OpenApi annotation.
@@ -91,7 +76,8 @@ class MergeIntoOpenApi
 
                 foreach ($componentsList as $components) {
                     foreach (OA\Components::$_nested as $nested) {
-                        if (2 == count($nested)) {
+                        // the [property, key] form; a bare string names a single-value slot
+                        if (is_array($nested) && 2 === count($nested)) {
                             $property = $nested[0];
                             if (!Undefined::isDefault($components->{$property})) {
                                 $firstComponents->merge($components->{$property});
@@ -102,11 +88,26 @@ class MergeIntoOpenApi
                     $analysis->removeAnnotation($components);
                 }
 
-                $merge = array_filter($merge, static fn (OA\AbstractAnnotation $annotation): bool => !$annotation instanceof OA\Components);
+                $merge = array_values(array_filter($merge, static fn (OA\AbstractAnnotation $annotation): bool => !$annotation instanceof OA\Components));
                 $merge[] = $firstComponents;
             }
         }
 
         $analysis->mergeAnnotations($openapi, $merge, true);
+    }
+
+    public function isMergeComponents(): bool
+    {
+        return $this->mergeComponents;
+    }
+
+    /**
+     *  If set to <code>true</code> allow multiple `@OA\Components` annotations to be merged.
+     */
+    public function setMergeComponents(bool $mergeComponents): MergeIntoOpenApi
+    {
+        $this->mergeComponents = $mergeComponents;
+
+        return $this;
     }
 }

@@ -12,6 +12,7 @@ use OpenApi\Undefined;
  * Sets a default value to the parameter. The type of the value depends on the defined type.
  *
  * @see [JSON schema validation](http://json-schema.org/latest/json-schema-validation.html)
+ * @phpstan-import-type EnumValue from \OpenApi\Spec\Schema
  */
 trait JsonSchemaTrait
 {
@@ -111,7 +112,7 @@ trait JsonSchemaTrait
      * A property instance is valid against this attribute if its value is one of the values specified in this
      * list.
      *
-     * @var list<string|int|float|bool|\UnitEnum>|class-string
+     * @var list<EnumValue>|class-string
      */
     public $enum = Undefined::UNDEFINED;
 
@@ -136,6 +137,24 @@ trait JsonSchemaTrait
     public $contains = Undefined::UNDEFINED;
 
     /**
+     * @var int
+     * @since OpenAPI 3.1.0
+     */
+    public $minContains = Undefined::UNDEFINED;
+
+    /**
+     * @var int
+     * @since OpenAPI 3.1.0
+     */
+    public $maxContains = Undefined::UNDEFINED;
+
+    /**
+     * @var array
+     * @since OpenAPI 3.1.0
+     */
+    public $prefixItems = Undefined::UNDEFINED;
+
+    /**
      * @var array
      */
     public $patternProperties = Undefined::UNDEFINED;
@@ -147,8 +166,26 @@ trait JsonSchemaTrait
 
     /**
      * @var mixed
+     * @since OpenAPI 3.1.0
+     */
+    public $unevaluatedItems = Undefined::UNDEFINED;
+
+    /**
+     * @var mixed
      */
     public $dependencies = Undefined::UNDEFINED;
+
+    /**
+     * @var array
+     * @since OpenAPI 3.1.0
+     */
+    public $dependentRequired = Undefined::UNDEFINED;
+
+    /**
+     * @var array
+     * @since OpenAPI 3.1.0
+     */
+    public $dependentSchemas = Undefined::UNDEFINED;
 
     /**
      * @var mixed
@@ -160,6 +197,36 @@ trait JsonSchemaTrait
      * @since OpenAPI 3.1.0
      */
     public $const = Undefined::UNDEFINED;
+
+    /**
+     * @var mixed
+     * @since OpenAPI 3.1.0
+     */
+    public $if = Undefined::UNDEFINED;
+
+    /**
+     * Applied when `if` succeeds.
+     *
+     * @var mixed
+     * @since OpenAPI 3.1.0
+     */
+    public $then = Undefined::UNDEFINED;
+
+    /**
+     * Applied when `if` fails.
+     *
+     * @var mixed
+     * @since OpenAPI 3.1.0
+     */
+    public $else = Undefined::UNDEFINED;
+
+    /**
+     * Schema for the decoded content described by `contentMediaType`.
+     *
+     * @var mixed
+     * @since OpenAPI 3.1.0
+     */
+    public $contentSchema = Undefined::UNDEFINED;
 }
 
 /*
@@ -168,7 +235,7 @@ trait JsonSchemaTrait
  *
 ** TYPE-HINTS:
 
-     * @param list<string|int|float|bool|\UnitEnum|null>|class-string|null $enum
+     * @param list<EnumValue|null>|class-string|null $enum
 
 
 ** PARAMETERS:
@@ -189,11 +256,21 @@ trait JsonSchemaTrait
         bool|AdditionalProperties|null $additionalProperties = null,
         array|null $additionalItems = null,
         array|null $contains = null,
+        int|null $minContains = null,
+        int|null $maxContains = null,
+        array|null $prefixItems = null,
         array|null $patternProperties = null,
         array|null $unevaluatedProperties = null,
+        mixed $unevaluatedItems = Undefined::UNDEFINED,
         mixed $dependencies = Undefined::UNDEFINED,
+        array|null $dependentRequired = null,
+        array|null $dependentSchemas = null,
         mixed $propertyNames = Undefined::UNDEFINED,
         mixed $const = Undefined::UNDEFINED,
+        mixed $if = Undefined::UNDEFINED,
+        mixed $then = Undefined::UNDEFINED,
+        mixed $else = Undefined::UNDEFINED,
+        mixed $contentSchema = Undefined::UNDEFINED,
 
 
 ** PARENT-PARAMS:
@@ -214,10 +291,20 @@ trait JsonSchemaTrait
             'additionalProperties' => $additionalProperties ?? Undefined::UNDEFINED,
             'additionalItems' => $additionalItems ?? Undefined::UNDEFINED,
             'contains' => $contains ?? Undefined::UNDEFINED,
+            'minContains' => $minContains ?? Undefined::UNDEFINED,
+            'maxContains' => $maxContains ?? Undefined::UNDEFINED,
+            'prefixItems' => $prefixItems ?? Undefined::UNDEFINED,
             'patternProperties' => $patternProperties ?? Undefined::UNDEFINED,
             'unevaluatedProperties' => $unevaluatedProperties ?? Undefined::UNDEFINED,
+            'unevaluatedItems' => $unevaluatedItems,
             'dependencies' => $dependencies,
+            'dependentRequired' => $dependentRequired ?? Undefined::UNDEFINED,
+            'dependentSchemas' => $dependentSchemas ?? Undefined::UNDEFINED,
             'propertyNames' => $propertyNames,
             'const' => $const,
+            'if' => $if,
+            'then' => $then,
+            'else' => $else,
+            'contentSchema' => $contentSchema,
 
 */

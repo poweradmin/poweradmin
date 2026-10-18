@@ -218,12 +218,13 @@ class Schema extends AbstractAnnotation
     /**
      * Examples of the schema.
      *
-     * Each example should contain a value in the correct format as specified in the parameter encoding.
+     * This is the JSON Schema keyword, so it takes a list of values. A nested <code>@OA\Examples</code>
+     * contributes its <code>value</code> and nothing else.
      * The examples object is mutually exclusive of the example object.
      * Furthermore, if referencing a schema which contains an example, the examples value shall override the example provided by the schema.
      *
      * @since OpenAPI 3.1.0
-     * @var array<Examples>
+     * @var array<mixed>
      */
     public $examples = Undefined::UNDEFINED;
 
@@ -311,6 +312,9 @@ class Schema extends AbstractAnnotation
         'allOf' => '[' . Schema::class . ']',
         'oneOf' => '[' . Schema::class . ']',
         'anyOf' => '[' . Schema::class . ']',
+        'prefixItems' => '[' . Schema::class . ']',
+        'minContains' => 'integer',
+        'maxContains' => 'integer',
         'contentEncoding' => 'string',
         'contentMediaType' => 'string',
     ];
@@ -323,7 +327,7 @@ class Schema extends AbstractAnnotation
         Items::class => 'items',
         Property::class => ['properties', 'property'],
         ExternalDocumentation::class => 'externalDocs',
-        Examples::class => ['examples', 'example'],
+        Examples::class => ['examples'],
         Xml::class => 'xml',
         AdditionalProperties::class => 'additionalProperties',
         Attachable::class => ['attachables'],
@@ -364,12 +368,26 @@ class Schema extends AbstractAnnotation
 
         if ($this->_context->isVersion('3.0.x')) {
             unset($data->examples);
+            foreach ([
+                'contains', 'minContains', 'maxContains', 'prefixItems',
+                'patternProperties', 'propertyNames', 'unevaluatedProperties', 'unevaluatedItems',
+                'dependentRequired', 'dependentSchemas', 'if', 'then', 'else',
+                'contentMediaType', 'contentEncoding', 'contentSchema',
+            ] as $keyword) {
+                unset($data->{$keyword});
+            }
             if (isset($data->const)) {
                 $data->enum = [$data->const];
                 unset($data->const);
             }
             if (isset($data->not) && is_array($data->not) && array_key_exists('const', $data->not)) {
                 $data->not = ['enum' => [$data->not['const']]];
+            }
+        } elseif (isset($data->examples)) {
+            $data->examples = $this->exampleValues();
+
+            if ($data->examples === []) {
+                unset($data->examples);
             }
         }
 
@@ -381,7 +399,10 @@ class Schema extends AbstractAnnotation
     {
         $isValid = parent::validate($analysis, $version, $context);
 
-        if ($this->hasType('array') && Undefined::isDefault($this->items)) {
+        if ($this->hasType('array') && Undefined::isDefault($this->items)
+            && (OpenApi::versionMatch($version, '3.0.x')
+                || (Undefined::isDefault($this->prefixItems) && Undefined::isDefault($this->contains)))) {
+            // 3.1 array schemas may describe their items via prefixItems or contains; 3.0 requires items
             $this->_context->logger->warning('@OA\\Items() is required when ' . $this->identity() . ' has type "array" in ' . $this->_context);
 
             $isValid = false;
@@ -392,8 +413,55 @@ class Schema extends AbstractAnnotation
                 $this->_context->logger->warning(static::shorten(static::class) . '::examples is only allowed as of 3.1.0 in ' . $this->_context);
                 $isValid = false;
             }
+
+            // the same keywords the spec compiler warns about; the rest drop silently
+            foreach (['prefixItems', 'unevaluatedProperties', 'unevaluatedItems'] as $keyword) {
+                if (!Undefined::isDefault($this->{$keyword})) {
+                    $this->_context->logger->warning($this->identity() . ': ' . $keyword . ' is not supported in OpenAPI 3.0 in ' . $this->_context);
+                    $isValid = false;
+                }
+            }
+            if (!Undefined::isDefault($this->if) || !Undefined::isDefault($this->then) || !Undefined::isDefault($this->else)) {
+                $this->_context->logger->warning($this->identity() . ': if/then/else is not supported in OpenAPI 3.0 in ' . $this->_context);
+                $isValid = false;
+            }
+        }
+
+        // the keyword takes values, so an annotation other than `@OA\Examples` is serialised whole
+        $nested = static::$_nested[Examples::class] ?? null;
+        if (is_array($nested) && count($nested) === 1) {
+            foreach ((array) $this->examples as $example) {
+                if ($example instanceof AbstractAnnotation && !$example instanceof Examples) {
+                    $this->_context->logger->warning($this->identity() . '->examples takes values, not ' . $example->identity() . ' in ' . $example->_context);
+                    $isValid = false;
+                }
+            }
         }
 
         return $isValid;
+    }
+
+    /**
+     * `examples` on a schema is the JSON Schema keyword, and takes a list of values. Values are
+     * kept as written; a nested `@OA\Examples` contributes its value, so an example carrying an
+     * `externalValue`, or nothing but a summary, has none to give and drops out — a list has
+     * nowhere to put the rest of an Example Object. Use a media type, parameter or header for
+     * those: their `examples` is a map of Example Objects and keeps every field.
+     *
+     * @return list<mixed>
+     */
+    protected function exampleValues(): array
+    {
+        $values = [];
+
+        foreach ((array) $this->examples as $example) {
+            if (!$example instanceof Examples) {
+                $values[] = $example;
+            } elseif (!Undefined::isDefault($example->value)) {
+                $values[] = $example->value;
+            }
+        }
+
+        return $values;
     }
 }

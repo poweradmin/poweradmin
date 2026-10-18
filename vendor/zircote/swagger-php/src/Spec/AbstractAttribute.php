@@ -1,0 +1,143 @@
+<?php declare(strict_types=1);
+
+/**
+ * @license Apache 2.0
+ */
+
+namespace OpenApi\Spec;
+
+use OpenApi\Contracts\AttributeInterface;
+use OpenApi\Utils\SourceLocation;
+
+abstract class AbstractAttribute implements AttributeInterface
+{
+    protected ?\Reflector $reflector = null;
+
+    protected ?SourceLocation $sourceLocation = null;
+
+    /**
+     * @var array<string,mixed>
+     */
+    protected array $meta = [];
+
+    /**
+     * @param array<string,mixed>|null $x
+     * @param list<Attachable>|null    $attachables Reusable custom attachable attributes
+     */
+    public function __construct(
+        public ?array $x = null,
+        public ?array $attachables = null,
+    ) {
+    }
+
+    public function isRoot(): bool
+    {
+        return false;
+    }
+
+    public function merge(): array
+    {
+        return [];
+    }
+
+    public function contained(): array
+    {
+        return [];
+    }
+
+    public function getReflector(): ?\Reflector
+    {
+        return $this->reflector;
+    }
+
+    /**
+     * @return \ReflectionClass<object>|null
+     */
+    public function getClassReflector(): ?\ReflectionClass
+    {
+        $reflector = $this->reflector;
+
+        if ($reflector instanceof \ReflectionClass) {
+            return $reflector;
+        }
+
+        if ($reflector instanceof \ReflectionMethod || $reflector instanceof \ReflectionProperty || $reflector instanceof \ReflectionClassConstant) {
+            return $reflector->getDeclaringClass();
+        }
+
+        if ($reflector instanceof \ReflectionParameter) {
+            $function = $reflector->getDeclaringFunction();
+
+            return $function instanceof \ReflectionMethod ? $function->getDeclaringClass() : null;
+        }
+
+        return null;
+    }
+
+    /**
+     * @return class-string|null
+     */
+    public function getClassName(): ?string
+    {
+        return $this->getClassReflector()?->getName();
+    }
+
+    public function getShortClassName(): ?string
+    {
+        return $this->getClassReflector()?->getShortName();
+    }
+
+    public function setReflector(?\Reflector $reflector): static
+    {
+        $this->reflector = $reflector;
+        $this->sourceLocation = null;
+
+        return $this;
+    }
+
+    public function getMeta(string $key, mixed $default = null): mixed
+    {
+        return array_key_exists($key, $this->meta) ? $this->meta[$key] : $default;
+    }
+
+    public function setMeta(string $key, mixed $value): static
+    {
+        $this->meta[$key] = $value;
+
+        return $this;
+    }
+
+    public function getSourceLocation(): SourceLocation
+    {
+        if (!$this->sourceLocation instanceof SourceLocation) {
+            $this->sourceLocation = $this->reflector instanceof \Reflector
+                ? SourceLocation::fromReflector($this->reflector)
+                : new SourceLocation();
+        }
+
+        return $this->sourceLocation;
+    }
+
+    /**
+     * @template T
+     *
+     * @param T|list<T>|null $value
+     *
+     * @return list<T>|null
+     */
+    protected static function wrapList(mixed $value): ?array
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_array($value)) {
+            return [$value];
+        }
+
+        /** @var list<T> $list array_values() guarantees the list shape the return type declares */
+        $list = array_values($value);
+
+        return $list;
+    }
+}

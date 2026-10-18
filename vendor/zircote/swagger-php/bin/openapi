@@ -2,13 +2,15 @@
 <?php
 
 use OpenApi\Console\GenerateCommand;
-use OpenApi\Generator;
+use OpenApi\Undefined;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
-if (class_exists(Generator::class) === false) {
+if (class_exists(Undefined::class) === false) {
     if (file_exists(__DIR__.'/../vendor/autoload.php')) {  // cloned / dev environment?
         require_once(__DIR__.'/../vendor/autoload.php');
     } else {
@@ -30,7 +32,9 @@ $input = new class extends ArgvInput
     }
 };
 $output = new ConsoleOutput();
-$logger = new ConsoleLogger($output);
+// diagnostics go to stderr: without -o the document itself is written to stdout;
+// notices show at normal verbosity, so a default run says what Cleanup removed
+$logger = new ConsoleLogger($output->getErrorOutput(), [LogLevel::NOTICE => OutputInterface::VERBOSITY_NORMAL]);
 $app = new Application();
 
 // Remove Symfony's built-in options that conflict with our command options:
@@ -41,6 +45,6 @@ $options = $definition->getOptions();
 unset($options['version'], $options['no-interaction']);
 $definition->setOptions($options);
 
-$app->addCommand(new GenerateCommand($logger));
+$app->addCommands([new GenerateCommand($logger)]);
 $app->setDefaultCommand('openapi', true);
 $app->run($input, $output);

@@ -21,15 +21,12 @@ use Psr\Log\LoggerInterface;
  * OpenApi spec generator.
  *
  * Scans PHP source code and generates OpenApi specifications from the found OpenApi annotations.
+ *
+ * @phpstan-import-type BuilderSource from Builder
  */
 class Generator
 {
-    /**
-     * Allows Annotation classes to know the context of the annotation that is being processed.
-     */
-    public static ?Context $context = null;
-
-    /** @deprecated Use {@see Undefined::UNDEFINED} instead. */
+    /** @deprecated since 6.3.1, removed in 8.0 - use {@see Undefined::UNDEFINED} instead */
     public const UNDEFINED = Undefined::UNDEFINED;
 
     /** @var array<string,string> */
@@ -38,10 +35,15 @@ class Generator
     /** @var list<string> */
     public const DEFAULT_NAMESPACES = ['OpenApi\\Annotations\\'];
 
+    /**
+     * Allows Annotation classes to know the context of the annotation that is being processed.
+     */
+    public static ?Context $context = null;
+
     /** @var array<string,string> Map of namespace aliases to be supported by doctrine. */
     protected array $aliases;
 
-    /** @var array<string>|null List of annotation namespaces to be autoloaded by doctrine. */
+    /** @var list<string>|null List of annotation namespaces to be autoloaded by doctrine. */
     protected ?array $namespaces;
 
     protected ?AnalyserInterface $analyser = null;
@@ -49,6 +51,7 @@ class Generator
     /** @var array<string,mixed> */
     protected array $config = [];
 
+    /** @var Pipeline<Analysis>|null */
     protected ?Pipeline $processorPipeline = null;
 
     protected ?TypeResolverInterface $typeResolver = null;
@@ -74,7 +77,9 @@ class Generator
     }
 
     /**
-     * @deprecated use {@see Undefined::isDefault()} instead
+     * @deprecated since 6.3.1, removed in 8.0 - use {@see Undefined::isDefault()} instead
+     *
+     * @param mixed ...$value
      */
     public static function isDefault(...$value): bool
     {
@@ -83,12 +88,17 @@ class Generator
 
     /**
      * @return array<string, string>
+     *
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
      */
     public function getAliases(): array
     {
         return $this->aliases;
     }
 
+    /**
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
+     */
     public function addAlias(string $alias, string $namespace): Generator
     {
         $this->aliases[$alias] = $namespace;
@@ -96,6 +106,11 @@ class Generator
         return $this;
     }
 
+    /**
+     * @param array<string, string> $aliases
+     *
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
+     */
     public function setAliases(array $aliases): Generator
     {
         $this->aliases = $aliases;
@@ -105,20 +120,30 @@ class Generator
 
     /**
      * @return list<string>|null
+     *
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
      */
     public function getNamespaces(): ?array
     {
         return $this->namespaces;
     }
 
+    /**
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
+     */
     public function addNamespace(string $namespace): Generator
     {
         $namespaces = (array) $this->getNamespaces();
         $namespaces[] = $namespace;
 
-        return $this->setNamespaces(array_unique($namespaces));
+        return $this->setNamespaces(array_values(array_unique($namespaces)));
     }
 
+    /**
+     * @param list<string>|null $namespaces
+     *
+     * @deprecated since 6.11, removed in 8.0 - docblock annotations only
+     */
     public function setNamespaces(?array $namespaces): Generator
     {
         $this->namespaces = $namespaces;
@@ -145,6 +170,9 @@ class Generator
         return $this;
     }
 
+    /**
+     * @return array<string, array<string, mixed>>
+     */
     public function getDefaultConfig(): array
     {
         return [
@@ -177,49 +205,12 @@ class Generator
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getConfig(): array
     {
         return $this->config + $this->getDefaultConfig();
-    }
-
-    protected function normaliseConfig(array $config): array
-    {
-        $normalised = [];
-        foreach ($config as $key => $value) {
-            if (is_numeric($key)) {
-                $token = explode('=', (string) $value);
-                if (2 === count($token)) {
-                    // 'operationId.hash=false'
-                    [$key, $value] = $token;
-                }
-            }
-
-            if (in_array($value, ['true', 'false'])) {
-                $value = 'true' == $value;
-            }
-
-            if ($isList = (str_ends_with((string) $key, '[]'))) {
-                $key = substr((string) $key, 0, -2);
-            }
-            $token = explode('.', (string) $key);
-            if (2 === count($token)) {
-                // 'operationId.hash' => false
-                // namespaced / processor
-                if ($isList) {
-                    $normalised[$token[0]][$token[1]][] = $value;
-                } else {
-                    $normalised[$token[0]][$token[1]] = $value;
-                }
-            } else {
-                if ($isList) {
-                    $normalised[$key][] = $value;
-                } else {
-                    $normalised[$key] = $value;
-                }
-            }
-        }
-
-        return $normalised;
     }
 
     /**
@@ -229,11 +220,16 @@ class Generator
      */
     public function setConfig(array $config): Generator
     {
-        $this->config = $this->normaliseConfig($config) + $this->config;
+        /** @var array<string, mixed> $normalised */
+        $normalised = $this->normaliseConfig($config);
+        $this->config = $normalised + $this->config;
 
         return $this;
     }
 
+    /**
+     * @return Pipeline<Analysis>
+     */
     public function getProcessorPipeline(): Pipeline
     {
         if (!$this->processorPipeline instanceof Pipeline) {
@@ -265,7 +261,7 @@ class Generator
         }
 
         $config = $this->getConfig();
-        $walker = function (callable $pipe) use ($config): void {
+        $walker = function (object $pipe) use ($config): void {
             $rc = new \ReflectionClass($pipe);
 
             // apply config
@@ -279,7 +275,7 @@ class Generator
                 }
             }
 
-            if (is_a($pipe, GeneratorAwareInterface::class)) {
+            if ($pipe instanceof GeneratorAwareInterface) {
                 $pipe->setGenerator($this);
             }
         };
@@ -287,12 +283,15 @@ class Generator
         return $this->processorPipeline->walk($walker);
     }
 
+    /**
+     * @param Pipeline<Analysis>|null $processor
+     */
     public function setProcessorPipeline(?Pipeline $processor): Generator
     {
         $this->processorPipeline = $processor;
 
-        $walker = function (callable $pipe): void {
-            if (is_a($pipe, GeneratorAwareInterface::class)) {
+        $walker = function (object $pipe): void {
+            if ($pipe instanceof GeneratorAwareInterface) {
                 $pipe->setGenerator($this);
             }
         };
@@ -371,13 +370,14 @@ class Generator
     /**
      * Generate OpenAPI spec by scanning the given source files.
      *
-     * @param iterable      $sources  PHP source files to scan.
-     *                                Supported sources:
-     *                                * string - file / directory name
-     *                                * \SplFileInfo
-     *                                * \Symfony\Component\Finder\Finder
-     * @param null|Analysis $analysis custom analysis instance
-     * @param bool          $validate flag to enable/disable validation of the returned spec
+     * @param iterable                                        $sources  PHP source files to scan.
+     *                                                                  Supported sources:
+     *                                                                  * string - file / directory name
+     *                                                                  * \SplFileInfo
+     *                                                                  * \Symfony\Component\Finder\Finder
+     * @param null|Analysis                                   $analysis custom analysis instance
+     * @param bool                                            $validate flag to enable/disable validation of the returned spec
+     * @param iterable<BuilderSource|iterable<BuilderSource>> $sources
      */
     public function generate(iterable $sources, ?Analysis $analysis = null, bool $validate = true): ?OpenApi
     {
@@ -409,6 +409,54 @@ class Generator
         return $analysis->openapi;
     }
 
+    /**
+     * @param array<int|string, mixed> $config
+     *
+     * @return array<int|string, mixed>
+     */
+    protected function normaliseConfig(array $config): array
+    {
+        $normalised = [];
+        foreach ($config as $key => $value) {
+            if (is_numeric($key)) {
+                $token = explode('=', (string) $value);
+                if (2 === count($token)) {
+                    // 'operationId.hash=false'
+                    [$key, $value] = $token;
+                }
+            }
+
+            if (in_array($value, ['true', 'false'])) {
+                $value = 'true' == $value;
+            }
+
+            if ($isList = (str_ends_with((string) $key, '[]'))) {
+                $key = substr((string) $key, 0, -2);
+            }
+            $token = explode('.', (string) $key);
+            if (2 === count($token)) {
+                // 'operationId.hash' => false
+                // namespaced / processor
+                if ($isList) {
+                    $normalised[$token[0]][$token[1]][] = $value;
+                } else {
+                    $normalised[$token[0]][$token[1]] = $value;
+                }
+            } else {
+                if ($isList) {
+                    $normalised[$key][] = $value;
+                } else {
+                    $normalised[$key] = $value;
+                }
+            }
+        }
+
+        return $normalised;
+    }
+
+    /**
+     * @param iterable<BuilderSource|iterable<BuilderSource>> $sources
+     */
     protected function scanSources(iterable $sources, Analysis $analysis, Context $rootContext): void
     {
         $analyser = $this->getAnalyser();

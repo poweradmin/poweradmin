@@ -10,10 +10,9 @@ use OpenApi\Analysis;
 use OpenApi\Annotations as OA;
 use OpenApi\Context;
 use OpenApi\Undefined;
-use OpenApi\Utils\TypeMapper;
 
 /**
- * @deprecated use `TypeInfoTypeResolver` instead
+ * @deprecated since 6.0.0, removed in 7.0 - use `TypeInfoTypeResolver` instead
  */
 class LegacyTypeResolver extends AbstractTypeResolver
 {
@@ -106,6 +105,11 @@ class LegacyTypeResolver extends AbstractTypeResolver
         $schema->type = 'array';
     }
 
+    /**
+     * @param array<mixed>|null $explicitDetails a min/max range shape, or a list of them for a disjoint range;
+     *                                           shape varies by caller, only ever read back verbatim
+     * @param list<string>      $types
+     */
     protected function normaliseTypeResult(?string $explicitType = null, ?array $explicitDetails = null, array $types = [], ?string $name = null, ?bool $nullable = null, ?bool $isArray = null, bool $unsupported = false, ?Context $context = null): \stdClass
     {
         $types = array_filter($types, static fn (string $t): bool => !in_array($t, ['null', ''], strict: true));
@@ -124,6 +128,8 @@ class LegacyTypeResolver extends AbstractTypeResolver
             // ensure we reset numeric keys
             $types = array_values($types);
         }
+
+        $types = array_map(static fn (string $t): string => ltrim($t, '\\') === 'stdClass' ? 'object' : $t, $types);
 
         $explicitType = $explicitType ?: ($types !== [] ? $types[0] : null);
 
@@ -184,7 +190,7 @@ class LegacyTypeResolver extends AbstractTypeResolver
     {
         $docComment = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
-            && $reflector->getDeclaringClass() && $reflector->getDeclaringClass()->getConstructor()
+            && $reflector->getDeclaringClass() instanceof \ReflectionClass && $reflector->getDeclaringClass()->getConstructor() instanceof \ReflectionMethod
                 ? $reflector->getDeclaringClass()->getConstructor()->getDocComment()
                 : $reflector->getDocComment(),
             $reflector instanceof \ReflectionParameter => $reflector->getDeclaringFunction()->getDocComment(),

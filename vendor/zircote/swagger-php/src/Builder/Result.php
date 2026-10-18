@@ -7,7 +7,10 @@
 namespace OpenApi\Builder;
 
 use OpenApi\Annotations\OpenApi;
+use OpenApi\Builder;
 use OpenApi\OpenApiException;
+use OpenApi\Specification;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Result container for a build operation.
@@ -17,21 +20,38 @@ class Result
     /**
      * @param list<string>                                $files
      * @param list<array{level: string, message: string}> $log
+     * @param array<string,mixed>|null                    $specOutput
      */
     protected function __construct(
         protected array $files,
         protected ?OpenApi $openApi,
+        protected ?Specification $specification,
         protected array $log = [],
+        protected ?array $specOutput = null,
     ) {
     }
 
     /**
+     * Create a Result from the classic annotation pipeline.
+     *
      * @param list<string>                                $files
      * @param list<array{level: string, message: string}> $log
      */
     public static function fromClassic(array $files, ?OpenApi $openApi, array $log = []): self
     {
-        return new self($files, $openApi, $log);
+        return new self($files, $openApi, null, $log);
+    }
+
+    /**
+     * Create a Result from the spec attribute pipeline.
+     *
+     * @param list<string>                                $files
+     * @param array<string,mixed>                         $output
+     * @param list<array{level: string, message: string}> $log
+     */
+    public static function fromSpec(array $files, Specification $specification, array $output, array $log = []): self
+    {
+        return new self($files, null, $specification, $log, $output);
     }
 
     /**
@@ -47,13 +67,28 @@ class Result
         return $this->openApi;
     }
 
+    public function specification(): ?Specification
+    {
+        return $this->specification;
+    }
+
+    /**
+     * Whether a document was produced and no errors were reported.
+     *
+     * Mirrors the exit code of the console command: warnings do not make a
+     * result invalid, errors do.
+     */
     public function isValid(): bool
     {
-        return $this->openApi instanceof OpenApi;
+        $generated = $this->openApi instanceof OpenApi || $this->specOutput !== null;
+
+        return $generated && !in_array('error', array_column($this->log, 'level'), true);
     }
 
     /**
      * @return list<array{level: string, message: string}>
+     *
+     * @deprecated since 6.16, removed in 8.0 - attach a logger via {@see Builder::setLogger()}; it already receives these
      */
     public function log(): array
     {
@@ -62,6 +97,8 @@ class Result
 
     /**
      * @return list<string>
+     *
+     * @deprecated since 6.16, removed in 8.0 - attach a logger via {@see Builder::setLogger()}; it already receives these
      */
     public function warnings(): array
     {
@@ -73,6 +110,8 @@ class Result
 
     /**
      * @return list<string>
+     *
+     * @deprecated since 6.16, removed in 8.0 - attach a logger via {@see Builder::setLogger()}; it already receives these
      */
     public function errors(): array
     {
@@ -87,6 +126,10 @@ class Result
      */
     public function toArray(): array
     {
+        if ($this->specOutput !== null) {
+            return $this->specOutput;
+        }
+
         if (!$this->openApi instanceof OpenApi) {
             return [];
         }
@@ -96,6 +139,10 @@ class Result
 
     public function toJson(int $flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): string
     {
+        if ($this->specOutput !== null) {
+            return json_encode($this->specOutput, $flags) ?: '{}';
+        }
+
         if (!$this->openApi instanceof OpenApi) {
             return '{}';
         }
@@ -103,8 +150,13 @@ class Result
         return $this->openApi->toJson();
     }
 
-    public function toYaml(int $inline = 10, int $indent = 4): string
+    public function toYaml(int $inline = 10, int $indent = 2): string
     {
+        if ($this->specOutput !== null) {
+            // Dumped from JSON, so keys like `'200'` stay strings and maps stay objects
+            return Yaml::dump(json_decode($this->toJson()), $inline, $indent, Yaml::DUMP_OBJECT_AS_MAP | Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+        }
+
         if (!$this->openApi instanceof OpenApi) {
             return '';
         }

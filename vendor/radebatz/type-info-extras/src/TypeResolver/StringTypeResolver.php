@@ -36,6 +36,7 @@ use PHPStan\PhpDocParser\Parser\TypeParser;
 use PHPStan\PhpDocParser\ParserConfig;
 use Radebatz\TypeInfoExtras\Type\Type;
 use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
+use Symfony\Component\TypeInfo\Exception\LogicException;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type as BaseType;
 use Symfony\Component\TypeInfo\Type\BackedEnumType;
@@ -62,6 +63,11 @@ final class StringTypeResolver implements TypeResolverInterface
      * @var array<string, bool>
      */
     private static array $classExistCache = [];
+
+    /**
+     * @var array<string, true>
+     */
+    private array $resolvingExtraTypeAliases = [];
 
     private readonly Lexer $lexer;
     private readonly TypeParser $parser;
@@ -111,10 +117,18 @@ final class StringTypeResolver implements TypeResolverInterface
         if ($node instanceof ArrayShapeNode) {
             $shape = [];
             foreach ($node->items as $item) {
-                $shape[(string) $item->keyName] = [
+                $shapeItem = [
                     'type' => $this->getTypeFromNode($item->valueType, $typeContext),
                     'optional' => $item->optional,
                 ];
+
+                if (null === $item->keyName) {
+                    $shape[] = $shapeItem;
+
+                    continue;
+                }
+
+                $shape[$item->keyName instanceof ConstExprStringNode ? $item->keyName->value : (string) $item->keyName] = $shapeItem;
             }
 
             return Type::arrayShape(
@@ -128,7 +142,7 @@ final class StringTypeResolver implements TypeResolverInterface
         if ($node instanceof ObjectShapeNode) {
             $shape = [];
             foreach ($node->items as $item) {
-                $shape[(string) $item->keyName] = [
+                $shape[$item->keyName instanceof ConstExprStringNode ? $item->keyName->value : (string) $item->keyName] = [
                     'type' => $this->getTypeFromNode($item->valueType, $typeContext),
                     'optional' => $item->optional,
                 ];
@@ -149,7 +163,13 @@ final class StringTypeResolver implements TypeResolverInterface
 
         if ($node instanceof ConstTypeNode) {
             if ($node->constExpr instanceof ConstFetchNode) {
-                $className = match (strtolower($node->constExpr->className)) {
+                $classKeyword = strtolower($node->constExpr->className);
+
+                if (null === $typeContext && \in_array($classKeyword, ['self', 'static', 'parent'], true)) {
+                    throw new InvalidArgumentException(\sprintf('A "%s" must be provided to resolve "%s".', TypeContext::class, $classKeyword));
+                }
+
+                $className = match ($classKeyword) {
                     'self' => $typeContext->getDeclaringClass(),
                     'static' => $typeContext->getCalledClass(),
                     'parent' => $typeContext->getParentClass(),
@@ -165,7 +185,7 @@ final class StringTypeResolver implements TypeResolverInterface
                     $className = $classType->getClassName();
                 }
 
-                if (!class_exists($className)) {
+                if (!class_exists($className) && !interface_exists($className)) {
                     return Type::mixed();
                 }
 
@@ -175,6 +195,10 @@ final class StringTypeResolver implements TypeResolverInterface
                     if (preg_match('/^' . str_replace('\*', '.*', preg_quote($node->constExpr->name, '/')) . '$/', $const->getName())) {
                         $types[] = Type::fromValue($const->getValue());
                     }
+                }
+
+                if (!$types) {
+                    throw new \DomainException(\sprintf('No "%s" constant found in "%s".', $node->constExpr->name, $className));
                 }
 
                 return CollectionType::mergeCollectionValueTypes($types);
@@ -377,7 +401,17 @@ final class StringTypeResolver implements TypeResolverInterface
         }
 
         if (isset($this->extraTypeAliases[$identifier])) {
-            return $this->resolve($this->extraTypeAliases[$identifier]);
+            if (isset($this->resolvingExtraTypeAliases[$identifier])) {
+                throw new LogicException(\sprintf('Cannot resolve "%s" type alias as it is recursive.', $identifier));
+            }
+
+            $this->resolvingExtraTypeAliases[$identifier] = true;
+
+            try {
+                return $this->resolve($this->extraTypeAliases[$identifier]);
+            } finally {
+                unset($this->resolvingExtraTypeAliases[$identifier]);
+            }
         }
 
         throw new \DomainException(\sprintf('Unhandled "%s" identifier.', $identifier));
