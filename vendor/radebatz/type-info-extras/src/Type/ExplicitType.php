@@ -34,10 +34,12 @@ class ExplicitType extends Type
 
     /**
      * Get the underlying builtin type.
+     *
+     * @return BuiltinType<T>
      */
     public function getBuiltinType(): BuiltinType
     {
-        return Type::builtin($this->typeIdentifier);
+        return new BuiltinType($this->typeIdentifier);
     }
 
     public function getExplicitType(): string

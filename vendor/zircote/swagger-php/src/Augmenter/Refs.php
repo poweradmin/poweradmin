@@ -6,8 +6,11 @@
 
 namespace OpenApi\Augmenter;
 
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Specification\ComponentName;
+use OpenApi\Utils\JsonPointer;
 use OpenApi\Utils\PipeInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -27,22 +30,33 @@ class Refs implements PipeInterface, LoggerAwareInterface
     public function __invoke(mixed $payload): mixed
     {
         foreach ($payload->schemas as $schema) {
-            $reflector = $schema->getClassReflector();
-            if ($reflector === null) {
+            if ($schema->getClassReflector() === null) {
                 continue;
             }
             $this->mergeAllOf($schema);
-            $this->dedupAllOfRefs($schema);
         }
 
-        $refMap = $this->buildRefMap($payload);
+        $index = $payload->buildComponentIndex();
+        $refMap = $index->buildRefMap();
+
+        if ($refMap !== []) {
+            $this->resolveRefRefs($payload);
+            $this->resolveFQCNRefs($payload, $refMap);
+        }
+
+        // deduplicate once every ref carries its final value: a FQCN and the component
+        // pointer added by Augmenter\Inheritance name the same schema but differ as strings
+        foreach ($payload->schemas as $schema) {
+            if ($schema->getClassReflector() === null) {
+                continue;
+            }
+            $this->dedupAllOfRefs($schema);
+        }
 
         if ($refMap === []) {
             return null;
         }
 
-        $this->resolveRefRefs($payload);
-        $this->resolveFQCNRefs($payload, $refMap);
         $this->resolveDiscriminatorMappings($payload, $refMap);
         $this->resolveAllOfPropertyRefs($payload);
 
@@ -56,21 +70,25 @@ class Refs implements PipeInterface, LoggerAwareInterface
 
     protected function resolveRefRefs(Specification $specification): void
     {
-        $specification->getWalker()->eachRef(function (OA\AbstractAttribute $attribute): void {
-            if ($attribute->ref instanceof OA\Schema\Ref) {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute): void {
+            if (property_exists($attribute, 'ref') && $attribute->ref !== null && $attribute->ref instanceof OA\Schema\Ref) {
                 $attribute->ref = $attribute->ref->ref;
             }
         });
     }
 
+    /**
+     * @param array<string,string> $refMap
+     */
     protected function resolveFQCNRefs(Specification $specification, array $refMap): void
     {
         $unresolved = [];
 
-        $specification->getWalker()->eachRef(function (OA\AbstractAttribute $attribute) use ($refMap, &$unresolved): void {
-            if (str_starts_with($attribute->ref, '#/')) {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute) use ($refMap, &$unresolved): void {
+            if (!property_exists($attribute, 'ref') || $attribute->ref === null || str_starts_with($attribute->ref, '#/')) {
                 return;
             }
+
             if (isset($refMap[$attribute->ref])) {
                 $attribute->ref = $refMap[$attribute->ref];
             } else {
@@ -81,58 +99,6 @@ class Refs implements PipeInterface, LoggerAwareInterface
         foreach (array_keys($unresolved) as $ref) {
             $this->logger?->warning("Ref: unresolved reference '{$ref}' — no matching component found");
         }
-    }
-
-    /**
-     * Build a map of FQCN → #/components/{type}/{name}.
-     *
-     * @return array<string, string>
-     */
-    protected function buildRefMap(Specification $specification): array
-    {
-        $map = [];
-
-        $specification->getWalker()->eachSchema(function (OA\Schema $schema) use (&$map): void {
-            $name = $schema->schema ?? $schema->title;
-            $fqcn = $schema->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/schemas/' . $name;
-            }
-        });
-
-        foreach ($specification->responses as $response) {
-            $name = $response->response;
-            $fqcn = $response->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/responses/' . $name;
-            }
-        }
-
-        foreach ($specification->requestBodies as $body) {
-            $name = $body->request;
-            $fqcn = $body->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/requestBodies/' . $name;
-            }
-        }
-
-        foreach ($specification->headers as $header) {
-            $name = $header->header;
-            $fqcn = $header->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/headers/' . $name;
-            }
-        }
-
-        foreach ($specification->parameters as $parameter) {
-            $name = $parameter->parameter ?? $parameter->name;
-            $fqcn = $parameter->getClassName();
-            if ($name !== null && $fqcn !== null) {
-                $map[$fqcn] = '#/components/parameters/' . $name;
-            }
-        }
-
-        return $map;
     }
 
     /**
@@ -167,26 +133,33 @@ class Refs implements PipeInterface, LoggerAwareInterface
             if ($schema->allOf !== null && $schema->properties === null) {
                 foreach ($schema->allOf as $index => $allOf) {
                     if ($allOf instanceof OA\Schema && $allOf->properties !== null) {
-                        if ($schema->schema !== null) {
-                            $candidates[$schema->schema] = $index;
+                        $name = ComponentName::of($schema);
+                        if ($name !== null) {
+                            $candidates[$name] = $index;
                         }
                     }
                 }
             }
         });
 
-        $specification->getWalker()->eachRef(function (OA\Schema|OA\Parameter|OA\Response|OA\Header|OA\RequestBody|OA\Link|OA\Example|OA\Security\Scheme $attribute) use (&$candidates): void {
+        $specification->getWalker()->eachRef(function (AttributeInterface $attribute) use (&$candidates): void {
+            if (!property_exists($attribute, 'ref') || $attribute->ref === null) {
+                return;
+            }
+
             preg_match('/#\/components\/schemas\/([^\/]+)\/(properties\/.+)/', (string) $attribute->ref, $matches);
 
             if (count($matches) !== 3) {
                 return;
             }
 
-            $name = $matches[1];
+            // the captured name is escaped, `$candidates` is keyed by the raw one
+            $name = JsonPointer::decode($matches[1]);
             $path = $matches[2];
             if (array_key_exists($name, $candidates)) {
                 $index = $candidates[$name];
-                $attribute->ref = "#/components/schemas/{$name}/allOf/{$index}/{$path}";
+                // `$path` is copied through as captured — it is already-escaped tokens plus separators
+                $attribute->ref = JsonPointer::ref('components', 'schemas', $name, 'allOf', (string) $index) . '/' . $path;
             }
         });
     }
@@ -213,11 +186,14 @@ class Refs implements PipeInterface, LoggerAwareInterface
 
         $unique = [];
         foreach ($schema->allOf as $ii => $allOf) {
-            if ($allOf->ref !== null) {
-                if (isset($unique[$allOf->ref])) {
+            // resolveRefRefs() has collapsed every Schema\Ref into its string by now, but only
+            // runs when the ref map is non-empty; key on the string form defensively
+            $ref = $allOf->ref instanceof OA\Schema\Ref ? $allOf->ref->ref : $allOf->ref;
+            if (is_string($ref)) {
+                if (isset($unique[$ref])) {
                     continue;
                 }
-                $unique[$allOf->ref] = $allOf;
+                $unique[$ref] = $allOf;
             } else {
                 $unique[$ii] = $allOf;
             }

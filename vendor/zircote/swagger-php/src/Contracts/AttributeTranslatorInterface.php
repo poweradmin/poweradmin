@@ -4,7 +4,7 @@
  * @license Apache 2.0
  */
 
-namespace OpenApi;
+namespace OpenApi\Contracts;
 
 /**
  * Contract for creating raw attributes and translating them into `AttributeInterface` instances.
@@ -16,6 +16,8 @@ namespace OpenApi;
  *
  * Processing order within the Assembler is guaranteed structural:
  * class → method → parameters (outer before inner).
+ *
+ * @phpstan-type AttributeReflector \ReflectionClass<object>|\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant
  */
 interface AttributeTranslatorInterface
 {
@@ -30,7 +32,8 @@ interface AttributeTranslatorInterface
     /**
      * Get attributes to load from the given reflector.
      *
-     * @return array<\ReflectionAttribute>
+     * @param  AttributeReflector                  $reflector
+     * @return array<\ReflectionAttribute<object>>
      */
     public function getAttributes(\ReflectionClass|\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $reflector): array;
 
@@ -42,9 +45,12 @@ interface AttributeTranslatorInterface
      * instances and newly instantiated objects from the current translator's
      * `getAttributes()` call.
      *
-     * @param  array<AttributeInterface> $attributes current attributes
-     * @param  array<object>             $created    newly created attribute instances
-     * @return array<AttributeInterface>
+     * @param  array<object>      $attributes current attributes; a previous translator's
+     *                                        output, so not yet narrowed to AttributeInterface
+     * @param  array<object>      $created    newly created attribute instances
+     * @param  AttributeReflector $reflector
+     * @return array<object>      attributes to carry forward; AttributeFactory filters
+     *                            the final result down to AttributeInterface
      */
     public function translate(array $attributes, array $created, \ReflectionClass|\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $reflector): array;
 }

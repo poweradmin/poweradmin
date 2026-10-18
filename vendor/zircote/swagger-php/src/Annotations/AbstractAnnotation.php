@@ -20,6 +20,11 @@ use Symfony\Component\Yaml\Yaml;
 abstract class AbstractAnnotation implements \JsonSerializable
 {
     /**
+     * A 3.0 schema that matches only `null`: 3.0 has no `null` type, and `nullable` only takes effect beside a `type`.
+     */
+    protected const NULL_SCHEMA_30 = ['type' => 'object', 'nullable' => true, 'enum' => [null]];
+
+    /**
      * While the OpenAPI Specification tries to accommodate most use cases, additional data can be added to extend the specification at certain points.
      * For further details see https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#specificationExtensions
      * The keys inside the array will be prefixed with <code>x-</code>.
@@ -41,7 +46,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
     /**
      * Annotations that couldn't be merged by mapping or postprocessing.
      *
-     * @var array
+     * @var list<AbstractAnnotation>
      */
     public $_unmerged = [];
 
@@ -81,7 +86,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
     /**
      * Reverse mapping of $_nested with the allowed parent annotations.
      *
-     * @var array<class-string<AbstractAnnotation>>
+     * @var list<class-string<AbstractAnnotation>>
      */
     public static $_parents = [];
 
@@ -111,6 +116,9 @@ abstract class AbstractAnnotation implements \JsonSerializable
         $nestedContext = new Context(['nested' => $this], $this->_context);
         foreach ($properties as $property => $value) {
             if (property_exists($this, $property)) {
+                if ($value instanceof AbstractAnnotation) {
+                    $value = $this->nested($value, $nestedContext);
+                }
                 $this->{$property} = $value;
                 if (is_array($value)) {
                     foreach ($value as $key => $annotation) {
@@ -243,9 +251,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
      */
     public function toYaml(?int $flags = null): string
     {
-        if ($flags === null) {
-            $flags = Yaml::DUMP_OBJECT_AS_MAP ^ Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE;
-        }
+        $flags ??= Yaml::DUMP_OBJECT_AS_MAP ^ Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE;
 
         return Yaml::dump(json_decode($this->toJson(JSON_INVALID_UTF8_IGNORE)), 10, 2, $flags);
     }
@@ -255,9 +261,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
      */
     public function toJson(?int $flags = null): string
     {
-        if ($flags === null) {
-            $flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE;
-        }
+        $flags ??= JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_IGNORE;
 
         return json_encode($this, $flags);
     }
@@ -330,18 +334,27 @@ abstract class AbstractAnnotation implements \JsonSerializable
                     }
                 }
             }
-            if (property_exists($this, 'nullable') && $this->nullable === true) {
-                $ref = ['oneOf' => [$ref]];
-                if (!$this->_context->isVersion('3.0.x')) {
-                    $ref['oneOf'][] = ['type' => 'null'];
-                } else {
-                    $ref['nullable'] = $data->nullable;
+            $nullable = property_exists($this, 'nullable') && $this->nullable === true;
+            // a Schema's $ref is a JSON Schema keyword in 3.1, so its annotations stay beside it
+            if (!$nullable && $this instanceof Schema && !$this->_context->isVersion('3.0.x')) {
+                foreach (['title', 'default', 'example', 'examples', 'deprecated', 'readOnly', 'writeOnly'] as $prop) {
+                    if (property_exists($data, $prop)) {
+                        $ref[$prop] = $data->{$prop};
+                    }
                 }
+            }
+            if ($nullable) {
+                $ref = ['oneOf' => [$ref]];
+                $ref['oneOf'][] = $this->_context->isVersion('3.0.x') ? self::NULL_SCHEMA_30 : ['type' => 'null'];
                 unset($data->ref, $data->nullable);
 
                 // preserve other properties
                 foreach (get_object_vars($data) as $property => $value) {
                     $ref[$property] = $value;
+                }
+                // an explicit type on the wrapper has to let null through too
+                if (isset($ref['type']) && $this->_context->isVersion('3.0.x')) {
+                    $ref['nullable'] = true;
                 }
             }
             $data = (object) $ref;
@@ -376,6 +389,19 @@ abstract class AbstractAnnotation implements \JsonSerializable
             }
 
             unset($data->unevaluatedProperties);
+
+            // without a type beside it, nullable has no effect; null gets a branch of its own where there is a choice
+            if (isset($data->nullable) && true === $data->nullable && !isset($data->type)) {
+                if (isset($data->oneOf)) {
+                    $data->oneOf[] = self::NULL_SCHEMA_30;
+                    unset($data->nullable);
+                } elseif (isset($data->anyOf)) {
+                    $data->anyOf[] = self::NULL_SCHEMA_30;
+                    unset($data->nullable);
+                } elseif (!isset($data->allOf)) {
+                    unset($data->nullable);
+                }
+            }
         }
 
         if (!$this->_context->isVersion('3.0.x')) {
@@ -473,7 +499,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
         }
 
         // validate refs
-        if ($analysis?->openapi && property_exists($this, 'ref') && !Undefined::isDefault($this->ref) && is_string($this->ref)) {
+        if ($analysis?->openapi instanceof OpenApi && property_exists($this, 'ref') && !Undefined::isDefault($this->ref) && is_string($this->ref)) {
             if (str_starts_with($this->ref, '#/')) {
                 try {
                     $analysis->openapi->ref($this->ref);
@@ -554,7 +580,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
             /** @var class-string<AbstractAnnotation> $parent */
             foreach (static::$_parents as $parent) {
                 foreach ($parent::$_nested as $annotationClass => $entry) {
-                    if ($annotationClass === $class && is_array($entry) && !Undefined::isDefault($this->{$entry[1]})) {
+                    if ($annotationClass === $class && is_array($entry) && count($entry) > 1 && !Undefined::isDefault($this->{$entry[1]})) {
                         $properties[] = $entry[1];
                         break 2;
                     }

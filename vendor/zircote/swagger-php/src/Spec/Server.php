@@ -7,7 +7,7 @@
 namespace OpenApi\Spec;
 
 /**
- * Represents a Server.
+ * A host the API is available on, optionally templated with `ServerVariable` substitutions.
  *
  * @see [Server Object](https://spec.openapis.org/oas/v3.1.1.html#server-object)
  */
@@ -41,8 +41,11 @@ class Server extends AbstractAttribute
         return [PathItem::class => 'servers[]', Operation::class => 'servers[]'];
     }
 
-    public function contains(): array
+    public function contained(): array
     {
-        return [ServerVariable::class => 'variables[]'];
+        return [
+            Operation::class => 'servers[]',
+            PathItem::class => 'servers[]',
+        ];
     }
 }

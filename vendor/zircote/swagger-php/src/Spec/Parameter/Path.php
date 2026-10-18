@@ -29,13 +29,14 @@ class Path extends OA\Parameter
         ?string $description = Undefined::UNDEFINED,
         ?bool $required = true,
         ?bool $deprecated = null,
-        ?string $ref = null,
+        string|OA\Schema\Ref|null $ref = null,
         string|OA\ParameterStyle|null $style = null,
         ?bool $explode = null,
         ?OA\Schema $schema = null,
         mixed $example = Undefined::UNDEFINED,
         ?array $examples = null,
         OA\MediaType|array|null $content = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
     ) {
@@ -53,6 +54,7 @@ class Path extends OA\Parameter
             example: $example,
             examples: $examples,
             content: $content,
+            component: $component,
             x: $x,
             attachables: $attachables,
         );

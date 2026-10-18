@@ -6,7 +6,6 @@
 
 namespace OpenApi\Type;
 
-use OpenApi\Utils\TypeMapper;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ReturnTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\VarTagValueNode;
@@ -25,11 +24,13 @@ use Symfony\Component\TypeInfo\Type\ArrayShapeType;
 use Symfony\Component\TypeInfo\Type\BuiltinType;
 use Symfony\Component\TypeInfo\Type\CollectionType;
 use Symfony\Component\TypeInfo\Type\CompositeTypeInterface;
+use Symfony\Component\TypeInfo\Type\GenericType;
 use Symfony\Component\TypeInfo\Type\IntersectionType;
 use Symfony\Component\TypeInfo\Type\NullableType;
 use Symfony\Component\TypeInfo\Type\ObjectType;
 use Symfony\Component\TypeInfo\Type\UnionType;
 use Symfony\Component\TypeInfo\TypeContext\TypeContextFactory;
+use Symfony\Component\TypeInfo\TypeIdentifier;
 use Symfony\Component\TypeInfo\TypeResolver\ReflectionTypeResolver;
 
 /**
@@ -62,7 +63,7 @@ class TypeResolver
         }
 
         $nullable = null;
-        if (($docblockType && $docblockType->isNullable()) || ($reflectionType && $reflectionType->isNullable())) {
+        if (($docblockType instanceof Type && $docblockType->isNullable()) || ($reflectionType instanceof Type && $reflectionType->isNullable())) {
             $nullable = true;
         }
 
@@ -86,7 +87,7 @@ class TypeResolver
     {
         $docComment = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
-                && $reflector->getDeclaringClass() && $reflector->getDeclaringClass()->getConstructor()
+                && $reflector->getDeclaringClass() instanceof \ReflectionClass && $reflector->getDeclaringClass()->getConstructor() instanceof \ReflectionMethod
                     ? $reflector->getDeclaringClass()->getConstructor()->getDocComment()
                     : $reflector->getDocComment(),
             $reflector instanceof \ReflectionParameter => $reflector->getDeclaringFunction()->getDocComment(),
@@ -155,7 +156,16 @@ class TypeResolver
         }
 
         if ($type instanceof ObjectType) {
-            return new SchemaType(type: $type->getClassName());
+            // In the global namespace a short-name docblock comes back as `\Foo`, while
+            // `\Foo` itself comes back as `Foo`. `ComponentIndex` keys on `getClassName()`,
+            // which carries no leading slash.
+            $className = ltrim($type->getClassName(), '\\');
+
+            if ($className === \stdClass::class) {
+                return new SchemaType(type: 'object');
+            }
+
+            return new SchemaType(type: $className);
         }
 
         if ($type instanceof IntRangeType) {
@@ -178,9 +188,19 @@ class TypeResolver
             return $this->mapCollectionType($type);
         }
 
+        // `Foo<T>` on a class. OpenAPI can express nothing about the parameters, so the
+        // type being parameterised is what is left. Last, so `array<...>` and `int<...>`
+        // reach the arms above.
+        if ($type instanceof GenericType) {
+            return $this->mapType($type->getWrappedType());
+        }
+
         return new SchemaType();
     }
 
+    /**
+     * @param CompositeTypeInterface<Type> $type
+     */
     protected function mapCompositeType(CompositeTypeInterface $type): SchemaType
     {
         $types = $type->getTypes();
@@ -233,6 +253,9 @@ class TypeResolver
         return new SchemaType();
     }
 
+    /**
+     * @param BuiltinType<TypeIdentifier> $type
+     */
     protected function mapBuiltinType(BuiltinType $type): SchemaType
     {
         $typeName = (string) $type;
@@ -243,6 +266,9 @@ class TypeResolver
         return new SchemaType();
     }
 
+    /**
+     * @param CollectionType<BuiltinType<TypeIdentifier::ARRAY>|BuiltinType<TypeIdentifier::ITERABLE>|ObjectType<class-string>|GenericType<BuiltinType<TypeIdentifier::ARRAY>|BuiltinType<TypeIdentifier::ITERABLE>|ObjectType<class-string>>> $type
+     */
     protected function mapCollectionType(CollectionType $type): SchemaType
     {
         if ($type->isList() || $type->getCollectionKeyType() instanceof UnionType) {
@@ -312,14 +338,16 @@ class TypeResolver
                 }
             }
         } elseif (is_array($schema->type)) {
-            $schema->type = $this->typeMapper->toSpecTypes(
+            /** @var list<string> $mapped neither array_map() nor toSpecTypes() change a list's shape */
+            $mapped = $this->typeMapper->toSpecTypes(
                 array_map(static fn ($t): string => strtolower((string) $t), $schema->type),
             );
+            $schema->type = $mapped;
         }
     }
 
     /**
-     * @param \ReflectionProperty|\ReflectionParameter|\ReflectionMethod|\ReflectionClass $reflector
+     * @param \ReflectionProperty|\ReflectionParameter|\ReflectionMethod|\ReflectionClass<object>|\ReflectionClassConstant $reflector
      */
     protected function getReflectionType(\Reflector $reflector): ?Type
     {

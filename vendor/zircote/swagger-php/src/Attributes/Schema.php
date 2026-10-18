@@ -9,21 +9,24 @@ namespace OpenApi\Attributes;
 use OpenApi\Annotations as OA;
 use OpenApi\Undefined;
 
+/**
+ * @phpstan-import-type EnumValue from \OpenApi\Spec\Schema
+ */
 #[\Attribute(\Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Schema extends OA\Schema
 {
     /**
-     * @param string|class-string|object|null                              $ref
-     * @param list<string>                                                 $required
-     * @param list<Property>                                               $properties
-     * @param string|non-empty-array<string>|null                          $type
-     * @param array<Examples>                                              $examples
-     * @param array<Schema|OA\Schema>                                      $allOf
-     * @param array<Schema|OA\Schema>                                      $anyOf
-     * @param array<Schema|OA\Schema>                                      $oneOf
-     * @param list<string|int|float|bool|\UnitEnum|null>|class-string|null $enum
-     * @param array<string,mixed>|null                                     $x
-     * @param list<Attachable>|null                                        $attachables
+     * @param string|class-string|object|null        $ref
+     * @param list<string>                           $required
+     * @param list<Property>                         $properties
+     * @param string|non-empty-array<string>|null    $type
+     * @param array<mixed>                           $examples
+     * @param array<Schema|OA\Schema>                $allOf
+     * @param array<Schema|OA\Schema>                $anyOf
+     * @param array<Schema|OA\Schema>                $oneOf
+     * @param list<EnumValue|null>|class-string|null $enum
+     * @param array<string,mixed>|null               $x
+     * @param list<Attachable>|null                  $attachables
      */
     public function __construct(
         // Schema
@@ -71,11 +74,21 @@ class Schema extends OA\Schema
         bool|AdditionalProperties|null $additionalProperties = null,
         array|null $additionalItems = null,
         array|null $contains = null,
+        int|null $minContains = null,
+        int|null $maxContains = null,
+        array|null $prefixItems = null,
         array|null $patternProperties = null,
         array|null $unevaluatedProperties = null,
+        mixed $unevaluatedItems = Undefined::UNDEFINED,
         mixed $dependencies = Undefined::UNDEFINED,
+        array|null $dependentRequired = null,
+        array|null $dependentSchemas = null,
         mixed $propertyNames = Undefined::UNDEFINED,
         mixed $const = Undefined::UNDEFINED,
+        mixed $if = Undefined::UNDEFINED,
+        mixed $then = Undefined::UNDEFINED,
+        mixed $else = Undefined::UNDEFINED,
+        mixed $contentSchema = Undefined::UNDEFINED,
 
         // abstract annotation
         ?array $x = null,
@@ -122,16 +135,27 @@ class Schema extends OA\Schema
             'additionalProperties' => $additionalProperties ?? Undefined::UNDEFINED,
             'additionalItems' => $additionalItems ?? Undefined::UNDEFINED,
             'contains' => $contains ?? Undefined::UNDEFINED,
+            'minContains' => $minContains ?? Undefined::UNDEFINED,
+            'maxContains' => $maxContains ?? Undefined::UNDEFINED,
+            'prefixItems' => $prefixItems ?? Undefined::UNDEFINED,
             'patternProperties' => $patternProperties ?? Undefined::UNDEFINED,
             'unevaluatedProperties' => $unevaluatedProperties ?? Undefined::UNDEFINED,
+            'unevaluatedItems' => $unevaluatedItems,
             'dependencies' => $dependencies,
+            'dependentRequired' => $dependentRequired ?? Undefined::UNDEFINED,
+            'dependentSchemas' => $dependentSchemas ?? Undefined::UNDEFINED,
             'propertyNames' => $propertyNames,
             'const' => $const,
+            'if' => $if,
+            'then' => $then,
+            'else' => $else,
+            'contentSchema' => $contentSchema,
 
             // abstract annotation
             'x' => $x ?? Undefined::UNDEFINED,
             'attachables' => $attachables ?? Undefined::UNDEFINED,
-            'value' => $this->combine($items, $discriminator, $externalDocs, $examples),
+            'examples' => $examples ?: Undefined::UNDEFINED,
+            'value' => $this->combine($items, $discriminator, $externalDocs),
         ]);
     }
 }

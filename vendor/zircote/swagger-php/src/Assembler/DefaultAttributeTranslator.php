@@ -1,18 +1,25 @@
 <?php declare(strict_types=1);
 
-/*
+/**
  * @license Apache 2.0
  */
 
 namespace OpenApi\Assembler;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
+use OpenApi\Contracts\AttributeTranslatorInterface;
 
 /**
- * Default implementation dealing with native attributes.
+ * Default implementation handling native (OpenApi) attributes.
+ *
+ * @phpstan-import-type AttributeReflector from AttributeTranslatorInterface
  */
 class DefaultAttributeTranslator extends AbstractAttributeTranslator
 {
+    /**
+     * @param  AttributeReflector                  $reflector
+     * @return array<\ReflectionAttribute<object>>
+     */
     public function getAttributes(\ReflectionClass|\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $reflector): array
     {
         return $reflector->getAttributes(

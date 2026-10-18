@@ -23,6 +23,9 @@ use OpenApi\Utils\PipeInterface;
  */
 class Types implements PipeInterface
 {
+    /** @var array<string, string> class name => component pointer, for the components that exist */
+    protected array $refMap = [];
+
     public function __construct(
         protected TypeResolver $typeResolver = new TypeResolver(),
     ) {
@@ -30,6 +33,8 @@ class Types implements PipeInterface
 
     public function __invoke(mixed $payload): mixed
     {
+        $this->refMap = $payload->buildComponentIndex()->buildRefMap();
+
         $payload->getWalker()->eachSchema(function (OA\Schema $schema): void {
             $this->inferSchemaType($schema);
             $this->walkSchema($schema);
@@ -82,7 +87,7 @@ class Types implements PipeInterface
 
         if ($schema->items instanceof OA\Schema) {
             $schema->type = 'array';
-        } elseif ($schema->properties || $schema->allOf || $schema->patternProperties) {
+        } elseif ($schema->properties || $schema->patternProperties) {
             $schema->type = 'object';
         }
     }
@@ -143,7 +148,7 @@ class Types implements PipeInterface
             $resolved = $this->typeResolver->resolve($reflector);
 
             if ($resolved instanceof SchemaType) {
-                if ($resolved->type !== null && $resolved->isRef()) {
+                if ($resolved->type !== null && $resolved->isRef() && $this->isComponent($resolved->type)) {
                     $requestBody->ref = $resolved->type;
                 }
 
@@ -239,10 +244,10 @@ class Types implements PipeInterface
         }
 
         if (!$property->schema instanceof OA\Schema) {
-            $property->schema = new OA\Schema();
+            $property->schema = $this->schemaTypeToSchema($resolved);
+        } else {
+            $this->mergeIntoSchema($property->schema, $resolved);
         }
-
-        $this->applySchemaType($property->schema, $resolved);
     }
 
     protected function augmentOperationParameters(OA\Operation $operation): void
@@ -292,6 +297,11 @@ class Types implements PipeInterface
         $parameter->required ??= !$isNullable;
     }
 
+    protected function isComponent(string $class): bool
+    {
+        return isset($this->refMap[ltrim($class, '\\')]);
+    }
+
     protected function schemaTypeToSchema(SchemaType $schemaType): OA\Schema
     {
         $schema = new OA\Schema();
@@ -306,9 +316,7 @@ class Types implements PipeInterface
             $this->applySchemaType($schema, $schemaType);
         }
 
-        if ($schema->nullable === null) {
-            $schema->nullable = $schemaType->nullable;
-        }
+        $schema->nullable ??= $schemaType->nullable;
     }
 
     protected function applySchemaType(OA\Schema $schema, SchemaType $schemaType): void
@@ -319,23 +327,20 @@ class Types implements PipeInterface
 
         if ($schemaType->type !== null) {
             if ($schemaType->isRef()) {
-                $schema->ref = $schemaType->type;
+                // a class is referenced only when it is a component, and never in place of an explicit enum
+                if ($schema->enum === null && $this->isComponent($schemaType->type)) {
+                    $schema->ref = $schemaType->type;
+                }
             } else {
                 $schema->type = $schemaType->type;
             }
         }
 
-        if ($schema->format === null) {
-            $schema->format = $schemaType->format;
-        }
+        $schema->format ??= $schemaType->format;
 
-        if ($schema->minimum === null) {
-            $schema->minimum = $schemaType->minimum;
-        }
+        $schema->minimum ??= $schemaType->minimum;
 
-        if ($schema->maximum === null) {
-            $schema->maximum = $schemaType->maximum;
-        }
+        $schema->maximum ??= $schemaType->maximum;
 
         if ($schemaType->not !== null && !$schema->not instanceof OA\Schema) {
             $schema->not = new OA\Schema(const: $schemaType->not['const']);

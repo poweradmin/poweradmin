@@ -8,16 +8,24 @@ namespace OpenApi\Utils;
 
 use OpenApi\OpenApiException;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
  * @template T
  *
- * @extends TypedList<PipeInterface|callable>
+ * @extends TypedList<PipeInterface|(callable&object)>
  */
-class Pipeline extends TypedList
+class Pipeline extends TypedList implements LoggerAwareInterface
 {
+    /**
+     * The pipeline hands this to every pipe that asks for one, so setting it here reaches all
+     * of them. The builder sets it once the build's collecting logger exists, which is after
+     * the pipeline was built.
+     */
+    use LoggerAwareTrait;
+
     /**
      * @var list<string>|null ordered group keys; null means no grouping (insertion order only)
      */
@@ -25,12 +33,10 @@ class Pipeline extends TypedList
 
     protected ?string $defaultGroup = null;
 
-    protected LoggerInterface $logger;
-
     /**
-     * @param list<PipeInterface|callable>  $pipes
-     * @param list<string|\BackedEnum>|null $groups       Ordered group names/enums. When set, process() executes pipes in group order.
-     * @param string|\BackedEnum|null       $defaultGroup Group for pipes without PipeInterface. Must be in $groups if groups are set.
+     * @param list<PipeInterface|(callable&object)> $pipes
+     * @param list<string|\BackedEnum>|null         $groups       Ordered group names/enums. When set, process() executes pipes in group order.
+     * @param string|\BackedEnum|null               $defaultGroup Group for pipes without PipeInterface. Must be in $groups if groups are set.
      */
     public function __construct(array $pipes = [], ?array $groups = null, string|\BackedEnum|null $defaultGroup = null, ?LoggerInterface $logger = null)
     {
@@ -71,7 +77,7 @@ class Pipeline extends TypedList
     public function process(mixed $payload)
     {
         foreach ($this->ordered() as $pipe) {
-            if ($pipe instanceof LoggerAwareInterface) {
+            if ($pipe instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
                 $pipe->setLogger($this->logger);
             }
             $payload = $pipe($payload) ?? $payload;
@@ -80,32 +86,103 @@ class Pipeline extends TypedList
         return $payload;
     }
 
+    /**
+     * Collect the configurable settings of all pipes, keyed by pipe name.
+     *
+     * A setting is a constructor parameter carrying a {@see Config} attribute, with a
+     * matching `setX()` method for a property `x`; the reported value is that property's
+     * current value.
+     *
+     * The result uses the same keys accepted by {@see self::configure()}.
+     *
+     * @return array<string,array<string,mixed>>
+     */
+    public function getConfig(): array
+    {
+        $config = [];
+
+        $walker = function (object $pipe) use (&$config): void {
+            $rc = new \ReflectionClass($pipe);
+            $settings = [];
+
+            foreach (self::configurableParameters($rc) as $name) {
+                $setter = 'set' . ucfirst($name);
+                if (!$rc->hasMethod($setter) || !$rc->hasProperty($name)) {
+                    continue;
+                }
+
+                $property = $rc->getProperty($name);
+                $settings[$name] = $property->isInitialized($pipe) ? $property->getValue($pipe) : null;
+            }
+
+            if ($settings !== []) {
+                $config[lcfirst($rc->getShortName())] = $settings;
+            }
+        };
+
+        $this->walk($walker);
+
+        return $config;
+    }
+
+    /**
+     * Apply config to the pipes in this pipeline.
+     *
+     * Keys that match no pipe, and options with no matching setter, are reported
+     * as warnings; they would otherwise be silently ignored. See {@see self::getConfig()}
+     * for the keys a pipeline accepts.
+     *
+     * @param array<int|string, mixed> $config
+     */
     public function configure(array $config): void
     {
         $config = $this->normaliseConfig($config);
+        $applied = [];
 
-        $walker = function (callable $pipe) use ($config): void {
+        $walker = function (object $pipe) use ($config, &$applied): void {
             $rc = new \ReflectionClass($pipe);
 
             // apply config
             $pipeKey = lcfirst($rc->getShortName());
-            if (array_key_exists($pipeKey, $config)) {
-                foreach ($config[$pipeKey] as $name => $value) {
-                    $setter = 'set' . ucfirst($name);
-                    if (method_exists($pipe, $setter)) {
-                        $pipe->{$setter}($value);
-                    }
+            if (!array_key_exists($pipeKey, $config) || !is_array($config[$pipeKey])) {
+                return;
+            }
+
+            $applied[$pipeKey] = true;
+
+            foreach ($config[$pipeKey] as $name => $value) {
+                $setter = 'set' . ucfirst($name);
+                if (method_exists($pipe, $setter)) {
+                    $pipe->{$setter}($value);
+                } else {
+                    $this->logger?->warning("Unknown config option '{$pipeKey}.{$name}'");
                 }
             }
         };
 
         $this->walk($walker);
+
+        foreach (array_keys($config) as $pipeKey) {
+            if (!isset($applied[$pipeKey])) {
+                $this->logger?->warning("Unknown config key '{$pipeKey}'; no matching pipe in this pipeline");
+            }
+        }
+    }
+
+    /**
+     * @param \ReflectionClass<object> $rc
+     *
+     * @return list<string> constructor parameter names carrying a {@see Config} attribute
+     */
+    protected static function configurableParameters(\ReflectionClass $rc): array
+    {
+        return array_keys(Config::forConstructor($rc));
     }
 
     /**
      * Return pipes in execution order: grouped if groups are configured, otherwise insertion order.
      *
-     * @return list<callable>
+     * @return list<PipeInterface|(callable&object)>
      */
     protected function ordered(): array
     {
@@ -137,6 +214,11 @@ class Pipeline extends TypedList
             : $group;
     }
 
+    /**
+     * @param array<int|string, mixed> $config
+     *
+     * @return array<int|string, mixed>
+     */
     protected function normaliseConfig(array $config): array
     {
         $normalised = [];

@@ -23,6 +23,8 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
 
     /**
      * @inheritdoc
+     *
+     * @param class-string<OA\AbstractAnnotation> $sourceClass
      */
     protected function doAugment(Analysis $analysis, OA\Schema $schema, \Reflector $reflector, string $sourceClass = OA\Schema::class): void
     {
@@ -64,25 +66,31 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
         }
     }
 
+    /**
+     * @param class-string<OA\AbstractAnnotation> $sourceClass
+     */
     protected function applyToAnnotation(OA\Schema $schema, SchemaType $schemaType, Analysis $analysis, string $sourceClass = OA\Schema::class): void
     {
-        if ($schemaType->type !== null) {
-            $schema->type = $schemaType->type;
+        // a class is referenced only when there is no explicit enum it would replace
+        if ($schemaType->type !== null && (!$schemaType->isRef() || Undefined::isDefault($schema->enum))) {
+            /** @var non-empty-array<string>|string $type every SchemaType array type is built non-empty */
+            $type = $schemaType->type;
+            $schema->type = $type;
         }
 
         if ($schemaType->format !== null && Undefined::isDefault($schema->format)) {
             $schema->format = $schemaType->format;
         }
 
-        if ($schemaType->minimum !== null) {
+        if ($schemaType->minimum !== null && Undefined::isDefault($schema->minimum)) {
             $schema->minimum = $schemaType->minimum;
         }
 
-        if ($schemaType->maximum !== null) {
+        if ($schemaType->maximum !== null && Undefined::isDefault($schema->maximum)) {
             $schema->maximum = $schemaType->maximum;
         }
 
-        if ($schemaType->not !== null) {
+        if ($schemaType->not !== null && Undefined::isDefault($schema->not)) {
             $schema->not = $schemaType->not;
         }
 
@@ -102,16 +110,22 @@ class TypeInfoTypeResolver extends AbstractTypeResolver
 
         if ($schemaType->additionalProperties instanceof SchemaType) {
             $schema->type = 'object';
-            if (Undefined::isDefault($schema->additionalProperties)) {
-                $schema->additionalProperties = new OA\AdditionalProperties(['_context' => new Context(['generated' => true], $schema->_context)]);
-                $this->applyToAnnotation($schema->additionalProperties, $schemaType->additionalProperties, $analysis, $sourceClass);
-                $this->type2ref($schema->additionalProperties, $analysis, $sourceClass);
-                $analysis->addAnnotation($schema->additionalProperties, $schema->additionalProperties->_context);
-            } elseif (Undefined::isDefault($schema->additionalProperties->type, $schema->additionalProperties->oneOf, $schema->additionalProperties->allOf, $schema->additionalProperties->anyOf)) {
-                $this->applyToAnnotation($schema->additionalProperties, $schemaType->additionalProperties, $analysis, $sourceClass);
-                $this->type2ref($schema->additionalProperties, $analysis, $sourceClass);
+            // An explicit `true|false` is the whole answer for this map — nothing for the
+            // inferred value type to attach to, and hybrid and spec already keep it.
+            // `isDefault()` only rules out the UNDEFINED sentinel, so without this guard a
+            // declared `false` is dereferenced as a Schema.
+            if (!is_bool($schema->additionalProperties)) {
+                if (Undefined::isDefault($schema->additionalProperties)) {
+                    $schema->additionalProperties = new OA\AdditionalProperties(['_context' => new Context(['generated' => true], $schema->_context)]);
+                    $this->applyToAnnotation($schema->additionalProperties, $schemaType->additionalProperties, $analysis, $sourceClass);
+                    $this->type2ref($schema->additionalProperties, $analysis, $sourceClass);
+                    $analysis->addAnnotation($schema->additionalProperties, $schema->additionalProperties->_context);
+                } elseif (Undefined::isDefault($schema->additionalProperties->type, $schema->additionalProperties->oneOf, $schema->additionalProperties->allOf, $schema->additionalProperties->anyOf)) {
+                    $this->applyToAnnotation($schema->additionalProperties, $schemaType->additionalProperties, $analysis, $sourceClass);
+                    $this->type2ref($schema->additionalProperties, $analysis, $sourceClass);
+                }
+                $this->mapNativeType($schema->additionalProperties, $schema->additionalProperties->type);
             }
-            $this->mapNativeType($schema->additionalProperties, $schema->additionalProperties->type);
         } elseif ($schemaType->additionalProperties === true) {
             if (Undefined::isDefault($schema->additionalProperties)) {
                 $schema->additionalProperties = new OA\AdditionalProperties(['_context' => new Context(['generated' => true], $schema->_context)]);

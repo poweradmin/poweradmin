@@ -10,6 +10,8 @@ use OpenApi\OpenApiException;
 
 /**
  * @template T
+ *
+ * @implements \IteratorAggregate<int, T>
  */
 class TypedList implements \IteratorAggregate
 {
@@ -26,6 +28,9 @@ class TypedList implements \IteratorAggregate
         $this->items = $items;
     }
 
+    /**
+     * @return \Traversable<int, T>
+     */
     public function getIterator(): \Traversable
     {
         return new \ArrayIterator($this->items);
@@ -92,9 +97,9 @@ class TypedList implements \IteratorAggregate
                 return $this;
             }
 
-            unset($this->items[$key]);
-
-            $this->items = array_values($this->items);
+            $items = $this->items;
+            unset($items[$key]);
+            $this->items = array_values($items);
         }
 
         return $this;
@@ -104,8 +109,9 @@ class TypedList implements \IteratorAggregate
      * Insert an item into the list at a specific position determined by a matcher.
      *
      * @param T                     $item
-     * @param callable|class-string $matcher either an <code>int</code> from a callable or, in the case of <code>$matcher</code> being
-     *                                       a <code>class-string</code>, the position before the first item of that class
+     * @param callable|class-string $matcher either an <code>int</code> from a callable or, in the case of
+     *                                       <code>$matcher</code> being a <code>class-string</code>, the position
+     *                                       before the first item of that class
      */
     public function insert(mixed $item, callable|string $matcher): static
     {
@@ -140,6 +146,13 @@ class TypedList implements \IteratorAggregate
         foreach ($this->items as $item) {
             $walker($item);
         }
+
+        return $this;
+    }
+
+    public function clear(): static
+    {
+        $this->items = [];
 
         return $this;
     }

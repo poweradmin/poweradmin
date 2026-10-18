@@ -8,19 +8,21 @@ namespace OpenApi\Augmenter;
 
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Utils\Config;
 use OpenApi\Utils\PipeInterface;
 
 /**
  * Generates operationId for operations that don't have one explicitly set.
  *
+ * The id is derived from method, path and the declaring method, function or class. An
+ * operation with no reflector is identified by method and path alone.
+ *
  * @implements PipeInterface<Specification>
  */
 class OperationIds implements PipeInterface
 {
-    /**
-     * @param bool $hash If set to true, generate ids (md5) instead of clear text operation ids
-     */
     public function __construct(
+        #[Config('If set to <code>true</code> generate ids (md5) instead of clear text operation ids.')]
         protected bool $hash = true,
     ) {
     }
@@ -41,9 +43,6 @@ class OperationIds implements PipeInterface
         return null;
     }
 
-    /**
-     * If set to <code>true</code> generate ids (md5) instead of clear text operation ids.
-     */
     public function setHash(bool $hash): static
     {
         $this->hash = $hash;
@@ -61,18 +60,18 @@ class OperationIds implements PipeInterface
         $reflector = $operation->getReflector();
 
         $source = match (true) {
-            $reflector instanceof \ReflectionMethod => $operation->getClassName() . '::' . $reflector->getName(),
+            $reflector instanceof \ReflectionMethod => $operation->getSourceLocation()->qualifiedMethod(),
             $reflector instanceof \ReflectionFunction => $reflector->getName(),
             $reflector instanceof \ReflectionClass => $reflector->getName(),
             default => null,
         };
 
-        if ($source === null) {
-            return null;
-        }
-
         $method = strtoupper($operation->method ?? 'GET');
         $path = $operation->path ?? '';
+
+        if ($source === null) {
+            return $path === '' ? null : $method . '::' . $path;
+        }
 
         return $method . '::' . $path . '::' . $source;
     }

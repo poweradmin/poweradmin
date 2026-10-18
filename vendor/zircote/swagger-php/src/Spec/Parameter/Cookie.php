@@ -29,12 +29,13 @@ class Cookie extends OA\Parameter
         ?string $description = Undefined::UNDEFINED,
         ?bool $required = null,
         ?bool $deprecated = null,
-        ?string $ref = null,
+        string|OA\Schema\Ref|null $ref = null,
         ?bool $explode = null,
         ?OA\Schema $schema = null,
         mixed $example = Undefined::UNDEFINED,
         ?array $examples = null,
         OA\MediaType|array|null $content = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
     ) {
@@ -51,6 +52,7 @@ class Cookie extends OA\Parameter
             example: $example,
             examples: $examples,
             content: $content,
+            component: $component,
             x: $x,
             attachables: $attachables,
         );

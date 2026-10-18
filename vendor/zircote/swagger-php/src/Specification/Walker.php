@@ -4,18 +4,17 @@
  * @license Apache 2.0
  */
 
-namespace OpenApi\Utils;
+namespace OpenApi\Specification;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Utils\JsonPointer;
 
 /**
  * Traversal helpers for walking the Specification tree.
- *
- * @phpstan-type RefAttributeTypes OA\Schema|OA\Parameter|OA\Response|OA\Header|OA\RequestBody|OA\Link|OA\Example|OA\Security\Scheme
  */
-class SpecificationWalker
+class Walker
 {
     public function __construct(
         protected readonly Specification $specification,
@@ -35,31 +34,20 @@ class SpecificationWalker
     /**
      * Walk every ref-bearing attribute in the specification.
      *
-     * @param callable(RefAttributeTypes): void $visitor
+     * @param callable(AttributeInterface): void $visitor
      */
     public function eachRef(callable $visitor): void
     {
         $this->visit(AttributeInterface::class, function (AttributeInterface $attribute) use ($visitor): void {
-            if (
-                $attribute instanceof OA\Schema
-                || $attribute instanceof OA\Parameter
-                || $attribute instanceof OA\Response
-                || $attribute instanceof OA\Header
-                || $attribute instanceof OA\RequestBody
-                || $attribute instanceof OA\Link
-                || $attribute instanceof OA\Example
-                || $attribute instanceof OA\Security\Scheme
-            ) {
-                if (isset($attribute->ref)) {
-                    $visitor($attribute);
-                }
+            if (property_exists($attribute, 'ref') && $attribute->ref !== null) {
+                $visitor($attribute);
+            }
 
-                // special case
-                if ($attribute instanceof OA\Schema) {
-                    if ($attribute->discriminator instanceof OA\Discriminator && $attribute->discriminator->mapping !== null) {
-                        foreach ($attribute->discriminator->mapping as $ref) {
-                            $visitor(new OA\Schema(ref: $ref));
-                        }
+            // special case
+            if ($attribute instanceof OA\Schema) {
+                if ($attribute->discriminator instanceof OA\Discriminator && $attribute->discriminator->mapping !== null) {
+                    foreach ($attribute->discriminator->mapping as $ref) {
+                        $visitor(new OA\Schema(ref: $ref));
                     }
                 }
             }
@@ -67,7 +55,7 @@ class SpecificationWalker
             // special case
             if ($attribute instanceof OA\Security\Requirement) {
                 foreach (array_keys($attribute->toArray()) as $schemeName) {
-                    $visitor(new OA\Security\Scheme(ref: '#/components/securitySchemes/' . $schemeName));
+                    $visitor(new OA\Security\Scheme(ref: JsonPointer::ref('components', 'securitySchemes', $schemeName)));
                 }
             }
         });
@@ -81,16 +69,22 @@ class SpecificationWalker
      */
     public function visit(string $visitee, callable $visitor): void
     {
+        // one `$seen` for every bucket: an attribute reachable from two of them — an
+        // operation held both directly and inside a path item — is still one attribute
+        $seen = new \SplObjectStorage();
+
         foreach (get_object_vars($this->specification) as $buckets) {
-            $this->walk($visitee, $visitor, $buckets instanceof AttributeInterface ? [$buckets] : (array) $buckets);
+            $this->walk($visitee, $visitor, $buckets instanceof AttributeInterface ? [$buckets] : (array) $buckets, $seen);
         }
     }
 
     /**
      * @template T of AttributeInterface
      *
-     * @param class-string<T>   $visitee
-     * @param callable(T): void $visitor
+     * @param class-string<T>                       $visitee
+     * @param callable(T): void                     $visitor
+     * @param array<mixed>                          $candidates
+     * @param \SplObjectStorage<object, mixed>|null $seen
      */
     protected function walk(string $visitee, callable $visitor, array $candidates, ?\SplObjectStorage $seen = null): void
     {

@@ -30,7 +30,7 @@ class Query extends OA\Parameter
         ?bool $required = null,
         ?bool $deprecated = null,
         ?bool $allowEmptyValue = null,
-        ?string $ref = null,
+        string|OA\Schema\Ref|null $ref = null,
         string|OA\ParameterStyle|null $style = null,
         ?bool $explode = null,
         ?bool $allowReserved = null,
@@ -38,6 +38,7 @@ class Query extends OA\Parameter
         mixed $example = Undefined::UNDEFINED,
         ?array $examples = null,
         OA\MediaType|array|null $content = null,
+        ?string $component = null,
         ?array $x = null,
         ?array $attachables = null,
     ) {
@@ -57,6 +58,7 @@ class Query extends OA\Parameter
             example: $example,
             examples: $examples,
             content: $content,
+            component: $component,
             x: $x,
             attachables: $attachables,
         );

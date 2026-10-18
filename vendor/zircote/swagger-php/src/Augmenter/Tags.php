@@ -8,6 +8,7 @@ namespace OpenApi\Augmenter;
 
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
+use OpenApi\Utils\Config;
 use OpenApi\Utils\PipeInterface;
 
 /**
@@ -24,7 +25,9 @@ class Tags implements PipeInterface
      * @param list<string> $whitelist
      */
     public function __construct(
+        #[Config("Whitelist tags to keep even if not used. Use '*' to keep all.")]
         protected array $whitelist = [],
+        #[Config('Enables/disables generation of default tag descriptions.')]
         protected bool $withDescription = true,
     ) {
     }
@@ -57,8 +60,6 @@ class Tags implements PipeInterface
     }
 
     /**
-     * Whitelist tags to keep even if not used. Use '*' to keep all.
-     *
      * @param list<string> $whitelist
      */
     public function setWhitelist(array $whitelist): static
@@ -68,9 +69,6 @@ class Tags implements PipeInterface
         return $this;
     }
 
-    /**
-     * Enables/disables generation of default tag descriptions.
-     */
     public function setWithDescription(bool $withDescription): static
     {
         $this->withDescription = $withDescription;
@@ -98,6 +96,10 @@ class Tags implements PipeInterface
         return array_values(array_unique($names));
     }
 
+    /**
+     * @param list<string>         $usedTagNames
+     * @param array<string,OA\Tag> $declaredTags
+     */
     protected function removeUnusedTags(array $usedTagNames, array $declaredTags, mixed $payload): void
     {
         if (in_array('*', $this->whitelist, true)) {

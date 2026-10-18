@@ -6,7 +6,7 @@
 
 namespace OpenApi\Augmenter;
 
-use OpenApi\AttributeInterface;
+use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Undefined;
@@ -199,7 +199,7 @@ class Docblocks implements PipeInterface
     {
         $properties = $schema->properties ?? [];
 
-        // Also walk properties inside allOf entries (placed there by ExpandHierarchy)
+        // Also walk properties inside allOf entries (placed there by Augmenter\Inheritance)
         foreach ($schema->allOf ?? [] as $entry) {
             if ($entry->properties) {
                 array_push($properties, ...$entry->properties);

@@ -4,7 +4,7 @@
  * @license Apache 2.0
  */
 
-namespace OpenApi\Utils;
+namespace OpenApi\Loggers;
 
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
@@ -21,6 +21,9 @@ class CollectingLogger extends AbstractLogger
     {
     }
 
+    /**
+     * @param string|\Stringable $message
+     */
     public function log($level, $message, array $context = []): void
     {
         $this->entries[] = ['level' => (string) $level, 'message' => (string) $message];
