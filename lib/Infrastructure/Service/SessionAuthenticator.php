@@ -363,7 +363,7 @@ class SessionAuthenticator extends LoggingService
      * How a session gate (user agreement, MFA enrolment) treats a request path.
      *
      * Without security.strict_session_gates every path containing /api/ is skipped,
-     * as before 4.3.7.
+     * as before 4.3.6.
      *
      * With it, the key-authenticated public APIs carry no session and are skipped. The
      * internal API runs on the session, so it is held back with a JSON 403 until the

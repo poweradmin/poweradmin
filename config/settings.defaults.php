@@ -55,7 +55,7 @@ return [
         'password_cost' => 12,                   // Cost factor for bcrypt (added in 2.1.8)
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
-        'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.3.7)
+        'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.3.6)
         /**
          * Password Policy Settings
          */
@@ -101,7 +101,7 @@ return [
             'rate_limit_attempts' => 5,                 // Max reset attempts per time window
             'rate_limit_window' => 3600,                // Rate limit window in seconds (1 hour)
             'min_time_between_requests' => 60,          // Minimum seconds between requests (1 minute)
-            'single_use_claim' => false,                // Claim the link before the password changes, so one link sets one password even under parallel requests (added in 4.3.7)
+            'single_use_claim' => false,                // Claim the link before the password changes, so one link sets one password even under parallel requests (added in 4.3.6)
         ],
         /**
          * Username Recovery Settings
