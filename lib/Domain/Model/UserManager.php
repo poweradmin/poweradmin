@@ -477,7 +477,7 @@ class UserManager
             $stmt->execute([':id' => $id]);
             $usercheck = $stmt->fetch();
 
-            if ($usercheck ['username'] != $user) {
+            if ((string)$usercheck['username'] !== $user) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
@@ -1094,7 +1094,7 @@ class UserManager
                 return false;
             }
 
-            if ($userCheck['username'] != $details['username']) {
+            if ((string)$userCheck['username'] !== (string)$details['username']) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
