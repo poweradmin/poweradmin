@@ -171,6 +171,8 @@ class IndexController extends BaseController
             'iface_add_reverse_record' => $ifaceAddReverseRecord,
             'api_enabled' => $apiEnabled,
             'pdns_api_enabled' => $pdnsApiEnabled,
+            // Overrides the expired-tolerant global so a failed refresh shows the "unknown" hint
+            'pdns_server_info' => $this->getCachedPdnsServerInfo(false),
             'is_api_backend' => $isApiBackend,
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,

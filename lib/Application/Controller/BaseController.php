@@ -228,6 +228,23 @@ abstract class BaseController
     }
 
     /**
+     * The server info the page chrome reads for zone type labels. Never calls
+     * PowerDNS (it renders on login pages too); the dashboard refreshes the
+     * cache, and an expired entry still beats flipping labels to Master/Slave.
+     * The dashboard passes false so its version badge shows only a fresh value.
+     *
+     * @return array{version: string, daemon_type: string, id: string, backends?: string, views?: string}|null
+     */
+    protected function getCachedPdnsServerInfo(bool $allowExpired = true): ?array
+    {
+        // A version cached before the API was unconfigured no longer describes the server
+        if ((string)$this->config->get('pdns_api', 'url', '') === '' || (string)$this->config->get('pdns_api', 'key', '') === '') {
+            return null;
+        }
+        return PdnsVersionService::getCachedInfo($this->session, $allowExpired);
+    }
+
+    /**
      * Capabilities to use when filtering selectable record types, or null to
      * skip version filtering entirely.
      *
@@ -784,7 +801,7 @@ abstract class BaseController
             $this->moduleRegistry,
             $this->isApiBackend(),
             $this->hasPermission(...),
-            fn(): ?array => PdnsVersionService::getCachedInfo($this->session),
+            fn(): ?array => $this->getCachedPdnsServerInfo(),
             fn(): array => $this->db instanceof DebugPDO ? $this->db->getQueries() : [],
             $userId !== null && $this->services()->userPreferenceService()->getWideLayout($userId),
             $this->session,

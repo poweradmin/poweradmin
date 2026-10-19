@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\PdnsCapabilities;
 use ReflectionClass;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Covers BaseController::getPdnsCapabilities() re-detecting the PowerDNS
@@ -35,6 +36,8 @@ use Poweradmin\Infrastructure\Session\ArraySession;
  */
 class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
 {
+    private const API_CONFIGURED = ['pdns_api' => ['url' => 'http://pdns:8081', 'key' => 'secret']];
+
     private ArraySession $session;
 
     protected function setUp(): void
@@ -103,6 +106,51 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
         $this->assertSame(1, $controller->refreshCalls);
         $this->assertFalse($caps->isKnown());
         $this->assertFalse($caps->supportsCatalogZones());
+    }
+
+    public function testPageChromeKeepsAnExpiredVersionWithoutRefreshing(): void
+    {
+        $this->cacheVersion('4.9.0', time() - 301);
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $info = $this->chromeServerInfo($controller, self::API_CONFIGURED);
+
+        $this->assertSame(0, $controller->refreshCalls, 'the page chrome must not call PowerDNS');
+        $this->assertSame('4.9.0', $info['version'] ?? null);
+        $this->assertTrue(PdnsCapabilities::fromServerInfo($info)->prefersPrimarySecondaryTerminology());
+    }
+
+    public function testPageChromeIgnoresACachedVersionOnceTheApiIsUnconfigured(): void
+    {
+        $this->cacheVersion('4.9.0', time());
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertNull($this->chromeServerInfo($controller, []));
+        $this->assertSame(0, $controller->refreshCalls);
+    }
+
+    public function testDashboardBadgeGetsNoExpiredVersion(): void
+    {
+        $this->cacheVersion('4.9.0', time() - 301);
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertNull($this->chromeServerInfo($controller, self::API_CONFIGURED, false));
+        $this->assertSame(0, $controller->refreshCalls);
+    }
+
+    public function testDashboardBadgeGetsAFreshVersion(): void
+    {
+        $this->cacheVersion('4.9.0', time());
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertSame('4.9.0', $this->chromeServerInfo($controller, self::API_CONFIGURED, false)['version'] ?? null);
+    }
+
+    private function chromeServerInfo(BaseController $controller, array $config, bool $allowExpired = true): ?array
+    {
+        $class = new ReflectionClass(BaseController::class);
+        $class->getProperty('config')->setValue($controller, new FakeConfiguration($config));
+        return $class->getMethod('getCachedPdnsServerInfo')->invoke($controller, $allowExpired);
     }
 
     private function capabilities(BaseController $controller): PdnsCapabilities
