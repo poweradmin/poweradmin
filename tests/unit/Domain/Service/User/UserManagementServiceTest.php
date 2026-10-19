@@ -550,6 +550,52 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testCreateUserLosingAUsernameRaceReportsTheUsernameAsTaken(): void
+    {
+        // Free at the pre-check, taken by a concurrent create when the unique index rejects the insert
+        $this->userRepository->method('getUserByUsername')
+            ->willReturnOnConsecutiveCalls(null, ['id' => 9]);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('createUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry'));
+
+        $result = $this->createUser(['username' => 'newuser', 'password' => 'test123', 'perm_templ' => 3]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserLosingAUsernameRaceReportsTheUsernameAsTaken(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'old', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByUsername')
+            ->willReturnOnConsecutiveCalls(null, ['id' => 2]);
+        $this->userRepository->method('updateUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23505]: Unique violation'));
+
+        $result = $this->updateUser(1, ['username' => 'taken']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserWriteFailureKeepingTheUsernameIsNotReportedAsTaken(): void
+    {
+        // Legacy data may hold the name twice; an unchanged name must not turn a write error into a conflict
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'dup', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByUsername')->willReturn(['id' => 2]);
+        $this->userRepository->method('updateUser')->willThrowException(new Exception('Database error'));
+
+        $result = $this->updateUser(1, ['username' => 'dup', 'fullname' => 'X']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_WRITE, $result['code']);
+    }
+
+    #[Test]
     public function testAWriteExceptionIsLoggedAndKeptOutOfTheMessage(): void
     {
         $this->userRepository->method('getUserById')->willReturn(['id' => 1]);

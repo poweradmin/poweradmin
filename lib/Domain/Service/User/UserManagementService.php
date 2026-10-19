@@ -257,12 +257,7 @@ class UserManagementService
 
         // Check if username already exists
         if ($this->userRepository->getUserByUsername($command->username)) {
-            return [
-                'success' => false,
-                'message' => 'Username already exists',
-                'refusal' => Refusal::CONFLICT,
-                'code' => self::ERR_USERNAME_EXISTS,
-            ];
+            return $this->usernameExists();
         }
 
         if ($command->email !== '' && ($emailError = $this->invalidEmailError($command->email)) !== null) {
@@ -318,6 +313,10 @@ class UserManagementService
                 'user_id' => $userId
             ];
         } catch (Exception $e) {
+            // users.username is unique: a concurrent create with the same name loses here
+            if ($this->usernameTakenByAnother($command->username, null)) {
+                return $this->usernameExists();
+            }
             $this->logFailure('create user', $e);
             return [
                 'success' => false,
@@ -417,12 +416,7 @@ class UserManagementService
         if ($command->username !== null && $command->username !== (string)($user['username'] ?? '')) {
             $existingUser = $this->userRepository->getUserByUsername($command->username);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
-                return [
-                    'success' => false,
-                    'message' => 'Username already exists',
-                    'refusal' => Refusal::CONFLICT,
-                    'code' => self::ERR_USERNAME_EXISTS,
-                ];
+                return $this->usernameExists();
             }
         }
 
@@ -502,6 +496,10 @@ class UserManagementService
                 'user_id' => $userId
             ];
         } catch (Exception $e) {
+            $renamed = $command->username !== null && $command->username !== (string)($user['username'] ?? '');
+            if ($renamed && $this->usernameTakenByAnother($command->username, $userId)) {
+                return $this->usernameExists();
+            }
             $this->logFailure('update user', $e);
             return [
                 'success' => false,
@@ -859,6 +857,32 @@ class UserManagementService
             'refusal' => Refusal::INVALID_INPUT,
             'code' => self::ERR_INVALID_AUTH_METHOD,
         ];
+    }
+
+    private function usernameExists(): array
+    {
+        return [
+            'success' => false,
+            'message' => 'Username already exists',
+            'refusal' => Refusal::CONFLICT,
+            'code' => self::ERR_USERNAME_EXISTS,
+        ];
+    }
+
+    /** Whether a user other than $userId (any user when null) now holds this username. */
+    private function usernameTakenByAnother(?string $username, ?int $userId): bool
+    {
+        if ($username === null || $username === '') {
+            return false;
+        }
+
+        try {
+            $existing = $this->userRepository->getUserByUsername($username);
+        } catch (Exception) {
+            return false;
+        }
+
+        return $existing !== null && (int)$existing['id'] !== $userId;
     }
 
     private function templateNotFound(): array

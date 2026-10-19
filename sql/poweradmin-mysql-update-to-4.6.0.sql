@@ -112,3 +112,23 @@ DEALLOCATE PREPARE repair;
 -- An encoded API record id holds the zone name twice plus the content, so an SOA
 -- in a long zone outgrew varchar(255) and zone creation from a template failed
 ALTER TABLE `records_zone_templ_api` MODIFY `record_id` text NOT NULL;
+
+-- Usernames are unique (a rename could collide with another account). Older data may
+-- already hold a name twice; then the index is skipped with a notice. Find those rows with
+--   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;
+-- rename or remove the extra accounts and run this block again.
+SET @has_users_username_index = (
+    SELECT COUNT(*) FROM information_schema.statistics
+    WHERE table_schema = DATABASE() AND table_name = 'users' AND index_name = 'idx_users_username'
+);
+SET @duplicate_usernames = (
+    SELECT COUNT(*) FROM (SELECT `username` FROM `users` GROUP BY `username` HAVING COUNT(*) > 1) AS dup
+);
+SET @repair = IF(@has_users_username_index > 0,
+    'SELECT ''idx_users_username already present'' AS notice',
+    IF(@duplicate_usernames > 0,
+        'SELECT ''idx_users_username NOT created: users holds duplicate usernames, resolve them and re-run'' AS notice',
+        'CREATE UNIQUE INDEX `idx_users_username` ON `users` (`username`)'));
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;

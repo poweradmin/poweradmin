@@ -297,6 +297,7 @@ CREATE TABLE "public"."users" (
 ) WITH (oids = false);
 
 CREATE INDEX "idx_users_perm_templ" ON "public"."users" USING btree ("perm_templ");
+CREATE UNIQUE INDEX "idx_users_username" ON "public"."users" USING btree ("username");
 
 CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

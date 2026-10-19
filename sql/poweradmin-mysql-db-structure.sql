@@ -90,6 +90,7 @@ CREATE TABLE `users` (
                          `auth_method` varchar(20) NOT NULL DEFAULT 'sql',
                          `max_zones` int(11) DEFAULT NULL,
                          PRIMARY KEY (`id`),
+                         UNIQUE KEY `idx_users_username` (`username`),
                          KEY `idx_users_perm_templ` (`perm_templ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

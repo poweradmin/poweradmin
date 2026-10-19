@@ -189,6 +189,7 @@ CREATE INDEX idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(
 CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql', max_zones integer DEFAULT NULL);
 
 CREATE INDEX idx_users_perm_templ ON users(perm_templ);
+CREATE UNIQUE INDEX idx_users_username ON users(username);
 
 CREATE TABLE login_attempts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

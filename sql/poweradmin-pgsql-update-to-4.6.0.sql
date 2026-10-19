@@ -138,3 +138,16 @@ ALTER TABLE "public"."user_groups" ADD COLUMN IF NOT EXISTS "max_zones" integer 
 -- An encoded API record id holds the zone name twice plus the content, so an SOA
 -- in a long zone outgrew varchar(255) and zone creation from a template failed
 ALTER TABLE "public"."records_zone_templ_api" ALTER COLUMN "record_id" TYPE text;
+
+-- Usernames are unique (a rename could collide with another account). Older data may
+-- already hold a name twice; then the index is skipped with a warning. Find those rows with
+--   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;
+-- rename or remove the extra accounts and run this block again.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM "public"."users" WHERE "username" IS NOT NULL GROUP BY "username" HAVING COUNT(*) > 1) THEN
+        RAISE WARNING 'idx_users_username NOT created: users holds duplicate usernames, resolve them and re-run';
+    ELSE
+        CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_username" ON "public"."users" USING btree ("username");
+    END IF;
+END $$;

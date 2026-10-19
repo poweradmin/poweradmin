@@ -293,7 +293,8 @@ class DatabaseStructureHelper
                         'fields' => array(
                             'perm_templ' => array()
                         )
-                    )
+                    ),
+                    'idx_users_username' => array('username', 'unique' => true)
                 )
             ),
             array(

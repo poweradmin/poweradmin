@@ -62,3 +62,9 @@ COMMIT;
 -- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
 ALTER TABLE users ADD COLUMN max_zones integer DEFAULT NULL;
 ALTER TABLE user_groups ADD COLUMN max_zones INTEGER DEFAULT NULL;
+
+-- Usernames are unique (a rename could collide with another account). Kept last: on data
+-- that already holds a name twice this fails with "UNIQUE constraint failed". Find those rows with
+--   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;
+-- rename or remove the extra accounts and run this statement again.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username);
