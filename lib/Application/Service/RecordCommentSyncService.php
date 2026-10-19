@@ -22,9 +22,13 @@
 
 namespace Poweradmin\Application\Service;
 
+use PDO;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DomainUtility;
 
@@ -33,15 +37,25 @@ class RecordCommentSyncService
     private RecordCommentService $commentService;
     private ?RecordRepositoryInterface $recordRepository;
     private bool $isApiBackend;
+    private ?PermissionService $permissionService;
+    private ?PDO $db;
 
+    /**
+     * Without a permission service and database, updateRelatedRecordComments()
+     * leaves the related zone alone.
+     */
     public function __construct(
         RecordCommentService $commentService,
         ?RecordRepositoryInterface $recordRepository = null,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProvider $backendProvider = null,
+        ?PermissionService $permissionService = null,
+        ?PDO $db = null
     ) {
         $this->commentService = $commentService;
         $this->recordRepository = $recordRepository;
         $this->isApiBackend = $backendProvider !== null && $backendProvider->isApiBackend();
+        $this->permissionService = $permissionService;
+        $this->db = $db;
     }
 
     public function syncCommentsForPtrRecord(
@@ -99,7 +113,7 @@ class RecordCommentSyncService
                 ? DomainUtility::convertIPv4AddrToPtrRec($newRecordInfo['content'])
                 : DomainUtility::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $domainRepository->getBestMatchingZoneIdFromName($ptrName);
-            if ($ptrZoneId !== -1) {
+            if ($ptrZoneId !== -1 && $this->mayEditZone($domainRepository, $ptrZoneId)) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
@@ -116,10 +130,28 @@ class RecordCommentSyncService
                 }
             }
 
-            if ($contentDomainId !== null) {
+            if ($contentDomainId !== null && $this->mayEditZone($domainRepository, $contentDomainId)) {
                 $this->updateRecordComments($contentDomainId, $hostname, RecordType::A, $comment, $userLogin);
             }
         }
+    }
+
+    /**
+     * The related zone is derived from the record content, so it may be a zone
+     * the current user cannot edit.
+     */
+    private function mayEditZone(DomainRepositoryInterface $domainRepository, int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null || $this->permissionService === null || $this->db === null) {
+            return false;
+        }
+
+        if (ZoneType::isReadOnly($domainRepository->getDomainType($zoneId))) {
+            return false;
+        }
+
+        return $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zoneId) !== 'none';
     }
 
     private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void

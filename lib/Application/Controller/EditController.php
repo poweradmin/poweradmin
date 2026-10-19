@@ -112,7 +112,13 @@ class EditController extends BaseController
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository, $backendProvider);
+        $this->commentSyncService = new RecordCommentSyncService(
+            $this->recordCommentService,
+            $this->recordRepository,
+            $backendProvider,
+            $this->createPermissionService(),
+            $this->db
+        );
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 

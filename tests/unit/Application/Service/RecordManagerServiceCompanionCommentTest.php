@@ -30,6 +30,8 @@ use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -49,13 +51,22 @@ class RecordManagerServiceCompanionCommentTest extends TestCase
         $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (50, 5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 3600, 0, 0)");
         $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio, disabled) VALUES (60, 1, 'host.example.com', 'A', '192.0.2.1', 3600, 0, 0)");
         $this->comments = $this->createMock(RecordCommentService::class);
+        UserContextService::setApiUserContext(7, 'admin');
     }
 
-    private function service(bool $sync = true): RecordManagerService
+    protected function tearDown(): void
+    {
+        UserContextService::clearApiUserContext();
+    }
+
+    private function service(bool $sync = true, string $editLevel = 'own', string $zoneType = 'MASTER'): RecordManagerService
     {
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getBestMatchingZoneIdFromName')->willReturnCallback(fn(string $name) => str_ends_with($name, '.in-addr.arpa') ? 5 : -1);
         $domains->method('getDomainIdByName')->willReturnCallback(fn(string $name) => $name === 'example.com' ? 1 : null);
+        $domains->method('getDomainType')->willReturn($zoneType);
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getEditPermissionLevelForZone')->willReturn($editLevel);
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(fn(string $group, string $key) => match ("$group.$key") {
             'misc.record_comments_sync' => $sync,
@@ -73,7 +84,8 @@ class RecordManagerServiceCompanionCommentTest extends TestCase
             $this->comments,
             $this->createMock(LegacyLogger::class),
             $config,
-            $backend
+            $backend,
+            $permissions
         );
     }
 
@@ -109,5 +121,20 @@ class RecordManagerServiceCompanionCommentTest extends TestCase
 
         $this->service(false)->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
         $this->service()->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', '', 'admin');
+    }
+
+    public function testSkipsACompanionInAZoneTheUserCannotEdit(): void
+    {
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->service(editLevel: 'none')->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
+        $this->service(editLevel: 'none')->syncCompanionComment(1, 'host.example.com', 'A', '192.0.2.1', 'rack 4', 'admin');
+    }
+
+    public function testSkipsACompanionInAReadOnlyZone(): void
+    {
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->service(editLevel: 'all', zoneType: 'SLAVE')->syncCompanionComment(1, 'host.example.com', 'A', '192.0.2.1', 'rack 4', 'admin');
     }
 }

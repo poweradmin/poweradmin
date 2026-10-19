@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -30,6 +31,9 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\PermissionService;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
@@ -42,6 +46,7 @@ class RecordManagerService
     private LegacyLogger $logger;
     private ConfigurationManager $config;
     private ?DnsBackendProvider $backendProvider;
+    private ?PermissionService $permissionService;
 
     public function __construct(
         PDO $db,
@@ -50,7 +55,8 @@ class RecordManagerService
         RecordCommentService $recordCommentService,
         LegacyLogger $logger,
         ConfigurationManager $config,
-        ?DnsBackendProvider $backendProvider = null
+        ?DnsBackendProvider $backendProvider = null,
+        ?PermissionService $permissionService = null
     ) {
         $this->db = $db;
         $this->domainRepository = $domainRepository;
@@ -59,6 +65,7 @@ class RecordManagerService
         $this->logger = $logger;
         $this->config = $config;
         $this->backendProvider = $backendProvider;
+        $this->permissionService = $permissionService;
     }
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp, int $disabled = 0): bool
@@ -173,7 +180,7 @@ class RecordManagerService
             : DomainUtility::convertIPv6AddrToPtrRec($content);
 
         $ptrZoneId = $this->domainRepository->getBestMatchingZoneIdFromName($ptrName);
-        if ($ptrZoneId !== -1) {
+        if ($ptrZoneId !== -1 && $this->mayEditZone($ptrZoneId)) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
@@ -208,7 +215,7 @@ class RecordManagerService
             }
         }
 
-        if ($contentDomainId !== null) {
+        if ($contentDomainId !== null && $this->mayEditZone($contentDomainId)) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
 
@@ -223,5 +230,21 @@ class RecordManagerService
                 );
             }
         }
+    }
+
+    /**
+     * The related zone is derived from the record content, so it may be a zone
+     * the current user cannot edit.
+     */
+    private function mayEditZone(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null || ZoneType::isReadOnly($this->domainRepository->getDomainType($zoneId))) {
+            return false;
+        }
+
+        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
+
+        return $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zoneId) !== 'none';
     }
 }
