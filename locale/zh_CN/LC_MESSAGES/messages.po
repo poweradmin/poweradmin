@@ -15210,3 +15210,7 @@ msgstr "没有仅大小写不同的两个区域"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d 个区域名称以不同大小写使用"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "您只能分配其权限您已全部拥有的权限模板。"

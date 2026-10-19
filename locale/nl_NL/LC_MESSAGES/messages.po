@@ -16460,3 +16460,7 @@ msgstr "Geen twee zones verschillen alleen in hoofdletters/kleine letters"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zonenamen worden met verschillende hoofdletters/kleine letters gebruikt"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "U kunt alleen een rechtensjabloon toewijzen waarvan u de rechten al hebt."

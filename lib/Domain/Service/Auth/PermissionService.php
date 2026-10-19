@@ -39,6 +39,7 @@ class PermissionService
     public const TEMPLATE_ASSIGN_DENIED = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
     public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
     public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
+    public const TEMPLATE_NOT_SUBSET_DENIED = 'Assigning a permission template that grants permissions you do not hold requires user_edit_others';
 
     /**
      * Level ladders: name => [grants that yield "all", grants that yield "own"].
@@ -470,6 +471,16 @@ class PermissionService
 
         if ($this->templateGrantsUberuser($permTemplId)) {
             return self::TEMPLATE_SUPERUSER_DENIED;
+        }
+
+        // A new account may not receive more than its creator holds, or a delegate
+        // could mint an account with user_edit_others and act through it
+        if (
+            $targetUserId === null
+            && !$this->hasPermission($actorId, Permission::PERM_USER_EDIT_OTHERS)
+            && array_diff($this->userRepository->getTemplatePermissionNames($permTemplId), $this->getUserPermissions($actorId)) !== []
+        ) {
+            return self::TEMPLATE_NOT_SUBSET_DENIED;
         }
 
         return null;

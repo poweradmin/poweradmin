@@ -16322,3 +16322,7 @@ msgstr "Nėra dviejų zonų, kurios skirtųsi tik raidžių dydžiu"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zonų pavadinimų naudojami skirtingu raidžių dydžiu"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Galite priskirti tik tokį teisių šabloną, kurio teises jau turite."

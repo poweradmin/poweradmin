@@ -15991,3 +15991,7 @@ msgstr "कोई भी दो ज़ोन केवल अक्षरों 
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d ज़ोन नाम अलग-अलग अक्षर केस में उपयोग किए गए हैं"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "आप केवल वही अनुमति टेम्पलेट असाइन कर सकते हैं जिसकी अनुमतियाँ आपके पास पहले से हैं।"

@@ -15540,3 +15540,7 @@ msgstr "ไม่มีโซนสองโซนที่ต่างกัน
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "มี ชื่อโซน %d รายการที่ใช้ตัวพิมพ์ใหญ่/เล็กต่างกัน"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "คุณสามารถกำหนดได้เฉพาะเทมเพลตสิทธิ์ที่คุณมีสิทธิ์ทั้งหมดอยู่แล้วเท่านั้น"

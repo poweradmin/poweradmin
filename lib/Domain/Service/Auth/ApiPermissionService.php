@@ -38,6 +38,7 @@ class ApiPermissionService
     public const TEMPLATE_ASSIGN_DENIED = PermissionService::TEMPLATE_ASSIGN_DENIED;
     public const TEMPLATE_SELF_ASSIGN_DENIED = PermissionService::TEMPLATE_SELF_ASSIGN_DENIED;
     public const TEMPLATE_SUPERUSER_DENIED = PermissionService::TEMPLATE_SUPERUSER_DENIED;
+    public const TEMPLATE_NOT_SUBSET_DENIED = PermissionService::TEMPLATE_NOT_SUBSET_DENIED;
 
     private UserLookupInterface&UserPermissionReadInterface $userRepository;
     private PermissionService $permissions;

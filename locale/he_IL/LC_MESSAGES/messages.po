@@ -15807,3 +15807,7 @@ msgstr "אין שני אזורים שנבדלים רק באותיות גדולו
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d שמות אזורים בשימוש באותיות גדולות/קטנות שונות"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "ניתן להקצות רק תבנית הרשאות שכל ההרשאות שבה כבר בידיך."

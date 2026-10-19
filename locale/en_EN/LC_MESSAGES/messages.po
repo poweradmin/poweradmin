@@ -16181,3 +16181,7 @@ msgstr "No two zones differ only in letter case"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zone names are used in more than one letter case"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "You can only assign a permission template whose permissions you already hold."

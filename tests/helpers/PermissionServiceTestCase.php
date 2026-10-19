@@ -40,6 +40,7 @@ abstract class PermissionServiceTestCase extends TestCase
      * @param array<int, int> $templateByUser user id => perm_templ id
      * @param int[] $superuserTemplateIds templates that grant user_is_ueberuser
      * @param array<int, int[]> $groupIdsByUser user id => ids of the groups the user belongs to
+     * @param array<int, string[]> $permissionsByTemplate perm_templ id => permission names it grants
      */
     protected function buildPermissionService(
         array $permissionsByUser = [],
@@ -47,7 +48,8 @@ abstract class PermissionServiceTestCase extends TestCase
         array $ownedZonesByUser = [],
         array $templateByUser = [],
         array $superuserTemplateIds = [],
-        array $groupIdsByUser = []
+        array $groupIdsByUser = [],
+        array $permissionsByTemplate = []
     ): PermissionService {
         return new PermissionService($this->scriptedUserRepository(
             $permissionsByUser,
@@ -55,7 +57,8 @@ abstract class PermissionServiceTestCase extends TestCase
             $ownedZonesByUser,
             $templateByUser,
             $superuserTemplateIds,
-            $groupIdsByUser
+            $groupIdsByUser,
+            $permissionsByTemplate
         ));
     }
 
@@ -66,6 +69,7 @@ abstract class PermissionServiceTestCase extends TestCase
      * @param array<int, int> $templateByUser
      * @param int[] $superuserTemplateIds
      * @param array<int, int[]> $groupIdsByUser
+     * @param array<int, string[]> $permissionsByTemplate
      */
     protected function scriptedUserRepository(
         array $permissionsByUser = [],
@@ -73,7 +77,8 @@ abstract class PermissionServiceTestCase extends TestCase
         array $ownedZonesByUser = [],
         array $templateByUser = [],
         array $superuserTemplateIds = [],
-        array $groupIdsByUser = []
+        array $groupIdsByUser = [],
+        array $permissionsByTemplate = []
     ): UserRepositoryInterface&MockObject {
         $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserPermissions')
@@ -92,6 +97,8 @@ abstract class PermissionServiceTestCase extends TestCase
                 : null);
         $repository->method('templateGrantsUberuser')
             ->willReturnCallback(fn(int $templId): bool => in_array($templId, $superuserTemplateIds, true));
+        $repository->method('getTemplatePermissionNames')
+            ->willReturnCallback(fn(int $templId): array => $permissionsByTemplate[$templId] ?? []);
 
         return $repository;
     }

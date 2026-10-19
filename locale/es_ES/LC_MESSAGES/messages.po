@@ -16580,3 +16580,7 @@ msgstr "No hay dos zonas que solo difieran en mayúsculas y minúsculas"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d nombres de zona se usan con distintas mayúsculas y minúsculas"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Solo puede asignar una plantilla de permisos cuyos permisos ya tenga."

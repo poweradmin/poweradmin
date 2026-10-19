@@ -296,4 +296,116 @@ class PermissionTemplateAssignmentGuardTest extends PermissionServiceTestCase
 
         $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
     }
+
+    /**
+     * @param string[] $callerPermissions
+     * @param array<int, string[]> $permissionsByTemplate
+     */
+    private function subsetService(array $callerPermissions, array $permissionsByTemplate, array $superuserTemplateIds = []): PermissionService
+    {
+        return $this->buildPermissionService(
+            permissionsByUser: [7 => $callerPermissions],
+            superuserTemplateIds: $superuserTemplateIds,
+            permissionsByTemplate: $permissionsByTemplate
+        );
+    }
+
+    public function testCreateRefusesTemplateGrantingPermissionsTheCallerLacks(): void
+    {
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM],
+            [5 => [Permission::PERM_USER_EDIT_OTHERS, Permission::PERM_USER_PASSWD_EDIT_OTHERS]]
+        );
+        $input = ['perm_templ' => 5, 'username' => 'helper'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertSame(PermissionService::TEMPLATE_NOT_SUBSET_DENIED, $error);
+    }
+
+    public function testCreateAllowsTemplateWithinTheCallersEffectivePermissions(): void
+    {
+        // The caller's set is the merged template and group set getUserPermissions() returns
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM, Permission::PERM_ZONE_CONTENT_VIEW_OWN],
+            [5 => [Permission::PERM_USER_ADD_NEW, Permission::PERM_ZONE_CONTENT_VIEW_OWN]]
+        );
+        $input = ['perm_templ' => 5];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null));
+    }
+
+    public function testCreateAllowsRicherTemplateForUserEditOthersHolder(): void
+    {
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM, Permission::PERM_USER_EDIT_OTHERS],
+            [5 => [Permission::PERM_USER_EDIT_OTHERS, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS]]
+        );
+        $input = ['perm_templ' => 5];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null));
+    }
+
+    public function testSuperuserTemplateKeepsItsOwnMessageBeforeTheSubsetCheck(): void
+    {
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM],
+            [1 => [Permission::PERM_USER_IS_UEBERUSER]],
+            [1]
+        );
+        $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+    }
+
+    public function testUeberuserSkipsTheSubsetCheck(): void
+    {
+        $svc = $this->buildPermissionService(
+            adminUserIds: [7],
+            permissionsByTemplate: [5 => [Permission::PERM_USER_EDIT_OTHERS]]
+        );
+        $input = ['perm_templ' => 5];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null));
+    }
+
+    public function testAnOmittedTemplateFallsBackToTheMinimalOneWithoutTheSubsetCheck(): void
+    {
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM],
+            [4 => [Permission::PERM_ZONE_CONTENT_VIEW_OWN]]
+        );
+        $input = ['username' => 'helper'];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null));
+        $this->assertSame(4, $input['perm_templ']);
+    }
+
+    public function testAnExplicitMinimalTemplateIsCheckedLikeAnyOther(): void
+    {
+        // Template ids are not stable: deleting templates can make a richer one the minimal
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM],
+            [4 => [Permission::PERM_ZONE_CONTENT_VIEW_OWN], 5 => [Permission::PERM_USER_EDIT_OTHERS]]
+        );
+        $minimal = ['perm_templ' => 4];
+        $richer = ['perm_templ' => 5];
+
+        $this->assertSame(PermissionService::TEMPLATE_NOT_SUBSET_DENIED, PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $minimal, null));
+        $this->assertSame(PermissionService::TEMPLATE_NOT_SUBSET_DENIED, PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $richer, null));
+    }
+
+    public function testAnExplicitSuperuserMinimalTemplateKeepsTheSuperuserMessage(): void
+    {
+        $svc = $this->subsetService(
+            [Permission::PERM_USER_ADD_NEW, Permission::PERM_USER_EDIT_TEMPL_PERM],
+            [4 => [Permission::PERM_USER_IS_UEBERUSER]],
+            [4]
+        );
+        $input = ['perm_templ' => 4];
+
+        $this->assertSame(PermissionService::TEMPLATE_SUPERUSER_DENIED, PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null));
+    }
 }

@@ -16203,3 +16203,7 @@ msgstr "Ingen to soner skiller seg bare i store/små bokstaver"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d sonenavn brukes med ulike store/små bokstaver"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Du kan bare tildele en tilgangsmal med tillatelser du allerede har."

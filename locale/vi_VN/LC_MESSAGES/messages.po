@@ -16182,3 +16182,7 @@ msgstr "Không có hai vùng nào chỉ khác nhau về chữ hoa/chữ thườn
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d tên vùng được dùng với chữ hoa/chữ thường khác nhau"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Bạn chỉ có thể gán mẫu quyền hạn có các quyền mà bạn đã có."

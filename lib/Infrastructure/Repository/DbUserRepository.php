@@ -1203,6 +1203,18 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$stmt->fetchColumn();
     }
 
+    public function getTemplatePermissionNames(int $permTemplId): array
+    {
+        $stmt = $this->db->prepare("SELECT DISTINCT perm_items.name
+                  FROM perm_templ_items
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_templ_items.templ_id = :templId");
+        $stmt->bindValue(':templId', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('strval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function findPermissionTemplateIdByName(string $name): ?int
     {
         $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');

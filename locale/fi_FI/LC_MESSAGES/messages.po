@@ -16066,3 +16066,7 @@ msgstr "Mitkään kaksi aluetta eivät eroa vain kirjainkoolta"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d alueen nimeä on käytössä eri kirjainkoolla"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Voit määrittää vain käyttöoikeusmallin, jonka oikeudet sinulla jo on."

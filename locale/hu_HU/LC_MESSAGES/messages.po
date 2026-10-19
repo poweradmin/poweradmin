@@ -16442,3 +16442,7 @@ msgstr "Nincs két zóna, amely csak kis- és nagybetűben tér el"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zónanév eltérő kis- és nagybetűkkel is használatban van"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Csak olyan engedélysablont rendelhet hozzá, amelynek engedélyeivel már rendelkezik."

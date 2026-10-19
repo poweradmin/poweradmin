@@ -15910,3 +15910,7 @@ msgstr "Nema dvije zone koje se razlikuju samo po velikim/malim slovima"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d naziva zona koristi se s različitim velikim/malim slovima"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Možete dodijeliti samo šablon dozvola čije dozvole već imate."

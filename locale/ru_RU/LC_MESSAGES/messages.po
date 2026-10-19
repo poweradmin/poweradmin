@@ -16426,3 +16426,7 @@ msgstr "Нет двух зон, отличающихся только регис
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "Имён зон, используемых в разном регистре: %d"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Можно назначить только шаблон прав, все права которого у вас уже есть."

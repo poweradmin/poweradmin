@@ -16013,3 +16013,7 @@ msgstr "Nav divu zonu, kas atšķiras tikai ar burtu reģistru"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zonu nosaukumi tiek lietoti ar atšķirīgu burtu reģistru"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Varat piešķirt tikai tādu atļauju veidni, kuras atļaujas jums jau ir."

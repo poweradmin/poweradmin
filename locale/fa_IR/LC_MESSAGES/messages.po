@@ -16138,3 +16138,7 @@ msgstr "هیچ دو منطقه‌ای فقط در حروف بزرگ و کوچک 
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d نام منطقه با حروف بزرگ و کوچک متفاوت استفاده شده است"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "فقط می‌توانید قالب مجوزی را تخصیص دهید که همه مجوزهای آن را از قبل دارید."

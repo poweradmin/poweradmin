@@ -16628,3 +16628,7 @@ msgstr "Keine zwei Zonen unterscheiden sich nur in der Groß-/Kleinschreibung"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d Zonennamen werden in unterschiedlicher Groß-/Kleinschreibung verwendet"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Sie können nur eine Berechtigungsvorlage zuweisen, deren Berechtigungen Sie bereits besitzen."

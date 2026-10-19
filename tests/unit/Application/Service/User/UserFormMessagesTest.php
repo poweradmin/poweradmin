@@ -50,6 +50,7 @@ class UserFormMessagesTest extends TestCase
         $this->assertStringContainsString('administrator rights', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_SUPERUSER_DENIED));
         $this->assertStringContainsString('your own permission template', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_SELF_ASSIGN_DENIED));
         $this->assertStringContainsString('do not have the permission', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_ASSIGN_DENIED));
+        $this->assertStringContainsString('you already hold', UserFormMessages::templateAssignmentError(PermissionService::TEMPLATE_NOT_SUBSET_DENIED));
     }
 
     public function testLastAdminRefusalsSayWhichChangeWasRefused(): void

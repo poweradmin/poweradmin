@@ -15955,3 +15955,7 @@ msgstr "Ei leitud tsoone, mille nimed erinevad ainult suur- ja väiketähtede po
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d tsooni nime on kasutusel erinevate suur- ja väiketähtedega"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Saate määrata ainult sellise õiguste malli, mille õigused teil juba on."

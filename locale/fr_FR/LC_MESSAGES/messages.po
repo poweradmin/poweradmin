@@ -16832,3 +16832,7 @@ msgstr "Aucune zone ne diffère d'une autre uniquement par la casse"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d noms de zone sont utilisés avec une casse différente"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Vous ne pouvez attribuer qu'un modèle de permissions dont vous détenez déjà les permissions."

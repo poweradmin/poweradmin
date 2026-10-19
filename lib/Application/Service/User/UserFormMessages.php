@@ -83,6 +83,7 @@ final class UserFormMessages
         return match ($error) {
             PermissionService::TEMPLATE_SELF_ASSIGN_DENIED => _('Changing your own permission template requires the permission to edit other users.'),
             PermissionService::TEMPLATE_SUPERUSER_DENIED => _('Assigning a permission template with administrator rights requires administrator rights.'),
+            PermissionService::TEMPLATE_NOT_SUBSET_DENIED => _('You can only assign a permission template whose permissions you already hold.'),
             default => _('You do not have the permission to change the permission template.'),
         };
     }

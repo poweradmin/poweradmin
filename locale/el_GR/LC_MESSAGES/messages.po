@@ -16805,3 +16805,7 @@ msgstr "Δεν υπάρχουν δύο ζώνες που διαφέρουν μό
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d ονόματα ζωνών χρησιμοποιούνται με διαφορετικά κεφαλαία/πεζά"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Μπορείτε να αναθέσετε μόνο ένα πρότυπο άδειας του οποίου τα δικαιώματα έχετε ήδη."

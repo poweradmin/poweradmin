@@ -15988,3 +15988,7 @@ msgstr "لا توجد منطقتان تختلفان فقط في حالة الأ�
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d من أسماء المناطق مستخدمة بحالات أحرف مختلفة"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "يمكنك فقط تعيين قالب صلاحيات تمتلك جميع صلاحياته بالفعل."

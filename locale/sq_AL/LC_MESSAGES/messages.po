@@ -16592,3 +16592,7 @@ msgstr "Asnjë dy zona nuk ndryshojnë vetëm nga shkronjat e mëdha/të vogla"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d emra zonash përdoren me shkronja të mëdha/të vogla të ndryshme"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Mund të caktoni vetëm një model lejesh, lejet e të cilit i keni tashmë."

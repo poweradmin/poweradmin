@@ -16299,3 +16299,7 @@ msgstr "Yalnızca büyük/küçük harf farkı olan iki bölge yok"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d bölge adı farklı büyük/küçük harflerle kullanılıyor"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Yalnızca izinlerine zaten sahip olduğunuz bir izin şablonu atayabilirsiniz."

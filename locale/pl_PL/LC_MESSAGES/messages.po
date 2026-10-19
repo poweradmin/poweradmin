@@ -16423,3 +16423,7 @@ msgstr "Żadne dwie strefy nie różnią się tylko wielkością liter"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d nazw stref jest używanych z różną wielkością liter"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Możesz przypisać tylko szablon uprawnień, którego uprawnienia już posiadasz."

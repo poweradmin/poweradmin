@@ -16250,3 +16250,7 @@ msgstr "大文字と小文字だけが異なるゾーンはありません"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d 個のゾーン名が大文字と小文字の異なる形で使われています"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "割り当てられるのは、すでに保有している権限のみを含む権限テンプレートだけです。"

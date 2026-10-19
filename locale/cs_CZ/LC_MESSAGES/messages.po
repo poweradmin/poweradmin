@@ -16227,3 +16227,7 @@ msgstr "Žádné dvě zóny se neliší jen velikostí písmen"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d názvů zón je použito s různou velikostí písmen"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Můžete přiřadit pouze šablonu oprávnění, jejíž oprávnění již máte."

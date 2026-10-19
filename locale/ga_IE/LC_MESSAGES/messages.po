@@ -16702,3 +16702,7 @@ msgstr "Níl aon dá chrios difriúil ach i gcás na litreacha"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "Úsáidtear %d ainm crios i gcás litreacha éagsúla"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Ní féidir leat ach teimpléad ceadanna a shannadh a bhfuil a cheadanna agat cheana féin."

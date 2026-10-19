@@ -16320,3 +16320,7 @@ msgstr "Nobeni dve coni se ne razlikujeta le po velikih/malih črkah"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "Imena con, uporabljena z različnimi velikimi/malimi črkami: %d"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Dodelite lahko samo predlogo dovoljenj, katere dovoljenja že imate."

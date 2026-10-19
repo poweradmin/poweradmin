@@ -16378,3 +16378,7 @@ msgstr "Tiada dua zon yang hanya berbeza pada huruf besar/kecil"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d nama zon digunakan dengan huruf besar/kecil yang berbeza"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Anda hanya boleh memberikan templat kebenaran yang kebenarannya sudah anda miliki."

@@ -16758,3 +16758,7 @@ msgstr "Nu există două zone care să difere doar prin majuscule/minuscule"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d nume de zonă sunt folosite cu majuscule/minuscule diferite"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Puteți atribui doar un șablon de permisiuni ale cărui permisiuni le dețineți deja."

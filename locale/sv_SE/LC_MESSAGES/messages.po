@@ -16257,3 +16257,7 @@ msgstr "Inga två zoner skiljer sig bara i versaler/gemener"
 #, php-format
 msgid "%d zone names are used in more than one letter case"
 msgstr "%d zonnamn används med olika versaler/gemener"
+
+#: lib/Application/Service/User/UserFormMessages.php:86
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Du kan bara tilldela en behörighetsmall vars behörigheter du redan har."
