@@ -13677,3 +13677,11 @@ msgid ""
 msgstr ""
 "Nu se poate crea această zonă deoarece se suprapune cu o zonă existentă "
 "deținută de alt utilizator."
+
+#: lib/Domain/Model/UserManager.php:1027
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

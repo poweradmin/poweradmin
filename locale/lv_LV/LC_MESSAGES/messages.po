@@ -13807,3 +13807,11 @@ msgid ""
 msgstr ""
 "Nevar izveidot šo zonu, jo tā pārklājas ar esošu zonu, kas pieder citam "
 "lietotājam."
+
+#: lib/Domain/Model/UserManager.php:1027
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

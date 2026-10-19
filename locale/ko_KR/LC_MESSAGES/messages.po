@@ -14780,3 +14780,11 @@ msgid ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
 msgstr "이 존은 다른 사용자가 소유한 기존 존과 겹치므로 생성할 수 없습니다."
+
+#: lib/Domain/Model/UserManager.php:1027
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

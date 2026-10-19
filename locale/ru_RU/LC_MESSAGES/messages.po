@@ -15150,3 +15150,11 @@ msgid ""
 msgstr ""
 "Невозможно создать эту зону, так как она пересекается с существующей зоной, "
 "принадлежащей другому пользователю."
+
+#: lib/Domain/Model/UserManager.php:1027
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

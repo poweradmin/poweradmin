@@ -13680,3 +13680,11 @@ msgid ""
 msgstr ""
 "Ez a zóna nem hozható létre, mert átfedésben van egy másik felhasználó "
 "tulajdonában lévő meglévő zónával."
+
+#: lib/Domain/Model/UserManager.php:1027
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."
