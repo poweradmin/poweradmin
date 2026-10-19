@@ -149,11 +149,12 @@ class BadgeTwigExtension extends AbstractExtension
 
     /**
      * Build a PdnsCapabilities snapshot from the session-cached PowerDNS
-     * version. Indirected so tests can override behaviour by subclassing.
+     * version, expired or not, so labels do not flip to Master/Slave once
+     * the cache ages out. Indirected so tests can override behaviour by subclassing.
      */
     protected function resolveCapabilities(): PdnsCapabilities
     {
-        $info = PdnsVersionService::getCachedInfo();
+        $info = PdnsVersionService::getCachedInfo(true);
         return PdnsCapabilities::fromVersion($info['version'] ?? null);
     }
 }
