@@ -14385,3 +14385,11 @@ msgstr "Nie masz uprawnień do usuwania rekordów LUA."
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr "Nie masz uprawnień do edycji tej strefy."
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Nie można utworzyć tej strefy, ponieważ pokrywa się z istniejącą strefą "
+"należącą do innego użytkownika."

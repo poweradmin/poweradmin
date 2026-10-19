@@ -14235,3 +14235,10 @@ msgstr "LUA レコードを削除する権限がありません。"
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr "このゾーンを編集する権限がありません。"
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"このゾーンは他のユーザーが所有する既存のゾーンと重複するため作成できません。"

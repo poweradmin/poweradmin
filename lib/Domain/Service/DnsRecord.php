@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,13 +34,14 @@ use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use PDO;
 
 /**
  * DNS record functions
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  * @deprecated This class is being refactored into smaller services. Use the specific service classes instead.
  */
@@ -502,6 +503,58 @@ class DnsRecord
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         return $this->domainRepository->getBestMatchingZoneIdFromName($domain);
+    }
+
+    /**
+     * Check whether a new zone would sit inside an existing zone the user does not own.
+     *
+     * PowerDNS answers from the most specific zone it holds, so a child zone takes
+     * over that part of the parent's namespace. Gated on dns.parent_zone_ownership_check;
+     * superusers and holders of zone_content_edit_others are exempt.
+     */
+    public function isInsideForeignZone(string $zoneName, int $userId, ?ApiPermissionService $permissionService = null): bool
+    {
+        if (!$this->config->get('dns', 'parent_zone_ownership_check', true)) {
+            return false;
+        }
+
+        $permissionService ??= new ApiPermissionService($this->db);
+        if (
+            $permissionService->userHasPermission($userId, 'user_is_ueberuser')
+            || $permissionService->userHasPermission($userId, 'zone_content_edit_others')
+        ) {
+            return false;
+        }
+
+        // Only the closest existing parent decides: owning it is legitimate sub-delegation,
+        // and a parent nobody owns blocks no one.
+        $labels = explode('.', strtolower(rtrim($zoneName, '.')));
+        for ($i = 1, $count = count($labels); $i < $count; $i++) {
+            $parentId = $this->getDomainIdByName(implode('.', array_slice($labels, $i)));
+            if ($parentId !== null) {
+                return !$permissionService->userOwnsZone($userId, $parentId) && $this->zoneHasOwner($parentId);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether a zone has any owner, a user or a group. Keyed by the same zone id
+     * as ApiPermissionService::userOwnsZone().
+     */
+    private function zoneHasOwner(int $zoneId): bool
+    {
+        $zoneIdColumn = 'zones.domain_id';
+        $stmt = $this->db->prepare("
+            SELECT (SELECT COUNT(*) FROM zones WHERE $zoneIdColumn = :zone_id AND zones.owner IS NOT NULL)
+                + (SELECT COUNT(*) FROM zones_groups WHERE zones_groups.domain_id = :group_zone_id)
+        ");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':group_zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     /** Check if Domain Exists

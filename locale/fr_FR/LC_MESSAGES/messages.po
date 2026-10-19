@@ -14734,3 +14734,11 @@ msgstr "Vous n'avez pas la permission de supprimer des enregistrements LUA."
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr "Vous n'avez pas la permission de modifier cette zone."
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Impossible de créer cette zone car elle chevauche une zone existante "
+"appartenant à un autre utilisateur."

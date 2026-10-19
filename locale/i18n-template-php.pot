@@ -12772,3 +12772,9 @@ msgstr ""
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr ""
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""

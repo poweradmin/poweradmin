@@ -13265,3 +13265,9 @@ msgstr "您没有删除 LUA 记录的权限。"
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr "您没有编辑此区域的权限。"
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "无法创建此区域，因为它与另一个用户拥有的现有区域重叠。"

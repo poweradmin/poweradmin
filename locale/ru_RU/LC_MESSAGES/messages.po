@@ -14303,3 +14303,11 @@ msgstr "У вас нет прав на удаление записей LUA."
 #: lib/Application/Controller/EditController.php:600
 msgid "You do not have the permission to edit this zone."
 msgstr "У вас нет разрешения на редактирование этой зоны."
+
+#: lib/BaseController.php:436
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Невозможно создать эту зону, так как она пересекается с существующей зоной, "
+"принадлежащей другому пользователю."
