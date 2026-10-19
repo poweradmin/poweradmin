@@ -557,6 +557,20 @@ class DnsRecord
         return (int)$stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Check whether the logged-in user may edit records in a zone (direct or group
+     * ownership, never a SLAVE zone). Used before writing to a zone the user did not pick.
+     */
+    public function currentUserMayEditZoneContent(int $zoneId): bool
+    {
+        $userId = (new UserContextService())->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+
+        return (new ApiPermissionService($this->db))->canEditZoneContent($userId, $zoneId, $this->getDomainType($zoneId));
+    }
+
     /** Check if Domain Exists
      *
      * Check if a domain is already existing.
