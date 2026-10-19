@@ -3525,16 +3525,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "6.0.8",
+            "version": "6.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "c36a6273888a184390bf68c9649cb54de9602696"
+                "reference": "d4e8d92d55aa2dfc623fa9ed542ff75e6bcde3d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/c36a6273888a184390bf68c9649cb54de9602696",
-                "reference": "c36a6273888a184390bf68c9649cb54de9602696",
+                "url": "https://api.github.com/repos/phan/phan/zipball/d4e8d92d55aa2dfc623fa9ed542ff75e6bcde3d5",
+                "reference": "d4e8d92d55aa2dfc623fa9ed542ff75e6bcde3d5",
                 "shasum": ""
             },
             "require": {
@@ -3605,9 +3605,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phan/phan/issues",
-                "source": "https://github.com/phan/phan/tree/6.0.8"
+                "source": "https://github.com/phan/phan/tree/6.0.9"
             },
-            "time": "2026-10-10T21:08:19+00:00"
+            "time": "2026-10-11T21:08:43+00:00"
         },
         {
             "name": "phan/tolerant-php-parser",
