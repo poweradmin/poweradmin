@@ -183,6 +183,14 @@ if (!empty($_REQUEST['myip6'])) {
     $given_ip6 = $_REQUEST['ip6'];
 }
 
+// An ip[]=... parameter arrives as an array and must not reach valid_ip_address()
+if (!is_string($given_ip)) {
+    $given_ip = '';
+}
+if (!is_string($given_ip6)) {
+    $given_ip6 = '';
+}
+
 if (valid_ip_address($given_ip) === 'AAAA') {
     $given_ip6 = $given_ip;
 }
