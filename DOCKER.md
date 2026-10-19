@@ -11,14 +11,13 @@ Poweradmin official Docker images are available at:
 
 ### Image Tags
 
-- **`stable`** - Current stable release line, recommended for production (currently the 4.3.x line)
-- **`4.3.x`** - Latest build of the 4.3.x stable line
-- **`4.2.x`** - Latest build of the 4.2.x maintenance line (security updates only)
+- **`stable`** - Recommended for production, currently the 4.4.x line
+- **`latest`** - Newest 4.5.x release
+- **`4.5.x`**, **`4.4.x`**, **`4.3.x`**, **`4.2.x`** - Latest build of each release branch, including fixes not yet released (4.3.x and 4.2.x are supported until 2027-01-31)
 - **`lts`** - Long-term support line from `release/3.x` (bug fixes and security updates only)
-- **`latest`** - Latest build from the `master` branch (upcoming minor, not for production)
-- **`dev`** - Development build from the `develop` branch (experimental features, not for production)
-- **`4.3.5`** - Specific, immutable version tags (e.g., `4.2.6`, `4.3.5`); image tags carry no `v` prefix
-- **`4`**, **`4.2`**, **`4.3`** - Semver aliases that track the newest patch in that series
+- **`dev`** - Development build from the `master` branch (4.6.0 work, not for production)
+- **`4.5.0`** - Specific, immutable version tags (e.g., `4.4.2`, `4.5.0`); image tags carry no `v` prefix
+- **`4`**, **`4.5`** - Semver aliases that track the newest patch in that series (e.g., `4.4` for the newest 4.4.x)
 
 ### Moving the `stable` tag to a new release line
 
@@ -37,7 +36,11 @@ When the stable line changes:
    moves without waiting for the next tag build.
 4. Update the `stable` entry in the tag list above to name the new line.
 
-For production deployments, use the `stable` tag or pin a specific version tag (e.g., `4.3.5`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `latest` and `dev` tags track in-development branches and should not be used in production.
+The `latest` tag comes from one rule in `docker.yml` on `master` and
+`release/4.5.x`, matched on the `v4.5.` tag prefix. When the next release line
+opens, change that prefix on `master` and remove the rule from the outgoing branch.
+
+For production deployments, use the `stable` tag or pin a specific version tag (e.g., `4.4.2`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `dev` tag tracks `master` and should not be used in production.
 
 ## Quick Start
 
