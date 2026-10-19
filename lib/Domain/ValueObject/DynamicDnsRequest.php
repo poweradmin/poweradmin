@@ -41,12 +41,12 @@ readonly class DynamicDnsRequest
 
     public static function fromHttpRequest(Request $request): self
     {
-        $username = $_SERVER['PHP_AUTH_USER'] ?? $request->query->get('username', '');
-        $password = $_SERVER['PHP_AUTH_PW'] ?? $request->query->get('password', '');
-        $hostname = $request->query->get('hostname', '');
-        $ipv4 = $request->query->get('myip') ?? $request->query->get('ip', '');
-        $ipv6 = $request->query->get('myip6') ?? $request->query->get('ip6', '');
-        $dualstackUpdate = $request->query->get('dualstack_update') === '1';
+        $username = $_SERVER['PHP_AUTH_USER'] ?? self::queryString($request, 'username') ?? '';
+        $password = $_SERVER['PHP_AUTH_PW'] ?? self::queryString($request, 'password') ?? '';
+        $hostname = self::queryString($request, 'hostname') ?? '';
+        $ipv4 = self::queryString($request, 'myip') ?? self::queryString($request, 'ip') ?? '';
+        $ipv6 = self::queryString($request, 'myip6') ?? self::queryString($request, 'ip6') ?? '';
+        $dualstackUpdate = self::queryString($request, 'dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
         [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
@@ -74,6 +74,17 @@ readonly class DynamicDnsRequest
             $dualstackUpdate,
             $userAgent
         );
+    }
+
+    /**
+     * Read a query value as a string; an array such as myip[]=1 reads as absent,
+     * since InputBag::get() throws on it and the endpoint answered with a 500.
+     */
+    private static function queryString(Request $request, string $key): ?string
+    {
+        $value = $request->query->all()[$key] ?? null;
+
+        return is_scalar($value) ? (string)$value : null;
     }
 
     /**
