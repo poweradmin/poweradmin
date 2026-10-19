@@ -256,4 +256,27 @@ class DynamicDnsRequestFactoryTest extends TestCase
         // client - add 203.0.113.1 to security.trusted_proxies to look further left.
         $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
     }
+
+    public function testArrayQueryValuesAreTreatedAsAbsent(): void
+    {
+        $request = Request::create('/dynamic_update.php?username[]=u&password[]=p&hostname[]=h&myip[]=1&myip6[]=2&dualstack_update[]=1');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('', $dynamicDnsRequest->getUsername());
+        $this->assertSame('', $dynamicDnsRequest->getPassword());
+        $this->assertSame('', $dynamicDnsRequest->getHostname());
+        $this->assertSame('', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('', $dynamicDnsRequest->getIpv6());
+        $this->assertFalse($dynamicDnsRequest->isDualstackUpdate());
+    }
+
+    public function testAnArrayMyipFallsBackToTheIpParameter(): void
+    {
+        $request = Request::create('/dynamic_update.php?hostname=h.example.com&myip[]=1&ip=192.0.2.5');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('192.0.2.5', $dynamicDnsRequest->getIpv4());
+    }
 }
