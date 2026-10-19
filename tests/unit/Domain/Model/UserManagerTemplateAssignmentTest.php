@@ -123,16 +123,50 @@ class UserManagerTemplateAssignmentTest extends TestCase
         $this->assertStringContainsString('administrator rights', $error);
     }
 
+    public function testCreateRejectsATemplateGrantingPermissionsTheCallerLacks(): void
+    {
+        $error = $this->check(
+            callerIsSuperuser: false,
+            callerMayEditOthers: false,
+            templateIsSuperuser: false,
+            targetUserId: null,
+            templatePermissions: ['user_edit_others', 'user_passwd_edit_others']
+        );
+
+        $this->assertNotNull($error);
+        $this->assertStringContainsString('permissions you already hold', $error);
+    }
+
+    public function testCreateByCallerWhoMayEditOthersSkipsTheSubsetCheck(): void
+    {
+        $error = $this->check(
+            callerIsSuperuser: false,
+            callerMayEditOthers: true,
+            templateIsSuperuser: false,
+            targetUserId: null,
+            templatePermissions: ['user_passwd_edit_others']
+        );
+
+        $this->assertNull($error);
+    }
+
+    /**
+     * @param list<string> $templatePermissions
+     */
     private function check(
         bool $callerIsSuperuser,
         bool $callerMayEditOthers,
         bool $templateIsSuperuser,
-        ?int $targetUserId
+        ?int $targetUserId,
+        array $templatePermissions = []
     ): ?string {
         $_SESSION['userid'] = self::CALLER_ID;
 
+        // fetchColumn answers both the superuser-template query and the caller's
+        // permission lookups; the caller holds none of the template's permissions.
         $statement = $this->createMock(PDOStatement::class);
         $statement->method('fetchColumn')->willReturn($templateIsSuperuser ? 1 : 0);
+        $statement->method('fetchAll')->willReturn($templatePermissions);
 
         $db = $this->createMock(PDOCommon::class);
         $db->method('prepare')->willReturn($statement);

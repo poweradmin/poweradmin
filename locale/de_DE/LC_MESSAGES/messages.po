@@ -14556,3 +14556,11 @@ msgid ""
 msgstr ""
 "Diese Zone kann nicht erstellt werden, da sie sich mit einer bestehenden "
 "Zone eines anderen Benutzers überschneidet."
+
+#: lib/Domain/Model/UserManager.php:994
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

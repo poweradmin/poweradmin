@@ -13512,3 +13512,11 @@ msgid ""
 msgstr ""
 "Không thể tạo vùng này vì nó chồng lấn với một vùng hiện có thuộc sở hữu của "
 "người dùng khác."
+
+#: lib/Domain/Model/UserManager.php:994
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

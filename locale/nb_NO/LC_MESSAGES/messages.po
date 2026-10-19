@@ -14190,3 +14190,11 @@ msgid ""
 msgstr ""
 "Kan ikke opprette denne sonen fordi den overlapper en eksisterende sone som "
 "eies av en annen bruker."
+
+#: lib/Domain/Model/UserManager.php:994
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

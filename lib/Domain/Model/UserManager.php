@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -983,6 +984,16 @@ class UserManager
 
         if ($this->templateGrantsUberuser($permTemplId)) {
             return _('Assigning a permission template with administrator rights requires administrator rights.');
+        }
+
+        // A new account is not a route to permissions the creator does not hold.
+        if ($targetUserId === null && !$callerMayEditOthers) {
+            $permissionService = new ApiPermissionService($this->db);
+            foreach ($permissionService->getTemplatePermissionNames($permTemplId) as $permission) {
+                if (!$permissionService->userHasPermission((int)$_SESSION["userid"], $permission)) {
+                    return _('You can only assign a permission template whose permissions you already hold.');
+                }
+            }
         }
 
         return null;

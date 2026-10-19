@@ -14211,3 +14211,11 @@ msgid ""
 msgstr ""
 "Tuto zónu nelze vytvořit, protože se překrývá s existující zónou, kterou "
 "vlastní jiný uživatel."
+
+#: lib/Domain/Model/UserManager.php:994
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

@@ -213,4 +213,83 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $this->assertNull($error);
         $this->assertSame(4, $input['perm_templ'], 'Caller did not choose; safe minimal template injected');
     }
+
+    /**
+     * @param list<string> $callerPermissions
+     * @param list<string> $templatePermissions
+     */
+    private function delegateService(array $callerPermissions, array $templatePermissions): ApiPermissionService
+    {
+        $svc = $this->createMock(ApiPermissionService::class);
+        $svc->method('userHasPermission')->willReturnCallback(
+            static fn(int $userId, string $perm): bool => in_array($perm, $callerPermissions, true)
+        );
+        $svc->method('templateGrantsSuperuser')->willReturn(false);
+        $svc->method('getTemplatePermissionNames')->willReturn($templatePermissions);
+        return $svc;
+    }
+
+    public function testCreateWithoutTemplateGetsTheMinimalDefaultEvenWithPermissionsTheCallerLacks(): void
+    {
+        $svc = $this->delegateService(['user_add_new', 'user_edit_templ_perm'], ['zone_content_view_own']);
+        $input = ['username' => 'x'];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input));
+        $this->assertSame(4, $input['perm_templ']);
+    }
+
+    public function testCreateWithTheMinimalTemplateSubmittedExplicitlyIsStillChecked(): void
+    {
+        $svc = $this->delegateService(['user_add_new', 'user_edit_templ_perm'], ['zone_content_view_own']);
+        $input = ['perm_templ' => 4];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+
+        $this->assertSame(PermissionTemplateAssignmentGuard::TEMPLATE_SUBSET_MESSAGE, $error);
+    }
+
+    public function testCreateWithTemplateRicherThanCallerIsRejected(): void
+    {
+        $svc = $this->delegateService(
+            ['user_add_new', 'user_edit_templ_perm'],
+            ['user_add_new', 'user_edit_others', 'user_passwd_edit_others']
+        );
+        $input = ['perm_templ' => 5];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+
+        $this->assertSame(PermissionTemplateAssignmentGuard::TEMPLATE_SUBSET_MESSAGE, $error);
+    }
+
+    public function testCreateWithTemplateWithinCallerPermissionsIsAllowed(): void
+    {
+        $svc = $this->delegateService(
+            ['user_add_new', 'user_edit_templ_perm', 'zone_content_view_own'],
+            ['zone_content_view_own']
+        );
+        $input = ['perm_templ' => 5];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input));
+    }
+
+    public function testCreateByCallerWhoMayEditOthersSkipsTheSubsetCheck(): void
+    {
+        $svc = $this->delegateService(
+            ['user_edit_templ_perm', 'user_edit_others'],
+            ['user_passwd_edit_others']
+        );
+        $input = ['perm_templ' => 5];
+
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input));
+    }
+
+    public function testSuperuserTemplateKeepsItsOwnMessageOnCreate(): void
+    {
+        $svc = $this->permissionService(isUeberuser: false, canEditTemplPerm: true, templateGrantsSuperuser: true);
+        $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input);
+
+        $this->assertSame(PermissionTemplateAssignmentGuard::SUPERUSER_TEMPLATE_MESSAGE, $error);
+    }
 }

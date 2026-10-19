@@ -484,6 +484,25 @@ class ApiPermissionService
     }
 
     /**
+     * Names of the permissions a permission template grants.
+     *
+     * @return list<string>
+     */
+    public function getTemplatePermissionNames(int $permTemplId): array
+    {
+        $stmt = $this->db->prepare("
+            SELECT pi.name
+            FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = :templ_id
+        ");
+        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_values(array_map('strval', $stmt->fetchAll(PDO::FETCH_COLUMN) ?: []));
+    }
+
+    /**
      * Check if user can list all users (stateless)
      *
      * @param int $userId User ID to check

@@ -14300,3 +14300,11 @@ msgid ""
 msgstr ""
 "Nepavyksta sukurti šios zonos, nes ji sutampa su esama zona, priklausančia "
 "kitam naudotojui."
+
+#: lib/Domain/Model/UserManager.php:994
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."
