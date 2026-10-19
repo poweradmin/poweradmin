@@ -78,6 +78,7 @@ class RecordCommentSyncServiceTest extends TestCase
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
         $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $dnsRecordMock->method('currentUserMayEditZoneContent')->willReturn(true);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -92,6 +93,7 @@ class RecordCommentSyncServiceTest extends TestCase
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
         $dnsRecordMock->method('getDomainIdByName')->willReturn(1);
+        $dnsRecordMock->method('currentUserMayEditZoneContent')->willReturn(true);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -141,5 +143,21 @@ class RecordCommentSyncServiceTest extends TestCase
 
         $service = new RecordCommentSyncService($commentServiceMock);
         $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsZonesTheUserMayNotEdit()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $dnsRecordMock->method('getDomainIdByName')->willReturn(1);
+        $dnsRecordMock->method('currentUserMayEditZoneContent')->willReturn(false);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())
+            ->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
     }
 }

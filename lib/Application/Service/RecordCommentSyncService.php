@@ -98,7 +98,7 @@ class RecordCommentSyncService
                 ? DnsRecord::convertIPv4AddrToPtrRec($newRecordInfo['content'])
                 : DnsRecord::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->getBestMatchingZoneIdFromName($ptrName);
-            if ($ptrZoneId !== -1) {
+            if ($ptrZoneId !== -1 && $dnsRecord->currentUserMayEditZoneContent($ptrZoneId)) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
@@ -115,7 +115,7 @@ class RecordCommentSyncService
                 }
             }
 
-            if ($contentDomainId !== null) {
+            if ($contentDomainId !== null && $dnsRecord->currentUserMayEditZoneContent($contentDomainId)) {
                 $this->updateRecordComments($contentDomainId, $hostname, RecordType::A, $comment, $userLogin);
             }
         }
