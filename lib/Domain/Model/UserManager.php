@@ -353,7 +353,7 @@ class UserManager
                 $i_use_ldap = (bool)$usercheck['use_ldap'];
             }
 
-            if ($usercheck ['username'] != $user) {
+            if ((string)$usercheck['username'] !== $user) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
@@ -880,7 +880,7 @@ class UserManager
                 $active = (int)$userCheck['active'];
             }
 
-            if ($userCheck['username'] != $details['username']) {
+            if ((string)$userCheck['username'] !== (string)$details['username']) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
