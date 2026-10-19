@@ -14879,3 +14879,11 @@ msgid ""
 msgstr ""
 "Impossible de créer cette zone car elle chevauche une zone existante "
 "appartenant à un autre utilisateur."
+
+#: lib/Domain/Model/UserManager.php:1017
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

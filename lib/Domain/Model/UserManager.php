@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -1008,6 +1009,16 @@ class UserManager
             return _('Assigning a permission template with administrator rights requires administrator rights.');
         }
 
+        // A new account is not a route to permissions the creator does not hold.
+        if ($targetUserId === null && !$callerMayEditOthers) {
+            $permissionService = new ApiPermissionService($this->db);
+            foreach ($permissionService->getTemplatePermissionNames($permTemplId) as $permission) {
+                if (!$permissionService->userHasPermission((int)$_SESSION["userid"], $permission)) {
+                    return _('You can only assign a permission template whose permissions you already hold.');
+                }
+            }
+        }
+
         return null;
     }
 
@@ -1201,10 +1212,12 @@ class UserManager
      * Add a new user
      *
      * @param array $details Array of User details
+     * @param bool $templateSetByApp True when the caller filled in perm_templ itself
+     *                               (the minimal default), not the submitted form
      *
      * @return int|false The new user ID on success, false otherwise
      */
-    public function addNewUser(array $details): int|false
+    public function addNewUser(array $details, bool $templateSetByApp = false): int|false
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
@@ -1234,7 +1247,7 @@ class UserManager
         // Callers without user_edit_templ_perm inherit the creator's own template
         // below, so only a chosen template needs gating.
         $mayAssignTemplate = self::verifyPermission($this->db, 'user_edit_templ_perm');
-        if ($mayAssignTemplate && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
+        if ($mayAssignTemplate && !$templateSetByApp && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
             return false;
         }
 

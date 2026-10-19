@@ -14288,3 +14288,11 @@ msgid ""
 msgstr ""
 "Cannot create this zone because it overlaps an existing zone owned by "
 "another user."
+
+#: lib/Domain/Model/UserManager.php:1017
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

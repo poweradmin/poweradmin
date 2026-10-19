@@ -14596,3 +14596,11 @@ msgid ""
 msgstr ""
 "Não é possível criar esta zona porque se sobrepõe a uma zona existente "
 "pertencente a outro utilizador."
+
+#: lib/Domain/Model/UserManager.php:1017
+msgid ""
+"You can only assign a permission template whose permissions you already "
+"hold."
+msgstr ""
+"You can only assign a permission template whose permissions you already "
+"hold."

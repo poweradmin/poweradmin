@@ -39,6 +39,7 @@ class PermissionTemplateAssignmentGuard
     public const REJECT_MESSAGE = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
     public const SELF_ASSIGN_MESSAGE = 'Changing your own permission template requires user_edit_others';
     public const SUPERUSER_TEMPLATE_MESSAGE = 'Assigning a superuser permission template requires user_is_ueberuser';
+    public const TEMPLATE_SUBSET_MESSAGE = 'You can only assign a permission template whose permissions you already hold.';
 
     /**
      * Apply the gate to a create/update input array.
@@ -95,6 +96,16 @@ class PermissionTemplateAssignmentGuard
 
         if ($permissionService->templateGrantsSuperuser($requestedTemplateId)) {
             return self::SUPERUSER_TEMPLATE_MESSAGE;
+        }
+
+        // A new account is not a route to permissions the creator does not hold. Only
+        // a template the caller submitted is checked; the injected default above is not.
+        if ($targetUserId === null && !$permissionService->userHasPermission($callerId, 'user_edit_others')) {
+            foreach ($permissionService->getTemplatePermissionNames($requestedTemplateId) as $permission) {
+                if (!$permissionService->userHasPermission($callerId, $permission)) {
+                    return self::TEMPLATE_SUBSET_MESSAGE;
+                }
+            }
         }
 
         return null;

@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -119,6 +119,7 @@ class AddUserController extends BaseController
 
         // When user access templates are hidden, force minimal user template assignment
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
+        $templateSetByApp = false;
         if (!$showUserAccessTemplates) {
             $minimalTemplateId = UserManager::getMinimalPermissionTemplateId($this->db, 'user');
             if ($minimalTemplateId === null) {
@@ -127,6 +128,7 @@ class AddUserController extends BaseController
                 return;
             }
             $userParams['perm_templ'] = $minimalTemplateId;
+            $templateSetByApp = true;
         }
 
         // Validate that the template is a user template
@@ -145,7 +147,7 @@ class AddUserController extends BaseController
             $userParams['password'] = $generatedPassword;
         }
 
-        $newUserId = $legacyUsers->addNewUser($userParams);
+        $newUserId = $legacyUsers->addNewUser($userParams, $templateSetByApp);
         if ($newUserId !== false) {
             $successMessage = _('The user has been created successfully.');
 
