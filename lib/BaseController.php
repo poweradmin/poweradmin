@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserAvatarService;
@@ -564,6 +565,25 @@ abstract class BaseController
     protected function getCurrentUserId(): ?int
     {
         return $this->userContextService->getLoggedInUserId();
+    }
+
+    /**
+     * Error message when the new zone would sit inside a zone owned by another user,
+     * or null when creation is allowed. The conflicting zone name is not disclosed.
+     */
+    protected function getZoneOverlapError(string $zoneName): ?string
+    {
+        $userId = $this->getCurrentUserId();
+        if ($userId === null) {
+            return null;
+        }
+
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if (!$dnsRecord->isInsideForeignZone($zoneName, $userId)) {
+            return null;
+        }
+
+        return _('Cannot create this zone because it overlaps an existing zone owned by another user.');
     }
 
     /**

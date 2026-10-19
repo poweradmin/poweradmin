@@ -112,6 +112,10 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
+        if ($actingUserId !== null && $dnsRecord->isInsideForeignZone($domain, $actingUserId)) {
+            return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
+        }
+
         // Validate zone type
         $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
         if (!in_array($type, $validTypes)) {

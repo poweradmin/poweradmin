@@ -15216,3 +15216,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Os dados genéricos do registo têm de ser \"\\# <length> <hex>\", com o comprimento correspondente aos dados hexadecimais."
+
+#: lib/BaseController.php:586
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Não é possível criar esta zona porque se sobrepõe a uma zona existente "
+"pertencente a outro utilizador."

@@ -13799,3 +13799,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Vispārīgajiem ieraksta datiem jābūt formā \"\\# <length> <hex>\", garumam atbilstot heksadecimālajiem datiem."
+
+#: lib/BaseController.php:586
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Nevar izveidot šo zonu, jo tā pārklājas ar esošu zonu, kas pieder citam "
+"lietotājam."

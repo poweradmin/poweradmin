@@ -14901,3 +14901,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Dữ liệu bản ghi chung phải có dạng \"\\# <length> <hex>\" với độ dài khớp với dữ liệu hex."
+
+#: lib/BaseController.php:586
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Không thể tạo vùng này vì nó chồng lấn với một vùng hiện có thuộc sở hữu của "
+"người dùng khác."

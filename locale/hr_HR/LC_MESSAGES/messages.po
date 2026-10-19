@@ -14118,3 +14118,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Generički podaci zapisa moraju biti \"\\# <length> <hex>\", pri čemu duljina odgovara heksadecimalnim podacima."
+
+#: lib/BaseController.php:586
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Nije moguće stvoriti ovu zonu jer se preklapa s postojećom zonom koju "
+"posjeduje drugi korisnik."

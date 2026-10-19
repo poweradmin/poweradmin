@@ -14963,3 +14963,11 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php
 msgid "Generic record data must be \"\\# <length> <hex>\" with the length matching the hex data."
 msgstr "Generiska postdata måste vara \"\\# <length> <hex>\" där längden matchar hexdata."
+
+#: lib/BaseController.php:586
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Kan inte skapa denna zon eftersom den överlappar en befintlig zon som ägs av "
+"en annan användare."
