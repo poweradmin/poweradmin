@@ -80,6 +80,8 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
+            # latest is the newest release on the current release line, not a branch build
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v4.5.') && !contains(github.ref, '-') }}
 
       - name: Resolve build cache ref
         id: cache
