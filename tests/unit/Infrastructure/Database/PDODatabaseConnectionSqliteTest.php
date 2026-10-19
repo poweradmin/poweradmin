@@ -26,6 +26,8 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 
 /**
@@ -33,6 +35,7 @@ use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
  * to be opened in a journal mode that lets a reader and a writer overlap.
  */
 #[CoversClass(PDODatabaseConnection::class)]
+#[CoversClass(DatabaseCredentialMapper::class)]
 class PDODatabaseConnectionSqliteTest extends TestCase
 {
     private string $file;
@@ -58,6 +61,35 @@ class PDODatabaseConnectionSqliteTest extends TestCase
         ]);
 
         $this->assertSame('wal', strtolower((string) $pdo->query('PRAGMA journal_mode')->fetchColumn()));
+        $this->assertSame(1, (int) $pdo->query('PRAGMA synchronous')->fetchColumn(), 'synchronous = NORMAL');
+    }
+
+    public function testWalCanBeTurnedOffToKeepTheFilesJournalMode(): void
+    {
+        $pdo = (new PDODatabaseConnection())->connect([
+            'db_type' => 'sqlite',
+            'db_file' => $this->file,
+            'db_user' => '',
+            'db_pass' => '',
+            'db_sqlite_wal' => false,
+        ]);
+
+        $this->assertSame('delete', strtolower((string) $pdo->query('PRAGMA journal_mode')->fetchColumn()));
+        $this->assertSame(2, (int) $pdo->query('PRAGMA synchronous')->fetchColumn(), 'synchronous = FULL');
+    }
+
+    public function testTheSettingDefaultsToWalAndReachesTheConnection(): void
+    {
+        $defaults = require dirname(__DIR__, 4) . '/config/settings.defaults.php';
+        $this->assertTrue($defaults['database']['sqlite_wal']);
+
+        $config = $this->createMock(ConfigurationInterface::class);
+        $config->method('getGroup')->willReturn(['sqlite_wal' => false]);
+        $this->assertFalse(DatabaseCredentialMapper::mapCredentials($config)['db_sqlite_wal']);
+
+        $unset = $this->createMock(ConfigurationInterface::class);
+        $unset->method('getGroup')->willReturn([]);
+        $this->assertTrue(DatabaseCredentialMapper::mapCredentials($unset)['db_sqlite_wal']);
     }
 
     public function testAWriterIsNotBlockedByAReaderHoldingATransaction(): void

@@ -26,6 +26,8 @@ return [
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
         'pdns_db_name' => '',  // Separate database for PowerDNS, MySQL/MariaDB only (added in 3.8.0)
+        'sqlite_wal' => true,  // SQLite only: WAL journal mode on connect; set false on NFS (added in 4.6.0)
+                               // false does not convert a file already in WAL: run PRAGMA journal_mode = DELETE once
 
         /**
          * SSL/TLS Settings for database connections (added in 4.1.0)

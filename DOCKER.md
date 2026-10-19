@@ -172,6 +172,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
+| `DB_SQLITE_WAL` | Switch the SQLite file to WAL journal mode on connect (**SQLite only**). Set `false` on NFS and similar file systems, then set the file's journal mode yourself (e.g. `PRAGMA journal_mode = DELETE`) | `true` | No |
 | `DB_CHARSET` | Character set used when Poweradmin creates its MySQL tables: `latin1` or `utf8` | `latin1` | No |
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
 | `DB_SSL` | Enable SSL/TLS connection (**MySQL/PostgreSQL only**) | `false` | No |

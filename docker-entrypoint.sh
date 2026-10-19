@@ -1271,6 +1271,7 @@ return [
         'file' => $(php_sq "${DB_FILE:-/db/pdns.db}"),
         'charset' => $(php_sq "${DB_CHARSET:-latin1}"),
         'pdns_db_name' => $(php_sq "${PA_PDNS_DB_NAME:-}"),
+        'sqlite_wal' => $(to_php_bool "${DB_SQLITE_WAL:-true}"),
         'ssl' => ${db_ssl},
         'ssl_verify' => ${db_ssl_verify},
         'ssl_ca' => $(php_sq "${DB_SSL_CA:-}"),

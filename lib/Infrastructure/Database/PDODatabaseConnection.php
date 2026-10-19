@@ -63,10 +63,13 @@ class PDODatabaseConnection
                 // with "database is locked" when requests run concurrently.
                 // Set before the journal switch below, which needs the wait.
                 $pdo->exec('PRAGMA busy_timeout = 5000');
-                $this->enableWalMode($pdo);
-                // Shorter write-lock windows; corruption-safe in all journal
-                // modes, trades only last-commit durability on power loss
-                $pdo->exec('PRAGMA synchronous = NORMAL');
+                if ($credentials['db_sqlite_wal'] ?? true) {
+                    $this->enableWalMode($pdo);
+                }
+                // NORMAL is corruption-safe only in WAL (it trades last-commit durability);
+                // a rollback journal needs FULL, also when the switch to WAL failed
+                $journalMode = strtolower((string) $pdo->query('PRAGMA journal_mode')->fetchColumn());
+                $pdo->exec($journalMode === 'wal' ? 'PRAGMA synchronous = NORMAL' : 'PRAGMA synchronous = FULL');
             }
 
             return $pdo;
@@ -84,6 +87,9 @@ class PDODatabaseConnection
      * it can fail on a read-only database or while another connection is
      * reading. That must not take the whole application down: the old journal
      * mode still works, it is only more prone to lock errors under contention.
+     *
+     * database.sqlite_wal = false skips the switch for file systems where WAL
+     * cannot work, such as NFS; the file then keeps the journal mode it has.
      */
     private function enableWalMode(PDO $pdo): void
     {

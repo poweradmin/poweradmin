@@ -53,6 +53,7 @@ class DatabaseCredentialMapper
             'db_type' => $dbConfig['type'] ?? '',
             'db_file' => $dbConfig['file'] ?? '',
             'db_debug' => $dbConfig['debug'] ?? false,
+            'db_sqlite_wal' => $dbConfig['sqlite_wal'] ?? true,
             'db_ssl' => $dbConfig['ssl'] ?? false,
             'db_ssl_verify' => $dbConfig['ssl_verify'] ?? false,
             'db_ssl_ca' => $dbConfig['ssl_ca'] ?? '',
