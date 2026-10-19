@@ -59,6 +59,13 @@ class BadgeTwigExtensionTest extends TestCase
         $this->assertSame('Slave', $this->ext->getZoneTypeLabel('SLAVE'));
     }
 
+    public function testZoneTypeLabelKeepsPrimarySecondaryAfterCacheExpires(): void
+    {
+        $this->setSessionVersion('4.5.0', time() - 3600);
+        $this->assertSame('Primary', $this->ext->getZoneTypeLabel('MASTER'));
+        $this->assertSame('Secondary', $this->ext->getZoneTypeLabel('SLAVE'));
+    }
+
     public function testZoneTypeLabelHandlesCaseAndProducerConsumer(): void
     {
         $this->setSessionVersion('4.7.0');
@@ -122,7 +129,7 @@ class BadgeTwigExtensionTest extends TestCase
         $this->assertSame('Autoprimaries', $this->ext->getAutoprimariesLabel('something_unrecognized'));
     }
 
-    private function setSessionVersion(string $version): void
+    private function setSessionVersion(string $version, ?int $fetchedAt = null): void
     {
         $_SESSION['pdns_server_info'] = [
             'info' => [
@@ -130,7 +137,7 @@ class BadgeTwigExtensionTest extends TestCase
                 'daemon_type' => 'authoritative',
                 'id' => 'localhost',
             ],
-            'fetched_at' => time(),
+            'fetched_at' => $fetchedAt ?? time(),
         ];
     }
 }

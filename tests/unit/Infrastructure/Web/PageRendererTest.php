@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\AppManager;
 use Poweradmin\Infrastructure\Web\PageRenderer;
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Service\PdnsCapabilities;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use ReflectionClass;
@@ -100,6 +101,40 @@ class PageRendererTest extends TestCase
 
         $this->assertSame('de_DE', $renderer->resolveActiveLocale());
         $this->assertSame('de_DE', $renderer->languageVars()['current_language']);
+    }
+
+    public function testExpiredPdnsVersionCacheStillFeedsTwigGlobals(): void
+    {
+        $_SESSION = ['pdns_server_info' => [
+            'info' => ['version' => '4.9.0', 'daemon_type' => 'authoritative', 'id' => 'localhost'],
+            'fetched_at' => time() - 3600,
+        ]];
+        $globals = [];
+        $app = $this->createMock(AppManager::class);
+        $app->method('addTwigGlobal')->willReturnCallback(
+            function (string $name, mixed $value) use (&$globals): void {
+                $globals[$name] = $value;
+            }
+        );
+        $renderer = new PageRenderer(
+            $app,
+            $this->createMock(ConfigurationManager::class),
+            $this->createMock(CsrfTokenService::class),
+            $this->createMock(UserContextService::class),
+            fn(string $permission): bool => false,
+            fn() => [],
+            false
+        );
+
+        try {
+            (new ReflectionClass(PageRenderer::class))->getMethod('setupTwigEnvironment')->invoke($renderer);
+        } finally {
+            $_SESSION = [];
+        }
+
+        $this->assertSame('4.9.0', $globals['pdns_server_info']['version'] ?? null);
+        $this->assertInstanceOf(PdnsCapabilities::class, $globals['pdns_caps']);
+        $this->assertTrue($globals['pdns_caps']->prefersPrimarySecondaryTerminology());
     }
 
     public static function brandingUrlProvider(): array

@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\PdnsVersionService;
 use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\BaseController;
@@ -177,6 +178,8 @@ class IndexController extends BaseController
             'is_api_backend' => DnsBackendProviderFactory::isApiBackend($this->config),
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
+            // Fresh-only, so a failed refresh shows the "unknown" hint instead of a stale version
+            'pdns_server_info' => PdnsVersionService::getCachedInfo(),
             'is_limited_user' => $isLimitedUser,
             'user_id' => $userId,
             'enable_consistency_checks' => $enableConsistencyChecks,
