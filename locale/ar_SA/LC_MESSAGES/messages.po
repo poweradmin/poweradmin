@@ -3774,6 +3774,10 @@ msgid ""
 "administrator rights."
 msgstr "تعيين قالب صلاحيات يحتوي على صلاحيات مسؤول يتطلب صلاحيات مسؤول."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "يمكنك فقط تعيين قالب صلاحيات تمتلك جميع صلاحياته بالفعل."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "أدخل عنوان بريد إلكتروني صحيح"

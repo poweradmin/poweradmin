@@ -3807,6 +3807,10 @@ msgstr ""
 "Rendszergazdai jogokkal rendelkező engedélysablon hozzárendelése "
 "rendszergazdai jogosultságot igényel."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Csak olyan engedélysablont rendelhet hozzá, amelynek engedélyeivel már rendelkezik."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Adjon meg érvényes e-mail címet."

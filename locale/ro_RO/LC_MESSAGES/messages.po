@@ -3878,6 +3878,10 @@ msgstr ""
 "Atribuirea unui șablon de permisiuni cu drepturi de administrator necesită "
 "drepturi de administrator."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Puteți atribui doar un șablon de permisiuni ale cărui permisiuni le dețineți deja."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Introduceți o adresă de email validă."

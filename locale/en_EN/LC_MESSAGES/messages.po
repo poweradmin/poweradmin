@@ -3777,6 +3777,10 @@ msgstr ""
 "Assigning a permission template with administrator rights requires "
 "administrator rights."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "You can only assign a permission template whose permissions you already hold."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Enter a valid email address."

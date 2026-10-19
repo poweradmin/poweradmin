@@ -3763,6 +3763,10 @@ msgid ""
 msgstr ""
 "Việc gán mẫu quyền hạn có quyền quản trị viên yêu cầu quyền quản trị viên."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Bạn chỉ có thể gán mẫu quyền hạn có các quyền mà bạn đã có."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Nhập địa chỉ email hợp lệ."

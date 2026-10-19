@@ -3885,6 +3885,10 @@ msgstr ""
 "Das Zuweisen einer Berechtigungsvorlage mit Administratorrechten erfordert "
 "Administratorrechte."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Sie können nur eine Berechtigungsvorlage zuweisen, deren Berechtigungen Sie bereits besitzen."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Geben Sie eine gültige E-Mail-Adresse ein."

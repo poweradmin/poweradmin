@@ -3776,6 +3776,10 @@ msgstr ""
 "Att tilldela en behörighetsmall med administratörsrättigheter kräver "
 "administratörsrättigheter."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Du kan bara tilldela en behörighetsmall vars behörigheter du redan har."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Ange en giltig e-postadress."

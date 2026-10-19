@@ -3830,6 +3830,10 @@ msgstr ""
 "Przypisanie szablonu uprawnień z uprawnieniami administratora wymaga "
 "uprawnień administratora."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Możesz przypisać tylko szablon uprawnień, którego uprawnienia już posiadasz."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Wprowadź prawidłowy adres e-mail."

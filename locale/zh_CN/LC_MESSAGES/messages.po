@@ -3620,6 +3620,10 @@ msgid ""
 "administrator rights."
 msgstr "分配具有管理员权限的权限模板需要管理员权限。"
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "您只能分配其权限您已全部拥有的权限模板。"
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "请输入有效的电子邮件地址。"

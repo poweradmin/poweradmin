@@ -3756,6 +3756,10 @@ msgid ""
 msgstr ""
 "管理者権限を含む権限テンプレートを割り当てるには、管理者権限が必要です。"
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "割り当てられるのは、すでに保有している権限のみを含む権限テンプレートだけです。"
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "有効なメールアドレスを入力してください。"

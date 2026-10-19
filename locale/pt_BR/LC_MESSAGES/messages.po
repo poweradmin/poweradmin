@@ -3844,6 +3844,10 @@ msgstr ""
 "Atribuir um modelo de permissão com direitos de administrador requer "
 "direitos de administrador."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Você só pode atribuir um modelo de permissão cujas permissões você já possui."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Introduza um endereço de correio eletrónico válido."

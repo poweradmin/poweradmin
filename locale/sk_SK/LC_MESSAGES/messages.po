@@ -3788,6 +3788,10 @@ msgstr ""
 "Priradenie šablóny oprávnení s administrátorskými právami vyžaduje "
 "administrátorské práva."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Môžete priradiť iba šablónu oprávnení, ktorej oprávnenia už máte."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Zadajte platnú e-mailovú adresu."

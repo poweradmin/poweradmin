@@ -3846,6 +3846,10 @@ msgstr ""
 "Per assegnare un modello di permessi con diritti di amministratore sono "
 "necessari i diritti di amministratore."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "È possibile assegnare solo un modello di permessi di cui si possiedono già i permessi."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Inserisci un indirizzo email valido."

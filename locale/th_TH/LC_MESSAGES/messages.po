@@ -3641,6 +3641,10 @@ msgid ""
 "administrator rights."
 msgstr "การกำหนดเทมเพลตสิทธิ์ที่มีสิทธิ์ผู้ดูแลระบบต้องใช้สิทธิ์ผู้ดูแลระบบ."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "คุณสามารถกำหนดได้เฉพาะเทมเพลตสิทธิ์ที่คุณมีสิทธิ์ทั้งหมดอยู่แล้วเท่านั้น"
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "ป้อนที่อยู่อีเมลที่ถูกต้อง"

@@ -3884,6 +3884,10 @@ msgstr ""
 "Η ανάθεση ενός προτύπου άδειας με δικαιώματα διαχειριστή απαιτεί δικαιώματα "
 "διαχειριστή."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Μπορείτε να αναθέσετε μόνο ένα πρότυπο άδειας του οποίου τα δικαιώματα έχετε ήδη."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Εισάγετε μια έγκυρη διεύθυνση email."

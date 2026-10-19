@@ -3829,6 +3829,10 @@ msgstr ""
 "Dodeljevanje predloge dovoljenj s skrbniškimi pravicami zahteva skrbniške "
 "pravice."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Dodelite lahko samo predlogo dovoljenj, katere dovoljenja že imate."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Vnesite veljaven e-poštni naslov."

@@ -3783,6 +3783,10 @@ msgstr ""
 "Yönetici haklarına sahip bir izin şablonu atamak için yönetici hakları "
 "gerekir."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Yalnızca izinlerine zaten sahip olduğunuz bir izin şablonu atayabilirsiniz."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Geçerli bir e-posta adresi girin."

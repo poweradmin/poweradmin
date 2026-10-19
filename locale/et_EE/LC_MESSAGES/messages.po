@@ -3737,6 +3737,10 @@ msgid ""
 msgstr ""
 "Administraatoriõigustega õiguste malli määramine nõuab administraatoriõigusi."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Saate määrata ainult sellise õiguste malli, mille õigused teil juba on."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Sisestage kehtiv e-posti aadress."

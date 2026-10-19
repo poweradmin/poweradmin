@@ -3809,6 +3809,10 @@ msgstr ""
 "Menetapkan templat izin dengan hak administrator memerlukan hak "
 "administrator."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Anda hanya dapat menetapkan templat izin yang izinnya sudah Anda miliki."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Masukkan alamat email yang valid."

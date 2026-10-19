@@ -3822,6 +3822,10 @@ msgstr ""
 "Для назначения шаблона прав с правами администратора требуются права "
 "администратора."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Можно назначить только шаблон прав, все права которого у вас уже есть."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Введите действительный адрес электронной почты."

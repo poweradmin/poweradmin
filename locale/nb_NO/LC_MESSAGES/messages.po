@@ -3782,6 +3782,10 @@ msgstr ""
 "Å tildele en tilgangsmal med administratorrettigheter krever "
 "administratorrettigheter."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Du kan bare tildele en tillatelsesmal med tillatelser du allerede har."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Skriv inn en gyldig e-postadresse."

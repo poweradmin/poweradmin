@@ -3827,6 +3827,10 @@ msgstr ""
 "Het toewijzen van een rechtensjabloon met beheerdersrechten vereist "
 "beheerdersrechten."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "U kunt alleen een rechtensjabloon toewijzen waarvan u de rechten al hebt."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Voer een geldig e-mailadres in."

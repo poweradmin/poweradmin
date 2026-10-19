@@ -3792,6 +3792,10 @@ msgstr ""
 "Přiřazení šablony oprávnění s administrátorskými právy vyžaduje "
 "administrátorská práva."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Můžete přiřadit pouze šablonu oprávnění, jejíž oprávnění již máte."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Zadejte platnou e-mailovou adresu."

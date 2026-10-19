@@ -3727,6 +3727,10 @@ msgid ""
 "administrator rights."
 msgstr "प्रशासक अधिकारों वाला अनुमति टेम्पलेट असाइन करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "आप केवल वही अनुमति टेम्पलेट असाइन कर सकते हैं जिसकी अनुमतियाँ आपके पास पहले से हैं।"
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "एक वैध ईमेल पता दर्ज करें।"

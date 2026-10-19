@@ -3620,6 +3620,10 @@ msgid ""
 "administrator rights."
 msgstr "指派具有管理員權限的權限範本需要具備管理員權限。"
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "您只能指派其權限您已全部具備的權限範本。"
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "請輸入有效的電子郵件地址。"

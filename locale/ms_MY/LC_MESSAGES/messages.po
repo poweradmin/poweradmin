@@ -3808,6 +3808,10 @@ msgstr ""
 "Pemberian templat kebenaran yang mempunyai hak pentadbir memerlukan hak "
 "pentadbir."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Anda hanya boleh memberikan templat kebenaran yang kebenarannya sudah anda miliki."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Masukkan alamat e-mel yang sah."

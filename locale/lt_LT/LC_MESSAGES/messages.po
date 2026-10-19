@@ -3810,6 +3810,10 @@ msgstr ""
 "Norint priskirti teisių šabloną su administratoriaus teisėmis, reikia "
 "administratoriaus teisių."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Galite priskirti tik tokį teisių šabloną, kurio teises jau turite."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Įveskite teisingą el. pašto adresą."

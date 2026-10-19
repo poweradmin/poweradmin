@@ -3829,6 +3829,10 @@ msgstr ""
 "Присвояването на шаблон за права с администраторски права изисква "
 "администраторски права."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Можете да присвоите само шаблон за права, чиито права вече имате."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Въведете валиден имейл адрес."

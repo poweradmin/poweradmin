@@ -3840,6 +3840,10 @@ msgstr ""
 "Caktimi i një modeli lejeve me të drejta administratori kërkon të drejta "
 "administratori."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Mund të caktoni vetëm një model lejesh, lejet e të cilit i keni tashmë."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Shkruaj një adresë email të vlefshme."

@@ -3895,6 +3895,10 @@ msgstr ""
 "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
 "riarthóra aige a shannadh."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Ní féidir leat ach teimpléad ceadanna a shannadh a bhfuil a cheadanna agat cheana féin."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Cuir isteach seoladh ríomhphoist bailí."

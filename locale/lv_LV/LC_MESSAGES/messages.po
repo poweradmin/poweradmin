@@ -3765,6 +3765,10 @@ msgstr ""
 "Lai piešķirtu atļauju veidni ar administratora tiesībām, ir nepieciešamas "
 "administratora tiesības."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Varat piešķirt tikai tādu atļauju veidni, kuras atļaujas jums jau ir."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Ievadiet derīgu e-pasta adresi."

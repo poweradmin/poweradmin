@@ -3790,6 +3790,10 @@ msgstr ""
 "Додељивање шаблона дозвола са администраторским правима захтева "
 "администраторска права."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Можете доделити само шаблон дозвола чије дозволе већ имате."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Унесите важећу имејл адресу."

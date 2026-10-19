@@ -3724,6 +3724,10 @@ msgid ""
 msgstr ""
 "관리자 권한이 포함된 권한 템플릿을 할당하려면 관리자 권한이 필요합니다."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "이미 보유한 권한만 포함된 권한 템플릿만 할당할 수 있습니다."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "유효한 이메일 주소를 입력하세요."

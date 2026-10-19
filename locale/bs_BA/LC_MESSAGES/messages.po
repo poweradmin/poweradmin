@@ -3748,6 +3748,10 @@ msgstr ""
 "Dodjeljivanje šablona dozvola sa administratorskim pravima zahtijeva "
 "administratorska prava."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Možete dodijeliti samo predložak dozvola čije dozvole već imate."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "Unesite valjanu adresu e-pošte."

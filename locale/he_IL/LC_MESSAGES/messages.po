@@ -3691,6 +3691,10 @@ msgid ""
 "administrator rights."
 msgstr "הקצאת תבנית הרשאות הכוללת הרשאות מנהל מחייבת הרשאות מנהל."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "ניתן להקצות רק תבנית הרשאות שכל ההרשאות שבה כבר בידיך."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "הזן כתובת דואר אלקטרוני חוקית."

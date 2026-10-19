@@ -3748,6 +3748,10 @@ msgid ""
 "administrator rights."
 msgstr "تخصیص یک قالب مجوز دارای دسترسی مدیریتی، نیازمند دسترسی مدیریتی است."
 
+#: lib/Domain/Model/UserManager.php:100
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "فقط می‌توانید قالب مجوزی را تخصیص دهید که همه مجوزهای آن را از قبل دارید."
+
 #: lib/Domain/Model/UserManager.php:527
 msgid "Enter a valid email address."
 msgstr "یک آدرس ایمیل معتبر وارد کنید."
