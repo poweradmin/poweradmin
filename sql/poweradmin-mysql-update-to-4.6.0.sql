@@ -64,24 +64,25 @@ PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
 
+-- Databases from the 3.9.7 update or the installer already index these columns as zones_*_idx
 SET @has_zones_domain_id_index = (
     SELECT COUNT(*) FROM information_schema.statistics
-    WHERE table_schema = DATABASE() AND table_name = 'zones' AND index_name = 'idx_zones_domain_id'
+    WHERE table_schema = DATABASE() AND table_name = 'zones' AND index_name IN ('idx_zones_domain_id', 'zones_domain_id_idx')
 );
 SET @repair = IF(@has_zones_domain_id_index = 0,
     'CREATE INDEX `idx_zones_domain_id` ON `zones` (`domain_id`)',
-    'SELECT ''idx_zones_domain_id already present'' AS notice');
+    'SELECT ''zones.domain_id index already present'' AS notice');
 PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
 
 SET @has_zones_owner_index = (
     SELECT COUNT(*) FROM information_schema.statistics
-    WHERE table_schema = DATABASE() AND table_name = 'zones' AND index_name = 'idx_zones_owner'
+    WHERE table_schema = DATABASE() AND table_name = 'zones' AND index_name IN ('idx_zones_owner', 'zones_owner_idx')
 );
 SET @repair = IF(@has_zones_owner_index = 0,
     'CREATE INDEX `idx_zones_owner` ON `zones` (`owner`)',
-    'SELECT ''idx_zones_owner already present'' AS notice');
+    'SELECT ''zones.owner index already present'' AS notice');
 PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;

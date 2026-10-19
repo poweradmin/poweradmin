@@ -128,8 +128,24 @@ BEGIN
     END IF;
 END $$;
 
-CREATE INDEX IF NOT EXISTS "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
-CREATE INDEX IF NOT EXISTS "idx_zones_owner" ON "public"."zones" USING btree ("owner");
+-- Databases from the 3.9.7 update or the installer already index these columns as zones_*_idx
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'zones'
+          AND indexname IN ('idx_zones_domain_id', 'zones_domain_id_idx')
+    ) THEN
+        CREATE INDEX "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'zones'
+          AND indexname IN ('idx_zones_owner', 'zones_owner_idx')
+    ) THEN
+        CREATE INDEX "idx_zones_owner" ON "public"."zones" USING btree ("owner");
+    END IF;
+END $$;
 
 -- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
 ALTER TABLE "public"."users" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
