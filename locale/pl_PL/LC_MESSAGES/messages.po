@@ -3074,3 +3074,7 @@ msgstr "Nie masz uprawnień do usunięcia konta superużytkownika."
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Nie można utworzyć tej strefy, ponieważ pokrywa się z istniejącą strefą należącą do innego użytkownika."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Możesz przypisać tylko wzorzec uprawnień, którego uprawnienia już posiadasz."

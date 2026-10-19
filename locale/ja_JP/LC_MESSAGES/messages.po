@@ -3082,3 +3082,7 @@ msgstr "スーパーユーザーアカウントを削除する権限がありま
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "このゾーンは他のユーザーが所有する既存のゾーンと重複するため作成できません。"
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "割り当てられるのは、自分が既に持っている権限だけを含む権限テンプレートのみです。"

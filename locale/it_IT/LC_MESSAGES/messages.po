@@ -3104,3 +3104,7 @@ msgstr "Non hai il permesso di eliminare un account superutente."
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Impossibile creare questa zona perché si sovrappone a una zona esistente di proprietà di un altro utente."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "È possibile assegnare solo un template di autorizzazione di cui si possiedono già tutte le autorizzazioni."

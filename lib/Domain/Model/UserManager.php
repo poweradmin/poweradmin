@@ -717,7 +717,33 @@ class UserManager
             return _('Assigning a permission template with administrator rights requires administrator rights.');
         }
 
+        // Without user_edit_others a new account may not carry rights its creator lacks
+        if ($target_user_id === null && !$caller_may_edit_others && self::template_exceeds_caller($db, $perm_templ_id)) {
+            return _('You can only assign a permission template whose permissions you already hold.');
+        }
+
         return null;
+    }
+
+    /**
+     * Whether the given template holds a permission the caller's own template does not.
+     *
+     * Matched by name, as template_grants_ueberuser() does.
+     */
+    private static function template_exceeds_caller($db, int $perm_templ_id): bool
+    {
+        $count = $db->queryOne("SELECT COUNT(*) FROM perm_templ_items pti
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pti.templ_id = " . $db->quote($perm_templ_id, 'integer') . "
+            AND pi.name NOT IN (
+                SELECT own_pi.name FROM perm_templ_items own_pti
+                INNER JOIN perm_items own_pi ON own_pti.perm_id = own_pi.id
+                INNER JOIN users u ON u.perm_templ = own_pti.templ_id
+                WHERE u.id = " . $db->quote((int)$_SESSION["userid"], 'integer') . "
+                AND own_pi.name IS NOT NULL
+            )");
+
+        return (int)$count > 0;
     }
 
     /**

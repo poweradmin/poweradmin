@@ -3049,3 +3049,7 @@ msgstr "Nemáte oprávnění smazat účet superuživatele."
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Tuto zónu nelze vytvořit, protože se překrývá s existující zónou, kterou vlastní jiný uživatel."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Můžete přiřadit pouze šablonu oprávnění, jejíž oprávnění již sami máte."

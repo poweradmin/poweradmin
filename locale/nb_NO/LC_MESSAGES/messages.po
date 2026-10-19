@@ -3066,3 +3066,7 @@ msgstr "Du har ikke tillatelse til å slette en superbrukerkonto."
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Kan ikke opprette denne sonen fordi den overlapper en eksisterende sone som eies av en annen bruker."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Du kan bare tildele en rettighetsmal med rettigheter du allerede har selv."

@@ -3094,3 +3094,7 @@ msgstr "Neturite leidimo ištrinti supervartotojo paskyros."
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Nepavyksta sukurti šios zonos, nes ji sutampa su esama zona, priklausančia kitam naudotojui."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Galite priskirti tik tokį teisių šabloną, kurio teises jau turite patys."

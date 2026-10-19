@@ -120,17 +120,76 @@ class UserManagerTemplateAssignmentTest extends TestCase
         $this->assertStringContainsString('administrator rights', $error);
     }
 
+    public function testCreatePathRefusesATemplateRicherThanTheCallers(): void
+    {
+        // user_add_new + user_edit_templ_perm alone must not mint an account
+        // holding user_edit_others or other rights the creator lacks.
+        $error = $this->check(
+            caller_is_superuser: false,
+            caller_may_edit_others: false,
+            template_is_superuser: false,
+            target_user_id: null,
+            template_exceeds_caller: true
+        );
+
+        $this->assertNotNull($error);
+        $this->assertStringContainsString('permissions you already hold', $error);
+    }
+
+    public function testCreatePathAllowsATemplateWithinTheCallersRights(): void
+    {
+        $error = $this->check(
+            caller_is_superuser: false,
+            caller_may_edit_others: false,
+            template_is_superuser: false,
+            target_user_id: null
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testCreatePathSubsetRuleDoesNotApplyWithUserEditOthers(): void
+    {
+        $error = $this->check(
+            caller_is_superuser: false,
+            caller_may_edit_others: true,
+            template_is_superuser: false,
+            target_user_id: null,
+            template_exceeds_caller: true
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testEditPathIsNotSubjectToTheSubsetRule(): void
+    {
+        $error = $this->check(
+            caller_is_superuser: false,
+            caller_may_edit_others: true,
+            template_is_superuser: false,
+            target_user_id: 42,
+            template_exceeds_caller: true
+        );
+
+        $this->assertNull($error);
+    }
+
     private function check(
         bool $caller_is_superuser,
         bool $caller_may_edit_others,
         bool $template_is_superuser,
-        ?int $target_user_id
+        ?int $target_user_id,
+        bool $template_exceeds_caller = false
     ): ?string {
         $_SESSION['userid'] = self::CALLER_ID;
 
         $db = $this->createMock(PDOLayer::class);
         $db->method('quote')->willReturnCallback(fn($value): string => (string)(int)$value);
-        $db->method('queryOne')->willReturn($template_is_superuser ? 1 : 0);
+        $db->method('queryOne')->willReturnCallback(
+            fn(string $sql): int => str_contains($sql, 'NOT IN')
+                ? ($template_exceeds_caller ? 2 : 0)
+                : ($template_is_superuser ? 1 : 0)
+        );
 
         $method = new ReflectionMethod(UserManager::class, 'permission_template_assignment_error');
         $method->setAccessible(true);

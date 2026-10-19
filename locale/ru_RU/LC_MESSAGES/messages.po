@@ -3093,3 +3093,7 @@ msgstr "У вас нет прав на удаление учетной запи�
 #: lib/Application/Controller/BulkRegistrationController.php:105
 msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
 msgstr "Невозможно создать эту зону, так как она пересекается с существующей зоной, принадлежащей другому пользователю."
+
+#: lib/Domain/Model/UserManager.php:722
+msgid "You can only assign a permission template whose permissions you already hold."
+msgstr "Можно назначить только шаблон привилегий, все привилегии которого у вас уже есть."
