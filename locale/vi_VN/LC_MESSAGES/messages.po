@@ -13639,3 +13639,11 @@ msgstr "Bạn không có quyền tạo vùng cho người dùng khác."
 #: lib/Application/Controller/EditController.php:586
 msgid "You do not have the permission to edit this zone."
 msgstr "Bạn không có quyền chỉnh sửa vùng này."
+
+#: lib/BaseController.php:482
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Không thể tạo vùng này vì nó chồng lấn với một vùng hiện có thuộc sở hữu của "
+"người dùng khác."

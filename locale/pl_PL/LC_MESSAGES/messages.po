@@ -14523,3 +14523,11 @@ msgstr "Nie masz uprawnień do tworzenia stref dla innych użytkowników."
 #: lib/Application/Controller/EditController.php:586
 msgid "You do not have the permission to edit this zone."
 msgstr "Nie masz uprawnień do edycji tej strefy."
+
+#: lib/BaseController.php:482
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Nie można utworzyć tej strefy, ponieważ pokrywa się z istniejącą strefą "
+"należącą do innego użytkownika."

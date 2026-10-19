@@ -14588,3 +14588,11 @@ msgstr "Não tem permissão para criar zonas para outros utilizadores."
 #: lib/Application/Controller/EditController.php:586
 msgid "You do not have the permission to edit this zone."
 msgstr "Não tem permissão para editar esta zona."
+
+#: lib/BaseController.php:482
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Não é possível criar esta zona porque se sobrepõe a uma zona existente "
+"pertencente a outro utilizador."

@@ -307,6 +307,11 @@ class ZoneFileImportController extends BaseController
             }
 
             $zoneType = $_POST['zone_type'] ?? 'MASTER';
+            $overlapError = $this->getZoneOverlapError($zoneName);
+            if ($overlapError !== null) {
+                $this->showError($overlapError);
+                return;
+            }
             if (!$dnsRecord->addDomain($this->db, $zoneName, $userId, $zoneType, '', 'none')) {
                 $this->showError(_('Failed to create zone.'));
                 return;

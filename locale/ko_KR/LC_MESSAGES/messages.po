@@ -13528,3 +13528,9 @@ msgstr "다른 사용자를 위한 존을 생성할 권한이 없습니다."
 #: lib/Application/Controller/EditController.php:586
 msgid "You do not have the permission to edit this zone."
 msgstr "이 존을 편집할 권한이 없습니다."
+
+#: lib/BaseController.php:482
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr "이 존은 다른 사용자가 소유한 기존 존과 겹치므로 생성할 수 없습니다."

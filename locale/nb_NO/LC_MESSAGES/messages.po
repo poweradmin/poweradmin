@@ -14324,3 +14324,11 @@ msgstr "Du har ikke tillatelse til å opprette soner for andre brukere."
 #: lib/Application/Controller/EditController.php:586
 msgid "You do not have the permission to edit this zone."
 msgstr "Du har ikke tillatelse til å redigere denne sonen."
+
+#: lib/BaseController.php:482
+msgid ""
+"Cannot create this zone because it overlaps an existing zone owned by "
+"another user."
+msgstr ""
+"Kan ikke opprette denne sonen fordi den overlapper en eksisterende sone som "
+"eies av en annen bruker."
