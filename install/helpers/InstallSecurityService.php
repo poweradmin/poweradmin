@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -86,13 +86,9 @@ class InstallSecurityService
 
     private function ipInRange(string $ip, string $range): bool
     {
-        list($range, $netmask) = explode('/', $range, 2);
-        $rangeDecimal = ip2long($range);
-        $ipDecimal = ip2long($ip);
-        $wildcardDecimal = pow(2, (32 - (int)$netmask)) - 1;
-        $netmaskDecimal = ~$wildcardDecimal;
-
-        return ($ipDecimal & $netmaskDecimal) == ($rangeDecimal & $netmaskDecimal);
+        // ip2long() returns false for IPv6, which made every IPv6 client match
+        // every IPv6 range; IpUtils handles both families and rejects mismatches.
+        return IpUtils::checkIp($ip, $range);
     }
 
     private function getClientIp(): string
