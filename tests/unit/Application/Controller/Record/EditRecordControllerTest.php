@@ -713,7 +713,8 @@ class EditRecordControllerTest extends SeamControllerTestCase
                 $this->domains,
                 $this->callback(static fn(array $row): bool => $row['name'] === 'www.example.com' && $row['content'] === '192.0.2.9'),
                 'a note',
-                self::USERNAME
+                self::USERNAME,
+                self::USER_ID
             );
 
         $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'comment' => 'a note']);

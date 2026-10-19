@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Application\Service\Web\AuditService;
 
@@ -44,6 +45,7 @@ class RecordManagerService
     private RecordCommentService $recordCommentService;
     private AuditService $audit;
     private ConfigurationInterface $config;
+    private PermissionService $permissions;
 
     public function __construct(
         DomainRepositoryInterface $domainRepository,
@@ -51,7 +53,8 @@ class RecordManagerService
         RecordManagerInterface $recordManager,
         RecordCommentService $recordCommentService,
         AuditService $audit,
-        ConfigurationInterface $config
+        ConfigurationInterface $config,
+        PermissionService $permissions
     ) {
         $this->domainRepository = $domainRepository;
         $this->recordRepository = $recordRepository;
@@ -59,6 +62,7 @@ class RecordManagerService
         $this->recordCommentService = $recordCommentService;
         $this->audit = $audit;
         $this->config = $config;
+        $this->permissions = $permissions;
     }
 
     /**
@@ -66,9 +70,22 @@ class RecordManagerService
      * Failures come back as the result; nothing is written to MessageService.
      *
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; picks the audit event
+     * @param int|null $userId The acting user; the comment reaches a related A/PTR record only in a
+     *                         zone this user may edit, and never when null
      */
-    public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, int $disabled = 0, string $origin = AuditLoggerInterface::ORIGIN_WEB): RecordWriteResult
-    {
+    public function createRecord(
+        int $zone_id,
+        string $name,
+        string $type,
+        string $content,
+        int $ttl,
+        int $prio,
+        string $comment,
+        string $userlogin,
+        int $disabled = 0,
+        string $origin = AuditLoggerInterface::ORIGIN_WEB,
+        ?int $userId = null
+    ): RecordWriteResult {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // All creates go through RecordManager so permission gates and record
@@ -87,7 +104,7 @@ class RecordManagerService
         } else {
             $this->audit->logRecordAdd($zone_id, $type, $fqdn, $content, $ttl, $prio);
         }
-        $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId);
+        $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $result->recordId, $userId);
 
         return $result;
     }
@@ -97,7 +114,7 @@ class RecordManagerService
      * This avoids the need to look up the record ID after creation.
      * Uses the record_comment_links table for per-record comment linking.
      */
-    private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int|string $recordId): void
+    private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int|string $recordId, ?int $userId): void
     {
         if ($comment === '') {
             return;
@@ -116,8 +133,8 @@ class RecordManagerService
         );
 
         // Handle synced comments (propagate to related A/PTR records)
-        if ($this->config->get('misc', 'record_comments_sync')) {
-            $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
+        if ($userId !== null && $this->config->get('misc', 'record_comments_sync')) {
+            $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName, $userId);
         }
     }
 
@@ -125,13 +142,13 @@ class RecordManagerService
      * Copy a new record's comment to the companion A or PTR record created right after it.
      * createRecord() syncs before the companion exists, so the add flow calls this once it does.
      */
-    public function syncCompanionComment(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin): void
+    public function syncCompanionComment(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, int $userId): void
     {
         if ($comment === '' || !$this->config->get('misc', 'record_comments_sync')) {
             return;
         }
 
-        $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $name);
+        $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $name, $userId);
     }
 
     /**
@@ -139,15 +156,15 @@ class RecordManagerService
      * This only syncs to the TARGET record, not the source record
      * (which already has a per-record comment from handleCommentsWithId).
      */
-    private function handleSyncedComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
+    private function handleSyncedComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name, int $userId): void
     {
         if ($type === RecordType::A || $type === RecordType::AAAA) {
             // Sync comment to the corresponding PTR record
-            $this->syncCommentToPtrRecord($type, $content, $comment, $userlogin);
+            $this->syncCommentToPtrRecord($type, $content, $comment, $userlogin, $userId);
         } elseif ($type === 'PTR') {
             // An ip6.arpa PTR pairs with AAAA records, an in-addr.arpa PTR with A records
             $forwardType = str_ends_with(strtolower($full_name), '.ip6.arpa') ? RecordType::AAAA : RecordType::A;
-            $this->syncCommentToARecord($content, $comment, $userlogin, $forwardType);
+            $this->syncCommentToARecord($content, $comment, $userlogin, $userId, $forwardType);
         }
         // For other record types, no sync needed - per-record comment is already set
     }
@@ -155,14 +172,14 @@ class RecordManagerService
     /**
      * Sync comment from A/AAAA record to corresponding PTR record.
      */
-    private function syncCommentToPtrRecord(string $type, string $content, string $comment, string $userlogin): void
+    private function syncCommentToPtrRecord(string $type, string $content, string $comment, string $userlogin, int $userId): void
     {
         $ptrName = $type === RecordType::A
             ? DomainUtility::convertIPv4AddrToPtrRec($content)
             : DomainUtility::convertIPv6AddrToPtrRec($content);
 
         $ptrZoneId = $this->domainRepository->getBestMatchingZoneIdFromName($ptrName);
-        if ($ptrZoneId !== -1) {
+        if ($ptrZoneId !== -1 && $this->mayEditZone($userId, $ptrZoneId)) {
             $rrsetRecords = $this->recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
             foreach ($rrsetRecords as $record) {
@@ -181,7 +198,7 @@ class RecordManagerService
     /**
      * Sync comment from PTR record to the corresponding A or AAAA records.
      */
-    private function syncCommentToARecord(string $content, string $comment, string $userlogin, string $forwardType = RecordType::A): void
+    private function syncCommentToARecord(string $content, string $comment, string $userlogin, int $userId, string $forwardType = RecordType::A): void
     {
         $content = rtrim($content, '.');
         $contentDomainId = $this->domainRepository->getDomainIdByName($content);
@@ -196,7 +213,7 @@ class RecordManagerService
             }
         }
 
-        if ($contentDomainId !== null) {
+        if ($contentDomainId !== null && $this->mayEditZone($userId, $contentDomainId)) {
             $rrsetRecords = $this->recordRepository->getRRSetRecords($contentDomainId, $content, $forwardType);
 
             foreach ($rrsetRecords as $record) {
@@ -210,5 +227,13 @@ class RecordManagerService
                 );
             }
         }
+    }
+
+    /**
+     * The related zone comes from the record content, so it can belong to someone else.
+     */
+    private function mayEditZone(int $userId, int $zoneId): bool
+    {
+        return $this->permissions->canEditZoneContent($userId, $zoneId, $this->domainRepository->getDomainType($zoneId));
     }
 }

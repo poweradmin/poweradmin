@@ -143,6 +143,7 @@ class RecordEditServiceTest extends TestCase
             'comment' => null,
             'syncPtr' => false,
             'bumpSoaSerial' => false,
+            'userId' => 12,
             'username' => 'alice',
         ];
 
@@ -341,7 +342,7 @@ class RecordEditServiceTest extends TestCase
     {
         $this->config['misc']['record_comments_sync'] = true;
         $this->commentSync->expects($this->once())->method('updateRelatedRecordComments')
-            ->with($this->domains, $this->reread, 'a note', 'alice');
+            ->with($this->domains, $this->reread, 'a note', 'alice', 12);
 
         $this->service()->edit($this->request(['comment' => 'a note']));
     }

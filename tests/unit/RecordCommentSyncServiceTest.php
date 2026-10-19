@@ -2,13 +2,27 @@
 
 namespace Poweradmin\Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordCommentSyncService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use TestHelpers\PermissionServiceTestCase;
 
-class RecordCommentSyncServiceTest extends TestCase
+class RecordCommentSyncServiceTest extends PermissionServiceTestCase
 {
+    private const ADMIN = 1;
+    private const OWNER = 2;
+
+    private function permissions(): PermissionService
+    {
+        return $this->buildPermissionService(
+            permissionsByUser: [self::OWNER => [Permission::PERM_ZONE_CONTENT_EDIT_OWN]],
+            adminUserIds: [self::ADMIN],
+            ownedZonesByUser: [self::OWNER => [1]]
+        );
+    }
+
     public function testCommentsForPtrRecordCreatesCommentsForPtrAndARecords()
     {
         $commentServiceMock = $this->createMock(RecordCommentService::class);
@@ -22,7 +36,7 @@ class RecordCommentSyncServiceTest extends TestCase
                 $receivedArgs[] = $args;
             });
 
-        $service = new RecordCommentSyncService($commentServiceMock);
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->syncCommentsForPtrRecord(1, 2, 'example.com', '1.0.168.192.in-addr.arpa', 'Test comment', 'user');
 
         $this->assertEquals([
@@ -43,7 +57,7 @@ class RecordCommentSyncServiceTest extends TestCase
                 $receivedArgs[] = $args;
             });
 
-        $service = new RecordCommentSyncService($commentServiceMock);
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->syncCommentsForDomainRecord(1, 2, '192.168.0.1', '1.0.168.192.in-addr.arpa', 'Test comment', 'user');
 
         $this->assertEquals([
@@ -59,7 +73,7 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(2, 'old.ptr.example.com', 'PTR', 'new.ptr.example.com', 'PTR', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->updatePtrRecordComment(2, 'old.ptr.example.com', 'new.ptr.example.com', 'Updated comment', 'user');
     }
 
@@ -70,7 +84,7 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(2, 'old.example.com', 'A', 'new.example.com', 'A', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->updateARecordComment(2, 'old.example.com', 'new.example.com', 'Updated comment', 'user');
     }
 
@@ -84,8 +98,8 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(2, '1.2.0.192.in-addr.arpa', 'PTR', '1.2.0.192.in-addr.arpa', 'PTR', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsUpdatesARecordCommentForPtrRecord()
@@ -98,8 +112,8 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(1, 'ptr.example.com', 'A', 'ptr.example.com', 'A', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsSkipsWhenPtrContentDomainNotFound()
@@ -111,8 +125,8 @@ class RecordCommentSyncServiceTest extends TestCase
         $commentServiceMock->expects($this->never())
             ->method('updateComment');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsSkipsWhenPtrZoneNotFound()
@@ -124,8 +138,8 @@ class RecordCommentSyncServiceTest extends TestCase
         $commentServiceMock->expects($this->never())
             ->method('updateComment');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsWithEmptyDomainName()
@@ -139,8 +153,8 @@ class RecordCommentSyncServiceTest extends TestCase
         $commentServiceMock->expects($this->never())
             ->method('updateComment');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsUpdatesTheApexRecordWhenThePtrTargetIsAZone()
@@ -154,8 +168,8 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(1, 'example.com', 'A', 'example.com', 'A', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
-        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'example.com'], 'Updated comment', 'user');
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'example.com'], 'Updated comment', 'user', self::ADMIN);
     }
 
     public function testUpdateRelatedRecordCommentsUpdatesAaaaRecordCommentForIp6ArpaPtr()
@@ -168,12 +182,65 @@ class RecordCommentSyncServiceTest extends TestCase
             ->method('updateComment')
             ->with(1, 'host.example.com', 'AAAA', 'host.example.com', 'AAAA', 'Updated comment', 'user');
 
-        $service = new RecordCommentSyncService($commentServiceMock);
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->updateRelatedRecordComments(
             $domainRepositoryMock,
             ['type' => 'PTR', 'name' => '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', 'content' => 'host.example.com'],
             'Updated comment',
-            'user'
+            'user',
+            self::ADMIN
         );
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsAReverseZoneTheUserCannotEdit()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+        $commentServiceMock->expects($this->never())->method('updateCommentForRecord');
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::OWNER);
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsAForwardZoneTheUserCannotEdit()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')->willReturn(7);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'host.other.example'], 'Updated comment', 'user', self::OWNER);
+    }
+
+    public function testUpdateRelatedRecordCommentsReachesAnOwnedZone()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getDomainIdByName')->willReturn(1);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->once())
+            ->method('updateComment')
+            ->with(1, 'ptr.example.com', 'A', 'ptr.example.com', 'A', 'Updated comment', 'user');
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user', self::OWNER);
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsASecondaryZone()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $domainRepositoryMock->method('getDomainType')->willReturn('SLAVE');
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN);
     }
 }

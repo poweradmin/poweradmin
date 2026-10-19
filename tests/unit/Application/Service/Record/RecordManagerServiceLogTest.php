@@ -31,6 +31,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -61,7 +62,8 @@ class RecordManagerServiceLogTest extends TestCase
             $recordManager,
             $comments ?? $this->createMock(RecordCommentService::class),
             $audit,
-            $config
+            $config,
+            $this->createMock(PermissionService::class)
         );
     }
 

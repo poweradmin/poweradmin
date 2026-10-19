@@ -313,6 +313,7 @@ class EditRecordController extends BaseController
             $showRecordComments ? (string)$this->httpRequest->getPostParam('comment', '') : null,
             $this->httpRequest->getPostParam('update_ptr') !== null,
             true,
+            (int)$this->getUserContextService()->getLoggedInUserId(),
             $this->getUserContextService()->getLoggedInUsername() ?? ''
         ));
         if (!$edited->isOk()) {

@@ -40,6 +40,7 @@ final readonly class RecordEditRequest
      * @param bool $bumpSoaSerial The web form lets an SOA carry a serial placeholder whose expanded
      *                            value is bumped after the write (#1360); API callers keep the serial
      *                            they sent and pass false
+     * @param int $userId The acting user; a synced comment reaches only zones this user may edit
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_edit_record
      */
     public function __construct(
@@ -56,6 +57,7 @@ final readonly class RecordEditRequest
         public ?string $comment,
         public bool $syncPtr,
         public bool $bumpSoaSerial,
+        public int $userId,
         public string $username,
         public string $origin = AuditLoggerInterface::ORIGIN_WEB
     ) {

@@ -31,11 +31,13 @@ interface RecordCommentSyncInterface
 {
     /**
      * @param array<string, mixed> $newRecordInfo Record row after the edit (type, name, content)
+     * @param int $userId The acting user; a related record is updated only in a zone this user may edit
      */
     public function updateRelatedRecordComments(
         DomainRepositoryInterface $domainRepository,
         array $newRecordInfo,
         string $comment,
-        string $userLogin
+        string $userLogin,
+        int $userId
     ): void;
 }

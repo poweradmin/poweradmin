@@ -267,7 +267,7 @@ class ZoneEditService
                 $submission->username
             );
             if ($this->config->get('misc', 'record_comments_sync')) {
-                $this->commentSync->updateRelatedRecordComments($this->domains, $record, $newComment, $submission->username);
+                $this->commentSync->updateRelatedRecordComments($this->domains, $record, $newComment, $submission->username, $submission->userId);
             }
         }
 

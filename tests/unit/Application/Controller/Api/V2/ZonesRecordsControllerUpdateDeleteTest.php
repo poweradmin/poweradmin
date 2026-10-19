@@ -70,6 +70,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     private ReverseRecordCreator&MockObject $reverseCreator;
     private RecordCommentService&MockObject $comments;
     private RecordCommentSyncService&MockObject $commentSync;
+    private bool $commentsSync = false;
     private AuditService&MockObject $audit;
 
     /** @var array<string, mixed> */
@@ -601,6 +602,18 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testASyncedCommentIsCheckedAgainstTheKeyOwner(): void
+    {
+        $this->commentsSync = true;
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->commentSync->expects($this->once())->method('updateRelatedRecordComments')
+            ->with($this->anything(), $this->anything(), 'Web server', 'apiuser', self::USER_ID);
+
+        $this->update(['content' => '192.0.2.9', 'comment' => 'Web server']);
+    }
+
     public function testWithoutACommentInTheBodyTheWriteCarriesNoneAndTheRecordCommentIsLeftAlone(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -738,6 +751,16 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         ], $overrides);
     }
 
+    private function editConfig(): ConfigurationInterface
+    {
+        $config = $this->createMock(ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key): ?bool => $group === 'misc' && $key === 'record_comments_sync' ? $this->commentsSync : null
+        );
+
+        return $config;
+    }
+
     /**
      * @param array<string, mixed> $body
      */
@@ -796,7 +819,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
             $this->comments,
             $this->commentSync,
             $this->audit,
-            $this->createMock(ConfigurationInterface::class),
+            $this->editConfig(),
             new NullLogger()
         ));
 

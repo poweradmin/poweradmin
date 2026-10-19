@@ -27,6 +27,7 @@ use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Utility\DomainUtility;
 
 /**
@@ -35,15 +36,18 @@ use Poweradmin\Domain\Utility\DomainUtility;
 class RecordCommentSyncService implements RecordCommentSyncInterface
 {
     private RecordCommentService $commentService;
+    private PermissionService $permissions;
     private ?RecordListingInterface $recordRepository;
     private bool $numericRecordIds;
 
     public function __construct(
         RecordCommentService $commentService,
+        PermissionService $permissions,
         ?RecordListingInterface $recordRepository = null,
         ?BackendCapabilitiesInterface $backendProvider = null
     ) {
         $this->commentService = $commentService;
+        $this->permissions = $permissions;
         $this->recordRepository = $recordRepository;
         $this->numericRecordIds = $backendProvider === null || $backendProvider->recordIdsAreNumeric();
     }
@@ -97,14 +101,15 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
         DomainRepositoryInterface $domainRepository,
         array $newRecordInfo,
         string $comment,
-        string $userLogin
+        string $userLogin,
+        int $userId
     ): void {
         if (in_array($newRecordInfo['type'], [RecordType::A, RecordType::AAAA])) {
             $ptrName = $newRecordInfo['type'] === RecordType::A
                 ? DomainUtility::convertIPv4AddrToPtrRec($newRecordInfo['content'])
                 : DomainUtility::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $domainRepository->getBestMatchingZoneIdFromName($ptrName);
-            if ($ptrZoneId !== -1) {
+            if ($ptrZoneId !== -1 && $this->mayEditZone($domainRepository, $userId, $ptrZoneId)) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
@@ -121,11 +126,19 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
                 }
             }
 
-            if ($contentDomainId !== null) {
+            if ($contentDomainId !== null && $this->mayEditZone($domainRepository, $userId, $contentDomainId)) {
                 $forwardType = str_ends_with(strtolower((string)($newRecordInfo['name'] ?? '')), '.ip6.arpa') ? RecordType::AAAA : RecordType::A;
                 $this->updateRecordComments($contentDomainId, $hostname, $forwardType, $comment, $userLogin);
             }
         }
+    }
+
+    /**
+     * The related zone comes from the record content, so it can belong to someone else.
+     */
+    private function mayEditZone(DomainRepositoryInterface $domainRepository, int $userId, int $zoneId): bool
+    {
+        return $this->permissions->canEditZoneContent($userId, $zoneId, $domainRepository->getDomainType($zoneId));
     }
 
     private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void

@@ -196,7 +196,8 @@ class BulkRecordAddController extends BaseController
                         $prio,
                         $comment,
                         $this->getUserContextService()->getLoggedInUsername(),
-                        $disabled
+                        $disabled,
+                        userId: $this->getUserContextService()->getLoggedInUserId()
                     );
                     if ($result->success) {
                         $success_count++;

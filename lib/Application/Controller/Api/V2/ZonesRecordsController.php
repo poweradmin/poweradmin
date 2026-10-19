@@ -795,6 +795,7 @@ class ZonesRecordsController extends PublicApiController
                 $comment,
                 $updatePtr,
                 false,
+                $this->getAuthenticatedUserId(),
                 $this->getAuthenticatedUsername(),
                 AuditLoggerInterface::ORIGIN_API
             ));

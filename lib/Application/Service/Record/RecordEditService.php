@@ -195,7 +195,7 @@ class RecordEditService
                 $request->username
             );
             if ($this->config->get('misc', 'record_comments_sync')) {
-                $this->commentSync->updateRelatedRecordComments($this->domains, $stored, $request->comment, $request->username);
+                $this->commentSync->updateRelatedRecordComments($this->domains, $stored, $request->comment, $request->username, $request->userId);
             }
 
             return;

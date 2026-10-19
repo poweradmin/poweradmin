@@ -184,7 +184,7 @@ final class RecordServices
             $this->recordManager(),
             $this->services->soaRecordManager(),
             $comments,
-            new RecordCommentSyncService($comments, $this->services->recordRepository(), $this->services->dnsBackendProvider()),
+            new RecordCommentSyncService($comments, $this->services->permissionService(), $this->services->recordRepository(), $this->services->dnsBackendProvider()),
             $this->services->auditService(),
             $this->recordCommentsEnabled(),
             $this->zoneCommentsEnabled()
@@ -278,7 +278,8 @@ final class RecordServices
             $this->recordManager(),
             $this->recordCommentService(),
             $this->services->auditService(),
-            $this->config
+            $this->config,
+            $this->services->permissionService()
         );
     }
 
@@ -308,7 +309,7 @@ final class RecordServices
             $this->services->soaRecordManager(),
             $this->reverseRecordCreator(),
             $comments,
-            new RecordCommentSyncService($comments, $this->services->recordRepository(), $this->services->dnsBackendProvider()),
+            new RecordCommentSyncService($comments, $this->services->permissionService(), $this->services->recordRepository(), $this->services->dnsBackendProvider()),
             $this->services->auditService(),
             $this->config,
             $this->logger,
