@@ -13276,6 +13276,4 @@ msgstr "无法创建此区域，因为它与另一个用户拥有的现有区域
 msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
-msgstr ""
-"You can only assign a permission template whose permissions you already "
-"hold."
+msgstr "您只能分配其权限您已全部拥有的权限模板。"
