@@ -2970,3 +2970,9 @@ msgstr "您没有权限编辑超级用户帐户。"
 msgid "You do not have permission to delete a superuser account."
 msgstr "您没有权限删除超级用户帐户。"
 
+
+#: lib/Application/Controller/AddZoneMasterController.php:108
+#: lib/Application/Controller/AddZoneSlaveController.php:105
+#: lib/Application/Controller/BulkRegistrationController.php:105
+msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
+msgstr "无法创建此区域，因为它与另一个用户拥有的现有区域重叠。"

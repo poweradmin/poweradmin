@@ -101,6 +101,8 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
             } elseif ($dnsRecord->domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
+            } elseif ($dnsRecord->is_subzone_of_foreign_zone($domain)) {
+                $failed_domains[] = $domain . " - " . _('Cannot create this zone because it overlaps an existing zone owned by another user.');
             } elseif ($dnsRecord->add_domain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
                 $zone_id = $dnsRecord->get_zone_id_from_name($domain);
                 $this->logger->log_info(sprintf(

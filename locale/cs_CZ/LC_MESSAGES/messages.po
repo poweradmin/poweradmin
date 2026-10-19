@@ -3043,3 +3043,9 @@ msgstr "Nemáte oprávnění upravovat účet superuživatele."
 msgid "You do not have permission to delete a superuser account."
 msgstr "Nemáte oprávnění smazat účet superuživatele."
 
+
+#: lib/Application/Controller/AddZoneMasterController.php:108
+#: lib/Application/Controller/AddZoneSlaveController.php:105
+#: lib/Application/Controller/BulkRegistrationController.php:105
+msgid "Cannot create this zone because it overlaps an existing zone owned by another user."
+msgstr "Tuto zónu nelze vytvořit, protože se překrývá s existující zónou, kterou vlastní jiný uživatel."

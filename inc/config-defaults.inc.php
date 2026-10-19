@@ -61,6 +61,7 @@ $dns_soa = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
 $dns_strict_tld_check = false;
 $dns_top_level_tld_check = false;   // Do not allow the creation of top-level domains
 $dns_third_level_check = false;     // Do not allow the creation of third-level domains
+$dns_parent_zone_ownership_check = true; // Refuse creating a zone inside a zone owned by another user
 $dns_txt_auto_quote = false;        // Automatically quote TXT records
 
 // Timezone settings

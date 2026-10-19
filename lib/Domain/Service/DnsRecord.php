@@ -1189,6 +1189,69 @@ class DnsRecord
         return $found_domain_id;
     }
 
+    /** Check whether a new zone would be carved out of a zone owned by another user
+     *
+     * PowerDNS answers from the most specific zone it holds, so creating a child zone
+     * takes over that part of the parent's namespace.
+     *
+     * @param string $domain Zone name to be created
+     *
+     * @return boolean true if the closest existing enclosing zone is owned by someone else
+     */
+    public function is_subzone_of_foreign_zone(string $domain): bool
+    {
+        if (!$this->config->get('dns_parent_zone_ownership_check', true)) {
+            return false;
+        }
+
+        // verify_permission() also passes superusers
+        if (UserManager::verify_permission($this->db, 'zone_content_edit_others')) {
+            return false;
+        }
+
+        // Only the closest existing parent decides, as it holds the namespace being split
+        foreach (self::get_parent_zone_names($domain) as $parent) {
+            $parent_id = $this->get_domain_id_by_name($parent);
+            if ($parent_id !== false) {
+                return !UserManager::verify_user_is_owner_zoneid($this->db, (int)$parent_id)
+                    && $this->zone_has_owner((int)$parent_id);
+            }
+        }
+        return false;
+    }
+
+    /** Whether any user owns the zone (a zones row with a non-empty owner)
+     *
+     * @param int $zone_id Zone ID
+     *
+     * @return boolean true if the zone has an owner
+     */
+    private function zone_has_owner(int $zone_id): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones
+            WHERE domain_id = :zone_id AND owner IS NOT NULL AND owner <> 0");
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /** List every enclosing zone name of a domain, closest first
+     *
+     * @param string $domain Domain name, e.g. "Sub.Example.COM."
+     *
+     * @return string[] Parent names, e.g. ["example.com", "com"]
+     */
+    public static function get_parent_zone_names(string $domain): array
+    {
+        $labels = explode('.', strtolower(trim($domain, '.')));
+        $parents = [];
+        for ($i = 1; $i < count($labels); $i++) {
+            $parents[] = implode('.', array_slice($labels, $i));
+        }
+        return $parents;
+    }
+
     /** Check if Domain Exists
      *
      * Check if a domain is already existing.
