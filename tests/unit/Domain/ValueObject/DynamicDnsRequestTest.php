@@ -42,6 +42,29 @@ class DynamicDnsRequestTest extends TestCase
         $this->assertEquals('TestAgent/1.0', $dynamicDnsRequest->getUserAgent());
     }
 
+    public function testFromHttpRequestTreatsArrayValuesAsAbsent(): void
+    {
+        $request = new Request([
+            'username' => ['a'],
+            'password' => ['b'],
+            'hostname' => ['c'],
+            'myip' => ['1'],
+            'ip' => '10.0.0.1',
+            'myip6' => ['2'],
+            'ip6' => ['3'],
+            'dualstack_update' => ['1'],
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertSame('', $dynamicDnsRequest->getUsername());
+        $this->assertSame('', $dynamicDnsRequest->getPassword());
+        $this->assertSame('', $dynamicDnsRequest->getHostname());
+        $this->assertSame('10.0.0.1', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('', $dynamicDnsRequest->getIpv6());
+        $this->assertFalse($dynamicDnsRequest->isDualstackUpdate());
+    }
+
     public function testFromHttpRequestWithQueryParams(): void
     {
         $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';

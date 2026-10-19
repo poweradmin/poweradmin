@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,12 +41,12 @@ class DynamicDnsRequest
 
     public static function fromHttpRequest(Request $request): self
     {
-        $username = $_SERVER['PHP_AUTH_USER'] ?? $request->query->get('username', '');
-        $password = $_SERVER['PHP_AUTH_PW'] ?? $request->query->get('password', '');
-        $hostname = $request->query->get('hostname', '');
-        $ipv4 = $request->query->get('myip') ?? $request->query->get('ip', '');
-        $ipv6 = $request->query->get('myip6') ?? $request->query->get('ip6', '');
-        $dualstackUpdate = $request->query->get('dualstack_update') === '1';
+        $username = $_SERVER['PHP_AUTH_USER'] ?? self::queryString($request, 'username') ?? '';
+        $password = $_SERVER['PHP_AUTH_PW'] ?? self::queryString($request, 'password') ?? '';
+        $hostname = self::queryString($request, 'hostname') ?? '';
+        $ipv4 = self::queryString($request, 'myip') ?? self::queryString($request, 'ip') ?? '';
+        $ipv6 = self::queryString($request, 'myip6') ?? self::queryString($request, 'ip6') ?? '';
+        $dualstackUpdate = self::queryString($request, 'dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
         [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
@@ -74,6 +74,17 @@ class DynamicDnsRequest
             $dualstackUpdate,
             $userAgent
         );
+    }
+
+    /**
+     * Read a query parameter as a string. An array value (e.g. myip[]=1) counts as
+     * absent, where InputBag::get() would throw and end the request with a 500.
+     */
+    private static function queryString(Request $request, string $key): ?string
+    {
+        $value = $request->query->all()[$key] ?? null;
+
+        return is_string($value) ? $value : null;
     }
 
     /**
