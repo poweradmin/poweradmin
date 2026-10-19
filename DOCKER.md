@@ -469,8 +469,8 @@ default. Restrict them at your reverse proxy when enabling them.
 | `PA_HEALTH_PING_ENABLED` | Enable liveness endpoint at /ping (returns `ok`, checks nothing else) | `false` | No |
 | `PA_HEALTH_DB_TIMEOUT` | Database connect timeout in seconds used by the health check | `2` | No |
 | `PA_HEALTH_PDNS_TIMEOUT` | PowerDNS API timeout in seconds used by the health check | `2` | No |
-| `PA_HEALTH_TOKEN` | When set, /api/health answers only requests sending it in the `X-Health-Token` header (4.6.0+) | - | No |
-| `PA_HEALTH_CACHE_SECONDS` | Reuse the last /api/health result for this many seconds; `0` runs the checks on every request (4.6.0+) | `0` | No |
+| `PA_HEALTH_TOKEN` | When set, /api/health answers only requests sending it in the `X-Health-Token` header (4.5.0+) | - | No |
+| `PA_HEALTH_CACHE_SECONDS` | Reuse the last /api/health result for this many seconds; `0` runs the checks on every request (4.5.0+) | `0` | No |
 
 The image's built-in `HEALTHCHECK` requests `/ping` when `PA_HEALTH_PING_ENABLED=true`
 (so a headless container with `PA_WEB_ENABLED=false` still reports healthy) and `/` otherwise.

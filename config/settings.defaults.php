@@ -58,8 +58,8 @@ return [
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
         'trusted_proxies' => [],                 // Reverse proxy IPs/CIDRs/wildcards allowed to set X-Forwarded-For/X-Real-IP; private/loopback peers are always trusted (added in 4.5.0)
-        'protect_last_admin_on_edit' => false,   // Refuse a user edit that moves the last super admin to a template without super admin; delete, disable and API PATCH always refuse (added in 4.6.0)
-        'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.6.0)
+        'protect_last_admin_on_edit' => false,   // Refuse a user edit that moves the last super admin to a template without super admin; delete, disable and API PATCH always refuse (added in 4.5.0)
+        'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.5.0)
         /**
          * Password Policy Settings
          */
@@ -108,7 +108,7 @@ return [
             'rate_limit_attempts' => 5,                 // Max reset attempts per time window
             'rate_limit_window' => 3600,                // Rate limit window in seconds (1 hour)
             'min_time_between_requests' => 60,          // Minimum seconds between requests (1 minute)
-            'single_use_claim' => false,                // Claim the link before the password changes, so one link sets one password even under parallel requests (added in 4.6.0)
+            'single_use_claim' => false,                // Claim the link before the password changes, so one link sets one password even under parallel requests (added in 4.5.0)
         ],
         /**
          * Username Recovery Settings
@@ -442,8 +442,8 @@ return [
         'ping_enabled' => false,                       // Enable unauthenticated liveness endpoint at /ping (added in 4.5.0)
         'db_timeout' => 2,                             // Database connect timeout in seconds used by the health check (added in 4.5.0)
         'pdns_timeout' => 2,                           // PowerDNS API timeout in seconds used by the health check (added in 4.5.0)
-        'token' => '',                                 // When set, /api/health answers only requests sending it in the X-Health-Token header (added in 4.6.0)
-        'cache_seconds' => 0,                          // Reuse the last /api/health result for this many seconds; 0 runs the checks on every request (added in 4.6.0)
+        'token' => '',                                 // When set, /api/health answers only requests sending it in the X-Health-Token header (added in 4.5.0)
+        'cache_seconds' => 0,                          // Reuse the last /api/health result for this many seconds; 0 runs the checks on every request (added in 4.5.0)
     ],
 
     /**
