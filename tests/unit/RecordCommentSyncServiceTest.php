@@ -78,6 +78,7 @@ class RecordCommentSyncServiceTest extends TestCase
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
         $dnsRecordMock->method('get_best_matching_zone_id_from_name')->willReturn(2);
+        $dnsRecordMock->method('user_can_edit_zone')->willReturn(true);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -92,11 +93,38 @@ class RecordCommentSyncServiceTest extends TestCase
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
         $dnsRecordMock->method('get_domain_id_by_name')->willReturn(1);
+        $dnsRecordMock->method('user_can_edit_zone')->willReturn(true);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
             ->method('updateComment')
             ->with(1, 'ptr.example.com', 'A', 'ptr.example.com', 'A', 'Updated comment', 'user');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsPtrZoneTheUserCannotEdit()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('get_best_matching_zone_id_from_name')->willReturn(2);
+        $dnsRecordMock->method('user_can_edit_zone')->with(2)->willReturn(false);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsForwardZoneTheUserCannotEdit()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('get_domain_id_by_name')->willReturn(1);
+        $dnsRecordMock->method('user_can_edit_zone')->with(1)->willReturn(false);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
 
         $service = new RecordCommentSyncService($commentServiceMock);
         $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');

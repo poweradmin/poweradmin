@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -92,13 +92,14 @@ class RecordCommentSyncService
                 ? DnsRecord::convert_ipv4addr_to_ptrrec($newRecordInfo['content'])
                 : DnsRecord::convert_ipv6addr_to_ptrrec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
-            if ($ptrZoneId !== -1) {
+            // The related zone comes from the posted content, so it can be anyone's zone
+            if ($ptrZoneId !== -1 && $dnsRecord->user_can_edit_zone($ptrZoneId)) {
                 $this->updatePtrRecordComment($ptrZoneId, $ptrName, $ptrName, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === self::RECORD_TYPE_PTR) {
             $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
             $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
-            if ($contentDomainId !== false) {
+            if ($contentDomainId !== false && $dnsRecord->user_can_edit_zone((int)$contentDomainId)) {
                 $this->updateARecordComment($contentDomainId, $newRecordInfo['content'], $newRecordInfo['content'], $comment, $userLogin);
             }
         }

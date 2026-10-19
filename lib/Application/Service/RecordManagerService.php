@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -131,7 +131,8 @@ class RecordManagerService
             : DnsRecord::convert_ipv6addr_to_ptrrec($content);
 
         $ptrZoneId = $this->dnsRecord->get_best_matching_zone_id_from_name($ptrName);
-        if ($ptrZoneId !== -1) {
+        // The related zone comes from the record content, so it can be anyone's zone
+        if ($ptrZoneId !== -1 && $this->dnsRecord->user_can_edit_zone($ptrZoneId)) {
             $this->commentSyncService->syncCommentsForPtrRecord(
                 $zone_id,
                 $ptrZoneId,
@@ -155,7 +156,7 @@ class RecordManagerService
     {
         $domainName = DnsHelper::getRegisteredDomain($content);
         $contentDomainId = $this->dnsRecord->get_domain_id_by_name($domainName);
-        if ($contentDomainId !== false) {
+        if ($contentDomainId !== false && $this->dnsRecord->user_can_edit_zone((int)$contentDomainId)) {
             $this->commentSyncService->syncCommentsForDomainRecord(
                 $contentDomainId,
                 $ptrZoneId,

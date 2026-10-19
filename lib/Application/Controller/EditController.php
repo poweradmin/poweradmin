@@ -424,12 +424,14 @@ class EditController extends BaseController
                                     $_SESSION['userlogin']
                                 );
 
-                                $this->commentSyncService->updateRelatedRecordComments(
-                                    $dnsRecord,
-                                    $record,
-                                    $record['comment'] ?? '',
-                                    $_SESSION['userlogin']
-                                );
+                                if ($this->config('record_comments_sync')) {
+                                    $this->commentSyncService->updateRelatedRecordComments(
+                                        $dnsRecord,
+                                        $record,
+                                        $record['comment'] ?? '',
+                                        $_SESSION['userlogin']
+                                    );
+                                }
 
                                 $updatedRecordComments[$recordKey] = true;
                             }

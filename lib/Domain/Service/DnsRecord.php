@@ -1236,6 +1236,21 @@ class DnsRecord
         return (int)$stmt->fetchColumn() > 0;
     }
 
+    /** Whether the current user may change content (records, comments) of a zone
+     *
+     * @param int $zone_id Zone ID
+     *
+     * @return boolean true if the user may edit the zone
+     */
+    public function user_can_edit_zone(int $zone_id): bool
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+        if ($perm_edit == "none" || $this->get_domain_type($zone_id) == "SLAVE") {
+            return false;
+        }
+        return $perm_edit == "all" || UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+    }
+
     /** List every enclosing zone name of a domain, closest first
      *
      * @param string $domain Domain name, e.g. "Sub.Example.COM."
