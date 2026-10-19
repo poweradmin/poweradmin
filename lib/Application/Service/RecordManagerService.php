@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -211,7 +211,7 @@ class RecordManagerService
             : DnsRecord::convertIPv6AddrToPtrRec($content);
 
         $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
-        if ($ptrZoneId !== -1) {
+        if ($ptrZoneId !== -1 && $this->dnsRecord->currentUserMayEditZoneContent($ptrZoneId)) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
 
@@ -246,7 +246,7 @@ class RecordManagerService
             }
         }
 
-        if ($contentDomainId !== null) {
+        if ($contentDomainId !== null && $this->dnsRecord->currentUserMayEditZoneContent($contentDomainId)) {
             $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
             $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
 

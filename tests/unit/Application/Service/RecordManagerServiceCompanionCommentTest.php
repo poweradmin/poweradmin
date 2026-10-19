@@ -51,11 +51,12 @@ class RecordManagerServiceCompanionCommentTest extends TestCase
         $this->comments = $this->createMock(RecordCommentService::class);
     }
 
-    private function service(bool $sync = true): RecordManagerService
+    private function service(bool $sync = true, bool $mayEditRelatedZone = true): RecordManagerService
     {
         $dnsRecord = $this->createMock(DnsRecord::class);
         $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturnCallback(fn(string $name) => str_ends_with($name, '.in-addr.arpa') ? 5 : -1);
         $dnsRecord->method('getDomainIdByName')->willReturnCallback(fn(string $name) => $name === 'example.com' ? 1 : null);
+        $dnsRecord->method('currentUserMayEditZoneContent')->willReturn($mayEditRelatedZone);
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(function (string $group, string $key, mixed $default = null) use ($sync) {
@@ -118,5 +119,13 @@ class RecordManagerServiceCompanionCommentTest extends TestCase
 
         $this->service(false)->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
         $this->service()->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', '', 'admin');
+    }
+
+    public function testDoesNotWriteIntoARelatedZoneTheUserMayNotEdit(): void
+    {
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->service(true, false)->syncCompanionComment(5, '1.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 'rack 4', 'admin');
+        $this->service(true, false)->syncCompanionComment(1, 'host.example.com', 'A', '192.0.2.1', 'rack 4', 'admin');
     }
 }
