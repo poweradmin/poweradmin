@@ -33,17 +33,22 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
      * assignment rules in checkPermissionTemplateAssignment() are exercised for real.
      *
      * @param int[] $superuserTemplateIds Templates that carry user_is_ueberuser
+     * @param int[] $exceedingTemplateIds Templates holding a permission the caller lacks
      */
     private function permissionService(
         bool $isUeberuser,
         bool $canEditTemplPerm,
         bool $canEditOthers = false,
         array $superuserTemplateIds = [],
-        ?int $currentTemplateId = null
+        ?int $currentTemplateId = null,
+        array $exceedingTemplateIds = []
     ): ApiPermissionService {
         $svc = $this->createPartialMock(
             ApiPermissionService::class,
-            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId']
+            ['userHasPermission', 'templateGrantsSuperuser', 'getUserPermissionTemplateId', 'templateExceedsUserPermissions']
+        );
+        $svc->method('templateExceedsUserPermissions')->willReturnCallback(
+            static fn(int $userId, int $templId): bool => in_array($templId, $exceedingTemplateIds, true)
         );
         $svc->method('getUserPermissionTemplateId')->willReturn($currentTemplateId);
         $svc->method('userHasPermission')->willReturnCallback(
@@ -298,5 +303,103 @@ class PermissionTemplateAssignmentGuardTest extends TestCase
         $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
 
         $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+    }
+
+    public function testCreateRejectsTemplateWithPermissionsTheCallerLacks(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            exceedingTemplateIds: [3]
+        );
+        $input = ['perm_templ' => 3, 'username' => 'delegate'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertSame(ApiPermissionService::TEMPLATE_SUBSET_DENIED, $error);
+    }
+
+    public function testCreateAllowsTemplateWithinTheCallersPermissions(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            exceedingTemplateIds: [3]
+        );
+        $input = ['perm_templ' => 2, 'username' => 'delegate'];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertNull($error);
+    }
+
+    public function testCreateByCallerWithEditOthersSkipsTheSubsetCheck(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            canEditOthers: true,
+            exceedingTemplateIds: [3]
+        );
+        $input = ['perm_templ' => 3];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertNull($error);
+    }
+
+    public function testSuperuserTemplateKeepsItsOwnMessageOnCreate(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            superuserTemplateIds: [1],
+            exceedingTemplateIds: [1]
+        );
+        $input = ['perm_templ' => 1];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $input, null);
+
+        $this->assertSame(ApiPermissionService::TEMPLATE_SUPERUSER_DENIED, $error);
+    }
+
+    public function testUpdateOfAnotherAccountIsNotSubjectToTheSubsetCheck(): void
+    {
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            exceedingTemplateIds: [3]
+        );
+        $input = ['perm_templ' => 3];
+
+        $error = PermissionTemplateAssignmentGuard::apply($svc, null, 7, $input, 9);
+
+        $this->assertNull($error);
+    }
+
+    public function testCreateDefaultsAnOmittedTemplateButChecksAnExplicitMinimalOne(): void
+    {
+        // Template 4 is the minimal default and holds a permission the delegate lacks.
+        $svc = $this->permissionService(
+            isUeberuser: false,
+            canEditTemplPerm: true,
+            exceedingTemplateIds: [4, 3]
+        );
+
+        $omitted = ['username' => 'delegate'];
+        $this->assertNull(PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $omitted, null));
+        $this->assertSame(4, $omitted['perm_templ']);
+
+        $explicitMinimal = ['perm_templ' => 4];
+        $this->assertSame(
+            ApiPermissionService::TEMPLATE_SUBSET_DENIED,
+            PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $explicitMinimal, null)
+        );
+
+        $richer = ['perm_templ' => 3];
+        $this->assertSame(
+            ApiPermissionService::TEMPLATE_SUBSET_DENIED,
+            PermissionTemplateAssignmentGuard::apply($svc, 4, 7, $richer, null)
+        );
     }
 }

@@ -96,6 +96,8 @@ class UserManager
                 _('Changing your own permission template requires the permission to edit other users.'),
             ApiPermissionService::TEMPLATE_SUPERUSER_DENIED =>
                 _('Assigning a permission template with administrator rights requires administrator rights.'),
+            ApiPermissionService::TEMPLATE_SUBSET_DENIED =>
+                _('You can only assign a permission template whose permissions you already hold.'),
             default => _('You do not have the permission to change the permission template.'),
         };
     }
@@ -575,10 +577,12 @@ class UserManager
      * Add a new user
      *
      * @param array $details Array of User details
+     * @param bool $templateDefaulted True when the application filled in the minimal
+     *                                template itself rather than taking the caller's choice
      *
      * @return int|false The new user ID on success, false otherwise
      */
-    public function addNewUser(array $details): int|false
+    public function addNewUser(array $details, bool $templateDefaulted = false): int|false
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->config);
@@ -606,9 +610,9 @@ class UserManager
         }
 
         // Callers without user_edit_templ_perm inherit the creator's own template
-        // below, so only a chosen template needs gating.
+        // below, and a defaulted template is not a choice, so only a chosen one is gated.
         $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
-        if ($mayAssignTemplate && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
+        if ($mayAssignTemplate && !$templateDefaulted && $this->templateAssignmentRejected(null, (int)($details['perm_templ'] ?? 0), null)) {
             return false;
         }
 

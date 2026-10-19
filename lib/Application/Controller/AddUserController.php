@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -122,7 +122,8 @@ class AddUserController extends BaseController
         $showUserAccessTemplates = $this->config->get('permissions', 'show_user_access_templates', true);
         $canChooseTemplate = $showUserAccessTemplates && $this->hasPermission('user_edit_templ_perm');
 
-        if (!$canChooseTemplate || !isset($userParams['perm_templ']) || $userParams['perm_templ'] === '') {
+        $templateDefaulted = !$canChooseTemplate || !isset($userParams['perm_templ']) || $userParams['perm_templ'] === '';
+        if ($templateDefaulted) {
             $minimalTemplateId = $this->permissionTemplateRepository->getMinimalPermissionTemplateId('user');
             if ($minimalTemplateId === null) {
                 $this->setMessage('add_user', 'error', _('No non-superuser permission template is available to assign.'));
@@ -146,7 +147,7 @@ class AddUserController extends BaseController
             $userParams['password'] = $generatedPassword;
         }
 
-        $newUserId = $legacyUsers->addNewUser($userParams);
+        $newUserId = $legacyUsers->addNewUser($userParams, $templateDefaulted);
         if ($newUserId !== false) {
             $successMessage = _('The user has been created successfully.');
 

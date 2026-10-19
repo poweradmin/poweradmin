@@ -43,6 +43,7 @@ class ApiPermissionService
     public const TEMPLATE_ASSIGN_DENIED = 'Setting perm_templ requires user_edit_templ_perm or user_is_ueberuser';
     public const TEMPLATE_SELF_ASSIGN_DENIED = 'Changing your own permission template requires user_edit_others';
     public const TEMPLATE_SUPERUSER_DENIED = 'Assigning a superuser permission template requires user_is_ueberuser';
+    public const TEMPLATE_SUBSET_DENIED = 'You can only assign a permission template whose permissions you already hold.';
 
     private PDO $db;
     private ?UserRepository $userRepository = null;
@@ -655,7 +656,50 @@ class ApiPermissionService
             return self::TEMPLATE_SUPERUSER_DENIED;
         }
 
+        // A new account must not receive authority its creator lacks, unless the
+        // creator may already edit other users anyway.
+        if (
+            $targetUserId === null
+            && !$this->userHasPermission($userId, 'user_edit_others')
+            && $this->templateExceedsUserPermissions($userId, $permTemplId)
+        ) {
+            return self::TEMPLATE_SUBSET_DENIED;
+        }
+
         return null;
+    }
+
+    /**
+     * Check whether a permission template holds any permission the user lacks.
+     *
+     * The user's permissions are their own template plus their groups' templates.
+     */
+    public function templateExceedsUserPermissions(int $userId, int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*) FROM perm_templ_items pti
+            WHERE pti.templ_id = :templ_id
+            AND pti.perm_id NOT IN (
+                SELECT own.perm_id
+                FROM perm_templ_items own
+                INNER JOIN users u ON own.templ_id = u.perm_templ
+                WHERE u.id = :user_id
+
+                UNION
+
+                SELECT grp.perm_id
+                FROM user_group_members ugm
+                INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                INNER JOIN perm_templ_items grp ON grp.templ_id = ug.perm_templ
+                WHERE ugm.user_id = :user_id2
+            )
+        ");
+        $stmt->bindValue(':templ_id', $permTemplId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     /**
