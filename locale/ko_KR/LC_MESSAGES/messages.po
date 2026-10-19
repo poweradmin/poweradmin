@@ -13539,6 +13539,4 @@ msgstr "이 존은 다른 사용자가 소유한 기존 존과 겹치므로 생�
 msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
-msgstr ""
-"You can only assign a permission template whose permissions you already "
-"hold."
+msgstr "이미 보유한 권한만 포함된 권한 템플릿만 할당할 수 있습니다."
