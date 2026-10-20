@@ -16422,3 +16422,18 @@ msgstr "Anda hanya dapat menetapkan templat izin yang izinnya sudah Anda miliki.
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s bukan alamat IPv6 yang valid."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Alamat %s berada di luar zona %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Nama atau alamat IP"

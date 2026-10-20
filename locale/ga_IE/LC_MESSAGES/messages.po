@@ -16715,3 +16715,18 @@ msgstr "Ní féidir leat ach teimpléad ceadanna a shannadh a bhfuil a cheadanna
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Taifid DNSSEC scipeáilte: %d. Cruthaíonn PowerDNS taifid RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS agus CDNSKEY é féin nuair a shíníonn sé an crios."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "Ní seoladh bailí IPv6 é %s."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Tá an seoladh %s lasmuigh den chrios %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Ainm nó seoladh IP"

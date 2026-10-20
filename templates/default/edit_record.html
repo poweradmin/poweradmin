@@ -53,7 +53,7 @@
                     {% set soa_structured = zone_is_editable and record['type'] == 'SOA' and soa_fields %}
                     <tr>
                         {% if not zone_is_editable %}
-                        <td>{{ record["name"] }}</td>
+                        <td>{{ record["name"] }}{% if record_address ?? null %}<div class="form-text">{{ record_address }}</div>{% endif %}</td>
                         <td>IN</td>
                         <td>{{ record["type"] }}</td>
                         <td>{% if soa_fields %}{{ macros.soa_breakdown(soa_fields, '', soa_durations) }}{% else %}{{ record['content'] }}{% endif %}</td>
@@ -72,6 +72,9 @@
                             .{{ zone_display_name }}
                             {% else %}
                             <input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}">
+                            {% endif %}
+                            {% if record_address ?? null %}
+                            <div class="form-text" data-testid="record-reverse-address">{{ record_address }}</div>
                             {% endif %}
                         </td>
                         <td>IN</td>

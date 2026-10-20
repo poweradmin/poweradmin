@@ -16053,3 +16053,18 @@ msgstr "이미 보유한 권한만 포함된 권한 템플릿만 할당할 수 �
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "건너뛴 DNSSEC 레코드: %d개. PowerDNS는 영역에 서명할 때 RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS 및 CDNSKEY 레코드를 직접 생성합니다."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s은(는) 유효한 IPv6 주소가 아닙니다."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "주소 %s은(는) 영역 %s 밖에 있습니다."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "이름 또는 IP 주소"

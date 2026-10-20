@@ -15553,3 +15553,18 @@ msgstr "คุณสามารถกำหนดได้เฉพาะเท
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "เรกคอร์ด DNSSEC ที่ถูกข้าม: %d รายการ PowerDNS สร้างเรกคอร์ด RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS และ CDNSKEY เองเมื่อลงนามโซน"
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s ไม่ใช่ที่อยู่ IPv6 ที่ถูกต้อง"
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "ที่อยู่ %s อยู่นอกโซน %s"
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "ชื่อหรือที่อยู่ IP"

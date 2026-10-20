@@ -433,6 +433,42 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->assertSame('', $formData['fieldError']);
     }
 
+    public function testAnAddressTypedAsTheNameInAnIp6ZoneIsStoredAsItsNibbleName(): void
+    {
+        $this->zoneName = '8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->post(['type' => 'PTR', 'content' => 'host.example.com', 'name' => '2001:DB8::1']);
+
+        $this->haltOf($this->makeController());
+
+        $this->assertSame('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', $this->addCalls[0][2]);
+    }
+
+    public function testAnAddressOutsideTheZoneIsRefusedOnTheNameFieldWithTheTypedValueKept(): void
+    {
+        $this->zoneName = '8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->post(['type' => 'PTR', 'content' => 'host.example.com', 'name' => '2001:db9::1', 'ttl' => '300']);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame([], $this->addCalls, 'nothing reaches the write');
+        $this->assertStringStartsWith('/zones/12/records/add?form_id=', $halt->target);
+        $formId = substr($halt->target, strlen('/zones/12/records/add?form_id='));
+        $formData = (new FormStateService($this->session))->getFormData($formId);
+        $this->assertSame('The address 2001:db9::1 is outside the zone 8.b.d.0.1.0.0.2.ip6.arpa.', $formData['errorMessage']);
+        $this->assertSame('name', $formData['fieldError']);
+        $this->assertSame('2001:db9::1', $formData['name']);
+    }
+
+    public function testANibbleNameInAnIp6ZoneIsPassedOnUnchanged(): void
+    {
+        $this->zoneName = '8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->post(['type' => 'PTR', 'content' => 'host.example.com', 'name' => '1.0.0.0']);
+
+        $this->haltOf($this->makeController());
+
+        $this->assertSame('1.0.0.0', $this->addCalls[0][2]);
+    }
+
     // ------------------------------------------------------ multiple records
 
     public function testMultiRecordModeNeedsBothTheFlagAndAnArrayOfRecords(): void
@@ -576,6 +612,25 @@ class AddRecordControllerTest extends SeamControllerTestCase
         $this->assertSame('a', $formData['name']);
         $this->assertSame('nope', $formData['content']);
         $this->assertSame($records, $formData['saved_records']);
+    }
+
+    public function testEachRowOfTheMultiRecordFormResolvesAnAddressNameOnItsOwn(): void
+    {
+        $this->zoneName = '2.0.192.in-addr.arpa';
+        $this->post(['multi_record_mode' => '1', 'records' => [
+            ['name' => '192.0.2.5', 'type' => 'PTR', 'content' => 'a.example.com'],
+            ['name' => '198.51.100.5', 'type' => 'PTR', 'content' => 'b.example.com'],
+            ['name' => '6', 'type' => 'PTR', 'content' => 'c.example.com'],
+        ]]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame(['5.2.0.192.in-addr.arpa', '6'], array_column($this->addCalls, 2));
+        $this->assertStringStartsWith('/zones/12/edit?form_id=', $halt->target);
+        $this->assertSame(
+            [['warning', '2 record(s) have been added successfully. 1 record(s) failed to be added. The address 198.51.100.5 is outside the zone 2.0.192.in-addr.arpa.']],
+            $this->messagesFor('edit')
+        );
     }
 
     public function testASubmittedFormTokenClearsTheRememberedFormState(): void

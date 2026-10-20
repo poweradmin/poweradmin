@@ -15968,3 +15968,18 @@ msgstr "Saate määrata ainult sellise õiguste malli, mille õigused teil juba 
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Vahele jäetud DNSSEC-kirjed: %d. PowerDNS loob RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- ja CDNSKEY-kirjed tsooni allkirjastamisel ise."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s ei ole kehtiv IPv6-aadress."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Aadress %s jääb tsoonist %s välja."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Nimi või IP-aadress"

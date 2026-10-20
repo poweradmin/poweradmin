@@ -16073,3 +16073,18 @@ msgstr "Можете доделити само шаблон дозвола чи�
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Прескочени DNSSEC записи: %d. PowerDNS сам прави RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS и CDNSKEY записе када потписује зону."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s није исправна IPv6 адреса."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Адреса %s је изван зоне %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Назив или IP адреса"

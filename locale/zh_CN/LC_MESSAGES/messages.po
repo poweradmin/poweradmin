@@ -15223,3 +15223,18 @@ msgstr "您只能分配其权限您已全部拥有的权限模板。"
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "已跳过的 DNSSEC 记录：%d 条。PowerDNS 在签名区域时会自行创建 RRSIG、NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS 和 CDNSKEY 记录。"
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s 不是有效的 IPv6 地址。"
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "地址 %s 不在区域 %s 内。"
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "名称或 IP 地址"

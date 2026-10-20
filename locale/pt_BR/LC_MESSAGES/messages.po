@@ -16524,3 +16524,18 @@ msgstr "Você só pode atribuir um modelo de permissão cujas permissões você 
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Registros DNSSEC ignorados: %d. O PowerDNS cria os registros RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS e CDNSKEY por conta própria ao assinar a zona."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s não é um endereço IPv6 válido."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "O endereço %s está fora da zona %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Nome ou endereço IP"

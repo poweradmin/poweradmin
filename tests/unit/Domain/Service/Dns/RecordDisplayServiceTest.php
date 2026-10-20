@@ -201,4 +201,21 @@ class RecordDisplayServiceTest extends TestCase
         $this->assertSame('www', $result[0]['display_name']);
         $this->assertSame('@', $result[1]['display_name']);
     }
+
+    public function testAFullReverseNameCarriesTheAddressItNames(): void
+    {
+        $service = new RecordDisplayService(true);
+        $zone = '8.b.d.0.1.0.0.2.ip6.arpa';
+
+        $ptr6 = $service->transformRecord(['name' => '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.' . $zone, 'type' => 'PTR', 'content' => 'host.example.com'], $zone);
+        $ptr4 = $service->transformRecord(['name' => '5.2.0.192.in-addr.arpa', 'type' => 'PTR', 'content' => 'host.example.com'], '2.0.192.in-addr.arpa');
+        $apex = $service->transformRecord(['name' => $zone, 'type' => 'SOA', 'content' => 'ns1 hostmaster 1'], $zone);
+        $forward = $service->transformRecord(['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1'], 'example.com');
+
+        $this->assertSame('2001:db8::1', $ptr6['reverse_address']);
+        $this->assertSame('5', $ptr4['editable_name'], 'the address comes from the full name, not the shortened one');
+        $this->assertSame('192.0.2.5', $ptr4['reverse_address']);
+        $this->assertNull($apex['reverse_address'], 'a partial name names a prefix, not an address');
+        $this->assertNull($forward['reverse_address']);
+    }
 }

@@ -16201,3 +16201,18 @@ msgstr "Môžete priradiť iba šablónu oprávnení, ktorej oprávnenia už má
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Preskočené záznamy DNSSEC: %d. PowerDNS vytvára záznamy RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS a CDNSKEY sám pri podpisovaní zóny."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s nie je platná adresa IPv6."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Adresa %s leží mimo zóny %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Názov alebo IP adresa"

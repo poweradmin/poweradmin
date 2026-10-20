@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Every add-record entry point goes through one flow: open() gates the zone
@@ -277,6 +278,33 @@ class RecordAddServiceTest extends TestCase
         $this->assertSame(RecordAddAccess::OK, $access->code);
         $this->assertSame('example.com', $access->zoneName);
         $this->assertSame('MASTER', $access->zoneType);
+    }
+
+    public function testTheFormsTakeAnAddressAsTheNameInAReverseZone(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->once())->method('createRecord')
+            ->with(9, '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', 'PTR', 'host.example.com')
+            ->willReturn(RecordWriteResult::ok(1));
+
+        $result = $this->makeService($records)
+            ->addFromForm(9, '8.b.d.0.1.0.0.2.ip6.arpa', '2001:db8::1', 'PTR', 'host.example.com', 60, 0, '', 7, 'alice');
+
+        $this->assertTrue($result->isOk());
+    }
+
+    public function testTheFormsRefuseAnAddressOutsideTheZoneOnTheNameField(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->never())->method('createRecord');
+
+        $result = $this->makeService($records)
+            ->addFromForm(9, '8.b.d.0.1.0.0.2.ip6.arpa', '2001:db9::1', 'PTR', 'host.example.com', 60, 0, '', 7, 'alice');
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame('The address 2001:db9::1 is outside the zone 8.b.d.0.1.0.0.2.ip6.arpa.', $result->record->message);
+        $this->assertSame(RecordField::NAME, $result->record->field);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->record->refusal);
     }
 
     /** @return DomainRepositoryInterface&MockObject */

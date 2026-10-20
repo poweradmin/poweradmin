@@ -68,7 +68,7 @@
                     <tbody id="recordsTableBody">
                         <tr class="record-row">
                             <td>
-                                <input class="form-control form-control-sm name-field" type="text" name="records[0][name]" value="{{ name }}">
+                                <input class="form-control form-control-sm name-field" type="text" name="records[0][name]" value="{{ name }}"{% if is_reverse_zone %} placeholder="{% trans %}Name or IP address{% endtrans %}"{% endif %}>
                             </td>
                             <td>
                                 <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']')); updateTtlForType(this, this.closest('tr').querySelector('input[name*=\'[ttl]\']'));">
@@ -126,7 +126,7 @@
                         {% for rec in saved_records|slice(1) %}
                         <tr class="record-row">
                             <td>
-                                <input class="form-control form-control-sm name-field" type="text" name="records[{{ loop.index }}][name]" value="{{ rec.name | default('') }}">
+                                <input class="form-control form-control-sm name-field" type="text" name="records[{{ loop.index }}][name]" value="{{ rec.name | default('') }}"{% if is_reverse_zone %} placeholder="{% trans %}Name or IP address{% endtrans %}"{% endif %}>
                             </td>
                             <td>
                                 <select class="form-select form-select-sm record-type-select" name="records[{{ loop.index }}][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']')); updateTtlForType(this, this.closest('tr').querySelector('input[name*=\'[ttl]\']'));">

@@ -109,7 +109,7 @@ class AddRecordController extends BaseController
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
         $ttl = $this->httpRequest->getPostParam('ttl');
 
-        $added = $this->recordAdd()->add(
+        $added = $this->recordAdd()->addFromForm(
             $zone_id,
             $zone_name,
             $name,
@@ -250,7 +250,7 @@ class AddRecordController extends BaseController
                 continue;
             }
 
-            $added = $this->recordAdd()->add(
+            $added = $this->recordAdd()->addFromForm(
                 $zone_id,
                 $zone_name,
                 (string)($record['name'] ?? ''),

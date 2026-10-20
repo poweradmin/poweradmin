@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\Web\SearchCriteria;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -217,6 +218,7 @@ class EditRecordController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
+            'record_address' => DomainUtility::convertPtrRecToIpAddr((string)$record['name']),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'display_hostname_only' => $display_hostname_only,
             'api_escape_warning' => $this->isApiBackend(),
@@ -260,11 +262,17 @@ class EditRecordController extends BaseController
             return false;
         }
 
+        $name = DomainUtility::resolveAddressAsRecordName((string)$this->httpRequest->getPostParam('name', ''), $zone_name);
+        if ($name['error'] !== null) {
+            $this->addSystemMessage('error', $name['error']);
+            return false;
+        }
+
         // One zone editor row, so the same diff and validation serve both forms
         $type = (string)$this->httpRequest->getPostParam('type', '');
         $row = new ZoneEditRow(
             (string)$this->httpRequest->getPostParam('rid', ''),
-            DnsIdnService::toPunycode((string)$this->httpRequest->getPostParam('name', '')),
+            DnsIdnService::toPunycode($name['name']),
             $type,
             DnsIdnService::convertContentToPunycode($type, (string)$this->httpRequest->getPostParam('content', '')),
             (int)$this->httpRequest->getPostParam('ttl', ''),
@@ -329,13 +337,19 @@ class EditRecordController extends BaseController
             );
         }
 
+        $name = DomainUtility::resolveAddressAsRecordName((string)$this->httpRequest->getPostParam('name', ''), $zone_name);
+        if ($name['error'] !== null) {
+            $this->addSystemMessage('error', $name['error']);
+            return false;
+        }
+
         $showRecordComments = $this->config->get('interface', 'show_record_comments', false);
         $edited = $this->services()->recordEditService()->edit(new RecordEditRequest(
             (int)$zid,
             $zone_name,
             RecordIdHelper::normalizeId((string)$rid),
             $old_record_info,
-            (string)$this->httpRequest->getPostParam('name', ''),
+            $name['name'],
             $type,
             $content,
             (int)$this->httpRequest->getPostParam('ttl', 0),

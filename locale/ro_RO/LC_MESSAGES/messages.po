@@ -16771,3 +16771,18 @@ msgstr "Puteți atribui doar un șablon de permisiuni ale cărui permisiuni le d
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Înregistrări DNSSEC omise: %d. PowerDNS creează singur înregistrările RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS și CDNSKEY atunci când semnează zona."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s nu este o adresă IPv6 validă."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Adresa %s se află în afara zonei %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Nume sau adresă IP"

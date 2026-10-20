@@ -16001,3 +16001,18 @@ msgstr "يمكنك فقط تعيين قالب صلاحيات تمتلك جميع
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "سجلات DNSSEC التي تم تخطيها: %d. ينشئ PowerDNS سجلات RRSIG وNSEC وNSEC3 وNSEC3PARAM وDNSKEY وCDS وCDNSKEY بنفسه عند توقيع المنطقة."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s ليس عنوان IPv6 صالحًا."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "العنوان %s خارج المنطقة %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "الاسم أو عنوان IP"

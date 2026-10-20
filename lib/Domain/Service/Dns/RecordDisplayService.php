@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\IpHelper;
 
 /**
@@ -44,7 +45,7 @@ final class RecordDisplayService
      *
      * @param array<string, mixed>|RecordRow $record The record data
      * @param string $zoneName The zone name
-     * @return array<string, mixed> The record with display_name, editable_name and is_hostname_only added
+     * @return array<string, mixed> The record with display_name, editable_name, is_hostname_only and reverse_address added
      */
     public function transformRecord(array|RecordRow $record, string $zoneName): array
     {
@@ -78,6 +79,7 @@ final class RecordDisplayService
             'display_name' => $displayName,
             'editable_name' => $editableName,
             'is_hostname_only' => $this->displayHostnameOnly,
+            'reverse_address' => DomainUtility::convertPtrRecToIpAddr((string)($record['name'] ?? '')),
         ];
     }
 

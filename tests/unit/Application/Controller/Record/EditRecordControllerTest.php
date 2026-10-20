@@ -846,6 +846,46 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame('', $this->renderedParams()['comment']);
     }
 
+    private function storePtrIn(string $zoneName, string $name): void
+    {
+        $this->zoneName = $zoneName;
+        $this->storedRecord = ['id' => self::RECORD_ID, 'name' => $name, 'type' => 'PTR', 'content' => 'host.example.com', 'ttl' => 3600, 'prio' => 0];
+    }
+
+    public function testAnAddressTypedAsTheNameIsSavedAsItsNibbleName(): void
+    {
+        $this->storePtrIn('8.b.d.0.1.0.0.2.ip6.arpa', '2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => '2001:db8::1', 'type' => 'PTR', 'content' => 'host.example.com', 'ttl' => '300']);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame('/zones/12/edit', $halt->target);
+        $this->assertSame('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', $this->editedRecord['name']);
+    }
+
+    public function testAnAddressOutsideTheZoneIsRefusedAndTheFormShowsTheStoredRecord(): void
+    {
+        $this->storePtrIn('2.0.192.in-addr.arpa', '5.2.0.192.in-addr.arpa');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => '198.51.100.5', 'type' => 'PTR', 'content' => 'host.example.com', 'ttl' => '300']);
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertNull($this->editedRecord, 'nothing is written');
+        $this->assertSame([['error', 'The address 198.51.100.5 is outside the zone 2.0.192.in-addr.arpa.']], $this->messagesFor('system'));
+        $params = $this->renderedParams();
+        $this->assertSame('5.2.0.192.in-addr.arpa', $params['record']['name']);
+        $this->assertSame('192.0.2.5', $params['record_address']);
+    }
+
+    public function testTheFormShowsNoAddressForAForwardRecord(): void
+    {
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertNull($this->renderedParams()['record_address']);
+    }
+
     // --------------------------------------------------------- request mode
 
     public function testInRequestModeThePostFilesAChangeRequest(): void
@@ -892,6 +932,39 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame(0, $row->prio);
         $this->assertSame('note', $row->comment);
         $this->assertTrue($row->disabled);
+    }
+
+    public function testInRequestModeAnAddressNameIsFiledAsItsNibbleName(): void
+    {
+        $this->editLevel = 'none';
+        $this->changeRequestLevel = 'all';
+        $this->storePtrIn('8.b.d.0.1.0.0.2.ip6.arpa', '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa');
+        $submission = null;
+        $this->changeRequests->method('fileRecordEdits')
+            ->willReturnCallback(function (ZoneEditSubmission $s) use (&$submission): ZoneChangeRequestResult {
+                $submission = $s;
+                return $this->fileResult;
+            });
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => '2001:db8::2', 'type' => 'PTR', 'content' => 'host.example.com', 'ttl' => '300']);
+
+        $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
+
+        $this->assertSame('2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', $submission->rows[0]->name);
+    }
+
+    public function testInRequestModeAnAddressOutsideTheZoneIsNotFiled(): void
+    {
+        $this->editLevel = 'none';
+        $this->changeRequestLevel = 'all';
+        $this->storePtrIn('8.b.d.0.1.0.0.2.ip6.arpa', '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa');
+        $this->changeRequests->expects($this->never())->method('fileRecordEdits');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => '2001:db9::1', 'type' => 'PTR', 'content' => 'host.example.com', 'ttl' => '300']);
+
+        $controller = $this->makeController(['approval' => ['enabled' => true]]);
+        $controller->run();
+
+        $this->assertSame([['error', 'The address 2001:db9::1 is outside the zone 8.b.d.0.1.0.0.2.ip6.arpa.']], $this->messagesFor('system'));
+        $this->assertSame('edit_record.html', $this->output->rendered[0][0]);
     }
 
     public function testARefusedFilingKeepsTheFormAndReportsEveryRowError(): void

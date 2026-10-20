@@ -16195,3 +16195,18 @@ msgstr "Bạn chỉ có thể gán mẫu quyền hạn có các quyền mà bạ
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Số bản ghi DNSSEC bị bỏ qua: %d. PowerDNS tự tạo các bản ghi RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS và CDNSKEY khi ký vùng."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s không phải là địa chỉ IPv6 hợp lệ."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Địa chỉ %s nằm ngoài vùng %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Tên hoặc địa chỉ IP"

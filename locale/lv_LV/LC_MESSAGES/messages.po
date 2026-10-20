@@ -16026,3 +16026,18 @@ msgstr "Varat piešķirt tikai tādu atļauju veidni, kuras atļaujas jums jau i
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Izlaistie DNSSEC ieraksti: %d. PowerDNS pats izveido RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS un CDNSKEY ierakstus, kad paraksta zonu."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s nav derīga IPv6 adrese."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Adrese %s atrodas ārpus zonas %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Nosaukums vai IP adrese"

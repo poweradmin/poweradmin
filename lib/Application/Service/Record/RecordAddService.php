@@ -27,6 +27,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Utility\DomainUtility;
+use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Dns\DomainRecordCreator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
@@ -146,5 +149,33 @@ class RecordAddService
         }
 
         return new RecordAddResult($written);
+    }
+
+    /**
+     * add() for the web forms, where an IP address typed as the name in a reverse
+     * zone stands for its PTR name and one outside the zone is refused.
+     *
+     * @param int|null $ttl The submitted TTL, or null for the configured default of the type
+     * @param string $companion One of the RecordAddResult::COMPANION_* constants, or '' for none
+     */
+    public function addFromForm(
+        int $zoneId,
+        string $zoneName,
+        string $name,
+        string $type,
+        string $content,
+        ?int $ttl,
+        int $prio,
+        string $comment,
+        int $userId,
+        string $username,
+        string $companion = ''
+    ): RecordAddResult {
+        $resolved = DomainUtility::resolveAddressAsRecordName($name, $zoneName);
+        if ($resolved['error'] !== null) {
+            return RecordAddResult::refused(RecordWriteResult::failure($resolved['error'], Refusal::INVALID_INPUT, RecordField::NAME));
+        }
+
+        return $this->add($zoneId, $zoneName, $resolved['name'], $type, $content, $ttl, $prio, $comment, $userId, $username, $companion);
     }
 }

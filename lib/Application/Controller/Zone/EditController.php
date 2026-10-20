@@ -52,6 +52,7 @@ use Poweradmin\Infrastructure\Session\FormStateService;
 use Poweradmin\Domain\Service\Dns\RecordDisplayService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
@@ -600,10 +601,20 @@ class EditController extends BaseController
      */
     private function requestRecordAdd(int $zone_id, string $zone_name): bool
     {
+        $name = DomainUtility::resolveAddressAsRecordName((string)$this->httpRequest->getPostParam('name', ''), $zone_name);
+        if ($name['error'] !== null) {
+            $this->formStateService()->rememberAddRecordError([
+                'error' => true,
+                'errorMessage' => $name['error'],
+                'fieldError' => 'name',
+            ]);
+            return false;
+        }
+
         $ttl = $this->httpRequest->getPostParam('ttl');
         $prio = $this->httpRequest->getPostParam('prio');
         $result = $this->services()->zoneChangeRequestService()->fileRecordAdd($zone_id, $zone_name, [
-            'name' => (string)$this->httpRequest->getPostParam('name', ''),
+            'name' => $name['name'],
             'type' => (string)$this->httpRequest->getPostParam('type', ''),
             'content' => (string)$this->httpRequest->getPostParam('content', ''),
             'ttl' => $ttl !== null && $ttl !== '' ? (int)$ttl : null,
@@ -705,7 +716,7 @@ class EditController extends BaseController
         $comment = (string)$this->httpRequest->getPostParam('comment', '');
 
         $ttl = $this->httpRequest->getPostParam('ttl');
-        $added = $this->services()->recordAddService()->add(
+        $added = $this->services()->recordAddService()->addFromForm(
             $zone_id,
             $zone_name,
             $name,

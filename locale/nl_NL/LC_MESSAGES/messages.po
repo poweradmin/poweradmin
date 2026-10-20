@@ -16473,3 +16473,18 @@ msgstr "U kunt alleen een rechtensjabloon toewijzen waarvan u de rechten al hebt
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Overgeslagen DNSSEC-records: %d. PowerDNS maakt RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- en CDNSKEY-records zelf aan wanneer het de zone ondertekent."
+
+#: lib/Domain/Utility/DomainUtility.php:102
+#, php-format
+msgid "%s is not a valid IPv6 address."
+msgstr "%s is geen geldig IPv6-adres."
+
+#: lib/Domain/Utility/DomainUtility.php:112
+#, php-format
+msgid "The address %s is outside the zone %s."
+msgstr "Het adres %s valt buiten de zone %s."
+
+#: templates/default/add_record.html:71 templates/default/add_record.html:129
+#: templates/default/edit.html:87 templates/default/edit.html:777
+msgid "Name or IP address"
+msgstr "Naam of IP-adres"
