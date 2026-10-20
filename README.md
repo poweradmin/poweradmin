@@ -74,7 +74,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * **Warning**: The master branch carries the next release and may be unstable. For production use, stick with the `release/4.4.x` LTS branch or a specific version tag (e.g. `v4.4.1`), or pin the matching Docker tag (e.g. `4.4.1`).
+    * **Warning**: The master branch carries the next release and may be unstable. For production use, stick with the `release/4.4.x` LTS branch or a specific version tag (e.g. `v4.5.0`), or pin the matching Docker tag (e.g. `4.5.0`).
 
 ### Docker Deployment
 
@@ -111,8 +111,8 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **develop (4.6.0)**: PHP 8.2-8.5, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
-- **master (4.5.x)**: PHP 8.2, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
+- **master (4.6.0)**: PHP 8.2-8.5, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.5.x**: PHP 8.2, PowerDNS 5.1.4, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.4.x (LTS)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.3.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
@@ -126,12 +126,13 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 | Version | Status |
 |---------|--------|
+| 4.5.x | Current release |
 | 4.4.x | LTS until December 2027, recommended for production. Last line with API v1 |
-| 4.3.x, 4.2.x | Last fixes only, end of life three months after the 4.5.0 release |
+| 4.3.x, 4.2.x | Last fixes only, end of life on 2027-01-31 |
 | 3.9.x | LTS until December 2027 |
 | 4.1.x, 4.0.x, 3.8.x and older | End of life, please upgrade |
 
-`master` holds 4.5.0 and `develop` holds 4.6.0 development. The support rules, a timeline, and the PHP, PowerDNS and distribution support dates are on [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/).
+`master` holds 4.6.0 development and `release/4.5.x` takes 4.5.x fixes. The support rules, a timeline, and the PHP, PowerDNS and distribution support dates are on [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/).
 
 ## Contributing
 
