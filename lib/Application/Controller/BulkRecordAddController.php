@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -216,19 +216,8 @@ class BulkRecordAddController extends BaseController
                         (new IpAddressRetriever($_SERVER))->getClientIp()
                     )
                 ) {
+                    // RecordManagerService::createRecord() writes the add_record log entry
                     $success_count++;
-
-                    // Log the record creation
-                    $this->logger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                        (new IpAddressRetriever($_SERVER))->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $name,
-                        $type,
-                        $content,
-                        $ttl,
-                        $prio
-                    ), $zone_id);
                 } else {
                     $failed_records[] = $line . " - " . _('Record could not be added.');
                 }
