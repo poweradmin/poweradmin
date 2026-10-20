@@ -13478,3 +13478,10 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""

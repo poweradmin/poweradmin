@@ -15009,3 +15009,12 @@ msgid ""
 msgstr ""
 "割り当てられるのは、すでに保有している権限のみを含む権限テンプレートだけで"
 "す。"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"スキップした DNSSEC レコード: %d 件。PowerDNS はゾーンに署名する際に RRSIG、"
+"NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS、CDNSKEY レコードを自動で作成します。"

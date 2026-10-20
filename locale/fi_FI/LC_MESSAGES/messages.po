@@ -13771,3 +13771,13 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Voit määrittää vain käyttöoikeusmallin, jonka oikeudet sinulla jo on."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Ohitetut DNSSEC-tietueet: %d. PowerDNS luo RRSIG-, NSEC-, NSEC3-, "
+"NSEC3PARAM-, DNSKEY-, CDS- ja CDNSKEY-tietueet itse allekirjoittaessaan "
+"vyöhykkeen."

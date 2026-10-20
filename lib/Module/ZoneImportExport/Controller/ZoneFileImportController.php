@@ -154,8 +154,13 @@ class ZoneFileImportController extends BaseController
             $origin = DnsIdnService::toPunycode($origin);
         }
 
-        // Filter out SOA records (Poweradmin creates its own)
-        $filteredRecords = array_values(array_filter($records, fn($r) => $r->type !== 'SOA'));
+        // Poweradmin creates its own SOA, and PowerDNS generates the DNSSEC records when it signs
+        $filteredRecords = array_values(array_filter($records, fn($r) => $r->type !== 'SOA' && !$r->isSignerGenerated()));
+        $dnssecSkipped = count(array_filter($records, fn($r) => $r->isSignerGenerated()));
+        $warnings = $parsed->getWarnings();
+        if ($dnssecSkipped > 0) {
+            $warnings[] = $this->dnssecSkippedMessage($dnssecSkipped);
+        }
 
         $importMode = $_POST['import_mode'] ?? 'new';
         $existingZoneId = isset($_POST['existing_zone_id']) ? (int)$_POST['existing_zone_id'] : 0;
@@ -197,6 +202,7 @@ class ZoneFileImportController extends BaseController
             ], $filteredRecords)),
             'warnings' => $parsed->getWarnings(),
             'filename' => $_FILES['zone_file']['name'],
+            'dnssec_skipped' => $dnssecSkipped,
         ];
 
         // Build preview data
@@ -215,7 +221,7 @@ class ZoneFileImportController extends BaseController
             'preview' => true,
             'records' => $previewRecords,
             'record_count' => count($filteredRecords),
-            'warnings' => $parsed->getWarnings(),
+            'warnings' => $warnings,
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
             'import_mode' => $importMode,
@@ -462,6 +468,11 @@ class ZoneFileImportController extends BaseController
         // Clean up session data
         unset($_SESSION['zone_import_data']);
 
+        $dnssecSkipped = (int)($importData['dnssec_skipped'] ?? 0);
+        if ($dnssecSkipped > 0) {
+            $this->addSystemMessage('info', $this->dnssecSkippedMessage($dnssecSkipped));
+        }
+
         $this->showForm([
             'result' => true,
             'success_count' => $successCount,
@@ -470,6 +481,11 @@ class ZoneFileImportController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zoneName ?: $origin,
         ]);
+    }
+
+    private function dnssecSkippedMessage(int $count): string
+    {
+        return sprintf(_('DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone.'), $count);
     }
 
     private function formatBytes(int $bytes): string

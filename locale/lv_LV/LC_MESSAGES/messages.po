@@ -13817,3 +13817,12 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Varat piešķirt tikai tādu atļauju veidni, kuras atļaujas jums jau ir."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Izlaistie DNSSEC ieraksti: %d. PowerDNS pats izveido RRSIG, NSEC, NSEC3, "
+"NSEC3PARAM, DNSKEY, CDS un CDNSKEY ierakstus, kad paraksta zonu."

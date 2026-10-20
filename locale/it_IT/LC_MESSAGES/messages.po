@@ -15293,3 +15293,12 @@ msgid ""
 msgstr ""
 "È possibile assegnare solo un modello di permessi di cui si possiedono già i "
 "permessi."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Record DNSSEC ignorati: %d. PowerDNS crea autonomamente i record RRSIG, "
+"NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS e CDNSKEY quando firma la zona."

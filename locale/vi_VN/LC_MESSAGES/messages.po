@@ -14919,3 +14919,12 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Bạn chỉ có thể gán mẫu quyền hạn có các quyền mà bạn đã có."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Số bản ghi DNSSEC bị bỏ qua: %d. PowerDNS tự tạo các bản ghi RRSIG, NSEC, "
+"NSEC3, NSEC3PARAM, DNSKEY, CDS và CDNSKEY khi ký vùng."

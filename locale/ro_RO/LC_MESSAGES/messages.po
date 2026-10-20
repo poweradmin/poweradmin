@@ -13689,3 +13689,12 @@ msgid ""
 msgstr ""
 "Puteți atribui doar un șablon de permisiuni ale cărui permisiuni le dețineți "
 "deja."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Înregistrări DNSSEC omise: %d. PowerDNS creează singur înregistrările RRSIG, "
+"NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS și CDNSKEY atunci când semnează zona."

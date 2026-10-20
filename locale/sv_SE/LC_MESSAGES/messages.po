@@ -14982,3 +14982,12 @@ msgid ""
 "hold."
 msgstr ""
 "Du kan bara tilldela en behörighetsmall vars behörigheter du redan har."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Överhoppade DNSSEC-poster: %d. PowerDNS skapar själv RRSIG-, NSEC-, NSEC3-, "
+"NSEC3PARAM-, DNSKEY-, CDS- och CDNSKEY-poster när den signerar zonen."

@@ -15124,3 +15124,12 @@ msgid ""
 "hold."
 msgstr ""
 "Anda hanya dapat menetapkan templat izin yang izinnya sudah Anda miliki."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, "
+"NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."

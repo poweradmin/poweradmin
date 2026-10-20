@@ -15029,3 +15029,12 @@ msgid ""
 "hold."
 msgstr ""
 "Yalnızca izinlerine zaten sahip olduğunuz bir izin şablonu atayabilirsiniz."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Atlanan DNSSEC kayıtları: %d. PowerDNS, bölgeyi imzalarken RRSIG, NSEC, "
+"NSEC3, NSEC3PARAM, DNSKEY, CDS ve CDNSKEY kayıtlarını kendisi oluşturur."

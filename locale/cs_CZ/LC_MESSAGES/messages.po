@@ -14968,3 +14968,12 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Můžete přiřadit pouze šablonu oprávnění, jejíž oprávnění již máte."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Přeskočené záznamy DNSSEC: %d. PowerDNS vytváří záznamy RRSIG, NSEC, NSEC3, "
+"NSEC3PARAM, DNSKEY, CDS a CDNSKEY sám při podepisování zóny."

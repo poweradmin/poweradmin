@@ -13829,3 +13829,12 @@ msgid ""
 "hold."
 msgstr ""
 "Saate määrata ainult sellise õiguste malli, mille õigused teil juba on."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:488
+#, php-format
+msgid ""
+"DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, "
+"DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr ""
+"Vahele jäetud DNSSEC-kirjed: %d. PowerDNS loob RRSIG-, NSEC-, NSEC3-, "
+"NSEC3PARAM-, DNSKEY-, CDS- ja CDNSKEY-kirjed tsooni allkirjastamisel ise."
