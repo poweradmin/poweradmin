@@ -43,7 +43,7 @@ class ApiSearchOwnViewTest extends TestCase
     protected function setUp(): void
     {
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT)");
+        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_name TEXT)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (7, 'alice', 'Alice')");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment) VALUES (11, 1, 7, ''), (12, 2, 7, '')");

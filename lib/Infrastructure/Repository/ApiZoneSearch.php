@@ -97,6 +97,9 @@ final class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
             }
         }
 
+        // Two zones can share an id; list only the one it opens, as the zone list does
+        $zones = $this->keepOpenedZones($zones, 'id', 'name');
+
         if (empty($zones)) {
             return [];
         }

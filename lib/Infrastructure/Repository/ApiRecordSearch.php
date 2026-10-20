@@ -121,6 +121,9 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
             $records = $this->mergeCommentMatches($records, $commentMatches['records']);
         }
 
+        // Two zones can share an id; list only the records of the one it opens
+        $records = $this->keepOpenedZones($records, 'domain_id', 'zone_name');
+
         if (empty($records)) {
             return [];
         }

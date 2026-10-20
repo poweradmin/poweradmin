@@ -28,6 +28,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 
 /**
  * Shared parts of the API-mode searches: query preprocessing that mirrors
@@ -75,6 +76,28 @@ abstract class ApiSearchBase
     protected function ownedZoneIds(int $userId): array
     {
         return $this->zoneRepository->getOwnedZoneIds($userId);
+    }
+
+    /**
+     * Drop the results of a zone whose canonical id another zone shares and opens (see SharedZoneIds).
+     *
+     * @param array<int, array<string, mixed>> $items
+     * @return array<int, array<string, mixed>>
+     */
+    protected function keepOpenedZones(array $items, string $idKey, string $nameKey): array
+    {
+        if ($items === []) {
+            return $items;
+        }
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames === []) {
+            return $items;
+        }
+
+        return array_values(array_filter($items, fn(array $item): bool => SharedZoneIds::isOpenedZone(
+            $openedNames,
+            ['id' => $item[$idKey] ?? 0, 'name' => $item[$nameKey] ?? '']
+        )));
     }
 
     protected function canonicalZoneId(string $alias): string
