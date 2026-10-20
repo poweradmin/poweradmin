@@ -15138,3 +15138,12 @@ msgstr ""
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Paling banyak %d rekaman per penambahan massal; bagi daftarnya."
+
+#: lib/Application/Controller/AddRecordController.php:347
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Paling banyak %d baris dapat ditambahkan sekaligus."
+
+#: lib/Application/Controller/AddRecordController.php:476
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Tidak ada rekaman yang ditambahkan karena formulir memiliki lebih banyak kolom daripada yang diterima server. Tambahkan lebih sedikit baris sekaligus."

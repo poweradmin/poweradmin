@@ -54,6 +54,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class AddRecordController extends BaseController
 {
+    /** Most rows the form offers; at up to 8 fields each, the form stays under PHP's default max_input_vars of 1000. */
+    public const MAX_ROWS = 100;
+
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private DnsRecord $dnsRecord;
@@ -340,6 +343,8 @@ class AddRecordController extends BaseController
             ),
             'form_data' => $formData,
             'saved_records' => $savedRecords,
+            'max_rows' => self::MAX_ROWS,
+            'row_limit_message' => sprintf(_('At most %d rows can be added at a time.'), self::MAX_ROWS),
         ]);
     }
 
@@ -462,6 +467,17 @@ class AddRecordController extends BaseController
             ];
             $this->formStateService->saveFormData($formId, $formData);
             $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
+            return;
+        }
+
+        // The form ends with form_complete: without it PHP dropped the fields past
+        // max_input_vars, so refuse the whole submit rather than add the rows that arrived
+        if (!isset($_POST['form_complete'])) {
+            $this->refuseWholeSubmit($zone_id, $formId, $records, _('No records were added because the form had more fields than the server accepts. Add fewer rows at a time.'));
+            return;
+        }
+        if (count($records) > self::MAX_ROWS) {
+            $this->refuseWholeSubmit($zone_id, $formId, $records, sprintf(_('At most %d rows can be added at a time.'), self::MAX_ROWS));
             return;
         }
 
@@ -594,5 +610,51 @@ class AddRecordController extends BaseController
 
         // Redirect back to zone edit page
         $this->redirect('/zones/' . $zone_id . '/edit');
+    }
+
+    /**
+     * Adds none of the rows and hands the first MAX_ROWS of them back to the form with the reason.
+     */
+    private function refuseWholeSubmit(int $zone_id, string $formId, mixed $records, string $message): void
+    {
+        $rows = self::restorableRows($records);
+        $this->formStateService->saveFormData($formId, ($rows[0] ?? []) + [
+            'error' => true,
+            'errorMessage' => $message,
+            'saved_records' => $rows,
+        ]);
+        $this->redirect('/zones/' . $zone_id . '/records/add?form_id=' . $formId);
+    }
+
+    /**
+     * The submitted rows as the form can show them again, capped at MAX_ROWS and limited
+     * to the fields it renders. They are the user's own input, so nothing is looked up.
+     *
+     * @return list<array{name: string, type: string, content: string, prio: string, ttl: string, comment: string, reverse: bool, create_domain_record: bool}>
+     */
+    private static function restorableRows(mixed $records): array
+    {
+        $rows = [];
+        foreach (is_array($records) ? $records : [] as $record) {
+            if (!is_array($record)) {
+                continue;
+            }
+            $text = static fn(string $key): string => is_scalar($record[$key] ?? null) ? (string)$record[$key] : '';
+            $rows[] = [
+                'name' => $text('name'),
+                'type' => $text('type'),
+                'content' => $text('content'),
+                'prio' => $text('prio'),
+                'ttl' => $text('ttl'),
+                'comment' => $text('comment'),
+                'reverse' => !empty($record['reverse']),
+                'create_domain_record' => !empty($record['create_domain_record']),
+            ];
+            if (count($rows) === self::MAX_ROWS) {
+                break;
+            }
+        }
+
+        return $rows;
     }
 }

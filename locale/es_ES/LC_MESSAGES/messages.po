@@ -15311,3 +15311,12 @@ msgstr ""
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Como máximo %d registros por adición masiva; divida la lista."
+
+#: lib/Application/Controller/AddRecordController.php:347
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Se pueden agregar como máximo %d filas a la vez."
+
+#: lib/Application/Controller/AddRecordController.php:476
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "No se agregó ningún registro porque el formulario tenía más campos de los que acepta el servidor. Agregue menos filas a la vez."
