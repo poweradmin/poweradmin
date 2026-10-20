@@ -15697,3 +15697,8 @@ msgstr "Bölge kimliği yükseltmesi çalışana kadar bölge kısıtlamaları k
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Bu anahtarın bölge kısıtlaması bölge kimliği yükseltmesinde aktarılamadı, bu nedenle hiçbir bölgeyle eşleşmiyor. Bölgeyi yeniden seçin."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Atlanan DNSSEC kayıtları: %d. PowerDNS, bölgeyi imzalarken RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS ve CDNSKEY kayıtlarını kendisi oluşturur."

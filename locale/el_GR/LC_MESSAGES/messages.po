@@ -16193,3 +16193,8 @@ msgstr "Οι περιορισμοί ζωνών δεν μπορούν να απο
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Ο περιορισμός ζώνης αυτού του κλειδιού δεν μπόρεσε να μεταφερθεί κατά την αναβάθμιση των ID ζωνών, οπότε δεν αντιστοιχεί σε καμία ζώνη. Επιλέξτε ξανά τη ζώνη."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Εγγραφές DNSSEC που παραλείφθηκαν: %d. Το PowerDNS δημιουργεί μόνο του τις εγγραφές RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS και CDNSKEY όταν υπογράφει τη ζώνη."

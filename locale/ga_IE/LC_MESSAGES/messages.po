@@ -16079,3 +16079,8 @@ msgstr "Ní féidir srianta crios a shábháil go dtí go rithfear uasghrádú n
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Níorbh fhéidir srian crios na heochrach seo a thabhairt anonn le huasghrádú na nIDanna crios, mar sin ní mheaitseálann sé crios ar bith. Roghnaigh an crios arís."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Taifid DNSSEC scipeáilte: %d. Cruthaíonn PowerDNS taifid RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS agus CDNSKEY é féin nuair a shíníonn sé an crios."

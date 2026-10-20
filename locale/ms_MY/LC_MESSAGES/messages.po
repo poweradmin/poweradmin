@@ -15777,3 +15777,8 @@ msgstr "Sekatan zon tidak boleh disimpan sehingga naik taraf ID zon dijalankan. 
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia tidak sepadan dengan mana-mana zon. Pilih zon itu semula."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Rekod DNSSEC yang dilangkau: %d. PowerDNS mencipta sendiri rekod RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS dan CDNSKEY apabila ia menandatangani zon."

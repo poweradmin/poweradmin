@@ -14635,3 +14635,8 @@ msgstr "在區域 ID 升級執行之前，無法儲存區域限制。請檢查�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "區域 ID 升級未能沿用此金鑰的區域限制，因此它不符合任何區域。請重新選擇區域。"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "已跳過的 DNSSEC 記錄：%d 筆。PowerDNS 在簽署區域時會自行建立 RRSIG、NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS 和 CDNSKEY 記錄。"

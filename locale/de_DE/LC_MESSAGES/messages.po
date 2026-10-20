@@ -16015,3 +16015,8 @@ msgstr "Zonenbeschränkungen können erst gespeichert werden, wenn das Upgrade d
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Die Zonenbeschränkung dieses Schlüssels konnte beim Upgrade der Zonen-IDs nicht übernommen werden und passt daher auf keine Zone. Wählen Sie die Zone erneut aus."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Übersprungene DNSSEC-Einträge: %d. PowerDNS erstellt RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- und CDNSKEY-Einträge selbst, wenn es die Zone signiert."

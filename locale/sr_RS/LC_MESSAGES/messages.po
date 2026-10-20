@@ -15452,3 +15452,8 @@ msgstr "Ограничења зона не могу да се сачувају �
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Ограничење зоне овог кључа није могло да се пренесе надоградњом ID-ова зона, па не одговара ниједној зони. Поново изаберите зону."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Прескочени DNSSEC записи: %d. PowerDNS сам прави RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS и CDNSKEY записе када потписује зону."

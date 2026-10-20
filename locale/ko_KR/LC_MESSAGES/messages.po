@@ -15450,3 +15450,8 @@ msgstr "존 ID 업그레이드가 실행될 때까지 존 제한을 저장할 �
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "이 키의 존 제한을 존 ID 업그레이드에서 옮기지 못해 어떤 존과도 일치하지 않습니다. 존을 다시 선택하세요."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "건너뛴 DNSSEC 레코드: %d개. PowerDNS는 영역에 서명할 때 RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS 및 CDNSKEY 레코드를 직접 생성합니다."

@@ -15370,3 +15370,8 @@ msgstr "لا يمكن حفظ قيود المناطق حتى تكتمل ترقي�
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "تعذّر نقل قيد المنطقة لهذا المفتاح أثناء ترقية معرّفات المناطق، لذا فهو لا يطابق أي منطقة. اختر المنطقة مرة أخرى."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "سجلات DNSSEC التي تم تخطيها: %d. ينشئ PowerDNS سجلات RRSIG وNSEC وNSEC3 وNSEC3PARAM وDNSKEY وCDS وCDNSKEY بنفسه عند توقيع المنطقة."

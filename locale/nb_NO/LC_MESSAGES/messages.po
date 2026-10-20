@@ -15599,3 +15599,8 @@ msgstr "Sonebegrensninger kan ikke lagres før oppgraderingen av sone-ID-er har 
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Sonebegrensningen for denne nøkkelen kunne ikke overføres av oppgraderingen av sone-ID-er, så den samsvarer ikke med noen sone. Velg sonen på nytt."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "DNSSEC-oppføringer hoppet over: %d. PowerDNS oppretter selv RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- og CDNSKEY-oppføringer når den signerer sonen."

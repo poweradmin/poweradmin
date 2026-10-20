@@ -2094,4 +2094,38 @@ ZONE;
         $this->assertContains('MX', $types);
         $this->assertContains('TXT', $types);
     }
+
+    public function testDnssecRecordsFromASignedZoneAreFlaggedAsSignerGenerated(): void
+    {
+        $content = <<<'ZONE'
+$ORIGIN example.com.
+$TTL 3600
+@ IN DNSKEY 257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==
+@ IN RRSIG DNSKEY 13 2 3600 20261101000000 20261011000000 12345 example.com. c2lnbmF0dXJl
+@ IN NSEC www.example.com. A NS SOA RRSIG NSEC DNSKEY
+@ IN NSEC3PARAM 1 0 0 -
+abc IN NSEC3 1 0 0 - 2VPTU5TIMAMQTTGL4LUU9KG21E0AOR3S A RRSIG
+@ IN CDS 12345 13 2 3AA5AB37EFCE57F737FC1627013FEFC5CB7CD9C2D2E1F2F1A2B3C4D5E6F70809
+@ IN CDNSKEY 257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==
+sub IN DS 54321 13 2 3AA5AB37EFCE57F737FC1627013FEFC5CB7CD9C2D2E1F2F1A2B3C4D5E6F70809
+www IN A 192.0.2.1
+ZONE;
+
+        $flags = [];
+        foreach ($this->parser->parse($content)->getRecords() as $record) {
+            $flags[$record->type] = $record->isSignerGenerated();
+        }
+
+        $this->assertSame([
+            'DNSKEY' => true,
+            'RRSIG' => true,
+            'NSEC' => true,
+            'NSEC3PARAM' => true,
+            'NSEC3' => true,
+            'CDS' => true,
+            'CDNSKEY' => true,
+            'DS' => false,
+            'A' => false,
+        ], $flags);
+    }
 }

@@ -15989,3 +15989,8 @@ msgstr "Kufizimet e zonave nuk mund të ruhen derisa të kryhet përditësimi i 
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Kufizimi i zonës për këtë çelës nuk mund të bartej nga përditësimi i ID-ve të zonave, ndaj nuk përputhet me asnjë zonë. Zgjidhni përsëri zonën."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Regjistrime DNSSEC të kapërcyera: %d. PowerDNS i krijon vetë regjistrimet RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS dhe CDNSKEY kur nënshkruan zonën."

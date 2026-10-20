@@ -15803,3 +15803,8 @@ msgstr "Batasan zona tidak dapat disimpan sampai pembaruan ID zona dijalankan. P
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehingga tidak cocok dengan zona mana pun. Pilih zona lagi."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."

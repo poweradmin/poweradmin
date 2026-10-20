@@ -15587,3 +15587,8 @@ msgstr "Không thể lưu giới hạn vùng cho đến khi nâng cấp ID vùng
 #: templates/modern/api_key_edit.html
 msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
 msgstr "Không thể chuyển giới hạn vùng của khóa này khi nâng cấp ID vùng, nên khóa không khớp với vùng nào. Hãy chọn lại vùng."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:531
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Số bản ghi DNSSEC bị bỏ qua: %d. PowerDNS tự tạo các bản ghi RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS và CDNSKEY khi ký vùng."
