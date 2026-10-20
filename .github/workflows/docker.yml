@@ -1,6 +1,6 @@
 name: Docker Image Publish
 
-# The v* release-tag publisher. Moving branch tags (dev, latest, 4.x.x, lts) come from
+# The v* release-tag publisher (also `latest`). Moving branch tags (dev, 4.x.x, lts) come from
 # docker-branches.yml; this file only ever runs from a tag's own tree.
 on:
   push:
