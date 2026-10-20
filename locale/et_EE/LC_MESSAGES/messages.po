@@ -15997,3 +15997,8 @@ msgstr "Vahele jäetud kirjete kommentaarid: %d. Kirjete kommentaarid on seadist
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Ühe hulgilisamisega saab lisada kuni %d kirjet; jagage loend osadeks."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Ühtegi kirjet ei lisatud: %s"

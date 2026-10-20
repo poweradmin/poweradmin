@@ -16465,3 +16465,8 @@ msgstr "Pominięte komentarze rekordów: %d. Komentarze rekordów są wyłączon
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Maksymalnie %d rekordów na jedno dodanie zbiorcze; podziel listę."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nie dodano żadnych rekordów: %s"

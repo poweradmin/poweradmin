@@ -16451,3 +16451,8 @@ msgstr "Komentar rekaman yang dilewati: %d. Komentar rekaman dinonaktifkan dalam
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Paling banyak %d rekaman per penambahan massal; bagi daftarnya."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Tidak ada rekaman yang ditambahkan: %s"

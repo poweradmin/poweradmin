@@ -15952,3 +15952,8 @@ msgstr "Preskočeni komentari zapisa: %d. Komentari zapisa su onemogućeni u kon
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Najviše %d zapisa po grupnom dodavanju; podijelite listu."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nijedan zapis nije dodan: %s"

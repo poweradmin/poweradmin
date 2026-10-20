@@ -15849,3 +15849,8 @@ msgstr "הערות רשומות שדולגו: %d. הערות רשומות מוש
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "לכל היותר %d רשומות בכל הוספה מרובה; פצלו את הרשימה."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "לא נוספו רשומות: %s"

@@ -16553,3 +16553,8 @@ msgstr "Comentários de registros ignorados: %d. Os comentários de registros es
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "No máximo %d registros por adição em massa; divida a lista."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nenhum registro foi adicionado: %s"

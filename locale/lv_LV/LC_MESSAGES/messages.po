@@ -16055,3 +16055,8 @@ msgstr "Izlaisti ierakstu komentāri: %d. Ierakstu komentāri ir atspējoti konf
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Vienā masveida pievienošanā ne vairāk kā %d ieraksti; sadaliet sarakstu."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Neviens ieraksts netika pievienots: %s"

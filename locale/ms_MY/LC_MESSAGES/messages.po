@@ -16420,3 +16420,8 @@ msgstr "Komen rekod yang dilangkau: %d. Komen rekod dinyahdayakan dalam konfigur
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Paling banyak %d rekod bagi setiap penambahan pukal; pecahkan senarai."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Tiada rekod ditambah: %s"

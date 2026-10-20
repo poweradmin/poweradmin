@@ -16030,3 +16030,8 @@ msgstr "تم تخطي تعليقات السجلات: %d. تعليقات السج
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "يمكن إضافة %d سجل كحد أقصى في الإضافة المجمعة؛ قسّم القائمة."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "لم تتم إضافة أي سجلات: %s"

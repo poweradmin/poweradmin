@@ -16611,3 +16611,8 @@ msgstr "Commenti dei record ignorati: %d. I commenti dei record sono disattivati
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Al massimo %d record per aggiunta in blocco; dividi l'elenco."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nessun record è stato aggiunto: %s"

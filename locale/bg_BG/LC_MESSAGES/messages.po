@@ -16538,3 +16538,8 @@ msgstr "Пропуснати коментари на записи: %d. Коме�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Най-много %d записа при едно масово добавяне; разделете списъка."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Не бяха добавени записи: %s"

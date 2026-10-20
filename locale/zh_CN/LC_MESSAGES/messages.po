@@ -15252,3 +15252,8 @@ msgstr "已跳过的记录备注：%d。配置中已禁用记录备注。"
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "每次批量添加最多 %d 条记录；请拆分列表。"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "未添加任何记录：%s"

@@ -72,6 +72,7 @@ class RecordManagerService
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; picks the audit event
      * @param int|null $userId The acting user; the comment reaches a related A/PTR record only in a
      *                         zone this user may edit, and never when null
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      */
     public function createRecord(
         int $zone_id,
@@ -84,7 +85,8 @@ class RecordManagerService
         string $userlogin,
         int $disabled = 0,
         string $origin = AuditLoggerInterface::ORIGIN_WEB,
-        ?int $userId = null
+        ?int $userId = null,
+        bool $finalizeZone = true
     ): RecordWriteResult {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
@@ -93,7 +95,7 @@ class RecordManagerService
         // API backend: carry the comment in the record PATCH; null rather than ''
         // so an empty form field does not clear an existing RRset comment
         $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $userlogin];
-        $result = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled, true, $rrsetComment);
+        $result = $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $disabled, $finalizeZone, $rrsetComment);
         if (!$result->success) {
             return $result;
         }

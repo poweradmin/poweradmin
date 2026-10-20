@@ -16180,3 +16180,8 @@ msgstr "نظرات رکوردهای ردشده: %d. نظرات رکوردها د
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "حداکثر %d رکورد در هر افزودن گروهی؛ فهرست را تقسیم کنید."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "هیچ رکوردی اضافه نشد: %s"

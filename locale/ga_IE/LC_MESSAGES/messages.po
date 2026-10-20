@@ -16744,3 +16744,8 @@ msgstr "Nótaí tráchta taifead a scipeáladh: %d. Tá nótaí tráchta taifead
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "%d taifead ar a mhéad in aghaidh an chur leis mórchóir; roinn an liosta."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Níor cuireadh aon taifead leis: %s"

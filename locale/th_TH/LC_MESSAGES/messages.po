@@ -15582,3 +15582,8 @@ msgstr "หมายเหตุของบันทึกที่ข้าม
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "เพิ่มได้สูงสุด %d เรกคอร์ดต่อการเพิ่มแบบกลุ่ม โปรดแบ่งรายการ"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "ไม่มีการเพิ่มเรกคอร์ด: %s"

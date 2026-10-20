@@ -15269,3 +15269,8 @@ msgstr "已略過的記錄備註：%d。設定中已停用記錄備註。"
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "每次大量新增最多 %d 筆記錄；請分割清單。"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "未新增任何記錄：%s"

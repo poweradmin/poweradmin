@@ -16269,3 +16269,8 @@ msgstr "Přeskočené komentáře záznamů: %d. Komentáře záznamů jsou v ko
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Hromadně lze přidat nejvýše %d záznamů; rozdělte seznam."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nebyly přidány žádné záznamy: %s"

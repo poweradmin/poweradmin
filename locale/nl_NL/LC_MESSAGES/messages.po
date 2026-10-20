@@ -16502,3 +16502,8 @@ msgstr "Overgeslagen recordopmerkingen: %d. Recordopmerkingen zijn uitgeschakeld
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Maximaal %d records per bulktoevoeging; splits de lijst."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Er zijn geen records toegevoegd: %s"

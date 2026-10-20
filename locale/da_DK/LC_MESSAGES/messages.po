@@ -16327,3 +16327,8 @@ msgstr "Sprungne postbemærkninger: %d. Postbemærkninger er deaktiveret i konfi
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Højst %d records pr. massetilføjelse; del listen op."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Ingen records blev tilføjet: %s"

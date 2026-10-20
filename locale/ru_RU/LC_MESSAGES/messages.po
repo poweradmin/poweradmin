@@ -16468,3 +16468,8 @@ msgstr "Пропущено комментариев к записям: %d. Ко�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Не более %d записей за одно массовое добавление; разделите список."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Записи не были добавлены: %s"

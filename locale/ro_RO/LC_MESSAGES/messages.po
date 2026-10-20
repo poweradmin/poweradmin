@@ -16800,3 +16800,8 @@ msgstr "Comentarii de înregistrări omise: %d. Comentariile înregistrărilor s
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Cel mult %d înregistrări per adăugare în masă; împărțiți lista."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nu a fost adăugată nicio înregistrare: %s"

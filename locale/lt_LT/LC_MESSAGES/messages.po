@@ -16364,3 +16364,8 @@ msgstr "Praleisti įrašų komentarai: %d. Įrašų komentarai išjungti konfig�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Vienu masiniu pridėjimu galima pridėti ne daugiau kaip %d įrašų; padalykite sąrašą."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Nepridėtas nė vienas įrašas: %s"

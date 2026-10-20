@@ -16108,3 +16108,8 @@ msgstr "Ohitetut tietueiden kommentit: %d. Tietueiden kommentit on poistettu kä
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Enintään %d tietuetta yhdellä joukkolisäyksellä; jaa luettelo osiin."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Tietueita ei lisätty: %s"

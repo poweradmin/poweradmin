@@ -16847,3 +16847,8 @@ msgstr "Σχόλια εγγραφών που παραλείφθηκαν: %d. Τ�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Το πολύ %d εγγραφές ανά μαζική προσθήκη· χωρίστε τη λίστα."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Δεν προστέθηκαν εγγραφές: %s"

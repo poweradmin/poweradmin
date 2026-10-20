@@ -139,97 +139,58 @@ class BulkRecordAddController extends BaseController
             set_time_limit(self::TIME_LIMIT_SECONDS);
         }
 
-        $parser = new BulkRecordParser();
-        $reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->setMessage('bulk_record_add', 'error', _('Zone not found.'));
+            $this->showBulkRecordAdditionForm([], $records_text);
+            return;
+        }
 
-        // One submission, one changeset: every record added below is grouped under a
-        // single entry in the change log carrying the reason the user gave.
-        [$success_count, $failed_records] = $this->services()->recordChangeLog()->withChangeset($zone_id, $change_comment, function () use ($lines, $zone_id, $parser, $reverseTtlResolver): array {
-            $success_count = 0;
-            $failed_records = [];
-            foreach ($lines as $line) {
-                $line = trim($line);
-                if (empty($line)) {
-                    continue;
+        // A SQL backend adds the whole list in one transaction: a fatal error or a timeout
+        // mid-list leaves nothing behind. Refused lines are still reported and skipped.
+        $useTransaction = $this->services()->dnsBackendProvider()->supportsLocalWriteTransaction();
+        $transaction = $this->services()->transaction();
+        $failedLine = '';
+
+        if ($useTransaction) {
+            $transaction->begin();
+        }
+        try {
+            // One submission, one changeset: every record added below is grouped under a
+            // single entry in the change log carrying the reason the user gave.
+            [$success_count, $failed_records] = $this->services()->recordChangeLog()->withChangeset(
+                $zone_id,
+                $change_comment,
+                function () use ($lines, $zone_id, $zone_name, $useTransaction, &$failedLine): array {
+                    return $this->addLines($lines, $zone_id, $zone_name, $useTransaction, $failedLine);
                 }
-
-                $result = $parser->parseLine($line);
-                if (is_string($result)) {
-                    $failed_records[] = $line . " - " . $result;
-                    continue;
-                }
-
-                $name = DnsIdnService::toPunycode($result['name']);
-                $type = $result['type'];
-                $content = $result['content'];
-                $prio = $result['prio'];
-                $ttl = $result['ttl'];
-                $disabled = $result['disabled'];
-                $comment = $result['comment'];
-
-                // Convert IDN content to punycode after full content assembly
-                $content = DnsIdnService::convertContentToPunycode($type, $content);
-
-                // Normalize record name to full FQDN (always, regardless of display setting)
-                // This converts @ to zone apex and ensures proper zone suffix
-                $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
-                if ($zone_name === null) {
-                    $failed_records[] = $line . " - " . _('Zone not found.');
-                    continue;
-                }
-                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-                // Validate record type. Filter by the connected server's
-                // capabilities so bulk import matches the add/edit dropdowns -
-                // otherwise users would get the same SVCB/HTTPS/WALLET line
-                // accepted here and rejected by PowerDNS later.
-                $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-                $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-                $caps = $this->getRecordTypeCapabilities();
-                $valid_types = $isReverseZone
-                    ? $this->recordTypeService()->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
-                    : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
-
-                if (!in_array($type, $valid_types)) {
-                    $failed_records[] = $line . " - " . _('Invalid record type.');
-                    continue;
-                }
-
-                // Apply the type-aware default when the bulk line omitted an explicit TTL.
-                if ($ttl === null) {
-                    $ttl = $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-                }
-
-                try {
-                    // For CNAME, MX, SRV, and similar records, ensure content ends with a dot
-                    if (in_array($type, ['CNAME', 'MX', 'SRV', 'NS']) && !empty($content) && !str_ends_with($content, '.')) {
-                        $content .= '.';
-                    }
-
-                    $result = $this->recordManager()->createRecord(
-                        $zone_id,
-                        $name,
-                        $type,
-                        $content,
-                        $ttl,
-                        $prio,
-                        $comment,
-                        $this->getUserContextService()->getLoggedInUsername(),
-                        $disabled,
-                        userId: $this->getUserContextService()->getLoggedInUserId()
-                    );
-                    if ($result->success) {
-                        $success_count++;
-                    } else {
-                        $failed_records[] = $line . " - " . $result->message;
-                    }
-                } catch (Exception $e) {
-                    $failed_records[] = $line . " - " . $e->getMessage();
-                }
+            );
+            if ($useTransaction) {
+                $transaction->commit();
             }
+        } catch (Exception $e) {
+            // Without a transaction the lines before it stay added, so this message would be wrong
+            if (!$useTransaction) {
+                throw $e;
+            }
+            if ($transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
+            $reason = $failedLine !== '' ? $failedLine . ' - ' . $e->getMessage() : $e->getMessage();
+            $this->setMessage('bulk_record_add', 'error', sprintf(_('No records were added: %s'), $reason));
+            $this->showBulkRecordAdditionForm([], $records_text);
+            return;
+        } catch (\Throwable $e) {
+            if ($useTransaction && $transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        }
 
-            return [$success_count, $failed_records];
-        });
+        // Rectify and flush once for the whole list, after the commit: PowerDNS reads committed rows
+        if ($success_count > 0) {
+            $this->services()->recordManager()->finalizeZone($zone_id, false);
+        }
 
         if (!$failed_records) {
             $this->setMessage('edit', 'success', sprintf(_('%d record(s) have been added successfully.'), $success_count));
@@ -238,6 +199,115 @@ class BulkRecordAddController extends BaseController
             $this->setMessage('bulk_record_add', 'warning', _('Some record(s) could not be added.'));
             $this->showBulkRecordAdditionForm($failed_records);
         }
+    }
+
+    /**
+     * Adds each line without the per-record serial bump and rectify, then bumps the serial
+     * once. A write that throws ends the list; inside a transaction it is rolled back whole,
+     * since a failed SQL statement leaves a PostgreSQL transaction unusable.
+     *
+     * @param list<string> $lines
+     * @param string $failedLine Set to the line whose write threw
+     * @return array{0: int, 1: list<string>} Records added, and the refused lines with their reasons
+     */
+    private function addLines(array $lines, int $zone_id, string $zone_name, bool $useTransaction, string &$failedLine): array
+    {
+        $parser = new BulkRecordParser();
+
+        // Validate record type. Filter by the connected server's capabilities so bulk
+        // import matches the add/edit dropdowns - otherwise users would get the same
+        // SVCB/HTTPS/WALLET line accepted here and rejected by PowerDNS later.
+        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+        $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
+        $caps = $this->getRecordTypeCapabilities();
+        $valid_types = $isReverseZone
+            ? $this->recordTypeService()->getReverseZoneTypes($isDnsSecEnabled, $caps, false)
+            : $this->recordTypeService()->getDomainZoneTypes($isDnsSecEnabled, $caps, false);
+        // The type-aware default for a line that omits its TTL, read once for the list
+        $defaultTtls = $this->services()->reverseTtlResolver()->resolveTtlsForTypes($valid_types, $isReverseZone);
+
+        $username = $this->getUserContextService()->getLoggedInUsername();
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+
+        $success_count = 0;
+        $failed_records = [];
+        $nonSoaAdded = false;
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) {
+                continue;
+            }
+
+            $result = $parser->parseLine($line);
+            if (is_string($result)) {
+                $failed_records[] = $line . " - " . $result;
+                continue;
+            }
+
+            $name = DnsIdnService::toPunycode($result['name']);
+            $type = $result['type'];
+            $content = $result['content'];
+            $prio = $result['prio'];
+            $ttl = $result['ttl'];
+            $disabled = $result['disabled'];
+            $comment = $result['comment'];
+
+            // Convert IDN content to punycode after full content assembly
+            $content = DnsIdnService::convertContentToPunycode($type, $content);
+
+            // Normalize record name to full FQDN (always, regardless of display setting)
+            // This converts @ to zone apex and ensures proper zone suffix
+            $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
+
+            if (!in_array($type, $valid_types)) {
+                $failed_records[] = $line . " - " . _('Invalid record type.');
+                continue;
+            }
+
+            $ttl ??= $defaultTtls[strtoupper($type)];
+
+            // For CNAME, MX, SRV, and similar records, ensure content ends with a dot
+            if (in_array($type, ['CNAME', 'MX', 'SRV', 'NS']) && !empty($content) && !str_ends_with($content, '.')) {
+                $content .= '.';
+            }
+
+            try {
+                $result = $this->recordManager()->createRecord(
+                    $zone_id,
+                    $name,
+                    $type,
+                    $content,
+                    $ttl,
+                    $prio,
+                    $comment,
+                    $username,
+                    $disabled,
+                    userId: $userId,
+                    finalizeZone: false
+                );
+            } catch (Exception $e) {
+                if ($useTransaction) {
+                    $failedLine = $line;
+                    throw $e;
+                }
+                $failed_records[] = $line . " - " . $e->getMessage();
+                continue;
+            }
+
+            if ($result->success) {
+                $success_count++;
+                $nonSoaAdded = $nonSoaAdded || $type !== 'SOA';
+            } else {
+                $failed_records[] = $line . " - " . $result->message;
+            }
+        }
+
+        // The serial moves with the records, inside the transaction
+        if ($nonSoaAdded) {
+            $this->services()->soaRecordManager()->updateSOASerial($zone_id);
+        }
+
+        return [$success_count, $failed_records];
     }
 
     /**

@@ -16362,3 +16362,8 @@ msgstr "Preskočene opombe zapisov: %d. Opombe zapisov so v konfiguraciji onemog
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Največ %d zapisov na eno množično dodajanje; razdelite seznam."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Noben zapis ni bil dodan: %s"

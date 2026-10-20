@@ -16033,3 +16033,8 @@ msgstr "छोड़ी गई रिकॉर्ड टिप्पणिया
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "एक बार में अधिकतम %d रिकॉर्ड जोड़े जा सकते हैं; सूची को विभाजित करें।"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "कोई रिकॉर्ड नहीं जोड़ा गया: %s"

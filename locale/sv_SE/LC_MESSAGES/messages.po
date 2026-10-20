@@ -16299,3 +16299,8 @@ msgstr "Överhoppade postkommentarer: %d. Postkommentarer är inaktiverade i kon
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Högst %d poster per masstillägg; dela upp listan."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Inga poster lades till: %s"

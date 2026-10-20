@@ -16341,3 +16341,8 @@ msgstr "Atlanan kayıt yorumları: %d. Kayıt yorumları yapılandırmada devre 
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Toplu eklemede en fazla %d kayıt eklenebilir; listeyi bölün."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Hiçbir kayıt eklenmedi: %s"

@@ -16224,3 +16224,8 @@ msgstr "Ghi chú bản ghi đã bỏ qua: %d. Ghi chú bản ghi đã bị tắt
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Tối đa %d bản ghi cho mỗi lần thêm hàng loạt; hãy chia nhỏ danh sách."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Không có bản ghi nào được thêm: %s"

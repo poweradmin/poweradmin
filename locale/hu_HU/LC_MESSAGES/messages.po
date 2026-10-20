@@ -16484,3 +16484,8 @@ msgstr "Kihagyott rekordmegjegyzések: %d. A rekordmegjegyzések ki vannak kapcs
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Tömeges hozzáadásonként legfeljebb %d rekord; ossza fel a listát."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Egyetlen rekord sem lett hozzáadva: %s"

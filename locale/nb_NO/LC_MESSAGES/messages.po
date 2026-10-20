@@ -16245,3 +16245,8 @@ msgstr "Hoppet over postkommentarer: %d. Postkommentarer er deaktivert i konfigu
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Høyst %d poster per massetillegg; del opp listen."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:180
+#, php-format
+msgid "No records were added: %s"
+msgstr "Ingen poster ble lagt til: %s"
