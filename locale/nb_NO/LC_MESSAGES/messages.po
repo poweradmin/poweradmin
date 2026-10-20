@@ -14947,3 +14947,8 @@ msgstr ""
 "DNSSEC-oppføringer hoppet over: %d. PowerDNS oppretter selv RRSIG-, NSEC-, "
 "NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- og CDNSKEY-oppføringer når den signerer "
 "sonen."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Høyst %d poster per massetillegg; del opp listen."

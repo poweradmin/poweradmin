@@ -15196,3 +15196,8 @@ msgstr ""
 "Overgeslagen DNSSEC-records: %d. PowerDNS maakt RRSIG-, NSEC-, NSEC3-, "
 "NSEC3PARAM-, DNSKEY-, CDS- en CDNSKEY-records zelf aan wanneer het de zone "
 "ondertekent."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Maximaal %d records per bulktoevoeging; splits de lijst."

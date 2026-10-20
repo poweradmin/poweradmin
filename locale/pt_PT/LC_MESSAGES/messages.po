@@ -15243,3 +15243,8 @@ msgid ""
 msgstr ""
 "Registos DNSSEC ignorados: %d. O PowerDNS cria os registos RRSIG, NSEC, "
 "NSEC3, NSEC3PARAM, DNSKEY, CDS e CDNSKEY por si próprio ao assinar a zona."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "No máximo %d registos por adição em massa; divida a lista."

@@ -15344,3 +15344,8 @@ msgstr ""
 "Übersprungene DNSSEC-Einträge: %d. PowerDNS erstellt RRSIG-, NSEC-, NSEC3-, "
 "NSEC3PARAM-, DNSKEY-, CDS- und CDNSKEY-Einträge selbst, wenn es die Zone "
 "signiert."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Höchstens %d Einträge pro Massenhinzufügung; teilen Sie die Liste auf."

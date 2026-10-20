@@ -14928,3 +14928,8 @@ msgid ""
 msgstr ""
 "Số bản ghi DNSSEC bị bỏ qua: %d. PowerDNS tự tạo các bản ghi RRSIG, NSEC, "
 "NSEC3, NSEC3PARAM, DNSKEY, CDS và CDNSKEY khi ký vùng."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Tối đa %d bản ghi cho mỗi lần thêm hàng loạt; hãy chia nhỏ danh sách."

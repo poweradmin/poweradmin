@@ -13781,3 +13781,8 @@ msgstr ""
 "Ohitetut DNSSEC-tietueet: %d. PowerDNS luo RRSIG-, NSEC-, NSEC3-, "
 "NSEC3PARAM-, DNSKEY-, CDS- ja CDNSKEY-tietueet itse allekirjoittaessaan "
 "vyöhykkeen."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Enintään %d tietuetta yhdellä joukkolisäyksellä; jaa luettelo osiin."

@@ -14145,3 +14145,8 @@ msgid ""
 msgstr ""
 "Preskočeni DNSSEC zapisi: %d. PowerDNS sam stvara RRSIG, NSEC, NSEC3, "
 "NSEC3PARAM, DNSKEY, CDS i CDNSKEY zapise kada potpisuje zonu."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Najviše %d zapisa po skupnom dodavanju; podijelite popis."

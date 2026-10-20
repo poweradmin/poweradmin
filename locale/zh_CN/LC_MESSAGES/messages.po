@@ -14007,3 +14007,8 @@ msgid ""
 msgstr ""
 "已跳过的 DNSSEC 记录：%d 条。PowerDNS 在签名区域时会自行创建 RRSIG、NSEC、"
 "NSEC3、NSEC3PARAM、DNSKEY、CDS 和 CDNSKEY 记录。"
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "每次批量添加最多 %d 条记录；请拆分列表。"

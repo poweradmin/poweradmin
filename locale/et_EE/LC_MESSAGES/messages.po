@@ -13838,3 +13838,8 @@ msgid ""
 msgstr ""
 "Vahele jäetud DNSSEC-kirjed: %d. PowerDNS loob RRSIG-, NSEC-, NSEC3-, "
 "NSEC3PARAM-, DNSKEY-, CDS- ja CDNSKEY-kirjed tsooni allkirjastamisel ise."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Ühe hulgilisamisega saab lisada kuni %d kirjet; jagage loend osadeks."

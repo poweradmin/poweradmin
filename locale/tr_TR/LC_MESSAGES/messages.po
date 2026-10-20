@@ -15038,3 +15038,8 @@ msgid ""
 msgstr ""
 "Atlanan DNSSEC kayıtları: %d. PowerDNS, bölgeyi imzalarken RRSIG, NSEC, "
 "NSEC3, NSEC3PARAM, DNSKEY, CDS ve CDNSKEY kayıtlarını kendisi oluşturur."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Toplu eklemede en fazla %d kayıt eklenebilir; listeyi bölün."

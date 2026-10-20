@@ -13701,3 +13701,8 @@ msgid ""
 msgstr ""
 "Kihagyott DNSSEC rekordok: %d. A PowerDNS a zóna aláírásakor maga hozza "
 "létre az RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS és CDNSKEY rekordokat."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Tömeges hozzáadásonként legfeljebb %d rekord; ossza fel a listát."

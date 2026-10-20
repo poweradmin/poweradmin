@@ -15133,3 +15133,8 @@ msgid ""
 msgstr ""
 "Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, "
 "NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Paling banyak %d rekaman per penambahan massal; bagi daftarnya."

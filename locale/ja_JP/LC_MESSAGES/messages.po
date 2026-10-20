@@ -15018,3 +15018,8 @@ msgid ""
 msgstr ""
 "スキップした DNSSEC レコード: %d 件。PowerDNS はゾーンに署名する際に RRSIG、"
 "NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS、CDNSKEY レコードを自動で作成します。"
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "一括追加できるレコードは最大 %d 件です。リストを分割してください。"

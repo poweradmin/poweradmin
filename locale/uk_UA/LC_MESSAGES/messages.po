@@ -15101,3 +15101,8 @@ msgid ""
 msgstr ""
 "Пропущено записів DNSSEC: %d. PowerDNS сам створює записи RRSIG, NSEC, "
 "NSEC3, NSEC3PARAM, DNSKEY, CDS і CDNSKEY під час підписування зони."
+
+#: lib/Application/Controller/BulkRecordAddController.php:140
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Не більше %d записів за одне масове додавання; розділіть список."
