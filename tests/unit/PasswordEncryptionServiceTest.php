@@ -73,4 +73,25 @@ class PasswordEncryptionServiceTest extends TestCase
         $this->assertSame('', $this->passwordEncryptionService->decrypt('0'));
         $this->assertSame('', $this->passwordEncryptionService->decrypt('not-encrypted'));
     }
+
+    public function testDecryptionWithAMalformedIvReturnsEmptyStringWithoutAWarning()
+    {
+        $ciphertext = explode(':', $this->passwordEncryptionService->encrypt('secret'), 2)[0];
+        $warnings = [];
+        set_error_handler(function (int $errno, string $errstr) use (&$warnings): bool {
+            $warnings[] = $errstr;
+            return true;
+        });
+
+        try {
+            $shortIv = $this->passwordEncryptionService->decrypt($ciphertext . ':' . base64_encode('short'));
+            $notBase64 = $this->passwordEncryptionService->decrypt($ciphertext . ':***');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame('', $shortIv);
+        $this->assertSame('', $notBase64);
+        $this->assertSame([], $warnings);
+    }
 }
