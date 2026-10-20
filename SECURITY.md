@@ -4,8 +4,9 @@
 
 | Version | Supported |
 |---------|-----------|
+| 4.5.x | Yes, current release |
 | 4.4.x | Yes, LTS until December 2027 |
-| 4.3.x, 4.2.x | Until three months after the 4.5.0 release |
+| 4.3.x, 4.2.x | Until 2027-01-31 |
 | 3.9.x | Yes, LTS until December 2027 |
 | 4.1.x, 4.0.x, 3.8.x and older | No, please upgrade |
 
