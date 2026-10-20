@@ -76,6 +76,21 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
         ], $written);
     }
 
+    #[RunInSeparateProcess]
+    public function testAMixedCaseTemplateNameIsWrittenLowercase(): void
+    {
+        // The name lookups compare against the stored name, so it is stored lowercase
+        $this->db->exec("DELETE FROM zone_templ_records");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (" . self::TEMPLATE_ID . ", 'WWW.[ZONE]', 'A', '192.0.2.10', 300, 0)");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (" . self::TEMPLATE_ID . ", 'Mail', 'A', '192.0.2.11', 300, 0)");
+
+        $this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $stmt = $this->db->query("SELECT name FROM records WHERE domain_id = " . self::ZONE_ID . " ORDER BY name");
+
+        $this->assertSame(['mail.example.com', 'www.example.com'], $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     private function makeDomainManager(): DomainManager
     {
         $config = $this->primeConfig();

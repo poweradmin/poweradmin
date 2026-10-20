@@ -362,7 +362,7 @@ class DomainManager implements DomainManagerInterface
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         // A template name without a [ZONE] placeholder is a bare
                                         // label and has to be qualified with the zone
-                                        $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
+                                        $name = strtolower(DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain));
                                         $recordType = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain, $recordType);
                                         $ttl = $r["ttl"];
@@ -1131,7 +1131,7 @@ class DomainManager implements DomainManagerInterface
                         if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                             // A template name without a [ZONE] placeholder is a bare
                             // label and has to be qualified with the zone
-                            $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
+                            $name = strtolower(DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain));
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {

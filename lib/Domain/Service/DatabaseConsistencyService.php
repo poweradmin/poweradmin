@@ -811,7 +811,7 @@ class DatabaseConsistencyService
 
         return $stmt->execute([
             'domain_id' => $zoneId,
-            'name' => $zoneName,
+            'name' => strtolower($zoneName),
             'content' => $soaContent
         ]);
     }

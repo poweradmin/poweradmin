@@ -239,15 +239,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        // Names are stored lowercase: a lowered input matches case-insensitively (PostgreSQL
+        // too) through the name index, where LOWER(name) scanned every record per lookup.
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
+            $stmt->execute([strtolower($name), (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE != 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
+            $stmt->execute([strtolower($name)]);
         }
 
         $response = $stmt->fetchColumn();
@@ -331,15 +333,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        // Names are stored lowercase: a lowered input matches case-insensitively (PostgreSQL
+        // too) through the name index, where LOWER(name) scanned every record per lookup.
         // Existing-record edit: exclude the row being edited from the duplicate check.
         if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME' AND id != ?";
+            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
+            $stmt->execute([strtolower($name), (int)$rid]);
         } else {
-            $query = "SELECT id FROM $records_table WHERE LOWER(name) = LOWER(?) AND TYPE = 'CNAME'";
+            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
+            $stmt->execute([strtolower($name)]);
         }
 
         $response = $stmt->fetchColumn();
