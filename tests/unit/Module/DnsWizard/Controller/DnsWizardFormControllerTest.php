@@ -172,6 +172,18 @@ class DnsWizardFormControllerTest extends SeamControllerTestCase
         $this->assertSame('Zone not found.', $halt->target);
     }
 
+    public function testAnUnknownZoneAnswersAnOwnLevelUserLikeAZoneTheyDoNotOwn(): void
+    {
+        $this->editLevel = 'own';
+        $this->ownsZone = false;
+        $this->zoneName = null;
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame('You do not have permission to add records to this zone.', $halt->target);
+    }
+
     /** @return array<string, array{0: string, 1: string, 2: bool, 3: bool}> */
     public static function editGateProvider(): array
     {

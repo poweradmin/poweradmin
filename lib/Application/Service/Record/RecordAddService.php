@@ -57,19 +57,26 @@ class RecordAddService
     }
 
     /**
-     * Whether the user may add records to the zone directly: the zone must
-     * exist, the user's changes must not be routed through review (those go
-     * through the zone editor), and the zone must be writable by them.
+     * Whether the user may add records to the zone directly: the user must have
+     * some edit or request access to it, the zone must exist, the user's changes
+     * must not be routed through review (those go through the zone editor), and
+     * the zone must be writable by them.
      */
     public function open(int $zoneId, int $userId): RecordAddAccess
     {
+        // Refused before the lookup, so a missing id answers like a zone the user cannot touch
+        $mode = $this->approval->modeForZone($userId, $zoneId);
+        if ($mode === ChangeApprovalPolicy::MODE_NONE) {
+            return RecordAddAccess::refused(RecordAddAccess::FORBIDDEN, '', '');
+        }
+
         $zoneName = $this->domains->getDomainNameById($zoneId);
         if ($zoneName === null) {
             return RecordAddAccess::zoneNotFound();
         }
         $zoneType = $this->domains->getDomainType($zoneId);
 
-        if ($this->approval->modeForZone($userId, $zoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
+        if ($mode === ChangeApprovalPolicy::MODE_REQUEST) {
             return RecordAddAccess::refused(RecordAddAccess::REQUIRES_APPROVAL, $zoneName, $zoneType);
         }
         if (!$this->permissions->canEditZoneContent($userId, $zoneId, $zoneType)) {

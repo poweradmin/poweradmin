@@ -65,18 +65,18 @@ class DnsWizardSelectController extends BaseController
 
         $zone_id = (int)$zone_id;
 
-        // Check if zone exists
+        // Permission before the lookup, so a missing id answers like a zone the user cannot edit
+        $perm_edit = $this->moduleServices()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
+        if (!ZoneAccessPolicy::canEditZone($perm_edit, $this->isZoneOwner($zone_id))) {
+            $this->showError(_('You do not have permission to add records to this zone.'));
+        }
+
         $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }
 
-        // Check permissions
-        $perm_edit = $this->moduleServices()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $zone_type = $this->domainRepository()->getDomainType($zone_id);
-
-        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($this->domainRepository()->getDomainType($zone_id))) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 

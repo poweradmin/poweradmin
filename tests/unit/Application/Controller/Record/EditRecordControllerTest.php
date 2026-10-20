@@ -249,6 +249,14 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame('Invalid record ID.', $this->haltOf($this->makeController())->target);
     }
 
+    public function testAMissingRecordAnswersAUserWithoutViewOthersLikeAForeignRecord(): void
+    {
+        $this->canViewOthers = false;
+        $this->zoneIdOfRecord = 0;
+
+        $this->assertSame('You do not have permission to view this record.', $this->haltOf($this->makeController())->target);
+    }
+
     public function testViewingNeedsEitherTheZoneOrTheViewOthersPermission(): void
     {
         $this->canViewOthers = false;

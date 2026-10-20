@@ -102,6 +102,7 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('userOwnsZone')->willReturnCallback(fn(): bool => $this->ownsZone);
         $permissions->method('getEditPermissionLevelForZone')->willReturnCallback(fn(): string => $this->editLevel);
+        $permissions->method('getEditPermissionLevel')->willReturnCallback(fn(): string => $this->editLevel);
         $permissions->method('getViewPermissionLevel')->willReturnCallback(fn(): string => $this->viewLevel);
         $permissions->method('getChangeRequestPermissionLevelForZone')
             ->willReturnCallback(fn(): string => $this->changeRequestLevel);
@@ -197,6 +198,14 @@ class DeleteRecordControllerTest extends SeamControllerTestCase
         $this->zoneIdOfRecord = 0;
 
         $this->assertSame('Invalid record ID.', $this->haltOf($this->makeController())->target);
+    }
+
+    public function testAMissingRecordAnswersAnOwnLevelUserLikeARecordInAForeignZone(): void
+    {
+        $this->editLevel = 'own';
+        $this->zoneIdOfRecord = 0;
+
+        $this->assertSame('You do not have permission to delete records in this zone.', $this->haltOf($this->makeController())->target);
     }
 
     public function testWithoutAnyEditLevelTheDeletionIsRefused(): void

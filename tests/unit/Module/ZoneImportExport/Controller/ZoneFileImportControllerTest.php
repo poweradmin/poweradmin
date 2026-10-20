@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Module\ZoneImportExport\Controller;
 
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Infrastructure\Session\ArraySession;
@@ -71,7 +72,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         ZONE;
 
     private string $editLevel = 'own';
-    private string $zoneName = 'example.com';
+    private ?string $zoneName = 'example.com';
     private bool $domainExists = false;
     private string $zoneType = 'MASTER';
     private bool $commentsEnabled = false;
@@ -98,7 +99,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $permissions->method('getEditPermissionLevelForZone')->willReturnCallback(fn(): string => $this->editLevel);
 
         $domains = $this->createMock(DomainRepositoryInterface::class);
-        $domains->method('getDomainNameById')->willReturnCallback(fn(): string => $this->zoneName);
+        $domains->method('getDomainNameById')->willReturnCallback(fn(): ?string => $this->zoneName);
         $domains->method('domainExists')->willReturnCallback(fn(): bool => $this->domainExists);
         $domains->method('getDomainIdByName')->willReturn(self::ZONE_ID);
         $domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
@@ -545,6 +546,35 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $halt = $this->haltOf(fn() => $controller->execute());
 
         $this->assertSame(_('Invalid zone type.'), $halt->target);
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function missingTargetZones(): array
+    {
+        return [
+            'no edit level for the id' => ['none', 'You do not have permission to modify this zone.'],
+            'all level' => ['all', 'The selected zone does not exist.'],
+        ];
+    }
+
+    #[DataProvider('missingTargetZones')]
+    public function testConfirmIntoAMissingZoneOnlyTellsAUserWhoMayEditEveryZone(string $editLevel, string $expected): void
+    {
+        $this->editLevel = $editLevel;
+        $this->zoneName = null;
+        $this->session->set(self::SESSION_KEY, [
+            'origin' => 'example.com',
+            'records' => json_encode([['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 0]]),
+            'warnings' => [],
+            'filename' => 'example.com.zone',
+        ]);
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => '404']);
+
+        $controller = $this->makeController();
+        $halt = $this->haltOf(fn() => $controller->execute());
+
+        $this->assertSame(_($expected), $halt->target);
+        $this->assertSame([], $this->writes);
     }
 
     public function testConfirmIntoAReadOnlyZoneIsRefusedAndKeepsTheStash(): void

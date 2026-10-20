@@ -224,10 +224,30 @@ class RecordAddServiceTest extends TestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->expects($this->never())->method('canEditZoneContent');
 
-        $access = $this->makeService($this->createMock(RecordManagerService::class), permissions: $permissions, domains: $domains)->open(5, 7);
+        $access = $this->makeService(
+            $this->createMock(RecordManagerService::class),
+            permissions: $permissions,
+            domains: $domains,
+            approval: $this->approvalAnswering(ChangeApprovalPolicy::MODE_DIRECT)
+        )->open(5, 7);
 
         $this->assertSame(RecordAddAccess::ZONE_NOT_FOUND, $access->code);
         $this->assertFalse($access->isGranted());
+    }
+
+    public function testOpenRefusesAUserWithoutAccessBeforeLookingTheZoneUp(): void
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->expects($this->never())->method('getDomainNameById');
+
+        $access = $this->makeService(
+            $this->createMock(RecordManagerService::class),
+            domains: $domains,
+            approval: $this->approvalAnswering(ChangeApprovalPolicy::MODE_NONE)
+        )->open(5, 7);
+
+        $this->assertSame(RecordAddAccess::FORBIDDEN, $access->code);
+        $this->assertSame('', $access->zoneName);
     }
 
     public function testOpenSendsAReviewedZoneToTheChangeRequestFlowBeforeTheEditCheck(): void

@@ -317,23 +317,23 @@ class ZoneFileImportController extends BaseController
         $domainRepository = $this->moduleServices()->domainRepository();
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            // Verify the zone exists
-            $existingZoneName = $domainRepository->getDomainNameById($existingZoneId);
-            if (!$existingZoneName) {
-                $this->showError(_('The selected zone does not exist.'));
-                return;
-            }
             if ($this->changeApprovalModeForZone($existingZoneId) === ChangeApprovalPolicy::MODE_REQUEST) {
                 $this->showError(ChangeRequestMessages::requiresApproval());
                 return;
             }
 
-            // Verify user has permission to edit this zone
+            // Permission before the lookup, so a missing id answers like a zone the user cannot edit
             $permissionService = $this->moduleServices()->permissionService();
             $permEdit = $permissionService->getEditPermissionLevelForZone($userId, $existingZoneId);
 
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
+
+            $existingZoneName = $domainRepository->getDomainNameById($existingZoneId);
+            if (!$existingZoneName) {
+                $this->showError(_('The selected zone does not exist.'));
                 return;
             }
 

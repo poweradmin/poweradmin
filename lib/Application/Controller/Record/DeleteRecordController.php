@@ -62,13 +62,16 @@ class DeleteRecordController extends BaseController
 
         // Get zone ID from record first
         $zid = $recordRepository->getZoneIdFromRecordId($record_id);
+        $userId = $this->getUserContextService()->getLoggedInUserId();
         if ($zid == null) {
-            $this->showError(_('Invalid record ID.'));
+            // Only a user who may edit every zone learns that the id matches no record
+            $this->showError($this->permissionService()->getEditPermissionLevel($userId) === 'all'
+                ? _('Invalid record ID.')
+                : _('You do not have permission to delete records in this zone.'));
             return;
         }
 
         // Early permission check - validate zone access before proceeding
-        $userId = $this->getUserContextService()->getLoggedInUserId();
         $user_is_zone_owner = $this->isZoneOwner($zid);
 
         // Check zone-specific edit permission (includes group permissions)
