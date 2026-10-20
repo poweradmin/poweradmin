@@ -513,13 +513,14 @@ class RecordManager implements RecordManagerInterface
         }
         $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
-        // Secondary and Consumer zones replicate records from a primary - records are read-only
-        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
-            $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
-            return false;
-        }
-
         if ($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1")) {
+            // Checked after permission, so a refusal never tells a foreign zone's type.
+            // Secondary and Consumer zones replicate records from a primary - records are read-only
+            if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
+                $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
+                return false;
+            }
+
             $zone = $this->domainRepository->getDomainNameById($record['zid']);
             $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
             if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {

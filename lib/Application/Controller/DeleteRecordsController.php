@@ -126,73 +126,85 @@ class DeleteRecordsController extends BaseController
         RecordChangeLogger::beginChangeset(null, (string)($this->request->getPostParam('change_comment') ?? ''));
 
         try {
+            // Resolved up front: a row missing before the batch gets the refusal a foreign record
+            // gets, so the messages never tell which ids exist; one removed by this batch is skipped
+            $selection = [];
             foreach ($record_ids as $record_id) {
+                if (array_key_exists((string)$record_id, $selection)) {
+                    continue;
+                }
                 $record_info = $recordRepository->getRecordFromId($record_id);
-                if ($record_info === null) {
+                $zid = $record_info === null ? 0 : $recordRepository->getZoneIdFromRecordId($record_id);
+                if ($record_info === null || $zid <= 0) {
+                    $selection[(string)$record_id] = null;
+                    $this->addSystemMessage('error', _("You do not have the permission to delete this record."));
+                    continue;
+                }
+                $selection[(string)$record_id] = [$record_id, $record_info, $zid];
+            }
+
+            foreach (array_filter($selection) as [$record_id, $record_info, $zid]) {
+                // An earlier row's PTR companion may have taken this one already
+                if ($recordRepository->getRecordFromId($record_id) === null) {
                     continue;
                 }
 
-                $zid = $recordRepository->getZoneIdFromRecordId($record_id);
+                $domain_id = $recordRepository->recidToDomid($record_id);
 
-                // 0 means the record no longer exists
-                if ($zid > 0) {
-                    $domain_id = $recordRepository->recidToDomid($record_id);
+                // Check if this is an A or AAAA record that might have a corresponding PTR record
+                $hasPtrRecord = false;
+                if (
+                    ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
+                    $this->config->get('interface', 'add_reverse_record', false)
+                ) {
+                    $hasPtrRecord = true;
+                }
 
-                    // Check if this is an A or AAAA record that might have a corresponding PTR record
-                    $hasPtrRecord = false;
-                    if (
-                        ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
-                        $this->config->get('interface', 'add_reverse_record', false)
-                    ) {
-                        $hasPtrRecord = true;
+                if ($recordManager->deleteRecord($record_id)) {
+                    $deleted_count++;
+                    $affected_zones[$zid] = true;
+
+                    if (isset($record_info['prio'])) {
+                        $this->auditLogger->logInfo(sprintf(
+                            'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
+                            $this->ipAddressRetriever->getClientIp(),
+                            $this->userContextService->getLoggedInUsername(),
+                            $record_info['type'],
+                            $record_info['name'],
+                            $record_info['content'],
+                            $record_info['ttl'],
+                            $record_info['prio']
+                        ), $zid);
+                    } else {
+                        $this->auditLogger->logInfo(sprintf(
+                            'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
+                            $this->ipAddressRetriever->getClientIp(),
+                            $this->userContextService->getLoggedInUsername(),
+                            $record_info['type'],
+                            $record_info['name'],
+                            $record_info['content'],
+                            $record_info['ttl']
+                        ), $zid);
                     }
 
-                    if ($recordManager->deleteRecord($record_id)) {
-                        $deleted_count++;
-                        $affected_zones[$zid] = true;
+                    RecordManager::deleteRecordZoneTempl($this->db, $record_id);
 
-                        if (isset($record_info['prio'])) {
-                            $this->auditLogger->logInfo(sprintf(
-                                'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
-                                $this->ipAddressRetriever->getClientIp(),
-                                $this->userContextService->getLoggedInUsername(),
-                                $record_info['type'],
-                                $record_info['name'],
-                                $record_info['content'],
-                                $record_info['ttl'],
-                                $record_info['prio']
-                            ), $zid);
-                        } else {
-                            $this->auditLogger->logInfo(sprintf(
-                                'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
-                                $this->ipAddressRetriever->getClientIp(),
-                                $this->userContextService->getLoggedInUsername(),
-                                $record_info['type'],
-                                $record_info['name'],
-                                $record_info['content'],
-                                $record_info['ttl']
-                            ), $zid);
-                        }
+                    // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
+                    $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
+                    if ($hasPtrRecord && $delete_ptr) {
+                        $this->reverseRecordCreator->deleteReverseRecord(
+                            $record_info['type'],
+                            $record_info['content'],
+                            $record_info['name']
+                        );
+                    }
 
-                        RecordManager::deleteRecordZoneTempl($this->db, $record_id);
+                    // Delete comment for this specific record (per-record comment by record_id)
+                    $this->recordCommentService->deleteCommentByRecordId($record_id);
 
-                        // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                        $delete_ptr = $this->request->getPostParam('delete_ptr') === '1';
-                        if ($hasPtrRecord && $delete_ptr) {
-                            $this->reverseRecordCreator->deleteReverseRecord(
-                                $record_info['type'],
-                                $record_info['content'],
-                                $record_info['name']
-                            );
-                        }
-
-                        // Delete comment for this specific record (per-record comment by record_id)
-                        $this->recordCommentService->deleteCommentByRecordId($record_id);
-
-                        // For backward compatibility, also clean up RRset-based comments if no similar records remain
-                        if (!$recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
-                            $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
-                        }
+                    // For backward compatibility, also clean up RRset-based comments if no similar records remain
+                    if (!$recordRepository->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
+                        $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     }
                 }
             }
