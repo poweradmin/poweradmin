@@ -16450,3 +16450,8 @@ msgstr "%d zónanév eltérő kis- és nagybetűkkel is használatban van"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Csak olyan engedélysablont rendelhet hozzá, amelynek engedélyeivel már rendelkezik."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Kihagyott DNSSEC rekordok: %d. A PowerDNS a zóna aláírásakor maga hozza létre az RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS és CDNSKEY rekordokat."

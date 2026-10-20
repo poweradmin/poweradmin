@@ -27,6 +27,7 @@ use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Model\PdnsCapabilities;
+use Poweradmin\Domain\Enum\DnsBackendKind;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -35,6 +36,7 @@ use PDO;
 use Poweradmin\Infrastructure\Logger\SyslogLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
 use Poweradmin\Infrastructure\Service\NullDnssecProvider;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Port\ActorInterface;
 
@@ -108,7 +110,8 @@ class DnssecProviderFactory
         $pdnsApiKey = $config->get('pdns_api', 'key');
 
         if (!$pdnsApiUrl || !$pdnsApiKey) {
-            return new NullDnssecProvider();
+            // API mode must never read PowerDNS tables, so only the SQL backend answers PRESIGNED from them
+            return new NullDnssecProvider(DnsBackendKind::fromConfig($config) === DnsBackendKind::SQL ? new DbZoneMetadataStore($db, $config) : null);
         }
 
         if ($apiClient === null) {

@@ -117,4 +117,16 @@ class DbZoneMetadataStoreTest extends TestCase
         $this->assertNull($this->store->writeRejection('MY-KIND'));
         $this->assertSame(DbZoneMetadataStore::SUPPORT_SUPPORTED, $this->store->kindSupport(['min_version' => '9.9.9'], $neverAsked));
     }
+
+    public function testIsPresignedReadsThePresignedMetadataOfTheNamedZone(): void
+    {
+        $this->db->exec('CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)');
+        $this->db->exec("INSERT INTO domains (id, name) VALUES (5, 'example.com'), (6, 'other.example'), (7, 'off.example')");
+        $this->db->exec("INSERT INTO domainmetadata (domain_id, kind, content) VALUES (5, 'PRESIGNED', '1'), (7, 'PRESIGNED', '0')");
+
+        $this->assertTrue($this->store->isPresigned('example.com'));
+        $this->assertFalse($this->store->isPresigned('other.example'));
+        $this->assertFalse($this->store->isPresigned('off.example'));
+        $this->assertFalse($this->store->isPresigned('missing.example'));
+    }
 }

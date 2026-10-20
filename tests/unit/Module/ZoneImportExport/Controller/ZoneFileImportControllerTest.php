@@ -22,9 +22,14 @@
 
 namespace Poweradmin\Tests\Unit\Module\ZoneImportExport\Controller;
 
+use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
+use Poweradmin\Application\Service\Backend\DnssecProviderFactory;
+use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -49,6 +54,21 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     private const ZONE_ID = 7;
 
     private const ZONE_FILE = "\$ORIGIN example.com.\n\$TTL 3600\n@ IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600\nwww IN A 192.0.2.1\nmail IN MX 10 mail.example.com.\n";
+
+    private const SIGNED_ZONE_FILE = <<<'ZONE'
+        $ORIGIN example.com.
+        $TTL 3600
+        @ IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600
+        @ IN DNSKEY 257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==
+        @ IN RRSIG DNSKEY 13 2 3600 20261101000000 20261011000000 12345 example.com. c2lnbmF0dXJl
+        @ IN NSEC www.example.com. A NS SOA RRSIG NSEC DNSKEY
+        @ IN NSEC3PARAM 1 0 0 -
+        abc.example.com. IN NSEC3 1 0 0 - 2VPTU5TIMAMQTTGL4LUU9KG21E0AOR3S A RRSIG
+        @ IN CDS 12345 13 2 3AA5AB37EFCE57F737FC1627013FEFC5CB7CD9C2D2E1F2F1A2B3C4D5E6F70809
+        @ IN CDNSKEY 257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==
+        www IN A 192.0.2.1
+        sub IN DS 54321 13 2 3AA5AB37EFCE57F737FC1627013FEFC5CB7CD9C2D2E1F2F1A2B3C4D5E6F70809
+        ZONE;
 
     private string $editLevel = 'own';
     private string $zoneName = 'example.com';
@@ -211,12 +231,164 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame([['id' => 1, 'name' => 'ops']], $params['available_groups']);
 
         $stash = $this->session->get(self::SESSION_KEY);
-        $this->assertSame(['origin', 'records', 'warnings', 'filename'], array_keys($stash));
+        $this->assertSame(['origin', 'records', 'warnings', 'filename', 'dnssec_skipped', 'presigned_zone_id'], array_keys($stash));
+        $this->assertSame(0, $stash['dnssec_skipped']);
+        $this->assertSame(0, $stash['presigned_zone_id']);
         $this->assertSame('example.com', $stash['origin']);
         $this->assertSame('example.com.zone', $stash['filename']);
         $this->assertSame([], $stash['warnings']);
         $this->assertIsString($stash['records']);
         $this->assertSame($params['records'], json_decode($stash['records'], true));
+    }
+
+    public function testUploadSkipsTheDnssecRecordsPowerDnsGeneratesAndKeepsDs(): void
+    {
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::SIGNED_ZONE_FILE);
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame(['www.example.com', 'sub.example.com'], array_column($params['records'], 'name'));
+        $this->assertSame(['A', 'DS'], array_column($params['records'], 'type'));
+        $this->assertSame(2, $params['record_count']);
+        $notice = sprintf(_('DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone.'), 7);
+        $this->assertSame([$notice], $params['warnings']);
+
+        $stash = $this->session->get(self::SESSION_KEY);
+        $this->assertSame(['A', 'DS'], array_column(json_decode($stash['records'], true), 'type'));
+        $this->assertSame(7, $stash['dnssec_skipped']);
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame(['A', 'DS'], array_column($this->writes, 2));
+        $this->assertSame([['info', $notice]], $this->messagesFor('system'));
+    }
+
+    public function testUploadIntoAPresignedZoneKeepsTheDnssecRecordsAndChecksOnce(): void
+    {
+        $dnssec = $this->createMock(DnssecProviderInterface::class);
+        $dnssec->expects($this->once())->method('isZonePresigned')->with('example.com')->willReturn(true);
+        $this->factory->method('dnssecProvider')->willReturn($dnssec);
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::SIGNED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame(['DNSKEY', 'RRSIG', 'NSEC', 'NSEC3PARAM', 'NSEC3', 'CDS', 'CDNSKEY', 'A', 'DS'], array_column($params['records'], 'type'));
+        $this->assertSame([], $params['warnings']);
+        $stash = $this->session->get(self::SESSION_KEY);
+        $this->assertSame(0, $stash['dnssec_skipped']);
+        $this->assertSame(self::ZONE_ID, $stash['presigned_zone_id']);
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertCount(9, $this->writes);
+        $this->assertSame([], $this->messagesFor('system'));
+    }
+
+    public function testSqlBackendWithoutTheApiKeepsTheDnssecRecordsOfAPresignedZone(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec('CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)');
+        $db->exec('CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id INTEGER, kind TEXT, content TEXT)');
+        $db->exec("INSERT INTO domains (id, name) VALUES (" . self::ZONE_ID . ", 'example.com')");
+        $db->exec("INSERT INTO domainmetadata (domain_id, kind, content) VALUES (" . self::ZONE_ID . ", 'PRESIGNED', '1')");
+        $config = $this->configure(['dns' => ['backend' => 'sql'], 'pdns_api' => ['url' => '', 'key' => '']]);
+        $this->factory->method('dnssecProvider')->willReturn(DnssecProviderFactory::create($db, $config, $this->createMock(ActorInterface::class), new ArraySession()));
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::SIGNED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $this->assertCount(9, $this->renderedParams()['records']);
+        $this->assertSame(self::ZONE_ID, $this->session->get(self::SESSION_KEY)['presigned_zone_id']);
+
+        $db->exec("DELETE FROM domainmetadata");
+        $this->makeController()->run();
+
+        $this->assertSame(['A', 'DS'], array_column($this->renderedParams()['records'], 'type'));
+    }
+
+    public function testConfirmIntoAnotherZoneDropsTheDnssecRecordsKeptForAPresignedOne(): void
+    {
+        $dnssec = $this->createMock(DnssecProviderInterface::class);
+        $dnssec->expects($this->once())->method('isZonePresigned')->willReturn(true);
+        $this->factory->method('dnssecProvider')->willReturn($dnssec);
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::SIGNED_ZONE_FILE);
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)(self::ZONE_ID + 1), 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame(['A', 'DS'], array_column($this->writes, 2));
+        $notice = sprintf(_('DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone.'), 7);
+        $this->assertSame([['info', $notice]], $this->messagesFor('system'));
+    }
+
+    public function testUploadSkipsTheDnssecRecordsWhenThePresignedStateCannotBeRead(): void
+    {
+        $dnssec = $this->createMock(DnssecProviderInterface::class);
+        $dnssec->method('isZonePresigned')->willThrowException(new \RuntimeException('API down'));
+        $this->factory->method('dnssecProvider')->willReturn($dnssec);
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::SIGNED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $this->assertSame(['A', 'DS'], array_column($this->renderedParams()['records'], 'type'));
+        $this->assertSame(0, $this->session->get(self::SESSION_KEY)['presigned_zone_id']);
+    }
+
+    public function testUploadAsNewZoneNeverAsksWhetherAZoneIsPresigned(): void
+    {
+        $dnssec = $this->createMock(DnssecProviderInterface::class);
+        $dnssec->expects($this->never())->method('isZonePresigned');
+        $this->factory->method('dnssecProvider')->willReturn($dnssec);
+        $this->post(['import_mode' => 'new']);
+        $this->upload(self::SIGNED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $this->assertSame(['A', 'DS'], array_column($this->renderedParams()['records'], 'type'));
+    }
+
+    public function testUploadWithNothingImportableAfterFilteringIsRefused(): void
+    {
+        $this->post(['import_mode' => 'new']);
+        $this->upload(
+            "\$ORIGIN example.com.\n\$TTL 3600\n"
+            . "@ IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600\n"
+            . "@ IN DNSKEY 257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==\n"
+            . "@ IN RRSIG DNSKEY 13 2 3600 20261101000000 20261011000000 12345 example.com. c2lnbmF0dXJl\n"
+        );
+
+        $controller = $this->makeController();
+        $halt = $this->haltOf(fn() => $controller->run());
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $notice = sprintf(_('DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone.'), 2);
+        $this->assertSame(_('No valid records found in the uploaded file.') . ' ' . $notice, $halt->target);
+        $this->assertFalse($this->session->has(self::SESSION_KEY));
+    }
+
+    public function testUploadOfOnlyAnSoaIsRefused(): void
+    {
+        $this->post(['import_mode' => 'new']);
+        $this->upload("\$ORIGIN example.com.\n@ 3600 IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600\n");
+
+        $controller = $this->makeController();
+        $halt = $this->haltOf(fn() => $controller->run());
+
+        $this->assertSame(_('No valid records found in the uploaded file.'), $halt->target);
     }
 
     public function testUploadAsNewZoneSwitchesToExistingWhenTheOriginAlreadyExists(): void

@@ -15235,3 +15235,8 @@ msgstr "%d 個區域名稱以不同大小寫使用"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "您只能指派其權限您已全部具備的權限範本。"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "已跳過的 DNSSEC 記錄：%d 筆。PowerDNS 在簽署區域時會自行建立 RRSIG、NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS 和 CDNSKEY 記錄。"

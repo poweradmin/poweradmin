@@ -16328,3 +16328,8 @@ msgstr "Imena con, uporabljena z različnimi velikimi/malimi črkami: %d"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Dodelite lahko samo predlogo dovoljenj, katere dovoljenja že imate."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Preskočeni zapisi DNSSEC: %d. PowerDNS sam ustvari zapise RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS in CDNSKEY, ko podpiše cono."

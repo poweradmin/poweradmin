@@ -16468,3 +16468,8 @@ msgstr "%d zonenamen worden met verschillende hoofdletters/kleine letters gebrui
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "U kunt alleen een rechtensjabloon toewijzen waarvan u de rechten al hebt."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Overgeslagen DNSSEC-records: %d. PowerDNS maakt RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- en CDNSKEY-records zelf aan wanneer het de zone ondertekent."

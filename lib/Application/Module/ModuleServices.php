@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Port\EmailTemplateRendererInterface;
 use Poweradmin\Domain\Port\ProxyContextInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -56,6 +57,8 @@ interface ModuleServices
     public function csvFormulaEscaper(): CsvFormulaEscaper;
 
     public function dnsBackendProvider(): DnsBackendProviderInterface;
+
+    public function dnssecProvider(): DnssecProviderInterface;
 
     public function domainManager(): DomainManagerInterface;
 

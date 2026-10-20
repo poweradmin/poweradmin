@@ -16840,3 +16840,8 @@ msgstr "%d noms de zone sont utilisés avec une casse différente"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Vous ne pouvez attribuer qu'un modèle de permissions dont vous détenez déjà les permissions."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Enregistrements DNSSEC ignorés : %d. PowerDNS crée lui-même les enregistrements RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS et CDNSKEY lorsqu'il signe la zone."

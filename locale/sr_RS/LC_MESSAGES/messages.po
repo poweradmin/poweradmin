@@ -16068,3 +16068,8 @@ msgstr "Имена зона која се користе са различити
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Можете доделити само шаблон дозвола чије дозволе већ имате."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Прескочени DNSSEC записи: %d. PowerDNS сам прави RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS и CDNSKEY записе када потписује зону."

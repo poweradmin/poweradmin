@@ -16600,3 +16600,8 @@ msgstr "%d emra zonash përdoren me shkronja të mëdha/të vogla të ndryshme"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Mund të caktoni vetëm një model lejesh, lejet e të cilit i keni tashmë."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Regjistrime DNSSEC të kapërcyera: %d. PowerDNS i krijon vetë regjistrimet RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS dhe CDNSKEY kur nënshkruan zonën."

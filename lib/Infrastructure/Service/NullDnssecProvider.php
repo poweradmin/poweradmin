@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Infrastructure\Repository\DbZoneMetadataStore;
 
 /**
  * Null Object implementation of DnssecProviderInterface
@@ -32,6 +33,13 @@ use Poweradmin\Domain\Port\DnssecProviderInterface;
  */
 class NullDnssecProvider implements DnssecProviderInterface
 {
+    /**
+     * @param DbZoneMetadataStore|null $sqlMetadata Answers isZonePresigned() from domainmetadata in SQL mode
+     */
+    public function __construct(private readonly ?DbZoneMetadataStore $sqlMetadata = null)
+    {
+    }
+
     public function rectifyZone(string $zoneName): bool
     {
         return false;
@@ -59,7 +67,7 @@ class NullDnssecProvider implements DnssecProviderInterface
 
     public function isZonePresigned(string $zoneName): bool
     {
-        return false;
+        return $this->sqlMetadata?->isPresigned($zoneName) ?? false;
     }
 
     public function getDsRecords(string $zoneName): array

@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Module\ZoneImportExport\ImportSessionKeys;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
+use Poweradmin\Module\ZoneImportExport\Service\ParsedRecord;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -144,9 +145,6 @@ class ZoneFileImportController extends BaseController
             $origin = DnsIdnService::toPunycode($origin);
         }
 
-        // Filter out SOA records (Poweradmin creates its own)
-        $filteredRecords = array_values(array_filter($records, fn($r) => $r->type !== 'SOA'));
-
         $importMode = $this->httpRequest->getPostParam('import_mode', 'new');
         $existingZoneId = (int)$this->httpRequest->getPostParam('existing_zone_id', 0);
 
@@ -181,6 +179,24 @@ class ZoneFileImportController extends BaseController
             }
         }
 
+        // Poweradmin creates its own SOA. PowerDNS generates the DNSSEC records when it signs,
+        // except in a presigned zone, which serves them from the records table.
+        $presignedZoneId = $importMode === 'existing' && $existingZoneId > 0 && $this->isPresignedZone($existingZoneId) ? $existingZoneId : 0;
+        $withoutSoa = array_values(array_filter($records, fn($r) => $r->type !== 'SOA'));
+        $filteredRecords = $presignedZoneId > 0 ? $withoutSoa : array_values(array_filter($withoutSoa, fn($r) => !$r->isSignerGenerated()));
+        $dnssecSkipped = count($withoutSoa) - count($filteredRecords);
+
+        if ($filteredRecords === []) {
+            $message = _('No valid records found in the uploaded file.');
+            $this->showError($dnssecSkipped > 0 ? $message . ' ' . $this->dnssecSkippedMessage($dnssecSkipped) : $message);
+            return;
+        }
+
+        $warnings = $parsed->getWarnings();
+        if ($dnssecSkipped > 0) {
+            $warnings[] = $this->dnssecSkippedMessage($dnssecSkipped);
+        }
+
         // Store parsed data in session for the execute step
         $this->getUserContextService()->setSessionData(ImportSessionKeys::ZONE_IMPORT_DATA, [
             'origin' => $origin,
@@ -193,6 +209,8 @@ class ZoneFileImportController extends BaseController
             ], $filteredRecords)),
             'warnings' => $parsed->getWarnings(),
             'filename' => $_FILES['zone_file']['name'],
+            'dnssec_skipped' => $dnssecSkipped,
+            'presigned_zone_id' => $presignedZoneId,
         ]);
 
         // Build preview data
@@ -211,7 +229,7 @@ class ZoneFileImportController extends BaseController
             'preview' => true,
             'records' => $previewRecords,
             'record_count' => count($filteredRecords),
-            'warnings' => $parsed->getWarnings(),
+            'warnings' => $warnings,
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
             'import_mode' => $importMode,
@@ -368,6 +386,15 @@ class ZoneFileImportController extends BaseController
             $conflictStrategy = 'add_all';
         }
 
+        // DNSSEC records were kept only for the presigned zone the preview checked
+        $dnssecSkipped = (int)($importData['dnssec_skipped'] ?? 0);
+        $presignedZoneId = (int)($importData['presigned_zone_id'] ?? 0);
+        if ($importMode !== 'existing' || $zone_id !== $presignedZoneId) {
+            $kept = array_values(array_filter($records, fn($r) => !in_array(strtoupper((string)$r->type), ParsedRecord::SIGNER_GENERATED_TYPES, true)));
+            $dnssecSkipped += count($records) - count($kept);
+            $records = $kept;
+        }
+
         // Import records
         $recordRepository = $this->moduleServices()->recordRepository();
         $dnsRecordManager = $this->moduleServices()->recordManager();
@@ -420,6 +447,10 @@ class ZoneFileImportController extends BaseController
         // Clean up session data
         $this->getUserContextService()->unsetSessionData(ImportSessionKeys::ZONE_IMPORT_DATA);
 
+        if ($dnssecSkipped > 0) {
+            $this->addSystemMessage('info', $this->dnssecSkippedMessage($dnssecSkipped));
+        }
+
         $this->showForm([
             'result' => true,
             'success_count' => $successCount,
@@ -428,6 +459,29 @@ class ZoneFileImportController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zoneName,
         ]);
+    }
+
+    /**
+     * Whether the zone carries PRESIGNED metadata. An unreadable state counts as not presigned,
+     * so the import falls back to skipping the DNSSEC records PowerDNS would otherwise sign over.
+     */
+    private function isPresignedZone(int $zoneId): bool
+    {
+        $zoneName = $this->moduleServices()->domainRepository()->getDomainNameById($zoneId);
+        if (!$zoneName) {
+            return false;
+        }
+        try {
+            return $this->moduleServices()->dnssecProvider()->isZonePresigned($zoneName);
+        } catch (\Throwable $e) {
+            $this->logger->warning('Zone import could not read the PRESIGNED state of {zone}, skipping DNSSEC records: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
+    private function dnssecSkippedMessage(int $count): string
+    {
+        return sprintf(_('DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone.'), $count);
     }
 
     private function formatBytes(int $bytes): string

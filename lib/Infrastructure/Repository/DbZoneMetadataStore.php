@@ -83,6 +83,22 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
         }
     }
 
+    /**
+     * Whether the PowerDNS zone of that name carries PRESIGNED metadata with content "1",
+     * the value PowerDNS itself checks.
+     */
+    public function isPresigned(string $zoneName): bool
+    {
+        $metadata = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $domains = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT 1 FROM $metadata m INNER JOIN $domains d ON d.id = m.domain_id WHERE d.name = :name AND m.kind = 'PRESIGNED' AND m.content = '1'");
+        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function writeRejection(string $kind): ?string
     {
         return null;

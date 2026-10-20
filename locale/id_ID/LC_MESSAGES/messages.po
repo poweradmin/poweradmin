@@ -16417,3 +16417,8 @@ msgstr "%d nama zona digunakan dengan huruf besar/kecil yang berbeda"
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "Anda hanya dapat menetapkan templat izin yang izinnya sudah Anda miliki."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."

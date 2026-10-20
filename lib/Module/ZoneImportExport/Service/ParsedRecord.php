@@ -27,6 +27,12 @@ namespace Poweradmin\Module\ZoneImportExport\Service;
  */
 class ParsedRecord
 {
+    /**
+     * Record types PowerDNS synthesizes for a signed zone (signatures, denial of existence,
+     * and DNSKEY/CDS/CDNSKEY/NSEC3PARAM from its key and metadata tables), so a stored copy is stale.
+     */
+    public const SIGNER_GENERATED_TYPES = ['RRSIG', 'NSEC', 'NSEC3', 'NSEC3PARAM', 'DNSKEY', 'CDS', 'CDNSKEY'];
+
     public string $name;
     public int $ttl;
     public string $type;
@@ -40,5 +46,10 @@ class ParsedRecord
         $this->type = $type;
         $this->content = $content;
         $this->priority = $priority;
+    }
+
+    public function isSignerGenerated(): bool
+    {
+        return in_array(strtoupper($this->type), self::SIGNER_GENERATED_TYPES, true);
     }
 }

@@ -15996,3 +15996,8 @@ msgstr "%d من أسماء المناطق مستخدمة بحالات أحرف �
 #: lib/Application/Service/User/UserFormMessages.php:86
 msgid "You can only assign a permission template whose permissions you already hold."
 msgstr "يمكنك فقط تعيين قالب صلاحيات تمتلك جميع صلاحياته بالفعل."
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:484
+#, php-format
+msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
+msgstr "سجلات DNSSEC التي تم تخطيها: %d. ينشئ PowerDNS سجلات RRSIG وNSEC وNSEC3 وNSEC3PARAM وDNSKEY وCDS وCDNSKEY بنفسه عند توقيع المنطقة."
