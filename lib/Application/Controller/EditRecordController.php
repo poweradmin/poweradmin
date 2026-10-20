@@ -92,7 +92,10 @@ class EditRecordController extends BaseController
         // Get zone ID from record first
         $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
-            $this->showError(_('Invalid record ID.'));
+            // Only a user who may view every zone learns that the id matches no record
+            $this->showError(UserManager::verifyPermission($this->db, 'zone_content_view_others')
+                ? _('Invalid record ID.')
+                : _("You do not have permission to view this record."));
             return;
         }
 

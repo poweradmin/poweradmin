@@ -296,21 +296,20 @@ class ZoneFileImportController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         if ($importMode === 'existing' && $existingZoneId > 0) {
-            // Verify the zone exists
-            $zoneRepository = $this->createZoneRepository();
-            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
-            if (!$existingZoneName) {
-                $this->showError(_('The selected zone does not exist.'));
-                return;
-            }
-
-            // Verify user has permission to edit this zone
+            // Permission before the lookup, so a missing id answers like a zone the user cannot edit
             $userRepository = new DbUserRepository($this->db, $this->getConfig());
             $permissionService = new PermissionService($userRepository);
             $permEdit = $permissionService->getEditPermissionLevelForZone($this->db, $userId, $existingZoneId);
 
             if ($permEdit === 'none') {
                 $this->showError(_('You do not have permission to modify this zone.'));
+                return;
+            }
+
+            $zoneRepository = $this->createZoneRepository();
+            $existingZoneName = $zoneRepository->getDomainNameById($existingZoneId);
+            if (!$existingZoneName) {
+                $this->showError(_('The selected zone does not exist.'));
                 return;
             }
 

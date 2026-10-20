@@ -96,13 +96,6 @@ class EditZoneMetadataController extends BaseController
         }
 
         $zoneId = (int) $this->getSafeRequestValue('id');
-        $zone = $this->zoneRepository->getZone($zoneId);
-
-        if ($zone === null) {
-            $this->showError(_('Zone not found.'));
-            return;
-        }
-
         $canEditMetadata = UserManager::verifyPermission($this->db, 'zone_meta_edit_others')
             || (
                 UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
@@ -116,7 +109,14 @@ class EditZoneMetadataController extends BaseController
                 && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId)
             );
 
+        // Checked before the lookup, so a missing id gets the same refusal as a foreign zone
         $this->checkCondition(!$canViewMetadata, _('You do not have the permission to view zone metadata.'));
+
+        $zone = $this->zoneRepository->getZone($zoneId);
+        if ($zone === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
 
         if ($this->isPost() && !$canEditMetadata) {
             $this->showError(_('You do not have the permission to edit zone metadata.'));
