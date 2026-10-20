@@ -16069,3 +16069,42 @@ msgstr "Vienlaikus var pievienot ne vairāk kā %d rindas."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Neviens ieraksts netika pievienots, jo veidlapā bija vairāk lauku, nekā serveris pieņem. Pievienojiet mazāk rindu vienlaikus."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Ierakstu nosaukumi ar lielajiem burtiem"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Visi ierakstu nosaukumi ir saglabāti ar mazajiem burtiem"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d ierakstu nosaukumos ir lielie burti"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Vai pārveidot visu uzskaitīto ierakstu nosaukumus mazajos burtos?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Ieraksta nosaukums pārveidots mazajos burtos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Neizdevās pārveidot ieraksta nosaukumu mazajos burtos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nav ierakstu nosaukumu, ko pārveidot mazajos burtos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "%d ierakstu nosaukumi pārveidoti mazajos burtos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Pārveidoti %d ierakstu nosaukumi; %d neizdevās"

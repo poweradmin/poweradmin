@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
 use PDO;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Database\PdnsTable;
@@ -41,6 +42,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     private string $domainsTable;
     private ?TransactionInterface $transactionPort = null;
     private string $recordsTable;
+    private string $commentsTable;
 
     public function __construct(
         private readonly PDO $db,
@@ -52,6 +54,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
+        $this->commentsTable = $tableNameService->getTable(PdnsTable::COMMENTS);
     }
 
     protected function zoneAccount(int $zoneId): ?string
@@ -148,6 +151,46 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         );
     }
 
+    public function checkRecordNamesInLowercase(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT r.id, r.domain_id, r.name, r.type, d.name AS zone_name
+             FROM {$this->recordsTable} r
+             LEFT JOIN {$this->domainsTable} d ON d.id = r.domain_id
+             WHERE {$this->mixedCaseName('r.name')}
+             ORDER BY r.domain_id, r.name, r.type"
+        );
+
+        $findings = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $findings[] = [
+                'id' => (int)$row['id'],
+                'domain_id' => (int)$row['domain_id'],
+                'zone_name' => $row['zone_name'],
+                'name' => $row['name'],
+                'type' => $row['type'],
+            ];
+        }
+
+        return ConsistencyReport::build(
+            $findings,
+            _('All record names are stored in lowercase'),
+            'warning',
+            _('%d records have uppercase letters in their name')
+        );
+    }
+
+    /**
+     * True for a name holding uppercase letters. MySQL compares through a case-insensitive
+     * collation, so its side is compared byte for byte.
+     */
+    private function mixedCaseName(string $column): string
+    {
+        $driver = (string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        return DbCompat::binaryCompare($driver, $column) . " <> LOWER($column)";
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         $stmt = $this->db->query("
@@ -242,6 +285,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'zone_names_differing_in_case' => $this->checkZoneNamesDifferingInCase(),
+            'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->checkDuplicateSOARecords(),
@@ -278,6 +322,173 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         return ConsistencyReport::repairEach(
             ConsistencyReport::findingIds($this->checkZonesHaveNames()),
             fn(int $zoneId): bool => $this->fixZoneName($zoneId),
+            'fixed'
+        );
+    }
+
+    /**
+     * Renames the record to its lowercase name. When that name already holds the same
+     * record the mixed-case copy is deleted instead. A rename that would leave two
+     * versions of one record, or a CNAME next to other data, is refused.
+     */
+    public function fixRecordNameCase(int $recordId): bool
+    {
+        // LOWER() in SQL rather than strtolower(), so the checks look at the name the UPDATE writes
+        $stmt = $this->db->prepare(
+            "SELECT domain_id, name, LOWER(name) AS lower_name, type, content, prio, disabled
+             FROM {$this->recordsTable} WHERE id = :id AND {$this->mixedCaseName('name')}"
+        );
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        $record = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($record === false) {
+            return false;
+        }
+
+        $domainId = (int)$record['domain_id'];
+        $lowerName = (string)$record['lower_name'];
+        $resolution = $this->caseRepairFor($record, $this->recordsAtName($domainId, $lowerName, $recordId));
+        if ($resolution === 'refuse') {
+            return false;
+        }
+
+        $this->transaction()->begin();
+        try {
+            if (is_int($resolution)) {
+                $this->replaceWithTwin($recordId, $resolution);
+            } else {
+                $stmt = $this->db->prepare("UPDATE {$this->recordsTable} SET name = :lower_name WHERE id = :id");
+                $stmt->bindValue(':lower_name', $lowerName);
+                $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            $this->lowercaseComments($domainId, (string)$record['name'], $lowerName, (string)$record['type']);
+
+            $this->transaction()->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->transaction()->rollBack();
+            return false;
+        }
+    }
+
+    /**
+     * The id of an identical record already at the lowercase name (delete this copy),
+     * 'refuse' when the rename would leave two versions of one record or a CNAME next to
+     * other data, otherwise 'rename'. Empty non-terminals only ever pair with each other.
+     *
+     * @param array<string, mixed> $record
+     * @param list<array<string, mixed>> $atLowerName
+     */
+    private function caseRepairFor(array $record, array $atLowerName): int|string
+    {
+        $isEnt = static fn(array $row): bool => (string)$row['type'] === '';
+        if ($isEnt($record)) {
+            $ents = array_values(array_filter($atLowerName, $isEnt));
+            return $ents === [] ? 'rename' : (int)$ents[0]['id'];
+        }
+        $atLowerName = array_values(array_filter($atLowerName, static fn(array $row): bool => !$isEnt($row)));
+
+        $key = static fn(array $row): string => implode("\0", [$row['type'], $row['content']]);
+        $full = static fn(array $row): string => $key($row) . "\0" . (int)$row['prio'] . "\0" . DbCompat::boolFromDb($row['disabled']);
+        foreach ($atLowerName as $row) {
+            if ($full($row) === $full($record)) {
+                return (int)$row['id'];
+            }
+        }
+        if (in_array($key($record), array_map($key, $atLowerName), true)) {
+            return 'refuse';
+        }
+        $types = array_column($atLowerName, 'type');
+        $cnameConflict = $record['type'] === 'CNAME' ? $types !== [] : in_array('CNAME', $types, true);
+
+        return $cnameConflict ? 'refuse' : 'rename';
+    }
+
+    /**
+     * Other records of the zone stored under exactly this lowercase name, empty
+     * non-terminals included.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function recordsAtName(int $domainId, string $lowerName, int $exceptId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id, type, content, prio, disabled FROM {$this->recordsTable}
+             WHERE domain_id = :domain_id AND {$this->exactName('name')} = :name AND id <> :id
+             ORDER BY id"
+        );
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $lowerName);
+        $stmt->bindValue(':id', $exceptId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function exactName(string $column): string
+    {
+        return DbCompat::binaryCompare((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME), $column);
+    }
+
+    /**
+     * Deletes the copy and its template link. Its comment moves to the surviving twin
+     * when that has none, and goes with the copy otherwise. Link record ids are strings,
+     * as API-mode ids are.
+     */
+    private function replaceWithTwin(int $recordId, int $twinId): void
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM record_comment_links WHERE record_id = :id");
+        $stmt->bindValue(':id', (string)$twinId);
+        $stmt->execute();
+        if ((int)$stmt->fetchColumn() === 0) {
+            $stmt = $this->db->prepare("UPDATE record_comment_links SET record_id = :twin WHERE record_id = :id");
+            $stmt->bindValue(':twin', (string)$twinId);
+            $stmt->bindValue(':id', (string)$recordId);
+            $stmt->execute();
+        } else {
+            $stmt = $this->db->prepare("SELECT comment_id FROM record_comment_links WHERE record_id = :id");
+            $stmt->bindValue(':id', (string)$recordId);
+            $stmt->execute();
+            foreach (array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)) as $commentId) {
+                foreach (["DELETE FROM record_comment_links WHERE comment_id = :id", "DELETE FROM {$this->commentsTable} WHERE id = :id"] as $sql) {
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->bindValue(':id', $commentId, PDO::PARAM_INT);
+                    $stmt->execute();
+                }
+            }
+        }
+
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = :id");
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    /**
+     * Comments are keyed by zone, name and type, so they follow the record. Links point
+     * at comment ids, so they stay valid.
+     */
+    private function lowercaseComments(int $domainId, string $name, string $lowerName, string $type): void
+    {
+        $stmt = $this->db->prepare(
+            "UPDATE {$this->commentsTable} SET name = :lower_name
+             WHERE domain_id = :domain_id AND {$this->exactName('name')} = :name AND type = :type"
+        );
+        $stmt->bindValue(':lower_name', $lowerName);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name);
+        $stmt->bindValue(':type', $type);
+        $stmt->execute();
+    }
+
+    public function fixAllRecordNamesCase(): array
+    {
+        return ConsistencyReport::repairEach(
+            ConsistencyReport::findingIds($this->checkRecordNamesInLowercase()),
+            fn(int $recordId): bool => $this->fixRecordNameCase($recordId),
             'fixed'
         );
     }

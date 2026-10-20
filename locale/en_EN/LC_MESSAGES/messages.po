@@ -16237,3 +16237,42 @@ msgstr "At most %d rows can be added at a time."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Record Names With Uppercase Letters"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "All record names are stored in lowercase"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d records have uppercase letters in their name"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Lowercase the names of all listed records?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Record name lowercased"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Failed to lowercase the record name"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "No record names to lowercase"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Lowercased the name of %d records"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Lowercased %d record names; %d failed"

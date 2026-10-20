@@ -15966,3 +15966,42 @@ msgstr "Najviše %d redova može se dodati odjednom."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nijedan zapis nije dodan jer je obrazac imao više polja nego što server prihvata. Dodajte manje redova odjednom."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Imena zapisa s velikim slovima"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Sva imena zapisa su pohranjena malim slovima"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d zapisa ima velika slova u imenu"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Pretvoriti imena svih navedenih zapisa u mala slova?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Ime zapisa je pretvoreno u mala slova"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Nije uspjelo pretvaranje imena zapisa u mala slova"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nema imena zapisa za pretvaranje u mala slova"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Imena %d zapisa pretvorena su u mala slova"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Pretvoreno %d imena zapisa; %d nije uspjelo"

@@ -16283,3 +16283,42 @@ msgstr "Najednou lze přidat nejvýše %d řádků."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nebyly přidány žádné záznamy, protože formulář měl více polí, než server přijímá. Přidávejte méně řádků najednou."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Názvy záznamů s velkými písmeny"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Všechny názvy záznamů jsou uloženy malými písmeny"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d záznamů má v názvu velká písmena"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Převést názvy všech uvedených záznamů na malá písmena?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Název záznamu byl převeden na malá písmena"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Název záznamu se nepodařilo převést na malá písmena"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Žádné názvy záznamů k převedení na malá písmena"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Názvy %d záznamů byly převedeny na malá písmena"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Převedeno %d názvů záznamů; %d se nezdařilo"

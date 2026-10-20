@@ -67,6 +67,14 @@ interface ConsistencyCheckerInterface
      */
     public function checkZoneNamesDifferingInCase(): array;
 
+    /**
+     * Records whose name holds uppercase letters, which PowerDNS never serves and the
+     * record lookups never find. Only the SQL backend can store them.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkRecordNamesInLowercase(): array;
+
     /** @return array{status: string, message: string, data: array} */
     public function checkSlaveZonesHaveMasters(): array;
 
@@ -105,6 +113,12 @@ interface ConsistencyCheckerInterface
     /** @return array{fixed: int, failed: int} */
     public function fixAllZonesWithoutName(): array;
 
+    /** Lowercase the record's name, and the name of the comments on its RRset. */
+    public function fixRecordNameCase(int $recordId): bool;
+
+    /** @return array{fixed: int, failed: int} */
+    public function fixAllRecordNamesCase(): array;
+
     public function deleteSlaveZone(int $zoneId): bool;
 
     public function deleteOrphanedRecord(int $recordId): bool;
@@ -116,8 +130,8 @@ interface ConsistencyCheckerInterface
 
     /**
      * Apply the single-item repair for a consistency page check type
-     * (zones_without_owners, zones_without_canonical_ids, slave_zones_without_masters,
-     * orphaned_records, duplicate_soa, zones_without_soa) to one finding.
+     * (zones_without_owners, zones_without_canonical_ids, records_with_uppercase_names,
+     * slave_zones_without_masters, orphaned_records, duplicate_soa, zones_without_soa) to one finding.
      *
      * @return array{status: string, message: string} status is success or error
      */

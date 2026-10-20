@@ -380,6 +380,7 @@ class ApiConsistencyChecksTest extends TestCase
             'shared_zone_ids',
             'group_grants_on_row_ids',
             'zone_names_differing_in_case',
+            'record_names_in_lowercase',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',
@@ -576,5 +577,14 @@ class ApiConsistencyChecksTest extends TestCase
 
         $this->assertSame('warning', $result['status']);
         $this->assertSame([['name' => 'example.com', 'zones' => 'Example.com, example.com', 'ids' => '1, 2']], $result['data']);
+    }
+
+    public function testRecordNameCaseIsNotCheckedOrRepairedInApiMode(): void
+    {
+        $checker = $this->checker();
+
+        $this->assertSame('success', $checker->checkRecordNamesInLowercase()['status']);
+        $this->assertFalse($checker->fixRecordNameCase(11));
+        $this->assertSame(['fixed' => 0, 'failed' => 0], $checker->fixAllRecordNamesCase());
     }
 }

@@ -269,6 +269,7 @@ class SqlConsistencyChecksTest extends TestCase
             'shared_zone_ids',
             'group_grants_on_row_ids',
             'zone_names_differing_in_case',
+            'record_names_in_lowercase',
             'slave_zones_have_masters',
             'records_belong_to_zones',
             'duplicate_soa_records',
@@ -505,5 +506,183 @@ class SqlConsistencyChecksTest extends TestCase
         $this->domain(2, 'example.org');
 
         $this->assertSame('success', $this->checker()->checkZoneNamesDifferingInCase()['status']);
+    }
+
+    public function testRecordNamesWithUppercaseLettersAreReported(): void
+    {
+        $this->domain(1, 'example.com');
+        $this->record(10, 1, 'example.com', 'SOA');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'mail.example.com', 'A', '192.0.2.2');
+
+        $result = $this->checker()->checkRecordNamesInLowercase();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame([['id' => 11, 'domain_id' => 1, 'zone_name' => 'example.com', 'name' => 'WWW.example.com', 'type' => 'A']], $result['data']);
+    }
+
+    public function testLowercaseRecordNamesPassTheCaseCheck(): void
+    {
+        $this->domain(1, 'example.com');
+        $this->record(10, 1, 'example.com', 'SOA');
+        $this->record(11, 1, 'www.example.com', 'A', '192.0.2.1');
+
+        $result = $this->checker()->checkRecordNamesInLowercase();
+
+        $this->assertSame('success', $result['status']);
+        $this->assertSame([], $result['data']);
+    }
+
+    public function testTheRepairLowercasesTheRecordAndTheCommentsOnItsRrset(): void
+    {
+        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (1, 1, 'WWW.example.com', 'A', 'web'), (2, 1, 'WWW.example.com', 'TXT', 'other type'), (3, 2, 'WWW.example.com', 'A', 'other zone')");
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'Mail.Example.com', 'A', '192.0.2.2');
+
+        $outcome = $this->checker()->fixOne('records_with_uppercase_names', 11, 1);
+
+        $this->assertSame(['status' => 'success', 'message' => 'Record name lowercased'], $outcome);
+        $this->assertSame('www.example.com', $this->db->query('SELECT name FROM records WHERE id = 11')->fetchColumn());
+        $this->assertSame(
+            [1 => 'www.example.com', 2 => 'WWW.example.com', 3 => 'WWW.example.com'],
+            $this->db->query('SELECT id, name FROM comments ORDER BY id')->fetchAll(PDO::FETCH_KEY_PAIR)
+        );
+
+        $this->assertSame(['status' => 'success', 'message' => 'Lowercased the name of 1 records'], $this->checker()->fixAll('records_with_uppercase_names', 1));
+        $this->assertSame('success', $this->checker()->checkRecordNamesInLowercase()['status']);
+        $this->assertSame(['status' => 'error', 'message' => 'Failed to lowercase the record name'], $this->checker()->fixOne('records_with_uppercase_names', 11, 1));
+    }
+
+    private function commentTables(): void
+    {
+        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE record_comment_links (record_id VARCHAR(4096) NOT NULL, comment_id INTEGER NOT NULL, PRIMARY KEY (record_id), UNIQUE (comment_id))");
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+    }
+
+    public function testAMixedCaseCopyOfARecordAlreadyStoredLowercaseIsDeletedNotRenamed(): void
+    {
+        $this->commentTables();
+        $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (1, 1, 'WWW.example.com', 'A', 'copy'), (2, 1, 'www.example.com', 'A', 'kept')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('11', 1), ('13', 2)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (1, 11, 3)");
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'Www.example.com', 'A', '192.0.2.1');
+        $this->record(13, 1, 'www.example.com', 'A', '192.0.2.1');
+
+        $outcome = $this->checker()->fixAll('records_with_uppercase_names', 1);
+
+        $this->assertSame(['status' => 'success', 'message' => 'Lowercased the name of 2 records'], $outcome);
+        $this->assertSame([[13, 'www.example.com']], $this->db->query('SELECT id, name FROM records')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame([['13']], $this->db->query('SELECT record_id FROM record_comment_links')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame([[2, 'www.example.com', 'kept']], $this->db->query('SELECT id, name, comment FROM comments')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame(0, $this->rows('records_zone_templ'));
+    }
+
+    public function testTwoMixedCaseVariantsOfOneRecordEndAsOneLowercaseRecord(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'Www.example.com', 'A', '192.0.2.1');
+
+        $this->checker()->fixAll('records_with_uppercase_names', 1);
+
+        $this->assertSame([[11, 'www.example.com']], $this->db->query('SELECT id, name FROM records')->fetchAll(PDO::FETCH_NUM));
+    }
+
+    public function testARenameThatWouldPutACnameNextToOtherDataIsRefused(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'Www.example.com', 'CNAME', 'host.example.net');
+        $this->record(12, 1, 'www.example.com', 'A', '192.0.2.1');
+        $this->record(13, 1, 'Mail.example.com', 'A', '192.0.2.2');
+        $this->record(14, 1, 'mail.example.com', 'CNAME', 'host.example.net');
+        $this->record(15, 1, 'Ftp.example.com', 'CNAME', 'one.example.net');
+        $this->record(16, 1, 'ftp.example.com', 'CNAME', 'two.example.net');
+
+        $this->assertFalse($this->checker()->fixRecordNameCase(11));
+        $this->assertFalse($this->checker()->fixRecordNameCase(13));
+        $this->assertFalse($this->checker()->fixRecordNameCase(15));
+        $this->assertSame(3, $this->rows('records', "name IN ('Www.example.com', 'Mail.example.com', 'Ftp.example.com')"));
+    }
+
+    public function testACopyThatDiffersOnlyInPriorityOrDisabledStateIsRefused(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'Example.com', 'MX', 'mx.example.net');
+        $this->db->exec("UPDATE records SET prio = 10 WHERE id = 11");
+        $this->record(12, 1, 'example.com', 'MX', 'mx.example.net');
+        $this->db->exec("UPDATE records SET prio = 20 WHERE id = 12");
+        $this->record(13, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(14, 1, 'www.example.com', 'A', '192.0.2.1');
+        $this->db->exec("UPDATE records SET disabled = 1 WHERE id = 14");
+
+        $this->assertFalse($this->checker()->fixRecordNameCase(11));
+        $this->assertFalse($this->checker()->fixRecordNameCase(13));
+        $this->assertSame(4, $this->rows('records'));
+    }
+
+    public function testEveryCommentOnTheRrsetFollowsARenamedRecord(): void
+    {
+        $this->commentTables();
+        $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (1, 1, 'WWW.example.com', 'A', 'mine'), (2, 1, 'www.example.com', 'A', 'other')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('11', 1)");
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'www.example.com', 'A', '192.0.2.2');
+
+        $this->assertTrue($this->checker()->fixRecordNameCase(11));
+
+        $this->assertSame([[1, 'www.example.com'], [2, 'www.example.com']], $this->db->query('SELECT id, name FROM comments ORDER BY id')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame([['11', 1]], $this->db->query('SELECT record_id, comment_id FROM record_comment_links')->fetchAll(PDO::FETCH_NUM));
+    }
+
+    public function testADeletedCopyHandsItsCommentToATwinThatHasNone(): void
+    {
+        $this->commentTables();
+        $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (1, 1, 'WWW.example.com', 'A', 'web')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('11', 1)");
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(13, 1, 'www.example.com', 'A', '192.0.2.1');
+
+        $this->assertTrue($this->checker()->fixRecordNameCase(11));
+
+        $this->assertSame([[13]], $this->db->query('SELECT id FROM records')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame([['13', 1]], $this->db->query('SELECT record_id, comment_id FROM record_comment_links')->fetchAll(PDO::FETCH_NUM));
+        $this->assertSame([[1, 'www.example.com']], $this->db->query('SELECT id, name FROM comments')->fetchAll(PDO::FETCH_NUM));
+    }
+
+    public function testEmptyNonTerminalsPairOnlyWithEachOther(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES
+            (11, 1, 'Sub.example.com', NULL, NULL, NULL, NULL), (12, 1, 'sub.example.com', 'CNAME', 'host.example.net', 3600, 0),
+            (13, 1, 'Ent.example.com', NULL, NULL, NULL, NULL), (14, 1, 'ent.example.com', NULL, NULL, NULL, NULL)");
+
+        $this->assertTrue($this->checker()->fixRecordNameCase(11));
+        $this->assertTrue($this->checker()->fixRecordNameCase(13));
+
+        $this->assertSame([[11, 'sub.example.com'], [12, 'sub.example.com'], [14, 'ent.example.com']], $this->db->query('SELECT id, name FROM records ORDER BY id')->fetchAll(PDO::FETCH_NUM));
+    }
+
+    public function testPostgresqlBooleanStringsCompareByValue(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'www.example.com', 'A', '192.0.2.1');
+        // As PostgreSQL returns a boolean column: 'f' is false, not a non-empty string
+        $this->db->exec("UPDATE records SET disabled = 'f' WHERE id = 11");
+
+        $this->assertTrue($this->checker()->fixRecordNameCase(11));
+        $this->assertSame([[12]], $this->db->query('SELECT id FROM records')->fetchAll(PDO::FETCH_NUM));
     }
 }

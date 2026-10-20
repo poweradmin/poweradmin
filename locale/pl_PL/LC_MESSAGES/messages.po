@@ -16479,3 +16479,42 @@ msgstr "Jednocześnie można dodać maksymalnie %d wierszy."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nie dodano żadnych rekordów, ponieważ formularz miał więcej pól, niż przyjmuje serwer. Dodawaj mniej wierszy naraz."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Nazwy rekordów z wielkimi literami"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Wszystkie nazwy rekordów są zapisane małymi literami"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d rekordów ma wielkie litery w nazwie"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Zmienić nazwy wszystkich wymienionych rekordów na małe litery?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Nazwa rekordu zmieniona na małe litery"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Nie udało się zmienić nazwy rekordu na małe litery"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Brak nazw rekordów do zmiany na małe litery"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Zmieniono na małe litery nazwy %d rekordów"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Zmieniono %d nazw rekordów; %d nie powiodło się"

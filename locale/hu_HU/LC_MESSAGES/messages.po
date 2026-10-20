@@ -16498,3 +16498,42 @@ msgstr "Egyszerre legfeljebb %d sor adható hozzá."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Egyetlen rekord sem lett hozzáadva, mert az űrlapon több mező volt, mint amennyit a kiszolgáló elfogad. Adjon hozzá egyszerre kevesebb sort."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Nagybetűket tartalmazó rekordnevek"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Minden rekordnév kisbetűvel van tárolva"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d rekord nevében nagybetű van"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Kisbetűssé alakítja az összes felsorolt rekord nevét?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "A rekord neve kisbetűssé alakítva"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Nem sikerült kisbetűssé alakítani a rekord nevét"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nincs kisbetűssé alakítandó rekordnév"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "%d rekord neve kisbetűssé alakítva"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "%d rekordnév átalakítva; %d sikertelen"

@@ -16122,3 +16122,42 @@ msgstr "Kerralla voi lisätä enintään %d riviä."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Tietueita ei lisätty, koska lomakkeessa oli enemmän kenttiä kuin palvelin hyväksyy. Lisää vähemmän rivejä kerralla."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Tietueiden nimet, joissa on isoja kirjaimia"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Kaikki tietueiden nimet on tallennettu pienillä kirjaimilla"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d tietueen nimessä on isoja kirjaimia"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Muutetaanko kaikkien lueteltujen tietueiden nimet pieniksi kirjaimiksi?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Tietueen nimi muutettiin pieniksi kirjaimiksi"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Tietueen nimen muuttaminen pieniksi kirjaimiksi epäonnistui"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Ei pieniksi kirjaimiksi muutettavia tietueiden nimiä"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "%d tietueen nimet muutettiin pieniksi kirjaimiksi"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Muutettiin %d tietueen nimeä; %d epäonnistui"

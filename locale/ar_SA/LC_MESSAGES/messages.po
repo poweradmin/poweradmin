@@ -16044,3 +16044,42 @@ msgstr "يمكن إضافة %d صف كحد أقصى في المرة الواحد
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "لم تتم إضافة أي سجلات لأن النموذج احتوى على حقول أكثر مما يقبله الخادم. أضف صفوفًا أقل في كل مرة."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "أسماء السجلات التي تحتوي على أحرف كبيرة"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "جميع أسماء السجلات مخزنة بأحرف صغيرة"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d سجل يحتوي اسمه على أحرف كبيرة"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "هل تريد تحويل أسماء جميع السجلات المدرجة إلى أحرف صغيرة؟"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "تم تحويل اسم السجل إلى أحرف صغيرة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "تعذر تحويل اسم السجل إلى أحرف صغيرة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "لا توجد أسماء سجلات لتحويلها إلى أحرف صغيرة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "تم تحويل اسم %d سجل إلى أحرف صغيرة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "تم تحويل %d اسم سجل إلى أحرف صغيرة؛ فشل %d"

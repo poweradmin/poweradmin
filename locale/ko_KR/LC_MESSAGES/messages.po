@@ -16096,3 +16096,42 @@ msgstr "한 번에 최대 %d개 행을 추가할 수 있습니다."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "양식의 필드 수가 서버가 허용하는 수보다 많아 레코드가 추가되지 않았습니다. 한 번에 더 적은 행을 추가하세요."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "대문자가 포함된 레코드 이름"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "모든 레코드 이름이 소문자로 저장되어 있습니다"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d개 레코드의 이름에 대문자가 있습니다"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "나열된 모든 레코드 이름을 소문자로 바꾸시겠습니까?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "레코드 이름을 소문자로 바꾸었습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "레코드 이름을 소문자로 바꾸지 못했습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "소문자로 바꿀 레코드 이름이 없습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "레코드 %d개의 이름을 소문자로 바꾸었습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "레코드 이름 %d개를 소문자로 바꾸었습니다. %d개 실패"

@@ -16378,3 +16378,42 @@ msgstr "Vienu metu galima pridėti ne daugiau kaip %d eilučių."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nepridėtas nė vienas įrašas, nes formoje buvo daugiau laukų, nei priima serveris. Pridėkite mažiau eilučių vienu metu."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Įrašų pavadinimai su didžiosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Visi įrašų pavadinimai saugomi mažosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d įrašų pavadinimuose yra didžiųjų raidžių"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Ar pakeisti visų išvardytų įrašų pavadinimus mažosiomis raidėmis?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Įrašo pavadinimas pakeistas mažosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Nepavyko pakeisti įrašo pavadinimo mažosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nėra įrašų pavadinimų, kuriuos reikėtų pakeisti mažosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "%d įrašų pavadinimai pakeisti mažosiomis raidėmis"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Pakeista %d įrašų pavadinimų; %d nepavyko"

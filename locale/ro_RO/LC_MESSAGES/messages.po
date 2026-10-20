@@ -16814,3 +16814,42 @@ msgstr "Se pot adăuga cel mult %d rânduri odată."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nu a fost adăugată nicio înregistrare deoarece formularul avea mai multe câmpuri decât acceptă serverul. Adăugați mai puține rânduri odată."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Nume de înregistrări cu majuscule"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Toate numele înregistrărilor sunt stocate cu litere mici"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d înregistrări au majuscule în nume"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Convertiți în litere mici numele tuturor înregistrărilor listate?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Numele înregistrării a fost convertit în litere mici"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Conversia numelui înregistrării în litere mici a eșuat"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nu există nume de înregistrări de convertit în litere mici"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Numele a %d înregistrări au fost convertite în litere mici"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Au fost convertite %d nume de înregistrări; %d au eșuat"

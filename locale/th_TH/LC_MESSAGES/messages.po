@@ -15596,3 +15596,42 @@ msgstr "เพิ่มได้สูงสุด %d แถวต่อคร�
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "ไม่มีการเพิ่มเรกคอร์ด เนื่องจากแบบฟอร์มมีฟิลด์มากกว่าที่เซิร์ฟเวอร์ยอมรับ โปรดเพิ่มแถวให้น้อยลงในแต่ละครั้ง"
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "ชื่อเรกคอร์ดที่มีตัวพิมพ์ใหญ่"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "ชื่อเรกคอร์ดทั้งหมดถูกจัดเก็บเป็นตัวพิมพ์เล็ก"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "มี %d เรกคอร์ดที่ชื่อมีตัวพิมพ์ใหญ่"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "แปลงชื่อของเรกคอร์ดทั้งหมดในรายการเป็นตัวพิมพ์เล็กหรือไม่"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "แปลงชื่อเรกคอร์ดเป็นตัวพิมพ์เล็กแล้ว"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "ไม่สามารถแปลงชื่อเรกคอร์ดเป็นตัวพิมพ์เล็กได้"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "ไม่มีชื่อเรกคอร์ดที่ต้องแปลงเป็นตัวพิมพ์เล็ก"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "แปลงชื่อของ %d เรกคอร์ดเป็นตัวพิมพ์เล็กแล้ว"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "แปลงชื่อเรกคอร์ด %d รายการแล้ว ล้มเหลว %d รายการ"

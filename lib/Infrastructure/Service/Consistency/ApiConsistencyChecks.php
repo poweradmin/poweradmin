@@ -163,6 +163,22 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         return $this->caseReport($this->backend->getZones());
     }
 
+    /** Records sit behind the PowerDNS API in this mode, which this check cannot read or rewrite. */
+    public function checkRecordNamesInLowercase(): array
+    {
+        return ConsistencyReport::allClear(_('All record names are stored in lowercase'));
+    }
+
+    public function fixRecordNameCase(int $recordId): bool
+    {
+        return false;
+    }
+
+    public function fixAllRecordNamesCase(): array
+    {
+        return ['fixed' => 0, 'failed' => 0];
+    }
+
     public function checkSlaveZonesHaveMasters(): array
     {
         return $this->masterReport($this->backend->getZones());
@@ -205,6 +221,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'zone_names_differing_in_case' => $this->caseReport($zones),
+            'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->masterReport($zones),
             'records_belong_to_zones' => $this->checkRecordsBelongToZones(),
             'duplicate_soa_records' => $this->duplicateSoaReport($zones),

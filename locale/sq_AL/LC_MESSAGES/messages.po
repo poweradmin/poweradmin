@@ -16648,3 +16648,42 @@ msgstr "Mund të shtohen më së shumti %d rreshta njëherësh."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nuk u shtua asnjë regjistrim sepse formulari kishte më shumë fusha nga sa pranon serveri. Shtoni më pak rreshta njëherësh."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Emra regjistrimesh me shkronja të mëdha"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Të gjithë emrat e regjistrimeve ruhen me shkronja të vogla"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d regjistrime kanë shkronja të mëdha në emër"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "T'i ktheni në shkronja të vogla emrat e të gjitha regjistrimeve të listuara?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Emri i regjistrimit u kthye në shkronja të vogla"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Kthimi i emrit të regjistrimit në shkronja të vogla dështoi"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Nuk ka emra regjistrimesh për t'u kthyer në shkronja të vogla"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Emrat e %d regjistrimeve u kthyen në shkronja të vogla"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "U kthyen %d emra regjistrimesh; %d dështuan"

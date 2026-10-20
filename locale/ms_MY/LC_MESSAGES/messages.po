@@ -16434,3 +16434,42 @@ msgstr "Paling banyak %d baris boleh ditambah pada satu masa."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Tiada rekod ditambah kerana borang mempunyai lebih banyak medan daripada yang diterima oleh pelayan. Tambah lebih sedikit baris pada satu masa."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Nama rekod dengan huruf besar"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Semua nama rekod disimpan dalam huruf kecil"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d rekod mempunyai huruf besar dalam namanya"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Tukar nama semua rekod yang disenaraikan kepada huruf kecil?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Nama rekod ditukar kepada huruf kecil"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Gagal menukar nama rekod kepada huruf kecil"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Tiada nama rekod untuk ditukar kepada huruf kecil"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Nama %d rekod ditukar kepada huruf kecil"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "%d nama rekod ditukar; %d gagal"

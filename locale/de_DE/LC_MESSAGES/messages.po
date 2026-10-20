@@ -16684,3 +16684,42 @@ msgstr "Es können höchstens %d Zeilen auf einmal hinzugefügt werden."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Es wurden keine Einträge hinzugefügt, weil das Formular mehr Felder enthielt, als der Server annimmt. Fügen Sie weniger Zeilen auf einmal hinzu."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Eintragsnamen mit Großbuchstaben"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Alle Eintragsnamen sind in Kleinbuchstaben gespeichert"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d Einträge haben Großbuchstaben im Namen"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Die Namen aller aufgeführten Einträge in Kleinbuchstaben umwandeln?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Eintragsname in Kleinbuchstaben umgewandelt"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Eintragsname konnte nicht in Kleinbuchstaben umgewandelt werden"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Keine Eintragsnamen in Kleinbuchstaben umzuwandeln"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Namen von %d Einträgen in Kleinbuchstaben umgewandelt"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "%d Eintragsnamen umgewandelt; %d fehlgeschlagen"

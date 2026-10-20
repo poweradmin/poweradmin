@@ -16861,3 +16861,42 @@ msgstr "Μπορούν να προστεθούν το πολύ %d γραμμές
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Δεν προστέθηκαν εγγραφές επειδή η φόρμα είχε περισσότερα πεδία από όσα δέχεται ο διακομιστής. Προσθέστε λιγότερες γραμμές τη φορά."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Ονόματα εγγραφών με κεφαλαία γράμματα"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Όλα τα ονόματα εγγραφών είναι αποθηκευμένα με πεζά γράμματα"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d εγγραφές έχουν κεφαλαία γράμματα στο όνομά τους"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Μετατροπή των ονομάτων όλων των εγγραφών της λίστας σε πεζά;"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Το όνομα της εγγραφής μετατράπηκε σε πεζά"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Αποτυχία μετατροπής του ονόματος της εγγραφής σε πεζά"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Δεν υπάρχουν ονόματα εγγραφών για μετατροπή σε πεζά"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Τα ονόματα %d εγγραφών μετατράπηκαν σε πεζά"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Μετατράπηκαν %d ονόματα εγγραφών· %d απέτυχαν"

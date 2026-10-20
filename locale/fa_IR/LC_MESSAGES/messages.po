@@ -16194,3 +16194,42 @@ msgstr "حداکثر %d ردیف را می‌توان در هر بار اضاف�
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "هیچ رکوردی اضافه نشد زیرا فرم بیش از تعداد فیلدهایی که سرور می‌پذیرد فیلد داشت. هر بار ردیف‌های کمتری اضافه کنید."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "نام رکوردهای دارای حروف بزرگ"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "همه نام‌های رکورد با حروف کوچک ذخیره شده‌اند"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d رکورد در نام خود حروف بزرگ دارند"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "نام همه رکوردهای فهرست‌شده به حروف کوچک تبدیل شود؟"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "نام رکورد به حروف کوچک تبدیل شد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "تبدیل نام رکورد به حروف کوچک ناموفق بود"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "هیچ نام رکوردی برای تبدیل به حروف کوچک وجود ندارد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "نام %d رکورد به حروف کوچک تبدیل شد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "%d نام رکورد تبدیل شد؛ %d ناموفق بود"

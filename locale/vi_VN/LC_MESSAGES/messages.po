@@ -16238,3 +16238,42 @@ msgstr "Có thể thêm tối đa %d dòng mỗi lần."
 #: lib/Application/Controller/Record/AddRecordController.php:256
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Không có bản ghi nào được thêm vì biểu mẫu có nhiều trường hơn mức máy chủ chấp nhận. Hãy thêm ít dòng hơn mỗi lần."
+
+#: templates/default/database_consistency.html:283
+msgid "Record Names With Uppercase Letters"
+msgstr "Tên bản ghi có chữ hoa"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:177
+msgid "All record names are stored in lowercase"
+msgstr "Tất cả tên bản ghi đều được lưu bằng chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:179
+#, php-format
+msgid "%d records have uppercase letters in their name"
+msgstr "%d bản ghi có chữ hoa trong tên"
+
+#: templates/default/database_consistency.html:292
+msgid "Lowercase the names of all listed records?"
+msgstr "Chuyển tên của tất cả bản ghi được liệt kê thành chữ thường?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Record name lowercased"
+msgstr "Đã chuyển tên bản ghi thành chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to lowercase the record name"
+msgstr "Không thể chuyển tên bản ghi thành chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:122
+msgid "No record names to lowercase"
+msgstr "Không có tên bản ghi nào cần chuyển thành chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+#, php-format
+msgid "Lowercased the name of %d records"
+msgstr "Đã chuyển tên của %d bản ghi thành chữ thường"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Lowercased %d record names; %d failed"
+msgstr "Đã chuyển %d tên bản ghi; %d thất bại"
