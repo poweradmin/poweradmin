@@ -88,14 +88,25 @@ class WhoisController extends BaseController
                 $domain = DnsIdnService::toPunycode($domain);
             }
         } elseif (isset($this->getRequest()['id'])) {
-            $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
+            $domain = $this->visibleZoneName((int)$this->getRequest()['id']);
         } elseif (isset($this->getRequest()['zone_id'])) {
-            $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
+            $domain = $this->visibleZoneName((int)$this->getRequest()['zone_id']);
         }
 
         return $domain;
+    }
+
+    /**
+     * The zone's name, or '' when the user may not view the zone, so the page never names a foreign zone.
+     */
+    private function visibleZoneName(int $zoneId): string
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        if ($userId === null || !$this->moduleServices()->permissionService()->canViewZone($userId, $zoneId)) {
+            return '';
+        }
+
+        return $this->domainRepository()->getDomainNameById($zoneId) ?? '';
     }
 
     private function performWhoisLookup(string $domain): array

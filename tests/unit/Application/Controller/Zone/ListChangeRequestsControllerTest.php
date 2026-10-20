@@ -177,6 +177,21 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $this->assertSame(['zoneIds' => []], $this->listedWith);
         $this->assertSame('all', $this->output->rendered[0][1]['status_filter']);
+        $this->assertNull($this->output->rendered[0][1]['zone_name']);
+    }
+
+    public function testTheBreadcrumbNamesAZoneTheUserMaySee(): void
+    {
+        $this->reviewer(true);
+        $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
+        $this->permissions->method('canViewZone')->with(self::USER_ID, 42)->willReturn(true);
+        $domains = $this->createMock(\Poweradmin\Domain\Repository\DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->willReturn('example.com');
+        $this->factory->method('domainRepository')->willReturn($domains);
+
+        $this->makeController(true, ['zone_id' => '42'])->run();
+
+        $this->assertSame('example.com', $this->output->rendered[0][1]['zone_name']);
     }
 
     public function testAGlobalApproverWithOwnEditRightsReviewsOnlyOwnedZones(): void

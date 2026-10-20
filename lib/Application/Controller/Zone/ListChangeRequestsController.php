@@ -86,7 +86,8 @@ class ListChangeRequestsController extends BaseController
         $requests = $repository->list($filters, $offset, $rowsPerPage);
 
         $zoneName = null;
-        if ($zoneId !== null) {
+        // The breadcrumb names the zone only for a user who may see it
+        if ($zoneId !== null && $this->services()->permissionService()->canViewZone($userId, $zoneId)) {
             $domainName = $this->services()->domainRepository()->getDomainNameById($zoneId);
             $zoneName = $domainName !== null ? DnsIdnService::toUtf8($domainName) : null;
         }

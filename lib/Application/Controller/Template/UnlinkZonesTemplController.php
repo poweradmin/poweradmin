@@ -41,7 +41,7 @@ class UnlinkZonesTemplController extends BaseController
 
         if ($this->isPost()) {
             $zone_ids = $this->httpRequest->getPostParam('zone_ids', []);
-            $template_id = filter_input(INPUT_POST, 'template_id', FILTER_VALIDATE_INT);
+            $template_id = filter_var($this->httpRequest->getPostParam('template_id'), FILTER_VALIDATE_INT);
 
             if (empty($zone_ids)) {
                 $this->showError(_('No zones selected.'));
@@ -123,8 +123,12 @@ class UnlinkZonesTemplController extends BaseController
 
     private function showConfirmation(array $zone_ids, int $template_id): void
     {
-        // Validate and filter zone IDs
-        $valid_zone_ids = array_filter(array_map('intval', $zone_ids));
+        // Only zones the unlink step would accept, so the page never names a foreign zone
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $valid_zone_ids = array_values(array_filter(
+            array_map('intval', $zone_ids),
+            fn(int $zone_id): bool => $zone_id > 0 && ($perm_godlike || $this->isZoneOwner($zone_id))
+        ));
 
         if (empty($valid_zone_ids)) {
             $this->showError(_('No valid zones selected.'));
