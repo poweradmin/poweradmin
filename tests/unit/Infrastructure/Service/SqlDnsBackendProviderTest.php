@@ -137,7 +137,7 @@ class SqlDnsBackendProviderTest extends TestCase
         $db->exec("INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'other.org', 'NATIVE'), (3, 'alpha.net', 'SLAVE')");
         $db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES
             (10, 1, 'www.example.com', 'A', '192.0.2.1', 3600, 0),
-            (11, 1, 'WWW.example.com', 'TXT', 'hello', 3600, 0),
+            (11, 1, 'www.example.com', 'TXT', 'hello', 3600, 0),
             (12, 1, 'mail.example.com', 'MX', 'www.example.com', 3600, 10),
             (13, 2, 'www.example.com', 'CNAME', 'other.org', 3600, 0),
             (14, 2, 'ent.other.org', NULL, '', 0, 0),

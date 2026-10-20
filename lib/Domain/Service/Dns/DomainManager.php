@@ -406,7 +406,7 @@ final class DomainManager implements DomainManagerInterface
             }
 
             // A template name without [ZONE] is relative to the zone, like a form entry
-            $name = DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue($r["name"], $domain), $domain);
+            $name = strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue($r["name"], $domain), $domain));
             $recordType = $r["type"];
             $content = $this->placeholders->parseTemplateValue($r["content"], $domain, $recordType);
             $ttl = $r["ttl"] ?: $dns_ttl;

@@ -353,7 +353,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
         return $stmt->execute([
             'domain_id' => $zoneId,
-            'name' => $zoneName,
+            'name' => strtolower($zoneName),
             'content' => $this->defaultSoa->content(),
             'ttl' => $this->defaultSoa->ttl(),
         ]);

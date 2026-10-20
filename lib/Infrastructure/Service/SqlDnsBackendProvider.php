@@ -319,7 +319,8 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
         $stmt = $this->db->prepare("INSERT INTO $recordsTable (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
         $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        // Stored lowercase whoever writes: PowerDNS serves only lowercase names, and the name lookups rely on it
+        $stmt->bindValue(':name', strtolower($name), PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->bindValue(':content', $content, PDO::PARAM_STR);
         $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
@@ -335,7 +336,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
         $stmt = $this->db->prepare("INSERT INTO $recordsTable (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
         $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':name', strtolower($name), PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->bindValue(':content', $content, PDO::PARAM_STR);
         $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
@@ -367,7 +368,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
                      VALUES (:domain_id, :name, :type, :content, :ttl, :prio, :disabled)"
                 );
                 $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-                $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+                $stmt->bindValue(':name', strtolower($name), PDO::PARAM_STR);
                 $stmt->bindValue(':type', $type, PDO::PARAM_STR);
                 $stmt->bindValue(':content', $content, PDO::PARAM_STR);
                 $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
@@ -408,7 +409,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("UPDATE $recordsTable SET name = ?, type = ?, content = ?, ttl = ?, prio = ?, disabled = ? WHERE id = ?");
-        $stmt->execute([$name, $type, $content, $ttl, $prio, $disabled, $recordId]);
+        $stmt->execute([strtolower($name), $type, $content, $ttl, $prio, $disabled, $recordId]);
 
         return true;
     }
@@ -602,7 +603,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
             "SELECT COUNT(*) FROM $recordsTable
              WHERE domain_id = :did AND name = :name AND type = :type AND content = :content"
         );
-        $stmt->execute([':did' => $domainId, ':name' => $name, ':type' => $type, ':content' => $content]);
+        $stmt->execute([':did' => $domainId, ':name' => strtolower($name), ':type' => $type, ':content' => $content]);
         return (int)$stmt->fetchColumn() > 0;
     }
 
@@ -628,13 +629,13 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
-        // LOWER() on both sides rather than a pre-lowercased comparison, so the
-        // match stays case-insensitive on PostgreSQL too
+        // Names are stored lowercase (PowerDNS only serves lowercase names), so lowering
+        // the input keeps the match case-insensitive and lets the name index serve it
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
                   FROM $recordsTable
-                  WHERE domain_id = :did AND LOWER(name) = LOWER(:name)
+                  WHERE domain_id = :did AND name = :name
                     AND type IS NOT NULL AND type != ''";
-        $params = [':did' => $domainId, ':name' => rtrim($name, '.')];
+        $params = [':did' => $domainId, ':name' => strtolower(rtrim($name, '.'))];
 
         if ($type !== null) {
             $query .= " AND type = :type";
@@ -649,7 +650,8 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
     public function findRecordsByName(string $name, ?string $type = null): array
     {
-        return $this->findRecords('LOWER(name) = LOWER(:value)', rtrim($name, '.'), $type);
+        // Lowercased here rather than LOWER(name), which would scan every record
+        return $this->findRecords('name = :value', strtolower(rtrim($name, '.')), $type);
     }
 
     public function findRecordsByContent(string $content, ?string $type = null): array

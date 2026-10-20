@@ -251,7 +251,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
                   AND content = :content");
         $stmt->execute([
             ':domain_id' => $domain_id,
-            ':name' => $name,
+            ':name' => strtolower($name),
             ':type' => $type,
             ':content' => $content
         ]);
@@ -342,15 +342,15 @@ final class SqlRecordRepository implements RecordRepositoryInterface
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        // LOWER() on both sides rather than a pre-lowercased comparison, so the
-        // match stays case-insensitive on PostgreSQL too
+        // Names are stored lowercase (PowerDNS only serves lowercase names), so lowering
+        // the input keeps the match case-insensitive and lets the name index serve it
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
                   FROM $records_table
                   WHERE domain_id = :domain_id
-                  AND LOWER(name) = LOWER(:name)
+                  AND name = :name
                   AND type IS NOT NULL AND type != ''";
 
-        $params = [':domain_id' => $domainId, ':name' => rtrim($name, '.')];
+        $params = [':domain_id' => $domainId, ':name' => strtolower(rtrim($name, '.'))];
 
         if ($type !== null) {
             $query .= " AND type = :type";

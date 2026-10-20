@@ -216,7 +216,7 @@ class ZoneTemplateApplier
             }
 
             // A template name without [ZONE] is relative to the zone, like a form entry
-            $name = DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain);
+            $name = strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain));
             $ttl = (int) ($record['ttl'] ?: $defaultTtl);
             $prio = intval($record['prio']);
 

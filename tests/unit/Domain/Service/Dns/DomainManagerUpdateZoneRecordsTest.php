@@ -187,6 +187,29 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
+    public function testAMixedCaseTemplateNameIsWrittenAndLoggedLowercase(): void
+    {
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->seedTemplateRecords([['WWW.[ZONE]', 'A', '192.0.2.10', 0, 0], ['Mail', 'A', '192.0.2.11', 0, 0]]);
+        $this->backend = $this->sqlBackend();
+        $checked = [];
+        $this->backend->method('recordExists')->willReturnCallback(function (int $zoneId, string $name) use (&$checked): bool {
+            $checked[] = $name;
+            return false;
+        });
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name) use (&$written): int {
+            $written[] = $name;
+            return 600 + count($written);
+        });
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+
+        $this->assertSame(['mail.old.example', 'www.old.example'], $checked);
+        $this->assertSame(['mail.old.example', 'www.old.example'], $written);
+        $this->assertSame(['mail.old.example', 'www.old.example'], array_column($this->loggedCreates, 'name'));
+    }
+
     public function testSwitchingTemplatesLeavesThePreviousTemplateRecordsInPlace(): void
     {
         $this->seedZone(self::OLD_TEMPLATE_ID);
