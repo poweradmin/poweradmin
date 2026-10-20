@@ -21,7 +21,7 @@
  */
 
 // Doctum configuration for the class reference (composer docs:reference). Source links
-// point at develop; the docs site build overrides the output path through the env vars.
+// point at master; the docs site build overrides the output path through the env vars.
 
 use Doctum\Doctum;
 use Doctum\RemoteRepository\GitHubRemoteRepository;
@@ -35,20 +35,20 @@ $files = Finder::create()
 require_once __DIR__ . '/lib/Version.php';
 
 // The footer records what the pages were generated from, since the published
-// site is rebuilt from develop on a schedule of its own.
+// site is rebuilt from master on a schedule of its own.
 $commit = !function_exists('shell_exec') ? '' : trim((string)shell_exec('git -C ' . escapeshellarg(__DIR__) . ' rev-parse --short HEAD 2>/dev/null'));
 $footer = [
     'href' => $commit !== '' ? 'https://github.com/poweradmin/poweradmin/commit/' . $commit : '',
     'rel' => 'noreferrer',
     'target' => '_blank',
-    'before_text' => sprintf('Poweradmin %s, develop branch,', Poweradmin\Version::VERSION),
+    'before_text' => sprintf('Poweradmin %s, master branch,', Poweradmin\Version::VERSION),
     'link_text' => $commit !== '' ? 'commit ' . $commit . ',' : '',
     'after_text' => 'built ' . gmdate('Y-m-d H:i') . ' UTC.',
 ];
 
 return new Doctum($files, [
     'title' => 'Poweradmin class reference',
-    'versions' => 'develop',
+    'versions' => 'master',
     'theme' => 'poweradmin',
     'template_dirs' => [__DIR__ . '/.doctum/theme'],
     'footer_link' => $footer,
