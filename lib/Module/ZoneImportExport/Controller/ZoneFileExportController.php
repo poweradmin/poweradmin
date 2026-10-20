@@ -25,6 +25,7 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * GET /zones/{id}/export/zonefile - downloads the zone in BIND format, from the API or the records table.
@@ -97,7 +98,7 @@ class ZoneFileExportController extends BaseController
 
         try {
             $serverName = $this->getConfig()->get('pdns_api', 'server_name', 'localhost');
-            $url = rtrim($apiUrl, '/') . "/api/v1/servers/" . urlencode($serverName) . "/zones/" . urlencode($zone_name . ".") . "/export";
+            $url = rtrim($apiUrl, '/') . "/api/v1/servers/" . urlencode($serverName) . "/zones/" . DnsHelper::powerdnsZoneId($zone_name . ".") . "/export";
 
             $options = [
                 'http' => [

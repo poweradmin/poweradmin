@@ -137,7 +137,7 @@ class PowerdnsApiClientTest extends TestCase
     public function testCreateZoneKeyPostsTheKeyAndReturnsWhatPowerDnsCreated(): void
     {
         $this->mockHttpClient->expects($this->once())->method('makeRequest')
-            ->with('POST', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa./cryptokeys', [
+            ->with('POST', '/api/v1/servers/localhost/zones/0=2F26.1.168.192.in-addr.arpa./cryptokeys', [
                 'keytype' => 'ksk', 'bits' => 256, 'algorithm' => 'ecdsa256', 'active' => true,
             ])
             ->willReturn(['responseCode' => 201, 'data' => [
@@ -357,7 +357,7 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient
             ->expects($this->once())
             ->method('makeRequest')
-            ->with('PUT', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa.')
+            ->with('PUT', '/api/v1/servers/localhost/zones/0=2F26.1.168.192.in-addr.arpa.')
             ->willReturn(['responseCode' => 204, 'data' => []]);
 
         $result = $this->apiClient->secureZone($zone);
@@ -387,7 +387,7 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient
             ->expects($this->once())
             ->method('makeRequest')
-            ->with('GET', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa./cryptokeys')
+            ->with('GET', '/api/v1/servers/localhost/zones/0=2F26.1.168.192.in-addr.arpa./cryptokeys')
             ->willReturn($apiResponse);
 
         $keys = $this->apiClient->getZoneKeys($zone);
@@ -402,7 +402,7 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient
             ->expects($this->once())
             ->method('makeRequest')
-            ->with('GET', '/api/v1/servers/localhost/zones/128%2F25.0.168.192.in-addr.arpa.')
+            ->with('GET', '/api/v1/servers/localhost/zones/128=2F25.0.168.192.in-addr.arpa.')
             ->willReturn(['responseCode' => 200, 'data' => ['dnssec' => true]]);
 
         $result = $this->apiClient->isZoneSecured($zone);
@@ -417,12 +417,45 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient
             ->expects($this->once())
             ->method('makeRequest')
-            ->with('DELETE', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa.')
+            ->with('DELETE', '/api/v1/servers/localhost/zones/0=2F26.1.168.192.in-addr.arpa.')
             ->willReturn(['responseCode' => 204, 'data' => []]);
 
         $result = $this->apiClient->deleteZone($zone);
 
         $this->assertTrue($result);
+    }
+
+    public function testRectifyZoneAddressesClasslessReverseZoneByZoneId(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/0=2F26.2.0.192.in-addr.arpa./rectify')
+            ->willReturn(['responseCode' => 200, 'data' => ['result' => 'Rectified']]);
+
+        $this->assertTrue($this->apiClient->rectifyZone(new Zone('0/26.2.0.192.in-addr.arpa.')));
+    }
+
+    public function testDeleteZoneAddressesRootZoneByZoneId(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('DELETE', '/api/v1/servers/localhost/zones/=2E')
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $this->assertTrue($this->apiClient->deleteZone(new Zone('.')));
+    }
+
+    public function testRemoveZoneFromViewAddressesTheZoneByZoneId(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('DELETE', '/api/v1/servers/localhost/views/trusted/0=2F26.2.0.192.in-addr.arpa..trusted')
+            ->willReturn(['responseCode' => 204, 'data' => []]);
+
+        $this->assertTrue($this->apiClient->removeZoneFromView('trusted', '0/26.2.0.192.in-addr.arpa..trusted'));
     }
 
     public function testGetZoneMetadataReturnsMetadataArray(): void

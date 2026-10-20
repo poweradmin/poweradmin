@@ -137,6 +137,23 @@ class DnsHelper
     }
 
     /**
+     * The id PowerDNS gives a zone in API paths: every byte other than a letter, digit,
+     * dot or hyphen becomes "=XX". Unlike %2F, it survives a proxy that decodes the path.
+     */
+    public static function powerdnsZoneId(string $zoneName): string
+    {
+        if ($zoneName === '.') {
+            return '=2E';
+        }
+
+        return preg_replace_callback(
+            '/[^A-Za-z0-9.-]/',
+            static fn(array $m): string => sprintf('=%02X', ord($m[0])),
+            $zoneName
+        ) ?? $zoneName;
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts

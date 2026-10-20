@@ -193,7 +193,7 @@ class PowerdnsApiClientExtendedTest extends TestCase
     {
         $this->mockHttpClient->expects($this->once())
             ->method('makeRequest')
-            ->with('PATCH', '/api/v1/servers/localhost/zones/0%2F26.1.168.192.in-addr.arpa.', $this->anything())
+            ->with('PATCH', '/api/v1/servers/localhost/zones/0=2F26.1.168.192.in-addr.arpa.', $this->anything())
             ->willReturn(['responseCode' => 204, 'data' => []]);
 
         $result = $this->apiClient->patchZoneRRsets('0/26.1.168.192.in-addr.arpa.', []);
