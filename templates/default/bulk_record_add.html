@@ -26,7 +26,7 @@
                             <small class="text-muted">(.{{ zone_name }})</small>
                             {% endif %}
                         </label>
-                        <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
+                        <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if records_text %}{{ records_text }}{% elseif failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
                         <small class="form-text text-muted">{% trans %}Format: name,type,content,priority,ttl,comment (one record per line){% endtrans %}</small>
                         <small class="form-text text-muted d-block">{% trans %}Example: www,A,192.168.1.1,0,3600,web server{% endtrans %}</small>

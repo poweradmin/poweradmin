@@ -14962,3 +14962,8 @@ msgstr "การอัปเกรดรหัสโซนไม่สามา
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "เรกคอร์ด DNSSEC ที่ถูกข้าม: %d รายการ PowerDNS สร้างเรกคอร์ด RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS และ CDNSKEY เองเมื่อลงนามโซน"
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "เพิ่มได้สูงสุด %d เรกคอร์ดต่อการเพิ่มแบบกลุ่ม โปรดแบ่งรายการ"

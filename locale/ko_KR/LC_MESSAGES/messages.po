@@ -15455,3 +15455,8 @@ msgstr "이 키의 존 제한을 존 ID 업그레이드에서 옮기지 못해 �
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "건너뛴 DNSSEC 레코드: %d개. PowerDNS는 영역에 서명할 때 RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS 및 CDNSKEY 레코드를 직접 생성합니다."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "일괄 추가는 최대 %d개 레코드까지 가능합니다. 목록을 나누어 주세요."

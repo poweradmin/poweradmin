@@ -15842,3 +15842,8 @@ msgstr "A kulcs zónakorlátozását a zóna ID-k frissítése nem tudta átvinn
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Kihagyott DNSSEC rekordok: %d. A PowerDNS a zóna aláírásakor maga hozza létre az RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS és CDNSKEY rekordokat."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Tömeges hozzáadásonként legfeljebb %d rekord; ossza fel a listát."

@@ -15808,3 +15808,8 @@ msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehing
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Rekaman DNSSEC yang dilewati: %d. PowerDNS membuat sendiri rekaman RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS, dan CDNSKEY saat menandatangani zona."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Paling banyak %d rekaman per penambahan massal; bagi daftarnya."

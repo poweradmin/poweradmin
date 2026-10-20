@@ -15994,3 +15994,8 @@ msgstr "Kufizimi i zonës për këtë çelës nuk mund të bartej nga përditës
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Regjistrime DNSSEC të kapërcyera: %d. PowerDNS i krijon vetë regjistrimet RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS dhe CDNSKEY kur nënshkruan zonën."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Më së shumti %d regjistrime për shtim në masë; ndajeni listën."

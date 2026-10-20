@@ -15569,3 +15569,8 @@ msgstr "Ograničenje zone ovog ključa nije se moglo prenijeti nadogradnjom ID-o
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Preskočeni DNSSEC zapisi: %d. PowerDNS sam stvara RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS i CDNSKEY zapise kada potpisuje zonu."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Najviše %d zapisa po skupnom dodavanju; podijelite popis."

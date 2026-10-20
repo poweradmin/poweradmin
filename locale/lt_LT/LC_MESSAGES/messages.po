@@ -15721,3 +15721,8 @@ msgstr "Šio rakto zonos apribojimo nepavyko perkelti atnaujinant zonų ID, tod�
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Praleisti DNSSEC įrašai: %d. PowerDNS pats sukuria RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS ir CDNSKEY įrašus, kai pasirašo zoną."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Vienu masiniu pridėjimu galima pridėti ne daugiau kaip %d įrašų; padalykite sąrašą."

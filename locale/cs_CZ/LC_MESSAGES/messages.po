@@ -15626,3 +15626,8 @@ msgstr "Omezení tohoto klíče na zónu nebylo možné při upgradu ID zón př
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Přeskočené záznamy DNSSEC: %d. PowerDNS vytváří záznamy RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS a CDNSKEY sám při podepisování zóny."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Hromadně lze přidat nejvýše %d záznamů; rozdělte seznam."

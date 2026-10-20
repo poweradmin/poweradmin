@@ -15857,3 +15857,8 @@ msgstr "De zonebeperking van deze sleutel kon niet worden overgenomen bij de upg
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Overgeslagen DNSSEC-records: %d. PowerDNS maakt RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- en CDNSKEY-records zelf aan wanneer het de zone ondertekent."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Maximaal %d records per bulktoevoeging; splits de lijst."

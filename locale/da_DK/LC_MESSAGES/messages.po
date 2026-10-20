@@ -15688,3 +15688,8 @@ msgstr "Denne nøgles zonebegrænsning kunne ikke overføres af opgraderingen af
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "DNSSEC-records sprunget over: %d. PowerDNS opretter selv RRSIG-, NSEC-, NSEC3-, NSEC3PARAM-, DNSKEY-, CDS- og CDNSKEY-records, når den signerer zonen."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Højst %d records pr. massetilføjelse; del listen op."

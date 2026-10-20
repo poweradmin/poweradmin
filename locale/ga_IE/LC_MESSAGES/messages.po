@@ -16084,3 +16084,8 @@ msgstr "Níorbh fhéidir srian crios na heochrach seo a thabhairt anonn le huasg
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Taifid DNSSEC scipeáilte: %d. Cruthaíonn PowerDNS taifid RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS agus CDNSKEY é féin nuair a shíníonn sé an crios."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "%d taifead ar a mhéad in aghaidh an chur leis mórchóir; roinn an liosta."

@@ -15906,3 +15906,8 @@ msgstr "A restrição de zona desta chave não pôde ser mantida na atualizaçã
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Registos DNSSEC ignorados: %d. O PowerDNS cria os registos RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS e CDNSKEY por si próprio ao assinar a zona."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "No máximo %d registos por adição em massa; divida a lista."

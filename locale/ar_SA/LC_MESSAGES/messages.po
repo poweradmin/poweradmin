@@ -15375,3 +15375,8 @@ msgstr "تعذّر نقل قيد المنطقة لهذا المفتاح أثنا
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "سجلات DNSSEC التي تم تخطيها: %d. ينشئ PowerDNS سجلات RRSIG وNSEC وNSEC3 وNSEC3PARAM وDNSKEY وCDS وCDNSKEY بنفسه عند توقيع المنطقة."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "يمكن إضافة %d سجل كحد أقصى في الإضافة المجمعة؛ قسّم القائمة."

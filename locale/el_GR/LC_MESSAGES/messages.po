@@ -16198,3 +16198,8 @@ msgstr "Ο περιορισμός ζώνης αυτού του κλειδιού 
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Εγγραφές DNSSEC που παραλείφθηκαν: %d. Το PowerDNS δημιουργεί μόνο του τις εγγραφές RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS και CDNSKEY όταν υπογράφει τη ζώνη."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Το πολύ %d εγγραφές ανά μαζική προσθήκη· χωρίστε τη λίστα."

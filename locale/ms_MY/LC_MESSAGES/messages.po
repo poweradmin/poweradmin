@@ -15782,3 +15782,8 @@ msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "Rekod DNSSEC yang dilangkau: %d. PowerDNS mencipta sendiri rekod RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS dan CDNSKEY apabila ia menandatangani zon."
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Paling banyak %d rekod bagi setiap penambahan pukal; pecahkan senarai."

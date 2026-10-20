@@ -15401,3 +15401,8 @@ msgstr "ज़ोन आईडी अपग्रेड इस कुंजी �
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "छोड़े गए DNSSEC रिकॉर्ड: %d। ज़ोन पर हस्ताक्षर करते समय PowerDNS RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS और CDNSKEY रिकॉर्ड स्वयं बनाता है।"
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "एक बार में अधिकतम %d रिकॉर्ड जोड़े जा सकते हैं; सूची को विभाजित करें।"

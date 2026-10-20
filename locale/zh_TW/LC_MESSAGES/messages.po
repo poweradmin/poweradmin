@@ -14640,3 +14640,8 @@ msgstr "區域 ID 升級未能沿用此金鑰的區域限制，因此它不符�
 #, php-format
 msgid "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PARAM, DNSKEY, CDS and CDNSKEY records itself when it signs the zone."
 msgstr "已跳過的 DNSSEC 記錄：%d 筆。PowerDNS 在簽署區域時會自行建立 RRSIG、NSEC、NSEC3、NSEC3PARAM、DNSKEY、CDS 和 CDNSKEY 記錄。"
+
+#: lib/Application/Controller/BulkRecordAddController.php:152
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "每次大量新增最多 %d 筆記錄；請分割清單。"
