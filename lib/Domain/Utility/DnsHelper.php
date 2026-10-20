@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -43,6 +43,23 @@ class DnsHelper
         }
 
         return false;
+    }
+
+    /**
+     * The id PowerDNS gives a zone in API paths: every byte other than a letter, digit,
+     * dot or hyphen becomes "=XX". Unlike %2F, it survives a proxy that decodes the path.
+     */
+    public static function powerdnsZoneId(string $zoneName): string
+    {
+        if ($zoneName === '.') {
+            return '=2E';
+        }
+
+        return preg_replace_callback(
+            '/[^A-Za-z0-9.-]/',
+            static fn(array $m): string => sprintf('=%02X', ord($m[0])),
+            $zoneName
+        ) ?? $zoneName;
     }
 
     /**

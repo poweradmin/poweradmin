@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 
@@ -100,7 +101,7 @@ class ZoneFileExportController extends BaseController
 
         try {
             $serverName = $this->getConfig()->get('pdns_api', 'server_name', 'localhost');
-            $url = rtrim($apiUrl, '/') . "/api/v1/servers/" . urlencode($serverName) . "/zones/" . urlencode($zone_name . ".") . "/export";
+            $url = rtrim($apiUrl, '/') . "/api/v1/servers/" . urlencode($serverName) . "/zones/" . DnsHelper::powerdnsZoneId($zone_name . ".") . "/export";
 
             $context = stream_context_create([
                 'http' => [

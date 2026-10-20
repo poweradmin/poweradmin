@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Api;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -85,7 +86,7 @@ class PowerdnsApiClient
 
     private function buildZoneEndpoint(string $zoneName, string $suffix = ''): string
     {
-        return $this->buildEndpoint("/zones/" . rawurlencode($zoneName) . $suffix);
+        return $this->buildEndpoint("/zones/" . DnsHelper::powerdnsZoneId($zoneName) . $suffix);
     }
 
     /**
@@ -1090,7 +1091,7 @@ class PowerdnsApiClient
     public function removeZoneFromView(string $view, string $zoneName): bool
     {
         try {
-            $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view) . '/' . rawurlencode($zoneName));
+            $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view) . '/' . DnsHelper::powerdnsZoneId($zoneName));
             $response = $this->httpClient->makeRequest('DELETE', $endpoint);
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
