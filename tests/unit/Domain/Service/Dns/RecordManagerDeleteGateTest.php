@@ -35,7 +35,8 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * deleteRecord() resolves the acting user's edit level and zone ownership
- * before touching the record: no user means "none", edit-own needs the zone.
+ * before touching the record: no user means "none", edit-own needs the zone,
+ * and the zone type is only consulted once the user may edit the zone.
  */
 #[CoversClass(RecordManager::class)]
 class RecordManagerDeleteGateTest extends PermissionServiceTestCase
@@ -48,7 +49,7 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
      * @param string[] $callerPermissions
      * @param int[] $ownedZones
      */
-    private function manager(?int $actingUserId, array $callerPermissions, array $ownedZones): RecordManager
+    private function manager(?int $actingUserId, array $callerPermissions, array $ownedZones, string $zoneType = 'MASTER'): RecordManager
     {
         $reflection = new ReflectionClass(RecordManager::class);
         $manager = $reflection->newInstanceWithoutConstructor();
@@ -65,7 +66,7 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
         $repositories->method('createRecordRepository')->willReturn($records);
 
         $domains = $this->createMock(DomainRepositoryInterface::class);
-        $domains->method('getDomainType')->willReturn('MASTER');
+        $domains->method('getDomainType')->willReturn($zoneType);
         $domains->method('getDomainNameById')->willReturn('example.com');
 
         foreach (
@@ -101,5 +102,20 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
         $this->assertSame('You do not have the permission to delete this record.', $result->message);
+    }
+
+    public function testAForeignReadOnlyZoneGetsThePermissionRefusalNotItsType(): void
+    {
+        $result = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_CONTENT_EDIT_OWN], [99], 'SLAVE')->deleteRecord(self::RECORD_ID);
+
+        $this->assertSame('You do not have the permission to delete this record.', $result->message);
+    }
+
+    public function testAnOwnedReadOnlyZoneIsStillRefusedAsReadOnly(): void
+    {
+        $result = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_CONTENT_EDIT_OWN], [self::ZONE_ID], 'SLAVE')->deleteRecord(self::RECORD_ID);
+
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+        $this->assertSame('You cannot delete records from a read-only zone.', $result->message);
     }
 }

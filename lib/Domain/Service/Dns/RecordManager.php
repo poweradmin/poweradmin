@@ -557,13 +557,14 @@ class RecordManager implements RecordManagerInterface
         }
         $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
+        // Permission first, so a refusal never tells a foreign zone's type
+        if (!ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+            return RecordWriteResult::forbidden(_("You do not have the permission to delete this record."));
+        }
+
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
             return RecordWriteResult::forbidden(_("You cannot delete records from a read-only zone."));
-        }
-
-        if (!ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
-            return RecordWriteResult::forbidden(_("You do not have the permission to delete this record."));
         }
 
         $zone = $this->domainRepository->getDomainNameById($record['zid']);

@@ -183,13 +183,31 @@ class RecordDeletionServiceTest extends TestCase
         $this->assertSame([self::ZONE_ID, 9], $finalized);
     }
 
-    public function testMissingAndZonelessRowsAreSkippedSilently(): void
+    public function testMissingAndZonelessRowsGetTheRefusalAForeignRecordGets(): void
     {
         $this->selection();
         $this->zoneOf[2] = 0;
         $this->recordManager->expects($this->once())->method('deleteRecord')->with(1, false)->willReturn(RecordWriteResult::ok());
 
-        $outcome = $this->service()->deleteMany([1, 2, 99], false);
+        $outcome = $this->service()->deleteMany([1, 2, 99, 99], false);
+
+        $this->assertSame(1, $outcome->deletedCount);
+        // The repeated missing id is refused once, like a repeated foreign one
+        $refusal = 'You do not have the permission to delete this record.';
+        $this->assertSame([$refusal, $refusal], $outcome->errors);
+    }
+
+    public function testARowTheBatchAlreadyRemovedAndARepeatedIdAreSkippedSilently(): void
+    {
+        $this->selection();
+        $this->reverse->method('deleteReverseRecord')->willReturnCallback(function (): bool {
+            unset($this->rows[3]);
+            return true;
+        });
+        $this->recordManager = $this->createMock(RecordManagerInterface::class);
+        $this->recordManager->expects($this->once())->method('deleteRecord')->with(1, false)->willReturn(RecordWriteResult::ok());
+
+        $outcome = $this->service()->deleteMany([1, 3, 1], true);
 
         $this->assertSame(1, $outcome->deletedCount);
         $this->assertSame([], $outcome->errors);

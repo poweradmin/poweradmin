@@ -96,11 +96,27 @@ class RecordDeletionService
         $errors = [];
         $affectedZones = [];
 
+        // Resolved up front: a row missing before the batch gets the refusal a foreign record
+        // gets, so the errors never tell which ids exist; one removed by this batch is skipped
+        $selection = [];
+        $seen = [];
         foreach ($recordIds as $recordId) {
+            if (isset($seen[(string)$recordId])) {
+                continue;
+            }
+            $seen[(string)$recordId] = true;
             $record = $this->recordRepository->getRecordFromId($recordId);
             $zoneId = $record === null ? 0 : $this->recordRepository->getZoneIdFromRecordId($recordId);
-            // 0 means the record no longer exists
             if ($record === null || $zoneId <= 0) {
+                $errors[] = _("You do not have the permission to delete this record.");
+                continue;
+            }
+            $selection[(string)$recordId] = [$recordId, $record, $zoneId];
+        }
+
+        foreach ($selection as [$recordId, $record, $zoneId]) {
+            // An earlier row's PTR companion may have taken this one already
+            if ($this->recordRepository->getRecordFromId($recordId) === null) {
                 continue;
             }
 
