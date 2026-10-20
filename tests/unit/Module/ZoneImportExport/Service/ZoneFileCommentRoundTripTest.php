@@ -60,6 +60,26 @@ class ZoneFileCommentRoundTripTest extends TestCase
         ], $parsed->getRecords())));
     }
 
+    public function testDisabledRecordsInASnapshotReadBackAsDisabled(): void
+    {
+        $records = [
+            ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 1 7200 3600 1209600 3600', 'ttl' => 3600, 'prio' => 0, 'disabled' => false],
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => false, 'comment' => 'live'],
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => true, 'comment' => "parked\nuntil spring"],
+            ['name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => true],
+            ['name' => 'example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all; x"', 'ttl' => 3600, 'prio' => 0, 'disabled' => true],
+        ];
+
+        $zoneFile = (new BindZoneFileGenerator())->generate('example.com', array_map(RecordRow::fromRow(...), $records), true, true);
+        $parsed = (new BindZoneFileParser())->parse($zoneFile);
+
+        $this->assertSame([], $parsed->getWarnings());
+        $this->assertSame(
+            ['example.com|SOA|0', 'example.com|MX|1', 'www.example.com|A|0|live', "www.example.com|A|1|parked\nuntil spring", 'example.com|TXT|1'],
+            array_map(fn($r): string => rtrim(implode('|', [$r->name, $r->type, (int)$r->disabled, $r->comment]), '|'), $parsed->getRecords())
+        );
+    }
+
     /**
      * @param list<array<string, mixed>> $records
      * @return list<string>

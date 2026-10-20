@@ -2232,4 +2232,95 @@ ZONE;
         $this->assertSame('', $result->getRecords()[0]->comment);
         $this->assertSame(['Poweradmin comment at the end of the file is not followed by a record, skipped'], $result->getWarnings());
     }
+
+    public function testDisabledMarkerLineIsParsedAsADisabledRecord(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "www 3600 IN A 192.0.2.1\n"
+            . "; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2 ; trailing note\n"
+            . "; poweradmin-disabled: txt 3600 IN TXT \"a;b\"\n"
+            . "; poweradmin-disabled: example.com. 3600 IN MX 10 mail.example.com.\n"
+            . "api 3600 IN A 192.0.2.3\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertSame([], $result->getWarnings());
+        $this->assertSame(
+            ['www.example.com|A|192.0.2.1|0|0', 'off.example.com|A|192.0.2.2|0|1', 'txt.example.com|TXT|"a;b"|0|1', 'example.com|MX|mail.example.com|10|1', 'api.example.com|A|192.0.2.3|0|0'],
+            array_map(fn(ParsedRecord $r): string => implode('|', [$r->name, $r->type, $r->content, $r->priority, (int)$r->disabled]), $records)
+        );
+        $this->assertSame(300, $records[1]->ttl);
+    }
+
+    public function testPoweradminCommentAttachesToTheFollowingDisabledRecord(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; poweradmin-comment: parked\n"
+            . "; poweradmin-comment: until spring\n"
+            . "; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\n"
+            . "www 3600 IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertSame([], $result->getWarnings());
+        $this->assertSame("parked\nuntil spring", $records[0]->comment);
+        $this->assertTrue($records[0]->disabled);
+        $this->assertSame('', $records[1]->comment);
+        $this->assertFalse($records[1]->disabled);
+    }
+
+    public function testMalformedDisabledLineWarnsLikeAMalformedRecordLine(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; poweradmin-comment: lost with its record\n"
+            . "; poweradmin-disabled: off.example.com. 300 IN BOGUS 192.0.2.2\n"
+            . "; poweradmin-disabled:\n"
+            . "; poweradmin-disabled: \$TTL 300\n"
+            . "bad.example.com. 300 IN BOGUS 192.0.2.3\n"
+            . "www 3600 IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertCount(1, $result->getRecords());
+        $this->assertSame('', $result->getRecords()[0]->comment);
+        $this->assertFalse($result->getRecords()[0]->disabled);
+        $this->assertSame([
+            'Line 3: Could not parse record, skipped',
+            'Line 4: Could not parse record, skipped',
+            'Line 5: Could not parse record, skipped',
+            'Line 6: Could not parse record, skipped',
+        ], $result->getWarnings());
+    }
+
+    public function testCommentThatOnlyResemblesTheDisabledMarkerIsIgnored(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; off.example.com. 300 IN A 192.0.2.2\n"
+            . ";   poweradmin-disabled: spaced.example.com. 300 IN A 192.0.2.3\n"
+            . "; poweradmin-disabled-not: other.example.com. 300 IN A 192.0.2.4\n"
+            . "www 3600 IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertSame([], $result->getWarnings());
+        $this->assertSame(['www.example.com'], array_map(fn(ParsedRecord $r): string => $r->name, $result->getRecords()));
+        $this->assertFalse($result->getRecords()[0]->disabled);
+    }
+
+    public function testDisabledLineDoesNotDisturbAFollowingMultilineRecord(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\n"
+            . "@ IN SOA ns1.example.com. admin.example.com. (\n"
+            . "    1 3600 900 1209600 86400 )\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertSame([], $result->getWarnings());
+        $this->assertSame(['A', 'SOA'], array_map(fn(ParsedRecord $r): string => $r->type, $records));
+        $this->assertSame([true, false], array_map(fn(ParsedRecord $r): bool => $r->disabled, $records));
+    }
 }

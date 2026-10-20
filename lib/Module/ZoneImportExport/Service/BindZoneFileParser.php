@@ -61,16 +61,18 @@ final class BindZoneFileParser
         $pendingComment = null;
 
         foreach ($lines as $lineNum => $line) {
-            $commentLine = $this->markerCommentLine($line);
+            $commentLine = $this->markerCommentLine($line, BindZoneFileGenerator::COMMENT_MARKER);
             if ($commentLine !== null) {
                 $pendingComment = $pendingComment === null ? $commentLine : $pendingComment . "\n" . $commentLine;
                 continue;
             }
 
-            $line = $this->stripComment($line);
+            $disabledLine = $this->markerCommentLine($line, BindZoneFileGenerator::DISABLED_MARKER);
+            $line = $this->stripComment($disabledLine ?? $line);
             $trimmed = trim($line);
 
-            if ($trimmed === '' || $trimmed[0] === ';') {
+            // A disabled marker always holds a record line, so a blank or directive one fails as a malformed record
+            if ($disabledLine === null && ($trimmed === '' || $trimmed[0] === ';')) {
                 // The export writes markers directly above their record, so anything in between orphans them
                 if ($pendingComment !== null) {
                     $warnings[] = sprintf('Line %d: Poweradmin comment not followed by a record, skipped', $lineNum + 1);
@@ -80,7 +82,7 @@ final class BindZoneFileParser
             }
 
             // Handle directives
-            if ($trimmed[0] === '$') {
+            if ($disabledLine === null && $trimmed[0] === '$') {
                 $parts = preg_split('/\s+/', $trimmed);
                 $directive = strtoupper($parts[0]);
 
@@ -118,6 +120,7 @@ final class BindZoneFileParser
                 $parsed->comment = $pendingComment;
             }
             $pendingComment = null;
+            $parsed->disabled = $disabledLine !== null;
 
             // Map Cloudflare TTL=1 (auto) to configured default
             if ($parsed->ttl === 1) {
@@ -243,17 +246,17 @@ final class BindZoneFileParser
     }
 
     /**
-     * The text of a Poweradmin comment line written by the zone file export, or null for any other line.
+     * The text after one of the marker prefixes the zone file export writes, or null for any other line.
      * Exactly one space after the marker is part of the format, so leading spaces of the text survive.
      */
-    private function markerCommentLine(string $line): ?string
+    private function markerCommentLine(string $line, string $marker): ?string
     {
         $line = ltrim($line, " \t");
-        if (!str_starts_with($line, BindZoneFileGenerator::COMMENT_MARKER)) {
+        if (!str_starts_with($line, $marker)) {
             return null;
         }
 
-        $text = rtrim(substr($line, strlen(BindZoneFileGenerator::COMMENT_MARKER)), "\r");
+        $text = rtrim(substr($line, strlen($marker)), "\r");
         return str_starts_with($text, ' ') ? substr($text, 1) : $text;
     }
 

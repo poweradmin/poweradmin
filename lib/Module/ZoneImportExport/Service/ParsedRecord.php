@@ -40,8 +40,10 @@ class ParsedRecord
     public int $priority;
     /** The Poweradmin comment the export wrote above this record, or '' */
     public string $comment;
+    /** Read from a disabled-record marker line, so the import creates the record disabled */
+    public bool $disabled;
 
-    public function __construct(string $name, int $ttl, string $type, string $content, int $priority = 0, string $comment = '')
+    public function __construct(string $name, int $ttl, string $type, string $content, int $priority = 0, string $comment = '', bool $disabled = false)
     {
         $this->name = $name;
         $this->ttl = $ttl;
@@ -49,6 +51,7 @@ class ParsedRecord
         $this->content = $content;
         $this->priority = $priority;
         $this->comment = $comment;
+        $this->disabled = $disabled;
     }
 
     public function isSignerGenerated(): bool

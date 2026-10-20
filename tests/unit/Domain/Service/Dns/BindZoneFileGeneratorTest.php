@@ -247,6 +247,78 @@ class BindZoneFileGeneratorTest extends TestCase
         $this->assertSame('', $this->generator->generate('example.com', $records, true));
     }
 
+    public function testSnapshotOptionWritesDisabledRecordsAsMarkedLinesInPlace(): void
+    {
+        $records = [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+            ['name' => 'off.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => 1],
+            ['name' => 'api.example.com', 'type' => 'A', 'content' => '192.0.2.3', 'ttl' => 3600, 'prio' => 0, 'disabled' => 'f'],
+            ['name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => 't'],
+        ];
+
+        $output = $this->generator->generate('example.com', $records, false, true);
+
+        $this->assertStringContainsString(
+            "; A Records\nwww.example.com. 3600 IN A 192.0.2.1\n; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\napi.example.com. 3600 IN A 192.0.2.3\n",
+            $output
+        );
+        $this->assertStringContainsString("; MX Records\n; poweradmin-disabled: example.com. 3600 IN MX 10 mail.example.com.\n", $output);
+    }
+
+    public function testSnapshotOptionLeavesAZoneWithoutDisabledRecordsUnchanged(): void
+    {
+        $records = [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'comment' => 'web'],
+        ];
+
+        $this->assertSame(
+            $this->withoutTimestamp($this->generator->generate('example.com', $records)),
+            $this->withoutTimestamp($this->generator->generate('example.com', $records, false, true))
+        );
+        $this->assertSame(
+            $this->withoutTimestamp($this->generator->generate('example.com', $records, true)),
+            $this->withoutTimestamp($this->generator->generate('example.com', $records, true, true))
+        );
+    }
+
+    public function testSnapshotOptionWritesTheZoneWhenEveryRecordIsDisabled(): void
+    {
+        $records = [
+            ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com admin.example.com 1 3600 900 1209600 86400', 'ttl' => 7200, 'prio' => 0, 'disabled' => true],
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 1],
+        ];
+
+        $output = $this->generator->generate('example.com', $records, false, true);
+
+        $this->assertStringContainsString("\$ORIGIN example.com.\n\$TTL 7200\n", $output);
+        $this->assertStringContainsString('; poweradmin-disabled: example.com. 7200 IN SOA ns1.example.com. admin.example.com. 1 3600 900 1209600 86400', $output);
+        $this->assertStringContainsString('; poweradmin-disabled: www.example.com. 3600 IN A 192.0.2.1', $output);
+        $this->assertSame('', $this->generator->generate('example.com', [], false, true));
+    }
+
+    public function testSnapshotOptionMarksDisabledRecordRows(): void
+    {
+        $row = static fn(string $content, bool $disabled): RecordRow => RecordRow::fromRow([
+            'id' => 1, 'domain_id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => $content,
+            'ttl' => 3600, 'prio' => 0, 'disabled' => $disabled,
+        ]);
+
+        $output = $this->generator->generate('example.com', [$row('192.0.2.1', false), $row('192.0.2.2', true)], false, true);
+
+        $this->assertStringContainsString("www.example.com. 3600 IN A 192.0.2.1\n; poweradmin-disabled: www.example.com. 3600 IN A 192.0.2.2\n", $output);
+    }
+
+    public function testCommentOfADisabledRecordSitsDirectlyAboveItsMarkerLine(): void
+    {
+        $records = [
+            ['name' => 'off.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 300, 'prio' => 0, 'disabled' => 1, 'comment' => 'parked'],
+        ];
+
+        $output = $this->generator->generate('example.com', $records, true, true);
+
+        $this->assertStringContainsString("; poweradmin-comment: parked\n; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\n", $output);
+    }
+
     private function withoutTimestamp(string $output): string
     {
         return preg_replace('/^;; Exported: .*$/m', '', $output);

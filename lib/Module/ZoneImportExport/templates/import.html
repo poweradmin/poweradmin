@@ -54,6 +54,9 @@
         {% if comment_count is defined and comment_count > 0 %}
         <span class="badge bg-secondary ms-2">{% trans %}Comments{% endtrans %}: {{ comment_count }}</span>
         {% endif %}
+        {% if disabled_count is defined and disabled_count > 0 %}
+        <span class="badge bg-danger ms-2">{% trans %}Disabled{% endtrans %}: {{ disabled_count }}</span>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if warnings is defined and warnings|length > 0 %}
@@ -90,7 +93,7 @@
                     {% for record in records %}
                     <tr>
                         <td><code>{{ record.name }}</code></td>
-                        <td><span class="badge {{ record_type_class(record.type) }}">{{ record.type }}</span></td>
+                        <td><span class="badge {{ record_type_class(record.type) }}">{{ record.type }}</span>{% if record.disabled is defined and record.disabled %} <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>{% endif %}</td>
                         <td class="text-break" style="max-width: 400px">{{ record.content }}</td>
                         <td>{{ record.ttl }}</td>
                         <td>{{ record.priority }}</td>

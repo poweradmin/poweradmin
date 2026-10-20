@@ -624,4 +624,31 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
         $this->assertSame([''], array_column($this->writes, 6));
     }
+
+    public function testPreviewCountsTheDisabledRecordsAndConfirmCreatesThemDisabled(): void
+    {
+        $this->commentsEnabled = true;
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload("\$ORIGIN example.com.\n\$TTL 3600\n"
+            . "; poweradmin-disabled: example.com. 3600 IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600\n"
+            . "www IN A 192.0.2.1\n"
+            . "; poweradmin-comment: parked\n"
+            . "; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\n");
+
+        $this->makeController()->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame(2, $params['record_count']);
+        $this->assertSame(1, $params['disabled_count']);
+        $this->assertSame([false, true], array_column($params['records'], 'disabled'));
+        $this->assertSame(['', 'parked'], array_column($params['records'], 'comment'));
+        $this->assertSame([false, true], array_column(json_decode($this->session->get(self::SESSION_KEY)['records'], true), 'disabled'));
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web', null], $this->writes[0]);
+        $this->assertSame([self::ZONE_ID, 'off.example.com', 'A', '192.0.2.2', 300, 0, 'parked', self::USERNAME, 1, 'web', null], $this->writes[1]);
+    }
 }

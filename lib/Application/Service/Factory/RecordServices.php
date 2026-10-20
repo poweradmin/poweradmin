@@ -242,7 +242,8 @@ final class RecordServices
     }
 
     /**
-     * The zone as a BIND zone file, or null when it has no enabled records.
+     * The zone as a BIND zone file, disabled records kept as marker lines, or null when it has no records.
+     * When the marker lines push the file past the stored size, the enabled records alone are kept.
      */
     private function zoneFileSnapshot(int $zoneId, string $zoneName): ?string
     {
@@ -251,7 +252,11 @@ final class RecordServices
             return null;
         }
 
-        $zoneFile = (new BindZoneFileGenerator())->generate($zoneName, $records);
+        $generator = new BindZoneFileGenerator();
+        $zoneFile = $generator->generate($zoneName, $records, keepDisabled: true);
+        if (strlen($zoneFile) > ZoneChangeRequestService::MAX_PAYLOAD_BYTES) {
+            $zoneFile = $generator->generate($zoneName, $records);
+        }
         return $zoneFile === '' ? null : $zoneFile;
     }
 

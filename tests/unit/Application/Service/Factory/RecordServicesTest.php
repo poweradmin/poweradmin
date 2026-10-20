@@ -97,4 +97,60 @@ class RecordServicesTest extends TestCase
 
         $this->assertSame($factory->recordRepository(), self::property($factory->recordManagerService(), 'recordRepository'));
     }
+
+    public function testDeletionSnapshotKeepsDisabledRecordsAsMarkedLines(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+        $db->exec('CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)');
+        $db->exec('CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER, ordername TEXT, auth INTEGER)');
+        $db->exec("INSERT INTO domains (id, name) VALUES (5, 'example.com')");
+        $db->exec("INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled, auth) VALUES
+            (5, 'www.example.com', 'A', '192.0.2.1', 3600, 0, 0, 1),
+            (5, 'off.example.com', 'A', '192.0.2.2', 300, 0, 1, 1),
+            (6, 'off.example.com', 'A', '192.0.2.3', 300, 0, 1, 1)");
+        $factory = new ControllerServiceFactory(
+            $db,
+            new FakeConfiguration(['database' => ['type' => 'sqlite'], 'dns' => ['backend' => 'sql']]),
+            new \Psr\Log\NullLogger(),
+            new ApiKeyActor(7, 'alice'),
+            new ArraySession()
+        );
+        $snapshot = self::property($factory->records()->zoneChangeRequestService(), 'zoneSnapshot');
+
+        $zoneFile = $snapshot(5, 'example.com');
+
+        $this->assertStringContainsString("www.example.com. 3600 IN A 192.0.2.1\n", $zoneFile);
+        $this->assertStringContainsString("; poweradmin-disabled: off.example.com. 300 IN A 192.0.2.2\n", $zoneFile);
+        $this->assertStringNotContainsString('192.0.2.3', $zoneFile);
+
+        $db->exec('UPDATE records SET disabled = 1');
+        $this->assertStringContainsString('; poweradmin-disabled: www.example.com. 3600 IN A 192.0.2.1', $snapshot(5, 'example.com'));
+        $this->assertNull($snapshot(9, 'empty.example.com'));
+    }
+
+    public function testDeletionSnapshotFallsBackToEnabledRecordsWhenTheMarkersDoNotFit(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+        $db->exec('CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)');
+        $db->exec('CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER, ordername TEXT, auth INTEGER)');
+        $db->exec("INSERT INTO domains (id, name) VALUES (5, 'example.com')");
+        $db->exec("INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled, auth) VALUES (5, 'www.example.com', 'A', '192.0.2.1', 3600, 0, 0, 1)");
+        $insert = $db->prepare("INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled, auth) VALUES (5, ?, 'TXT', ?, 3600, 0, 1, 1)");
+        for ($i = 0; $i < 300; $i++) {
+            $insert->execute(["off$i.example.com", '"' . str_repeat('x', 200) . '"']);
+        }
+        $factory = new ControllerServiceFactory(
+            $db,
+            new FakeConfiguration(['database' => ['type' => 'sqlite'], 'dns' => ['backend' => 'sql']]),
+            new \Psr\Log\NullLogger(),
+            new ApiKeyActor(7, 'alice'),
+            new ArraySession()
+        );
+        $snapshot = self::property($factory->records()->zoneChangeRequestService(), 'zoneSnapshot');
+
+        $zoneFile = $snapshot(5, 'example.com');
+
+        $this->assertStringContainsString("www.example.com. 3600 IN A 192.0.2.1\n", $zoneFile);
+        $this->assertStringNotContainsString('poweradmin-disabled', $zoneFile);
+    }
 }

@@ -216,6 +216,7 @@ class ZoneFileImportController extends BaseController
                 'ttl' => $r->ttl,
                 'priority' => $r->priority,
                 'comment' => $r->comment,
+                'disabled' => $r->disabled,
             ], $filteredRecords)),
             'warnings' => $parsed->getWarnings(),
             'filename' => $_FILES['zone_file']['name'],
@@ -233,6 +234,7 @@ class ZoneFileImportController extends BaseController
                 'ttl' => $record->ttl,
                 'priority' => $record->priority,
                 'comment' => $record->comment,
+                'disabled' => $record->disabled,
             ];
         }
 
@@ -241,6 +243,7 @@ class ZoneFileImportController extends BaseController
             'records' => $previewRecords,
             'record_count' => count($filteredRecords),
             'comment_count' => $commentCount,
+            'disabled_count' => count(array_filter($filteredRecords, fn($r) => $r->disabled)),
             'warnings' => $warnings,
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
@@ -447,7 +450,8 @@ class ZoneFileImportController extends BaseController
                 $record->ttl,
                 $record->priority,
                 $commentsEnabled ? (string)($record->comment ?? '') : '',
-                $userLogin
+                $userLogin,
+                !empty($record->disabled) ? 1 : 0
             );
 
             if ($result->success) {

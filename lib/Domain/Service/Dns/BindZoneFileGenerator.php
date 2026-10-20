@@ -33,15 +33,21 @@ class BindZoneFileGenerator
     /** Prefix of the comment lines that carry a record's Poweradmin comment; the importer reads them back */
     public const COMMENT_MARKER = '; poweradmin-comment:';
 
+    /** Prefix of the comment lines that carry a disabled record; the importer restores it as disabled */
+    public const DISABLED_MARKER = '; poweradmin-disabled:';
+
     /**
      * @param list<array<string, mixed>|RecordRow> $records The zone's records, as the listing returns them
      * @param bool $includeComments Write each record's comment as marker lines directly above it
-     * @return string The zone file, or '' when no enabled record is left
+     * @param bool $keepDisabled Write disabled records as marker lines instead of leaving them out
+     * @return string The zone file, or '' when no record is left to write
      */
-    public function generate(string $zoneName, array $records, bool $includeComments = false): string
+    public function generate(string $zoneName, array $records, bool $includeComments = false, bool $keepDisabled = false): string
     {
         // A zone file cannot mark a record disabled, so leave them out as PowerDNS's own export does
-        $records = array_values(array_filter($records, fn(array|RecordRow $record): bool => !$this->isDisabled($record)));
+        if (!$keepDisabled) {
+            $records = array_values(array_filter($records, fn(array|RecordRow $record): bool => !$this->isDisabled($record)));
+        }
         if ($records === []) {
             return '';
         }
@@ -91,7 +97,7 @@ class BindZoneFileGenerator
             $output[] = sprintf('; %s Records', $type);
             foreach ($grouped[$type] as $record) {
                 array_push($output, ...$this->commentLines($record, $includeComments));
-                $output[] = $this->formatRecord($record, $zoneName);
+                $output[] = $this->recordLine($record, $zoneName);
             }
             $output[] = '';
         }
@@ -101,7 +107,7 @@ class BindZoneFileGenerator
             $output[] = '; Other Records';
             foreach ($otherRecords as $record) {
                 array_push($output, ...$this->commentLines($record, $includeComments));
-                $output[] = $this->formatRecord($record, $zoneName);
+                $output[] = $this->recordLine($record, $zoneName);
             }
             $output[] = '';
         }
@@ -134,6 +140,17 @@ class BindZoneFileGenerator
 
         $lines = explode("\n", str_replace(["\r\n", "\r"], "\n", $comment));
         return array_map(static fn(string $line): string => $line === '' ? self::COMMENT_MARKER : self::COMMENT_MARKER . ' ' . $line, $lines);
+    }
+
+    /**
+     * Only a disabled record that survived the filter in generate() gets here with the flag set.
+     *
+     * @param array<string, mixed>|RecordRow $record
+     */
+    private function recordLine(array|RecordRow $record, string $zoneName): string
+    {
+        $line = $this->formatRecord($record, $zoneName);
+        return $this->isDisabled($record) ? self::DISABLED_MARKER . ' ' . $line : $line;
     }
 
     /**
