@@ -15380,3 +15380,12 @@ msgstr "سجلات DNSSEC التي تم تخطيها: %d. ينشئ PowerDNS سج
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "يمكن إضافة %d سجل كحد أقصى في الإضافة المجمعة؛ قسّم القائمة."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "يمكن إضافة %d صف كحد أقصى في المرة الواحدة."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "لم تتم إضافة أي سجلات لأن النموذج احتوى على حقول أكثر مما يقبله الخادم. أضف صفوفًا أقل في كل مرة."

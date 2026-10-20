@@ -15726,3 +15726,12 @@ msgstr "Praleisti DNSSEC įrašai: %d. PowerDNS pats sukuria RRSIG, NSEC, NSEC3,
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Vienu masiniu pridėjimu galima pridėti ne daugiau kaip %d įrašų; padalykite sąrašą."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Vienu metu galima pridėti ne daugiau kaip %d eilučių."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Nepridėtas nė vienas įrašas, nes formoje buvo daugiau laukų, nei priima serveris. Pridėkite mažiau eilučių vienu metu."

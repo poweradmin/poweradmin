@@ -15787,3 +15787,12 @@ msgstr "Rekod DNSSEC yang dilangkau: %d. PowerDNS mencipta sendiri rekod RRSIG, 
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Paling banyak %d rekod bagi setiap penambahan pukal; pecahkan senarai."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Paling banyak %d baris boleh ditambah pada satu masa."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Tiada rekod ditambah kerana borang mempunyai lebih banyak medan daripada yang diterima oleh pelayan. Tambah lebih sedikit baris pada satu masa."

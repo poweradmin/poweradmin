@@ -15999,3 +15999,12 @@ msgstr "Regjistrime DNSSEC të kapërcyera: %d. PowerDNS i krijon vetë regjistr
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Më së shumti %d regjistrime për shtim në masë; ndajeni listën."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Mund të shtohen më së shumti %d rreshta njëherësh."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Nuk u shtua asnjë regjistrim sepse formulari kishte më shumë fusha nga sa pranon serveri. Shtoni më pak rreshta njëherësh."

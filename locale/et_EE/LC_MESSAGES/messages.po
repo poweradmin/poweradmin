@@ -15361,3 +15361,12 @@ msgstr "Vahele jäetud DNSSEC-kirjed: %d. PowerDNS loob RRSIG-, NSEC-, NSEC3-, N
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Ühe hulgilisamisega saab lisada kuni %d kirjet; jagage loend osadeks."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Korraga saab lisada kuni %d rida."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Ühtegi kirjet ei lisatud, sest vormil oli rohkem välju, kui server vastu võtab. Lisage korraga vähem ridu."

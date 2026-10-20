@@ -15591,3 +15591,12 @@ msgstr "Preskočené záznamy DNSSEC: %d. PowerDNS vytvára záznamy RRSIG, NSEC
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Hromadne možno pridať najviac %d záznamov; rozdeľte zoznam."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Naraz možno pridať najviac %d riadkov."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Neboli pridané žiadne záznamy, pretože formulár mal viac polí, než server prijíma. Pridávajte menej riadkov naraz."

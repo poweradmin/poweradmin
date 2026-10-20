@@ -15462,3 +15462,12 @@ msgstr "Прескочени DNSSEC записи: %d. PowerDNS сам прави
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Највише %d записа по групном додавању; поделите листу."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Одједном се може додати највише %d редова."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Ниједан запис није додат јер је образац имао више поља него што сервер прихвата. Додајте мање редова одједном."

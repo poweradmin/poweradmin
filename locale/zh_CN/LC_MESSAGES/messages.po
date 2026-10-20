@@ -14629,3 +14629,12 @@ msgstr "已跳过的 DNSSEC 记录：%d 条。PowerDNS 在签名区域时会自�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "每次批量添加最多 %d 条记录；请拆分列表。"
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "一次最多可添加 %d 行。"
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "未添加任何记录，因为表单的字段数超过了服务器允许的上限。请每次添加更少的行。"

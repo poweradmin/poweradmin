@@ -15693,3 +15693,12 @@ msgstr "DNSSEC-records sprunget over: %d. PowerDNS opretter selv RRSIG-, NSEC-, 
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Højst %d records pr. massetilføjelse; del listen op."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Der kan højst tilføjes %d rækker ad gangen."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Ingen records blev tilføjet, fordi formularen havde flere felter, end serveren accepterer. Tilføj færre rækker ad gangen."

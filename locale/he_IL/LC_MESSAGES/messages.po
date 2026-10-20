@@ -15227,3 +15227,12 @@ msgstr "רשומות DNSSEC שדולגו: %d. PowerDNS יוצר בעצמו רש�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "לכל היותר %d רשומות בכל הוספה מרובה; פצלו את הרשימה."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "ניתן להוסיף לכל היותר %d שורות בכל פעם."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "לא נוספו רשומות כי בטופס היו יותר שדות ממה שהשרת מקבל. הוסיפו פחות שורות בכל פעם."

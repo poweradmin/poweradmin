@@ -15547,3 +15547,12 @@ msgstr "رکوردهای DNSSEC نادیده گرفته شده: %d. PowerDNS ر�
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "حداکثر %d رکورد در هر افزودن گروهی؛ فهرست را تقسیم کنید."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "حداکثر %d ردیف را می‌توان در هر بار اضافه کرد."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "هیچ رکوردی اضافه نشد زیرا فرم بیش از تعداد فیلدهایی که سرور می‌پذیرد فیلد داشت. هر بار ردیف‌های کمتری اضافه کنید."

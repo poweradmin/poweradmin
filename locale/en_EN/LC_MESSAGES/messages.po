@@ -15585,3 +15585,12 @@ msgstr "DNSSEC records skipped: %d. PowerDNS creates RRSIG, NSEC, NSEC3, NSEC3PA
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "At most %d records per bulk add; split the list."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "At most %d rows can be added at a time."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."

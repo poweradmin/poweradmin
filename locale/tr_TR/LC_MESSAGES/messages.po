@@ -15707,3 +15707,12 @@ msgstr "Atlanan DNSSEC kayıtları: %d. PowerDNS, bölgeyi imzalarken RRSIG, NSE
 #, php-format
 msgid "At most %d records per bulk add; split the list."
 msgstr "Toplu eklemede en fazla %d kayıt eklenebilir; listeyi bölün."
+
+#: lib/Application/Controller/AddRecordController.php:358
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Tek seferde en fazla %d satır eklenebilir."
+
+#: lib/Application/Controller/AddRecordController.php:488
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Formda sunucunun kabul ettiğinden fazla alan olduğu için hiçbir kayıt eklenmedi. Tek seferde daha az satır ekleyin."
