@@ -180,7 +180,8 @@
                     <tfoot>
                         <tr class="table-light">
                             <td colspan="{% if iface_record_comments %}9{% else %}8{% endif %}" class="text-end">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="addNewRecord()">
+                                <small id="rowLimitNotice" class="text-muted me-2 d-none">{{ row_limit_message }}</small>
+                                <button type="button" class="btn btn-secondary btn-sm" id="addRecordButton" onclick="addNewRecord()">
                                     <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add another record{% endtrans %}
                                 </button>
                             </td>
@@ -202,6 +203,8 @@
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                 </a>
             </div>
+            {# Last field of the form: when it is missing, PHP dropped fields past max_input_vars #}
+            <input type="hidden" name="form_complete" value="1">
         </form>
     </div>
 </div>
@@ -275,10 +278,26 @@
         });
     });
 
+    // Each row posts up to 8 fields, so this keeps the form under PHP's default max_input_vars of 1000
+    const MAX_RECORD_ROWS = {{ max_rows|json_encode|raw }};
+
+    function updateRowLimit() {
+        const atLimit = document.getElementById('recordsTableBody').querySelectorAll('.record-row').length >= MAX_RECORD_ROWS;
+        const addButton = document.getElementById('addRecordButton');
+        if (addButton) {
+            addButton.disabled = atLimit;
+        }
+        document.getElementById('rowLimitNotice')?.classList.toggle('d-none', !atLimit);
+    }
+
     function addNewRecord() {
         const tableBody = document.getElementById('recordsTableBody');
         const recordCount = tableBody.querySelectorAll('.record-row').length;
         const newRowIndex = recordCount;
+        if (recordCount >= MAX_RECORD_ROWS) {
+            updateRowLimit();
+            return;
+        }
 
         const firstRow = tableBody.querySelector('.record-row');
         const newRow = firstRow.cloneNode(true);
@@ -379,6 +398,8 @@
                 button.classList.remove('disabled');
             }
         });
+
+        updateRowLimit();
     }
 
     function updatePtrCheckboxVisibility(selectElement) {

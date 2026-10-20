@@ -16250,3 +16250,12 @@ msgstr "Høyst %d poster per massetillegg; del opp listen."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Ingen poster ble lagt til: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Høyst %d rader kan legges til om gangen."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Ingen poster ble lagt til fordi skjemaet hadde flere felt enn serveren godtar. Legg til færre rader om gangen."

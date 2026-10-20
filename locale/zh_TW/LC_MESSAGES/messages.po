@@ -15274,3 +15274,12 @@ msgstr "每次大量新增最多 %d 筆記錄；請分割清單。"
 #, php-format
 msgid "No records were added: %s"
 msgstr "未新增任何記錄：%s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "一次最多可新增 %d 列。"
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "未新增任何記錄，因為表單的欄位數超過伺服器允許的上限。請每次新增較少的列。"

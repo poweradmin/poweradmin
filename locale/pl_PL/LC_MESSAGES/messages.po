@@ -16470,3 +16470,12 @@ msgstr "Maksymalnie %d rekordów na jedno dodanie zbiorcze; podziel listę."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Nie dodano żadnych rekordów: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Jednocześnie można dodać maksymalnie %d wierszy."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Nie dodano żadnych rekordów, ponieważ formularz miał więcej pól, niż przyjmuje serwer. Dodawaj mniej wierszy naraz."

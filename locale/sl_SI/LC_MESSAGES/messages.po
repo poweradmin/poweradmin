@@ -16367,3 +16367,12 @@ msgstr "Največ %d zapisov na eno množično dodajanje; razdelite seznam."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Noben zapis ni bil dodan: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Hkrati je mogoče dodati največ %d vrstic."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Noben zapis ni bil dodan, ker je imel obrazec več polj, kot jih strežnik sprejme. Dodajajte manj vrstic hkrati."

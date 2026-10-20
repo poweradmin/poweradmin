@@ -16749,3 +16749,12 @@ msgstr "%d taifead ar a mhéad in aghaidh an chur leis mórchóir; roinn an lios
 #, php-format
 msgid "No records were added: %s"
 msgstr "Níor cuireadh aon taifead leis: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Is féidir %d ró ar a mhéad a chur leis ag an am céanna."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Níor cuireadh aon taifead leis mar go raibh níos mó réimsí san fhoirm ná mar a ghlacann an freastalaí. Cuir níos lú rónna leis ag an am céanna."

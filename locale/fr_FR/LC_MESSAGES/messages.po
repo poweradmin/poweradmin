@@ -16879,3 +16879,12 @@ msgstr "Au plus %d enregistrements par ajout en masse ; divisez la liste."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Aucun enregistrement n'a été ajouté : %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Au plus %d lignes peuvent être ajoutées à la fois."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Aucun enregistrement n'a été ajouté car le formulaire comportait plus de champs que le serveur n'en accepte. Ajoutez moins de lignes à la fois."

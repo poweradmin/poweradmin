@@ -16087,3 +16087,12 @@ msgstr "일괄 추가는 최대 %d개 레코드까지 가능합니다. 목록을
 #, php-format
 msgid "No records were added: %s"
 msgstr "레코드가 추가되지 않았습니다: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "한 번에 최대 %d개 행을 추가할 수 있습니다."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "양식의 필드 수가 서버가 허용하는 수보다 많아 레코드가 추가되지 않았습니다. 한 번에 더 적은 행을 추가하세요."

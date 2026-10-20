@@ -16113,3 +16113,12 @@ msgstr "Enintään %d tietuetta yhdellä joukkolisäyksellä; jaa luettelo osiin
 #, php-format
 msgid "No records were added: %s"
 msgstr "Tietueita ei lisätty: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Kerralla voi lisätä enintään %d riviä."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Tietueita ei lisätty, koska lomakkeessa oli enemmän kenttiä kuin palvelin hyväksyy. Lisää vähemmän rivejä kerralla."

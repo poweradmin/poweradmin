@@ -16185,3 +16185,12 @@ msgstr "حداکثر %d رکورد در هر افزودن گروهی؛ فهرس�
 #, php-format
 msgid "No records were added: %s"
 msgstr "هیچ رکوردی اضافه نشد: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "حداکثر %d ردیف را می‌توان در هر بار اضافه کرد."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "هیچ رکوردی اضافه نشد زیرا فرم بیش از تعداد فیلدهایی که سرور می‌پذیرد فیلد داشت. هر بار ردیف‌های کمتری اضافه کنید."

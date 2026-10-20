@@ -16038,3 +16038,12 @@ msgstr "एक बार में अधिकतम %d रिकॉर्ड �
 #, php-format
 msgid "No records were added: %s"
 msgstr "कोई रिकॉर्ड नहीं जोड़ा गया: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "एक बार में अधिकतम %d पंक्तियाँ जोड़ी जा सकती हैं।"
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "कोई रिकॉर्ड नहीं जोड़ा गया क्योंकि फ़ॉर्म में सर्वर द्वारा स्वीकार किए जाने से अधिक फ़ील्ड थे। एक बार में कम पंक्तियाँ जोड़ें।"

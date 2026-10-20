@@ -16235,3 +16235,12 @@ msgstr "Hromadne možno pridať najviac %d záznamov; rozdeľte zoznam."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Neboli pridané žiadne záznamy: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Naraz možno pridať najviac %d riadkov."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Neboli pridané žiadne záznamy, pretože formulár mal viac polí, než server prijíma. Pridávajte menej riadkov naraz."

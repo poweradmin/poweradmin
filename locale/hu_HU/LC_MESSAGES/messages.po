@@ -16489,3 +16489,12 @@ msgstr "Tömeges hozzáadásonként legfeljebb %d rekord; ossza fel a listát."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Egyetlen rekord sem lett hozzáadva: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Egyszerre legfeljebb %d sor adható hozzá."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Egyetlen rekord sem lett hozzáadva, mert az űrlapon több mező volt, mint amennyit a kiszolgáló elfogad. Adjon hozzá egyszerre kevesebb sort."

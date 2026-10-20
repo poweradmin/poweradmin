@@ -16229,3 +16229,12 @@ msgstr "Tối đa %d bản ghi cho mỗi lần thêm hàng loạt; hãy chia nh�
 #, php-format
 msgid "No records were added: %s"
 msgstr "Không có bản ghi nào được thêm: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Có thể thêm tối đa %d dòng mỗi lần."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Không có bản ghi nào được thêm vì biểu mẫu có nhiều trường hơn mức máy chủ chấp nhận. Hãy thêm ít dòng hơn mỗi lần."

@@ -16852,3 +16852,12 @@ msgstr "Το πολύ %d εγγραφές ανά μαζική προσθήκη·
 #, php-format
 msgid "No records were added: %s"
 msgstr "Δεν προστέθηκαν εγγραφές: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Μπορούν να προστεθούν το πολύ %d γραμμές τη φορά."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Δεν προστέθηκαν εγγραφές επειδή η φόρμα είχε περισσότερα πεδία από όσα δέχεται ο διακομιστής. Προσθέστε λιγότερες γραμμές τη φορά."

@@ -16035,3 +16035,12 @@ msgstr "يمكن إضافة %d سجل كحد أقصى في الإضافة الم
 #, php-format
 msgid "No records were added: %s"
 msgstr "لم تتم إضافة أي سجلات: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "يمكن إضافة %d صف كحد أقصى في المرة الواحدة."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "لم تتم إضافة أي سجلات لأن النموذج احتوى على حقول أكثر مما يقبله الخادم. أضف صفوفًا أقل في كل مرة."

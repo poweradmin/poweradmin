@@ -16369,3 +16369,12 @@ msgstr "Vienu masiniu pridėjimu galima pridėti ne daugiau kaip %d įrašų; pa
 #, php-format
 msgid "No records were added: %s"
 msgstr "Nepridėtas nė vienas įrašas: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "Vienu metu galima pridėti ne daugiau kaip %d eilučių."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Nepridėtas nė vienas įrašas, nes formoje buvo daugiau laukų, nei priima serveris. Pridėkite mažiau eilučių vienu metu."

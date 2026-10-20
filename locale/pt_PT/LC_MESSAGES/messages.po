@@ -16553,3 +16553,12 @@ msgstr "No máximo %d registos por adição em massa; divida a lista."
 #, php-format
 msgid "No records were added: %s"
 msgstr "Nenhum registo foi adicionado: %s"
+
+#: lib/Application/Controller/Record/AddRecordController.php:225
+#, php-format
+msgid "At most %d rows can be added at a time."
+msgstr "No máximo %d linhas podem ser adicionadas de cada vez."
+
+#: lib/Application/Controller/Record/AddRecordController.php:256
+msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
+msgstr "Nenhum registo foi adicionado porque o formulário tinha mais campos do que o servidor aceita. Adicione menos linhas de cada vez."

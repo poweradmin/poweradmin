@@ -484,7 +484,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
 
     public function testAnEmptyRecordListIsReportedThroughTheForm(): void
     {
-        $this->post(['multi_record_mode' => '1', 'records' => []]);
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => []]);
         $this->recordAdd->expects($this->never())->method('add');
 
         $halt = $this->haltOf($this->makeController());
@@ -497,9 +497,75 @@ class AddRecordControllerTest extends SeamControllerTestCase
         );
     }
 
+    public function testASubmitCutShortByMaxInputVarsAddsNothingAndKeepsTheRowsThatArrived(): void
+    {
+        // No form_complete: PHP dropped the trailing fields, so the rows below are not the whole list
+        $this->post(['multi_record_mode' => '1', 'records' => [
+            ['name' => 'www', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => '300', 'prio' => '0', 'reverse' => 'on'],
+            ['name' => 'mail', 'type' => 'A', 'content' => ['not', 'text']],
+        ]]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertCount(0, $this->addCalls);
+        $this->assertStringStartsWith('/zones/12/records/add?form_id=', $halt->target);
+        $formData = (new FormStateService($this->session))->getFormData(substr($halt->target, strlen('/zones/12/records/add?form_id=')));
+        $this->assertTrue($formData['error']);
+        $this->assertSame('No records were added because the form had more fields than the server accepts. Add fewer rows at a time.', $formData['errorMessage']);
+        $this->assertSame('www', $formData['name']);
+        $this->assertSame(['www', 'mail'], array_column($formData['saved_records'], 'name'));
+        $this->assertSame('', $formData['saved_records'][1]['content']);
+        $this->assertTrue($formData['saved_records'][0]['reverse']);
+    }
+
+    public function testTheRestoredRowsAreCappedAtTheRowLimit(): void
+    {
+        $rows = array_map(static fn(int $i): array => ['name' => "h$i", 'type' => 'A', 'content' => '192.0.2.1'], range(1, AddRecordController::MAX_ROWS + 20));
+        $this->post(['multi_record_mode' => '1', 'records' => $rows]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $formData = (new FormStateService($this->session))->getFormData(substr($halt->target, strlen('/zones/12/records/add?form_id=')));
+        $this->assertCount(AddRecordController::MAX_ROWS, $formData['saved_records']);
+        $this->assertCount(0, $this->addCalls);
+    }
+
+    public function testMoreRowsThanTheLimitAreRefusedWholeEvenWhenTheFormArrivedComplete(): void
+    {
+        $rows = array_map(static fn(int $i): array => ['name' => "h$i", 'type' => 'A', 'content' => '192.0.2.1'], range(1, AddRecordController::MAX_ROWS + 1));
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => $rows]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertCount(0, $this->addCalls);
+        $formData = (new FormStateService($this->session))->getFormData(substr($halt->target, strlen('/zones/12/records/add?form_id=')));
+        $this->assertSame(sprintf('At most %d rows can be added at a time.', AddRecordController::MAX_ROWS), $formData['errorMessage']);
+        $this->assertCount(AddRecordController::MAX_ROWS, $formData['saved_records']);
+    }
+
+    public function testExactlyTheRowLimitIsAccepted(): void
+    {
+        $rows = array_map(static fn(int $i): array => ['name' => "h$i", 'type' => 'A', 'content' => '192.0.2.1'], range(1, AddRecordController::MAX_ROWS));
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => $rows]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertCount(AddRecordController::MAX_ROWS, $this->addCalls);
+        $this->assertSame('/zones/12/edit', $halt->target);
+    }
+
+    public function testTheFormIsToldTheRowLimit(): void
+    {
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame(AddRecordController::MAX_ROWS, $this->renderedParams()['max_rows']);
+        $this->assertSame(sprintf('At most %d rows can be added at a time.', AddRecordController::MAX_ROWS), $this->renderedParams()['row_limit_message']);
+    }
+
     public function testIncompleteRowsAreSkippedSilently(): void
     {
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1'],
             ['name' => 'b', 'type' => '', 'content' => '192.0.2.2'],
             ['name' => 'c', 'type' => 'A', 'content' => ''],
@@ -519,7 +585,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
             self::added(RecordAddResult::COMPANION_PTR, true),
             self::added(RecordAddResult::COMPANION_PTR, true),
         ];
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1', 'reverse' => '1'],
             ['name' => 'b', 'type' => 'A', 'content' => '192.0.2.2', 'reverse' => '1'],
         ]]);
@@ -535,7 +601,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
     public function testPtrWarningsAreAppendedToTheSuccessMessage(): void
     {
         $this->addResults = [self::added(RecordAddResult::COMPANION_PTR, true, true, 'reverse zone is odd')];
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1', 'reverse' => '1'],
         ]]);
 
@@ -554,7 +620,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
             self::added(RecordAddResult::COMPANION_PTR, false, false, $refusal),
             self::added(RecordAddResult::COMPANION_PTR, false, false, $refusal),
         ];
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1', 'reverse' => '1'],
             ['name' => 'b', 'type' => 'A', 'content' => '192.0.2.2', 'reverse' => '1'],
         ]]);
@@ -570,7 +636,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
     public function testAPartialFailureWarnsAndStillGoesToTheZoneEditor(): void
     {
         $this->addResults = [self::added(), self::refused('Invalid IPv4 address.')];
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => 'a', 'type' => 'A', 'content' => '192.0.2.1'],
             ['name' => 'b', 'type' => 'A', 'content' => 'nope'],
         ]]);
@@ -597,7 +663,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
             ['name' => 'a', 'type' => 'A', 'content' => 'nope', 'ttl' => '300', 'prio' => '0', 'comment' => 'c'],
             ['name' => 'b', 'type' => 'A', 'content' => 'also nope'],
         ];
-        $this->post(['multi_record_mode' => '1', 'records' => $records]);
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => $records]);
 
         $halt = $this->haltOf($this->makeController());
 
@@ -617,7 +683,7 @@ class AddRecordControllerTest extends SeamControllerTestCase
     public function testEachRowOfTheMultiRecordFormResolvesAnAddressNameOnItsOwn(): void
     {
         $this->zoneName = '2.0.192.in-addr.arpa';
-        $this->post(['multi_record_mode' => '1', 'records' => [
+        $this->post(['multi_record_mode' => '1', 'form_complete' => '1', 'records' => [
             ['name' => '192.0.2.5', 'type' => 'PTR', 'content' => 'a.example.com'],
             ['name' => '198.51.100.5', 'type' => 'PTR', 'content' => 'b.example.com'],
             ['name' => '6', 'type' => 'PTR', 'content' => 'c.example.com'],
