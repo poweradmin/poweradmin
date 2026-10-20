@@ -3744,6 +3744,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Não é possível desativar o último superadministrador restante."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Não é possível remover o superadministrador do último utilizador superadministrador restante."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Não foi possível guardar o utilizador."
 

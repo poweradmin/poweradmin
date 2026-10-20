@@ -3626,6 +3626,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "अंतिम शेष सुपर एडमिन उपयोगकर्ता को अक्षम नहीं किया जा सकता।"
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "अंतिम शेष सुपर एडमिन उपयोगकर्ता से सुपर एडमिन अधिकार नहीं हटाया जा सकता।"
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "उपयोगकर्ता को सहेजा नहीं जा सका।"
 

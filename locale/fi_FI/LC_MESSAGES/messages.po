@@ -3651,6 +3651,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Viimeistä jäljellä olevaa pääkäyttäjää ei voi poistaa käytöstä."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Viimeiseltä jäljellä olevalta pääkäyttäjältä ei voi poistaa pääkäyttäjän oikeuksia."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Käyttäjää ei voitu tallentaa."
 

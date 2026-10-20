@@ -3694,6 +3694,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Није могуће онемогућити последњег преосталог супер администратора."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Није могуће уклонити супер администратора са последњег преосталог корисника супер администратора."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Корисника није било могуће сачувати."
 

@@ -3655,6 +3655,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Không thể vô hiệu hóa người dùng super admin cuối cùng còn lại."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Không thể gỡ quyền quản trị viên cấp cao khỏi người dùng quản trị viên cấp cao cuối cùng còn lại."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Không thể lưu người dùng."
 

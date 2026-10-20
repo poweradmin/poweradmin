@@ -3521,6 +3521,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "无法禁用最后一个超级管理员用户。"
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "无法移除最后一个超级管理员用户的超级管理员权限。"
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "无法保存该用户。"
 

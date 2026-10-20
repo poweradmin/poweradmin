@@ -3682,6 +3682,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Kalan son süper yönetici kullanıcı devre dışı bırakılamaz."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Kalan son süper yönetici kullanıcısından süper yönetici yetkisi kaldırılamaz."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Kullanıcı kaydedilemedi."
 

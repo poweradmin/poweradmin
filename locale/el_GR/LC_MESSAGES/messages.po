@@ -3789,6 +3789,10 @@ msgstr ""
 "απομένει."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Δεν είναι δυνατή η αφαίρεση του ρόλου υπερδιαχειριστή από τον τελευταίο εναπομείναντα υπερδιαχειριστή."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Ο χρήστης δεν μπόρεσε να αποθηκευτεί."
 

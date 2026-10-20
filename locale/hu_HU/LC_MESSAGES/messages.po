@@ -3710,6 +3710,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Az utolsó megmaradt szuperadminisztrátor nem tiltható le."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Az utolsó megmaradt szuperadminisztrátortól nem vonható meg a szuperadminisztrátori jog."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "A felhasználót nem lehetett elmenteni."
 

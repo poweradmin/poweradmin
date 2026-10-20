@@ -3670,6 +3670,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Nevar atspējot pēdējo atlikušo superadministratoru."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Nevar noņemt superadministratora tiesības pēdējam atlikušajam superadministratoram."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Lietotāju nevarēja saglabāt."
 

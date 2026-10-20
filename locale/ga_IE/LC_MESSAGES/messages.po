@@ -3808,6 +3808,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Ní féidir an sár-riarthóir deireanach a dhíchumasú."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Ní féidir sár-riarthóir a bhaint den úsáideoir sár-riarthóra deireanach atá fágtha."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Níorbh fhéidir an úsáideoir a shábháil."
 

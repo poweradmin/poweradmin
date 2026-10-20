@@ -3738,6 +3738,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "Nuk mund të çaktivizohet përdoruesi i fundit super admin."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "Nuk mund të hiqet super administratori nga përdoruesi i fundit super administrator i mbetur."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "Përdoruesi nuk mund të ruhej."
 

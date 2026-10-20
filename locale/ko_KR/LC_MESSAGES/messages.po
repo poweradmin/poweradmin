@@ -3626,6 +3626,10 @@ msgid "Cannot disable the last remaining super admin user."
 msgstr "마지막으로 남은 최고 관리자 사용자는 비활성화할 수 없습니다."
 
 #: lib/Application/Service/User/UserFormMessages.php:52
+msgid "Cannot remove super admin from the last remaining super admin user."
+msgstr "마지막으로 남은 슈퍼 관리자 사용자에게서 슈퍼 관리자 권한을 제거할 수 없습니다."
+
+#: lib/Application/Service/User/UserFormMessages.php:52
 msgid "The user could not be saved."
 msgstr "사용자를 저장할 수 없습니다."
 
