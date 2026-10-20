@@ -344,4 +344,23 @@ class DnsHelperTest extends TestCase
         $this->assertFalse(DnsHelper::isZoneApex('other.org', 'example.com'));
         $this->assertFalse(DnsHelper::isZoneApex('testexample.com', 'example.com'), 'A suffix match without a dot boundary is not the apex.');
     }
+
+    public static function zoneIdProvider(): array
+    {
+        return [
+            'classless reverse zone' => ['0/26.2.0.192.in-addr.arpa.', '0=2F26.2.0.192.in-addr.arpa.'],
+            'underscore label' => ['_tcp.example.com.', '=5Ftcp.example.com.'],
+            'plain zone' => ['example.com.', 'example.com.'],
+            'hyphenated zone' => ['my-zone.example.com.', 'my-zone.example.com.'],
+            'root zone' => ['.', '=2E'],
+            'view variant' => ['example.com..internal', 'example.com..internal'],
+            'space and equals sign' => ['a b=c.example.', 'a=20b=3Dc.example.'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('zoneIdProvider')]
+    public function testPowerdnsZoneIdMatchesThePowerdnsZoneIdForm(string $zoneName, string $expected): void
+    {
+        $this->assertSame($expected, DnsHelper::powerdnsZoneId($zoneName));
+    }
 }
