@@ -63,6 +63,8 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
     /** @var list<int> */
     private array $finalizedZones = [];
 
+    private bool $canViewZone = true;
+
     /** @var RecordRepositoryInterface&MockObject */
     private RecordRepositoryInterface $records;
 
@@ -85,6 +87,7 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('getEditPermissionLevelForZone')->willReturn('all');
         $permissions->method('getViewPermissionLevel')->willReturn('all');
+        $permissions->method('canViewZone')->willReturnCallback(fn(): bool => $this->canViewZone);
 
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $id): ?array => $this->rows[(int)$id] ?? null);
@@ -270,6 +273,16 @@ class DeleteRecordsControllerTest extends SeamControllerTestCase
     public function testAnUnknownZoneIdFallsBackToTheSearchPage(): void
     {
         $this->confirm([1], ['zone_id' => '999']);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame('/search', $halt->target);
+    }
+
+    public function testAZoneIdTheUserMayNotViewFallsBackToTheSearchPageLikeAnUnknownOne(): void
+    {
+        $this->canViewZone = false;
+        $this->confirm([1], ['zone_id' => (string)self::ZONE_ID]);
 
         $halt = $this->haltOf($this->makeController());
 

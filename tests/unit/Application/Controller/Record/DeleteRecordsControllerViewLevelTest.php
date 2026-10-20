@@ -61,6 +61,7 @@ class DeleteRecordsControllerViewLevelTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('getEditPermissionLevelForZone')->willReturn('all');
         $permissions->method('getViewPermissionLevel')->willReturnCallback(fn(): string => $this->viewLevel);
+        $permissions->method('canViewZone')->willReturnCallback(fn(): bool => $this->viewLevel === 'all');
 
         $records = $this->createMock(RecordRepositoryInterface::class);
         $records->method('getZoneIdFromRecordId')->willReturn(self::ZONE_ID);
