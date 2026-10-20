@@ -41,8 +41,7 @@ class CryptoKeyTest extends TestCase
         );
 
         $ds = $key->getDs();
-        $this->assertIsArray($ds);
-        $this->assertEmpty($ds);
+        $this->assertSame([], $ds);
     }
 
     public function testConstructorWithMinimalParameters(): void
@@ -55,20 +54,19 @@ class CryptoKeyTest extends TestCase
         $this->assertNull($key->getAlgorithm());
         $this->assertFalse($key->isActive());
         $this->assertNull($key->getDnskey());
-        $this->assertIsArray($key->getDs());
-        $this->assertEmpty($key->getDs());
+        $this->assertSame([], $key->getDs());
     }
 
     public function testGetDsAlwaysReturnsArray(): void
     {
         $key1 = new CryptoKey(id: 1, ds: null);
-        $this->assertIsArray($key1->getDs());
+        $this->assertSame([], $key1->getDs());
 
         $key2 = new CryptoKey(id: 2, ds: []);
-        $this->assertIsArray($key2->getDs());
+        $this->assertSame([], $key2->getDs());
 
         $key3 = new CryptoKey(id: 3, ds: ['test']);
-        $this->assertIsArray($key3->getDs());
+        $this->assertSame(['test'], $key3->getDs());
     }
 
     public function testActivateAndDeactivate(): void
@@ -96,8 +94,7 @@ class CryptoKeyTest extends TestCase
         );
 
         $this->assertEquals('zsk', $key->getType());
-        $this->assertIsArray($key->getDs());
-        $this->assertEmpty($key->getDs());
+        $this->assertSame([], $key->getDs());
     }
 
     public function testKskKeyWithDsRecords(): void
@@ -114,8 +111,54 @@ class CryptoKeyTest extends TestCase
         );
 
         $this->assertEquals('ksk', $key->getType());
-        $this->assertIsArray($key->getDs());
-        $this->assertCount(2, $key->getDs());
-        $this->assertEquals($dsRecords, $key->getDs());
+        $this->assertSame($dsRecords, $key->getDs());
+    }
+
+    // The DNSKEY from RFC 4034 section 5.4, whose key tag is 60485
+    private const RFC_DNSKEY = '256 3 5 AQOeiiR0GOMYkDshWoSKz9XzfwJr1AYtsmx3TGkJaNXVbfi/2pHm822aJ5iI9BMzNXxeYCmZDRD99WYwYqUSdjMmmAphXdvxegXd/M5+X7OrzKBaMbCVdFLUUh6DhweJBjEVv5f2wwjM9XzcnOf+EPbtG9DMBmADjFDc2w/rljwvFw==';
+
+    public function testKeyTagIsComputedFromTheDnskey(): void
+    {
+        $key = new CryptoKey(1, 'zsk', 1024, 'RSASHA1', true, self::RFC_DNSKEY, []);
+
+        $this->assertSame(60485, $key->getKeyTag());
+        $this->assertSame(5, $key->getAlgorithmId());
+    }
+
+    public function testKeyTagIgnoresSpacesInsideThePublicKey(): void
+    {
+        $split = substr(self::RFC_DNSKEY, 0, 40) . ' ' . substr(self::RFC_DNSKEY, 40);
+
+        $this->assertSame(60485, (new CryptoKey(1, dnskey: $split))->getKeyTag());
+    }
+
+    public function testAKeyWithoutAReadableDnskeyHasNoKeyTag(): void
+    {
+        $this->assertSame(0, (new CryptoKey(1))->getKeyTag());
+        $this->assertSame(0, (new CryptoKey(1))->getAlgorithmId());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3'))->getKeyTag());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3'))->getAlgorithmId());
+        $this->assertSame(0, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getKeyTag());
+        $this->assertSame(13, (new CryptoKey(1, dnskey: '257 3 13 !!!'))->getAlgorithmId());
+    }
+
+    /** @return array<string, array{0: ?string, 1: ?bool}> */
+    public static function secureEntryPointProvider(): array
+    {
+        return [
+            'ksk or csk' => ['257 3 13 AAAA', true],
+            'zsk' => ['256 3 13 AAAA', false],
+            'revoked ksk' => ['385 3 13 AAAA', true],
+            'no dnskey' => [null, null],
+            'unreadable flags' => ['x 3 13 AAAA', null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('secureEntryPointProvider')]
+    public function testIsSecureEntryPointReadsTheStoredFlag(?string $dnskey, ?bool $expected): void
+    {
+        $key = new CryptoKey(1, 'csk', 256, 'ECDSAP256SHA256', true, $dnskey, []);
+
+        $this->assertSame($expected, $key->isSecureEntryPoint());
     }
 }

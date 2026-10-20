@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,34 +22,32 @@
 
 namespace Poweradmin\Module\DnsWizard\Controller;
 
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
 
 /**
- * DNS Wizard Selection Controller
+ * Renders the wizard picker at /zones/{id}/wizard.
  *
  * Displays the wizard selection page where users can choose
  * which DNS record wizard to use.
  */
 class DnsWizardSelectController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
-    private WizardRegistry $wizardRegistry;
-    private ZoneRepositoryInterface $zoneRepository;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?WizardRegistry $wizardRegistry = null;
 
-    public function __construct(array $request)
+    private function domainRepository(): DomainRepositoryInterface
     {
-        parent::__construct($request);
+        return $this->domainRepository ??= $this->moduleServices()->domainRepository();
+    }
 
-        $this->domainRepository = $this->createDomainRepository();
-        $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
+    private function wizardRegistry(): WizardRegistry
+    {
+        return $this->wizardRegistry ??= new WizardRegistry($this->getConfig());
     }
 
     public function run(): void
@@ -68,17 +66,17 @@ class DnsWizardSelectController extends BaseController
         $zone_id = (int)$zone_id;
 
         // Check if zone exists
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }
 
         // Check permissions
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->moduleServices()->permissionService()->getEditPermissionLevel((int)$this->getCurrentUserId());
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
+        $zone_type = $this->domainRepository()->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 
@@ -86,7 +84,7 @@ class DnsWizardSelectController extends BaseController
         $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get available wizards
-        $wizards = $this->wizardRegistry->getWizardMetadata();
+        $wizards = $this->wizardRegistry()->getWizardMetadata();
 
         // Render the wizard selection page
         $this->setCurrentPage('module_dns_wizard_select');

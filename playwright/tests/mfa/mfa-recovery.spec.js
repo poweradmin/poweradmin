@@ -2,11 +2,44 @@
  * MFA Recovery Codes Tests
  *
  * Tests for Multi-Factor Authentication recovery codes functionality.
+ * The account-level flows enable MFA on a throwaway user with a TOTP code
+ * computed from the secret the setup page shows, so no seeded account is
+ * left with MFA on.
  */
 
+import { createHmac } from 'node:crypto';
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
+
+const BASE32_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+/**
+ * RFC 6238 TOTP (SHA-1, 6 digits, 30 second step) for a base32 secret.
+ *
+ * @param {string} secret - Base32 secret as shown on the MFA setup page
+ * @param {number} offsetSteps - Time steps to shift, to step over a period boundary
+ * @returns {string} Six digit code
+ */
+function totp(secret, offsetSteps = 0) {
+  let bits = '';
+  for (const char of secret.replace(/=+$/, '').replace(/\s+/g, '').toUpperCase()) {
+    bits += BASE32_ALPHABET.indexOf(char).toString(2).padStart(5, '0');
+  }
+  const key = Buffer.from(
+    bits.match(/.{8}/g).map(byte => parseInt(byte, 2))
+  );
+
+  const counter = Math.floor(Date.now() / 30000) + offsetSteps;
+  const message = Buffer.alloc(8);
+  message.writeBigUInt64BE(BigInt(counter));
+
+  const hmac = createHmac('sha1', key).update(message).digest();
+  const offset = hmac[hmac.length - 1] & 0x0f;
+  const value = ((hmac[offset] & 0x7f) << 24) | (hmac[offset + 1] << 16) | (hmac[offset + 2] << 8) | hmac[offset + 3];
+
+  return String(value % 1000000).padStart(6, '0');
+}
 
 test.describe('MFA Recovery Codes Page', () => {
   test.describe('Recovery Codes Display', () => {
@@ -16,25 +49,10 @@ test.describe('MFA Recovery Codes Page', () => {
       await expect(page).toHaveURL(/.*mfa\/setup/);
     });
 
-    test('should show recovery codes option when MFA enabled', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-      const mfaEnabled = bodyText.toLowerCase().includes('mfa is currently enabled');
-
-      if (mfaEnabled) {
-        // Should have regenerate recovery codes button
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await expect(regenerateBtn).toBeVisible();
-      }
-    });
-
     test('should display recovery codes after MFA setup', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/mfa/setup');
 
-      // Check if we can access recovery codes (either through setup or regeneration)
       const bodyText = await page.locator('body').textContent();
       const hasRecoveryOption = bodyText.toLowerCase().includes('recovery') ||
                                  bodyText.toLowerCase().includes('regenerate');
@@ -64,92 +82,6 @@ test.describe('MFA Recovery Codes Page', () => {
     });
   });
 
-  test.describe('Recovery Codes Management', () => {
-    test('should display save warning for recovery codes', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-      const mfaEnabled = bodyText.toLowerCase().includes('mfa is currently enabled');
-
-      if (mfaEnabled) {
-        const hasWarning = bodyText.toLowerCase().includes('save') ||
-                           bodyText.toLowerCase().includes('store') ||
-                           bodyText.toLowerCase().includes('safe') ||
-                           bodyText.toLowerCase().includes('regenerate');
-        expect(hasWarning).toBeTruthy();
-      } else {
-        const hasSetupOption = bodyText.toLowerCase().includes('set up') ||
-                                bodyText.toLowerCase().includes('authenticator');
-        expect(hasSetupOption).toBeTruthy();
-      }
-    });
-
-    test('should display recovery codes in grid format', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const codeElements = page.locator('code');
-      const hasCodeDisplayOption = await codeElements.count() >= 0;
-      expect(hasCodeDisplayOption).toBeTruthy();
-    });
-  });
-
-  test.describe('Recovery Codes Actions', () => {
-    test('should have print button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await expect(regenerateBtn).toBeVisible();
-
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasPrintOption = newBodyText.toLowerCase().includes('print') ||
-                                newBodyText.toLowerCase().includes('recovery');
-        expect(hasPrintOption).toBeTruthy();
-      }
-    });
-
-    test('should have copy all button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasCopyOption = newBodyText.toLowerCase().includes('copy') ||
-                               newBodyText.toLowerCase().includes('recovery');
-        expect(hasCopyOption).toBeTruthy();
-      }
-    });
-
-    test('should have download button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasDownloadOption = newBodyText.toLowerCase().includes('download') ||
-                                   newBodyText.toLowerCase().includes('recovery');
-        expect(hasDownloadOption).toBeTruthy();
-      }
-    });
-  });
-
   test.describe('Recovery Codes Navigation', () => {
     test('should have back to MFA settings link', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -168,47 +100,6 @@ test.describe('MFA Recovery Codes Page', () => {
       const hasDashboardLink = await dashboardLink.count() > 0;
       expect(hasDashboardLink).toBeTruthy();
     });
-
-    test('should have disable MFA option', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const disableBtn = page.locator('button[name="disable_mfa"]');
-        await expect(disableBtn).toBeVisible();
-      }
-    });
-  });
-
-  test.describe('Regenerate Recovery Codes', () => {
-    test('should have regenerate codes button when MFA enabled', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await expect(regenerateBtn).toBeVisible();
-      }
-    });
-
-    test('should regenerate codes when clicking button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/recovery|code|save|store/i);
-      }
-    });
   });
 
   test.describe('Recovery Codes Security', () => {
@@ -219,19 +110,162 @@ test.describe('MFA Recovery Codes Page', () => {
       const csrfToken = page.locator('input[name="_token"]');
       expect(await csrfToken.count()).toBeGreaterThan(0);
     });
+  });
 
-    test('should warn about one-time use of codes', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
+  test.describe('MFA enabled account', () => {
+    test.describe.configure({ mode: 'serial' });
 
-      const bodyText = await page.locator('body').textContent();
-      const hasOneTimeWarning = bodyText.toLowerCase().includes('once') ||
-                                 bodyText.toLowerCase().includes('one-time') ||
-                                 bodyText.toLowerCase().includes('recovery');
-      const hasSetupOption = bodyText.toLowerCase().includes('set up') ||
-                              bodyText.toLowerCase().includes('authenticator') ||
-                              bodyText.toLowerCase().includes('mfa');
-      expect(hasOneTimeWarning || hasSetupOption).toBeTruthy();
+    const username = `mfa-rec-${Date.now()}`;
+    const password = 'TestP@ssw0rd123';
+    let userPage = null;
+    let firstCodes = [];
+    let regeneratedCodes = [];
+    let secret = '';
+
+    async function openSetup() {
+      await userPage.goto('/mfa/setup');
+    }
+
+    test.beforeAll(async ({ browser }) => {
+      const admin = await browser.newPage();
+      await loginAndWaitForDashboard(admin, users.admin.username, users.admin.password);
+      await admin.goto('/users/add');
+      await admin.locator('input[name="username"]').fill(username);
+      await admin.locator('input[name="fullname"]').fill(username);
+      await admin.locator('input[name="email"]').fill(`${username}@example.com`);
+      await admin.locator('input[name="password"]').fill(password);
+      await admin.locator('button[name="commit"]').click();
+      await expect(admin.locator('[data-testid="system-message"]')).toContainText(/success/i);
+      await admin.close();
+
+      // One page for the whole group: a fresh login would ask for the MFA code
+      userPage = await browser.newPage();
+      await loginAndWaitForDashboard(userPage, username, password);
+    });
+
+    test.afterAll(async ({ browser }) => {
+      await userPage?.close();
+
+      const admin = await browser.newPage();
+      await loginAndWaitForDashboard(admin, users.admin.username, users.admin.password);
+      await admin.goto(`/users?search=${username}`);
+      // The username renders as an input value, so hasText would never match
+      const row = admin.locator(`tr:has(input[value="${username}"])`);
+      if (await row.count() > 0) {
+        await row.locator('a[href*="/delete"]').first().click();
+        await admin.locator('button[name="commit"]').click();
+        await admin.waitForLoadState('networkidle');
+      }
+      await admin.close();
+    });
+
+    test('should enable MFA from the setup secret and show recovery codes', async () => {
+      await userPage.goto('/mfa/setup');
+      await userPage.locator('button[name="setup_app"]').click();
+
+      secret = await userPage.locator('#secret-key').inputValue();
+      expect(secret).toMatch(/^[A-Z2-7]+=*$/);
+
+      await userPage.locator('#verification_code').fill(totp(secret));
+      await userPage.locator('button[name="verify_app"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/MFA has been enabled/i);
+
+      const codes = userPage.locator('code');
+      await expect(codes.first()).toBeVisible();
+      firstCodes = await codes.allTextContents();
+      expect(firstCodes.length).toBeGreaterThan(0);
+      for (const code of firstCodes) {
+        expect(code.trim().length).toBeGreaterThan(0);
+      }
+    });
+
+    test('should not ask for the code again after enabling MFA (#1737)', async () => {
+      await userPage.goto('/');
+
+      await expect(userPage).not.toHaveURL(/mfa\/verify/);
+      await expect(userPage.locator('#mfa_code')).toHaveCount(0);
+    });
+
+    test('should show recovery codes option when MFA enabled', async () => {
+      await openSetup();
+
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+      await expect(userPage.locator('button[name="regenerate_codes"]')).toBeVisible();
+    });
+
+    test('should display save warning for recovery codes', async () => {
+      await openSetup();
+
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+      await expect(userPage.locator('body')).toContainText(/save|store|safe|regenerate/i);
+    });
+
+    test('should have disable MFA option', async () => {
+      await openSetup();
+
+      await expect(userPage.locator('button[name="disable_mfa"]')).toBeVisible();
+    });
+
+    test('should refuse to regenerate codes without a verification code', async () => {
+      await openSetup();
+      // The browser blocks an empty required field, so drop the attribute to reach the server check
+      await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').evaluate(el => el.removeAttribute('required'));
+      await userPage.locator('button[name="regenerate_codes"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Verification code is required/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+    });
+
+    test('should refuse to disable MFA with a wrong code', async () => {
+      await openSetup();
+      await userPage.locator('[data-testid="disable-mfa-code"]').fill('000000');
+      await userPage.locator('button[name="disable_mfa"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Invalid verification code/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+    });
+
+    test('should regenerate codes when clicking button', async () => {
+      await openSetup();
+      await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').fill(firstCodes[0].trim());
+      await userPage.locator('button[name="regenerate_codes"]').click();
+
+      await expect(userPage.locator('body')).toContainText(/recovery|code|save|store/i);
+
+      // Display grid: every code sits in a <code> element and the set is new
+      const codes = userPage.locator('code');
+      await expect(codes.first()).toBeVisible();
+      const regenerated = await codes.allTextContents();
+      expect(regenerated.length).toBe(firstCodes.length);
+      expect(regenerated).not.toEqual(firstCodes);
+      regeneratedCodes = regenerated;
+    });
+
+    test('should warn about one-time use of codes', async () => {
+      // Still on the recovery codes page that the regeneration rendered
+      await expect(userPage.locator('body')).toContainText(/Each code can only be used once/i);
+    });
+
+    test('should have print button', async () => {
+      await expect(userPage.locator('button:has-text("Print")')).toBeVisible();
+    });
+
+    test('should have copy all button', async () => {
+      await expect(userPage.locator('button:has-text("Copy all")')).toBeVisible();
+    });
+
+    test('should have download button', async () => {
+      await expect(userPage.locator('button#download-btn')).toBeVisible();
+    });
+
+    test('should disable MFA with a recovery code', async () => {
+      await openSetup();
+      await userPage.locator('[data-testid="disable-mfa-code"]').fill(regeneratedCodes[0].trim());
+      await userPage.locator('button[name="disable_mfa"]').click();
+
+      await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/MFA has been disabled/i);
+      await expect(userPage.locator('body')).toContainText(/MFA is currently disabled/i);
     });
   });
 });

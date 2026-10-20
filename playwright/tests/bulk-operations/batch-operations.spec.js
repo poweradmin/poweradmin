@@ -1,16 +1,22 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { deleteZoneById, errorMessages, findZoneIdByName, openZoneListPageFor, uniqueName, zoneExists } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Bulk and Batch Operations', () => {
-  // Use a fixed timestamp for the entire test suite to ensure consistency
-  const timestamp = process.env.BULK_TEST_TIMESTAMP || Date.now().toString();
-  const baseTestDomain = `bulk-test-${timestamp}`;
+  // Registration, listing and deletion share one set of throwaway zones, so run in order
+  test.describe.configure({ mode: 'serial' });
+
+  // Evaluated per worker; every name is unique so reruns and parallel files never collide
+  const baseTestDomain = uniqueName('bulk');
   const testDomains = [
-    `${baseTestDomain}-1.com`,
-    `${baseTestDomain}-2.com`,
-    `${baseTestDomain}-3.com`
+    `${baseTestDomain}-1.example.com`,
+    `${baseTestDomain}-2.example.com`,
+    `${baseTestDomain}-3.example.com`
   ];
+  const progressBase = uniqueName('bulkp');
+
+  const progressDomains = [];
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -25,44 +31,20 @@ test.describe('Bulk and Batch Operations', () => {
   test('should perform bulk domain registration', async ({ page }) => {
     await page.goto('/zones/bulk-registration');
 
-    const hasTextarea = await page.locator('textarea, input[name*="domains"], input[name*="zones"]').count() > 0;
-    if (hasTextarea) {
-      // Enter multiple domains for bulk registration
-      const domainsText = testDomains.join('\n');
+    // Enter multiple domains for bulk registration
+    await page.locator('textarea[name="domains"]').fill(testDomains.join('\n'));
+    await page.locator('button[name="submit"]').click();
+    await page.waitForLoadState('networkidle');
 
-      await page.locator('textarea, input[name*="domains"], input[name*="zones"]').first().fill(domainsText);
-
-      // Set owner email if field exists
-      const hasEmail = await page.locator('input[name*="email"], input[type="email"]').count() > 0;
-      if (hasEmail) {
-        await page.locator('input[name*="email"], input[type="email"]').first().fill('admin@example.com');
-      }
-
-      // Select template if available
-      const hasTemplate = await page.locator('select[name*="template"]').count() > 0;
-      if (hasTemplate) {
-        await page.locator('select[name*="template"]').first().selectOption({ index: 0 });
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForLoadState('networkidle');
-
-      // Verify bulk registration success
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/success|created|registered/i);
-    }
+    // Verify bulk registration success
+    await expect(page.locator('body')).toContainText(/success|created|registered/i);
   });
 
   test('should verify bulk registered domains exist', async ({ page }) => {
-    await page.goto('/zones/forward?letter=all');
-
-    // Check that bulk test domains were created (use prefix pattern)
-    const bodyText = await page.locator('body').textContent();
-    // Look for any bulk-test domains, not specific timestamps
-    const hasBulkTestDomains = bodyText.includes('bulk-test-') ||
-                                bodyText.toLowerCase().includes('no zone') ||
-                                bodyText.toLowerCase().includes('zones');
-    expect(hasBulkTestDomains).toBeTruthy();
+    // The zones this suite registered must be findable in the list
+    for (const domain of testDomains) {
+      expect(await zoneExists(page, domain)).toBe(true);
+    }
   });
 
   test('should access batch PTR record generation', async ({ page }) => {
@@ -71,172 +53,100 @@ test.describe('Bulk and Batch Operations', () => {
     await expect(page.locator('h1, h2, h3, .page-title, form').first()).toBeVisible();
   });
 
-  test('should generate batch PTR records', async ({ page }) => {
+  test('should refuse an invalid batch PTR network prefix', async ({ page }) => {
     await page.goto('/zones/batch-ptr');
 
-    const hasForm = await page.locator('form').count() > 0;
-    if (!hasForm) {
-      // Batch PTR page may redirect or show different content based on available reverse zones
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await expect(page.locator('#network_prefix')).toBeVisible();
+    await expect(page.locator('#domain')).toBeVisible();
 
-    // Check if there's a reverse zone dropdown and it has options
-    const zoneSelect = page.locator('select[name*="zone"], select[name*="reverse"]').first();
-    const hasZoneOptions = await zoneSelect.count() > 0 && await zoneSelect.locator('option').count() > 1;
+    // The IPv6 count is only shown for the IPv6 network type
+    await page.locator('#network_type').selectOption('ipv6');
+    await expect(page.locator('#ipv6_count')).toBeVisible();
+    await page.locator('#network_type').selectOption('ipv4');
 
-    if (!hasZoneOptions) {
-      // No reverse zones available for batch PTR
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
+    await page.locator('#network_prefix').fill('not-a-prefix');
+    await page.locator('#domain').fill('example.com');
+    await page.locator('form button[type="submit"]').first().click();
 
-    // Select reverse zone
-    await zoneSelect.selectOption({ index: 1 });
-
-    // Submit form
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-    // Page should not error - may show form again or success
-    // Auto-retrying assertion: the click navigation may still be in flight
+    // The form is shown again with the entered prefix and nothing was generated
     await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page).toHaveURL(/\/zones\/batch-ptr/);
+    await expect(page.locator('#network_prefix')).toHaveValue('not-a-prefix');
   });
 
   test('should perform bulk zone deletion', async ({ page }) => {
-    // Use letter=all to ensure bulk-test domains (starting with "b") are visible
-    await page.goto('/zones/forward?letter=all');
+    // Walking the paginated list and confirming the deletion needs more than
+    // the default per-test budget on a busy instance.
+    test.slow();
 
-    // Select multiple domains for deletion (if checkboxes exist)
-    const hasCheckboxes = await page.locator('input[type="checkbox"]').count() > 0;
-    if (hasCheckboxes) {
-      // Select test domains for bulk deletion
-      let checkedCount = 0;
-      for (const domain of testDomains) {
-        const domainRow = page.locator(`tr:has-text("${domain}")`);
-        const domainCheckbox = domainRow.locator('input[type="checkbox"]');
-        const checkboxCount = await domainCheckbox.count();
-        if (checkboxCount > 0) {
-          await domainCheckbox.check();
-          checkedCount++;
-        }
-      }
+    // The list is paginated, so walk to the page that holds the test domains
+    expect(await openZoneListPageFor(page, testDomains[0]), 'registered domains must be listed').toBe(true);
 
-      if (checkedCount === 0) {
-        // No test domains found on the page, nothing to delete
-        return;
-      }
+    // Select test domains for bulk deletion
+    for (const domain of testDomains) {
+      const domainCheckbox = page.locator(`tr:has-text("${domain}")`).locator('input[type="checkbox"]');
+      await expect(domainCheckbox).toBeVisible();
+      await domainCheckbox.check();
+    }
 
-      // Look for enabled bulk delete button
-      const bulkDeleteBtn = page.locator('button:not([disabled])').filter({ hasText: /Delete/i });
-      const hasBulkDelete = await bulkDeleteBtn.count();
-      if (hasBulkDelete > 0) {
-        await bulkDeleteBtn.click();
+    // The bulk submit is disabled until a row is ticked
+    const bulkDeleteBtn = page.locator('#delete-zones-btn');
+    await expect(bulkDeleteBtn).toBeEnabled();
+    await bulkDeleteBtn.click();
 
-        // Confirm bulk deletion
-        const hasConfirm = await page.locator('button').filter({ hasText: /Yes|Confirm/i }).count();
-        if (hasConfirm > 0) {
-          await page.locator('button').filter({ hasText: /Yes|Confirm/i }).click();
-        }
+    // Confirm bulk deletion on the confirmation page, which only exists once
+    // the navigation has landed
+    const confirmBtn = page.locator('button[type="submit"][name="confirm"]');
+    await expect(confirmBtn).toBeVisible();
+    await confirmBtn.click();
+    await page.waitForLoadState('networkidle');
 
-        // Verify domains were deleted. Auto-retrying so the confirmation page,
-        // which lists the very domains being checked, cannot be read mid-post.
-        for (const domain of testDomains) {
-          await expect(page.locator('body')).not.toContainText(domain);
-        }
-      }
-    } else {
-      // Manual deletion if no bulk option
-      for (const domain of testDomains) {
-        await page.goto('/zones/forward?letter=all');
-        const bodyText = await page.locator('body').textContent();
-        if (bodyText.includes(domain)) {
-          const domainRow = page.locator(`tr:has-text("${domain}")`);
-          const deleteLink = await domainRow.locator('a[href*="/delete"]');
-
-          if (await deleteLink.count() > 0) {
-            await deleteLink.first().click();
-
-            const confirmButton = page.locator('button').filter({ hasText: /Yes|Confirm/i });
-            if (await confirmButton.count() > 0) {
-              await confirmButton.click();
-            }
-          }
-        }
-      }
+    // Verify the domains are really gone, not just off the current page
+    for (const domain of testDomains) {
+      expect(await zoneExists(page, domain)).toBe(false);
     }
   });
 
   test('should handle bulk operations with validation errors', async ({ page }) => {
     await page.goto('/zones/bulk-registration');
 
-    const hasTextarea = await page.locator('textarea').count() > 0;
-    if (hasTextarea) {
-      // Enter invalid domains
-      const invalidDomains = 'invalid-domain\n..invalid..\n-invalid-';
+    // A bare label such as "invalid-domain" is a valid zone name, so it is not used here
+    const invalidDomains = ['..invalid..', '-invalid-.example.com', 'bad!name.example.com'];
+    await page.locator('textarea[name="domains"]').fill(invalidDomains.join('\n'));
+    await page.locator('button[name="submit"]').click();
 
-      await page.locator('textarea').first().fill(invalidDomains);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    // The echoed textarea also contains "invalid", so read the flash message only
+    await expect(page.locator('[data-testid="system-message"]').first()).toBeVisible();
+    expect(await errorMessages(page), 'a refusal message must be shown').not.toBe('');
 
-      // Should show validation errors
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/error|invalid|validation/i);
+    for (const domain of invalidDomains) {
+      expect(await zoneExists(page, domain), `${domain} must not be created`).toBe(false);
     }
   });
 
   test('should show bulk operation progress and results', async ({ page }) => {
     await page.goto('/zones/bulk-registration');
 
-    const hasTextarea = await page.locator('textarea').count() > 0;
-    if (hasTextarea) {
-      // Enter a few test domains
-      const testTimestamp = Date.now();
-      const smallBatch = [
-        `progress-test-${testTimestamp}-1.com`,
-        `progress-test-${testTimestamp}-2.com`
-      ].join('\n');
+    progressDomains.push(`${progressBase}-1.example.com`, `${progressBase}-2.example.com`);
+    await page.locator('textarea[name="domains"]').fill(progressDomains.join('\n'));
+    await page.locator('button[name="submit"]').click();
 
-      await page.locator('textarea').first().fill(smallBatch);
-
-      const hasEmail = await page.locator('input[name*="email"]').count() > 0;
-      if (hasEmail) {
-        await page.locator('input[name*="email"]').first().fill('admin@example.com');
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Look for progress indicators, results summary, or any valid response
-      // Should show success, error, or remain on form - but not crash
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
-  });
-
-  test('should handle bulk import from file', async ({ page }) => {
-    await page.goto('/zones/bulk-registration');
-
-    const hasFileInput = await page.locator('input[type="file"]').count() > 0;
-    if (hasFileInput) {
-      // Create a test file for import (this would need actual file handling)
-      await expect(page.locator('input[type="file"]')).toBeVisible();
-
-      // Note: File upload testing would require actual file fixtures
-      test.info().annotations.push({ type: 'note', description: 'File upload functionality detected - would require file fixtures for full testing' });
+    // Both domains are valid, so the result must report them and they must exist
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+    await expect(page.locator('body')).toContainText(/success|created|registered/i);
+    for (const domain of progressDomains) {
+      expect(await zoneExists(page, domain), `${domain} must be registered`).toBe(true);
     }
   });
 
   test('should export bulk zone data', async ({ page }) => {
-    // Check for export functionality
-    await page.goto('/zones/forward');
+    // Zone data is exported per zone from the edit page
+    const zoneId = await findZoneIdByName(page, 'admin-zone.example.com');
+    expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
-    const hasExport = await page.locator('a, button').filter({ hasText: /Export|Download/i }).count();
-    if (hasExport > 0) {
-      await expect(page.locator('a, button').filter({ hasText: /Export|Download/i }).first()).toBeVisible();
-
-      // Note: Actual download testing would require different approach
-      test.info().annotations.push({ type: 'note', description: 'Export functionality detected' });
-    }
+    await page.goto(`/zones/${zoneId}/edit`);
+    await page.locator('button.dropdown-toggle:has-text("Export")').click();
+    await expect(page.locator('.dropdown-menu a[href*="/export/csv"]')).toBeVisible();
   });
 
   // Cleanup any remaining test domains
@@ -244,32 +154,10 @@ test.describe('Bulk and Batch Operations', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/zones/forward');
-
-    // Clean up any remaining test domains
-    const allTestDomains = [...testDomains, `progress-test-${Date.now()}-1.com`, `progress-test-${Date.now()}-2.com`];
-
-    for (const domain of allTestDomains) {
-      const domainPrefix = domain.split('-')[0];
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.includes(domainPrefix)) {
-        const rows = page.locator('tr').filter({ hasText: domainPrefix });
-        const count = await rows.count();
-
-        for (let i = 0; i < count; i++) {
-          const row = rows.nth(i);
-          const deleteLink = await row.locator('a, button').filter({ hasText: /Delete/i }).count();
-
-          if (deleteLink > 0) {
-            await row.locator('a, button').filter({ hasText: /Delete/i }).click();
-
-            const confirmButton = await page.locator('button').filter({ hasText: /Yes|Confirm/i }).count();
-            if (confirmButton > 0) {
-              await page.locator('button').filter({ hasText: /Yes|Confirm/i }).click();
-            }
-          }
-        }
+    for (const domain of [...testDomains, ...progressDomains]) {
+      const zoneId = await findZoneIdByName(page, domain);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
       }
     }
 

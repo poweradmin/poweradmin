@@ -49,7 +49,7 @@
         <div class="d-flex justify-content-between align-items-center px-3 pt-3">
             <div>
                 {% if pagination %}
-                {{ pagination | raw }}
+                {% include '_partials/pagination.html' with {items: pagination_items} only %}
                 {% endif %}
             </div>
             <div class="d-flex align-items-center">
@@ -62,7 +62,7 @@
         <form method="post" action="{{ base_url_prefix }}/users" id="user-form">
             {{ macros.csrf_field() }}
             <div class="table-responsive">
-                {% set user_column_count = 6 + (show_user_access_templates ? 1 : 0) + (show_group_access_templates ? 1 : 0) + (mfa_enabled ? 1 : 0) %}
+                {% set user_column_count = 6 + (show_user_access_templates ? 1 : 0) + (show_group_access_templates ? 1 : 0) + (mfa_enabled ? 1 : 0) + (show_zone_limit ? 1 : 0) %}
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
                     <tr>
@@ -72,6 +72,7 @@
                         {% if show_user_access_templates %}<th>{% trans %}Template{% endtrans %}</th>{% endif %}
                         {% if show_group_access_templates %}<th>{% trans %}Groups{% endtrans %}</th>{% endif %}
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
+                        {% if show_zone_limit %}<th class="text-center">{% trans %}Zones{% endtrans %}</th>{% endif %}
                         {% if mfa_enabled %}
                         <th class="text-center">{% trans %}MFA{% endtrans %}</th>
                         {% endif %}
@@ -90,14 +91,14 @@
 
                     {% set user_uid = user['uid'] %}
 
-                    {% if (user_uid == session_userid and permissions['user_edit_own']) or (user_uid != session_userid and permissions['user_edit_others']) or (permissions['user_is_ueberuser']) %}
+                    {% if user['can_edit'] %}
                     <tr>
-                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"{% if user_uid == session_userid and not permissions['user_edit_others'] %} readonly{% endif %}></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
                         {% if show_user_access_templates %}
                         <td>
-                            {% if permissions['user_edit_templ_perm'] %}
+                            {% if user['can_change_template'] %}
                             <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
                                 {% for template in perm_templates %}
                                 {% if template['id'] == user['tpl_id'] %}
@@ -138,10 +139,14 @@
                                 <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
                             {% elseif user['auth_type'] == 'saml' %}
                                 <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'remote_user' %}
+                                <span class="badge bg-dark">{% trans %}Web server{% endtrans %}</span>
                             {% else %}
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}
                         </td>
+
+                        {% if show_zone_limit %}<td class="text-center small" data-testid="user-zone-limit">{{ user['zones_owned'] }} / {{ user['zone_limit'] ?? '∞' }}</td>{% endif %}
 
                         {% if mfa_enabled %}
                         <td class="text-center">
@@ -202,10 +207,14 @@
                                 <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
                             {% elseif user['auth_type'] == 'saml' %}
                                 <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'remote_user' %}
+                                <span class="badge bg-dark">{% trans %}Web server{% endtrans %}</span>
                             {% else %}
                                 <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
                             {% endif %}
                         </td>
+
+                        {% if show_zone_limit %}<td class="text-center small" data-testid="user-zone-limit">{{ user['zones_owned'] }} / {{ user['zone_limit'] ?? '∞' }}</td>{% endif %}
 
                         {% if mfa_enabled %}
                         <td class="text-center">
@@ -238,7 +247,7 @@
         </form>
         {% if pagination %}
         <div class="px-3 py-3">
-            {{ pagination | raw }}
+            {% include '_partials/pagination.html' with {items: pagination_items} only %}
         </div>
         {% endif %}
     </div>

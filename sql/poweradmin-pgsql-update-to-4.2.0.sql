@@ -2,7 +2,7 @@
 -- Poweradmin 4.2.0 Migration (PostgreSQL)
 -- ============================================================================
 
--- The 4.1.0 update shipped before 4.5.0 inserted permissions with explicit ids without
+-- The 4.1.0 update shipped before 4.6.0 inserted permissions with explicit ids without
 -- advancing the sequences, so the inserts below would collide. Resync them first.
 SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1));
 SELECT setval('perm_templ_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ), 1));

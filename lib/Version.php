@@ -23,16 +23,14 @@
 namespace Poweradmin;
 
 /**
- * Class Version
- *
- * This class contains the version information for the Poweradmin application.
+ * Holds the Poweradmin release version constant.
  */
-class Version
+final class Version
 {
     /**
      * The current version of the Poweradmin application.
      *
      * @var string
      */
-    public final const VERSION = '4.5.0';
+    public final const VERSION = '4.6.0';
 }

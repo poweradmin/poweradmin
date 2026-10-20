@@ -22,27 +22,33 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Domain\Model\PaginationLimits;
 use Poweradmin\Infrastructure\Database\DbDriver;
 
-class ConfigValidator
+/**
+ * Checks the loaded settings array for invalid values (syslog, session timeout, theme, PowerDNS API, pdns_db_name).
+ */
+final class ConfigValidator
 {
     private array $config;
     private array $errors;
+    private array $warnings;
 
     public function __construct(array $config)
     {
         $this->config = $config;
         $this->errors = [];
+        $this->warnings = [];
     }
 
     public function validate(): bool
     {
         $this->errors = [];
+        $this->warnings = [];
 
         $this->validateIfaceRowAmount();
-        $this->validatePasswordEncryption();
         $this->validateSessionTimeout();
+        $this->validatePasswordEncryption();
         $this->validateIfaceLang();
         $this->validateTheme();
         $this->validateSyslogUse();
@@ -56,6 +62,8 @@ class ConfigValidator
         $this->validateDnsBackend();
         $this->validatePdnsDbName();
         $this->validatePermissions();
+        $this->validateApproval();
+        $this->validateZoneLimitDefaults();
 
         return empty($this->errors);
     }
@@ -63,6 +71,14 @@ class ConfigValidator
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Settings that are legal but ineffective; they never fail validate().
+     */
+    public function getWarnings(): array
+    {
+        return $this->warnings;
     }
 
     /**
@@ -120,13 +136,23 @@ class ConfigValidator
         $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
         if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
             $this->errors['interface.rows_per_page'] = 'rows_per_page must be a positive integer';
-        } elseif ($rowsPerPage < PaginationService::MIN_ROWS_PER_PAGE || $rowsPerPage > PaginationService::MAX_ROWS_PER_PAGE) {
+        } elseif ($rowsPerPage < PaginationLimits::MIN_ROWS_PER_PAGE || $rowsPerPage > PaginationLimits::MAX_ROWS_PER_PAGE) {
             // Reported rather than silently clamped, so a mistyped value is visible.
             $this->errors['interface.rows_per_page'] = sprintf(
                 'rows_per_page must be between %d and %d',
-                PaginationService::MIN_ROWS_PER_PAGE,
-                PaginationService::MAX_ROWS_PER_PAGE
+                PaginationLimits::MIN_ROWS_PER_PAGE,
+                PaginationLimits::MAX_ROWS_PER_PAGE
             );
+        }
+    }
+
+    private function validateZoneLimitDefaults(): void
+    {
+        foreach (['default_max_zones_per_user', 'default_max_zones_per_group'] as $key) {
+            $value = $this->getSetting('dns', $key);
+            if ($value !== null && (!is_int($value) || $value < 0)) {
+                $this->errors['dns.' . $key] = $key . ' must be null (unlimited) or a whole number of 0 or more';
+            }
         }
     }
 
@@ -136,6 +162,16 @@ class ConfigValidator
         $sessionTimeout = $this->getSetting('interface', 'session_timeout', 1800);
         if (!is_int($sessionTimeout) || $sessionTimeout <= 0) {
             $this->errors['interface.session_timeout'] = 'session_timeout must be a positive integer (seconds); the timeout cannot be disabled';
+        }
+
+        $maxLifetime = $this->getSetting('interface', 'session_max_lifetime', 0);
+        if (!is_int($maxLifetime) || $maxLifetime < 0) {
+            $this->errors['interface.session_max_lifetime'] = 'session_max_lifetime must be 0 (off) or a positive integer (seconds)';
+        }
+
+        $bulkMaxOperations = $this->getSetting('api', 'bulk_max_operations', 1000);
+        if (!is_int($bulkMaxOperations) || $bulkMaxOperations < 0) {
+            $this->errors['api.bulk_max_operations'] = 'bulk_max_operations must be 0 (no limit) or a positive integer';
         }
     }
 
@@ -333,6 +369,22 @@ class ConfigValidator
 
         if (!$showUser && !$showGroup) {
             $this->errors['permissions'] = 'At least one of show_user_access_templates or show_group_access_templates must be enabled';
+        }
+    }
+
+    /**
+     * require_review_for_all and allow_self_approval only take effect once the approval workflow is on.
+     */
+    private function validateApproval(): void
+    {
+        $enabled = $this->getSetting('approval', 'enabled', false);
+        $requireReviewForAll = $this->getSetting('approval', 'require_review_for_all', false);
+
+        if ($requireReviewForAll && !$enabled) {
+            $this->warnings['approval.require_review_for_all'] = 'approval.require_review_for_all has no effect while approval.enabled is false';
+        }
+        if (!$this->getSetting('approval', 'allow_self_approval', true) && !$enabled) {
+            $this->warnings['approval.allow_self_approval'] = 'approval.allow_self_approval has no effect while approval.enabled is false';
         }
     }
 

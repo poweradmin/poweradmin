@@ -23,16 +23,22 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use ReflectionClass;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * IDOR guard for RecordManager::editRecord(). The record's zone must be derived
@@ -53,8 +59,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         parent::setUp();
 
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
-        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)");
+        $this->createZoneTables();
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
 
         // Victim zone belongs to the admin; the attacker only owns its own zone.
@@ -73,6 +78,7 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $this->assertForgedEditRejected(
             self::VICTIM_RECORD_ID,
             'pwned.attacker.example',
+            Refusal::FORBIDDEN,
             'editRecord must reject a record whose real zone the caller does not own, even when the request carries an owned zid.'
         );
     }
@@ -80,16 +86,42 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testEditRejectsUnknownRecordId(): void
     {
-        $this->assertForgedEditRejected(9999, 'ghost.attacker.example');
+        $this->assertForgedEditRejected(9999, 'ghost.attacker.example', Refusal::NOT_FOUND);
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeleteOfForeignRecordIsForbidden(): void
+    {
+        $this->session->set('userid', self::ATTACKER_USER_ID);
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->never())->method('deleteRecord');
+
+        $result = $this->makeRecordManager($backend)->deleteRecord(self::VICTIM_RECORD_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeleteOfUnknownRecordIsNotFound(): void
+    {
+        $this->session->set('userid', self::ATTACKER_USER_ID);
+        $backend = $this->dnsBackendStub(false);
+        $backend->expects($this->never())->method('deleteRecord');
+
+        $result = $this->makeRecordManager($backend)->deleteRecord(9999);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
     }
 
     /**
      * Drive editRecord() as the attacker with a request that always claims the
      * attacker's own zone id, and assert the write never reaches the backend.
      */
-    private function assertForgedEditRejected(int $rid, string $name, string $message = ''): void
+    private function assertForgedEditRejected(int $rid, string $name, Refusal $expected, string $message = ''): void
     {
-        $_SESSION['userid'] = self::ATTACKER_USER_ID;
+        $this->session->set('userid', self::ATTACKER_USER_ID);
 
         $record = [
             'rid' => $rid,
@@ -107,22 +139,24 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
 
         $manager = $this->makeRecordManager($backend);
 
-        $this->assertFalse($manager->editRecord($record), $message);
+        $result = $manager->editRecord($record);
+        $this->assertFalse($result->success, $message);
+        $this->assertSame($expected, $result->refusal, $message);
     }
 
     private function seedAttackerAsClient(): void
     {
         // zone_content_edit_own_as_client is what makes the pre-fix bug exploitable:
         // with it the attacker passes the ownership check on its own zid and writes.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, 'zone_content_edit_own_as_client')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::ATTACKER_PERM_TEMPL_ID . ", 'Client')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::ATTACKER_PERM_TEMPL_ID . ", 60)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::ATTACKER_USER_ID . ", 'attacker', " . self::ATTACKER_PERM_TEMPL_ID . ")");
     }
 
-    private function makeRecordManager(DnsBackendProvider $backend): RecordManager
+    private function makeRecordManager(DnsBackendProviderInterface $backend): RecordManager
     {
-        $config = $this->primeConfig();
+        $config = $this->sqliteConfiguration(['dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600]]);
 
         // The validation and zone-name lookups are stubbed to succeed so that, on
         // vulnerable code, nothing but the ownership check stands between the forged
@@ -141,32 +175,18 @@ class RecordManagerEditRecordOwnershipTest extends SqliteIntegrationTestCase
         $changeLogger = $this->createMock(RecordChangeLogger::class);
 
         return new RecordManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
             $validation,
             $soa,
             $domainRepository,
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
+            fn() => $this->createMock(DnssecProviderInterface::class),
             $backend,
-            null,
-            $changeLogger
+            $this->permissionService($config),
+            $changeLogger,
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend),
+            new SessionActor($this->session)
         );
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, [
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-            'dns' => ['hostmaster' => 'hostmaster.example', 'ttl' => 3600],
-        ]);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 }

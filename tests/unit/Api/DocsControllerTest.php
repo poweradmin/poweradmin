@@ -2,9 +2,11 @@
 
 namespace Poweradmin\Tests\Unit\Api;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
+#[BackupGlobals(true)]
 class DocsControllerTest extends TestCase
 {
     private TestableDocsController $controller;
@@ -17,7 +19,7 @@ class DocsControllerTest extends TestCase
 
     private function withConfig(string $applicationUrl, string $baseUrlPrefix = ''): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             function (string $group, string $key) use ($applicationUrl, $baseUrlPrefix) {
                 if ($group !== 'interface') {

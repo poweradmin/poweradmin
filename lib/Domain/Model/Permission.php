@@ -22,17 +22,10 @@
 
 namespace Poweradmin\Domain\Model;
 
-use PDO;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
- * Class Permission
- *
- * This class handles permission checks for various actions.
+ * Permission names and the record-type restrictions for client-level editors.
  */
 class Permission
 {
@@ -46,21 +39,97 @@ class Permission
      */
     public const PERM_EDIT_NS_SUBZONE = 'zone_content_edit_ns_subzone';
 
-    private static ?PermissionService $permissionService = null;
+    public const PERM_ZONE_MASTER_ADD = 'zone_master_add';
+    public const PERM_ZONE_SLAVE_ADD = 'zone_slave_add';
+    public const PERM_ZONE_CONTENT_VIEW_OWN = 'zone_content_view_own';
+    public const PERM_ZONE_CONTENT_EDIT_OWN = 'zone_content_edit_own';
+    public const PERM_ZONE_META_EDIT_OWN = 'zone_meta_edit_own';
+    public const PERM_ZONE_CONTENT_VIEW_OTHERS = 'zone_content_view_others';
+    public const PERM_ZONE_CONTENT_EDIT_OTHERS = 'zone_content_edit_others';
+    public const PERM_ZONE_META_EDIT_OTHERS = 'zone_meta_edit_others';
+    public const PERM_SEARCH = 'search';
+    public const PERM_SUPERMASTER_VIEW = 'supermaster_view';
+    public const PERM_SUPERMASTER_ADD = 'supermaster_add';
+    public const PERM_SUPERMASTER_EDIT = 'supermaster_edit';
+    public const PERM_USER_IS_UEBERUSER = 'user_is_ueberuser';
+    public const PERM_USER_VIEW_OTHERS = 'user_view_others';
+    public const PERM_USER_ADD_NEW = 'user_add_new';
+    public const PERM_USER_EDIT_OWN = 'user_edit_own';
+    public const PERM_USER_EDIT_OTHERS = 'user_edit_others';
+    public const PERM_USER_PASSWD_EDIT_OTHERS = 'user_passwd_edit_others';
+    public const PERM_USER_EDIT_TEMPL_PERM = 'user_edit_templ_perm';
+    public const PERM_TEMPL_PERM_ADD = 'templ_perm_add';
+    public const PERM_TEMPL_PERM_EDIT = 'templ_perm_edit';
+    public const PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT = 'zone_content_edit_own_as_client';
+    public const PERM_ZONE_TEMPL_ADD = 'zone_templ_add';
+    public const PERM_ZONE_TEMPL_EDIT = 'zone_templ_edit';
+    public const PERM_API_MANAGE_KEYS = 'api_manage_keys';
+    public const PERM_ZONE_DELETE_OWN = 'zone_delete_own';
+    public const PERM_ZONE_DELETE_OTHERS = 'zone_delete_others';
+    public const PERM_USER_ENFORCE_MFA = 'user_enforce_mfa';
+    public const PERM_ZONE_DNSSEC_MANAGE_OWN = 'zone_dnssec_manage_own';
+    public const PERM_ZONE_LOGS_VIEW_OWN = 'zone_logs_view_own';
+    public const PERM_ZONE_LOGS_VIEW_OTHERS = 'zone_logs_view_others';
+    public const PERM_USER_LOGS_VIEW = 'user_logs_view';
+    public const PERM_GROUP_LOGS_VIEW = 'group_logs_view';
+    public const PERM_ZONE_METADATA_VIEW_OWN = 'zone_metadata_view_own';
+    public const PERM_ZONE_METADATA_VIEW_OTHERS = 'zone_metadata_view_others';
+    public const PERM_ZONE_OWNERSHIP_VIEW_OWN = 'zone_ownership_view_own';
+    public const PERM_ZONE_OWNERSHIP_VIEW_OTHERS = 'zone_ownership_view_others';
+    public const PERM_ZONE_CHANGE_REQUEST_OWN = 'zone_change_request_own';
+    public const PERM_ZONE_CHANGE_REQUEST_OTHERS = 'zone_change_request_others';
+    public const PERM_ZONE_CHANGE_APPROVE_OWN = 'zone_change_approve_own';
+    public const PERM_ZONE_CHANGE_APPROVE_OTHERS = 'zone_change_approve_others';
+    public const PERM_SERVER_STATUS_VIEW = 'server_status_view';
 
     /**
-     * Check the logged-in user's permission (admins always pass). The memoized
-     * service keeps repeated level lookups at one query set per request.
+     * Every permission name known to perm_items, for validation and lint tooling.
      */
-    private static function currentUserHasPermission($db, string $permission): bool
-    {
-        $userId = (new UserContextService())->getLoggedInUserId();
-        if ($userId === null) {
-            return false;
-        }
-        self::$permissionService ??= new PermissionService(new DbUserRepository($db, ConfigurationManager::getInstance()));
-        return self::$permissionService->hasPermission($userId, $permission);
-    }
+    public const ALL = [
+        self::PERM_ZONE_MASTER_ADD,
+        self::PERM_ZONE_SLAVE_ADD,
+        self::PERM_ZONE_CONTENT_VIEW_OWN,
+        self::PERM_ZONE_CONTENT_EDIT_OWN,
+        self::PERM_ZONE_META_EDIT_OWN,
+        self::PERM_ZONE_CONTENT_VIEW_OTHERS,
+        self::PERM_ZONE_CONTENT_EDIT_OTHERS,
+        self::PERM_ZONE_META_EDIT_OTHERS,
+        self::PERM_SEARCH,
+        self::PERM_SUPERMASTER_VIEW,
+        self::PERM_SUPERMASTER_ADD,
+        self::PERM_SUPERMASTER_EDIT,
+        self::PERM_USER_IS_UEBERUSER,
+        self::PERM_USER_VIEW_OTHERS,
+        self::PERM_USER_ADD_NEW,
+        self::PERM_USER_EDIT_OWN,
+        self::PERM_USER_EDIT_OTHERS,
+        self::PERM_USER_PASSWD_EDIT_OTHERS,
+        self::PERM_USER_EDIT_TEMPL_PERM,
+        self::PERM_TEMPL_PERM_ADD,
+        self::PERM_TEMPL_PERM_EDIT,
+        self::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT,
+        self::PERM_ZONE_TEMPL_ADD,
+        self::PERM_ZONE_TEMPL_EDIT,
+        self::PERM_API_MANAGE_KEYS,
+        self::PERM_ZONE_DELETE_OWN,
+        self::PERM_ZONE_DELETE_OTHERS,
+        self::PERM_USER_ENFORCE_MFA,
+        self::PERM_ZONE_DNSSEC_MANAGE_OWN,
+        self::PERM_ZONE_LOGS_VIEW_OWN,
+        self::PERM_ZONE_LOGS_VIEW_OTHERS,
+        self::PERM_USER_LOGS_VIEW,
+        self::PERM_GROUP_LOGS_VIEW,
+        self::PERM_EDIT_NS_SUBZONE,
+        self::PERM_ZONE_METADATA_VIEW_OWN,
+        self::PERM_ZONE_METADATA_VIEW_OTHERS,
+        self::PERM_ZONE_OWNERSHIP_VIEW_OWN,
+        self::PERM_ZONE_OWNERSHIP_VIEW_OTHERS,
+        self::PERM_ZONE_CHANGE_REQUEST_OWN,
+        self::PERM_ZONE_CHANGE_REQUEST_OTHERS,
+        self::PERM_ZONE_CHANGE_APPROVE_OWN,
+        self::PERM_ZONE_CHANGE_APPROVE_OTHERS,
+        self::PERM_SERVER_STATUS_VIEW,
+    ];
 
     /**
      * Check whether the given record type is off-limits for a client-level editor.
@@ -69,7 +138,7 @@ class Permission
      * and the record type is one that requires a stronger edit permission.
      *
      * @param string $type DNS record type (e.g. "A", "SOA", "NS")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      */
     public static function isRecordTypeRestrictedForClient(string $type, string $permEdit): bool
     {
@@ -90,7 +159,7 @@ class Permission
      * requires the standing to write one directly.
      *
      * @param string $type DNS record type (e.g. "A", "NS", "LUA")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      */
     public static function isTemplateRecordTypeRestricted(string $type, string $permEdit): bool
     {
@@ -109,7 +178,7 @@ class Permission
      * SOA and apex NS records stay restricted regardless of that permission.
      *
      * @param string $type DNS record type (e.g. "A", "SOA", "NS")
-     * @param string $permEdit Edit permission level returned by getEditPermission()
+     * @param string $permEdit Edit permission level from PermissionService::getEditPermissionLevel()
      * @param string|null $recordName Record name (FQDN); null keeps the type-only restriction
      * @param string|null $zoneName Zone name; null keeps the type-only restriction
      * @param bool $canEditSubzoneNs Whether the user holds zone_content_edit_ns_subzone
@@ -176,157 +245,5 @@ class Permission
                 default => _('You do not have the permission to delete SOA records.'),
             },
         };
-    }
-
-    /**
-     * Get view permission.
-     *
-     * This method determines the user's permission to view content.
-     *
-     * @return string Returns "all", "own", or "none" depending on the user's view permission.
-     */
-    public static function getViewPermission($db): string
-    {
-        if (self::currentUserHasPermission($db, 'zone_content_view_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_view_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get zone metadata view permission.
-     *
-     * Determines whose zone metadata (zone type, master, template, PowerDNS
-     * metadata) the user may see. Holders of zone_meta_edit_* may always see
-     * what they are allowed to edit.
-     *
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneMetadataViewPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'zone_metadata_view_others')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
-        ) {
-            return "all";
-        } elseif (
-            self::currentUserHasPermission($db, 'zone_metadata_view_own')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
-        ) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get zone ownership view permission.
-     *
-     * Determines whose zone owner lists the user may see. Holders of
-     * zone_meta_edit_* may always see what they are allowed to edit.
-     *
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneOwnershipViewPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'zone_ownership_view_others')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_others')
-        ) {
-            return "all";
-        } elseif (
-            self::currentUserHasPermission($db, 'zone_ownership_view_own')
-            || self::currentUserHasPermission($db, 'zone_meta_edit_own')
-        ) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get edit permission.
-     *
-     * This method determines the user's permission to edit content.
-     *
-     * @return string Returns "all", "own", "own_as_client" or "none" depending on the user's edit permission.
-     */
-    public static function getEditPermission($db): string
-    {
-        if (self::currentUserHasPermission($db, 'zone_content_edit_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own')) {
-            return "own";
-        } elseif (self::currentUserHasPermission($db, 'zone_content_edit_own_as_client')) {
-            return "own_as_client";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get delete permission.
-     *
-     * This method determines the user's permission to delete zones.
-     *
-     * @param PDO $db The database connection.
-     * @return string Returns "all", "own", or "none" depending on the user's delete permission.
-     */
-    public static function getDeletePermission(PDO $db): string
-    {
-        if (self::currentUserHasPermission($db, 'zone_delete_others')) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_delete_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get zone log view permission.
-     *
-     * Determines how much of the zone activity log the user may see. Ueberusers
-     * and holders of zone_logs_view_others see every zone's log; zone_logs_view_own
-     * holders are limited to zones they own (directly or via a group).
-     *
-     * @param PDO $db The database connection.
-     * @return string Returns "all", "own", or "none".
-     */
-    public static function getZoneLogPermission($db): string
-    {
-        if (
-            self::currentUserHasPermission($db, 'user_is_ueberuser')
-            || self::currentUserHasPermission($db, 'zone_logs_view_others')
-        ) {
-            return "all";
-        } elseif (self::currentUserHasPermission($db, 'zone_logs_view_own')) {
-            return "own";
-        } else {
-            return "none";
-        }
-    }
-
-    /**
-     * Get permissions.
-     *
-     * This method checks a set of permissions for the user.
-     *
-     * @param PDO $db The database connection.
-     * @param array $permissions An array containing the permission keys to check.
-     * @return array An associative array containing the permission key and its corresponding boolean value.
-     */
-    public static function getPermissions(PDO $db, array $permissions): array
-    {
-        $result = [];
-
-        foreach ($permissions as $permissionName) {
-            $result[$permissionName] = self::currentUserHasPermission($db, $permissionName);
-        }
-
-        return $result;
     }
 }

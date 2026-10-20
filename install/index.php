@@ -22,25 +22,15 @@
 
 namespace PoweradminInstall;
 
+use Poweradmin\Application\Boot\BootOptions;
+use Poweradmin\Application\Boot\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-if (!function_exists('session_start')) {
-    exit("Error: PHP session extension is not installed. Please install it to proceed.");
-}
-
-if (session_status() === PHP_SESSION_NONE) {
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
-    session_set_cookie_params([
-        'secure'   => $secure,
-        'httponly' => true,
-        'samesite' => 'Lax',
-    ]);
-    session_start();
-}
+// The shipped defaults are the configuration until step 7 writes settings.php
+$context = Kernel::boot(BootOptions::Installer);
 
 $request = Request::createFromGlobals();
-$installer = new Installer($request);
+$installer = new Installer($request, $context->config);
 $installer->initialize();

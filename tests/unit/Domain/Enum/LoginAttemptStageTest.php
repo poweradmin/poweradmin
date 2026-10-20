@@ -24,7 +24,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Enum;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Domain\Enum\LoginAttemptStage;
 
 class LoginAttemptStageTest extends TestCase

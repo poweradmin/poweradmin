@@ -22,58 +22,24 @@
 
 namespace Poweradmin\Module\DnsWizard\Controller;
 
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordAddAccess;
+use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
 
 /**
- * DNS Wizard Form Controller
+ * Renders the form for one wizard at /zones/{id}/wizard/{type} and creates the records it builds.
  *
  * Handles the wizard form display and submission for creating DNS records.
  */
 class DnsWizardFormController extends BaseController
 {
-    private DomainRepositoryInterface $domainRepository;
-    private WizardRegistry $wizardRegistry;
-    private ZoneRepositoryInterface $zoneRepository;
-    private RecordManagerService $recordManager;
-    private FormStateService $formStateService;
+    private ?WizardRegistry $wizardRegistry = null;
 
-    public function __construct(array $request)
+    private function wizardRegistry(): WizardRegistry
     {
-        parent::__construct($request);
-
-        $this->wizardRegistry = new WizardRegistry($this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->formStateService = new FormStateService();
-
-        $logger = new LegacyLogger($this->db);
-        $backendProvider = $this->createDnsBackendProvider();
-        $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-        $this->domainRepository = $repositoryFactory->createDomainRepository();
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $recordCommentService = new RecordCommentService($recordCommentRepository);
-
-        $this->recordManager = new RecordManagerService(
-            $this->db,
-            $this->domainRepository,
-            $this->createRecordManager(),
-            $recordCommentService,
-            $logger,
-            $this->getConfig(),
-            $backendProvider
-        );
+        return $this->wizardRegistry ??= new WizardRegistry($this->getConfig());
     }
 
     public function run(): void
@@ -92,34 +58,30 @@ class DnsWizardFormController extends BaseController
 
         $zone_id = (int)$zone_id;
 
-        // Check if zone exists
-        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
-        if ($zone_name === null) {
-            $this->showError(_('Zone not found.'));
+        // Wizards write directly, so a reviewed zone sends the user to the zone editor
+        $access = $this->moduleServices()->recordAddService()->open($zone_id, (int)$this->getCurrentUserId());
+        if (!$access->isGranted()) {
+            $this->showError(match ($access->code) {
+                RecordAddAccess::ZONE_NOT_FOUND => _('Zone not found.'),
+                RecordAddAccess::REQUIRES_APPROVAL => ChangeRequestMessages::requiresApproval(),
+                default => _('You do not have permission to add records to this zone.'),
+            });
         }
-
-        // Check permissions
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
-
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)) {
-            $this->showError(_('You do not have permission to add records to this zone.'));
-        }
+        $zone_name = $access->zoneName;
 
         // Check if zone is reverse zone
         $is_reverse_zone = DnsHelper::isReverseZoneName($zone_name);
 
         // Get wizard
         try {
-            $wizard = $this->wizardRegistry->getWizard($wizard_type);
+            $wizard = $this->wizardRegistry()->getWizard($wizard_type);
         } catch (\RuntimeException $e) {
             $this->showError(_('Invalid wizard type.'));
             return;
         }
 
         // Handle form submission
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_wizard'])) {
+        if ($this->isPost() && $this->httpRequest->getPostParam('submit_wizard') !== null) {
             $this->handleFormSubmission($zone_id, $zone_name, $wizard, $wizard_type);
             return;
         }
@@ -141,12 +103,12 @@ class DnsWizardFormController extends BaseController
         }
 
         // Check if we have saved form data from a validation error or warnings
-        $formId = $_GET['form_id'] ?? null;
-        $showWarnings = $_GET['show_warnings'] ?? null;
+        $formId = $this->httpRequest->getQueryParam('form_id');
+        $showWarnings = $this->httpRequest->getQueryParam('show_warnings');
         $warnings = [];
 
         if ($formId) {
-            $savedFormData = $this->formStateService->getFormData($formId);
+            $savedFormData = $this->moduleServices()->formStateService()->getFormData($formId);
             if ($savedFormData) {
                 // Extract warnings if present
                 if (isset($savedFormData['_warnings'])) {
@@ -157,7 +119,7 @@ class DnsWizardFormController extends BaseController
                 // Merge saved data over defaults (saved data takes precedence)
                 $formData = array_merge($formData, $savedFormData);
                 // Clear the saved data now that we've used it
-                $this->formStateService->clearFormData($formId);
+                $this->moduleServices()->formStateService()->clearFormData($formId);
             }
         }
 
@@ -187,7 +149,7 @@ class DnsWizardFormController extends BaseController
         // Get form data from POST
         $formData = [];
         $warningsAcknowledged = false;
-        foreach ($_POST as $key => $value) {
+        foreach ($this->httpRequest->getPostParams() as $key => $value) {
             if ($key === 'warnings_acknowledged' && $value === '1') {
                 $warningsAcknowledged = true;
             } elseif ($key !== '_token' && $key !== 'submit_wizard' && $key !== 'warnings_acknowledged') {
@@ -204,8 +166,7 @@ class DnsWizardFormController extends BaseController
             $this->setMessage('dns_wizard_form', 'error', _('Validation failed:') . ' ' . implode(', ', $errors));
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->stashForm($formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;
@@ -214,8 +175,7 @@ class DnsWizardFormController extends BaseController
         // Check for warnings even if validation passed (unless user already acknowledged them)
         $warnings = $validation['warnings'] ?? [];
         if (!empty($warnings) && !$warningsAcknowledged) {
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, array_merge($formData, ['_warnings' => $warnings]));
+            $formId = $this->stashForm(array_merge($formData, ['_warnings' => $warnings]));
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId, 'show_warnings' => '1']);
             return;
@@ -228,48 +188,30 @@ class DnsWizardFormController extends BaseController
             $this->setMessage('dns_wizard_form', 'error', _('Failed to generate record:') . ' ' . $e->getMessage());
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->stashForm($formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;
         }
 
-        // Normalize wizard-provided names
-        $name = DnsHelper::restoreZoneSuffix($recordData['name'] ?? '', $zone_name);
-        $type = $recordData['type'] ?? '';
-        $content = $recordData['content'] ?? '';
-        $reverseTtlResolver = $this->createReverseTtlResolver();
-        $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-        $ttl = isset($recordData['ttl']) && $recordData['ttl'] !== ''
-            ? (int)$recordData['ttl']
-            : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-        $prio = isset($recordData['prio']) && $recordData['prio'] !== '' ? (int)$recordData['prio'] : 0;
-
-        // Create the record
-        $userContextService = new UserContextService();
-        $userlogin = $userContextService->getLoggedInUsername() ?? 'unknown';
-        $ipRetriever = new IpAddressRetriever($_SERVER);
-        $clientIp = $ipRetriever->getClientIp();
-
-        $success = $this->recordManager->createRecord(
+        $added = $this->moduleServices()->recordAddService()->add(
             $zone_id,
-            $name,
-            $type,
-            $content,
-            $ttl,
-            $prio,
+            $zone_name,
+            (string)($recordData['name'] ?? ''),
+            (string)($recordData['type'] ?? ''),
+            (string)($recordData['content'] ?? ''),
+            isset($recordData['ttl']) && $recordData['ttl'] !== '' ? (int)$recordData['ttl'] : null,
+            isset($recordData['prio']) && $recordData['prio'] !== '' ? (int)$recordData['prio'] : 0,
             '',
-            $userlogin,
-            $clientIp
+            (int)$this->getCurrentUserId(),
+            $this->getUserContextService()->getLoggedInUsername() ?? 'unknown'
         );
 
-        if (!$success) {
-            $this->setMessage('dns_wizard_form', 'error', _('This record was not valid and could not be added. It may already exist or contain invalid data.'));
+        if (!$added->isOk()) {
+            $this->setMessage('dns_wizard_form', 'error', (string)$added->record->message);
 
             // Save form data so it can be repopulated
-            $formId = $this->formStateService->generateFormId('dns_wizard_form');
-            $this->formStateService->saveFormData($formId, $formData);
+            $formId = $this->stashForm($formData);
 
             $this->redirect('/zones/' . $zone_id . '/wizard/' . strtolower($wizard_type), ['form_id' => $formId]);
             return;
@@ -278,6 +220,20 @@ class DnsWizardFormController extends BaseController
         // Success - redirect to zone edit page
         $this->setMessage('edit', 'success', _('The record was successfully added.'));
         $this->redirect('/zones/' . $zone_id . '/edit');
+    }
+
+    /**
+     * Keeps the submission in the session so the form refills after the redirect; returns its id.
+     *
+     * @param array<string, mixed> $formData
+     */
+    private function stashForm(array $formData): string
+    {
+        $formState = $this->moduleServices()->formStateService();
+        $formId = $formState->generateFormId('dns_wizard_form');
+        $formState->saveFormData($formId, $formData);
+
+        return $formId;
     }
 
     /**

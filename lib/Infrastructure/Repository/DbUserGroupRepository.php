@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,14 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 
-class DbUserGroupRepository implements UserGroupRepositoryInterface
+/**
+ * SQL persistence for user groups in the user_groups table, with member and zone counts.
+ */
+final class DbUserGroupRepository implements UserGroupRepositoryInterface
 {
     private PDO $db;
 
@@ -120,6 +124,16 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return $row ? $this->mapRowToEntity($row) : null;
     }
 
+    public function findIdByExactName(string $name): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE $match");
+        $stmt->execute([$name]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
     /**
      * Return the subset of supplied IDs that actually exist in user_groups.
      *
@@ -200,6 +214,24 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
+    public function lockForZoneLimit(int $groupId): void
+    {
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE id = :id$lock");
+        $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll();
+    }
+
+    public function setZoneLimit(int $groupId, ?int $limit): bool
+    {
+        $stmt = $this->db->prepare('UPDATE user_groups SET max_zones = :max_zones WHERE id = :id');
+        $stmt->bindValue(':max_zones', $limit, $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
     private function insert(UserGroup $group): UserGroup
     {
         $query = "INSERT INTO user_groups (name, description, perm_templ, created_by, created_at, updated_at)
@@ -254,7 +286,8 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
             (int)$row['perm_templ'],
             $row['created_by'] !== null ? (int)$row['created_by'] : null,
             $row['created_at'] ?? null,
-            $row['updated_at'] ?? null
+            $row['updated_at'] ?? null,
+            isset($row['max_zones']) ? (int)$row['max_zones'] : null
         );
     }
 }

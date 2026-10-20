@@ -23,8 +23,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - branch: develop
-            php: '8.4'
           - branch: master
             php: '8.4'
           - branch: release/4.5.x

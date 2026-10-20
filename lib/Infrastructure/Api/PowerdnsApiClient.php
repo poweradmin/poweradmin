@@ -22,13 +22,18 @@
 
 namespace Poweradmin\Infrastructure\Api;
 
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
+/**
+ * Typed wrapper over the PowerDNS /api/v1 server endpoints: zones, RRsets, DNSSEC keys, metadata, TSIG, views.
+ */
 class PowerdnsApiClient
 {
 
@@ -39,6 +44,9 @@ class PowerdnsApiClient
 
     /** Filtered zone reads only return disabled records from this version on */
     private const RRSET_FILTER_MIN_VERSION = '5.0.0';
+
+    /** The zone list reports each zone's catalog from this version on; 4.7 and 4.8 leave it empty */
+    private const ZONE_LIST_CATALOG_MIN_VERSION = '4.9.0';
 
     private HttpClient $httpClient;
     private string $serverName;
@@ -59,21 +67,35 @@ class PowerdnsApiClient
     /** @var bool|null Whether this server's filtered reads keep disabled records; probed once per request */
     private ?bool $rrsetFilterIsSafe = null;
 
+    /** @var array<string, string> Catalog per zone from single zone reads, for servers whose zone list leaves it empty */
+    private array $zoneCatalogCache = [];
+
+    /** @var bool|null Whether this server's zone list leaves catalog empty; probed once per request */
+    private ?bool $zoneListOmitsCatalog = null;
+
     /** @var string|null PowerDNS version, when the caller supplied one instead of leaving it to be probed */
     private ?string $serverVersion = null;
 
+    /** PowerDNS's own explanation for the last rejected RRset PATCH. */
+    private ?string $lastWriteRejection = null;
+
+    private ApiStatusRecorderInterface $apiStatus;
+
     /**
+     * @param ApiStatusRecorderInterface $apiStatus Holds the outage banner state, in the request's own session
      * @param string|null $serverVersion Skips the capability probe when the caller
      *        already knows the PowerDNS version
      */
     public function __construct(
         HttpClient $httpClient,
         string $serverName,
+        ApiStatusRecorderInterface $apiStatus,
         ?LoggerInterface $logger = null,
         ?string $serverVersion = null
     ) {
         $this->httpClient = $httpClient;
         $this->serverName = $serverName;
+        $this->apiStatus = $apiStatus;
         $this->logger = $logger ?? new NullLogger();
         $this->serverVersion = $serverVersion;
     }
@@ -89,6 +111,7 @@ class PowerdnsApiClient
             $this->lastZone = null;
             $this->narrowedZoneCache = [];
             $this->searchCache = [];
+            $this->zoneCatalogCache = [];
         }
 
         return $this->httpClient->makeRequest($method, $endpoint, $data);
@@ -114,6 +137,22 @@ class PowerdnsApiClient
     private function buildZoneEndpoint(string $zoneName, string $suffix = ''): string
     {
         return $this->buildEndpoint("/zones/" . rawurlencode($zoneName) . $suffix);
+    }
+
+    /**
+     * Drop PowerDNS's cached answers for a zone and (re)load it into the zone cache,
+     * so a zone written straight to the database is served without waiting.
+     */
+    public function flushZoneCache(string $zoneName): bool
+    {
+        // PowerDNS refuses a name without the trailing dot as not canonical
+        $domain = rawurlencode(rtrim($zoneName, '.') . '.');
+        // The caller logs a failure, so this stays quiet
+        try {
+            return $this->request('PUT', $this->buildEndpoint('/cache/flush?domain=' . $domain))['responseCode'] === 200;
+        } catch (ApiErrorException) {
+            return false;
+        }
     }
 
     /**
@@ -251,7 +290,7 @@ class PowerdnsApiClient
      * list under two different URLs.
      *
      * @param bool $withDnssec Match the endpoint a companion list call uses
-     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string}>
+     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string, account: string}>
      */
     public function getAllZoneKinds(bool $withDnssec = false): array
     {
@@ -268,6 +307,7 @@ class PowerdnsApiClient
                     'kind' => strtoupper((string)($zoneData['kind'] ?? '')),
                     'masters' => is_array($masters) ? array_values(array_map('strval', $masters)) : [],
                     'catalog' => self::canonicalZoneName((string)($zoneData['catalog'] ?? '')),
+                    'account' => (string)($zoneData['account'] ?? ''),
                 ];
             }
         }
@@ -282,9 +322,7 @@ class PowerdnsApiClient
      */
     public static function canonicalZoneName(string $name): string
     {
-        $trimmed = rtrim(trim($name), '.');
-
-        return $trimmed === '' ? '' : strtolower($trimmed);
+        return DnsHelper::canonicalZoneName($name);
     }
 
     /**
@@ -453,25 +491,43 @@ class PowerdnsApiClient
     }
 
     /**
-     * Import a DNSSEC key from its private key in the ISC/BIND format, which
-     * PowerDNS accepts on POST /cryptokeys since 4.1. PowerDNS derives the
-     * algorithm and size from the key and answers 422 when they are sent too,
-     * so $algorithm is not passed on.
+     * Create a DNSSEC key from an existing private key and return the key
+     * PowerDNS created.
+     *
+     * The private key is in the ISC/BIND format ("Private-key-format: v1.x"),
+     * which PowerDNS accepts on POST /cryptokeys since 4.1. Only keytype,
+     * privatekey and active are sent: PowerDNS derives algorithm and size from
+     * the key and answers 422 when algorithm or bits are sent as well. The
+     * private key is never logged.
+     *
+     * @return CryptoKey|DnssecKeyOutcome The created key, KEY_REJECTED when PowerDNS
+     *                                    could not parse the key (HTTP 422), or FAILED
      */
-    public function importZoneKey(Zone $zone, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
-    {
+    public function createZoneKeyFromPrivateKey(
+        Zone $zone,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active = false
+    ): CryptoKey|DnssecKeyOutcome {
         try {
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys");
             $data = [
                 'keytype' => $keyType,
-                'privatekey' => $privateKeyPem,
+                'privatekey' => $privateKey,
+                'active' => $active,
             ];
             $response = $this->request('POST', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 201;
+            if ($response && $response['responseCode'] === 201 && is_array($response['data']) && isset($response['data']['id'])) {
+                return $this->cryptoKeyFromData($response['data']);
+            }
+
+            return DnssecKeyOutcome::FAILED;
         } catch (ApiErrorException $e) {
-            $this->logger->error('Failed to import DNSSEC key into zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
-            return false;
+            $this->logger->error('Failed to import DNSSEC key into zone {zone}: HTTP {code}', ['zone' => $zone->getName(), 'code' => $e->getCode()]);
+            // Only 422 means PowerDNS could not use the key. Any other status, e.g. 401/403
+            // for a wrong PowerDNS API key or 404, is a failure on our side, not a bad key.
+            return $e->getCode() === 422 ? DnssecKeyOutcome::KEY_REJECTED : DnssecKeyOutcome::FAILED;
         }
     }
 
@@ -818,6 +874,34 @@ class PowerdnsApiClient
     }
 
     /**
+     * PowerDNS 4.7 and 4.8 have catalog zones but leave the catalog field of the
+     * zone list empty; only a single zone read reports it.
+     */
+    public function zoneListOmitsCatalog(): bool
+    {
+        if ($this->zoneListOmitsCatalog === null) {
+            $version = $this->serverVersion ?? (string)($this->getServerInfo()['version'] ?? '');
+            // An unreadable version keeps the bulk list rather than reading every zone
+            $this->zoneListOmitsCatalog = $version !== ''
+                && version_compare($version, '4.7.0', '>=')
+                && version_compare($version, self::ZONE_LIST_CATALOG_MIN_VERSION, '<');
+        }
+
+        return $this->zoneListOmitsCatalog;
+    }
+
+    /**
+     * A zone's catalog from a single zone read, canonicalised like getAllZoneKinds().
+     * Kept for the request because the zone read cache holds only a few bodies.
+     */
+    public function getZoneCatalogName(string $zoneName): string
+    {
+        return $this->zoneCatalogCache[$zoneName] ??= self::canonicalZoneName(
+            (string)($this->getZone($zoneName, false)['catalog'] ?? '')
+        );
+    }
+
+    /**
      * PowerDNS 5.0 routes filtered zone reads through APILookup, which returns
      * disabled records; older servers use the resolver lookup, which does not.
      */
@@ -919,7 +1003,7 @@ class PowerdnsApiClient
             if ($response && $response['responseCode'] === 200) {
                 // Mirror getZones(): a successful read clears any stale API error
                 // so the outage banner doesn't linger after the API recovers.
-                (new ApiStatusService())->clearError();
+                $this->apiStatus->clearError();
                 // Only a complete body may stand in for a different, narrower read
                 if ($params === []) {
                     $this->lastZone = ['name' => $zoneName, 'data' => $response['data']];
@@ -936,7 +1020,7 @@ class PowerdnsApiClient
             // apart from a genuinely empty zone. A 404 just means the zone is gone.
             $httpCode = $e->getDetail('http_code', $e->getCode());
             if ($httpCode !== 404) {
-                (new ApiStatusService())->recordError($e->getMessage(), [
+                $this->apiStatus->recordError($e->getMessage(), [
                     'endpoint' => 'zone',
                     'http_code' => $httpCode,
                     'url' => $e->getDetail('url'),
@@ -1011,6 +1095,25 @@ class PowerdnsApiClient
         }
     }
 
+    /**
+     * Queue a NOTIFY to the secondaries of a primary zone.
+     *
+     * @param string $zoneName Zone name (with trailing dot)
+     * @return bool
+     */
+    public function notifyZone(string $zoneName): bool
+    {
+        try {
+            $endpoint = $this->buildZoneEndpoint($zoneName, '/notify');
+            $response = $this->request('PUT', $endpoint);
+
+            return $response && $response['responseCode'] === 200;
+        } catch (ApiErrorException $e) {
+            $this->logger->error('Failed to notify zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            return false;
+        }
+    }
+
     // ---------------------------------------------------------------
     // RRset operations
     // ---------------------------------------------------------------
@@ -1024,6 +1127,7 @@ class PowerdnsApiClient
      */
     public function patchZoneRRsets(string $zoneName, array $rrsets): bool
     {
+        $this->lastWriteRejection = null;
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $data = ['rrsets' => $rrsets];
@@ -1034,8 +1138,35 @@ class PowerdnsApiClient
             return $response && $response['responseCode'] === 204;
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to patch RRsets for zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+            $this->lastWriteRejection = self::rejectionReason($e);
             return false;
         }
+    }
+
+    /**
+     * What PowerDNS said when it refused the last patchZoneRRsets() call, or null when
+     * the call succeeded or failed without a PowerDNS verdict (transport, auth).
+     */
+    public function getLastWriteRejection(): ?string
+    {
+        return $this->lastWriteRejection;
+    }
+
+    /**
+     * The "error" text of a 4xx PowerDNS answer. Auth failures (401/403) and
+     * transport errors say nothing about the record, so they yield null.
+     */
+    private static function rejectionReason(ApiErrorException $e): ?string
+    {
+        $status = $e->getDetail('http_code');
+        if (!is_int($status) || $status < 400 || $status > 499 || $status === 401 || $status === 403) {
+            return null;
+        }
+
+        $response = $e->getDetail('response');
+        $reason = is_array($response) ? ($response['error'] ?? null) : null;
+
+        return is_string($reason) && trim($reason) !== '' ? $reason : null;
     }
 
     // ---------------------------------------------------------------

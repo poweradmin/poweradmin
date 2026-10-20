@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,9 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Tests for the ARecordValidator using ValidationResult pattern
@@ -32,15 +34,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class ARecordValidatorTest extends TestCase
 {
     private ARecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new ARecordValidator($this->configMock);
+        $this->validator = new ARecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidData()
@@ -89,6 +89,7 @@ class ARecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid(), "A record validation should fail for invalid hostname");
         $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid hostname");
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testValidateWithInvalidTTL()
@@ -103,6 +104,17 @@ class ARecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid(), "A record validation should fail for invalid TTL");
         $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid TTL");
+        $this->assertSame(RecordField::TTL, $result->getField());
+    }
+
+    public function testInvalidContentBeforeInvalidTtlLeavesTheFieldUnnamed()
+    {
+        $result = $this->validator->validate('not-an-ip', 'host.example.com', 0, -1, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid IPv4 address format.', $result->getFirstError());
+        $this->assertCount(2, $result->getErrors());
+        $this->assertNull($result->getField());
     }
 
     public function testValidateWithInvalidPriority()

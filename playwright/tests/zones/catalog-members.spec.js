@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { findZoneIdByName, deleteZoneById, openZoneListPageFor } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // The producer and its member are built once and reused across the assertions.
 test.describe.configure({ mode: 'serial' });
@@ -21,9 +22,9 @@ test.describe('Catalog zone members', () => {
   }
 
   async function openZone(page, name) {
-    await page.goto('/zones/forward?letter=all&rows_per_page=100');
-    await page.waitForLoadState('networkidle');
-    await page.locator(`tr:has-text("${name}") a[href*="/edit"]`).first().click();
+    const zoneId = await findZoneIdByName(page, name);
+    expect(zoneId).not.toBeNull();
+    await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('networkidle');
   }
 
@@ -36,10 +37,8 @@ test.describe('Catalog zone members', () => {
     await addZone(page, memberZone, 'MASTER');
     await addZone(page, nativeZone, 'NATIVE');
 
-    await page.goto('/zones/forward?letter=all&rows_per_page=100');
-    await page.waitForLoadState('networkidle');
-
     for (const name of [producerZone, memberZone, nativeZone]) {
+      await openZoneListPageFor(page, name);
       await expect(page.locator(`tr:has-text("${name}")`)).toHaveCount(1);
     }
   });
@@ -101,12 +100,9 @@ test.describe('Catalog zone members', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     for (const name of [memberZone, nativeZone, producerZone]) {
-      await page.goto('/zones/forward?letter=all&rows_per_page=100');
-      const link = page.locator(`tr:has-text("${name}") a[href*="/delete"]`);
-      if (await link.count() > 0) {
-        await link.first().click();
-        await page.locator('button[type="submit"]').first().click().catch(() => {});
-        await page.waitForLoadState('domcontentloaded');
+      const zoneId = await findZoneIdByName(page, name);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
       }
     }
 

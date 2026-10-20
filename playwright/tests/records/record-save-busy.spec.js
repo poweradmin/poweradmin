@@ -1,34 +1,25 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
+import { expectRecordAdded } from './record-assert.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Record save busy state - Issue #1409', () => {
-  async function getTestZoneId(page) {
-    await page.goto('/zones/forward?letter=all');
-    // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-    // which carries no zone id, so this helper used to return null for every test.
-      const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
-    }
-    return null;
-  }
+const zone = useFileZone('recbusy');
 
+test.describe('Record save busy state - Issue #1409', () => {
   // The busy state only exists while the POST is in flight, so the response is
   // held open deliberately rather than racing a real save.
   test('shows a spinner and blocks repeat submits while the add POST is pending', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = zone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
     await page.locator('select[name*="type"]').first().selectOption('A');
-    await page.locator('input[name*="name"]').first().fill(`busy-${Date.now()}`);
+    const label = uniqueName('busy');
+    await page.locator('input[name*="name"]').first().fill(label);
     await page.locator('input[name*="content"]').first().fill('192.0.2.44');
 
     let postCount = 0;
@@ -63,12 +54,12 @@ test.describe('Record save busy state - Issue #1409', () => {
     expect(postCount).toBe(1);
 
     await page.unroute('**/records/add');
+    await expectRecordAdded(page, zoneId, { name: label, content: '192.0.2.44' });
   });
 
   test('leaves the button usable when validation rejects the submit', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    const zoneId = await getTestZoneId(page);
-    if (!zoneId) return;
+    const zoneId = zone.id;
 
     await page.goto(`/zones/${zoneId}/records/add`);
 
@@ -83,20 +74,10 @@ test.describe('Record save busy state - Issue #1409', () => {
 
   // The confirm button comes from the shared delete_actions macro, so this
   // covers every delete-confirmation page at once.
-  test('shows a spinner on the shared delete confirmation button', async ({ page }) => {
+  test('shows a spinner on the shared delete confirmation button', async ({ page, tempZone }) => {
+    test.slow(); // creates throwaway zones on top of the test itself
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-    const zoneName = `busy-delete-${Date.now()}.example.com`;
-    await page.goto('/zones/add/master');
-    await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-    await page.waitForLoadState('networkidle');
-
-    await page.goto('/zones/forward?letter=all');
-    const row = page.locator('tr', { hasText: zoneName }).first();
-    const href = await row.locator('a[href*="/edit"]').first().getAttribute('href');
-    const zoneId = href && href.match(/\/zones\/(\d+)\/edit/)?.[1];
-    expect(zoneId).toBeTruthy();
+    const zoneId = tempZone.id;
 
     await page.goto(`/zones/${zoneId}/delete`);
 
@@ -120,5 +101,8 @@ test.describe('Record save busy state - Issue #1409', () => {
     expect(probe.ariaBusy).toBe('true');
     expect(probe.spinner).toBe(true);
     expect(probe.label).toBe('Saving...');
+
+    // The delete was submitted; wait for it to finish before the fixture cleans up
+    await expect(page).not.toHaveURL(/\/delete$/);
   });
 });

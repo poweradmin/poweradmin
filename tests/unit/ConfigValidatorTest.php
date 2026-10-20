@@ -262,6 +262,80 @@ class ConfigValidatorTest extends TestCase
         $this->assertTrue($validator->validate());
     }
 
+    #[DataProvider('sessionMaxLifetimeProvider')]
+    public function testInterfaceSessionMaxLifetime(mixed $value, bool $valid): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 1800,
+                'session_max_lifetime' => $value,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertSame($valid, $validator->validate());
+        $this->assertSame(!$valid, array_key_exists('interface.session_max_lifetime', $validator->getErrors()));
+    }
+
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function sessionMaxLifetimeProvider(): array
+    {
+        return [
+            'off' => [0, true],
+            'twelve hours' => [43200, true],
+            'negative' => [-1, false],
+            'string' => ['43200', false],
+        ];
+    }
+
+    #[DataProvider('bulkMaxOperationsProvider')]
+    public function testApiBulkMaxOperations(mixed $value, bool $valid): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'session_timeout' => 1800,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'api' => ['bulk_max_operations' => $value],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertSame($valid, $validator->validate());
+        $this->assertSame(!$valid, array_key_exists('api.bulk_max_operations', $validator->getErrors()));
+    }
+
+    /**
+     * @return array<string, array{mixed, bool}>
+     */
+    public static function bulkMaxOperationsProvider(): array
+    {
+        return [
+            'no limit' => [0, true],
+            'default' => [1000, true],
+            'negative' => [-5, false],
+            'string' => ['1000', false],
+        ];
+    }
+
     public function testInterfaceRowsPerPageIsInteger(): void
     {
         $config = [
@@ -1230,6 +1304,77 @@ class ConfigValidatorTest extends TestCase
         $this->assertStringContainsString('must be a non-empty string', $errors['interface.theme']);
     }
 
+    public function testApprovalRequireReviewForAllWithoutEnabledIsAWarning(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+            'approval' => [
+                'enabled' => false,
+                'require_review_for_all' => true,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+        $this->assertArrayHasKey('approval.require_review_for_all', $validator->getWarnings());
+    }
+
+    public function testApprovalRequireReviewForAllWithEnabledHasNoWarning(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+            'approval' => [
+                'enabled' => true,
+                'require_review_for_all' => true,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getWarnings());
+    }
+
+    public function testApprovalSelfApprovalOffWithoutEnabledWarns(): void
+    {
+        $validator = new ConfigValidator([
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE'],
+            'logging' => ['syslog_enabled' => false, 'syslog_identity' => 'poweradmin', 'syslog_facility' => LOG_USER],
+            'approval' => ['enabled' => false, 'allow_self_approval' => false],
+        ]);
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayHasKey('approval.allow_self_approval', $validator->getWarnings());
+    }
+
+    public function testApprovalDefaultsProduceNoWarning(): void
+    {
+        $validator = new ConfigValidator(require dirname(__DIR__, 2) . '/config/settings.defaults.php');
+        $validator->validate();
+
+        $this->assertEmpty($validator->getWarnings());
+    }
+
     /** @return array<array{string}> */
     public static function removedPasswordEncryptionMethods(): array
     {
@@ -1251,6 +1396,40 @@ class ConfigValidatorTest extends TestCase
             $validator = new ConfigValidator($this->passwordEncryptionConfig($method));
 
             $this->assertTrue($validator->validate(), $method);
+        }
+    }
+
+    public static function zoneLimitKeys(): array
+    {
+        return [
+            'user' => ['default_max_zones_per_user'],
+            'group' => ['default_max_zones_per_group'],
+        ];
+    }
+
+    #[DataProvider('zoneLimitKeys')]
+    public function testZoneLimitDefaultsAcceptNullZeroAndPositiveIntegers(string $key): void
+    {
+        foreach ([null, 0, 10] as $value) {
+            $config = $this->passwordEncryptionConfig('bcrypt');
+            $config['dns'] = [$key => $value];
+            $validator = new ConfigValidator($config);
+
+            $this->assertTrue($validator->validate(), var_export($value, true) . ' should be accepted');
+            $this->assertArrayNotHasKey('dns.' . $key, $validator->getErrors());
+        }
+    }
+
+    #[DataProvider('zoneLimitKeys')]
+    public function testZoneLimitDefaultsRefuseOtherValues(string $key): void
+    {
+        foreach ([-1, '5', 1.5, true] as $value) {
+            $config = $this->passwordEncryptionConfig('bcrypt');
+            $config['dns'] = [$key => $value];
+            $validator = new ConfigValidator($config);
+
+            $this->assertFalse($validator->validate(), var_export($value, true) . ' should be refused');
+            $this->assertArrayHasKey('dns.' . $key, $validator->getErrors());
         }
     }
 

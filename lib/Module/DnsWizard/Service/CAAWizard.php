@@ -22,16 +22,10 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
- * CAA Wizard
- *
- * Wizard for creating CAA (Certification Authority Authorization) records.
- * CAA records specify which certificate authorities are authorized to issue
- * SSL/TLS certificates for a domain.
- *
- * @package Poweradmin\Module\DnsWizard\Service
+ * Builds CAA records naming the certificate authorities allowed to issue for a domain.
  */
 class CAAWizard extends AbstractDnsWizard
 {

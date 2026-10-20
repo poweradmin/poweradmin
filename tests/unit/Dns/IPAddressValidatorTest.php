@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 /**
  * Tests for the IPAddressValidator service
@@ -61,6 +61,7 @@ class IPAddressValidatorTest extends TestCase
         $result1 = $this->validator->validateIPv4("256.0.0.1");
         $this->assertFalse($result1->isValid());
         $this->assertNotEmpty($result1->getErrors());
+        $this->assertSame(RecordField::CONTENT, $result1->getField());
 
         $result2 = $this->validator->validateIPv4("192.168.1");
         $this->assertFalse($result2->isValid());

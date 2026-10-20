@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+/**
+ * Output sink for the PSR-3 Logger.
+ */
 interface LogHandlerInterface
 {
     public const DEFAULT_LOG_FORMAT = '%timestamp% [%level%]: %classname% %message%';

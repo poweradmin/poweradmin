@@ -7,7 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Login Edge Cases', () => {
   test.describe('Session Management', () => {
@@ -54,8 +54,7 @@ test.describe('Login Edge Cases', () => {
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
         await page.waitForLoadState('networkidle');
       }
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should allow login after failed attempts', async ({ page }) => {
@@ -173,8 +172,7 @@ test.describe('Login Edge Cases', () => {
       await page.waitForLoadState('networkidle');
       // Attempt to go back and check
       await page.goBack();
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
 

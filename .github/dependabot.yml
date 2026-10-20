@@ -61,6 +61,33 @@ updates:
       default-days: 3
     commit-message:
       prefix: "chore(deps)"
+
+  - package-ecosystem: "docker"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+
+  - package-ecosystem: "docker-compose"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "09:00"
+      timezone: "Europe/Vilnius"
+    cooldown:
+      default-days: 3
+    commit-message:
+      prefix: "chore(devcontainer)"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
@@ -71,75 +98,6 @@ updates:
       interval: "weekly"
       day: "saturday"
       time: "09:00"
-      timezone: "Europe/Vilnius"
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: "chore(deps)"
-    groups:
-      npm:
-        patterns: ["*"]
-
-  # ---- develop ----
-  - package-ecosystem: "composer"
-    directory: "/"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "13:00"
-      timezone: "Europe/Vilnius"
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: "chore(deps)"
-    groups:
-      composer:
-        patterns: ["*"]
-    ignore:
-      - dependency-name: "phpunit/phpunit"
-        versions: [">=12.0"]
-      - dependency-name: "symfony/*"
-        versions: [">=8.0"]
-      - dependency-name: "tomasvotruba/cognitive-complexity"
-        versions: [">=1.2"]
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "13:00"
-      timezone: "Europe/Vilnius"
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: "chore(deps)"
-    groups:
-      github-actions:
-        patterns: ["*"]
-
-  - package-ecosystem: "docker"
-    directory: "/"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "13:00"
-      timezone: "Europe/Vilnius"
-    cooldown:
-      default-days: 3
-    commit-message:
-      prefix: "chore(deps)"
-
-  - package-ecosystem: "npm"
-    directory: "/"
-    target-branch: "develop"
-    schedule:
-      interval: "weekly"
-      day: "saturday"
-      time: "13:00"
       timezone: "Europe/Vilnius"
     cooldown:
       default-days: 7

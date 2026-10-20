@@ -22,23 +22,16 @@
 
 namespace Poweradmin\Module\Rdap;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class RdapModule implements ModuleInterface
+/**
+ * Module registration for the RDAP lookup page and its zone-page action.
+ */
+final class RdapModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'rdap';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'RDAP Lookup';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Lookup domain RDAP information';
     }
 
     public function getRoutes(): array
@@ -75,12 +68,12 @@ class RdapModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['rdap_lookup'];
+        return [self::CAP_RDAP_LOOKUP];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'rdap_lookup') {
+        if ($capability === self::CAP_RDAP_LOOKUP) {
             return [
                 [
                     'label' => 'RDAP',
@@ -95,10 +88,5 @@ class RdapModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return '';
     }
 }

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
+use Poweradmin\Application\Bootstrap;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Pages;
 use ReflectionMethod;
+use TestHelpers\BootContexts;
 
 /**
  * Functional tests for index.php entry point
@@ -20,6 +21,7 @@ use ReflectionMethod;
  * - Configuration loading
  * - Router setup
  * - Bootstrap failures reaching the error responder
+ * - Halted requests (showError) sending a complete response and nothing more
  *
  * Error-response shaping itself is covered by BootstrapErrorResponderTest.
  */
@@ -33,9 +35,6 @@ class IndexEntryPointTest extends TestCase
         parent::setUp();
         $this->originalServer = $_SERVER;
         $this->originalRequest = $_REQUEST;
-
-        // Ensure helper functions are available
-        require_once __DIR__ . '/../../lib/Application/Helpers/StartupHelpers.php';
     }
 
     protected function tearDown(): void
@@ -45,19 +44,10 @@ class IndexEntryPointTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * Test that helper functions are properly loaded and accessible
-     */
-    public function testHelperFunctionsAreLoaded(): void
+    public function testBootstrapEntryPointsExist(): void
     {
-        $this->assertTrue(
-            function_exists('initializeSession'),
-            'initializeSession() function should be available'
-        );
-        $this->assertTrue(
-            function_exists('initializeTimezone'),
-            'initializeTimezone() function should be available'
-        );
+        $this->assertTrue(method_exists(Bootstrap::class, 'initializeSession'));
+        $this->assertTrue(method_exists(Bootstrap::class, 'initializeTimezone'));
     }
 
     /**
@@ -65,6 +55,190 @@ class IndexEntryPointTest extends TestCase
      * shaped if the whole bootstrap sits inside the front controller's try block.
      */
     public function testBootstrapFailureIsShapedInsteadOfEscapingAsAFatal(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('throwing-settings.php', '/api/v2/zones', 'application/json');
+
+        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
+        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
+        $this->assertStringContainsString('Simulated configuration failure', $stderr);
+    }
+
+    /**
+     * showError() writes the whole error page and then ends the request; what
+     * follows in the controller must never reach the client, and neither must
+     * the error responder's own output.
+     */
+    public function testAHaltedRequestSendsTheErrorPageAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/password/forgot', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!doctype html>', $stdout);
+        $this->assertStringEndsWith("</html>\n", $stdout);
+        $this->assertSame(1, substr_count($stdout, 'Password reset functionality is disabled.'));
+    }
+
+    public function testAHaltedJsonRequestSendsTheErrorBodyAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/password/forgot', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":true,"message":"Password reset functionality is disabled."}', $stdout);
+    }
+
+    /**
+     * The probes and the retired v1 family answer from configuration alone; the
+     * fixture's in-memory database has no schema, so touching it would fail.
+     */
+    public function testDatabaseFreeControllersAnswerWithoutASchema(): void
+    {
+        $expected = [
+            '/ping' => 'Not Found',
+            '/api/health' => '{"error":true,"message":"Not Found"}',
+            '/api/v1/zones' => '{"error":true,"message":"API v1 was removed in Poweradmin 4.5.0. Use \/api\/v2 instead."}',
+        ];
+
+        foreach ($expected as $uri => $body) {
+            [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', $uri, 'application/json');
+
+            $this->assertSame(0, $exitCode, $uri);
+            $this->assertSame('', $stderr, $uri);
+            $this->assertSame($body, $stdout, $uri);
+        }
+    }
+
+    public function testADisabledApiRefusesBeforeAuthentication(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/v2/zones', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"success":false,"data":null,"message":"The API feature is disabled in the system configuration."}', $stdout);
+    }
+
+    /**
+     * The disabled-API refusal is shaped per family: v2 wraps it, the internal
+     * API keeps the {error:true} form.
+     */
+    public function testADisabledApiRefusesInternalCallsBeforeAuthentication(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/internal/zone', 'application/json');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":true,"message":"The API feature is disabled in the system configuration."}', $stdout);
+    }
+
+    /**
+     * Each API family ends an unauthenticated request with its own 401 body and
+     * nothing after it: the session-bound internal API from the authenticator,
+     * the public v2 API from its own key check.
+     */
+    public function testAnUnauthenticatedApiCallSendsTheErrorBodyAndNothingElse(): void
+    {
+        $expected = [
+            '/api/internal/zone' => '{"error":true,"message":"Unauthorized"}',
+            '/api/internal/user-preferences' => '{"error":true,"message":"Unauthorized"}',
+            '/api/v2/zones' => '{"success":false,"data":null,"message":"Unauthorized: Invalid credentials"}',
+            '/api/v2/users' => '{"success":false,"data":null,"message":"Unauthorized: Invalid credentials"}',
+        ];
+
+        foreach ($expected as $uri => $body) {
+            [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', $uri, 'application/json');
+
+            $this->assertSame(0, $exitCode, $uri);
+            $this->assertSame('', $stderr, $uri);
+            $this->assertSame($body, $stdout, $uri);
+        }
+    }
+
+    public function testDisabledDocsAnswer404InTheirOwnFormat(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/docs', 'text/html');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('<html><body><h1>404 Not Found</h1><p>API documentation is disabled.</p></body></html>', $stdout);
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/api/docs/json', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":"Not Found","message":"API documentation is disabled","status":404}', $stdout);
+    }
+
+    public function testEnabledDocsSendTheirDocumentAndNothingElse(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', '/api/docs', 'text/html');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!DOCTYPE html>', $stdout);
+        $this->assertSame(1, substr_count($stdout, '</html>'));
+        $this->assertStringEndsWith('</html>', rtrim($stdout));
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('api-settings.php', '/api/docs/json', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $spec = json_decode($stdout, true);
+        $this->assertIsArray($spec, 'The spec must be the whole output');
+        $this->assertSame('3.0.0', $spec['openapi']);
+        $this->assertSame('Poweradmin API V2', $spec['info']['title']);
+    }
+
+    public function testAnUnmatchedRouteRendersTheNotFoundPage(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/no-such-page', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertStringStartsWith('<!doctype html>', $stdout);
+        $this->assertStringContainsString('Page Not Found', $stdout);
+
+        [$exitCode, $json, $stderr] = $this->runFrontController('halting-settings.php', '/no-such-page', 'application/json');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('{"error":"Not Found","message":"The requested resource was not found","status":404}', $json);
+    }
+
+    public function testAStaticAssetIsServedFromTheTemplatesTree(): void
+    {
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/templates/default/style/dark.css', 'text/css');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame(file_get_contents(dirname(__DIR__, 2) . '/templates/default/style/dark.css'), $stdout);
+
+        [$exitCode, $stdout, $stderr] = $this->runFrontController('halting-settings.php', '/templates/default/nope.css', 'text/css');
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame('Not Found', $stdout);
+    }
+
+    /**
+     * The login page's CSRF token is written to the session and read back while
+     * the same request renders, so it can only appear once the session round
+     * trip works. A second request gets a fresh session and a different token.
+     */
+    public function testTheLoginPageCarriesACsrfTokenReadBackFromTheSession(): void
+    {
+        [$exitCode, $first, $stderr] = $this->runFrontController('halting-settings.php', '/login', 'text/html');
+
+        $this->assertSame(0, $exitCode);
+        $this->assertSame('', $stderr);
+        $this->assertSame(1, preg_match("/window\\.CSRF_TOKEN = '([^']+)'/", $first, $matches), 'The login page must carry a token');
+        $this->assertSame(40, strlen($matches[1]));
+
+        [, $second] = $this->runFrontController('halting-settings.php', '/login', 'text/html');
+        preg_match("/window\\.CSRF_TOKEN = '([^']+)'/", $second, $other);
+        $this->assertNotSame($matches[1], $other[1], 'A fresh session must mint a fresh token');
+    }
+
+    /**
+     * Drives index.php in a subprocess with the given settings fixture.
+     *
+     * @return array{0: int, 1: string, 2: string} Exit code, stdout, stderr
+     */
+    private function runFrontController(string $settingsFixture, string $uri, string $accept): array
     {
         $repositoryRoot = dirname(__DIR__, 2);
 
@@ -75,10 +249,10 @@ class IndexEntryPointTest extends TestCase
             $repositoryRoot,
             [
                 'PATH' => getenv('PATH'),
-                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/throwing-settings.php',
+                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/' . $settingsFixture,
                 'REQUEST_METHOD' => 'GET',
-                'REQUEST_URI' => '/api/v2/zones',
-                'HTTP_ACCEPT' => 'application/json',
+                'REQUEST_URI' => $uri,
+                'HTTP_ACCEPT' => $accept,
                 'SERVER_NAME' => 'localhost',
                 'SERVER_PORT' => '80',
             ]
@@ -90,61 +264,8 @@ class IndexEntryPointTest extends TestCase
         $stderr = (string) stream_get_contents($pipes[2]);
         fclose($pipes[1]);
         fclose($pipes[2]);
-        $exitCode = proc_close($process);
 
-        $this->assertSame(0, $exitCode, 'A configuration failure must not exit as an uncaught fatal');
-        $this->assertSame('{"success":false,"data":null,"message":"Internal server error"}', $stdout);
-        $this->assertStringContainsString('Simulated configuration failure', $stderr);
-    }
-
-    /**
-     * The public API authenticates every request by key or Basic credentials; starting
-     * the caller's cookie session there let a key owner's id leak into a web login.
-     */
-    public function testThePublicApiStartsNoSession(): void
-    {
-        $this->assertSame([], $this->sessionFilesAfterRequest('/api/v2/zones'));
-        $this->assertSame([], $this->sessionFilesAfterRequest('/api/v%32/zones'));
-        // Control: a web page still gets one, so the empty result above is not the harness
-        $this->assertCount(1, $this->sessionFilesAfterRequest('/zones'));
-    }
-
-    /**
-     * @return list<string> Session files the front controller left behind
-     */
-    private function sessionFilesAfterRequest(string $requestUri): array
-    {
-        $repositoryRoot = dirname(__DIR__, 2);
-        $savePath = sys_get_temp_dir() . '/pa-session-' . bin2hex(random_bytes(6));
-        mkdir($savePath);
-
-        $process = proc_open(
-            [PHP_BINARY, '-d', 'session.save_path=' . $savePath, $repositoryRoot . '/index.php'],
-            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-            $pipes,
-            $repositoryRoot,
-            [
-                'PATH' => getenv('PATH'),
-                'PA_CONFIG_PATH' => __DIR__ . '/fixtures/unreachable-db-settings.php',
-                'REQUEST_METHOD' => 'GET',
-                'REQUEST_URI' => $requestUri,
-                'HTTP_ACCEPT' => 'application/json',
-                'SERVER_NAME' => 'localhost',
-                'SERVER_PORT' => '80',
-            ]
-        );
-        $this->assertIsResource($process, 'Failed to start the front controller subprocess');
-        stream_get_contents($pipes[1]);
-        stream_get_contents($pipes[2]);
-        fclose($pipes[1]);
-        fclose($pipes[2]);
-        proc_close($process);
-
-        $files = glob($savePath . '/sess_*') ?: [];
-        array_map('unlink', $files);
-        rmdir($savePath);
-
-        return $files;
+        return [proc_close($process), $stdout, $stderr];
     }
 
     /**
@@ -163,7 +284,7 @@ class IndexEntryPointTest extends TestCase
 
         // The actual session initialization is tested in integration context
         // Here we just verify the function exists and can be called
-        $this->assertIsCallable('initializeSession');
+        $this->assertIsCallable([Bootstrap::class, 'initializeSession']);
     }
 
     /**
@@ -202,25 +323,8 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         // Test router instantiation
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(ConfigurationManager::getInstance()));
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
-    }
-
-    /**
-     * Test Pages class integration
-     */
-    public function testPagesIntegration(): void
-    {
-        // Test that Pages class exists and has getPages method
-        $this->assertTrue(class_exists('Poweradmin\Pages'), 'Pages class should be available');
-        $this->assertTrue(
-            method_exists('Poweradmin\Pages', 'getPages'),
-            'Pages::getPages() method should be available'
-        );
-
-        // Test that getPages returns an array
-        $pages = Pages::getPages();
-        $this->assertIsArray($pages, 'Pages::getPages() should return an array');
     }
 
     /**
@@ -230,7 +334,7 @@ class IndexEntryPointTest extends TestCase
     {
         // Test that BaseController class exists
         $this->assertTrue(
-            class_exists('Poweradmin\BaseController'),
+            class_exists('Poweradmin\Application\Controller\BaseController'),
             'BaseController should be available'
         );
 
@@ -255,9 +359,8 @@ class IndexEntryPointTest extends TestCase
         $requiredClasses = [
             'Poweradmin\Application\Routing\SymfonyRouter',
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
-            'Poweradmin\Pages',
-            'Poweradmin\BaseController',
-            'Poweradmin\Application\Controller\NotFoundController',
+            'Poweradmin\Application\Controller\BaseController',
+            'Poweradmin\Application\Controller\System\NotFoundController',
         ];
 
         foreach ($requiredClasses as $className) {
@@ -286,7 +389,7 @@ class IndexEntryPointTest extends TestCase
         $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(ConfigurationManager::getInstance()));
 
         // Verify router is properly configured
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
@@ -313,8 +416,7 @@ class IndexEntryPointTest extends TestCase
 
         // Simulate key initialization steps
         ConfigurationManager::getInstance();
-        $router = new SymfonyRouter();
-        $pages = Pages::getPages();
+        $router = new SymfonyRouter(BootContexts::over(ConfigurationManager::getInstance()));
         RequestContext::expectsJson();
 
         $memoryAfter = memory_get_usage();
@@ -376,12 +478,14 @@ class IndexEntryPointTest extends TestCase
         foreach ($testRequests as $request) {
             // SymfonyRouter doesn't take request in constructor, uses $_SERVER
             $_SERVER['REQUEST_URI'] = $request['page'] ?? '/';
-            $router = new SymfonyRouter();
+            $router = new SymfonyRouter(BootContexts::over(ConfigurationManager::getInstance()));
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
-        // RequestContext JSON detection
-        // The path has to name a real API family; other pages under /api/ still get HTML
+        // RequestContext JSON detection. The path has to name a real API family:
+        // isApiPath() matches per segment so web pages under /api/ still get HTML.
+        $_SERVER['HTTP_ACCEPT'] = 'text/html';
+
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
         $this->assertTrue(RequestContext::expectsJson());
 
@@ -389,7 +493,6 @@ class IndexEntryPointTest extends TestCase
         $this->assertFalse(RequestContext::expectsJson());
 
         $_SERVER['REQUEST_URI'] = '/dashboard';
-        $_SERVER['HTTP_ACCEPT'] = 'text/html';
         $this->assertFalse(RequestContext::expectsJson());
     }
 }

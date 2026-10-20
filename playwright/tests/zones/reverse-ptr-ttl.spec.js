@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { findZoneIdByName } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Issue #1032 - dns.ttl_reverse pre-fills the TTL field for PTR records in
 // reverse zones. The behavioral matrix is covered by ReverseTtlResolverTest;
@@ -19,10 +19,7 @@ test.describe('Reverse zone PTR default TTL', () => {
 
   test('reverse-zone add-record form renders a non-negative TTL value', async ({ page }) => {
     const reverseZoneId = await findZoneIdByName(page, reverseZone);
-    if (!reverseZoneId) {
-      test.skip(true, `Reverse zone ${reverseZone} not found - load test data first`);
-      return;
-    }
+    expect(reverseZoneId, `Reverse zone ${reverseZone} must be seeded`).toBeTruthy();
 
     await page.goto(`/zones/${reverseZoneId}/records/add`);
     await page.waitForLoadState('networkidle');
@@ -37,10 +34,7 @@ test.describe('Reverse zone PTR default TTL', () => {
 
   test('forward-zone add-record form renders a non-negative TTL value', async ({ page }) => {
     const forwardZoneId = await findZoneIdByName(page, forwardZone);
-    if (!forwardZoneId) {
-      test.skip(true, `Forward zone ${forwardZone} not found - load test data first`);
-      return;
-    }
+    expect(forwardZoneId, `Forward zone ${forwardZone} must be seeded`).toBeTruthy();
 
     await page.goto(`/zones/${forwardZoneId}/records/add`);
     await page.waitForLoadState('networkidle');

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -36,10 +37,6 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  * TTL values define how long DNS records should be cached by resolvers.
  * According to RFC 2181, TTL values are unsigned 32-bit integers (0-4294967295),
  * although practical implementations typically use much lower values.
- *
- * @package Poweradmin
- * @copyright 2010-2025 Poweradmin Development Team
- * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TTLValidator
 {
@@ -74,7 +71,8 @@ class TTLValidator
 
             // Still validate the default value against RFC requirements
             if (!is_numeric($defaultTtl) || $defaultTtl < self::TTL_MIN || $defaultTtl > self::TTL_MAX) {
-                return ValidationResult::failure(_('Invalid value for default TTL. It must be a number between 0 and 2147483647.'));
+                return ValidationResult::failure(_('Invalid value for default TTL. It must be a number between 0 and 2147483647.'))
+                    ->withField(RecordField::TTL);
             }
 
             // Check recommendations for the default value if requested
@@ -95,21 +93,21 @@ class TTLValidator
 
         // Validate TTL is numeric and within RFC limits
         if (!is_numeric($ttl)) {
-            return ValidationResult::failure(_('Invalid value for TTL field. It must be numeric.'));
+            return ValidationResult::failure(_('Invalid value for TTL field. It must be numeric.'))->withField(RecordField::TTL);
         }
 
         $ttlValue = (int)$ttl;
 
         // Basic RFC validation - TTL must be a positive 32-bit integer (RFC 2181)
         if ($ttlValue < self::TTL_MIN) {
-            return ValidationResult::failure(_('TTL value cannot be negative. It must be 0 or higher.'));
+            return ValidationResult::failure(_('TTL value cannot be negative. It must be 0 or higher.'))->withField(RecordField::TTL);
         }
 
         if ($ttlValue > self::TTL_MAX) {
             return ValidationResult::failure(sprintf(
                 _('TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer.'),
                 self::TTL_MAX
-            ));
+            ))->withField(RecordField::TTL);
         }
 
         // Check against recommended ranges if requested

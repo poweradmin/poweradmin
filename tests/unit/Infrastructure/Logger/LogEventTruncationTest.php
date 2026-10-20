@@ -26,39 +26,25 @@ use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Logger\LogEventColumn;
 
 class LogEventTruncationTest extends TestCase
 {
     private const LIMIT = 2048;
 
-    private mixed $savedConfigInstance = null;
-
-    protected function setUp(): void
-    {
-        // DbZoneLogger initializes the ConfigurationManager singleton; keep that out of other tests.
-        $property = new \ReflectionProperty(ConfigurationManager::class, 'instance');
-        $this->savedConfigInstance = $property->getValue();
-        $property->setValue(null, null);
-    }
-
-    protected function tearDown(): void
-    {
-        (new \ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
-    }
-
-    /** @return array<string, array{string, callable(PDO, string): void}> */
+    /** @return array<string, array{string, callable(PDO, string, ConfigurationInterface): void}> */
     public static function loggers(): array
     {
         return [
-            'log_zones' => ['log_zones', fn(PDO $db, string $m) => (new DbZoneLogger($db))->doLog($m, 1, LOG_INFO)],
-            'log_users' => ['log_users', fn(PDO $db, string $m) => (new DbUserLogger($db))->doLog($m, LOG_INFO)],
-            'log_groups' => ['log_groups', fn(PDO $db, string $m) => (new DbGroupLogger($db))->doLog($m, 1, LOG_INFO)],
-            'log_api' => ['log_api', fn(PDO $db, string $m) => (new DbApiLogger($db))->doLog($m, LOG_INFO)],
+            'log_zones' => ['log_zones', fn(PDO $db, string $m, ConfigurationInterface $c) => (new DbZoneLogger($db, $c))->doLog($m, 1, LOG_INFO)],
+            'log_users' => ['log_users', fn(PDO $db, string $m, ConfigurationInterface $c) => (new DbUserLogger($db))->doLog($m, LOG_INFO)],
+            'log_groups' => ['log_groups', fn(PDO $db, string $m, ConfigurationInterface $c) => (new DbGroupLogger($db))->doLog($m, 1, LOG_INFO)],
+            'log_api' => ['log_api', fn(PDO $db, string $m, ConfigurationInterface $c) => (new DbApiLogger($db))->doLog($m, LOG_INFO)],
         ];
     }
 
@@ -83,7 +69,7 @@ class LogEventTruncationTest extends TestCase
         $db = $this->dbWith($table);
         $message = 'operation:add_record ' . str_repeat('a', 5000);
 
-        $log($db, $message);
+        $log($db, $message, $this->createStub(ConfigurationInterface::class));
 
         $stored = $this->stored($db, $table);
         $this->assertSame(self::LIMIT, mb_strlen($stored));
@@ -98,21 +84,17 @@ class LogEventTruncationTest extends TestCase
         $db = $this->dbWith($table);
         $message = str_repeat('b', self::LIMIT);
 
-        $log($db, $message);
+        $log($db, $message, $this->createStub(ConfigurationInterface::class));
 
         $this->assertSame($message, $this->stored($db, $table));
     }
 
     #[Test]
-    #[DataProvider('loggers')]
-    public function truncationCountsCharactersAndNeverSplitsAMultibyteCharacter(string $table, callable $log): void
+    public function truncationCountsCharactersAndNeverSplitsAMultibyteCharacter(): void
     {
-        $db = $this->dbWith($table);
+        $fitted = LogEventColumn::fit(str_repeat("\u{20AC}", 5000));
 
-        $log($db, str_repeat("\u{20AC}", 5000));
-
-        $stored = $this->stored($db, $table);
-        $this->assertSame(self::LIMIT, mb_strlen($stored));
-        $this->assertTrue(mb_check_encoding($stored, 'UTF-8'));
+        $this->assertSame(self::LIMIT, mb_strlen($fitted));
+        $this->assertTrue(mb_check_encoding($fitted, 'UTF-8'));
     }
 }

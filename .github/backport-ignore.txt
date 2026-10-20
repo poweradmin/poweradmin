@@ -31,44 +31,19 @@ release/4.2.x::fix(docker): escape the favicon and logo paths when generating co
 release/4.3.x::fix(docker): escape the default zone template name when generating config
 release/4.2.x::fix(docker): escape the default zone template name when generating config
 
-# 4.5.x keeps its Docker image as released; this hardening ships with 4.6.0 (none is a
-# security or data-loss fix: settings.php escaping, DB wait, healthcheck, CORS scope,
-# php.ini-production, Caddy deny rules, file modes).
-master::fix(docker): split trusted proxies on whitespace too and detect PEM secrets with leading headers
-master::fix(docker): own /app and the template cache directory so non-root containers can cache templates
-master::fix(docker): escape group and template mappings like every other setting and honour yes/1 for PA_CREATE_ADMIN in the summary
-master::fix(docker): accept the CA certificate from a secret file and escape the proxy list for sed
-master::fix(docker): probe /ping in the healthcheck when the liveness endpoint is enabled
-master::fix(docker): answer CORS preflight only under /api with a configurable origin and tier the cache lifetimes
-master::fix(docker): keep group 0 on the volumes the entrypoint re-owns
-master::fix(docker): wait for the database before schema init and honour DB_PORT when creating the admin user
-master::fix(docker): escape every string and validate every number written to settings.php
-master::fix(docker): keep the generated settings.php readable by www-data only
-master::fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy configs
-master::fix(docker): run PHP on php.ini-production with tuned limits and opcache
-
-# develop runs php.ini-production with its own 00-poweradmin.ini, which covers both.
-develop::fix(docker): log PHP warnings instead of printing them into pages
-develop::fix(docker): write the PHP ini in the entrypoint RUN so hadolint passes
-
-# master already loads 00-poweradmin.ini first, and SQLite WAL sidecar files only
-# appear with the WAL mode 4.6.0 introduced.
-master::fix(docker): load the image's php overrides first so mounted ini files win
-master::fix(docker): keep SQLite WAL sidecar files out of the web root
-
-# The same 4.6.0 Docker work, seen from master once develop folds into it: release/4.5.x
-# keeps the 4.5.0 image.
-release/4.5.x::fix(docker): split trusted proxies on whitespace too and detect PEM secrets with leading headers
-release/4.5.x::fix(docker): own /app and the template cache directory so non-root containers can cache templates
-release/4.5.x::fix(docker): escape group and template mappings like every other setting and honour yes/1 for PA_CREATE_ADMIN in the summary
-release/4.5.x::fix(docker): accept the CA certificate from a secret file and escape the proxy list for sed
-release/4.5.x::fix(docker): probe /ping in the healthcheck when the liveness endpoint is enabled
-release/4.5.x::fix(docker): answer CORS preflight only under /api with a configurable origin and tier the cache lifetimes
-release/4.5.x::fix(docker): keep group 0 on the volumes the entrypoint re-owns
-release/4.5.x::fix(docker): wait for the database before schema init and honour DB_PORT when creating the admin user
-release/4.5.x::fix(docker): escape every string and validate every number written to settings.php
-release/4.5.x::fix(docker): keep the generated settings.php readable by www-data only
-release/4.5.x::fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy configs
-release/4.5.x::fix(docker): run PHP on php.ini-production with tuned limits and opcache
-release/4.5.x::fix(docker): load the image's php overrides first so mounted ini files win
-release/4.5.x::fix(docker): keep SQLite WAL sidecar files out of the web root
+# The 4.6.0 Docker hardening (none is a security or data-loss fix). No release line takes it:
+# 4.5.x keeps the 4.5.0 image and the older lines keep theirs.
+fix(docker): split trusted proxies on whitespace too and detect PEM secrets with leading headers
+fix(docker): own /app and the template cache directory so non-root containers can cache templates
+fix(docker): escape group and template mappings like every other setting and honour yes/1 for PA_CREATE_ADMIN in the summary
+fix(docker): accept the CA certificate from a secret file and escape the proxy list for sed
+fix(docker): probe /ping in the healthcheck when the liveness endpoint is enabled
+fix(docker): answer CORS preflight only under /api with a configurable origin and tier the cache lifetimes
+fix(docker): keep group 0 on the volumes the entrypoint re-owns
+fix(docker): wait for the database before schema init and honour DB_PORT when creating the admin user
+fix(docker): escape every string and validate every number written to settings.php
+fix(docker): keep the generated settings.php readable by www-data only
+fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy configs
+fix(docker): run PHP on php.ini-production with tuned limits and opcache
+fix(docker): load the image's php overrides first so mounted ini files win
+fix(docker): keep SQLite WAL sidecar files out of the web root

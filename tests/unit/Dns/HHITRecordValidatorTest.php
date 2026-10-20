@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HHITRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 class HHITRecordValidatorTest extends TestCase
 {
@@ -32,9 +33,7 @@ class HHITRecordValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturn('example.com');
-        $this->validator = new HHITRecordValidator($config);
+        $this->validator = new HHITRecordValidator(new HostnameValidator(new HostnamePolicy(true, true)));
     }
 
     public function testValidBase64Content(): void

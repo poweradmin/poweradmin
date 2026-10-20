@@ -110,6 +110,12 @@
     </div>
 </div>
 
+{% if record_comments_truncated %}
+<div class="alert alert-warning py-2 small" role="alert" data-testid="comment-matches-truncated">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Comment matches were limited to 50 zones; refine your search to see more.{% endtrans %}
+</div>
+{% endif %}
+
 {% if has_zones %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -131,7 +137,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>
-                            {% if delete_permission == 'all' or delete_permission == 'own' %}
+                            {% if can_bulk_delete_zones %}
                             <input type="checkbox" class="form-check-input" id="select_search_zones" onClick="toggleSearchZoneCheckboxes()"/>
                             {% endif %}
                         </th>
@@ -257,47 +263,11 @@
 
             {% if total_zones > zone_rowamount %}
             <div class="card-footer py-2">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm justify-content-center mb-0">
-                        {% if zones_page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})" aria-label="Previous">
-                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if zones_pager.show_leading_break %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        {% endif %}
-
-                        {% for i in zones_pager.start_page..zones_pager.end_page %}
-                        {% if i == zones_page %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                        {% else %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if zones_pager.show_trailing_break %}
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ zones_pager.total_pages }})">{{ zones_pager.total_pages }}</a></li>
-                        {% endif %}
-
-                        {% if zones_page < zones_pager.total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})" aria-label="Next">
-                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                {% include '_partials/pagination.html' with {items: zones_pagination_items, js_handler: 'do_search_with_zones_page'} only %}
             </div>
             {% endif %}
 
-            {% if delete_permission == 'all' or delete_permission == 'own' %}
+            {% if can_bulk_delete_zones %}
             {% if total_zones > 0 %}
             <div class="card-footer py-3">
                 <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
@@ -315,7 +285,7 @@
 {% if has_records %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}</span></span>
+        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}{% if record_comments_truncated %}+{% endif %}</span></span>
         {% if total_records > record_rowamount %}
         <div class="d-flex align-items-center">
             <label for="records-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
@@ -333,7 +303,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>
-                            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+                            {% if can_bulk_delete_records %}
                             <input type="checkbox" class="form-check-input" id="select_records" onClick="toggleRecordCheckboxes()"/>
                             {% endif %}
                         </th>
@@ -407,7 +377,7 @@
                         <td>{{ record['prio'] }}</td>
                         <td><code class="text-break">{{ record['content'] }}</code></td>
                         <td>{{ record['ttl'] }}</td>
-                        <td>{{ record['disabled'] }}</td>
+                        <td>{{ record['disabled_label'] }}</td>
                         {% if iface_record_comments %}
                             <td>{{ record['comment'] }}</td>
                         {% endif %}
@@ -433,47 +403,11 @@
 
             {% if total_records > record_rowamount %}
             <div class="card-footer py-2">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination pagination-sm justify-content-center mb-0">
-                        {% if records_page > 1 %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})" aria-label="Previous">
-                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% if records_pager.show_leading_break %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        {% endif %}
-
-                        {% for i in records_pager.start_page..records_pager.end_page %}
-                        {% if i == records_page %}
-                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                        {% else %}
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
-                        {% endif %}
-                        {% endfor %}
-
-                        {% if records_pager.show_trailing_break %}
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
-                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ records_pager.total_pages }})">{{ records_pager.total_pages }}</a></li>
-                        {% endif %}
-
-                        {% if records_page < records_pager.total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})" aria-label="Next">
-                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
-                            </a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                {% include '_partials/pagination.html' with {items: records_pagination_items, js_handler: 'do_search_with_records_page'} only %}
             </div>
             {% endif %}
 
-            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+            {% if can_bulk_delete_records %}
             {% if total_records > 0 %}
             <div class="card-footer py-3">
                 <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled

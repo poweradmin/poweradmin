@@ -22,56 +22,52 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
+use Poweradmin\Domain\Port\TransactionInterface;
 use DateTime;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Logger\PhpErrorLogPsrLogger;
-use Poweradmin\Infrastructure\Service\ApiKeyZoneScopeMigration;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class DbApiKeyRepository
- *
- * Database implementation of the API key repository
- *
- * @package Poweradmin\Infrastructure\Repository
+ * SQL persistence for API keys in the api_keys table and their zone scopes in api_key_zones.
  */
-class DbApiKeyRepository implements ApiKeyRepositoryInterface
+final class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ?TransactionInterface $transactionPort = null;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
     /**
      * DbApiKeyRepository constructor
      *
      * @param PDO $db The PDO database layer
-     * @param ConfigurationManager $config The configuration manager
+     * @param ConfigurationInterface $config The configuration manager
      * @param LoggerInterface|null $logger The logger instance
-     * @param bool $zoneScopesReady False while the one-time scope migration has not run (see ApiKeyZoneScopeMigration)
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null, private readonly bool $zoneScopesReady = true)
-    {
+    /**
+     * @param bool $zoneScopesReady False while the one-time scope migration has not run (see ApiKeyZoneScopeMigration)
+     * @param bool $isApiBackend Whether zones are served by the PowerDNS API; under the SQL backend a scoped zone gets a named zones row
+     */
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null,
+        private readonly bool $zoneScopesReady = true,
+        private readonly bool $isApiBackend = false
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
-    }
-
-    /**
-     * The repository every request uses: it moves stored zone scopes to canonical zone ids
-     * first, once, so no scope is read or saved before that (see ApiKeyZoneScopeMigration).
-     */
-    public static function withCanonicalZoneScopes(PDO $db, ConfigurationManager $config): self
-    {
-        $isApiBackend = $config->get('dns', 'backend') === 'api';
-        $ready = (new ApiKeyZoneScopeMigration($db, $isApiBackend, new PhpErrorLogPsrLogger()))->runOnce();
-
-        return new self($db, $config, null, $ready);
     }
 
     public function zoneScopesReady(): bool
@@ -177,13 +173,9 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             return null;
         }
 
-        // MySQL's default collation is case-insensitive, which would let a
-        // mistyped/case-shifted candidate match the stored plaintext and then
-        // migrate the row to the wrong-cased hash, locking the real owner out.
-        // BINARY restores byte-exact comparison; PostgreSQL and SQLite are
-        // already byte-exact by default.
-        $dbType = $this->config->get('database', 'type', 'mysql');
-        $matchExpr = ($dbType === 'mysql' || $dbType === 'mysqli') ? 'BINARY secret_key' : 'secret_key';
+        // A case-shifted candidate must not match the stored plaintext, or the row
+        // would migrate to the wrong-cased hash and lock the real owner out.
+        $matchExpr = DbCompat::binaryCompare($this->config->get('database', 'type', 'mysql'), 'secret_key');
 
         $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE $matchExpr = :secretKey");
         $stmt->bindValue(':secretKey', $plaintext);
@@ -283,7 +275,7 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         // Wrap both deletes in one transaction: deleting the scope rows first and
         // then failing to delete the key would leave a key with no scope, i.e. an
         // unrestricted key. On failure everything rolls back.
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
 
         try {
             $zones = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :id");
@@ -295,10 +287,10 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
             $stmt->execute();
             $deleted = $stmt->rowCount() > 0;
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return $deleted;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -414,13 +406,13 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void
     {
-        $this->db->beginTransaction();
+        $unique = array_values(array_unique(array_map('intval', $zoneIds)));
+        $this->transaction()->begin();
         try {
             $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
             $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
             $delete->execute();
 
-            $unique = array_values(array_unique(array_map('intval', $zoneIds)));
             if ($unique !== []) {
                 $insert = $this->db->prepare("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (:apiKeyId, :zoneId)");
                 foreach ($unique as $zoneId) {
@@ -430,10 +422,41 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
         } catch (Exception $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
+
+        if ($unique !== [] && !$this->isApiBackend) {
+            $this->nameScopedZones($unique);
+        }
+    }
+
+    /**
+     * Gives each scoped zone a named row so it keeps its id when the API backend takes over.
+     * Runs after the scope commits: a naming failure must not roll back the scope and leave the key unrestricted.
+     *
+     * @param int[] $zoneIds
+     */
+    private function nameScopedZones(array $zoneIds): void
+    {
+        $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+        foreach ($zoneIds as $zoneId) {
+            try {
+                SqlZoneNames::ensureNamed($this->db, $domainsTable, $zoneId, true);
+            } catch (\Throwable $e) {
+                $this->logger->warning('[DbApiKeyRepository] Could not name scoped zone {zone}: {error}', ['zone' => $zoneId, 'error' => $e->getMessage()]);
+            }
+        }
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

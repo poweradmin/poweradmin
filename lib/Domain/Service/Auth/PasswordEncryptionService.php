@@ -1,0 +1,83 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Service\Auth;
+
+/**
+ * AES-256-CBC encryption for the password held in the session, keyed from the configured session_key.
+ */
+class PasswordEncryptionService
+{
+    private const ALGORITHM = 'aes-256-cbc';
+    private const IV_LENGTH = 16;
+    private string $session_key;
+
+    public function __construct(#[\SensitiveParameter] string $session_key)
+    {
+        $this->session_key = $session_key;
+    }
+
+    public function encrypt(#[\SensitiveParameter] string $password): string
+    {
+        // Only a zero-length password is skipped: "0" is a real password and must round-trip
+        if ($password === '') {
+            return '';
+        }
+
+        $key = $this->computeKey();
+        $iv = $this->computeIV();
+
+        return openssl_encrypt($password, self::ALGORITHM, $key, 0, $iv) . ':' . base64_encode($iv);
+    }
+
+    public function decrypt(#[\SensitiveParameter] string $password): string
+    {
+        // Malformed or tampered input decrypts to an empty string.
+        if ($password === '' || !str_contains($password, ':')) {
+            return '';
+        }
+
+        $key = $this->computeKey();
+
+        list($encryptedPassword, $iv) = explode(':', $password, 2);
+        $iv = base64_decode($iv, true);
+        if ($iv === false || strlen($iv) !== self::IV_LENGTH) {
+            return '';
+        }
+
+        $decrypted = openssl_decrypt($encryptedPassword, self::ALGORITHM, $key, 0, $iv);
+
+        // openssl_encrypt() pads with PKCS#7, so the plaintext comes back byte for byte; trimming NUL
+        // bytes would let a password that was refused at login pass on the next request
+        return $decrypted === false ? '' : $decrypted;
+    }
+
+    private function computeKey(): string
+    {
+        return hash('sha256', $this->session_key);
+    }
+
+    private function computeIV(): string
+    {
+        return random_bytes(self::IV_LENGTH);
+    }
+}

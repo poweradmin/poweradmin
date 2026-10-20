@@ -277,6 +277,15 @@ class DatabaseStructureHelper
                         'name' => 'auth_method',
                         'table' => 'users',
                         'flags' => 'not_null'
+                    ),
+                    'max_zones' => array
+                    (
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'max_zones',
+                        'table' => 'users',
+                        'flags' => ''
                     )
                 ),
                 'indexes' => array(
@@ -284,7 +293,8 @@ class DatabaseStructureHelper
                         'fields' => array(
                             'perm_templ' => array()
                         )
-                    )
+                    ),
+                    'idx_users_username' => array('username', 'unique' => true)
                 )
             ),
             array(
@@ -1077,6 +1087,176 @@ class DatabaseStructureHelper
                     'log_record_changes_changeset_id_idx' => array(
                         'fields' => array(
                             'changeset_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'zone_change_requests',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'zone_id',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_name' => array(
+                        'notnull' => 1,
+                        'length' => 255,
+                        'type' => 'text',
+                        'name' => 'zone_name',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'kind' => array(
+                        'notnull' => 1,
+                        'length' => 16,
+                        'type' => 'text',
+                        'name' => 'kind',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'status' => array(
+                        'notnull' => 1,
+                        'length' => 16,
+                        'type' => 'text',
+                        'name' => 'status',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'requester_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'requester_id',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'requester_name' => array(
+                        'notnull' => 1,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'requester_name',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'request_comment' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'request_comment',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'base_serial' => array(
+                        'notnull' => 0,
+                        'length' => 32,
+                        'type' => 'text',
+                        'name' => 'base_serial',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'payload' => array(
+                        'notnull' => 1,
+                        'type' => 'text',
+                        'name' => 'payload',
+                        'table' => 'zone_change_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'reviewer_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'reviewer_id',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'reviewer_name' => array(
+                        'notnull' => 0,
+                        'length' => 64,
+                        'type' => 'text',
+                        'name' => 'reviewer_name',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'review_comment' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'review_comment',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'reviewed_at' => array(
+                        'notnull' => 0,
+                        'type' => 'timestamp',
+                        'name' => 'reviewed_at',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'applied_at' => array(
+                        'notnull' => 0,
+                        'type' => 'timestamp',
+                        'name' => 'applied_at',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'error' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'error',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    ),
+                    'snapshot' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'snapshot',
+                        'table' => 'zone_change_requests',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'zone_change_requests_zone_id_idx' => array(
+                        'fields' => array(
+                            'zone_id' => array()
+                        )
+                    ),
+                    'zone_change_requests_status_idx' => array(
+                        'fields' => array(
+                            'status' => array()
+                        )
+                    ),
+                    'zone_change_requests_requester_id_idx' => array(
+                        'fields' => array(
+                            'requester_id' => array()
+                        )
+                    ),
+                    'zone_change_requests_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
                         )
                     )
                 )
@@ -1941,6 +2121,14 @@ class DatabaseStructureHelper
                         'name' => 'perm_templ',
                         'table' => 'user_groups',
                         'flags' => 'not_null'
+                    ),
+                    'max_zones' => array(
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'max_zones',
+                        'table' => 'user_groups',
+                        'flags' => ''
                     ),
                     'created_by' => array(
                         'type' => 'integer',

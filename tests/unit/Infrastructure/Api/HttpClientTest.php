@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use ReflectionClass;
 use ReflectionMethod;
@@ -188,6 +189,48 @@ class HttpClientTest extends TestCase
         $this->assertFalse($method->invoke($this->httpClient, $ex));
     }
 
+    public function testDisplayErrorsFlagDecidesHowMuchOfTheFailureIsReported(): void
+    {
+        // A URL without a scheme is opened as a file path and fails without touching the network.
+        $verbose = new HttpClient('nowhere/pdns-api-test', 'key', null, 10, true);
+        $quiet = new HttpClient('nowhere/pdns-api-test', 'key', null, 10, false);
+
+        try {
+            $verbose->makeRequest('POST', '/servers');
+            $this->fail('Expected the request to fail.');
+        } catch (ApiErrorException $e) {
+            $this->assertStringContainsString('nowhere/pdns-api-test', $e->getMessage());
+        }
+
+        try {
+            $quiet->makeRequest('POST', '/servers');
+            $this->fail('Expected the request to fail.');
+        } catch (ApiErrorException $e) {
+            $this->assertStringNotContainsString('nowhere/pdns-api-test', $e->getMessage());
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('responseHeaderProvider')]
+    public function testGetResponseCodeReadsStatusLine(array $headers, ?int $expected): void
+    {
+        $method = $this->getPrivateMethod('getResponseCode');
+
+        $this->assertSame($expected, $method->invoke($this->httpClient, $headers));
+    }
+
+    public static function responseHeaderProvider(): array
+    {
+        return [
+            'ok' => [['HTTP/1.1 200 OK', 'Content-Type: application/json'], 200],
+            'no content' => [['HTTP/1.1 204 No Content'], 204],
+            'not found' => [['HTTP/1.1 404 Not Found'], 404],
+            'no reason phrase' => [['HTTP/1.1 422'], 422],
+            'redirect then final' => [['HTTP/1.1 301 Moved Permanently', 'Location: /x', 'HTTP/1.1 200 OK', 'Content-Length: 2'], 200],
+            'empty' => [[], null],
+            'garbage' => [['nonsense'], null],
+        ];
+    }
+
     /**
      * Helper method to access private methods for testing
      */
@@ -195,7 +238,6 @@ class HttpClientTest extends TestCase
     {
         $reflection = new ReflectionClass(HttpClient::class);
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
         return $method;
     }
 }

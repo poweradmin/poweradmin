@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Management', () => {
   test.beforeEach(async ({ page }) => {
@@ -17,14 +17,7 @@ test.describe('User Management', () => {
   test('should display users list or empty state', async ({ page }) => {
     await page.goto('/users');
 
-    // Should show either users table or empty state
-    const hasTable = await page.locator('table, .table').count() > 0;
-    if (hasTable) {
-      await expect(page.locator('table, .table')).toBeVisible();
-    } else {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/No users|users|empty/i);
-    }
+    await expect(page.locator('table, .table').first()).toBeVisible();
   });
 
   test('should access add user page', async ({ page }) => {

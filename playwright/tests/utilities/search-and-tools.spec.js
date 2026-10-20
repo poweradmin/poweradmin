@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Search and Utility Tools', () => {
   test.beforeEach(async ({ page }) => {
@@ -37,8 +37,7 @@ test.describe('Search and Utility Tools', () => {
     await page.waitForLoadState('networkidle');
 
     // Should stay on search page or show validation
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should perform search with query', async ({ page }) => {
@@ -47,14 +46,11 @@ test.describe('Search and Utility Tools', () => {
 
     // Enter search query
     const searchInput = page.locator('input[type="search"], input[name*="search"], input[name*="query"], input[placeholder*="search"], input[placeholder*="domain"]').first();
-    await searchInput.fill('example.com');
+    await searchInput.fill('admin-zone.example.com');
 
     await page.locator('button[type="submit"], input[type="submit"], button:has-text("Search")').first().click();
-    await page.waitForLoadState('networkidle');
 
-    // Should show search results or "no results" message
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('table tr:has-text("admin-zone.example.com")').first()).toBeVisible();
   });
 
   test('should access WHOIS tool', async ({ page }) => {
@@ -77,21 +73,9 @@ test.describe('Search and Utility Tools', () => {
 
   test('should show WHOIS form fields', async ({ page }) => {
     await page.goto('/whois');
-    await page.waitForLoadState('networkidle');
 
-    const bodyText = await page.locator('body').textContent();
-
-    // Check if WHOIS is available
-    if (bodyText.toLowerCase().includes('disabled') || bodyText.toLowerCase().includes('not available')) {
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Should have domain input field
-    const domainInput = page.locator('input[name*="domain"], input[name*="host"], input[placeholder*="domain"]').first();
-    if (await domainInput.count() > 0) {
-      await expect(domainInput).toBeVisible();
-    }
+    await expect(page.locator('input[name="domain"]')).toBeVisible();
+    await expect(page.locator('form button[type="submit"]').first()).toBeVisible();
   });
 
   test('should validate WHOIS domain input', async ({ page }) => {
@@ -112,8 +96,7 @@ test.describe('Search and Utility Tools', () => {
     }
 
     // Should stay on form or show validation
-    const newBodyText = await page.locator('body').textContent();
-    expect(newBodyText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should perform WHOIS lookup', async ({ page }) => {
@@ -140,8 +123,7 @@ test.describe('Search and Utility Tools', () => {
     await page.waitForLoadState('networkidle');
 
     // Should show WHOIS results or error message
-    const resultText = await page.locator('body').textContent();
-    expect(resultText).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
   });
 
   test('should access RDAP tool if enabled', async ({ page }) => {

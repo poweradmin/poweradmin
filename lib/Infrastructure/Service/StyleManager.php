@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,10 @@ namespace Poweradmin\Infrastructure\Service;
 use DirectoryIterator;
 use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
 
-class StyleManager
+/**
+ * Picks the light/dark stylesheet from the style cookie or config, limited to what the theme's style directory ships.
+ */
+final class StyleManager
 {
     private const DEFAULT_STYLE = 'light';
 

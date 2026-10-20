@@ -9,7 +9,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Timezone Preference', () => {
   test.beforeEach(async ({ page }) => {

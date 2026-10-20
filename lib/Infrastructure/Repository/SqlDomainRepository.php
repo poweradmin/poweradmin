@@ -23,51 +23,58 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use Poweradmin\Domain\Model\ZoneStartingLetter;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneStartingLetter;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\ZoneHealthSql;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\ZoneHealthSql;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
 
 /**
- * SQL-backend domain repository.
- * Queries PowerDNS tables directly via PDO.
+ * Domain lookups on the domains table.
  */
-class SqlDomainRepository implements DomainRepositoryInterface
+final class SqlDomainRepository implements DomainRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
-    private MessageService $messageService;
+    private ConfigurationInterface $config;
     private HostnameValidator $hostnameValidator;
     private TableNameService $tableNameService;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->tableNameService = new TableNameService($config);
     }
 
-    public function zoneIdExists(int $zid): int
+    /**
+     * Template names for the zone listing; built on first use since most listings never show them.
+     */
+    private function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db);
+    }
+
+    public function zoneIdExists(int $zid): bool
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $zid]);
-        return (int)$stmt->fetchColumn();
+        $stmt = $this->db->prepare("SELECT 1 FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $zid, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() !== false;
     }
 
     public function getDomainNameById(int $id): ?string
@@ -75,13 +82,10 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $result = $stmt->fetch();
-        if ($result) {
-            return $result["name"];
-        } else {
-            return null;
-        }
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetchColumn();
+        return $result === false ? null : (string)$result;
     }
 
     public function getDomainIdByName(string $name): ?int
@@ -101,48 +105,30 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $result ? (int)$result['id'] : null;
     }
 
-    public function getZoneIdFromName(string $zname): ?int
-    {
-        if (empty($zname)) {
-            return null;
-        }
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $zname]);
-        $result = $stmt->fetch();
-
-        return $result ? (int)$result["id"] : null;
-    }
-
     public function getDomainType(int $id): string
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->prepare("SELECT type FROM $domains_table WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $type = $stmt->fetchColumn();
-        if ($type == "") {
-            $type = "NATIVE";
-        }
-        return $type;
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        return ((string)$stmt->fetchColumn()) ?: 'NATIVE';
     }
 
-    public function getDomainSlaveMaster(int $id): ?string
+    public function getDomainMaster(int $id): ?string
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = :id");
-        $stmt->execute([':id' => $id]);
+        $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetchColumn();
-        return $result !== false ? $result : null;
+        return $result ?: null;
     }
 
     public function domainExists(string $domain): bool
     {
         if (!$this->hostnameValidator->isValid($domain)) {
-            $this->messageService->addSystemError(_('This is an invalid zone name.'));
             return false;
         }
 
@@ -150,6 +136,38 @@ class SqlDomainRepository implements DomainRepositoryInterface
         $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
         $stmt->execute([':name' => $domain]);
         return (bool)$stmt->fetch();
+    }
+
+    /**
+     * Joins and aggregate that rank a page of zones by owner, record count or group.
+     * Returns null for column sorts, which the DISTINCT id query can order directly.
+     *
+     * @return array{joins: string, key: string}|null
+     */
+    private function pageSortKey(string $sqlSortBy, string $sortDirection, string $domainsTable, string $recordsTable): ?array
+    {
+        if (str_contains($sqlSortBy, 'users.username')) {
+            return [
+                'joins' => "LEFT JOIN zones page_zones ON page_zones.domain_id = $domainsTable.id
+                            LEFT JOIN users page_users ON page_users.id = page_zones.owner",
+                // A zone with several owners is listed under its first owner in the requested direction
+                'key' => ($sortDirection === 'DESC' ? 'MAX' : 'MIN') . '(page_users.username)',
+            ];
+        }
+        if (str_contains($sqlSortBy, 'COUNT(')) {
+            return [
+                'joins' => "LEFT JOIN $recordsTable page_records ON page_records.domain_id = $domainsTable.id AND page_records.type IS NOT NULL",
+                'key' => 'COUNT(DISTINCT page_records.id)',
+            ];
+        }
+        if (str_contains($sqlSortBy, 'user_groups.name')) {
+            return [
+                'joins' => "LEFT JOIN zones_groups page_groups ON page_groups.domain_id = $domainsTable.id
+                            LEFT JOIN user_groups page_group_names ON page_group_names.id = page_groups.group_id",
+                'key' => 'MIN(page_group_names.name)',
+            ];
+        }
+        return null;
     }
 
     /**
@@ -244,12 +262,15 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortby = "$domains_table.$sortby";
         }
 
-        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getZoneSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getNaturalSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
         if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
             $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
+            $pageSort = null;
 
-            if ($db_type == 'pgsql' && $sortby == "$domains_table.name") {
+            // The natural sort is an expression over name, so a driver that cannot
+            // ORDER BY it under DISTINCT pages by the plain column instead.
+            if (!DbCompat::distinctAllowsOrderByExpression($db_type) && $sortby == "$domains_table.name") {
                 $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
                             FROM $domains_table";
 
@@ -279,20 +300,12 @@ class SqlDomainRepository implements DomainRepositoryInterface
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                $sortByGroupInner = strpos($sql_sortby, 'user_groups.name') !== false;
-                $sortUsesAggregateOrJoin = strpos($sql_sortby, 'users.username') !== false
-                    || strpos($sql_sortby, 'COUNT(') !== false
-                    || $sortByGroupInner;
+                $pageSort = $this->pageSortKey($sql_sortby, $sortDirection, $domains_table, $records_table);
 
-                if ($sortByGroupInner) {
-                    // Aggregate on user_groups.name so paginating a group-sorted page picks the right zones globally
-                    $id_query = "SELECT $domains_table.id, $domains_table.name
-                                FROM $domains_table
-                                LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
-                                LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id";
-                } elseif (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && $sortUsesAggregateOrJoin) {
-                    $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
-                                FROM $domains_table";
+                if ($pageSort !== null) {
+                    // Rank zones by the owner, record count or group itself before LIMIT, so every page is in global order
+                    $id_query = "SELECT $domains_table.id, $domains_table.name, " . $pageSort['key'] . " AS page_rank
+                                FROM $domains_table " . $pageSort['joins'];
                 } else {
                     $select_columns = "$domains_table.id";
                     if (strpos($sql_sortby, "$domains_table.name") !== false) {
@@ -328,15 +341,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
                 }
 
-                if ($sortByGroupInner) {
+                if ($pageSort !== null) {
                     $id_query .= " GROUP BY $domains_table.id, $domains_table.name"
-                        . " ORDER BY MIN(user_groups.name) " . $sortDirection . ", $domains_table.name";
-                } elseif (in_array($db_type, ['mysql', 'mysqli', 'pgsql'], true) && $sortUsesAggregateOrJoin) {
-                    $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
-                } elseif (!$sortUsesAggregateOrJoin) {
-                    $id_query .= " ORDER BY " . $sql_sortby;
+                        . " ORDER BY " . $pageSort['key'] . " " . $sortDirection . ", $domains_table.name";
                 } else {
-                    $id_query .= " ORDER BY $domains_table.name";
+                    $id_query .= " ORDER BY " . $sql_sortby;
                 }
 
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
@@ -345,6 +354,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $sortByGroup = strpos($sql_sortby, 'user_groups.name') !== false;
 
             $needsRecordsJoin = $includeRecordCount || $includeHealth;
+
+            // The listing follows the rank that picked the page, so ownerless rows cannot reorder it
+            $pagedOrderBy = $pageSort !== null
+                ? "MIN(limited_domains.page_rank) $sortDirection, $domains_table.name, users.username $sortDirection"
+                : $sql_sortby;
 
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
@@ -373,7 +387,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
             $query .= " GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
                         " . ($iface_zone_comments ? ", zones.comment" : "") . "
-                        ORDER BY " . $sql_sortby;
+                        ORDER BY " . $pagedOrderBy;
 
             if (!empty($params)) {
                 $stmt = $this->db->prepare($query);
@@ -477,22 +491,15 @@ class SqlDomainRepository implements DomainRepositoryInterface
             }
 
             if ($iface_zonelist_template) {
-                $ret[$domainName]["template"] = ZoneTemplate::getZoneTemplName($this->db, $r["id"]);
+                $ret[$domainName]["template"] = $this->zoneTemplateRepository()->getTemplateNameForZone($r["id"]);
             }
         }
 
-        return $ret;
+        return array_map(ZoneSummary::fromRow(...), $ret);
     }
 
     public function getZoneInfoFromId(int $zid): array
     {
-        $perm_view = Permission::getViewPermission($this->db);
-
-        if ($perm_view == "none") {
-            $this->messageService->addSystemError(_("You do not have permission to view this zone."));
-            return [];
-        }
-
         [$domains_table, $records_table] = $this->tableNameService->getTables(
             PdnsTable::DOMAINS,
             PdnsTable::RECORDS
@@ -529,6 +536,18 @@ class SqlDomainRepository implements DomainRepositoryInterface
         return $zone_infos;
     }
 
+    public function listZoneNames(): array
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $rows = $this->db->query("SELECT id, name, type FROM $domains_table ORDER BY name ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn(array $row): array => [
+            'id' => (int)$row['id'],
+            'name' => (string)$row['name'],
+            'type' => (string)$row['type'],
+        ], $rows);
+    }
+
     public function getBestMatchingZoneIdFromName(string $domain): int
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
@@ -548,5 +567,48 @@ class SqlDomainRepository implements DomainRepositoryInterface
             }
         }
         return -1;
+    }
+
+    public function findZoneIdsByNames(array $names): array
+    {
+        if ($names === []) {
+            return [];
+        }
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $placeholders = implode(',', array_fill(0, count($names), '?'));
+
+        // LOWER(name) so the match is case-insensitive on every backend; the
+        // names are already lowercased.
+        $stmt = $this->db->prepare("SELECT id AS id, name AS name FROM $domains_table WHERE LOWER(name) IN ($placeholders)");
+        $stmt->execute($names);
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[$row['name']] = (int)$row['id'];
+        }
+
+        return $result;
+    }
+
+    public function findZonesUnder(string $suffix): array
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        // Escape LIKE wildcards with '=' (not backslash, which MySQL mangles in
+        // string literals) so an underscore matches literally; escape '=' first.
+        $escaped = str_replace(['=', '%', '_'], ['==', '=%', '=_'], $suffix);
+        $pattern = '%.' . $escaped;
+
+        $stmt = $this->db->prepare(
+            "SELECT id AS id, name AS name FROM $domains_table WHERE LOWER(name) LIKE :pattern ESCAPE '=' ORDER BY name"
+        );
+        $stmt->execute([':pattern' => $pattern]);
+
+        $result = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = ['id' => (int)$row['id'], 'name' => (string)$row['name']];
+        }
+
+        return $result;
     }
 }

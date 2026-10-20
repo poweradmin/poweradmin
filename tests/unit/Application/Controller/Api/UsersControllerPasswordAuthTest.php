@@ -16,8 +16,8 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\UserManagementService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\User\UserManagementService;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -78,7 +78,6 @@ class UsersControllerPasswordAuthTest extends TestCase
     private function invokeUpdate(object $controller): object
     {
         $method = new ReflectionMethod($controller, 'updateUser');
-        $method->setAccessible(true);
 
         return $method->invoke($controller);
     }
@@ -86,7 +85,6 @@ class UsersControllerPasswordAuthTest extends TestCase
     private function setProperty(object $target, string $name, mixed $value): void
     {
         $property = new ReflectionProperty($target, $name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

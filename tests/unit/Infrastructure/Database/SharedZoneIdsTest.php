@@ -24,11 +24,10 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Database;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use ReflectionProperty;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 /**
  * In API backend mode a zone this application created (domain_id = its own id) and a
@@ -44,8 +43,6 @@ class SharedZoneIdsTest extends TestCase
     private const GROUP_MEMBER = 4;
 
     private PDO $db;
-    private array $savedSettings = [];
-    private bool $savedInitialized = false;
 
     protected function setUp(): void
     {
@@ -53,36 +50,6 @@ class SharedZoneIdsTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, group_id INTEGER, user_id INTEGER)");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, fullname TEXT)");
-        $this->db->exec("INSERT INTO users (id, fullname) VALUES (1, 'Creator'), (2, 'Migrator'), (3, 'Extra')");
-
-        $config = ConfigurationManager::getInstance();
-        $this->savedSettings = $this->configProperty('settings')->getValue($config);
-        $this->savedInitialized = $this->configProperty('initialized')->getValue($config);
-    }
-
-    protected function tearDown(): void
-    {
-        $config = ConfigurationManager::getInstance();
-        $this->configProperty('settings')->setValue($config, $this->savedSettings);
-        $this->configProperty('initialized')->setValue($config, $this->savedInitialized);
-    }
-
-    private function configProperty(string $name): ReflectionProperty
-    {
-        $property = new ReflectionProperty(ConfigurationManager::class, $name);
-        $property->setAccessible(true);
-
-        return $property;
-    }
-
-    private function useBackend(string $backend): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $this->configProperty('settings')->setValue($config, ['dns' => ['backend' => $backend]]);
-        $this->configProperty('initialized')->setValue($config, true);
-
-        return $config;
     }
 
     private function seed(int $id, ?int $domainId, ?string $zoneName, ?int $owner): void
@@ -111,9 +78,9 @@ class SharedZoneIdsTest extends TestCase
         $this->seed(31, 30, null, self::EXTRA_OWNER);
     }
 
-    private function users(string $backend = 'api'): DbUserRepository
+    private function users(bool $apiBackend = true): DbUserRepository
     {
-        return new DbUserRepository($this->db, $this->useBackend($backend));
+        return new DbUserRepository($this->db, $this->createStub(ConfigurationInterface::class), $apiBackend);
     }
 
     public function testAnIdTwoNamedZonesShareIsShared(): void
@@ -144,19 +111,6 @@ class SharedZoneIdsTest extends TestCase
         $this->assertFalse($users->userOwnsZone(self::MIGRATED_OWNER, 5), 'The migrated zone owner must not act on the created zone');
         $this->assertFalse($users->userOwnsZone(self::EXTRA_OWNER, 5), 'An extra-owner row keyed by a shared id cannot be attributed');
         $this->assertFalse($users->userOwnsZone(self::GROUP_MEMBER, 5), 'A group grant keyed by a shared id cannot be attributed');
-        $this->assertSame('Creator', $users->getZoneOwnerFullNames(5));
-    }
-
-    public function testTheApiPermissionCheckFollowsTheSameRule(): void
-    {
-        $this->seedCollision();
-        $this->useBackend('api');
-        $permissions = new ApiPermissionService($this->db);
-
-        $this->assertTrue($permissions->userOwnsZone(self::CREATED_OWNER, 5));
-        $this->assertFalse($permissions->userOwnsZone(self::MIGRATED_OWNER, 5));
-        $this->assertFalse($permissions->userOwnsZone(self::GROUP_MEMBER, 5));
-        $this->assertTrue($permissions->userOwnsZone(self::EXTRA_OWNER, 30));
     }
 
     public function testOwnershipOfAnUnsharedIdIsUnchanged(): void
@@ -171,18 +125,28 @@ class SharedZoneIdsTest extends TestCase
     public function testOwnedZoneListsDropSharedIdsTheUserDoesNotDirectlyOwn(): void
     {
         $this->seedCollision();
+        $users = $this->users();
 
-        $this->assertSame([5], SharedZoneIds::filterOwned($this->db, self::CREATED_OWNER, [5]));
-        $this->assertSame([30], SharedZoneIds::filterOwned($this->db, self::MIGRATED_OWNER, [5, 30]));
-        $this->assertSame([30], SharedZoneIds::filterOwned($this->db, self::EXTRA_OWNER, [5, 30]));
-        $this->assertSame([], SharedZoneIds::filterOwned($this->db, self::GROUP_MEMBER, [5]));
+        $this->assertSame([5], $users->getUserOwnedZoneIds(self::CREATED_OWNER));
+        $this->assertSame([30], $users->getUserOwnedZoneIds(self::MIGRATED_OWNER));
+        $this->assertSame([30], $users->getUserOwnedZoneIds(self::EXTRA_OWNER));
+        $this->assertSame([], $users->getUserOwnedZoneIds(self::GROUP_MEMBER));
     }
 
     public function testSqlModeKeepsMatchingDomainIds(): void
     {
         $this->seedCollision();
 
-        $this->assertTrue($this->users('sql')->userOwnsZone(self::MIGRATED_OWNER, 5));
+        $this->assertTrue($this->users(false)->userOwnsZone(self::MIGRATED_OWNER, 5));
+    }
+
+    public function testTheGroupIndexDropsGrantsOnASharedId(): void
+    {
+        $this->seedCollision();
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (30, 8)");
+
+        $this->assertSame([30 => [8]], (new DbZoneGroupRepository($this->db, null, true))->findGroupIdsByDomainIds([5, 30]));
+        $this->assertSame([5 => [7], 30 => [8]], (new DbZoneGroupRepository($this->db, null, false))->findGroupIdsByDomainIds([5, 30]));
     }
 
     public function testListsBuiltFromTheBackendKeepOnlyTheZoneASharedIdOpens(): void

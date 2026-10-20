@@ -23,8 +23,11 @@
 namespace Poweradmin\Application\Routing;
 
 use Exception;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleRegistry;
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Controller\RequestHalted;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Application\Module\ModuleRegistry;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -36,15 +39,9 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Route;
 
 /**
- * Class SymfonyRouter
- *
- * Symfony Router implementation for Poweradmin with module support.
- * Uses modern routing patterns with clean URLs and proper REST endpoints.
- * Loads routes from YAML configuration and enabled modules.
- *
- * @package Poweradmin\Application\Routing
+ * Matches the request against routes.yaml and enabled module routes, then runs the matched controller.
  */
-class SymfonyRouter
+final class SymfonyRouter
 {
     private UrlMatcher $matcher;
     private UrlGenerator $urlGenerator;
@@ -53,18 +50,31 @@ class SymfonyRouter
     private ?string $matchedRoute = null;
     private bool $routeFound = true;
     private bool $webEnabled = true;
+    private BootContext $context;
 
-    public function __construct()
+    /**
+     * @param BootContext $context What the kernel booted: module routes come from
+     *        its registry, and every controller built here works from it
+     */
+    public function __construct(BootContext $context)
     {
         $this->request = Request::createFromGlobals();
-        $this->initializeRouter();
+        $this->context = $context;
+        BaseController::bindContext($context);
+
+        $this->initializeRouter($context->config);
+    }
+
+    public function getModuleRegistry(): ModuleRegistry
+    {
+        return $this->context->moduleRegistry;
     }
 
     /**
      * Initialize the router with YAML routes and module routes.
      * Handles base_url_prefix for subfolder deployments.
      */
-    private function initializeRouter(): void
+    private function initializeRouter(ConfigurationInterface $config): void
     {
         $configDir = __DIR__ . '/../Config';
         $fileLocator = new FileLocator([$configDir]);
@@ -73,12 +83,7 @@ class SymfonyRouter
         // Load YAML routes into a RouteCollection
         $routes = $loader->load('routes.yaml');
 
-        // Load module routes from enabled modules
-        $config = ConfigurationManager::getInstance();
-        $registry = new ModuleRegistry($config);
-        $registry->loadModules();
-
-        foreach ($registry->getRoutes() as $routeDef) {
+        foreach ($this->context->moduleRegistry->getRoutes() as $routeDef) {
             $defaults = ['_controller' => $routeDef['controller']];
             $requirements = $routeDef['requirements'] ?? [];
 
@@ -127,13 +132,11 @@ class SymfonyRouter
 
             $controller = $parameters['_controller'];
 
-            // Parse controller string (e.g., "App\Controller\HomeController::index")
-            if (strpos($controller, '::') !== false) {
-                [$controllerClass, $method] = explode('::', $controller);
-            } else {
-                $controllerClass = $controller;
-                $method = $this->getMethodFromHttpVerb();
+            // Every route names its method ("Controller::run"); a bare class is a config error.
+            if (!str_contains($controller, '::')) {
+                throw new Exception("Route controller \"$controller\" must name a method", 500);
             }
+            [$controllerClass, $method] = explode('::', $controller, 2);
 
             // Remove route-specific parameters to get clean parameters
             $cleanParameters = array_filter($parameters, function ($key) {
@@ -151,7 +154,7 @@ class SymfonyRouter
             // A headless install has no interface to render a 404 page with, and
             // misses are most of its traffic, so answer without touching the database.
             $notFound = $this->webEnabled
-                ? '\Poweradmin\Application\Controller\NotFoundController'
+                ? '\Poweradmin\Application\Controller\System\NotFoundController'
                 : '\Poweradmin\Application\Controller\Api\HeadlessNotFoundController';
 
             return [
@@ -188,38 +191,42 @@ class SymfonyRouter
             $this->request->request->all()
         );
 
-        // Create controller instance
-        if ($this->isApiRoute()) {
-            $controller = new $controllerClass($requestData, $parameters);
-        } else {
-            // Web controllers get route parameters merged into the request data
-            $requestData = array_merge($requestData, $parameters);
-            // Add the route name as 'page' for template navigation
-            $requestData['page'] = $routeInfo['route'];
-            $controller = new $controllerClass($requestData);
-        }
+        try {
+            if (self::takesBootContext($controllerClass)) {
+                // The database-free responders (ping, health) are built from the boot context
+                $controller = new $controllerClass($this->context);
+            } elseif ($this->isApiRoute()) {
+                $controller = new $controllerClass($requestData, $parameters);
+            } else {
+                // Web controllers get route parameters merged into the request data
+                $requestData = array_merge($requestData, $parameters);
+                // Add the route name as 'page' for template navigation
+                $requestData['page'] = $routeInfo['route'];
+                $controller = new $controllerClass($requestData);
+            }
 
-        // Check if method exists
+            $this->assertMethodExists($controller, $method, $controllerClass);
+            $controller->$method();
+        } catch (RequestHalted) {
+            // The response is complete; the halt only unwinds the stack the way exit did
+        }
+    }
+
+    /** Whether the controller's constructor asks for the BootContext rather than request data. */
+    private static function takesBootContext(string $controllerClass): bool
+    {
+        $constructor = (new \ReflectionClass($controllerClass))->getConstructor();
+        $first = $constructor?->getParameters()[0] ?? null;
+        $type = $first?->getType();
+
+        return $type instanceof \ReflectionNamedType && $type->getName() === BootContext::class;
+    }
+
+    private function assertMethodExists(object $controller, string $method, string $controllerClass): void
+    {
         if (!method_exists($controller, $method)) {
             throw new Exception("Method {$method} not found in {$controllerClass}", 404);
         }
-
-        // Execute controller method
-        $controller->$method();
-    }
-
-    /**
-     * Determine HTTP method to controller method mapping.
-     */
-    private function getMethodFromHttpVerb(): string
-    {
-        return match ($this->request->getMethod()) {
-            'GET' => 'index',
-            'POST' => 'create',
-            'PUT', 'PATCH' => 'update',
-            'DELETE' => 'delete',
-            default => 'run'
-        };
     }
 
     /**

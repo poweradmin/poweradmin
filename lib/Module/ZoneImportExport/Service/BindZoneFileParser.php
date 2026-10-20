@@ -23,12 +23,12 @@
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
 /**
- * BIND zone file parser.
+ * Parses BIND zone file text into records, handling $ORIGIN, $TTL and multi-line values.
  *
  * Parses standard BIND zone file format (RFC 1035) with Cloudflare extensions.
  * Informed by PowerDNS ZoneParserTNG patterns.
  */
-class BindZoneFileParser
+final class BindZoneFileParser
 {
     private const KNOWN_TYPES = [
         'A', 'AAAA', 'AFSDB', 'ALIAS', 'APL', 'CAA', 'CDNSKEY', 'CDS', 'CERT',

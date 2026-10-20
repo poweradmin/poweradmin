@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Validator for DLV (DNSSEC Lookaside Validation) DNS records
@@ -41,11 +41,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * @see https://datatracker.ietf.org/doc/html/rfc8749 RFC 8749: Moving DNSSEC Lookaside Validation (DLV) to Historic Status
  * @see https://datatracker.ietf.org/doc/html/rfc5074 RFC 5074: DNSSEC Lookaside Validation (DLV)
  * @see https://datatracker.ietf.org/doc/html/rfc4431 RFC 4431: The DNSSEC Lookaside Validation (DLV) DNS Resource Record
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DLVRecordValidator implements DnsRecordValidatorInterface
 {
@@ -55,11 +50,11 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param HostnameValidator $hostnameValidator
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -74,6 +69,7 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority
      * @param mixed $ttl TTL value
      * @param int $defaultTTL Default TTL to use if TTL is empty
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult Validation result with data, errors, or warnings
      */
@@ -87,7 +83,7 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
         // Validate the hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return $hostnameResult;
+            return $hostnameResult->withField(RecordField::NAME);
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];

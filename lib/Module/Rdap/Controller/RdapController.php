@@ -22,37 +22,45 @@
 
 namespace Poweradmin\Module\Rdap\Controller;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Module\Rdap\Service\RdapService;
 
+/**
+ * /rdap and /zones/{id}/rdap - looks up a domain's RDAP record and shows the result.
+ */
 class RdapController extends BaseController
 {
-    private RdapService $rdapService;
-    private DomainRepositoryInterface $domainRepository;
+    private ?RdapService $rdapService = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
 
-    public function __construct(array $request)
+    private function rdapService(): RdapService
     {
-        parent::__construct($request);
+        if ($this->rdapService === null) {
+            $this->rdapService = new RdapService($this->moduleServices()->proxyContext());
+            $this->rdapService->setRequestTimeout($this->getModuleConfig('rdap', 'request_timeout', 10));
 
-        $this->rdapService = new RdapService();
-        $this->domainRepository = $this->createDomainRepository();
-
-        $timeout = $this->getModuleConfig('rdap', 'request_timeout', 10);
-        $this->rdapService->setRequestTimeout($timeout);
-
-        $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);
-        if (is_array($customServers) && !empty($customServers)) {
-            $this->rdapService->setCustomServers($customServers);
+            $customServers = $this->getModuleConfig('rdap', 'custom_servers', []);
+            if (is_array($customServers) && !empty($customServers)) {
+                $this->rdapService->setCustomServers($customServers);
+            }
         }
+
+        return $this->rdapService;
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->moduleServices()->domainRepository();
     }
 
     public function run(): void
     {
         $restrict_to_admin = $this->getModuleConfig('rdap', 'restrict_to_admin', true);
         if ($restrict_to_admin) {
-            $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform RDAP lookups.'));
+            $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to perform RDAP lookups.'));
         }
 
         $this->setCurrentPage('module_rdap');
@@ -81,10 +89,10 @@ class RdapController extends BaseController
             }
         } elseif (isset($this->getRequest()['id'])) {
             $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->domainRepository->getDomainNameById($zone_id) ?? '';
+            $domain = $this->domainRepository()->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;
@@ -105,16 +113,16 @@ class RdapController extends BaseController
         $customServer = $this->getModuleConfig('rdap', 'default_server', '');
 
         if (!empty($customServer)) {
-            $response = $this->rdapService->query($domain, $customServer);
+            $response = $this->rdapService()->query($domain, $customServer);
 
             if ($response !== null) {
                 $result['success'] = true;
-                $result['data'] = $this->rdapService->formatRdapResponse($response);
+                $result['data'] = $this->rdapService()->formatRdapResponse($response);
             } else {
                 $result['error'] = sprintf(_('Failed to retrieve RDAP information using server %s'), $customServer);
             }
         } else {
-            $result = $this->rdapService->getRdapInfo($domain);
+            $result = $this->rdapService()->getRdapInfo($domain);
         }
 
         return $result;

@@ -71,38 +71,48 @@
     "phpunit/phpunit": "^11.5",
     "squizlabs/php_codesniffer": "^4.0.1",
     "phpstan/phpstan": "^2.1",
-    "friendsofphp/php-cs-fixer": "^v3.89",
     "vimeo/psalm": "^6.15",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "tomasvotruba/cognitive-complexity": "^1.1",
     "spaze/phpstan-disallowed-calls": "^4.13"
   },
+  "scripts-descriptions": {
+    "docs:api": "Print the OpenAPI spec as JSON; add -- --output <file> to write it",
+    "docs:reference": "Build the local class reference into docs/reference with Doctum",
+    "lint:docblocks": "Fail on @param tags that do not match the method signature (Doctum parse)",
+    "sql:seed": "Regenerate the seed INSERT blocks of sql/poweradmin-*-db-structure.sql from PermissionCatalogue; add -- --check to only verify"
+  },
   "scripts": {
-    "phpdoc:install": "test -f .phpdoc/phpDocumentor.phar || (mkdir -p .phpdoc && curl -sL -o .phpdoc/phpDocumentor.phar https://phpdoc.org/phpDocumentor.phar)",
-    "docs": ["@phpdoc:install", "php .phpdoc/phpDocumentor.phar"],
-    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.json",
-    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi.yaml --format yaml",
-    "docs:api": ["@docs:api:json", "@docs:api:yaml"],
-
+    "docs:api": "openapi lib/Application/Controller/Api/V2/ --format json",
+    "doctum:install": "test -f .doctum/doctum.phar || (mkdir -p .doctum && curl -fsSL --retry 3 --retry-all-errors --max-time 120 -o .doctum/doctum.phar.tmp https://doctum.long-term.support/releases/5.6.0/doctum.phar && mv .doctum/doctum.phar.tmp .doctum/doctum.phar)",
+    "docs:reference": ["@doctum:install", "php .doctum/doctum.phar update doctum.php --force"],
+    "lint:docblocks": ["@doctum:install", "out=$(php .doctum/doctum.phar parse doctum.php --force --no-progress -v 2>&1) || { printf '%s\n' \"$out\" | grep '^ERROR'; echo 'ERROR: fix the docblocks above (composer lint:docblocks)'; exit 1; }"],
+    "sql:seed": "php bin/regenerate-seed-sql.php",
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
     "tests:functional": "phpunit --testsuite functional",
     "tests:all": "phpunit",
+    "tests:matrix": ".devcontainer/scripts/test-php-matrix.sh",
 
-    "check:all": "phpcs --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
-    "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
-    "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config index.php install lib tests dynamic_update.php",
-    "analyse:phpstan": "phpstan analyse --level=4 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
+    "check:all": "phpcs --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
+    "format:all": "phpcbf --standard=phpcs.xml addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=4 --memory-limit=512M addons bin bin/poweradmin config index.php install lib tests dynamic_update.php",
     "analyse:complexity": "phpstan analyse -c phpstan-complexity.neon --level=4 --memory-limit=512M addons config index.php install lib tests dynamic_update.php",
     "analyse:taint": "psalm --taint-analysis --no-cache",
     "lint:twig": [
         "! grep -rn 'name=\"csrf_token\"' templates/ lib/ --include='*.html' || (echo 'ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields' && false)",
         "! grep -rn 'name=\"_token\"' templates/ lib/ --include='*.html' | grep -v '_macros.html' || (echo 'ERROR: Use the csrf_field() macro from _macros.html instead of a raw _token input' && false)"
     ],
-    "lint:themes": "failed=0; for f in $(cd templates/default && find . -name '*.html' | sed 's|^\\./||' | sort); do grep -qx \"$f\" templates/theme-specific-templates.txt && continue; if [ ! -f \"templates/modern/$f\" ]; then echo \"Theme drift: $f is missing from templates/modern\"; failed=1; elif ! cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f differs between templates/default and templates/modern (sync it or add it to templates/theme-specific-templates.txt)\"; failed=1; fi; done; exit $failed",
+    "lint:themes": "failed=0; for f in $(cd templates/modern && find . -name '*.html' | sed 's|^\\./||' | sort); do if ! grep -qx \"$f\" templates/theme-specific-templates.txt; then echo \"Theme drift: templates/modern/$f is not listed in templates/theme-specific-templates.txt (identical templates live only in templates/default)\"; failed=1; elif cmp -s \"templates/default/$f\" \"templates/modern/$f\"; then echo \"Theme drift: $f is identical in both themes; delete the modern copy and its allowlist entry\"; failed=1; fi; done; for f in $(grep -v '^#' templates/theme-specific-templates.txt); do [ -f \"templates/modern/$f\" ] || { echo \"Theme drift: $f is allowlisted but missing from templates/modern\"; failed=1; }; done; exit $failed",
     "lint:e2e-assertions": "node playwright/tools/check-assertions.js",
+    "lint:js": "npx --yes eslint@10.12.0 playwright/",
     "lint:e2e-routes": "php playwright/tools/check-route-paths.php",
     "lint:e2e-urls": "php playwright/tools/check-url-literals.php",
+    "lint:no-traits": "! grep -rnE '^\\s*trait ' lib/ --include='*.php' || (echo 'ERROR: lib/ does not use traits; share behaviour through a service or an abstract class instead (the installer keeps its five legacy ones)' && false)",
+    "lint:domain-imports": "! grep -rnE '^use (function |const )?\\\\?[A-Za-z0-9_]+\\\\' lib/Domain/ --include='*.php' | grep -vE ':[0-9]+:use (function |const )?\\\\?(Poweradmin|Psr)\\\\' || (echo 'ERROR: lib/Domain must not import a third-party library. Put it behind a port in lib/Domain/Port with an adapter in lib/Infrastructure, the way TotpInterface and PublicSuffixInterface are wired. Psr interfaces are the only exception.' && false)",
+    "lint:permission-literals": [
+        "! grep -rnE \"(hasPermission|userHasPermission|checkPermission|canPerformZoneAction|requirePermission|logAccessDenied)\\([^)]*'(zone_master_add|zone_slave_add|zone_content_view_own|zone_content_edit_own|zone_meta_edit_own|zone_content_view_others|zone_content_edit_others|zone_meta_edit_others|search|supermaster_view|supermaster_add|supermaster_edit|user_is_ueberuser|user_view_others|user_add_new|user_edit_own|user_edit_others|user_passwd_edit_others|user_edit_templ_perm|templ_perm_add|templ_perm_edit|zone_content_edit_own_as_client|zone_templ_add|zone_templ_edit|api_manage_keys|zone_delete_own|zone_delete_others|user_enforce_mfa|zone_dnssec_manage_own|zone_logs_view_own|zone_logs_view_others|user_logs_view|group_logs_view|zone_content_edit_ns_subzone|zone_metadata_view_own|zone_metadata_view_others|zone_ownership_view_own|zone_ownership_view_others|server_status_view)'\" lib/ --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*(\\*|//)' || (echo 'ERROR: pass a Permission::PERM_* constant instead of a raw permission-name string literal, see lib/Domain/Model/Permission.php' && false)"
+    ],
     "lint:zone-ids": [
         "! grep -rnE 'zg[0-9]*\\.domain_id *(= *z[0-9_]*\\.id\\b|IN *\\( *z[0-9_]*\\.id)' lib/ || (echo 'ERROR: match zones_groups.domain_id against COALESCE(z.domain_id, z.id); zones.id and zones.domain_id overlap, see CanonicalZoneSql' && false)"
     ],
@@ -112,21 +122,38 @@
     "lint:error-traces": [
         "! grep -rnE 'getTrace(AsString)?\\(\\)' lib/ install/ index.php dynamic_update.php --include='*.php' | grep -vE ':[0-9]+:[[:space:]]*\\*' | grep -v 'BootstrapErrorResponder.php' || (echo 'ERROR: a stack trace prints call arguments, including passwords. Log the file and line instead of the trace. The only permitted traces live in BootstrapErrorResponder, gated behind misc.display_errors' && false)"
     ],
-    "analyse:all": [
+    "gate": [
+        "composer validate --strict --check-lock",
         "@check:all",
+        "@lint:all",
         "@analyse:phpstan",
+        "@compat:8.2",
+        "@tests",
+        "@tests:integration"
+    ],
+    "lint:all": [
         "@lint:twig",
         "@lint:themes",
         "@lint:zone-ids",
         "@lint:sensitive-params",
         "@lint:error-traces",
         "@lint:e2e-routes",
-        "@lint:e2e-urls"
+        "@lint:e2e-urls",
+        "@lint:docblocks",
+        "@lint:no-traits",
+        "@lint:permission-literals",
+        "@lint:domain-imports",
+        "@lint:js"
+    ],
+    "analyse:all": [
+        "@check:all",
+        "@analyse:phpstan",
+        "@lint:all"
     ],
 
     "locale:check": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -q 'fatal error'; then echo \"FAIL: $f\"; failed=1; fi; done; exit $failed",
     "locale:stats": "python3 scripts/check_translation_stats.py",
-    "locale:msgfmt": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do if ! msgfmt --check -o /dev/null \"$f\" 2>/dev/null; then echo \"FAIL: $f\"; msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -v 'warning:' | head -5; failed=1; fi; done; exit $failed",
+    "locale:msgfmt": "failed=0; for f in locale/*/LC_MESSAGES/messages.po lib/Module/*/locale/*/messages.po; do [ -f \"$f\" ] || continue; if ! msgfmt --check -o /dev/null \"$f\" 2>/dev/null; then echo \"FAIL: $f\"; msgfmt --check -o /dev/null \"$f\" 2>&1 | grep -v 'warning:' | head -5; failed=1; fi; done; exit $failed",
     "locale:mo-sync": "failed=0; for f in locale/*/LC_MESSAGES/messages.po; do mo=\"${f%.po}.mo\"; msgfmt -o /tmp/pa-mo-check.mo \"$f\" 2>/dev/null || continue; if ! cmp -s /tmp/pa-mo-check.mo \"$mo\"; then echo \"STALE: $mo does not match $f\"; failed=1; fi; done; rm -f /tmp/pa-mo-check.mo; exit $failed",
     "locale:verify": [
         "@locale:msgfmt",
@@ -139,7 +166,7 @@
         "@locale:stats"
     ],
 
-    "phan:install": "test -f .phan/phan.phar || curl -sL -o .phan/phan.phar https://github.com/phan/phan/releases/download/6.0.1/phan.phar",
+    "phan:install": "test -f .phan/phan.phar || (curl -fsSL --retry 3 --retry-all-errors --max-time 120 -o .phan/phan.phar.tmp https://github.com/phan/phan/releases/download/6.0.1/phan.phar && mv .phan/phan.phar.tmp .phan/phan.phar)",
     "compat:8.2": ["@phan:install", "php .phan/phan.phar --target-php-version=8.2 --allow-polyfill-parser"],
     "compat:8.3": ["@phan:install", "php .phan/phan.phar --target-php-version=8.3 --allow-polyfill-parser"],
     "compat:8.4": ["@phan:install", "php .phan/phan.phar --target-php-version=8.4 --allow-polyfill-parser"],
@@ -157,6 +184,7 @@
     ]
   },
   "config": {
+    "process-timeout": 0,
     "platform": {
       "php": "8.2.27"
     },
@@ -174,20 +202,18 @@
       ".devcontainer",
       ".github",
       ".phan",
-      ".phpdoc",
+      ".doctum",
       "playwright/",
       "install/",
       "tests",
       ".dockerignore",
       ".gitignore",
       ".hadolint.yaml",
-      ".php-cs-fixer.cache",
-      ".php-cs-fixer.php",
       "playwright.config.js",
       "DONORS.md",
       "package.json",
       "phpcs.xml",
-      "phpdoc.dist.xml",
+      "doctum.php",
       "phpstan-baseline.neon",
       "phpstan.neon",
       "phpunit.xml.dist",

@@ -22,42 +22,51 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use PDO;
-use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Model\UserId;
-use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
+use PDO;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
+use Poweradmin\Infrastructure\Utility\SortHelper;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
-class DbUserRepository implements UserRepository
+/**
+ * SQL persistence for accounts in the users table, with permission lookups through perm_templ and perm_items.
+ */
+class DbUserRepository implements UserRepositoryInterface
 {
     private object $db;
-    private ConfigurationManager $config;
+    private ?TransactionInterface $transactionPort = null;
+    private ConfigurationInterface $config;
+    private bool $isApiBackend;
+    private LoggerInterface $logger;
 
-    public function __construct($db, ConfigurationManager $config)
+    /**
+     * @param object $db Database connection
+     * @param ConfigurationInterface $config Application configuration
+     * @param bool $isApiBackend Whether zone ids are allocated from the zones table, so a
+     *                           row without a domain_id is keyed by zones.id instead
+     */
+    public function __construct($db, ConfigurationInterface $config, bool $isApiBackend, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;
-    }
-
-    public function canViewOthersContent(UserId $user): bool
-    {
-        $query = "SELECT DISTINCT u.id
-                  FROM users u
-                  JOIN perm_templ pt ON u.perm_templ = pt.id
-                  JOIN perm_templ_items pti ON pti.templ_id = pt.id
-                  JOIN (SELECT id FROM perm_items WHERE name IN ('zone_content_view_others', 'user_is_ueberuser')) pit ON pti.perm_id = pit.id
-                  WHERE u.id = :userId";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(['userId' => $user->getId()]);
-
-        return (bool)$stmt->fetchColumn();
+        $this->isApiBackend = $isApiBackend;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     public function findByUsername(string $username): ?User
@@ -73,6 +82,123 @@ class DbUserRepository implements UserRepository
         }
 
         return new User($data['id'], $data['password'], (bool)$data['use_ldap']);
+    }
+
+    public function findActiveUsersByEmail(string $email): array
+    {
+        $query = "SELECT id, username, fullname, email, auth_method, active
+                  FROM users
+                  WHERE email = :email
+                  AND active = 1
+                  ORDER BY username ASC";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':email' => $email]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findNotificationRecipient(int $userId): ?array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE id = :user_id
+            LIMIT 1
+        ');
+
+        $stmt->execute(['user_id' => $userId]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+
+    public function listNotifiableUsers(): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE active = 1 AND email IS NOT NULL AND email <> :empty
+            ORDER BY id
+        ');
+        $stmt->execute(['empty' => '']);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function listActiveUsers(): array
+    {
+        $stmt = $this->db->prepare('
+            SELECT id, username, fullname, email
+            FROM users
+            WHERE active = 1
+            ORDER BY id
+        ');
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function findSqlLoginUser(string $username): ?array
+    {
+        $stmt = $this->db->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
+        $stmt->bindValue(':username', $username, PDO::PARAM_STR);
+        $stmt->execute();
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj ?: null;
+    }
+
+    public function findActiveLdapUser(string $username): ?array
+    {
+        // Accent-exact match, so a look-alike username cannot resolve to another account.
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname, email FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt->execute([
+            'username' => $username
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj ?: null;
+    }
+
+    public function hasActiveLdapUser(string $username): bool
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
+        $stmt->execute(['username' => $username]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (bool)$rowObj;
+    }
+
+    public function isActiveUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id AND active = 1");
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function findBasicAuthUser(string $username): ?array
+    {
+        $query = $this->db->prepare("SELECT id, password, use_ldap FROM users WHERE username = :username AND active = 1");
+        $query->execute(['username' => $username]);
+        $user = $query->fetch(PDO::FETCH_ASSOC);
+
+        return $user ?: null;
+    }
+
+    public function findAuthMethodRow(string $username): ?array
+    {
+        $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
+        $stmt->execute([
+            'username' => $username
+        ]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $rowObj === false ? null : $rowObj;
     }
 
     public function updatePassword(int $userId, string $hashedPassword): bool
@@ -112,9 +238,18 @@ class DbUserRepository implements UserRepository
         return $fullname !== false ? (string)$fullname : null;
     }
 
+    public function getFullNameByUsername(string $username): ?string
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
+        $stmt = $this->db->prepare("SELECT fullname FROM users WHERE $match");
+        $stmt->execute([':username' => $username]);
+        $fullname = $stmt->fetchColumn();
+        return $fullname !== false ? (string)$fullname : null;
+    }
+
     public function getZoneOwnerFullNames(int $domainId): string
     {
-        if (DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $domainId)) {
+        if ($this->isApiBackend && SharedZoneIds::isShared($this->db, $domainId)) {
             $owner = SharedZoneIds::resolvedOwner($this->db, $domainId);
             if ($owner === null) {
                 return '';
@@ -127,7 +262,7 @@ class DbUserRepository implements UserRepository
         }
 
         // PARAM_INT: the canonical expression has no column affinity, so SQLite would compare as text
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT users.fullname FROM users, zones WHERE $canonicalId = :id AND zones.owner = users.id ORDER BY fullname");
         $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
         $stmt->execute();
@@ -148,11 +283,11 @@ class DbUserRepository implements UserRepository
      */
     public function userOwnsZone(int $userId, int $domainId): bool
     {
-        if (DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $domainId)) {
+        if ($this->isApiBackend && SharedZoneIds::isShared($this->db, $domainId)) {
             return SharedZoneIds::ownsResolvedZone($this->db, $userId, $domainId);
         }
 
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->isApiBackend);
         $stmt = $this->db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND $canonicalId = :zoneid");
         $stmt->bindValue(':userid', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zoneid', $domainId, PDO::PARAM_INT);
@@ -172,6 +307,130 @@ class DbUserRepository implements UserRepository
             ':zoneid' => $domainId
         ]);
         return (bool)$stmt->fetchColumn();
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getUserGroupIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT group_id FROM user_group_members WHERE user_id = :user_id'
+        );
+        $stmt->execute([':user_id' => $userId]);
+
+        $rows = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return array_map('intval', $rows ?: []);
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getUserOwnedZoneIds(int $userId): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        $stmt = $this->db->prepare("
+            SELECT $canonicalId FROM zones WHERE owner = :user_id
+            UNION
+            SELECT zg.domain_id FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :user_id2
+        ");
+        $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        return $this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds;
+    }
+
+    /**
+     * @return array<int, int>
+     */
+    public function getDirectlyOwnedZoneIds(int $userId): array
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        $stmt = $this->db->prepare("SELECT DISTINCT $canonicalId FROM zones WHERE owner = :user_id");
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // A shared id belongs only to the direct owner of the row it resolves to
+        return $this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds;
+    }
+
+    public function countDirectlyOwnedZones(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        $owned = array_fill_keys($userIds, []);
+        if ($userIds === []) {
+            return [];
+        }
+
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $this->db->prepare("SELECT DISTINCT owner, $canonicalId AS zone_id FROM zones WHERE owner IN ($placeholders)");
+        foreach ($userIds as $i => $userId) {
+            $stmt->bindValue($i + 1, $userId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owned[(int)$row['owner']][] = (int)$row['zone_id'];
+        }
+
+        $counts = [];
+        foreach ($owned as $userId => $zoneIds) {
+            $counts[$userId] = count($this->isApiBackend ? SharedZoneIds::filterOwned($this->db, $userId, $zoneIds) : $zoneIds);
+        }
+
+        return $counts;
+    }
+
+    public function findZoneLimits(array $userIds): array
+    {
+        $userIds = array_values(array_unique(array_map('intval', $userIds)));
+        $limits = array_fill_keys($userIds, null);
+        if ($userIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $stmt = $this->db->prepare("SELECT id, max_zones FROM users WHERE id IN ($placeholders)");
+        foreach ($userIds as $i => $userId) {
+            $stmt->bindValue($i + 1, $userId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $limits[(int)$row['id']] = $row['max_zones'] === null ? null : (int)$row['max_zones'];
+        }
+
+        return $limits;
+    }
+
+    public function lockForZoneLimit(int $userId): void
+    {
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id$lock");
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll();
+    }
+
+    public function findZoneLimit(int $userId): ?int
+    {
+        $stmt = $this->db->prepare('SELECT max_zones FROM users WHERE id = :id');
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        $limit = $stmt->fetchColumn();
+
+        return $limit === false || $limit === null ? null : (int)$limit;
+    }
+
+    public function setZoneLimit(int $userId, ?int $limit): bool
+    {
+        $stmt = $this->db->prepare('UPDATE users SET max_zones = :max_zones WHERE id = :id');
+        $stmt->bindValue(':max_zones', $limit, $limit === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
     }
 
     /**
@@ -238,7 +497,7 @@ class DbUserRepository implements UserRepository
             INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
             INNER JOIN users ON perm_templ.id = users.perm_templ
             WHERE users.id = ?
-                AND perm_items.name = 'user_is_ueberuser'
+                AND perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                 AND perm_items.name IS NOT NULL
 
             UNION
@@ -250,7 +509,7 @@ class DbUserRepository implements UserRepository
             INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
             WHERE ugm.user_id = ?
-                AND pi.name = 'user_is_ueberuser'
+                AND pi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                 AND pi.name IS NOT NULL
         ";
 
@@ -265,10 +524,14 @@ class DbUserRepository implements UserRepository
      *
      * @param int $offset Starting offset for pagination
      * @param int $limit Maximum number of users to return
+     * @param string|null $search Case-insensitive substring filter on username, full name, email or description
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (id, username, fullname or email); empty sorts by id
      * @return array Array of user data with zone counts
      */
-    public function getUsersList(int $offset, int $limit): array
+    public function getUsersList(int $offset, int $limit, ?string $search = null, array $sort = []): array
     {
+        [$searchCondition, $searchBindings] = $this->buildUserSearchFilter($search);
+
         $query = "SELECT users.id AS id,
             users.username AS username,
             users.fullname AS fullname,
@@ -276,12 +539,14 @@ class DbUserRepository implements UserRepository
             users.description AS description,
             users.active AS active,
             users.perm_templ AS perm_templ,
+            users.max_zones AS max_zones,
             perm_templ.name AS perm_templ_name,
             COUNT(zones.owner) AS zone_count
             FROM users
             LEFT JOIN zones ON users.id = zones.owner
             LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
                  AND perm_templ.template_type = 'user'
+            WHERE 1=1" . $searchCondition . "
             GROUP BY
             users.id,
             users.username,
@@ -289,14 +554,18 @@ class DbUserRepository implements UserRepository
             users.email,
             users.description,
             users.perm_templ,
+            users.max_zones,
             perm_templ.name,
             users.active
-            ORDER BY users.id
+            ORDER BY " . self::userListOrder($sort) . "
             LIMIT :limit OFFSET :offset";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        foreach ($searchBindings as $placeholder => $value) {
+            $stmt->bindValue($placeholder, $value, PDO::PARAM_STR);
+        }
         $stmt->execute();
 
         $users = [];
@@ -310,6 +579,7 @@ class DbUserRepository implements UserRepository
                 'active' => $row['active'],
                 'perm_templ' => $row['perm_templ'],
                 'perm_templ_name' => $row['perm_templ_name'],
+                'max_zones' => $row['max_zones'],
                 'zone_count' => $row['zone_count']
             ];
         }
@@ -351,6 +621,22 @@ class DbUserRepository implements UserRepository
             ];
         }
         return $users;
+    }
+
+    /**
+     * ORDER BY for the user list. Text columns compare lowercased so the order is
+     * the same on every database; the id tiebreaker keeps pages stable.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private static function userListOrder(array $sort): string
+    {
+        return SortHelper::orderBy($sort, [
+            'id' => 'users.id',
+            'username' => 'LOWER(users.username)',
+            'fullname' => 'LOWER(users.fullname)',
+            'email' => 'LOWER(users.email)',
+        ], 'users.id', 'users.id');
     }
 
     /**
@@ -603,34 +889,52 @@ class DbUserRepository implements UserRepository
     {
         try {
             // Start transaction to ensure atomicity
-            $this->db->beginTransaction();
+            $this->transaction()->begin();
 
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
 
-            // Delete user preferences
-            $stmt = $this->db->prepare("DELETE FROM user_preferences WHERE user_id = :userId");
+            // Private zone templates die with their owner, as they always did in the web UI.
+            (new DbZoneTemplateRepository($this->db, $this->config))->deleteZoneTemplatesOwnedBy($userId);
+
+            $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :userId AND domain_id IS NOT NULL");
             $stmt->execute([':userId' => $userId]);
-
-            // Delete MFA settings
-            $stmt = $this->db->prepare("DELETE FROM user_mfa WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete login attempts
-            $stmt = $this->db->prepare("DELETE FROM login_attempts WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Finally delete the user
-            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
-            $result = $stmt->execute([':userId' => $userId]);
-
-            if ($result) {
-                $this->db->commit();
-                return true;
-            } else {
-                $this->db->rollback();
-                return false;
+            $ownedZoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+            if ($this->isApiBackend) {
+                // The user's named rows carry zones in API mode; an id one opens may open another zone once it goes
+                $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :userId AND zone_name IS NOT NULL");
+                $stmt->execute([':userId' => $userId]);
+                SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
             }
+
+            // Memberships and ownership rows are cleared explicitly: the FK cascade
+            // is not guaranteed on every schema.
+            foreach (
+                [
+                    "DELETE FROM user_preferences WHERE user_id = :userId",
+                    "DELETE FROM user_mfa WHERE user_id = :userId",
+                    "DELETE FROM login_attempts WHERE user_id = :userId",
+                    "DELETE FROM user_group_members WHERE user_id = :userId",
+                    // The FK only nulls created_by. ApiKeyService refuses an ownerless
+                    // key, so the row is dead, but it still lists as if it were usable.
+                    "DELETE FROM api_keys WHERE created_by = :userId",
+                    "DELETE FROM zones WHERE owner = :userId",
+                    "DELETE FROM users WHERE id = :userId",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':userId' => $userId]);
+            }
+            if (!$this->isApiBackend) {
+                // The user's row may have carried the zone name, or been the zone's last row
+                $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+                foreach ($ownedZoneIds as $zoneId) {
+                    SqlZoneNames::ensureNamedAfterOwnerRemoval($this->db, $domainsTable, $zoneId);
+                }
+            }
+
+            $this->transaction()->commit();
+            return true;
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
@@ -703,8 +1007,115 @@ class DbUserRepository implements UserRepository
      */
     public function transferUserZones(int $fromUserId, int $toUserId): bool
     {
-        $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
-        return $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+        $transaction = $this->transaction();
+        $owns = !$transaction->inTransaction();
+        if ($owns) {
+            $transaction->begin();
+        }
+
+        try {
+            $this->queueOwnershipWriters($fromUserId);
+            $this->dropSharedOwnerships($fromUserId, $toUserId);
+            $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
+            $moved = $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+            if (!$this->isApiBackend) {
+                $this->dropReceiverDuplicates($toUserId);
+            }
+            if ($owns) {
+                $transaction->commit();
+            }
+
+            return $moved;
+        } catch (\Throwable $e) {
+            if ($owns && $transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Takes the lock every zone owner writer queues on (the API marker row, or each of the
+     * sender's domains rows in ascending order), so an owner added meanwhile cannot slip in
+     * between the dedupe and the move. DELETE and UPDATE read current rows, not the snapshot.
+     */
+    private function queueOwnershipWriters(int $fromUserId): void
+    {
+        if ($this->isApiBackend) {
+            BackendModeMarker::markApi($this->db);
+            return;
+        }
+
+        $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :fromUserId AND domain_id IS NOT NULL ORDER BY domain_id");
+        $stmt->execute([':fromUserId' => $fromUserId]);
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        $domains = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->prepare("SELECT id FROM $domains WHERE id = :id$lock");
+        foreach ($zoneIds as $zoneId) {
+            $stmt->execute([':id' => $zoneId]);
+            $stmt->fetchAll();
+        }
+    }
+
+    /**
+     * On PostgreSQL a zone granted to the sender after its domains rows were locked can commit
+     * between the dedupe and the move; this drops the receiver's resulting unnamed duplicate.
+     */
+    private function dropReceiverDuplicates(int $toUserId): void
+    {
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :toUserId AND zone_name IS NULL
+               AND id IN (
+                   SELECT id FROM (
+                       SELECT z.id FROM zones z
+                       WHERE z.owner = :dupOwner AND z.zone_name IS NULL
+                         AND EXISTS (
+                             SELECT 1 FROM zones k
+                             WHERE k.owner = z.owner AND k.domain_id = z.domain_id AND k.id <> z.id
+                               AND (k.zone_name IS NOT NULL OR k.id < z.id)
+                         )
+                   ) AS duplicates
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':dupOwner' => $toUserId]);
+    }
+
+    /**
+     * Clears the ownership a transfer would duplicate, so the receiver ends up with one row per zone.
+     * The derived tables keep MySQL from refusing a subquery on the table being deleted from.
+     */
+    private function dropSharedOwnerships(int $fromUserId, int $toUserId): void
+    {
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->isApiBackend);
+        // Extra rows (no zone_name) are the only ones API mode may delete; the canonical row carries the zone
+        $senderRows = $this->isApiBackend ? ' AND zone_name IS NULL' : '';
+
+        // The sender holds the named row: drop the receiver's unnamed row so the move below hands the name over
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :toUserId AND zone_name IS NULL
+               AND domain_id IN (
+                   SELECT zone_id FROM (
+                       SELECT $canonicalId AS zone_id FROM zones
+                       WHERE owner = :fromUserId AND zone_name IS NOT NULL
+                   ) AS sender_zones
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+
+        $stmt = $this->db->prepare(
+            "DELETE FROM zones
+             WHERE owner = :fromUserId$senderRows
+               AND $canonicalId IN (
+                   SELECT zone_id FROM (
+                       SELECT $canonicalId AS zone_id FROM zones WHERE owner = :toUserId
+                   ) AS receiver_zones
+               )"
+        );
+        $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
     }
 
     /**
@@ -719,7 +1130,7 @@ class DbUserRepository implements UserRepository
                   JOIN perm_templ ON users.perm_templ = perm_templ.id
                   JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = 'user_is_ueberuser'
+                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   AND users.active = 1";
 
         $stmt = $this->db->query($query);
@@ -732,6 +1143,11 @@ class DbUserRepository implements UserRepository
      * @param int $userId User ID to check
      * @return bool True if user is an uberuser
      */
+    public function isLastUberuser(int $userId): bool
+    {
+        return $this->isUberuser($userId) && $this->countUberusers() <= 1;
+    }
+
     public function isUberuser(int $userId): bool
     {
         $query = "SELECT COUNT(*)
@@ -739,7 +1155,7 @@ class DbUserRepository implements UserRepository
                   JOIN perm_templ ON users.perm_templ = perm_templ.id
                   JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = 'user_is_ueberuser'
+                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   AND users.id = :userId
                   AND users.active = 1";
 
@@ -748,17 +1164,65 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
+    public function getAdminUserIds(): array
+    {
+        $query = "
+            SELECT users.id AS user_id
+            FROM users
+            INNER JOIN perm_templ ON perm_templ.id = users.perm_templ
+            INNER JOIN perm_templ_items ON perm_templ_items.templ_id = perm_templ.id
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
+
+            UNION
+
+            SELECT ugm.user_id AS user_id
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE pi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
+        ";
+
+        $stmt = $this->db->query($query);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function templateGrantsUberuser(int $permTemplId): bool
     {
         $query = "SELECT COUNT(*)
                   FROM perm_templ_items
                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
                   WHERE perm_templ_items.templ_id = :templId
-                  AND perm_items.name = 'user_is_ueberuser'";
+                  AND perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([':templId' => $permTemplId]);
         return (bool)$stmt->fetchColumn();
+    }
+
+    public function getTemplatePermissionNames(int $permTemplId): array
+    {
+        $stmt = $this->db->prepare("SELECT DISTINCT perm_items.name
+                  FROM perm_templ_items
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_templ_items.templ_id = :templId");
+        $stmt->bindValue(':templId', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('strval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function findPermissionTemplateIdByName(string $name): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');
+        $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
+        $stmt->execute([$name]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
     }
 
     public function getPermissionIdsByName(string $name): array
@@ -770,13 +1234,13 @@ class DbUserRepository implements UserRepository
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
-    public function createUser(array $userData): ?int
+    public function createUser(CreateUserCommand $user): ?int
     {
-        $useLdap = (int)($userData['use_ldap'] ?? 0);
+        $useLdap = (int)$user->useLdap;
 
         // No implicit template: defaulting to id 1 handed the bundled
         // Administrator template to every caller that omitted perm_templ.
-        $permTemplId = (int)($userData['perm_templ'] ?? 0);
+        $permTemplId = (int)$user->permissionTemplateId;
         if ($permTemplId <= 0) {
             return null;
         }
@@ -786,15 +1250,15 @@ class DbUserRepository implements UserRepository
 
         $stmt = $this->db->prepare($query);
         $result = $stmt->execute([
-            ':username' => $userData['username'],
-            ':password' => $userData['password'],
-            ':fullname' => $userData['fullname'] ?? '',
-            ':email' => $userData['email'] ?? '',
-            ':description' => $userData['description'] ?? '',
-            ':active' => (int)($userData['active'] ?? 1),
+            ':username' => $user->username,
+            ':password' => $user->password,
+            ':fullname' => $user->fullname,
+            ':email' => $user->email,
+            ':description' => $user->description,
+            ':active' => (int)$user->active,
             ':perm_templ' => $permTemplId,
             ':use_ldap' => $useLdap,
-            ':auth_method' => AuthMethod::resolve((bool)$useLdap, null)->value
+            ':auth_method' => $user->authMethod()->value
         ]);
 
         if ($result) {
@@ -802,6 +1266,54 @@ class DbUserRepository implements UserRepository
         }
 
         return null;
+    }
+
+    public function createProvisionedUser(array $userData): int
+    {
+        $stmt = $this->db->prepare("
+            INSERT INTO users (username, password, fullname, email, description, active, perm_templ, perm_templ_source, use_ldap, auth_method)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        $success = $stmt->execute([
+            $userData['username'],
+            '', // No password for external auth users
+            $userData['fullname'],
+            $userData['email'],
+            $userData['description'],
+            1, // Active
+            $userData['perm_templ'],
+            $userData['perm_templ_source'],
+            $userData['use_ldap'],
+            $userData['auth_method']
+        ]);
+
+        if (!$success) {
+            throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $stmt->errorInfo()));
+        }
+
+        return (int)$this->db->lastInsertId('users_id_seq');
+    }
+
+    public function updateProvisionedUser(int $userId, array $fields): void
+    {
+        $allowed = ['fullname', 'email', 'auth_method', 'perm_templ', 'perm_templ_source'];
+        $setFields = [];
+        $values = [];
+        foreach ($fields as $column => $value) {
+            if (!in_array($column, $allowed, true)) {
+                throw new \InvalidArgumentException("Column $column is not owned by provisioning");
+            }
+            $setFields[] = "$column = ?";
+            $values[] = $value;
+        }
+        if ($setFields === []) {
+            return;
+        }
+
+        $values[] = $userId;
+        $stmt = $this->db->prepare("UPDATE users SET " . implode(', ', $setFields) . " WHERE id = ?");
+        $stmt->execute($values);
     }
 
     public function getUserByUsername(string $username): ?array
@@ -820,8 +1332,7 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
-        // Accent-exact match, so a look-alike email cannot resolve to another account.
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'users.email', ':email');
+        $match = $this->emailEquals('users.email', ':email');
         $query = "SELECT users.*, perm_templ.name AS perm_templ_name
                   FROM users
                   LEFT JOIN perm_templ ON users.perm_templ = perm_templ.id
@@ -834,9 +1345,37 @@ class DbUserRepository implements UserRepository
         return $result ?: null;
     }
 
+    public function findActiveUserIdByEmail(string $email): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    public function findInactiveUserIdByEmail(string $email): ?int
+    {
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND (active IS NULL OR active <> 1)");
+        $stmt->execute([$email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
+    public function getProvisioningProfile(int $userId): array
+    {
+        $stmt = $this->db->prepare("SELECT fullname, email, auth_method, perm_templ, perm_templ_source FROM users WHERE id = ?");
+        $stmt->execute([$userId]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function countUsersByEmail(string $email): int
     {
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $match = $this->emailEquals('email', ':email');
         $query = "SELECT COUNT(*) FROM users WHERE $match";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
@@ -844,49 +1383,63 @@ class DbUserRepository implements UserRepository
         return (int)$stmt->fetchColumn();
     }
 
-    public function updateUser(int $userId, array $userData): bool
+    /**
+     * Email addresses match regardless of case but accent-exact, so User@x and
+     * user@x are one account while a look-alike address cannot resolve to another.
+     */
+    private function emailEquals(string $column, string $placeholder): string
     {
-        // Build dynamic update query based on provided fields
+        return DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), $column, $placeholder);
+    }
+
+    public function updateUser(int $userId, UpdateUserCommand $changes): bool
+    {
+        // Build dynamic update query from the fields the request carried
         $setFields = [];
         $params = [':id' => $userId];
 
-        $allowedFields = ['username', 'password', 'fullname', 'email', 'description', 'active', 'perm_templ', 'use_ldap'];
-
         // An empty password means "leave it unchanged"; callers only hash non-empty
         // values, so storing it verbatim would replace the hash with an empty string.
-        if (array_key_exists('password', $userData) && (string)$userData['password'] === '') {
-            unset($userData['password']);
-        }
+        $columns = [
+            'username' => $changes->username,
+            'password' => $changes->passwordGiven() ? $changes->password : null,
+            'fullname' => $changes->fullname,
+            'email' => $changes->email,
+            'description' => $changes->description,
+            'active' => $changes->active,
+            'perm_templ' => $changes->permissionTemplateId,
+        ];
 
-        foreach ($allowedFields as $field) {
-            if (array_key_exists($field, $userData)) {
+        foreach ($columns as $field => $value) {
+            if ($value !== null) {
                 $setFields[] = "{$field} = :{$field}";
-
-                // Handle type casting for specific fields
-                if ($field === 'active' || $field === 'perm_templ' || $field === 'use_ldap') {
-                    $params[":{$field}"] = (int)$userData[$field];
-                } else {
-                    $params[":{$field}"] = $userData[$field];
-                }
+                $params[":{$field}"] = is_bool($value) ? (int)$value : $value;
             }
         }
 
-        // Keep auth_method in sync with use_ldap; preserve external methods (oidc, saml)
-        // when LDAP is being disabled.
-        if (array_key_exists('use_ldap', $userData)) {
-            $setFields[] = 'auth_method = :auth_method';
-            $useLdap = (int)$userData['use_ldap'] === 1;
+        // A template set by hand is no longer the SSO mapping's to revoke on the next login.
+        if ($changes->permissionTemplateId !== null) {
+            $setFields[] = "perm_templ_source = 'admin'";
+        }
 
-            // The current method is only needed to avoid downgrading an SSO
-            // account to sql when LDAP is switched off.
-            $currentAuthMethod = null;
-            if (!$useLdap) {
+        // auth_method and the legacy use_ldap flag change together; switching LDAP off
+        // keeps an OIDC, SAML or web server account as it is.
+        if ($changes->useLdap !== null || $changes->useRemoteUser !== null) {
+            // Only switching a method off depends on the method the account has now
+            $current = AuthMethod::SQL;
+            if ($changes->useLdap !== true && $changes->useRemoteUser !== true) {
                 $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
                 $currentStmt->execute([':id' => $userId]);
-                $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
+                $current = AuthMethod::fromDb((string)($currentStmt->fetchColumn() ?: 'sql'));
             }
 
-            $params[':auth_method'] = AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
+            $target = $changes->authMethodAfter($current);
+            if ($target !== null) {
+                $setFields[] = 'auth_method = :auth_method';
+                $setFields[] = 'use_ldap = :use_ldap';
+                $params[':auth_method'] = $target->value;
+                $params[':use_ldap'] = $target === AuthMethod::LDAP ? 1 : 0;
+            }
         }
 
         if (empty($setFields)) {
@@ -931,5 +1484,14 @@ class DbUserRepository implements UserRepository
             $stmt->execute([':permTemplId' => $permTemplId]);
         }
         return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

@@ -22,9 +22,11 @@
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use ReflectionClass;
+use Poweradmin\Infrastructure\Session\ArraySession;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Covers BaseController::getPdnsCapabilities() re-detecting the PowerDNS
@@ -34,15 +36,19 @@ use ReflectionClass;
  */
 class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
 {
+    private const API_CONFIGURED = ['pdns_api' => ['url' => 'http://pdns:8081', 'key' => 'secret']];
+
+    private ArraySession $session;
+
     protected function setUp(): void
     {
         parent::setUp();
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -102,10 +108,54 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
         $this->assertFalse($caps->supportsCatalogZones());
     }
 
+    public function testPageChromeKeepsAnExpiredVersionWithoutRefreshing(): void
+    {
+        $this->cacheVersion('4.9.0', time() - 301);
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $info = $this->chromeServerInfo($controller, self::API_CONFIGURED);
+
+        $this->assertSame(0, $controller->refreshCalls, 'the page chrome must not call PowerDNS');
+        $this->assertSame('4.9.0', $info['version'] ?? null);
+        $this->assertTrue(PdnsCapabilities::fromServerInfo($info)->prefersPrimarySecondaryTerminology());
+    }
+
+    public function testPageChromeIgnoresACachedVersionOnceTheApiIsUnconfigured(): void
+    {
+        $this->cacheVersion('4.9.0', time());
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertNull($this->chromeServerInfo($controller, []));
+        $this->assertSame(0, $controller->refreshCalls);
+    }
+
+    public function testDashboardBadgeGetsNoExpiredVersion(): void
+    {
+        $this->cacheVersion('4.9.0', time() - 301);
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertNull($this->chromeServerInfo($controller, self::API_CONFIGURED, false));
+        $this->assertSame(0, $controller->refreshCalls);
+    }
+
+    public function testDashboardBadgeGetsAFreshVersion(): void
+    {
+        $this->cacheVersion('4.9.0', time());
+        $controller = $this->controllerRefreshingTo('5.1.4');
+
+        $this->assertSame('4.9.0', $this->chromeServerInfo($controller, self::API_CONFIGURED, false)['version'] ?? null);
+    }
+
+    private function chromeServerInfo(BaseController $controller, array $config, bool $allowExpired = true): ?array
+    {
+        $class = new ReflectionClass(BaseController::class);
+        $class->getProperty('config')->setValue($controller, new FakeConfiguration($config));
+        return $class->getMethod('getCachedPdnsServerInfo')->invoke($controller, $allowExpired);
+    }
+
     private function capabilities(BaseController $controller): PdnsCapabilities
     {
         $method = (new ReflectionClass(BaseController::class))->getMethod('getPdnsCapabilities');
-        $method->setAccessible(true);
         return $method->invoke($controller);
     }
 
@@ -116,15 +166,17 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
     private function controllerRefreshingTo(?string $version): PdnsCapabilitiesRefreshTestController
     {
         $controller = (new ReflectionClass(PdnsCapabilitiesRefreshTestController::class))->newInstanceWithoutConstructor();
+        $session = (new ReflectionClass(BaseController::class))->getProperty('session');
+        $session->setValue($controller, $this->session);
         $controller->versionToCache = $version;
         return $controller;
     }
 
     private function cacheVersion(string $version, int $fetchedAt): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'fetched_at' => $fetchedAt,
             'info' => ['version' => $version, 'daemon_type' => 'authoritative', 'id' => 'localhost'],
-        ];
+        ]);
     }
 }

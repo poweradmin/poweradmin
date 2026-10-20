@@ -30,9 +30,9 @@ use Throwable;
 /**
  * Rewrites API key zone scopes from zones row ids to canonical zone ids, once.
  *
- * The API key form used to store the row id of each zone in API backend mode, while every
- * request compared the canonical id, so on installs migrated from SQL mode a scope named
- * the wrong zone. The marker row in app_settings doubles as the lock: only the
+ * Before 4.6.0 the API key form stored the row id of each zone in API backend mode, while
+ * every request compared the canonical id, so on installs migrated from SQL mode a scope
+ * named the wrong zone. The marker row in app_settings doubles as the lock: only the
  * request that inserts it runs the rewrite, so the overlapping id spaces are never mapped
  * twice. SQL mode stores domains.id, already canonical, and only sets the marker.
  */

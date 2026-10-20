@@ -24,53 +24,83 @@ namespace Poweradmin\Application\Presenter;
 
 use Poweradmin\Domain\Model\ZoneStartingLetter;
 
-class ZoneStartingLettersPresenter
+/**
+ * Describes the 0-9, a-z, IDN and "Show all" filter links on the forward zone list page.
+ *
+ * items() feeds templates/default/_partials/letters.html; present() is the pre-rendered
+ * string still exposed as the `letters` template variable for theme forks.
+ */
+final class ZoneStartingLettersPresenter
 {
-    public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = ''): string
+    /**
+     * The digits bucket, a-z, the IDN bucket for punycode zones and "Show all", in display order.
+     * `letter` is the raw filter value ('1' for the digits bucket, 'idn', 'all' for the last item).
+     *
+     * @return list<array{letter: string, label: string, url: ?string, active: bool, disabled: bool}>
+     */
+    public function items(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = '', ?int $rowsPerPage = null): array
     {
-        $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
-        $html .= '<nav>';
-        $html .= '<ul class="pagination pagination-sm d-flex flex-wrap">';
+        $rowsPerPageParam = $rowsPerPage !== null ? '&rows_per_page=' . $rowsPerPage : '';
+        $url = fn(string $letter): string => $baseUrlPrefix . '/zones/forward?letter=' . $letter . $rowsPerPageParam;
 
-        // Preserve rows_per_page parameter if set
-        $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
+        $items = [];
 
-
-        if ($letterStart === "1") {
-            $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
+        if ($letterStart === '1') {
+            $items[] = $this->item('1', '0-9', null, true, false);
         } elseif ($digitsAvailable) {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=1" . $rowsPerPageParam . "\">0-9</a></li>";
+            $items[] = $this->item('1', '0-9', $url('1'), false, false);
         } else {
-            $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">0-9</span></li>';
+            $items[] = $this->item('1', '0-9', null, false, true);
         }
 
-        // First show all ASCII letters
         foreach (range('a', 'z') as $letter) {
             if ($letter === $letterStart) {
-                $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
+                $items[] = $this->item($letter, $letter, null, true, false);
             } elseif (in_array($letter, $availableChars)) {
-                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=" . $letter . $rowsPerPageParam . "\">" . $letter . "</a></li>";
+                $items[] = $this->item($letter, $letter, $url($letter), false, false);
             } else {
-                $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
+                $items[] = $this->item($letter, $letter, null, false, true);
             }
         }
 
         // Punycode zones share one entry after the alphabet, shown only when there are any.
         if ($letterStart === ZoneStartingLetter::IDN) {
-            $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">IDN</span></li>';
+            $items[] = $this->item(ZoneStartingLetter::IDN, 'IDN', null, true, false);
         } elseif (in_array(ZoneStartingLetter::IDN, $availableChars, true)) {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=idn" . $rowsPerPageParam . "\">IDN</a></li>";
+            $items[] = $this->item(ZoneStartingLetter::IDN, 'IDN', $url(ZoneStartingLetter::IDN), false, false);
         }
 
-        if ($letterStart === 'all') {
-            $html .= '<li class="page-item active"><span class="page-link" href="#">' . _('Show all') . '</span></li>';
-        } else {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"" . $baseUrlPrefix . "/zones/forward?letter=all" . $rowsPerPageParam . "\">" . _('Show all') . '</a></li>';
+        $items[] = $this->item('all', _('Show all'), $letterStart === 'all' ? null : $url('all'), $letterStart === 'all', false);
+
+        return $items;
+    }
+
+    public function present(array $availableChars, bool $digitsAvailable, string $letterStart, string $baseUrlPrefix = '', ?int $rowsPerPage = null): string
+    {
+        $html = '<span class="text-secondary">' . _('Show zones beginning with') . '</span><br>';
+        $html .= '<nav><ul class="pagination pagination-sm d-flex flex-wrap">';
+
+        foreach ($this->items($availableChars, $digitsAvailable, $letterStart, $baseUrlPrefix, $rowsPerPage) as $item) {
+            $label = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
+            if ($item['active']) {
+                // The "Show all" item has always carried href="#" instead of tabindex; kept for theme forks.
+                $attribute = $item['letter'] === 'all' ? 'href="#"' : 'tabindex="-1"';
+                $html .= '<li class="page-item active"><span class="page-link" ' . $attribute . '>' . $label . '</span></li>';
+            } elseif ($item['disabled']) {
+                $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $label . '</span></li>';
+            } else {
+                $html .= '<li class="page-item"><a class="page-link" href="' . $item['url'] . '">' . $label . '</a></li>';
+            }
         }
 
-        $html .= "</ul>";
-        $html .= "</nav>";
+        return $html . '</ul></nav>';
+    }
 
-        return $html;
+    /**
+     * @return array{letter: string, label: string, url: ?string, active: bool, disabled: bool}
+     */
+    private function item(string $letter, string $label, ?string $url, bool $active, bool $disabled): array
+    {
+        return ['letter' => $letter, 'label' => $label, 'url' => $url, 'active' => $active, 'disabled' => $disabled];
     }
 }

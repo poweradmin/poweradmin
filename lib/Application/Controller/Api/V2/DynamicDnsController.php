@@ -24,59 +24,45 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\Record\DynamicDnsRequestFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
-use Poweradmin\Domain\Service\DynamicDnsUpdateService;
-use Poweradmin\Domain\Service\DynamicDnsValidationService;
-use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\DynamicDnsUpdateService;
+use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * POST /api/v2/dynamic-dns: updates the A/AAAA records of a hostname in a zone the caller owns.
+ */
 class DynamicDnsController extends PublicApiController
 {
     private DynamicDnsUpdateService $updateService;
     private DynamicDnsValidationService $validationService;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $config = $this->getConfig();
-        $backendProvider = $this->createDnsBackendProvider();
-        $soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $config, $backendProvider);
-        $repository = $this->getRepositoryFactory($backendProvider)->createDynamicDnsRepository($soaRecordManager);
-
-        $userAuthService = new UserAuthenticationService(
-            $config->get('security', 'password_encryption', 'bcrypt'),
-            $config->get('security', 'password_cost', 12)
-        );
+        $config = $this->config;
+        $backendProvider = $this->services()->dnsBackendProvider();
+        $repository = $this->services()->repositoryFactory($backendProvider)->createDynamicDnsRepository($this->services()->soaRecordManager());
 
         $this->validationService = new DynamicDnsValidationService($config);
-        $this->updateService = new DynamicDnsUpdateService(
-            $this->validationService,
-            new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config)),
-            $repository,
-            new LegacyLogger($this->db),
-            new IpAddressRetriever($_SERVER)
-        );
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->updateService = DynamicDnsRequestFactory::createUpdateService($this->db, $config, $repository, $this->apiPermissionService->permissions(), $this->services()->auditService(), $this->services()->zoneCacheFlusher());
     }
 
     public function run(): void
     {
         $response = match ($this->request->getMethod()) {
             'POST' => $this->updateRecord(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // A dynamic DNS update is an upsert that may create and/or update records, so
@@ -157,7 +143,8 @@ class DynamicDnsController extends PublicApiController
         }
 
         try {
-            $hostname = $this->validationService->createValidatedHostname($rawHostname);
+            // Lowercased like the legacy dynamic_update.php path, so a differently cased update finds the existing records
+            $hostname = $this->validationService->createValidatedHostname(strtolower($rawHostname));
             $ipList = $this->validationService->createValidatedIpList($rawIpv4, $rawIpv6);
         } catch (\InvalidArgumentException $e) {
             return $this->returnApiError($e->getMessage(), 400);
@@ -188,6 +175,7 @@ class DynamicDnsController extends PublicApiController
             'forbidden' => $this->returnApiError('Forbidden: this API key does not have access to the requested zone', 403),
             'nohost' => $this->returnApiError('Hostname is not contained in any zone the user owns', 404),
             'readonly' => $this->returnApiError('Records in Secondary and Consumer zones are read-only; they replicate from a primary', 403),
+            'approval' => $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403),
             'nodelete' => $this->returnApiError('Forbidden: this API key is not permitted to perform the delete operation', 403),
             '!yours' => $this->returnApiError('Update did not produce any change and no matching records exist', 409),
             default => $this->returnApiError('Failed to apply dynamic DNS update', 500),
@@ -197,7 +185,7 @@ class DynamicDnsController extends PublicApiController
     private function userCanUseDdns(int $userId): bool
     {
         // DDNS operates only on zones the caller owns, so require an own-zone edit grant.
-        return $this->permissionService->userHasPermission($userId, 'zone_content_edit_own')
-            || $this->permissionService->userHasPermission($userId, 'zone_content_edit_own_as_client');
+        return $this->apiPermissionService->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_EDIT_OWN)
+            || $this->apiPermissionService->userHasPermission($userId, Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT);
     }
 }

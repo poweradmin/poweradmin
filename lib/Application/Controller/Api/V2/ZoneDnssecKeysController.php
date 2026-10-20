@@ -34,17 +34,16 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Exception;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Domain\Enum\DnssecKeyType;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
-use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecKeySpecValidator;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
+use Poweradmin\Domain\Service\Zone\DnssecKeyResult;
+use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -59,60 +58,59 @@ use Symfony\Component\HttpFoundation\JsonResponse;
         new OA\Property(property: 'bits', type: 'integer', example: 256),
         new OA\Property(property: 'active', type: 'boolean', example: true),
         new OA\Property(property: 'dnskey', type: 'string', nullable: true, example: '257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ=='),
-        new OA\Property(property: 'ds', type: 'array', items: new OA\Items(type: 'string'), example: ['12345 13 2 3dd8ee7d9ab0c6d8e4b2fd8a7e1cb3a2b7b0d4e5f6a7b8c9d0e1f2a3b4c5d6e7'], description: 'DS records; empty for a ZSK'),
+        new OA\Property(
+            property: 'ds',
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            example: ['12345 13 2 3dd8ee7d9ab0c6d8e4b2fd8a7e1cb3a2b7b0d4e5f6a7b8c9d0e1f2a3b4c5d6e7'],
+            description: 'DS records; empty for a key PowerDNS currently lists as ZSK'
+        ),
+        new OA\Property(
+            property: 'sep',
+            type: 'boolean',
+            nullable: true,
+            example: true,
+            description: 'Whether the key carries the SEP flag (DNSKEY flags 257), which is what PowerDNS stores. '
+                . '`type` is derived on every read: a key is listed as ksk or zsk only while the zone has an active '
+                . 'SEP and an active non-SEP key of the same algorithm, otherwise as csk. Null without a readable DNSKEY.'
+        ),
     ],
     type: 'object'
 )]
 class ZoneDnssecKeysController extends PublicApiController
 {
-    /**
-     * DNSSEC algorithm numbers (RFC 8624) mapped to the names PowerDNS uses.
-     */
-    private const ALGORITHM_NAMES_BY_ID = [
-        5 => 'rsasha1',
-        7 => 'rsasha1-nsec3-sha1',
-        8 => 'rsasha256',
-        10 => 'rsasha512',
-        13 => 'ecdsa256',
-        14 => 'ecdsa384',
-        15 => 'ed25519',
-        16 => 'ed448',
-    ];
-
-    protected ZoneRepositoryInterface $zoneRepository;
+    protected DomainRepositoryInterface $domainRepository;
     protected ApiPermissionService $apiPermissionService;
-    protected DnssecProvider $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
-
-    /** @var CryptoKey[]|null The zone's keys, once a write has fetched them */
-    private ?array $zoneKeys = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, null, $this->logger);
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
 
         // Key management needs the PowerDNS API; createApiClient() returns null when it is not configured.
-        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->session(), $this->logger);
     }
 
     public function run(): void
     {
+        if (($this->pathParameters['action'] ?? null) === 'import') {
+            $this->sendAndHalt($this->request->getMethod() === 'POST' ? $this->importKey() : $this->methodNotAllowed(['POST']));
+        }
+
         $hasKeyId = isset($this->pathParameters['key_id']);
 
         $response = match ($this->request->getMethod()) {
             'GET' => $hasKeyId ? $this->getKey() : $this->listKeys(),
-            'POST' => $hasKeyId ? $this->returnApiError('Method not allowed', 405) : $this->addKey(),
-            'PATCH' => $hasKeyId ? $this->updateKey() : $this->returnApiError('Method not allowed', 405),
-            'DELETE' => $hasKeyId ? $this->deleteKey() : $this->returnApiError('Method not allowed', 405),
-            default => $this->returnApiError('Method not allowed', 405),
+            'POST' => $hasKeyId ? $this->methodNotAllowed(['GET', 'PATCH', 'DELETE']) : $this->addKey(),
+            'PATCH' => $hasKeyId ? $this->updateKey() : $this->methodNotAllowed(['GET', 'POST']),
+            'DELETE' => $hasKeyId ? $this->deleteKey() : $this->methodNotAllowed(['GET', 'POST']),
+            default => $this->methodNotAllowed($hasKeyId ? ['GET', 'PATCH', 'DELETE'] : ['GET', 'POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Get(
@@ -151,13 +149,13 @@ class ZoneDnssecKeysController extends PublicApiController
         }
 
         try {
-            $keys = $this->loadKeys($zoneName);
-            if ($keys instanceof JsonResponse) {
-                return $keys;
+            $result = $this->keyService()->listKeys($zoneName);
+            if ($result->refusal !== null) {
+                return $this->refused($result);
             }
-            return $this->returnApiResponse(array_map([$this, 'formatKey'], $keys), true, 'DNSSEC keys retrieved successfully');
+            return $this->returnApiResponse(array_map([$this, 'formatKey'], $result->keys), true, 'DNSSEC keys retrieved successfully');
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to list DNSSEC keys', 'Failed to retrieve DNSSEC keys');
+            return $this->handleException($e, 'ZoneDnssecKeysController::listKeys', 'Failed to retrieve DNSSEC keys');
         }
     }
 
@@ -198,13 +196,13 @@ class ZoneDnssecKeysController extends PublicApiController
         }
 
         try {
-            $key = $this->findKey($zoneName, $this->keyIdFromPath());
-            if ($key instanceof JsonResponse) {
-                return $key;
+            $result = $this->keyService()->findKey($zoneName, $this->keyIdFromPath());
+            if ($result->key === null) {
+                return $this->refused($result);
             }
-            return $this->returnApiResponse($this->formatKey($key), true, 'DNSSEC key retrieved successfully');
+            return $this->returnApiResponse($this->formatKey($result->key), true, 'DNSSEC key retrieved successfully');
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to get DNSSEC key', 'Failed to retrieve DNSSEC key');
+            return $this->handleException($e, 'ZoneDnssecKeysController::getKey', 'Failed to retrieve DNSSEC key');
         }
     }
 
@@ -259,36 +257,22 @@ class ZoneDnssecKeysController extends PublicApiController
             return $zoneName;
         }
 
-        $data = json_decode($this->request->getContent(), true);
-        if (!is_array($data)) {
+        $data = $this->getValidatedJsonBody();
+        if ($data === null) {
             return $this->returnApiError('Invalid JSON body', 400);
         }
 
         $type = $data['type'] ?? null;
-        if (!is_string($type) || !DnssecKeyType::isValid(strtolower($type))) {
-            return $this->returnApiError('Missing or invalid required field: type (ksk, zsk or csk)', 400);
-        }
-        $type = strtolower($type);
-
-        $allowedAlgorithms = DnssecAlgorithmName::getSupportedAlgorithmsForCapabilities($this->getPdnsCapabilities());
+        $type = is_string($type) ? strtolower($type) : '';
         $algorithm = $data['algorithm'] ?? null;
-        if (!is_string($algorithm) || !in_array(strtolower($algorithm), $allowedAlgorithms, true)) {
-            return $this->returnApiError(
-                'Missing or invalid required field: algorithm (one of: ' . implode(', ', $allowedAlgorithms) . ')',
-                400
-            );
-        }
-        $algorithm = strtolower($algorithm);
-
+        $algorithm = is_string($algorithm) ? strtolower($algorithm) : '';
         $bits = $data['bits'] ?? null;
-        if (!is_int($bits) && !(is_string($bits) && ctype_digit($bits))) {
-            return $this->returnApiError('Missing or invalid required field: bits (integer)', 400);
-        }
-        $bits = (string)(int)$bits;
+        $bits = is_int($bits) || (is_string($bits) && ctype_digit($bits)) ? (int)$bits : null;
 
-        $specError = DnssecKeySpecValidator::apiErrorForAlgorithmBits($algorithm, $bits);
-        if ($specError !== null) {
-            return $this->returnApiError($specError, 400);
+        $capabilities = $this->getPdnsCapabilities();
+        $invalid = $this->keyService()->validateNewKey($type, $algorithm, $bits, $capabilities);
+        if ($invalid !== null) {
+            return $this->returnApiError($this->invalidKeyMessage($invalid, $algorithm, $bits), RefusalStatus::of($invalid->refusal ?? Refusal::INVALID_INPUT));
         }
 
         $active = $this->inputBool($data, 'active', false);
@@ -296,22 +280,15 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('Invalid field: active (boolean)', 400);
         }
 
-        if (($refused = $this->checkWritable($zoneName)) !== null) {
-            return $refused;
-        }
-
         try {
-            // PowerDNS answers with the key it created, so the id returned is always the new key's
-            $created = $this->apiClient?->createZoneKey(new Zone($zoneName), new CryptoKey(null, $type, (int)$bits, $algorithm), $active);
-            if ($created === null) {
-                return $this->returnApiError('Failed to add DNSSEC key', 500);
+            $result = $this->keyService()->addKey($zoneId, $zoneName, $type, $algorithm, (int)$bits, $active, $capabilities);
+            if ($result->key === null) {
+                return $this->refused($result, 'Failed to add DNSSEC key');
             }
 
-            (new AuditService($this->db))->logDnssecAddKey($zoneId, $zoneName, $type, $bits, $algorithm);
-
-            return $this->returnApiResponse($this->formatKey($created), true, 'DNSSEC key added successfully', 201);
+            return $this->returnApiResponse($this->formatKey($result->key), true, 'DNSSEC key added successfully', 201);
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to add DNSSEC key', 'Failed to add DNSSEC key');
+            return $this->handleException($e, 'ZoneDnssecKeysController::addKey', 'Failed to add DNSSEC key');
         }
     }
 
@@ -364,43 +341,24 @@ class ZoneDnssecKeysController extends PublicApiController
             return $zoneName;
         }
 
-        $data = json_decode($this->request->getContent(), true);
-        $active = is_array($data) ? $this->inputBool($data, 'active') : null;
+        $data = $this->getValidatedJsonBody();
+        $active = $data !== null ? $this->inputBool($data, 'active') : null;
         if ($active === null) {
             return $this->returnApiError('Missing or invalid required field: active (boolean)', 400);
         }
 
-        if (($refused = $this->checkWritable($zoneName)) !== null) {
-            return $refused;
-        }
-
-        $keyId = $this->keyIdFromPath();
-
         try {
-            $key = $this->findKey($zoneName, $keyId);
-            if ($key instanceof JsonResponse) {
-                return $key;
+            $result = $this->keyService()->setKeyActive($zoneId, $zoneName, $this->keyIdFromPath(), $active);
+            if ($result->refusal !== null || $result->key === null) {
+                return $this->refused($result, 'Failed to update DNSSEC key');
             }
 
-            // Already in the requested state: nothing to do (matches setting DNSSEC on/off).
-            if ($key->isActive() === $active) {
-                $message = $active ? 'DNSSEC key already active' : 'DNSSEC key already inactive';
-                return $this->returnApiResponse($this->formatKey($key), true, $message);
-            }
-
-            $zone = new Zone($zoneName);
-            $result = $active ? $this->apiClient?->activateZoneKey($zone, $key) : $this->apiClient?->deactivateZoneKey($zone, $key);
-            if (!$result) {
-                return $this->returnApiError('Failed to update DNSSEC key', 500);
-            }
-
-            (new AuditService($this->db))->logDnssecToggleKey($zoneId, $zoneName, $keyId, $active ? 'activate' : 'deactivate');
-
-            $active ? $key->activate() : $key->deactivate();
-            $message = $active ? 'DNSSEC key activated successfully' : 'DNSSEC key deactivated successfully';
-            return $this->returnApiResponse($this->formatKey($key), true, $message);
+            $message = $result->outcome === DnssecKeyOutcome::UNCHANGED
+                ? ($active ? 'DNSSEC key already active' : 'DNSSEC key already inactive')
+                : ($active ? 'DNSSEC key activated successfully' : 'DNSSEC key deactivated successfully');
+            return $this->returnApiResponse($this->formatKey($result->key), true, $message);
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to update DNSSEC key', 'Failed to update DNSSEC key');
+            return $this->handleException($e, 'ZoneDnssecKeysController::updateKey', 'Failed to update DNSSEC key');
         }
     }
 
@@ -443,28 +401,119 @@ class ZoneDnssecKeysController extends PublicApiController
             return $zoneName;
         }
 
-        if (($refused = $this->checkWritable($zoneName)) !== null) {
-            return $refused;
-        }
-
-        $keyId = $this->keyIdFromPath();
-
         try {
             // An unreachable PowerDNS must not read as "not found", which clients take for "already gone"
-            $key = $this->findKey($zoneName, $keyId);
-            if ($key instanceof JsonResponse) {
-                return $key;
+            $result = $this->keyService()->removeKey($zoneId, $zoneName, $this->keyIdFromPath());
+            if ($result->refusal !== null) {
+                return $this->refused($result, 'Failed to delete DNSSEC key');
             }
-
-            if (!$this->apiClient?->removeZoneKey(new Zone($zoneName), $key)) {
-                return $this->returnApiError('Failed to delete DNSSEC key', 500);
-            }
-
-            (new AuditService($this->db))->logDnssecDeleteKey($zoneId, $zoneName, $keyId);
 
             return $this->returnApiResponse(null, true, 'DNSSEC key deleted successfully');
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to delete DNSSEC key', 'Failed to delete DNSSEC key');
+            return $this->handleException($e, 'ZoneDnssecKeysController::deleteKey', 'Failed to delete DNSSEC key');
+        }
+    }
+
+    protected function keyService(): DnssecKeyService
+    {
+        return $this->services()->dnssecKeyService();
+    }
+
+    #[OA\Post(
+        path: '/v2/zones/{id}/dnssec/keys/import',
+        operationId: 'v2ImportZoneDnssecKey',
+        description: 'Imports a DNSSEC key from an existing private key in the ISC/BIND format '
+            . '("Private-key-format: v1.x", as written by dnssec-keygen or pdnsutil export-zone-key). '
+            . 'PowerDNS derives algorithm and size from the key. PEM keys are not accepted by the PowerDNS HTTP API; '
+            . 'import them with pdnsutil import-zone-key-pem or convert them first. '
+            . 'The private key is never returned, logged or audited.',
+        summary: 'Import a zone DNSSEC key',
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['type', 'privatekey'],
+                properties: [
+                    new OA\Property(property: 'type', type: 'string', enum: ['ksk', 'zsk', 'csk'], example: 'csk'),
+                    new OA\Property(
+                        property: 'privatekey',
+                        type: 'string',
+                        example: "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: Lt0v0Gol5Q6tsaPsYv6dcdeFk5yKzKjWMrhhm3E8wqU=\n",
+                        description: 'Private key in the ISC/BIND format'
+                    ),
+                    new OA\Property(property: 'active', type: 'boolean', example: false, description: 'Create the key active; defaults to false'),
+                ]
+            )
+        ),
+        tags: ['zones'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Zone ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ]
+    )]
+    #[OA\Response(
+        response: 201,
+        description: 'DNSSEC key imported successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'DNSSEC key imported successfully'),
+                new OA\Property(property: 'data', ref: '#/components/schemas/DnssecKey'),
+            ],
+            type: 'object'
+        )
+    )]
+    #[OA\Response(response: 400, description: 'Invalid input, a private key PowerDNS rejected, a key algorithm not offered for new keys, or DNSSEC not enabled on the server')]
+    #[OA\Response(response: 401, description: 'Unauthorized')]
+    #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 409, description: 'Zone is presigned; DNSSEC is managed at the primary server')]
+    #[OA\Response(response: 500, description: 'Failed to import DNSSEC key')]
+    #[OA\Response(response: 501, description: 'DNSSEC key management requires the PowerDNS API')]
+    #[OA\Response(response: 502, description: 'The request to PowerDNS failed')]
+    protected function importKey(): JsonResponse
+    {
+        $zoneId = (int)$this->pathParameters['id'];
+        $zoneName = $this->resolveZone(true);
+        if ($zoneName instanceof JsonResponse) {
+            return $zoneName;
+        }
+
+        $data = $this->getValidatedJsonBody();
+        if ($data === null) {
+            return $this->returnApiError('Invalid JSON body', 400);
+        }
+
+        $type = $data['type'] ?? null;
+        $type = is_string($type) ? strtolower($type) : '';
+        $privateKey = $data['privatekey'] ?? null;
+        $privateKey = is_string($privateKey) ? $privateKey : '';
+
+        $active = $this->inputBool($data, 'active', false);
+        if ($active === null) {
+            return $this->returnApiError('Invalid field: active (boolean)', 400);
+        }
+
+        try {
+            $result = $this->keyService()->importKey($zoneId, $zoneName, $type, $privateKey, $active, $this->getPdnsCapabilities());
+            if ($result->key !== null) {
+                return $this->returnApiResponse($this->formatKey($result->key), true, 'DNSSEC key imported successfully', 201);
+            }
+
+            // Fixed English texts: none of them may echo the private key
+            $message = match ($result->outcome) {
+                DnssecKeyOutcome::INVALID_TYPE => 'Missing or invalid required field: type (ksk, zsk or csk)',
+                DnssecKeyOutcome::INVALID_ALGORITHM => 'The private key uses an unsupported algorithm (one of: ' . implode(', ', $result->allowedAlgorithms) . ')',
+                DnssecKeyOutcome::INVALID_PRIVATE_KEY => 'Missing or invalid required field: privatekey (an ISC/BIND private key with "Private-key-format: v1.x"; PEM keys can be imported with pdnsutil import-zone-key-pem)',
+                DnssecKeyOutcome::KEY_REJECTED => 'PowerDNS rejected the private key',
+                default => null,
+            };
+            if ($message !== null) {
+                return $this->returnApiError($message, RefusalStatus::of($result->refusal ?? Refusal::INVALID_INPUT));
+            }
+
+            return $this->refused($result, 'Failed to import DNSSEC key');
+        } catch (Exception $e) {
+            return $this->handleException($e, 'ZoneDnssecKeysController::importKey', 'Failed to import DNSSEC key');
         }
     }
 
@@ -473,7 +522,7 @@ class ZoneDnssecKeysController extends PublicApiController
      * the error response to send.
      *
      * Reading keys needs view access to the zone (the keys are public DNSKEY
-     * data); changing them needs the DNSSEC management permission.
+     * data); changing them needs the DNSSEC management permission as well.
      */
     private function resolveZone(bool $modify): string|JsonResponse
     {
@@ -483,13 +532,14 @@ class ZoneDnssecKeysController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
-        $allowed = $modify
-            ? $this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId)
-            : $this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId);
+        // Changing keys also needs view access, as on the web DNSSEC pages
+        $allowed = $this->apiPermissionService->canViewZone($this->authenticatedUserId, $zoneId)
+            && (!$modify || $this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId));
         if (!$allowed) {
             return $this->returnApiError(
                 $modify ? 'You do not have permission to manage DNSSEC for this zone' : 'You do not have permission to view this zone',
@@ -501,39 +551,7 @@ class ZoneDnssecKeysController extends PublicApiController
             return $this->returnApiError('DNSSEC key management requires the PowerDNS API to be configured', 501);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
-        }
-
         return $zoneName;
-    }
-
-    /**
-     * Refuse a key change for a presigned zone or a server without DNSSEC, or
-     * return null when the change may go ahead.
-     */
-    private function checkWritable(string $zoneName): ?JsonResponse
-    {
-        // Ask for the keys first: the server-settings lookup below reads a failed request as "DNSSEC off"
-        $keys = $this->loadKeys($zoneName);
-        if ($keys instanceof JsonResponse) {
-            return $keys;
-        }
-        $this->zoneKeys = $keys;
-
-        try {
-            if (!$this->dnssecProvider->isDnssecEnabled()) {
-                return $this->returnApiError('DNSSEC is not enabled on the server', 400);
-            }
-            if ($this->dnssecProvider->isZonePresigned($zoneName)) {
-                return $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409);
-            }
-        } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to check DNSSEC state', 'Failed to check DNSSEC state');
-        }
-
-        return null;
     }
 
     private function keyIdFromPath(): int
@@ -542,50 +560,51 @@ class ZoneDnssecKeysController extends PublicApiController
     }
 
     /**
-     * @return CryptoKey[]|JsonResponse The zone's keys, or the error to send when PowerDNS could not be asked
+     * The error for a request the key service refused.
+     *
+     * @param string $failedText The text for a PowerDNS write that did not go through
      */
-    private function loadKeys(string $zoneName): array|JsonResponse
+    private function refused(DnssecKeyResult $result, string $failedText = 'Failed to retrieve DNSSEC keys'): JsonResponse
     {
-        $keys = $this->apiClient?->fetchZoneKeys(new Zone($zoneName));
+        $message = match ($result->outcome) {
+            DnssecKeyOutcome::UNREACHABLE => 'Failed to retrieve DNSSEC keys from PowerDNS',
+            DnssecKeyOutcome::SERVER_DISABLED => 'DNSSEC is not enabled on the server',
+            DnssecKeyOutcome::PRESIGNED => 'DNSSEC for this zone is presigned and managed at the primary server',
+            DnssecKeyOutcome::NOT_FOUND => 'DNSSEC key not found',
+            default => $failedText,
+        };
 
-        return $keys ?? $this->returnApiError('Failed to retrieve DNSSEC keys from PowerDNS', 502);
+        return $this->returnApiError($message, RefusalStatus::of($result->refusal ?? Refusal::BACKEND_FAILURE));
     }
 
-    private function findKey(string $zoneName, int $keyId): CryptoKey|JsonResponse
+    private function invalidKeyMessage(DnssecKeyResult $invalid, string $algorithm, ?int $bits): string
     {
-        $keys = $this->zoneKeys ?? $this->loadKeys($zoneName);
-        if ($keys instanceof JsonResponse) {
-            return $keys;
-        }
-
-        foreach ($keys as $key) {
-            if ($key->getId() === $keyId) {
-                return $key;
-            }
-        }
-
-        return $this->returnApiError('DNSSEC key not found', 404);
+        return match (true) {
+            $invalid->outcome === DnssecKeyOutcome::INVALID_TYPE => 'Missing or invalid required field: type (ksk, zsk or csk)',
+            $invalid->outcome === DnssecKeyOutcome::INVALID_ALGORITHM => 'Missing or invalid required field: algorithm (one of: ' . implode(', ', $invalid->allowedAlgorithms) . ')',
+            $bits === null => 'Missing or invalid required field: bits (integer)',
+            default => $algorithm . ' requires ' . implode(' or ', $invalid->acceptedBits) . ' bits',
+        };
     }
 
     /**
-     * @return array{id: int, type: string, keytag: int, algorithm: ?string, algorithm_id: int, bits: int, active: bool, dnskey: ?string, ds: string[]}
+     * @return array{id: int, type: string, keytag: int, algorithm: ?string, algorithm_id: int, bits: int, active: bool, dnskey: ?string, ds: string[], sep: ?bool}
      */
     private function formatKey(CryptoKey $key): array
     {
-        $dnskey = $key->getDnskey();
-        $fields = $dnskey !== null ? preg_split('/\s+/', trim($dnskey)) : [];
-        $algorithmId = (int)($fields[2] ?? 0);
+        $algorithmId = $key->getAlgorithmId();
 
         return [
             'id' => (int)$key->getId(),
             'type' => strtolower((string)$key->getType()),
             'keytag' => $key->getKeyTag(),
-            'algorithm' => self::ALGORITHM_NAMES_BY_ID[$algorithmId] ?? null,
+            'algorithm' => DnssecAlgorithmName::fromAlgorithmId($algorithmId),
             'algorithm_id' => $algorithmId,
             'bits' => (int)$key->getSize(),
             'active' => $key->isActive(),
-            'dnskey' => $dnskey,
+            'dnskey' => $key->getDnskey(),
             'ds' => array_values($key->getDs()),
+            'sep' => $key->isSecureEntryPoint(),
         ];
     }
 }

@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\UserMfa;
 
+/**
+ * Persistence for per-user MFA settings.
+ */
 interface UserMfaRepositoryInterface
 {
     /**

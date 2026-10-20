@@ -23,12 +23,15 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * `zones_groups.domain_id` stores the canonical zone id, COALESCE(zones.domain_id,
@@ -39,17 +42,19 @@ use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
  * zone - see CanonicalZoneSql. A tolerant `IN (id, domain_id)` match would pass the
  * visibility test below while leaking the colliding zone in the test after it.
  */
+#[BackupGlobals(true)]
 #[CoversClass(ApiZoneRepository::class)]
 class ApiZoneRepositoryGroupOwnershipTest extends TestCase
 {
     private PDO $db;
-    private DnsBackendProvider $backend;
+    private ArraySession $session;
+    private DnsBackendProviderInterface $backend;
 
     protected function setUp(): void
     {
         // Hold the sync throttle closed; a sync against a stubbed provider would
         // see zero API zones and delete every local row as orphaned.
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
@@ -59,27 +64,23 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'admin', 'Administrator'), (2, 'member', 'Group Member')");
 
-        $this->backend = $this->createMock(DnsBackendProvider::class);
+        $this->backend = $this->createMock(DnsBackendProviderInterface::class);
+        $this->backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $this->backend->method('getZoneStats')->willReturn([]);
         $this->backend->method('countZoneRecords')->willReturn(0);
         $this->backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(): ApiZoneRepository
     {
-        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', $this->createMock(ConfigurationManager::class));
+        return new ApiZoneRepository($this->db, $this->backend, 'sqlite', new FakeConfiguration(), $this->session);
     }
 
     /** @return string[] */
     private function visibleTo(int $userId): array
     {
         $zones = $this->repository()->getReverseZones('own', $userId, 'all', 0, 25, 'name', 'ASC');
-        return array_map(static fn(array $zone): string => $zone['name'], array_values($zones));
+        return array_map(static fn(ZoneSummary $zone): string => $zone->name, array_values($zones));
     }
 
     #[Test]
@@ -164,6 +165,12 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
 
         $this->assertSame(4011, $zones[0]['id']);
         $this->assertSame(['admin', 'member'], $zones[0]['owners']);
+        $this->assertSame([4011 => [1, 2]], $this->repository()->getOwnerIdsByZoneIds([4011]));
+
+        // listZones() keys by the row id, so only the primary owner lines up with it
+        $listed = array_values($this->repository()->listZones(1, true));
+        $this->assertSame('admin', $listed[0]['owners'][0]);
+        $this->assertSame($listed[0]['owners'], $listed[0]['users']);
     }
 
     #[Test]
@@ -172,18 +179,19 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
             VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");
 
+        // getAllZonesFiltered() feeds GET /api/v2/zones; listZones() the internal API.
         $filtered = array_column($this->repository()->getAllZonesFiltered(null, null, null, null, null), null, 'name');
         $listed = array_column(array_values($this->repository()->listZones(1, true)), null, 'name');
 
         foreach ([$filtered, $listed] as $byName) {
             $this->assertSame(4011, (int)$byName['migrated.example']['id']);
-            $this->assertSame(8, (int)$byName['native.example']['id']);
+            $this->assertSame(4011, $byName['migrated.example']['canonical_id']);
+            $this->assertSame(8, $byName['native.example']['canonical_id']);
         }
-        $this->assertSame(4011, $this->repository()->getZoneById(7)['id'] ?? null, 'A zone addressed by its row id reports its canonical id');
     }
 
     #[Test]
-    public function zoneIdFiltersMatchTheCanonicalId(): void
+    public function zoneIdAllowlistBindsIntegersInTheCountQuery(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
             VALUES (7, 4011, 'migrated.example', 'MASTER', '', '', 1, 0), (8, 8, 'native.example', 'MASTER', '', '', 1, 0)");

@@ -3,16 +3,11 @@
 -- of record/zone mutations, enabling the diff-style change-log UI and email
 -- digest reports. The existing log_zones activity feed is unchanged.
 
--- The 4.1.0 update shipped before 4.5.0 inserted permissions with explicit ids without
+-- The 4.1.0 update shipped before 4.6.0 inserted permissions with explicit ids without
 -- advancing the sequences, so the inserts below would collide. Resync them first.
 SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1));
 SELECT setval('perm_templ_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ), 1));
 SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
-
--- Restore the permission the 4.2.0 update failed to add on databases whose sequence lagged.
-INSERT INTO perm_items (name, descr)
-SELECT 'user_enforce_mfa', 'User is required to use multi-factor authentication.'
-WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'user_enforce_mfa');
 
 -- Groups the record changes made by one submission under a single row, so the
 -- change log can show "these six edits went together, and here is why".

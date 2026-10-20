@@ -36,6 +36,21 @@ docs
 scripts
 # Keep README.md but exclude other markdown files
 DONORS.md
+DOCKER.md
+DOCKER-SECRETS.md
+CONTRIBUTING.md
+caddy.conf.example
+.semgrepignore
+
+# Bootstrap sources, docs and source maps; the app serves only dist/ and font/
+vendor/twbs/bootstrap/site/
+vendor/twbs/bootstrap/scss/
+vendor/twbs/bootstrap/js/
+vendor/twbs/bootstrap/build/
+vendor/twbs/bootstrap/nuget/
+vendor/twbs/bootstrap-icons/icons/
+vendor/twbs/**/*.map
+locale/*.pot
 
 # Node.js
 package.json
@@ -54,18 +69,22 @@ playwright-report/
 test-results/
 *.trace.zip
 
+# Local developer state (gitignored, never part of the image)
+config/settings.php
+var/
+playwright-sweep-logs/
+
 # Configuration files
 composer.json
 composer.lock
 phpcs.xml
-phpdoc.dist.xml
 phpstan-baseline.neon
 phpstan.neon
 phpunit.xml.dist
 psalm.xml
-.php-cs-fixer.cache
-.php-cs-fixer.php
 .phan
+.doctum
+doctum.php
 nginx.conf.example
 .htaccess
 .hadolint.yaml

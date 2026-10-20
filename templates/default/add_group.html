@@ -38,6 +38,15 @@
                         <div class="invalid-feedback">{% trans %}Select a permission template{% endtrans %}</div>
                     </div>
 
+                    <div class="mb-3">
+                        <label for="max_zones" class="form-label">{% trans %}Zone limit{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="number" min="0" step="1" id="max_zones" name="max_zones"
+                               value="{{ max_zones }}"
+                               placeholder="{{ zone_limit_default is null ? 'Unlimited'|trans : 'Default: %count%'|trans({'%count%': zone_limit_default}) }}"
+                               data-testid="max-zones-input">
+                        <small class="text-muted">{% trans %}How many zones this group may own. Leave empty to use the default.{% endtrans %}</small>
+                    </div>
+
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Create Group{% endtrans %}

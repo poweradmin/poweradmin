@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,33 +20,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Abstract base API controller class with common functionality
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Application\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Shared base for API controllers: enforces the api.enabled switch, parses JSON input and shapes JSON responses.
+ */
 abstract class AbstractApiController extends BaseController
 {
     /**
      * @var Request The current HTTP request
      */
     protected Request $request;
-
-    /**
-     * @var Request|null Temporary request for initialization
-     */
-    private static ?Request $tempRequest = null;
 
     /**
      * AbstractApiController constructor
@@ -56,31 +44,20 @@ abstract class AbstractApiController extends BaseController
      */
     public function __construct(array $requestParams, bool $authenticate = true)
     {
-        // Create Request object before anything else for route determination
-        // Store it in a static property for use before $this->request is initialized
-        self::$tempRequest = Request::createFromGlobals();
-
-        // Initialize config early
-        $config = ConfigurationManager::getInstance();
-        $config->initialize();
-
-        // Check if API is enabled in the system
-        if (!$config->get('api', 'enabled', false)) {
+        // Refused before the parent boots the request, so a disabled API never opens the database
+        if (!self::requestContext()->config->get('api', 'enabled', false)) {
             // v2 wraps errors as {success:false,data,message}; the internal API keeps {error:true}.
             $message = 'The API feature is disabled in the system configuration.';
             $body = str_contains(static::class, '\\V2\\')
                 ? ['success' => false, 'data' => null, 'message' => $message]
                 : ['error' => true, 'message' => $message];
-            $response = new JsonResponse($body, 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt(new JsonResponse($body, 403));
         }
 
         // Call parent constructor with authenticate param for session handling if needed
         parent::__construct($requestParams, $authenticate);
 
-        // Assign the already created Symfony Request object to the instance property
-        $this->request = self::$tempRequest;
+        $this->request = Request::createFromGlobals();
     }
 
     /**
@@ -90,6 +67,23 @@ abstract class AbstractApiController extends BaseController
     protected function requiresCsrfValidation(): bool
     {
         return false;
+    }
+
+    /**
+     * The first query parameter sent as an array (`?type[]=A`), or null when every
+     * value is a scalar. InputBag::get() throws on such a value, so subclasses refuse
+     * the request before any handler reads the query. The key is scrubbed to valid
+     * UTF-8 because it is echoed in a JSON error.
+     */
+    protected function arrayQueryParameter(): ?string
+    {
+        foreach ($this->request->query->all() as $key => $value) {
+            if (is_array($value)) {
+                return mb_scrub((string)$key, 'UTF-8');
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -126,12 +120,29 @@ abstract class AbstractApiController extends BaseController
     protected function getJsonInput(): ?array
     {
         if ($this->isJsonRequest()) {
-            $content = $this->request->getContent();
-            return json_decode($content, true);
+            // A scalar body ("abc", 42) is valid JSON but not a usable input set
+            $decoded = json_decode($this->request->getContent(), true);
+            return is_array($decoded) ? $decoded : null;
         }
 
         // Fall back to POST data if no valid JSON in the body
         return $this->request->request->all() ?: null;
+    }
+
+    /**
+     * Get the JSON request body validated as a non-empty array.
+     *
+     * Same sources as {@see self::getJsonInput()} (JSON body with a form-data
+     * fallback), but scalar bodies like `"abc"` or `42` - which decode to
+     * non-array values - are rejected as well, so callers can safely use array
+     * access on the result. Returns null for anything but a non-empty array.
+     *
+     * @return array|null Decoded body array, or null when missing or invalid
+     */
+    protected function getValidatedJsonBody(): ?array
+    {
+        $input = $this->getJsonInput();
+        return is_array($input) && $input !== [] ? $input : null;
     }
 
     /**
@@ -151,6 +162,53 @@ abstract class AbstractApiController extends BaseController
         }
 
         return new JsonResponse($data, $status, $headers);
+    }
+
+    /**
+     * Wrapped API response: {success, data, message?} plus any additional top-level fields.
+     *
+     * @param mixed $data The data to return
+     * @param array $additionalFields Extra top-level fields (pagination, meta)
+     * @param array $headers Additional response headers
+     */
+    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = [], array $headers = []): JsonResponse
+    {
+        $response = [
+            'success' => $success,
+            'data' => $data
+        ];
+
+        if ($message !== null) {
+            $response['message'] = $message;
+        }
+
+        return $this->returnJsonResponse(array_merge($response, $additionalFields), $status, $headers);
+    }
+
+    /**
+     * Wrapped API error: {success: false, data, message} plus any additional top-level fields.
+     *
+     * @param mixed $data Additional error data
+     * @param array $additionalFields Extra top-level fields (meta)
+     * @param array $headers Additional response headers
+     */
+    protected function returnApiError(string $message, int $status = 400, $data = null, array $additionalFields = [], array $headers = []): JsonResponse
+    {
+        return $this->returnApiResponse($data, false, $message, $status, $additionalFields, $headers);
+    }
+
+    /**
+     * Return a 405 Method Not Allowed error with the RFC 9110 Allow header
+     * listing the methods the endpoint supports.
+     *
+     * @param string[] $allowedMethods HTTP methods the endpoint handles (e.g. ['GET', 'POST'])
+     * @return JsonResponse
+     */
+    protected function methodNotAllowed(array $allowedMethods): JsonResponse
+    {
+        return $this->returnApiError('Method not allowed', 405, null, [], [
+            'Allow' => implode(', ', $allowedMethods),
+        ]);
     }
 
     /**
@@ -190,8 +248,8 @@ abstract class AbstractApiController extends BaseController
 
     /**
      * Extract an integer value from input array.
-     * Accepts integers and numeric strings. Returns default when key is absent;
-     * returns null for present non-numeric values.
+     * Accepts integers and integer-shaped strings. Returns default when key is
+     * absent; returns null for present non-integer values.
      */
     protected function inputInt(array $input, string $key, ?int $default = null): ?int
     {
@@ -202,7 +260,8 @@ abstract class AbstractApiController extends BaseController
         if (is_int($value)) {
             return $value;
         }
-        if (is_string($value) && is_numeric($value)) {
+        // A fractional string would silently truncate ("0.5" -> 0, "-0.5" -> 0)
+        if (is_string($value) && preg_match('/^-?\d+$/', $value) === 1) {
             return (int)$value;
         }
         return null;
@@ -252,7 +311,7 @@ abstract class AbstractApiController extends BaseController
         if ($value === 'true' || $value === 'false') {
             return $value === 'true' ? 1 : 0;
         }
-        if (is_string($value) && is_numeric($value)) {
+        if (is_string($value) && preg_match('/^-?\d+$/', $value) === 1) {
             return (int)$value;
         }
         return null;

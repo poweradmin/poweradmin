@@ -33,7 +33,7 @@ function extractIdFromUrl(href) {
  * @param {string} templateName - Template name to search for
  * @returns {Promise<string|null>} - Template ID or null if not found
  */
-export async function findTemplateIdByName(page, templateName) {
+async function findTemplateIdByName(page, templateName) {
   await page.goto('/zones/templates');
 
   // Wait for table to load
@@ -87,27 +87,6 @@ export async function createTemplate(page, name, description = '') {
 
   // Try to find the template ID
   return await findTemplateIdByName(page, name);
-}
-
-/**
- * Ensure a template exists and return its ID
- * Creates the template if it doesn't exist
- *
- * @param {import('@playwright/test').Page} page - Playwright page object
- * @param {string} name - Template name
- * @param {string} description - Template description (optional)
- * @returns {Promise<string|null>} - Template ID or null if both find and create failed
- */
-export async function ensureTemplateExists(page, name, description = '') {
-  // First try to find existing template
-  let templateId = await findTemplateIdByName(page, name);
-
-  if (templateId) {
-    return templateId;
-  }
-
-  // Template doesn't exist, create it
-  return await createTemplate(page, name, description);
 }
 
 /**
@@ -192,4 +171,34 @@ export async function ensurePermTemplateExists(page, name, description = '') {
 
   // Template doesn't exist, create it
   return await createPermTemplate(page, name, description);
+}
+
+/**
+ * Delete a zone template through the confirmation page
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} templateId - Zone template ID
+ * @returns {Promise<void>}
+ */
+export async function deleteTemplate(page, templateId) {
+  await page.goto(`/zones/templates/${templateId}/delete`);
+  await page.locator('button[name="confirm"]').click();
+  await page.waitForLoadState('networkidle');
+}
+
+/**
+ * Add a record to a zone template
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} templateId - Zone template ID
+ * @param {{type: string, name: string, content: string}} record - Record to add
+ * @returns {Promise<void>}
+ */
+export async function addTemplateRecord(page, templateId, record) {
+  await page.goto(`/zones/templates/${templateId}/records/add`);
+  await page.locator('#type').selectOption(record.type);
+  await page.locator('#name').fill(record.name);
+  await page.locator('#content').fill(record.content);
+  await page.locator('button[name="commit"]').click();
+  await page.waitForLoadState('networkidle');
 }

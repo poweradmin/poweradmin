@@ -35,35 +35,36 @@
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\PowerdnsStatusService;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
 class ServerStatusController extends PublicApiController
 {
-    private ApiPermissionService $apiPermissionService;
-    private PowerdnsStatusService $statusService;
+    protected ApiPermissionService $apiPermissionService;
+    protected PowerdnsStatusService $statusService;
+    protected ?SupermasterManager $supermasterManager = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->statusService = new PowerdnsStatusService($this->logger);
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->statusService = $this->services()->powerdnsStatusService();
     }
 
     public function run(): void
     {
         $response = match ($this->request->getMethod()) {
             'GET' => $this->getStatus(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Get(
@@ -189,14 +190,11 @@ class ServerStatusController extends PublicApiController
     }
 
     /**
-     * Administrators always pass; everyone else needs the dedicated monitoring permission.
+     * Administrators pass implicitly; everyone else needs the dedicated monitoring permission.
      */
     private function canViewServerStatus(): bool
     {
-        $userId = $this->authenticatedUserId;
-
-        return $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')
-            || $this->apiPermissionService->userHasPermission($userId, 'server_status_view');
+        return $this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_SERVER_STATUS_VIEW);
     }
 
     /**
@@ -204,10 +202,7 @@ class ServerStatusController extends PublicApiController
      */
     private function canViewAutoprimaries(): bool
     {
-        $userId = $this->authenticatedUserId;
-
-        return $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')
-            || $this->apiPermissionService->userHasPermission($userId, 'supermaster_view');
+        return $this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_SUPERMASTER_VIEW);
     }
 
     /**
@@ -241,8 +236,7 @@ class ServerStatusController extends PublicApiController
      */
     private function getSlaveStatus(): array
     {
-        $supermasterManager = DnsServiceFactory::createSupermasterManager($this->db, $this->getConfig());
-        $slaveServers = $supermasterManager->getSlaveServerIPs();
+        $slaveServers = $this->supermasterManager()->getSlaveServerIPs();
         if (empty($slaveServers)) {
             return [];
         }
@@ -258,5 +252,10 @@ class ServerStatusController extends PublicApiController
         }
 
         return $result;
+    }
+
+    protected function supermasterManager(): SupermasterManager
+    {
+        return $this->supermasterManager ??= $this->services()->supermasterManager();
     }
 }

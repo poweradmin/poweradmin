@@ -7,7 +7,8 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordComment;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 
@@ -15,7 +16,7 @@ use Poweradmin\Infrastructure\Repository\ApiRecordCommentRepository;
 class ApiRecordCommentRepositoryTest extends TestCase
 {
     private MockObject&PowerdnsApiClient $apiClient;
-    private MockObject&DnsBackendProvider $backendProvider;
+    private MockObject&DnsBackendProviderInterface $backendProvider;
     private ApiRecordCommentRepository $repo;
 
     private const ZONE_NAME = 'example.com';
@@ -24,7 +25,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     protected function setUp(): void
     {
         $this->apiClient = $this->createMock(PowerdnsApiClient::class);
-        $this->backendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
 
         $this->backendProvider->method('getZoneNameById')
             ->with(self::DOMAIN_ID)
@@ -127,7 +128,7 @@ class ApiRecordCommentRepositoryTest extends TestCase
     #[Test]
     public function updateReturnsNullWhenZoneNotFound(): void
     {
-        $backendProvider = $this->createMock(DnsBackendProvider::class);
+        $backendProvider = $this->createMock(DnsBackendProviderInterface::class);
         $backendProvider->method('getZoneNameById')->willReturn(null);
 
         $repo = new ApiRecordCommentRepository($this->apiClient, $backendProvider);
@@ -209,19 +210,11 @@ class ApiRecordCommentRepositoryTest extends TestCase
     }
 
     #[Test]
-    public function findByRecordIdAlwaysReturnsNull(): void
+    public function perRecordCommentsAreNotOfferedInApiMode(): void
     {
-        $result = $this->repo->findByRecordId('rec-123');
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function deleteByRecordIdIsNoOp(): void
-    {
-        $this->apiClient->expects($this->never())->method('patchZoneRRsets');
-
-        $result = $this->repo->deleteByRecordId('rec-123');
-        $this->assertTrue($result);
+        // Comments are shared across an RRset here, so the linked-comment port
+        // is not implemented rather than answered with a fake success.
+        $this->assertNotInstanceOf(RecordLinkedCommentRepositoryInterface::class, $this->repo);
     }
 
     #[Test]
@@ -278,12 +271,5 @@ class ApiRecordCommentRepositoryTest extends TestCase
         $this->apiClient->expects($this->never())->method('patchZoneRRsets');
 
         $this->assertTrue($this->repo->delete(self::DOMAIN_ID, 'www.example.com', 'A'));
-    }
-
-    #[Test]
-    public function migrateLegacyCommentsReturnsFalse(): void
-    {
-        $result = $this->repo->migrateLegacyComments(self::DOMAIN_ID, 'www.example.com', 'A', 'rec-123');
-        $this->assertFalse($result);
     }
 }

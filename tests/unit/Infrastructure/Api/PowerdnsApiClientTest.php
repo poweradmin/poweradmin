@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -9,6 +10,9 @@ use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 
 class PowerdnsApiClientTest extends TestCase
 {
@@ -21,7 +25,7 @@ class PowerdnsApiClientTest extends TestCase
         $this->mockHttpClient = $this->createMock(HttpClient::class);
         // Narrowed reads only keep disabled records from PowerDNS 5.0, so declare a
         // server that supports them rather than letting the client probe
-        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '5.0.0');
+        $this->apiClient = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService(new ArraySession()), null, '5.0.0');
     }
 
     public function testGetZoneKeysWithMissingDsKey(): void
@@ -149,17 +153,6 @@ class PowerdnsApiClientTest extends TestCase
         $this->assertSame('257 3 13 BBBB', $created->getDnskey());
     }
 
-    public function testImportingAKeySendsOnlyTheKeyTypeAndThePrivateKey(): void
-    {
-        $isc = "Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: AAAA\n";
-        // PowerDNS derives algorithm and size from the key and answers 422 when they are sent too
-        $this->mockHttpClient->expects($this->once())->method('makeRequest')
-            ->with('POST', '/api/v1/servers/localhost/zones/example.com./cryptokeys', ['keytype' => 'csk', 'privatekey' => $isc])
-            ->willReturn(['responseCode' => 201, 'data' => ['id' => 4]]);
-
-        $this->assertTrue($this->apiClient->importZoneKey(new Zone('example.com.'), 'csk', 'ecdsa256', $isc));
-    }
-
     /** @return array<string, array{0: array<string, mixed>|null}> */
     public static function failedCreateProvider(): array
     {
@@ -201,6 +194,35 @@ class PowerdnsApiClientTest extends TestCase
             ->willReturn(['responseCode' => 422]);
 
         $this->assertFalse($this->apiClient->retrieveZone('example.com.'));
+    }
+
+    public function testNotifyZoneQueuesNotify(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./notify')
+            ->willReturn(['responseCode' => 200]);
+
+        $this->assertTrue($this->apiClient->notifyZone('example.com.'));
+    }
+
+    public function testNotifyZoneReturnsFalseOnNonSuccess(): void
+    {
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/zones/example.com./notify')
+            ->willReturn(['responseCode' => 400]);
+
+        $this->assertFalse($this->apiClient->notifyZone('example.com.'));
+    }
+
+    public function testNotifyZoneReturnsFalseWhenTheApiErrors(): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willThrowException(new ApiErrorException('down'));
+
+        $this->assertFalse($this->apiClient->notifyZone('example.com.'));
     }
 
     public function testGetZoneKeysWithDsRecords(): void
@@ -821,7 +843,7 @@ class PowerdnsApiClientTest extends TestCase
                 ],
             ]]);
 
-        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', null, '4.9.12');
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService(new ArraySession()), null, '4.9.12');
         $zone = $client->getZoneRrset('example.com.', 'www.example.com.', 'A');
 
         $this->assertSame('192.0.2.1', $zone['rrsets'][0]['records'][0]['content']);
@@ -830,7 +852,7 @@ class PowerdnsApiClientTest extends TestCase
 
     public function testAnUnknownServerVersionIsTreatedAsTheOlderBehaviour(): void
     {
-        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost');
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService(new ArraySession()));
 
         $this->mockHttpClient
             ->method('makeRequest')
@@ -1070,5 +1092,100 @@ class PowerdnsApiClientTest extends TestCase
         $this->apiClient->getZone('example.com.');
 
         $this->assertSame(2, $calls);
+    }
+
+    public function testFlushZoneCacheSendsTheCanonicalZoneName(): void
+    {
+        $this->mockHttpClient->expects($this->once())->method('makeRequest')
+            ->with('PUT', '/api/v1/servers/localhost/cache/flush?domain=example.com.')
+            ->willReturn(['responseCode' => 200, 'data' => ['count' => 1, 'result' => 'Cache flushed']]);
+
+        $this->assertTrue($this->apiClient->flushZoneCache('example.com'));
+    }
+
+    public function testFlushZoneCacheReportsARefusalAsFalse(): void
+    {
+        $this->mockHttpClient->method('makeRequest')
+            ->willReturn(['responseCode' => 422, 'data' => ['error' => "DNS Name 'example.com' is not canonical"]]);
+
+        $this->assertFalse($this->apiClient->flushZoneCache('example.com.'));
+    }
+
+    public function testFlushZoneCacheReportsAnApiErrorAsFalse(): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willThrowException(new ApiErrorException('connection refused'));
+
+        $this->assertFalse($this->apiClient->flushZoneCache('example.com'));
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: bool}>
+     */
+    public static function zoneListCatalogVersions(): array
+    {
+        return [
+            '4.6 has no catalog zones' => ['4.6.4', false],
+            '4.7 leaves the list empty' => ['4.7.5', true],
+            '4.8 leaves the list empty' => ['4.8.5', true],
+            '4.9 fills the list' => ['4.9.12', false],
+            '5.1 fills the list' => ['5.1.4', false],
+            'unknown version' => ['', false],
+        ];
+    }
+
+    #[DataProvider('zoneListCatalogVersions')]
+    public function testZoneListOmitsCatalogOnlyOnPowerDns47And48(string $version, bool $expected): void
+    {
+        $this->mockHttpClient->method('makeRequest')->willReturn(['responseCode' => 200, 'data' => ['version' => $version]]);
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService(new ArraySession()));
+
+        $this->assertSame($expected, $client->zoneListOmitsCatalog());
+    }
+
+    public function testZoneCatalogNameIsReadOnceUntilAWrite(): void
+    {
+        $this->mockHttpClient->expects($this->exactly(3))
+            ->method('makeRequest')
+            ->willReturnOnConsecutiveCalls(
+                ['responseCode' => 200, 'data' => ['name' => 'member.example.com.', 'catalog' => 'Producer.Example.com.']],
+                ['responseCode' => 204, 'data' => []],
+                ['responseCode' => 200, 'data' => ['name' => 'member.example.com.', 'catalog' => '']]
+            );
+
+        $this->assertSame('producer.example.com', $this->apiClient->getZoneCatalogName('member.example.com.'));
+        $this->assertSame('producer.example.com', $this->apiClient->getZoneCatalogName('member.example.com.'));
+        $this->apiClient->updateZoneProperties('member.example.com.', ['catalog' => '']);
+        $this->assertSame('', $this->apiClient->getZoneCatalogName('member.example.com.'));
+    }
+
+    #[BackupGlobals(true)]
+    public function testAFailedZoneReadIsRecordedInTheInjectedSessionNotTheGlobalOne(): void
+    {
+        $_SESSION = [];
+        $session = new ArraySession();
+        $this->mockHttpClient->method('makeRequest')
+            ->willThrowException(new ApiErrorException('down', 500, null, ['http_code' => 500]));
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService($session), null, '5.0.0');
+
+        $this->assertNull($client->getZone('example.com.'));
+
+        $this->assertSame('down', $session->get('pdns_api_last_error')['message']);
+        $this->assertSame([], $_SESSION);
+    }
+
+    #[BackupGlobals(true)]
+    public function testASuccessfulZoneReadClearsTheErrorInTheInjectedSessionOnly(): void
+    {
+        $stale = ['message' => 'down', 'context' => [], 'timestamp' => 0];
+        $_SESSION = ['pdns_api_last_error' => $stale];
+        $session = new ArraySession(['pdns_api_last_error' => $stale]);
+        $this->mockHttpClient->method('makeRequest')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com.', 'rrsets' => []]]);
+        $client = new PowerdnsApiClient($this->mockHttpClient, 'localhost', new ApiStatusService($session), null, '5.0.0');
+
+        $client->getZone('example.com.');
+
+        $this->assertFalse($session->has('pdns_api_last_error'));
+        $this->assertSame(['pdns_api_last_error' => $stale], $_SESSION);
     }
 }

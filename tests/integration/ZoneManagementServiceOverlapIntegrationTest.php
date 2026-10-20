@@ -25,9 +25,21 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Psr\Log\NullLogger;
+use TestHelpers\ZoneTemplateServiceBuilder;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration test for the API zone-creation path. Confirms that the
@@ -47,6 +59,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
     // Seeded by import-test-data.sh: group 2 contains manager (user 2) only.
     private const MANAGER_ONLY_GROUP = 2;
+    private const MANAGER = 2;
     private const CLIENT = 3;
 
     private ?PDO $db = null;
@@ -62,13 +75,20 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             $this->markTestSkipped('Devcontainer MariaDB not available.');
         }
 
-        // Confirm the ownership fixtures are present; skip otherwise.
-        $hasGroup = (int)$this->db->query(
-            'SELECT COUNT(*) FROM user_group_members WHERE group_id = ' . self::MANAGER_ONLY_GROUP
-            . ' AND user_id = ' . self::CLIENT
-        )->fetchColumn();
-        if ($hasGroup !== 0) {
-            $this->markTestSkipped('Expected test-data group membership not present.');
+        // The overlap guard needs group 2 to exist with manager in it and client outside it.
+        $count = fn(string $sql): int => (int)$this->db->query($sql)->fetchColumn();
+        $group = self::MANAGER_ONLY_GROUP;
+        if ($count("SELECT COUNT(*) FROM user_groups WHERE id = $group") === 0) {
+            $this->markTestSkipped("Test data has no user group $group.");
+        }
+        if ($count("SELECT COUNT(*) FROM user_group_members WHERE group_id = $group AND user_id = " . self::MANAGER) === 0) {
+            $this->markTestSkipped("Test data group $group does not contain the manager user.");
+        }
+        if ($count('SELECT COUNT(*) FROM users WHERE id = ' . self::CLIENT) === 0) {
+            $this->markTestSkipped('Test data has no client user ' . self::CLIENT . '.');
+        }
+        if ($count("SELECT COUNT(*) FROM user_group_members WHERE group_id = $group AND user_id = " . self::CLIENT) !== 0) {
+            $this->markTestSkipped("Test data group $group already contains the client user, so nothing overlaps.");
         }
     }
 
@@ -91,7 +111,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
 
     private function makeService(): ZoneManagementService
     {
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
             function (string $group, string $key, $default = null) {
                 if ($group === 'dns' && $key === 'parent_zone_ownership_check') {
@@ -107,7 +127,24 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
             }
         );
 
-        return new ZoneManagementService($this->createMock(ZoneRepositoryInterface::class), $config, $this->db);
+        $backend = DnsBackendProviderFactory::create($this->db, $config, new ArraySession());
+
+        return new ZoneManagementService(
+            $this->createMock(ZoneRepositoryInterface::class),
+            $config,
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
+            new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
+            new RecordChangeLogger($this->db, $config, new SessionActor(new ArraySession())),
+            fn() => (new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor(new ArraySession()), new ArraySession()))->domainManager(),
+            ZoneTemplateServiceBuilder::build(
+                new DbZoneTemplateRepository($this->db, $config, $backend),
+                $config,
+                $backend,
+                new PermissionService(new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally())),
+                new SessionActor(new ArraySession()),
+                new NullLogger()
+            )
+        );
     }
 
     public function testApiCreateRejectsOverlapForNonOwnerWith409(): void
@@ -128,7 +165,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
         );
 
         $this->assertFalse($result['success']);
-        $this->assertSame(409, $result['status']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
         $this->assertStringContainsString('overlaps', $result['message']);
     }
 }

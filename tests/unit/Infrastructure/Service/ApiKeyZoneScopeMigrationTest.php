@@ -26,11 +26,11 @@ use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyZoneScopeMigration;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
- * API key scopes the form saved in API backend mode hold zones row ids; requests compare
+ * API key scopes saved in API backend mode before 4.6.0 hold zones row ids; requests compare
  * canonical ids. The migration maps each to the canonical id once and never widens a key.
  */
 class ApiKeyZoneScopeMigrationTest extends TestCase
@@ -168,22 +168,10 @@ class ApiKeyZoneScopeMigrationTest extends TestCase
     public function testAnUntrustedRepositoryRestrictsAScopedKeyToNothing(): void
     {
         $this->scope(11, 7);
-        $repository = new DbApiKeyRepository($this->db, $this->createStub(ConfigurationManager::class), null, false);
+        $repository = new DbApiKeyRepository($this->db, new FakeConfiguration(), null, false);
 
         $this->assertSame([0], $repository->getZoneIds(11));
         $this->assertSame([], $repository->getZoneIds(12), 'An unrestricted key stays unrestricted');
         $this->assertFalse($repository->zoneScopesReady());
-    }
-
-    public function testTheRequestRepositoryMigratesBeforeItReadsAScope(): void
-    {
-        $this->scope(12, 7);
-        $config = $this->createStub(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([['dns', 'backend', null, 'api']]);
-
-        $repository = DbApiKeyRepository::withCanonicalZoneScopes($this->db, $config);
-
-        $this->assertTrue($repository->zoneScopesReady());
-        $this->assertSame([4011], $repository->getZoneIds(12));
     }
 }

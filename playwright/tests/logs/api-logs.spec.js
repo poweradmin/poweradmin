@@ -12,7 +12,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Serial mode: we create API keys to generate log entries, then verify them
 test.describe.configure({ mode: 'serial' });
@@ -28,8 +28,8 @@ test.describe('API Logs - Generate Events', () => {
     const submitBtn = page.locator('button[type="submit"]');
     await submitBtn.click();
 
-    // Auto-retrying assertion: the click navigation may still be in flight
-    await expect(page.locator('body')).toContainText(/created|success|api key/i);
+    // The add form also says "API Key", so assert text only the created page carries
+    await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
   });
 
   test('should edit the API key (api_key_edit)', async ({ page }) => {
@@ -38,18 +38,17 @@ test.describe('API Logs - Generate Events', () => {
 
     const row = page.locator('tr:has-text("test-api-logs-key")').first();
     const editLink = row.locator('a[href*="/edit"]');
+    await expect(editLink).toHaveCount(1);
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    await editLink.click();
 
-      const nameInput = page.locator('input[name="name"]');
-      await nameInput.fill('test-api-logs-key-edited');
+    const nameInput = page.locator('input[name="name"]');
+    await nameInput.fill('test-api-logs-key-edited');
 
-      const submitBtn = page.locator('button[type="submit"]');
-      await submitBtn.click();
+    const submitBtn = page.locator('button[type="submit"]');
+    await submitBtn.click();
 
-      await expect(page).toHaveURL(/.*api-keys/);
-    }
+    await expect(page).toHaveURL(/.*api-keys/);
   });
 
   test('should toggle the API key (api_key_toggle)', async ({ page }) => {
@@ -78,19 +77,13 @@ test.describe('API Logs - Generate Events', () => {
 
     const row = page.locator('tr:has-text("test-api-logs-key")').first();
     const regenerateLink = row.locator('a[href*="/regenerate"]');
+    await expect(regenerateLink).toHaveCount(1);
 
-    if (await regenerateLink.count() > 0) {
-      await regenerateLink.click();
+    await regenerateLink.click();
+    await page.locator('button[type="submit"]').first().click();
 
-      // Confirm regeneration
-      const confirmBtn = page.locator('button[type="submit"]').first();
-      if (await confirmBtn.count() > 0) {
-        await confirmBtn.click();
-      }
-
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).toContainText(/regenerated|new.*key|api key/i);
-    }
+    // Only the regenerated page shows the new secret
+    await expect(page.locator('body')).toContainText(/regenerated/i);
   });
 
   test('should delete the API key (api_key_delete)', async ({ page }) => {
@@ -99,18 +92,13 @@ test.describe('API Logs - Generate Events', () => {
 
     const row = page.locator('tr:has-text("test-api-logs-key")').first();
     const deleteLink = row.locator('a[href*="/delete"]');
+    await expect(deleteLink).toHaveCount(1);
 
-    if (await deleteLink.count() > 0) {
-      await deleteLink.click();
+    await deleteLink.click();
+    await page.locator('button[type="submit"]').first().click();
 
-      // Confirm deletion
-      const confirmBtn = page.locator('button[type="submit"]').first();
-      if (await confirmBtn.count() > 0) {
-        await confirmBtn.click();
-      }
-
-      await expect(page).toHaveURL(/.*api-keys/);
-    }
+    await expect(page).toHaveURL(/.*api-keys/);
+    await expect(page.locator('table')).not.toContainText('test-api-logs-key');
   });
 
   test('should have all event types in API logs', async ({ page }) => {
@@ -189,17 +177,17 @@ test.describe('API Logs - Navigation', () => {
 
     const toolsToggle = page.locator('a.dropdown-toggle:has-text("Tools")');
 
-    if (await toolsToggle.count() > 0) {
-      await toolsToggle.click();
-      await page.waitForTimeout(300);
+    expect(await toolsToggle.count()).toBeGreaterThan(0);
 
-      const apiLogsLink = page.locator('.dropdown-menu a[href*="/settings/api/logs"]');
+    await toolsToggle.click();
+    await page.waitForTimeout(300);
 
-      if (await apiLogsLink.count() > 0) {
-        await apiLogsLink.click();
-        await expect(page).toHaveURL(/.*settings\/api\/logs/);
-      }
-    }
+    const apiLogsLink = page.locator('.dropdown-menu a[href*="/settings/api/logs"]');
+
+    expect(await apiLogsLink.count()).toBeGreaterThan(0);
+
+    await apiLogsLink.click();
+    await expect(page).toHaveURL(/.*settings\/api\/logs/);
   });
 });
 
@@ -250,9 +238,9 @@ test.describe('API Logs - Filter Controls', () => {
 
   test('should display clear button', async ({ page }) => {
     const clearBtn = page.locator('form a.btn[href*="/settings/api/logs"]');
-    if (await clearBtn.count() > 0) {
-      await expect(clearBtn).toBeVisible();
-    }
+    expect(await clearBtn.count()).toBeGreaterThan(0);
+
+    await expect(clearBtn).toBeVisible();
   });
 
   test('should submit filter form', async ({ page }) => {
@@ -296,70 +284,48 @@ test.describe('API Logs - Log Entries', () => {
   test('should display logs table or no logs message', async ({ page }) => {
     await page.goto('/settings/api/logs');
     const table = page.locator('table').first();
-    const bodyText = await page.locator('body').textContent();
 
-    if (await table.count() > 0) {
-      await expect(table).toBeVisible();
-    } else {
-      expect(bodyText.toLowerCase()).toMatch(/no.*log|no logs found/i);
-    }
+    expect(await table.count()).toBeGreaterThan(0);
+
+    await expect(table).toBeVisible();
   });
 
   test('should display log entries from API key creation', async ({ page }) => {
     await page.goto('/settings/api/logs');
+    // The tests above created, edited, regenerated and deleted a key, so the log has rows
     const rows = page.locator('table tbody tr');
-
-    if (await rows.count() > 0) {
-      await expect(rows.first()).toBeVisible();
-
-      // Should show api_key_create badge
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/api_key_create/);
-    }
+    await expect(rows.first()).toBeVisible();
+    await expect(page.locator('body')).toContainText(/api_key_create/);
   });
 
   test('should display total logs count', async ({ page }) => {
     await page.goto('/settings/api/logs');
-    const badge = page.locator('.badge.bg-secondary');
+    // Operation badges in the table carry the same classes, so scope to the header
+    const badge = page.locator('.card-header .badge.bg-secondary');
     await expect(badge).toBeVisible();
-
-    const badgeText = await badge.textContent();
-    const count = parseInt(badgeText.trim());
-    expect(count).toBeGreaterThanOrEqual(0);
+    await expect(badge).toHaveText(/^\d+$/);
   });
 
   test('should display operation badges with colors', async ({ page }) => {
     await page.goto('/settings/api/logs');
     const badges = page.locator('table .badge');
-
-    if (await badges.count() > 0) {
-      const firstBadge = badges.first();
-      await expect(firstBadge).toBeVisible();
-    }
+    await expect(badges.first()).toBeVisible();
   });
 
   test('should have details button for log entries', async ({ page }) => {
     await page.goto('/settings/api/logs');
     const detailsBtn = page.locator('table button[data-bs-toggle="modal"]');
-
-    if (await detailsBtn.count() > 0) {
-      await expect(detailsBtn.first()).toBeVisible();
-    }
+    await expect(detailsBtn.first()).toBeVisible();
   });
 
   test('should open details modal when clicking details button', async ({ page }) => {
     await page.goto('/settings/api/logs');
     const detailsBtn = page.locator('table button[data-bs-toggle="modal"]').first();
+    await detailsBtn.click();
 
-    if (await detailsBtn.count() > 0) {
-      await detailsBtn.click();
-
-      const modal = page.locator('#apiLogModal');
-      await expect(modal).toBeVisible();
-
-      const modalText = await modal.textContent();
-      expect(modalText).toMatch(/Log Details/);
-    }
+    const modal = page.locator('#apiLogModal');
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(/Log Details/);
   });
 });
 
@@ -370,28 +336,23 @@ test.describe('API Logs - Export', () => {
   });
 
   test('should display export button when logs exist', async ({ page }) => {
-    const rows = page.locator('table tbody tr');
-
-    if (await rows.count() > 0) {
-      const exportBtn = page.locator('button[data-bs-target="#exportModal"]');
-      await expect(exportBtn).toBeVisible();
-    }
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
+    await expect(page.locator('button[data-bs-target="#exportModal"]')).toBeVisible();
   });
 
   test('should open export modal', async ({ page }) => {
     const exportBtn = page.locator('button[data-bs-target="#exportModal"]');
 
-    if (await exportBtn.count() > 0) {
-      await exportBtn.click();
+    expect(await exportBtn.count()).toBeGreaterThan(0);
 
-      const modal = page.locator('#exportModal');
-      await expect(modal).toBeVisible();
+    await exportBtn.click();
 
-      const modalText = await modal.textContent();
-      expect(modalText).toMatch(/Export Logs/);
-      expect(modalText).toMatch(/CSV/);
-      expect(modalText).toMatch(/JSON/);
-    }
+    const modal = page.locator('#exportModal');
+    await expect(modal).toBeVisible();
+
+    await expect(modal).toContainText(/Export Logs/);
+    await expect(modal).toContainText(/CSV/);
+    await expect(modal).toContainText(/JSON/);
   });
 });
 
@@ -428,31 +389,31 @@ test.afterAll(async ({ browser }) => {
 
   await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
+  // The cleanup walks every leftover key, so it needs more than a hook's budget
+  test.setTimeout(120000);
+
   const testKeyNames = ['test-api-logs-key'];
 
   for (const prefix of testKeyNames) {
-    let found = true;
-    while (found) {
+    // Collect the delete links once per pass rather than re-reading the list per key
+    for (let pass = 0; pass < 20; pass++) {
       await page.goto('/settings/api-keys');
 
-      const row = page.locator(`tr:has-text("${prefix}")`).first();
+      const deleteHrefs = await page
+        .locator(`tr:has-text("${prefix}") a[href*="/delete"]`)
+        .evaluateAll(links => links.map(link => link.getAttribute('href')));
 
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]');
+      if (deleteHrefs.length === 0) {
+        break;
+      }
 
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-
-          const confirmBtn = page.locator('button[type="submit"]').first();
-
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
-          }
-        } else {
-          found = false;
+      for (const href of deleteHrefs) {
+        await page.goto(href);
+        const confirmBtn = page.locator('button[type="submit"]').first();
+        if (await confirmBtn.count() > 0) {
+          await confirmBtn.click();
+          await page.waitForLoadState('domcontentloaded');
         }
-      } else {
-        found = false;
       }
     }
   }

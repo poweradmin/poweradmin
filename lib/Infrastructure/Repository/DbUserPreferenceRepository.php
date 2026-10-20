@@ -26,7 +26,10 @@ use PDO;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 
-class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
+/**
+ * SQL persistence for per-user settings in the user_preferences table.
+ */
+final class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
 {
     private PDO $db;
 

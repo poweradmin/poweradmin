@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,15 +23,9 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Default DNS record validator for record types that don't have specific validation
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DefaultRecordValidator implements DnsRecordValidatorInterface
 {
@@ -40,9 +34,8 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
     /**
      * @param string $recordType The type being validated; a TYPE<number> type only takes generic data
      */
-    public function __construct(ConfigurationManager $_config, private readonly string $recordType = '')
+    public function __construct(private readonly string $recordType = '')
     {
-        // ConfigurationManager parameter is kept for interface consistency
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -54,6 +47,7 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The priority value (if applicable)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult Validation result with data or errors
      */

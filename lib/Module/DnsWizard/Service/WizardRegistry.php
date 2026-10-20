@@ -22,15 +22,13 @@
 
 namespace Poweradmin\Module\DnsWizard\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
- * DNS Wizard Registry
+ * Lookup of the available record wizards by type.
  *
  * Central registry for all available DNS wizards. Manages wizard lifecycle,
  * availability, and provides access to wizard instances.
- *
- * @package Poweradmin\Module\DnsWizard\Service
  */
 class WizardRegistry
 {
@@ -101,10 +99,10 @@ class WizardRegistry
      * Get a wizard instance by type
      *
      * @param string $type Wizard type identifier (e.g., 'DMARC', 'SPF')
-     * @return DnsWizardInterface|null Wizard instance or null if not found
+     * @return AbstractDnsWizard|null Wizard instance or null if not found
      * @throws \RuntimeException If wizard class doesn't exist or isn't available
      */
-    public function getWizard(string $type): ?DnsWizardInterface
+    public function getWizard(string $type): ?AbstractDnsWizard
     {
         if (!$this->isEnabled()) {
             throw new \RuntimeException('DNS wizards are not enabled in configuration');
@@ -128,8 +126,8 @@ class WizardRegistry
 
         $wizard = new $className($this->config);
 
-        if (!$wizard instanceof DnsWizardInterface) {
-            throw new \RuntimeException(sprintf('Wizard class "%s" must implement DnsWizardInterface', $className));
+        if (!$wizard instanceof AbstractDnsWizard) {
+            throw new \RuntimeException(sprintf('Wizard class "%s" must extend AbstractDnsWizard', $className));
         }
 
         // Cache the instance
@@ -198,15 +196,6 @@ class WizardRegistry
     }
 
     /**
-     * Register a custom wizard class
-     *
-     * Allows plugins or extensions to add custom wizard implementations.
-     *
-     * @param string $type Wizard type identifier
-     * @param string $className Fully qualified class name
-     * @return void
-     */
-    /**
      * Get wizard configuration with module config fallback
      *
      * @return array Wizard configuration
@@ -226,16 +215,6 @@ class WizardRegistry
             return $this->config->getGroup('dns_wizards');
         } catch (\Exception $e) {
             return [];
-        }
-    }
-
-    public function registerWizard(string $type, string $className): void
-    {
-        $this->wizardClasses[$type] = $className;
-
-        // Clear cached instance if exists
-        if (isset($this->wizards[$type])) {
-            unset($this->wizards[$type]);
         }
     }
 }

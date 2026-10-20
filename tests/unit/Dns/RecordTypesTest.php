@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,7 +29,8 @@ use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for various record type validation
@@ -42,15 +43,15 @@ class RecordTypesTest extends BaseDnsTest
     protected function setUp(): void
     {
         parent::setUp();
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $this->csyncValidator = new CSYNCRecordValidator($configMock);
-        $this->dsValidator = new DSRecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $this->csyncValidator = new CSYNCRecordValidator($hostnameValidator);
+        $this->dsValidator = new DSRecordValidator($hostnameValidator);
     }
 
     public function testValidateSPF()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $validator = new SPFRecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $validator = new SPFRecordValidator($hostnameValidator);
 
         // Valid SPF records
         $result1 = $validator->validate('v=spf1 include:example.com ~all', 'example.com', 0, 3600, 3600);
@@ -111,9 +112,9 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testValidateLocation()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
 
-        $validator = new LOCRecordValidator($configMock);
+        $validator = new LOCRecordValidator($hostnameValidator);
         // Valid LOC records
         $result1 = $validator->validate('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m', 'example.com', 0, 3600, 3600);
         $this->assertTrue($result1->isValid());
@@ -243,8 +244,8 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testValidateHINFOContent()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $validator = new HINFORecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $validator = new HINFORecordValidator($hostnameValidator);
 
         // Valid HINFO content formats
         $result1 = $validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600);
@@ -279,8 +280,8 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testValidateSRV()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $validator = new SRVRecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $validator = new SRVRecordValidator($hostnameValidator);
 
         // Valid SRV records
         $result1 = $validator->validate('20 5060 sip.example.com', '_sip._tcp.example.com', 10, 3600, 3600);
@@ -336,8 +337,8 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testValidateHINFO()
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $validator = new HINFORecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $validator = new HINFORecordValidator($hostnameValidator);
 
         // Valid HINFO records
         $result1 = $validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600);

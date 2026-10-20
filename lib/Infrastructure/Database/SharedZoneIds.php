@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use WeakMap;
 
@@ -285,7 +286,7 @@ final class SharedZoneIds
      */
     public static function sharedIdsSql(): string
     {
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zs');
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zs', true);
 
         // Wrapped in a derived table so MySQL accepts it next to another read of zones
         return "SELECT shared_id FROM (SELECT $canonicalId AS shared_id FROM zones zs

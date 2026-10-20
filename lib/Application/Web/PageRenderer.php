@@ -1,0 +1,537 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Web;
+
+use Closure;
+use Poweradmin\Application\Boot\AppManager;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Application\Service\User\AvatarService;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
+use Poweradmin\Application\Service\Web\PaginationService;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\PdnsCapabilities;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Configuration\ThemePathResolver;
+use Poweradmin\Infrastructure\Utility\LanguageCode;
+use Poweradmin\Infrastructure\Service\StyleManager;
+use Poweradmin\Infrastructure\Web\PermissionTwigExtension;
+use Poweradmin\Application\Module\ModuleRegistry;
+use Poweradmin\Version;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Port\SessionInterface;
+
+/**
+ * Renders the shared page chrome (header, footer, Twig globals) around
+ * controller-rendered templates.
+ *
+ * The permission, server-info and debug-query lookups arrive as closures so they stay
+ * deferred until a template actually needs them, and so this class never
+ * triggers authentication or database work on construction.
+ */
+final class PageRenderer implements PageOutputInterface
+{
+    /** Shorter than the 46 characters the installer writes, so a generated key never trips the warning. */
+    private const MIN_SESSION_KEY_LENGTH = 32;
+
+    private AppManager $app;
+    private ConfigurationInterface $config;
+    private CsrfTokenService $csrfTokenService;
+    private SessionInterface $session;
+    private UserContextService $userContextService;
+    private ModuleRegistry $moduleRegistry;
+    private bool $isApiBackend;
+    private Closure $hasPermission;
+    private Closure $getPdnsServerInfo;
+    private Closure $getDebugQueries;
+    private bool $wideLayout;
+    private ?Closure $pendingChangeRequestCount;
+
+    private bool $twigEnvironmentReady = false;
+    /** @var list<array<string, mixed>>|null */
+    private ?array $moduleNavItems = null;
+    private ?array $languageVars = null;
+    private ?string $assetFingerprint = null;
+
+    /**
+     * @param ModuleRegistry $moduleRegistry Already loaded; the renderer only reads its nav items
+     * @param bool $isApiBackend Whether zones live behind the PowerDNS API (enables the API error banner)
+     * @param Closure $getPdnsServerInfo Returns the session-cached PowerDNS server info (array or null), read at first render
+     */
+    public function __construct(
+        AppManager $app,
+        ConfigurationInterface $config,
+        CsrfTokenService $csrfTokenService,
+        UserContextService $userContextService,
+        ModuleRegistry $moduleRegistry,
+        bool $isApiBackend,
+        Closure $hasPermission,
+        Closure $getPdnsServerInfo,
+        Closure $getDebugQueries,
+        bool $wideLayout,
+        SessionInterface $session,
+        ?Closure $pendingChangeRequestCount = null
+    ) {
+        $this->app = $app;
+        $this->config = $config;
+        $this->session = $session;
+        $this->csrfTokenService = $csrfTokenService;
+        $this->userContextService = $userContextService;
+        $this->moduleRegistry = $moduleRegistry;
+        $this->isApiBackend = $isApiBackend;
+        $this->hasPermission = $hasPermission;
+        $this->getPdnsServerInfo = $getPdnsServerInfo;
+        $this->getDebugQueries = $getDebugQueries;
+        $this->wideLayout = $wideLayout;
+        $this->pendingChangeRequestCount = $pendingChangeRequestCount;
+    }
+
+    private function hasPermission(string $permission): bool
+    {
+        return ($this->hasPermission)($permission);
+    }
+
+    /**
+     * Registers Twig extensions and globals that need controller-owned
+     * services. Called on the first render of the request (Twig locks
+     * extensions and new globals after that), so API requests that never
+     * render a template skip the cost entirely.
+     */
+    private function setupTwigEnvironment(): void
+    {
+        if ($this->twigEnvironmentReady) {
+            return;
+        }
+        $this->twigEnvironmentReady = true;
+
+        // The closure defers the permission lookup until a template calls can()
+        $this->app->addTwigExtension(new PermissionTwigExtension($this->hasPermission));
+
+        // Always-on context shared by header, page, and footer templates
+        $this->csrfTokenService->ensureTokenExists();
+        $this->app->addTwigGlobal('csrf_token', $this->csrfTokenService->getToken());
+        $this->app->addTwigGlobal('base_url_prefix', $this->config->get('interface', 'base_url_prefix', ''));
+        $pdnsInfo = ($this->getPdnsServerInfo)();
+        $this->app->addTwigGlobal('pdns_caps', PdnsCapabilities::fromServerInfo($pdnsInfo));
+        $this->app->addTwigGlobal('pdns_server_info', $pdnsInfo);
+        $this->app->addTwigGlobal('user_logged_in', $this->userContextService->isAuthenticated());
+        $this->app->addTwigGlobal('file_version', $this->getAssetVersion());
+        // Record forms read these in JS; one source keeps them in step with the validators.
+        $nav = $this->navigationVisibility();
+        // One count query, and only for users who get the Change requests entry
+        $pending = $nav['change_requests'] && $this->pendingChangeRequestCount !== null
+            ? ($this->pendingChangeRequestCount)()
+            : 0;
+        if ($pending === null) {
+            // The requests table is missing until the 4.6.0 schema update runs
+            $nav = $this->navigationVisibility(false);
+        }
+        $this->app->addTwigGlobal('nav', $nav);
+        $this->app->addTwigGlobal('pending_change_requests', (int)$pending);
+        $this->app->addTwigGlobal('record_types_with_priority', RecordType::TYPES_WITH_PRIORITY);
+        $this->app->addTwigGlobal('deprecated_record_types', RecordType::DEPRECATED_TYPES);
+        // Page-size choices, so the dropdowns offer the configured value rather than
+        // a hardcoded list that silently excludes it.
+        $this->app->addTwigGlobal('rows_per_page_options', (new PaginationService())->getRowsPerPageOptions(
+            (int)$this->config->get('interface', 'rows_per_page', PaginationService::DEFAULT_ROWS_PER_PAGE)
+        ));
+    }
+
+    /**
+     * The warning for a session key an attacker could guess, or null when it is fine.
+     *
+     * Only catches unset, shipped-default and obviously short keys. A key of
+     * adequate length generated by a weak source still reads as fine here.
+     */
+    private static function sessionKeyWarning(mixed $key): ?string
+    {
+        if (!is_string($key) || in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
+            return _('Default session encryption key is used, please set it in your configuration file.');
+        }
+
+        if (strlen($key) < self::MIN_SESSION_KEY_LENGTH) {
+            return _('Session encryption key is too short, please set a longer one in your configuration file.');
+        }
+
+        return null;
+    }
+
+    /**
+     * Opaque cache-busting token for static asset URLs: stable while the
+     * assets are unchanged so browsers can cache, changes on upgrade or
+     * whenever an asset is edited, and does not reveal the release number
+     * to unauthenticated visitors.
+     */
+    private function getAssetVersion(): string
+    {
+        $key = (string)$this->config->get('security', 'session_key', '');
+        if ($key === '' || in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
+            // Placeholder keys are publicly known, so mix in a per-install
+            // value to keep the token unpredictable from the release alone
+            $configFile = getenv('PA_CONFIG_PATH') ?: dirname(__DIR__, 3) . '/config/settings.php';
+            $key .= (string)@filemtime($configFile);
+        }
+        $message = Version::VERSION . '|' . $this->getAssetFingerprint();
+        return substr(hash_hmac('sha256', $message, $key), 0, 12);
+    }
+
+    /**
+     * Content digest of every asset the token versions, so editing one during
+     * development or patching one in place busts the cache without a release.
+     * Hashing the bytes rather than mtime and size also covers a same-second
+     * replacement of identical length.
+     */
+    private function getAssetFingerprint(): string
+    {
+        if ($this->assetFingerprint !== null) {
+            return $this->assetFingerprint;
+        }
+
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($this->app->getThemeBasePath());
+        $patterns = [
+            dirname(__DIR__, 3) . '/assets/*.js',
+            rtrim($fsThemeBasePath, '/') . '/*/style/*.css',
+        ];
+
+        $parts = [];
+        foreach ($patterns as $pattern) {
+            foreach (glob($pattern) ?: [] as $file) {
+                $digest = @hash_file('xxh3', $file);
+                $parts[] = $file . ':' . ($digest === false ? '' : $digest);
+            }
+        }
+        sort($parts);
+
+        return $this->assetFingerprint = hash('xxh3', implode('|', $parts));
+    }
+
+    /**
+     * Resolves a configurable branding asset (favicon, logo) to a usable URL.
+     *
+     * Absolute URLs (scheme or protocol-relative) are used as-is; site and
+     * app-relative paths are served from the application, so they get the
+     * subfolder prefix like every other internal URL.
+     */
+    private function brandingUrl(string $configKey, string $bundledPath, string $baseUrlPrefix): string
+    {
+        $path = $this->config->get('interface', $configKey, '') ?: $bundledPath;
+        if (preg_match('~^([a-z][a-z0-9+.-]*:|//)~i', $path)) {
+            return $path;
+        }
+        return $baseUrlPrefix . (str_starts_with($path, '/') ? $path : '/' . $path);
+    }
+
+    public function renderPage(string $template, array $params, array $requestData, string $pageTitle, ?array $systemMessages, ?array $scriptMessages): void
+    {
+        // The language selector vars are shared with the body template so the
+        // login form's hidden userlang field carries the chosen language
+        // through submission (memoized per request).
+        $languageVars = $this->languageVars();
+
+        $this->renderHeader($requestData, $pageTitle, $systemMessages, $scriptMessages);
+
+        // csrf_token, base_url_prefix, pdns_caps, and pdns_server_info are Twig
+        // globals (see setupTwigEnvironment); page params still override them.
+        $params = array_merge($languageVars, $params);
+
+        // Shared page chrome tested bare in many templates; the falsy defaults
+        // keep strict_variables mode rendering identical to non-strict output.
+        $params['message'] ??= false;
+        $params['is_reverse_zone'] ??= false;
+        $params['success'] ??= false;
+
+        $this->app->render($template, $params);
+        $this->renderFooter();
+    }
+
+    public function renderChrome(array $requestData, string $pageTitle, ?array $systemMessages): void
+    {
+        $this->renderHeader($requestData, $pageTitle, $systemMessages);
+        $this->renderFooter();
+    }
+
+    /**
+     * Renders the header of the page.
+     *
+     * @param array $requestData The controller's request data (current page, form state)
+     * @param string $pageTitle Page title, or '' to fall back to the interface title
+     * @param array|null $systemMessages System messages to be displayed
+     */
+    public function renderHeader(array $requestData, string $pageTitle, ?array $systemMessages = null, ?array $scriptMessages = null): void
+    {
+        $this->setupTwigEnvironment();
+
+        if (!headers_sent()) {
+            header('Content-type: text/html; charset=utf-8');
+        }
+
+        $style = $this->config->get('interface', 'style', 'light');
+        // The resolved theme (not the raw config value) keeps asset URLs in
+        // sync with the templates AppManager actually serves after fallback
+        $themeBasePath = $this->app->getThemeBasePath();
+        $theme = $this->app->getThemeName();
+        $styleManager = new StyleManager($style, $themeBasePath, $theme);
+
+        // Resolve against the app root for on-disk asset checks (the resolved
+        // value stays relative for the template URL below).
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
+
+        // Check for custom theme stylesheets
+        $customLightExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_light.css');
+        $customDarkExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_dark.css');
+        $customThemeExists = file_exists($fsThemeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
+
+        $activeLocale = $this->resolveActiveLocale();
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+
+        $vars = array_merge([
+            'iface_title' => $this->config->get('interface', 'title'),
+            'iface_style' => $styleManager->getSelectedStyle(),
+            'theme' => $theme,
+            'theme_base_path' => $themeBasePath,
+            'base_url_prefix' => $baseUrlPrefix,
+            'iface_favicon' => $this->brandingUrl('favicon_path', '/favicon.ico', $baseUrlPrefix),
+            'iface_logo' => $this->brandingUrl('logo_path', '/assets/logo.png', $baseUrlPrefix),
+            'custom_header' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/header.html'),
+            'custom_light_exists' => $customLightExists,
+            'custom_dark_exists' => $customDarkExists,
+            'custom_theme_exists' => $customThemeExists,
+            'install_error' => file_exists('install') ? _('The install/ directory exists, you must remove it first before proceeding.') : false,
+            'version' => Version::VERSION,
+            'show_style_switcher' => true,
+            // Defined on every render (incl. unauthenticated) so strict_variables holds
+            'api_error' => false,
+            'wide_layout' => $this->wideLayout,
+        ], LanguageCode::templateVars($activeLocale));
+
+        $vars = array_merge($vars, $this->languageVars());
+
+        $dblog_use = $this->config->get('logging', 'database_enabled');
+        $session_key = $this->config->get('security', 'session_key');
+
+        if ($this->userContextService->isAuthenticated()) {
+            $perm_is_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+            $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
+
+            $vars = array_merge($vars, [
+                'user_name' => $this->userContextService->getDisplayName(),
+                'user_username' => $this->userContextService->getLoggedInUsername(),
+                'perm_search' => $this->hasPermission(Permission::PERM_SEARCH),
+                'perm_view_zone_own' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN),
+                'perm_view_zone_other' => $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS),
+                'perm_supermaster_view' => $this->hasPermission(Permission::PERM_SUPERMASTER_VIEW),
+                'perm_zone_master_add' => $this->hasPermission(Permission::PERM_ZONE_MASTER_ADD),
+                'perm_zone_slave_add' => $this->hasPermission(Permission::PERM_ZONE_SLAVE_ADD),
+                'perm_zone_templ_add' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_ADD),
+                'perm_zone_templ_edit' => $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT),
+                'perm_supermaster_add' => $this->hasPermission(Permission::PERM_SUPERMASTER_ADD),
+                'perm_is_godlike' => $perm_is_godlike,
+                'perm_templ_perm_edit' => $this->hasPermission(Permission::PERM_TEMPL_PERM_EDIT),
+                'perm_templ_perm_add' => $this->hasPermission(Permission::PERM_TEMPL_PERM_ADD),
+                'perm_add_new' => $this->hasPermission(Permission::PERM_USER_ADD_NEW),
+                'perm_view_others' => $this->hasPermission(Permission::PERM_USER_VIEW_OTHERS),
+                'perm_edit_own' => $this->hasPermission(Permission::PERM_USER_EDIT_OWN),
+                'perm_edit_others' => $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS),
+                'perm_api_manage_keys' => $this->hasPermission(Permission::PERM_API_MANAGE_KEYS),
+                'perm_view_zone_logs_own' => $this->hasPermission(Permission::PERM_ZONE_LOGS_VIEW_OWN),
+                'perm_view_zone_logs_others' => $this->hasPermission(Permission::PERM_ZONE_LOGS_VIEW_OTHERS),
+                'perm_user_logs_view' => $this->hasPermission(Permission::PERM_USER_LOGS_VIEW),
+                'perm_group_logs_view' => $this->hasPermission(Permission::PERM_GROUP_LOGS_VIEW),
+                'session_key_error' => $perm_is_godlike ? (self::sessionKeyWarning($session_key) ?? false) : false,
+                'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",  // Legacy variable for backward compatibility
+                'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
+                'can_change_password' => AuthMethod::fromDb($this->userContextService->getAuthMethod())->allowsLocalPassword(),
+                'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
+                'user_avatar_url' => $this->getUserAvatarUrl(),
+                'request' => $requestData,
+                'dblog_use' => $dblog_use,
+                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
+                'api_enabled' => $this->config->get('api', 'enabled', false),
+                'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
+                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
+                // Docs describe the API, so the nav link follows the API being
+                // enabled at all - otherwise it advertises an endpoint that 404s.
+                'api_docs_enabled' => $this->config->get('api', 'enabled', false)
+                    && $this->config->get('api', 'docs_enabled', false),
+                'module_nav_items' => $moduleNavItems,
+                'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
+                'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
+            ]);
+
+            // Surface PowerDNS API errors on every page, not just the dashboard.
+            if ($perm_is_godlike && $this->isApiBackend) {
+                $vars['api_error'] = (new ApiStatusService($this->session))->getLastError();
+            }
+        }
+
+        if ($systemMessages) {
+            $vars['system_messages'] = $systemMessages;
+        }
+        if ($scriptMessages) {
+            $vars['script_messages'] = $scriptMessages;
+        }
+
+        // Add the current page and page title to the header variables
+        $currentPage = $requestData['page'] ?? 'index';
+        $vars['current_page'] = $currentPage;
+        $vars['page_title'] = $pageTitle !== '' ? $pageTitle : $vars['iface_title'];
+
+        $this->app->render('header.html', $vars);
+    }
+
+    /**
+     * Renders the footer of the page.
+     */
+    public function renderFooter(): void
+    {
+        $style = $this->config->get('interface', 'style', 'light');
+        $themeBasePath = $this->app->getThemeBasePath();
+        $theme = $this->app->getThemeName();
+        $styleManager = new StyleManager($style, $themeBasePath, $theme);
+        $selected_style = $styleManager->getSelectedStyle();
+        $fsThemeBasePath = ThemePathResolver::toFilesystemPath($themeBasePath);
+
+        $display_stats = $this->config->get('misc', 'display_stats');
+        $db_debug = $this->config->get('database', 'debug');
+
+        $this->app->render('footer.html', [
+            'version' => $this->userContextService->isAuthenticated() ? Version::VERSION : false,
+            'custom_footer' => file_exists($fsThemeBasePath . '/' . $theme . '/custom/footer.html'),
+            'display_stats' => $display_stats ? $this->app->displayStats() : false,
+            'db_queries' => $db_debug ? ($this->getDebugQueries)() : false,
+            'show_style_switcher' => in_array($selected_style, ['light', 'dark']),
+            'iface_style' => $selected_style,
+            'theme' => $theme,
+            'theme_base_path' => $themeBasePath,
+            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
+            'is_rtl' => LanguageCode::isRtl($this->resolveActiveLocale()),
+        ]);
+    }
+
+    /**
+     * Language selector variables for the current request, built once and
+     * shared by the header dropdown, the page body (login form's hidden
+     * userlang field), and any later render call in the same request.
+     *
+     * @return array<string, mixed>
+     */
+    public function languageVars(): array
+    {
+        return $this->languageVars ??= $this->getLanguageSelectorVars($this->resolveActiveLocale());
+    }
+
+    /**
+     * Build the login-page language selector variables: the active locale,
+     * the dropdown options, and a visibility flag. Shared by the header
+     * dropdown and the login form's hidden userlang field so the chosen
+     * language survives form submission.
+     *
+     * @return array<string, mixed>
+     */
+    public function getLanguageSelectorVars(string $activeLocale): array
+    {
+        $vars = ['current_language' => $activeLocale];
+
+        $localeList = $this->app->getSupportedLocales();
+        if (count($localeList) > 1) {
+            $preparedLocales = [];
+            foreach ($localeList as $locale) {
+                $preparedLocales[] = [
+                    'locale' => $locale,
+                    'language' => LanguageCode::getByLocale($locale),
+                    'selected' => $locale === $activeLocale,
+                ];
+            }
+            usort($preparedLocales, fn($a, $b) => strcmp($a['language'], $b['language']));
+            $vars['locales'] = $preparedLocales;
+            $vars['show_language_selector'] = true;
+        }
+
+        return $vars;
+    }
+
+    /**
+     * Returns the locale the translator was built with, so rendered strings
+     * and the page's lang metadata always agree.
+     */
+    public function resolveActiveLocale(): string
+    {
+        return $this->app->getInterfaceLocale();
+    }
+
+    /**
+     * Gets navigation items from enabled modules.
+     *
+     * @return array<array<string, string>>
+     */
+    /**
+     * Which navigation entries this request's user gets; every entry is false
+     * before login so templates can read the map without guarding it.
+     *
+     * @return array<string, bool>
+     */
+    private function navigationVisibility(bool $changeRequestsAvailable = true): array
+    {
+        if (!$this->userContextService->isAuthenticated()) {
+            return NavigationVisibility::build(static fn(string $permission): bool => false, $this->config, false);
+        }
+        $moduleNavItems = $this->moduleNavItems ??= $this->getModuleNavItems();
+        return NavigationVisibility::build(
+            fn(string $permission): bool => $this->hasPermission($permission),
+            $this->config,
+            $moduleNavItems !== [],
+            $changeRequestsAvailable
+        );
+    }
+
+    private function getModuleNavItems(): array
+    {
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $items = $this->moduleRegistry->getNavItems($isAdmin);
+
+        return array_values(array_filter($items, function (array $item): bool {
+            if (!empty($item['permission'])) {
+                return $this->hasPermission($item['permission']);
+            }
+            return true;
+        }));
+    }
+
+    /**
+     * Gets the user's avatar URL if avatar functionality is enabled
+     *
+     * @return string|null The avatar URL or null if not available/enabled
+     */
+    private function getUserAvatarUrl(): ?string
+    {
+        if (!$this->userContextService->isAuthenticated()) {
+            return null;
+        }
+
+        return (new AvatarService($this->config))->getAvatarUrl(
+            $this->userContextService->getUserEmail(),
+            $this->userContextService->getOAuthAvatarUrl()
+        );
+    }
+}

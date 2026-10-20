@@ -8,28 +8,29 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
 
 #[CoversClass(ZoneGroupService::class)]
 class ZoneGroupServiceTest extends TestCase
 {
     private MockObject&ZoneGroupRepositoryInterface $zoneGroupRepo;
     private MockObject&UserGroupRepositoryInterface $groupRepo;
+    private MockObject&ZoneOwnershipGuard $ownershipGuard;
     private ZoneGroupService $service;
-    private MockObject&ZoneRepositoryInterface $zoneRepo;
 
     protected function setUp(): void
     {
         $this->zoneGroupRepo = $this->createMock(ZoneGroupRepositoryInterface::class);
         $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo);
+        $this->ownershipGuard = $this->createMock(ZoneOwnershipGuard::class);
+        $this->service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $this->ownershipGuard);
     }
 
     // --- addGroupToZone ---
@@ -50,45 +51,29 @@ class ZoneGroupServiceTest extends TestCase
     #[Test]
     public function addGroupToZoneRefusesAZoneIdTwoZonesShare(): void
     {
-        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
-        $zoneRepo->method('isSharedZoneId')->with(100)->willReturn(true);
-        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo);
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
         $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->ownershipGuard->method('refusesNewGrants')->with(100)->willReturn(true);
         $this->zoneGroupRepo->expects($this->never())->method('add');
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('its ID is shared with another zone');
 
-        $service->addGroupToZone(100, 1);
+        $this->service->addGroupToZone(100, 1);
     }
 
     #[Test]
     public function bulkAddZonesSkipsZoneIdsTwoZonesShare(): void
     {
-        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
-        $zoneRepo->method('isSharedZoneId')->willReturnCallback(fn(int $zoneId): bool => $zoneId === 100);
-        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo);
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
         $this->zoneGroupRepo->method('exists')->willReturn(false);
+        $this->ownershipGuard->method('refusesNewGrants')->willReturnCallback(fn(int $zoneId): bool => $zoneId === 100);
         $this->zoneGroupRepo->expects($this->once())->method('add')->with(200, 1)->willReturn(ZoneGroup::create(200, 1));
 
-        $result = $service->bulkAddZones(1, [100, 200]);
+        $result = $this->service->bulkAddZones(1, [100, 200]);
 
         $this->assertSame([200], $result['success']);
         $this->assertArrayHasKey(100, $result['failed']);
-    }
-
-    #[Test]
-    public function removingAGroupGrantOnASharedZoneIdIsNeverRefused(): void
-    {
-        $zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
-        $zoneRepo->method('isSharedZoneId')->willReturn(true);
-        $zoneRepo->method('getZoneOwners')->willReturn([]);
-        $service = new ZoneGroupService($this->zoneGroupRepo, $this->groupRepo, $zoneRepo, $this->createMock(ZoneOwnershipModeService::class));
-        $this->zoneGroupRepo->method('findByDomainId')->willReturn([ZoneGroup::create(100, 1)]);
-
-        $this->assertNull($service->getGroupRemovalRefusal(100, 1));
     }
 
     #[Test]
@@ -120,9 +105,30 @@ class ZoneGroupServiceTest extends TestCase
     public function removeGroupFromZoneHappyPath(): void
     {
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->expects($this->once())->method('remove')->with(100, 1)->willReturn(true);
+        $this->ownershipGuard->expects($this->once())->method('removeGroup')->with(100, 1)->willReturn(true);
 
         $this->assertTrue($this->service->removeGroupFromZone(100, 1));
+    }
+
+    #[Test]
+    public function removeGroupFromZoneReturnsTheGuardRefusalAndKeepsTheRow(): void
+    {
+        $refusal = new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH);
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->ownershipGuard->method('refuseGroupRemoval')->with(100, 1)->willReturn($refusal);
+        $this->ownershipGuard->expects($this->never())->method('removeGroup');
+
+        $this->assertSame($refusal, $this->service->removeGroupFromZone(100, 1));
+    }
+
+    #[Test]
+    public function removeGroupFromZoneAsksTheGuardBeforeLookingUpTheGroup(): void
+    {
+        $refusal = new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH);
+        $this->groupRepo->expects($this->never())->method('findById');
+        $this->ownershipGuard->method('refuseGroupRemoval')->with(100, 999)->willReturn($refusal);
+
+        $this->assertSame($refusal, $this->service->removeGroupFromZone(100, 999));
     }
 
     #[Test]
@@ -219,7 +225,7 @@ class ZoneGroupServiceTest extends TestCase
     public function bulkRemoveZonesPartialSuccess(): void
     {
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->method('remove')->willReturnMap([
+        $this->ownershipGuard->method('removeGroup')->willReturnMap([
             [100, 1, true],
             [101, 1, false],
         ]);
@@ -230,96 +236,25 @@ class ZoneGroupServiceTest extends TestCase
         $this->assertSame('Group does not own this zone', $results['failed'][101]);
     }
 
-    // --- last-owner rule ---
-
     #[Test]
-    public function bulkRemoveZonesKeepsTheLastGroupOfAnUnownedZone(): void
+    public function bulkRemoveZonesKeepsAZoneWhoseLastOwnerIsTheGroup(): void
     {
-        $service = $this->guardedService();
         $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
-        $this->zoneRepo->method('getZoneOwners')->with(100)->willReturn([]);
-        $this->zoneGroupRepo->expects($this->never())->method('remove');
+        $this->ownershipGuard->method('removeGroup')->willReturnMap([
+            [100, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_OWNER, ZoneOwnershipModeService::MODE_BOTH)],
+            [101, 1, true],
+            [102, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY, ZoneOwnershipModeService::MODE_GROUPS_ONLY)],
+            [103, 1, new ZoneOwnershipRefusal(ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS, ZoneOwnershipModeService::MODE_USERS_ONLY)],
+        ]);
 
-        $results = $service->bulkRemoveZones(1, [100]);
+        $results = $this->service->bulkRemoveZones(1, [100, 101, 102, 103]);
 
-        $this->assertSame([], $results['success']);
-        $this->assertSame(
-            'Cannot remove the last owner: this would leave the zone with no ownership',
-            $results['failed'][100]
-        );
-    }
-
-    #[Test]
-    public function bulkRemoveZonesStillRemovesAGroupWhenAUserOwnerRemains(): void
-    {
-        $service = $this->guardedService();
-        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
-        $this->zoneRepo->method('getZoneOwners')->with(100)->willReturn([['id' => 5]]);
-        $this->zoneGroupRepo->expects($this->once())->method('remove')->with(100, 1)->willReturn(true);
-
-        $results = $service->bulkRemoveZones(1, [100]);
-
-        $this->assertSame([100], $results['success']);
-        $this->assertSame([], $results['failed']);
-    }
-
-    #[Test]
-    public function removeGroupFromZoneRefusesTheLastOwner(): void
-    {
-        $service = $this->guardedService();
-        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
-        $this->zoneGroupRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
-        $this->zoneRepo->method('getZoneOwners')->with(100)->willReturn([]);
-        $this->zoneGroupRepo->expects($this->never())->method('remove');
-
-        $this->assertFalse($service->removeGroupFromZone(100, 1));
-        $this->assertSame(
-            ZoneGroupService::REFUSAL_LAST_OWNER,
-            $service->getGroupRemovalRefusal(100, 1)
-        );
-    }
-
-    #[Test]
-    public function groupsOnlyModeRefusesTheLastGroupEvenWithAUserOwner(): void
-    {
-        $service = $this->guardedService('groups_only');
-        $this->zoneGroupRepo->method('findByDomainId')->with(100)->willReturn([ZoneGroup::create(100, 1)]);
-        $this->zoneRepo->method('getZoneOwners')->with(100)->willReturn([['id' => 5]]);
-
-        $this->assertSame(
-            ZoneGroupService::REFUSAL_LAST_GROUP_GROUPS_ONLY,
-            $service->getGroupRemovalRefusal(100, 1)
-        );
-    }
-
-    #[Test]
-    public function usersOnlyModeRefusesAGroupRemovalWithoutUserOwners(): void
-    {
-        $service = $this->guardedService('users_only');
-        $this->zoneGroupRepo->method('findByDomainId')->with(100)
-            ->willReturn([ZoneGroup::create(100, 1), ZoneGroup::create(100, 2)]);
-        $this->zoneRepo->method('getZoneOwners')->with(100)->willReturn([]);
-
-        $this->assertSame(
-            ZoneGroupService::REFUSAL_USERS_ONLY_NO_USER_OWNERS,
-            $service->getGroupRemovalRefusal(100, 1)
-        );
-    }
-
-    private function guardedService(string $mode = 'both'): ZoneGroupService
-    {
-        $this->zoneRepo = $this->createMock(ZoneRepositoryInterface::class);
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->with('dns', 'zone_ownership_mode', 'both')->willReturn($mode);
-
-        return new ZoneGroupService(
-            $this->zoneGroupRepo,
-            $this->groupRepo,
-            $this->zoneRepo,
-            new ZoneOwnershipModeService($config)
-        );
+        $this->assertSame([101], $results['success']);
+        $this->assertSame([
+            100 => 'Cannot remove the last owner: this would leave the zone with no ownership',
+            102 => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group',
+            103 => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners',
+        ], $results['failed']);
     }
 
     // --- isGroupOwner ---

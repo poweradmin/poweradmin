@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,9 +23,15 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use DateTimeImmutable;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\AbstractLogger;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Stringable;
 
+/**
+ * PSR-3 logger that applies the logging.level threshold, fills {placeholders} and passes lines to a log handler.
+ */
 class Logger extends AbstractLogger
 {
     private const ISO8601_DATETIME_FORMAT = 'c';
@@ -45,6 +51,19 @@ class Logger extends AbstractLogger
     ];
 
     private const DEFAULT_LEVEL = 'info';
+
+    /**
+     * The application logger as configured: PHP error_log when logging.type is
+     * "native", otherwise a logger that drops everything.
+     */
+    public static function fromConfig(ConfigurationInterface $config): LoggerInterface
+    {
+        if ($config->get('logging', 'type') !== 'native') {
+            return new NullLogger();
+        }
+
+        return new self(new NativeLogHandler(), (string)$config->get('logging', 'level', self::DEFAULT_LEVEL));
+    }
 
     /**
      * Level names accepted by the logging.level setting, most severe first.
@@ -101,23 +120,17 @@ class Logger extends AbstractLogger
         }
 
         $this->logHandler->handle([
-            'message' => self::interpolateMessage((string)$message, $context) . $contextString,
+            'message' => self::interpolatePlaceholders((string)$message, $context) . $contextString,
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
             'classname' => $classname,
         ]);
     }
 
-    private function interpolateMessage(string $message, array $context = []): string
-    {
-        return self::interpolatePlaceholders($message, $context);
-    }
-
     /**
      * Substitute PSR-3 `{key}` placeholders in a log message with values from the context array.
      *
-     * Shared by Logger and the lightweight PhpErrorLogPsrLogger fallback so the
-     * substitution rules stay in one place.
+     * Shared with SyslogLogger so the substitution rules stay in one place.
      */
     public static function interpolatePlaceholders(string $message, array $context): string
     {

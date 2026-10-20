@@ -22,32 +22,44 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
+use Poweradmin\Domain\Model\ZoneDetail;
 use Poweradmin\Domain\Model\ZoneStartingLetter;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\ZoneHealthSql;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\ZoneHealthSql;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 
+/**
+ * SQL zone repository over the PowerDNS domains and records tables plus the zones and zones_groups ownership tables.
+ */
 class DbZoneRepository implements ZoneRepositoryInterface
 {
     private object $db;
+    private ?TransactionInterface $transactionPort = null;
     private string $db_type;
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
     private TableNameService $tableNameService;
-    private ?DnsBackendProvider $backendProvider;
+    private ?DnsBackendProviderInterface $backendProvider;
+    private ?ZoneTemplateRepositoryInterface $zoneTemplateRepository = null;
 
-    public function __construct($db, $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct($db, $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
@@ -57,6 +69,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
+
+    /**
+     * Template names for the zone listing; built on first use since most listings never show them.
+     */
+    private function zoneTemplateRepository(): ZoneTemplateRepositoryInterface
+    {
+        return $this->zoneTemplateRepository ??= new DbZoneTemplateRepository($this->db, null, $this->backendProvider);
+    }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
@@ -122,7 +142,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param string $sortBy Column to sort by
      * @param string $sortDirection Sort direction ('ASC' or 'DESC')
      * @param bool $countOnly If true, returns only the count of matching zones
-     * @return array|int Array of reverse zones or count if countOnly is true
+     * @return array<string, ZoneSummary>|int Reverse zones keyed by name, or the count if countOnly is true
      */
     public function getReverseZones(
         string $permType,
@@ -205,18 +225,17 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return (int)$stmt->fetchColumn();
         } else {
             $sortByGroup = $sortBy === 'group';
-            // Group join multiplies record rows per group, so DISTINCT keeps the count accurate
-            $recordCountExpr = $sortByGroup ? "COUNT(DISTINCT $records_table.id)" : "COUNT($records_table.id)";
-            $needsRecordsJoin = $includeRecordCount || $includeHealth;
 
+            // Correlated probes keep the row set at owners (x groups) instead of
+            // multiplying it by records, keys and metadata as joins would
             $selectFields = "$domains_table.id,
                            $domains_table.name,
                            $domains_table.type,
-                           " . ($includeRecordCount ? "$recordCountExpr AS count_records," : "") . "
+                           " . ($includeRecordCount ? $this->recordCountSubquery($domains_table, $records_table) . " AS count_records," : "") . "
                            " . ($includeHealth ? ZoneHealthSql::soaHealthColumns($domains_table, $records_table) . "," : "") . "
                            users.username,
                            users.fullname,
-                           COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                           " . $this->securedProbe($domains_table, $cryptokeys_table, $domainmetadata_table) . " AS secured,
                            zones.comment";
         }
 
@@ -224,10 +243,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $query = "SELECT $selectFields
                  FROM $domains_table
                  LEFT JOIN zones ON $domains_table.id = zones.domain_id
-                 " . ($needsRecordsJoin ? "LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL" : "") . "
-                 LEFT JOIN users ON users.id = zones.owner
-                 LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-                 LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'"
+                 LEFT JOIN users ON users.id = zones.owner"
                  . ($sortByGroup ? "
                  LEFT JOIN zones_groups ON zones_groups.domain_id = $domains_table.id
                  LEFT JOIN user_groups ON user_groups.id = zones_groups.group_id" : "")
@@ -266,7 +282,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         if ($sortBy == 'owner') {
             $sortBy = 'users.username';
         } elseif ($sortBy == 'count_records') {
-            $sortBy = "COUNT($records_table.id)";
+            // The select alias; MySQL, PostgreSQL and SQLite all accept it in ORDER BY
+            $sortBy = 'count_records';
         } elseif ($sortBy == 'group') {
             $sortBy = "MIN(user_groups.name)";
         } else {
@@ -321,7 +338,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 ];
 
                 if ($showTemplate) {
-                    $zones[$name]['template'] = ZoneTemplate::getZoneTemplName($this->db, $row['id']);
+                    $zones[$name]['template'] = $this->zoneTemplateRepository()->getTemplateNameForZone($row['id']);
                 }
             }
 
@@ -344,7 +361,71 @@ class DbZoneRepository implements ZoneRepositoryInterface
             unset($zone); // Break reference
         }
 
-        return $zones;
+        return array_map(ZoneSummary::fromRow(...), $zones);
+    }
+
+    public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int
+    {
+        if ($permType !== 'own' && $permType !== 'all') {
+            return 0;
+        }
+
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $tables = $domains_table;
+        $conditions = [];
+        $params = [];
+
+        if ($permType === 'own') {
+            if (!$userId) {
+                return 0;
+            }
+            // Include zones accessible via direct ownership or group membership.
+            $tables .= " LEFT JOIN zones ON zones.domain_id = $domains_table.id";
+            $conditions[] = "(zones.owner = ? OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = ?
+            ))";
+            $params[] = (string)$userId;
+            $params[] = (string)$userId;
+        }
+
+        if ($letterStart === ZoneStartingLetter::IDN) {
+            $conditions[] = "$domains_table.name LIKE 'xn--%'";
+        } elseif ($letterStart !== ZoneStartingLetter::ALL) {
+            if ($letterStart === ZoneStartingLetter::DIGITS) {
+                $conditions[] = DbCompat::substr($this->db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($this->db_type) . " '[0-9]'";
+            } else {
+                // Exact first-character match, so a filter of `_` (e.g. _dmarc zones)
+                // matches literally instead of LIKE `_%` treating `_` as a wildcard.
+                $conditions[] = DbCompat::substr($this->db_type) . "($domains_table.name,1,1) = ?";
+                $conditions[] = "$domains_table.name NOT LIKE 'xn--%'";
+                $params[] = $letterStart;
+            }
+        }
+
+        if ($zoneType === 'forward') {
+            $conditions[] = "$domains_table.name NOT LIKE '%.in-addr.arpa'";
+            $conditions[] = "$domains_table.name NOT LIKE '%.ip6.arpa'";
+        } elseif ($zoneType === 'reverse') {
+            $conditions[] = "($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
+        }
+
+        $whereClause = empty($conditions) ? '' : ' WHERE ' . implode(' AND ', $conditions);
+        $query = "SELECT COUNT(DISTINCT $domains_table.id) AS count_zones FROM $tables" . $whereClause;
+
+        if (empty($params)) {
+            $result = $this->db->query($query)->fetch();
+            return (int)($result['count_zones'] ?? 0);
+        }
+
+        $stmt = $this->db->prepare($query);
+        if ($stmt === false) {
+            return 0;
+        }
+        $stmt->execute($params);
+        $result = $stmt->fetch();
+        return (int)($result['count_zones'] ?? 0);
     }
 
     /**
@@ -400,26 +481,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Get domain name by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The domain name or null if not found
-     */
-    public function getDomainNameById(int $zoneId): ?string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT name FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_COLUMN);
-        return $result ?: null;
-    }
-
-    /**
      * Get a complete list of zones accessible by the current user
      *
      * @param int|null $userId Optional user ID to filter zones
@@ -427,7 +488,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param array $filters Optional filters for zones
      * @param int $offset Pagination offset
      * @param int $limit Maximum number of records to return
-     * @return array List of zones
+     * @return list<ZoneSummary> Zones ordered by name
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
@@ -437,21 +498,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
+        // Correlated probes keep the row set at one row per owner instead of
+        // multiplying it by records, keys and metadata as joins would
         $query = "SELECT
                 $domains_table.id,
                 $domains_table.name,
                 $domains_table.type,
-                COUNT($records_table.id) AS count_records,
+                " . $this->recordCountSubquery($domains_table, $records_table) . " AS count_records,
                 users.username,
                 users.fullname,
-                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                " . $this->securedProbe($domains_table, $cryptokeys_table, $domainmetadata_table) . " AS secured,
                 zones.comment
             FROM $domains_table
             LEFT JOIN zones ON $domains_table.id = zones.domain_id
-            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
             LEFT JOIN users ON users.id = zones.owner
-            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
             WHERE 1=1";
 
         $params = [];
@@ -527,124 +587,17 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         // Convert associative array to indexed array for consistent API response
-        return array_values($zones);
+        return array_values(array_map(ZoneSummary::fromRow(...), $zones));
     }
 
-    /**
-     * Check if a zone exists and is accessible by a user
-     *
-     * @param int $zoneId The zone ID
-     * @param int|null $userId Optional user ID to check ownership
-     * @return bool True if the zone exists and is accessible by the user
-     */
-    public function zoneExists(int $zoneId, ?int $userId = null): bool
+    public function getZone(int $zoneId): ?ZoneDetail
     {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT 1 FROM $domains_table";
-
-        if ($userId !== null) {
-            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            $query .= " WHERE $domains_table.id = :id AND (zones.owner = :userId OR EXISTS (
-                SELECT 1 FROM zones_groups zg
-                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
-            ))";
-        } else {
-            $query .= " WHERE $domains_table.id = :id";
-        }
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-
-        if ($userId !== null) {
-            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        }
-
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
-    }
-
-    /**
-     * Get a zone by ID with full details
-     *
-     * @param int $zoneId The zone ID
-     * @return array|null The zone data or null if not found
-     */
-    public function getZone(int $zoneId): ?array
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        // First get the zone details
-        $query = "SELECT
-                $domains_table.id,
-                $domains_table.name,
-                $domains_table.type,
-                COUNT($records_table.id) AS count_records,
-                users.username,
-                users.fullname,
-                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
-                zones.comment
-            FROM $domains_table
-            LEFT JOIN zones ON $domains_table.id = zones.domain_id
-            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
-            LEFT JOIN users ON users.id = zones.owner
-            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
-            WHERE $domains_table.id = :id
-            GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname, zones.comment";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$zone) {
+        $zone = $this->getZoneById($zoneId);
+        if ($zone === null) {
             return null;
         }
 
-        // Add additional properties
-        $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
-        $zone['owners'] = [$zone['username']];
-        $zone['full_names'] = [$zone['fullname'] ?: ''];
-        $zone['users'] = [$zone['username']];
-
-        return $zone;
-    }
-
-    /**
-     * Get a zone by name with full details
-     *
-     * @param string $zoneName The zone name
-     * @return array|null The zone data or null if not found
-     */
-    public function getZoneByName(string $zoneName): ?array
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        // First find the zone ID
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $zoneId = $stmt->fetchColumn();
-
-        if (!$zoneId) {
-            return null;
-        }
-
-        // Then get the full zone details
-        return $this->getZone((int)$zoneId);
+        return ZoneDetail::fromRow($zone, $this->getZoneOwners($zoneId));
     }
 
     /**
@@ -765,65 +718,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Check if zone exists by ID
-     *
-     * @param int $zoneId The zone ID
-     * @return bool True if zone exists
-     */
-    public function zoneIdExists(int $zoneId): bool
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT 1 FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchColumn() !== false;
-    }
-
-    /**
-     * Get domain type by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string The domain type (MASTER, SLAVE, NATIVE)
-     */
-    public function getDomainType(int $zoneId): string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT type FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ?: '';
-    }
-
-    /**
-     * Get slave master by zone ID
-     *
-     * @param int $zoneId The zone ID
-     * @return string|null The slave master or null if not found
-     */
-    public function getDomainSlaveMaster(int $zoneId): ?string
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT master FROM $domains_table WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
-    }
-
-    /**
      * Get zone comment by zone ID
      *
      * @param int $zoneId The zone ID
@@ -839,6 +733,57 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $result = $stmt->fetchColumn();
         return $result ?: null;
+    }
+
+    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int|string
+    {
+        $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
+        $rowId = $this->db->lastInsertId('zones_id_seq');
+        $this->ensureNamed($domainId);
+
+        return $rowId;
+    }
+
+    /** Keeps the zone findable by name should the database later move to the API backend. */
+    private function ensureNamed(int $domainId): void
+    {
+        SqlZoneNames::ensureNamed($this->db, $this->tableNameService->getTable(PdnsTable::DOMAINS), $domainId);
+    }
+
+    public function deleteZoneShell(int $domainId): void
+    {
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :did");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function saveZoneComment(int $zoneId, string $comment): void
+    {
+        $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+        } else {
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+        $stmt->execute();
+        if ($count == 0) {
+            $this->ensureNamed($zoneId);
+        }
     }
 
     /**
@@ -879,6 +824,73 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function lockZoneOwners(int $zoneId): void
+    {
+        $this->queueOwnershipWriters($zoneId);
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id" . DbCompat::rowLock($this->db_type));
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getOwnerIdsByZoneIds(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare("SELECT domain_id, owner FROM zones WHERE domain_id IN ($placeholders)");
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $owners = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owners[(int)$row['domain_id']][] = (int)$row['owner'];
+        }
+
+        return $owners;
+    }
+
+    public function getOwnedZoneIds(int $userId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT z.domain_id AS zone_id FROM zones z WHERE z.owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id AS zone_id
+             FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * Locks the zone's PowerDNS domains row, the one row every writer of the zone's ownership
+     * queues on. It is a primary key lookup, so only that record is locked, and the locking
+     * read leaves the MySQL snapshot unset: what the caller reads next includes whatever the
+     * writer ahead of it committed. Locking the zones rows alone leaves two writers each
+     * holding a gap the other must insert into, a deadlock on InnoDB. deleteZone() takes the
+     * same lock first, so lock order is the same for every writer.
+     *
+     * @return bool False when the domains row does not exist, so there is nothing to own
+     */
+    private function queueOwnershipWriters(int $zoneId): bool
+    {
+        $domains = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT id FROM $domains WHERE id = :id" . DbCompat::rowLock($this->db_type));
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) !== [];
+    }
+
     /**
      * Add owner to zone
      *
@@ -888,6 +900,40 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
+        $transaction = $this->transaction();
+        if ($transaction->inTransaction()) {
+            return $this->insertOwnerRow($zoneId, $userId);
+        }
+
+        // A lost lock race rolls the whole transaction back, so it is replayed whole
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $userId): bool {
+            $transaction->begin();
+            try {
+                $added = $this->insertOwnerRow($zoneId, $userId);
+                $transaction->commit();
+
+                return $added;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    /**
+     * Adds the owner row once the writers ahead have finished, so a concurrent request for the
+     * same user cannot store a second row. A user who already owns the zone counts as added.
+     */
+    private function insertOwnerRow(int $zoneId, int $userId): bool
+    {
+        if (!$this->queueOwnershipWriters($zoneId)) {
+            return false;
+        }
+        if ($this->isUserZoneOwner($zoneId, $userId)) {
+            return true;
+        }
 
         // Get the zone_templ_id from an existing zone record for this domain
         $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE domain_id = :domain_id LIMIT 1";
@@ -898,18 +944,25 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $zoneTemplId = $templateResult ? $templateResult['zone_templ_id'] : 0;
 
-        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_templ_id)";
+        // The check sits in the insert: its read is current even where the transaction's snapshot predates the owner row
+        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id)
+                  SELECT :domain_id, :owner, :zone_templ_id
+                  WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = :existing_domain_id AND owner = :existing_owner)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
+        $stmt->bindValue(':existing_domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':existing_owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $added = $stmt->rowCount() > 0;
-        if ($added) {
-            $this->syncZoneAccount($zoneId);
+        if ($stmt->rowCount() === 0) {
+            // A concurrent request stored the owner first
+            return true;
         }
-        return $added;
+        $this->ensureNamed($zoneId);
+        $this->syncZoneAccount($zoneId);
+        return true;
     }
 
     /**
@@ -930,6 +983,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $removed = $stmt->rowCount() > 0;
         if ($removed) {
+            // The removed row may have been the one carrying the zone name, or the last row
+            SqlZoneNames::ensureNamedAfterOwnerRemoval($this->db, $this->tableNameService->getTable(PdnsTable::DOMAINS), $zoneId);
             $this->syncZoneAccount($zoneId);
         }
         return $removed;
@@ -939,6 +994,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
         // SQL mode keys every zone by its unique domains.id
         return false;
+    }
+
+    public function handOverNamedZoneRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        // SQL mode keeps the zone in the domains table, so an added owner is enough
+        return null;
     }
 
     /**
@@ -961,87 +1022,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Get zone ID by name
-     *
-     * @param string $zoneName The zone name
-     * @return int|null The zone ID or null if not found
-     */
-    public function getZoneIdByName(string $zoneName): ?int
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
-    }
-
-    /**
-     * Get raw PowerDNS domain metadata rows for a zone.
-     *
-     * @param int $zoneId The zone ID
-     * @return array Array of metadata rows [['kind' => string, 'content' => string], ...]
-     */
-    public function getDomainMetadata(int $zoneId): array
-    {
-        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        $query = "SELECT kind, content
-                  FROM $domainmetadata_table
-                  WHERE domain_id = :domain_id
-                  ORDER BY kind, id";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-    }
-
-    /**
-     * Replace all PowerDNS domain metadata rows for a zone.
-     *
-     * @param int $zoneId The zone ID
-     * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
-     * @return bool True if metadata was replaced successfully
-     */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
-    {
-        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        $this->db->beginTransaction();
-
-        try {
-            $deleteQuery = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
-            $deleteStmt = $this->db->prepare($deleteQuery);
-            $deleteStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-            $deleteStmt->execute();
-
-            if (!empty($metadata)) {
-                $insertQuery = "INSERT INTO $domainmetadata_table (domain_id, kind, content)
-                                VALUES (:domain_id, :kind, :content)";
-                $insertStmt = $this->db->prepare($insertQuery);
-
-                foreach ($metadata as $row) {
-                    $insertStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-                    $insertStmt->bindValue(':kind', $row['kind'], PDO::PARAM_STR);
-                    $insertStmt->bindValue(':content', $row['content'], PDO::PARAM_STR);
-                    $insertStmt->execute();
-                }
-            }
-
-            $this->db->commit();
-            return true;
-        } catch (\Throwable $e) {
-            $this->db->rollBack();
-            return false;
-        }
-    }
-
-    /**
      * Delete a zone by ID
      *
      * @param int $zoneId The zone ID
@@ -1053,14 +1033,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
         // Wrap the dependent deletes in one transaction so a mid-sequence failure
         // rolls back instead of leaving a half-deleted zone.
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
 
         try {
+            // First, so the lock order matches the owner writers' and they cannot deadlock with this delete
+            $this->queueOwnershipWriters($zoneId);
             foreach (
                 [
+                    // Comment links are Poweradmin-native, so no cascade reaches them.
+                    "DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM $comments_table WHERE domain_id = :domain_id)",
+                    "DELETE FROM $comments_table WHERE domain_id = :domain_id",
                     "DELETE FROM $records_table WHERE domain_id = :domain_id",
                     // Mapping tables cannot carry a foreign key: in API mode their domain_id
                     // is a canonical zone id, not a local domains.id. Delete them here.
@@ -1078,10 +1064,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $stmt->execute();
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             return false;
         }
     }
@@ -1100,8 +1086,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // current one is dropped so clients that PUT the whole zone object back still work.
         $nameWasNoOp = isset($updates['name']);
         if ($nameWasNoOp) {
-            $currentName = $this->getDomainNameById($zoneId);
-            if ($currentName !== null && $updates['name'] !== $currentName) {
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+            $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
+            $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+            $currentName = $stmt->fetchColumn();
+            if ($currentName !== false && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
                     'Zone renaming is not supported. Delete the zone and recreate it under the new name.'
                 );
@@ -1132,39 +1122,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->execute($params);
     }
 
-    public function getAllZones(?int $offset = null, ?int $limit = null): array
-    {
-
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $query = "SELECT d.id, d.name, d.type, d.master,
-                         COALESCE(MIN(z.owner), 0) as owner,
-                         COUNT(DISTINCT r.id) as record_count
-                  FROM $domains_table d
-                  LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN $records_table r ON d.id = r.domain_id
-                  GROUP BY d.id, d.name, d.type, d.master
-                  ORDER BY d.name";
-
-        // Add pagination only if limit is specified
-        if ($limit !== null && $limit > 0) {
-            $query .= " LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
-        } else {
-            $stmt = $this->db->prepare($query);
-        }
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     public function getZoneCount(): int
     {
-
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT COUNT(*) FROM $domains_table";
@@ -1179,7 +1138,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Array of allowed zone IDs, or null for all zones
      * @return int Count of zones the user can access
      */
-    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?string $nameContains = null): int
     {
 
         // If empty array, user can't see any zones
@@ -1191,7 +1150,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Build the WHERE conditions: ownership (when a user is given) AND an explicit
         // zone-id allowlist (when provided). Both are optional and combine with AND.
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
 
         if ($conditions === []) {
             $query = "SELECT COUNT(*) FROM $domains_table d";
@@ -1218,9 +1177,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
      * @param int|null $userId Owner to filter by, or null for no ownership restriction
      * @param string|null $nameFilter Optional exact zone-name filter
+     * @param string|null $nameContains Optional case-insensitive zone-name substring filter
      * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
      */
-    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter, ?string $nameContains = null): array
     {
         $conditions = [];
         $params = [];
@@ -1252,7 +1212,29 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $params[':name_filter'] = $nameFilter;
         }
 
+        $nameContains = trim((string)$nameContains);
+        if ($nameContains !== '') {
+            // LOWER() on both sides because PostgreSQL LIKE is case-sensitive
+            $conditions[] = "LOWER(d.name) LIKE LOWER(:name_contains) ESCAPE '!'";
+            $params[':name_contains'] = '%' . DbCompat::escapeLike($nameContains) . '%';
+        }
+
         return [$conditions, $params];
+    }
+
+    /**
+     * ORDER BY for the zone list. The id tiebreaker keeps pages stable when sort
+     * values repeat; no sort keeps the plain name order the list always had.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private function zoneListOrder(array $sort): string
+    {
+        return SortHelper::orderBy($sort, [
+            'name' => fn(string $direction): string => SortHelper::getNaturalSortOrder('d', $this->db_type, $direction),
+            'type' => 'd.type',
+            'id' => 'd.id',
+        ], 'd.id', 'd.name');
     }
 
     /**
@@ -1263,9 +1245,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @param string|null $nameFilter Optional zone name filter (exact match)
      * @param int|null $offset Pagination offset
      * @param int|null $limit Pagination limit
+     * @param string|null $nameContains Optional case-insensitive zone name substring filter
+     * @param list<array{field: string, desc: bool}> $sort Sort keys (name, type or id); empty keeps the name order
      * @return array Array of zones the user can access
      */
-    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null, ?string $nameContains = null, array $sort = []): array
     {
 
         // If empty array, user can't see any zones
@@ -1277,7 +1261,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Ownership and explicit zone-id allowlist conditions (both optional).
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
 
         $query = "SELECT d.id, d.name, d.type, d.master,
                          COALESCE(MIN(z.owner), 0) as owner,
@@ -1293,7 +1277,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Add GROUP BY and ORDER BY
         // Group only by domain columns to avoid duplicates when zones have multiple owners
         $query .= " GROUP BY d.id, d.name, d.type, d.master
-                    ORDER BY d.name";
+                    ORDER BY " . $this->zoneListOrder($sort);
 
         // Add pagination only if limit is specified
         if ($limit !== null && $limit > 0) {
@@ -1322,15 +1306,19 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
+        // Correlated probes instead of joins: the same record count rule as the zone
+        // list (empty non-terminals excluded) and no fan-out on signed or shared zones.
         $query = "SELECT d.id, d.name, d.type, d.master, d.account,
-                         COALESCE(MIN(z.owner), 0) as owner,
-                         COUNT(DISTINCT r.id) as record_count
+                         COALESCE((SELECT MIN(z.owner) FROM zones z WHERE z.domain_id = d.id), 0) as owner,
+                         COALESCE((SELECT MIN(z.comment) FROM zones z WHERE z.domain_id = d.id), '') as comment,
+                         " . $this->recordCountSubquery('d', $records_table) . " as record_count,
+                         " . $this->securedProbe('d', $cryptokeys_table, $domainmetadata_table) . " as secured
                   FROM $domains_table d
-                  LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN " . $this->tableNameService->getTable(PdnsTable::RECORDS) . " r ON d.id = r.domain_id
-                  WHERE d.id = :id
-                  GROUP BY d.id, d.name, d.type, d.master, d.account";
+                  WHERE d.id = :id";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
@@ -1340,9 +1328,38 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $result ?: null;
     }
 
+    /**
+     * Correlated record count for the zone list, excluding the NULL-type ENT rows
+     * PowerDNS keeps for empty non-terminals.
+     */
+    private function recordCountSubquery(string $domainsTable, string $recordsTable): string
+    {
+        return "(SELECT COUNT(*) FROM $recordsTable r WHERE r.domain_id = $domainsTable.id AND r.type IS NOT NULL)";
+    }
+
+    /**
+     * 1 when the zone has an active cryptokey or is PRESIGNED, else 0.
+     */
+    private function securedProbe(string $domainsTable, string $cryptokeysTable, string $domainmetadataTable): string
+    {
+        return "CASE WHEN EXISTS (SELECT 1 FROM $cryptokeysTable c WHERE c.domain_id = $domainsTable.id AND c.active)"
+            . " OR EXISTS (SELECT 1 FROM $domainmetadataTable m WHERE m.domain_id = $domainsTable.id AND m.kind = 'PRESIGNED')"
+            . " THEN 1 ELSE 0 END";
+    }
+
     private function syncZoneAccount(int $domainId): void
     {
-        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $owners = new DbZoneAccountOwnerRepository($this->db, $this->backendProvider?->allocatesZoneIdsLocally() ?? false);
+        $accountSync = new ZoneAccountSyncService($owners, $this->config, $this->backendProvider);
         $accountSync->syncZoneAccount($domainId);
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

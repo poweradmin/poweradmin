@@ -23,8 +23,11 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Database\DbCompat;
 
+/**
+ * Writes API events to the log_api table and queries, filters and prunes them for the API log page.
+ */
 class DbApiLogger
 {
     private PDO $db;
@@ -34,25 +37,12 @@ class DbApiLogger
         $this->db = $db;
     }
 
-    // The event column is varchar(2048) on every database; an overlong message would fail the INSERT.
-    private const EVENT_MAX_LENGTH = 2048;
-
-    private function fitEvent($msg): string
-    {
-        $msg = (string) $msg;
-        if (mb_strlen($msg, 'UTF-8') <= self::EVENT_MAX_LENGTH) {
-            return $msg;
-        }
-
-        return mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
-    }
-
     public function doLog($msg, $priority): void
     {
         try {
             $stmt = $this->db->prepare('INSERT INTO log_api (event, priority) VALUES (:msg, :priority)');
             $stmt->execute([
-                ':msg' => $this->fitEvent($msg),
+                ':msg' => LogEventColumn::fit($msg),
                 ':priority' => $priority,
             ]);
         } catch (\PDOException $e) {

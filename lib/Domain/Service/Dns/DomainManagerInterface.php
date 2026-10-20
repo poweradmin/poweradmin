@@ -23,14 +23,13 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 /**
- * Interface for domain/zone management operations
+ * Zone creation, update and deletion.
  */
 interface DomainManagerInterface
 {
     /**
      * Add a domain to the database
      *
-     * @param object $db Database connection
      * @param string $domain A domain name
      * @param int|null $owner Owner ID for domain (null if only groups are assigned)
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
@@ -38,28 +37,8 @@ interface DomainManagerInterface
      * @param int|string $zone_template ID of zone template ['none' or int]
      * @param int[] $groupIds Group IDs for group ownership (assigned atomically within the same transaction)
      * @param string|null $soaEditApi SOA-EDIT-API policy for the new zone; 'OFF' disables, null uses the dns.soa_edit_api config default
-     *
-     * @return boolean true on success
      */
-    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool;
-
-    /**
-     * Deletes a domain by a given id
-     *
-     * @param int $id Zone ID
-     *
-     * @return boolean true on success
-     */
-    public function deleteDomain(int $id): bool;
-
-    /**
-     * Delete array of domains
-     *
-     * @param int[] $domains Array of Domain IDs to delete
-     *
-     * @return boolean true on success
-     */
-    public function deleteDomains(array $domains): bool;
+    public function addDomain(string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): ZoneWriteResult;
 
     /**
      * Change Zone Type
@@ -67,7 +46,7 @@ interface DomainManagerInterface
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      */
-    public function changeZoneType(string $type, int $id): bool;
+    public function changeZoneType(string $type, int $id): ZoneWriteResult;
 
     /**
      * Ask the backend to retrieve a slave zone from its master now
@@ -79,40 +58,42 @@ interface DomainManagerInterface
     public function retrieveZone(int $id): bool;
 
     /**
+     * Ask the backend to send NOTIFY for a primary zone now
+     *
+     * @param int $id Zone ID
+     *
+     * @return bool true on success
+     */
+    public function notifyZone(int $id): bool;
+
+    /**
      * Change Slave Zone's Master IP Address
      *
      * @param int $zone_id Zone ID
      * @param string $ip_slave_master Master IP Address
      */
-    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): bool;
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master): ZoneWriteResult;
 
     /**
-     * Change owner of a domain
+     * Add a user as an owner of a zone; an existing owner counts as success
      *
      * @param int $zone_id Zone ID
      * @param int $user_id User ID
-     *
-     * @return boolean true when succesful
      */
-    public static function addOwnerToZone($db, int $zone_id, int $user_id): bool;
+    public function addOwnerToZone(int $zone_id, int $user_id): ZoneWriteResult;
 
     /**
-     * Update All Zone Records for Zone ID with Zone Template
+     * Give a zone of a user being deleted to another user; where the user's row carries the
+     * zone (API backend) it changes owner, otherwise the new owner is added
+     */
+    public function handOverZone(int $zone_id, int $from_user_id, int $to_user_id): ZoneWriteResult;
+
+    /**
+     * Apply a zone template to a zone, or unlink it with template id 0.
      *
-     * @param string $db_type Database type
      * @param int $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id);
-
-    /**
-     * Get Zone Template ID for Zone ID
-     *
-     * @param object $db Database connection
-     * @param int $zone_id Zone ID
-     *
-     * @return int Zone Template ID
-     */
-    public static function getZoneTemplate($db, int $zone_id): int;
+    public function updateZoneRecords(int $dns_ttl, int $zone_id, int $zone_template_id): ZoneWriteResult;
 }

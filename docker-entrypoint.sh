@@ -28,7 +28,50 @@ to_php_bool() {
 # this a secret containing a quote (e.g. DB_PASS=p'ass) produced an unparseable
 # config and every request 500'd. Backslashes are doubled, then single quotes.
 php_sq_escape() {
-    printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e "s/'/\\\\'/g"
+    local value="$1"
+    value="${value//\\/\\\\}"
+    printf '%s' "${value//\'/\\\'}"
+}
+
+# Print $1 as a single-quoted PHP string literal
+php_sq() {
+    printf "'%s'" "$(php_sq_escape "$1")"
+}
+
+# Print $2 when it is a number (or null when that is the default); otherwise warn on
+# stderr and print the default $3. $1 names the variable for the log line. A stray unit
+# such as PA_SESSION_TIMEOUT=30m used to land in settings.php as a parse error.
+php_num() {
+    local name="$1" value="$2" default="$3"
+    if [[ "${value}" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { [ "${default}" = "null" ] && [ "${value}" = "null" ]; }; then
+        printf '%s' "${value}"
+    else
+        log "WARNING: ${name}='${value}' is not a number, using default ${default}" >&2
+        printf '%s' "${default}"
+    fi
+}
+
+# Print $2 when it names a PHP LOG_* constant; otherwise warn on stderr and print $3
+php_log_facility() {
+    local name="$1" value="$2" default="$3"
+    if [[ "${value}" =~ ^LOG_[A-Z0-9]+$ ]]; then
+        printf '%s' "${value}"
+    else
+        log "WARNING: ${name}='${value}' is not a LOG_* constant, using default ${default}" >&2
+        printf '%s' "${default}"
+    fi
+}
+
+# Print a comma-separated list as a PHP array of quoted strings ([] when empty)
+php_str_array() {
+    local item items="" IFS=','
+    for item in $1; do
+        item="${item#"${item%%[![:space:]]*}"}"
+        item="${item%"${item##*[![:space:]]}"}"
+        [ -n "${item}" ] || continue
+        items="${items}$(php_sq "${item}"), "
+    done
+    printf '[%s]' "${items%, }"
 }
 
 # Wait until the database answers; on a fresh compose stack the app usually starts first.
@@ -76,6 +119,14 @@ process_secret_files() {
 # Install custom CA certificate for trusting self-signed certs (e.g., internal Keycloak/OIDC)
 install_trusted_ca() {
     if [ -n "${TRUSTED_CA_FILE:-}" ]; then
+        # TRUSTED_CA_FILE__FILE arrives here as the PEM text itself, not as a path
+        if [[ "${TRUSTED_CA_FILE}" == *"-----BEGIN "* ]]; then
+            log "Installing custom CA certificate from TRUSTED_CA_FILE__FILE..."
+            printf '%s\n' "${TRUSTED_CA_FILE}" > /usr/local/share/ca-certificates/custom-ca.crt
+            update-ca-certificates
+            log "Custom CA certificate installed successfully"
+            return
+        fi
         if [ ! -f "${TRUSTED_CA_FILE}" ]; then
             log "ERROR: TRUSTED_CA_FILE points to non-existent file: ${TRUSTED_CA_FILE}"
             exit 1
@@ -112,7 +163,10 @@ configure_trusted_proxies() {
 
     log "Configuring trusted proxies: ${proxies}"
 
-    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
+    # & and | are special in the sed replacement; a stray one would corrupt the Caddyfile
+    local proxies_sed
+    proxies_sed=$(printf '%s' "${proxies}" | sed 's/[&|\\]/\\&/g')
+    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies_sed}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
 
     log "Trusted proxies configured in Caddyfile"
 }
@@ -176,30 +230,64 @@ make_mysql_defaults_file() {
     printf '%s' "${tmpfile}"
 }
 
+# One place for the client connection arguments: every MySQL/PostgreSQL call below goes
+# through these, so host, port, SSL and credentials cannot drift between call sites.
+MYSQL_DEFAULTS_FILE=""
+# Must run in the main shell (not a subshell) so the file and its cleanup trap persist
+ensure_mysql_defaults_file() {
+    if [ -z "${MYSQL_DEFAULTS_FILE}" ]; then
+        MYSQL_DEFAULTS_FILE=$(make_mysql_defaults_file)
+        # shellcheck disable=SC2064
+        trap "rm -f '${MYSQL_DEFAULTS_FILE}'" EXIT
+    fi
+}
+
+mysql_connection_args() {
+    printf '%s\n' "--defaults-file=${MYSQL_DEFAULTS_FILE}"
+    build_mysql_ssl_opts
+    printf '%s\n' "-h${DB_HOST}"
+    [ -n "${DB_PORT:-}" ] && printf '%s\n' "-P${DB_PORT}"
+    printf '%s\n' "-u${DB_USER}"
+}
+
+mysql_client() { # mysql_client [mysql args...] - runs against DB_NAME
+    ensure_mysql_defaults_file
+    local -a args
+    mapfile -t args < <(mysql_connection_args)
+    mysql "${args[@]}" "${DB_NAME}" "$@"
+}
+
+mysql_ping() {
+    ensure_mysql_defaults_file
+    local -a args
+    mapfile -t args < <(mysql_connection_args)
+    mysqladmin "${args[@]}" ping
+}
+
+psql_client() { # psql_client [psql args...]
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
+    PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" "$@"
+}
+
+pg_ready() {
+    local -a port_opt=()
+    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
+    pg_isready -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -q
+}
+
 # Load the Poweradmin schema into an empty MySQL database (parity with SQLite init).
 # Idempotent: skips when the users table already exists, so existing data is never touched.
 init_mysql_db() {
     [ "${DB_TYPE}" = "mysql" ] || return 0
 
-    local -a ssl_opts
-    mapfile -t ssl_opts < <(build_mysql_ssl_opts)
-    local -a port_opt=()
-    [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
-
-    local mycnf
-    mycnf=$(make_mysql_defaults_file)
-    # shellcheck disable=SC2064
-    trap "rm -f '${mycnf}'" RETURN
-
     # mysqladmin ping succeeds once the server is up, even before credentials are checked
-    wait_for_db mysqladmin --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" ping || true
+    wait_for_db mysql_ping || true
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-        -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
+    table_exists=$(mysql_client -sNe \
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='users';" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -216,15 +304,13 @@ init_mysql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe \
+        pdns_table_exists=$(mysql_client -sNe \
             "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$(escape_sql "${DB_NAME}")' AND table_name='domains';" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "0" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.mysql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS MySQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" < "${pdns_schema}"; then
+            elif mysql_client < "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in MySQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in MySQL database '${DB_NAME}'"
@@ -243,8 +329,7 @@ init_mysql_db() {
         log "WARNING: Poweradmin MySQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if mysql --defaults-file="${mycnf}" "${ssl_opts[@]}" \
-            -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" \
+    if mysql_client \
             < /app/sql/poweradmin-mysql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in MySQL database '${DB_NAME}'"
     else
@@ -258,15 +343,12 @@ init_mysql_db() {
 init_pgsql_db() {
     [ "${DB_TYPE}" = "pgsql" ] || return 0
 
-    local -a port_opt=()
-    [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
-
-    wait_for_db pg_isready -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -q || true
+    wait_for_db pg_ready || true
 
     # '|| true' keeps a probe failure (DB unreachable / bad credentials) from tripping 'set -e';
     # the empty-result check below turns it into a graceful skip.
     local table_exists
-    table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+    table_exists=$(psql_client -tAc \
         "SELECT to_regclass('public.users') IS NOT NULL;" 2>/dev/null) || true
 
     if [ -z "${table_exists}" ]; then
@@ -283,13 +365,13 @@ init_pgsql_db() {
     if [ "${init_pdns_schema}" = "true" ] && [ -z "${PA_PDNS_DB_NAME:-}" ]; then
         local pdns_version="${PDNS_VERSION:-49}"
         local pdns_table_exists
-        pdns_table_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc \
+        pdns_table_exists=$(psql_client -tAc \
             "SELECT to_regclass('public.domains') IS NOT NULL;" 2>/dev/null) || true
         if [ "${pdns_table_exists}" = "f" ]; then
             local pdns_schema="/app/sql/pdns/${pdns_version}/schema.pgsql.sql"
             if [ ! -f "${pdns_schema}" ]; then
                 log "WARNING: PowerDNS PostgreSQL schema file for version ${pdns_version} not found, database may not be properly initialized"
-            elif PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
+            elif psql_client -v ON_ERROR_STOP=1 -q -f "${pdns_schema}"; then
                 log "PowerDNS schema (version ${pdns_version}) initialized successfully in PostgreSQL database '${DB_NAME}'"
             else
                 log "ERROR: Failed to initialize PowerDNS schema in PostgreSQL database '${DB_NAME}'"
@@ -308,7 +390,7 @@ init_pgsql_db() {
         log "WARNING: Poweradmin PostgreSQL schema file not found, database may not be properly initialized"
         return 0
     fi
-    if PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
+    if psql_client -v ON_ERROR_STOP=1 -q -f /app/sql/poweradmin-pgsql-db-structure.sql; then
         log "Poweradmin schema initialized successfully in PostgreSQL database '${DB_NAME}'"
     else
         log "ERROR: Failed to initialize Poweradmin schema in PostgreSQL database '${DB_NAME}'"
@@ -347,6 +429,17 @@ validate_database_config() {
             if [ -z "${DB_NAME}" ]; then
                 log "ERROR: DB_NAME is required for ${DB_TYPE} database"
                 exit 1
+            fi
+            # An empty or 0 port means the driver default, as it always has
+            if [ -n "${DB_PORT:-}" ] && [ "${DB_PORT}" != "0" ]; then
+                if ! [[ "${DB_PORT}" =~ ^[0-9]{1,5}$ ]] || [ "$((10#${DB_PORT}))" -lt 1 ] || [ "$((10#${DB_PORT}))" -gt 65535 ]; then
+                    log "ERROR: DB_PORT must be a port number between 1 and 65535, got '${DB_PORT}'"
+                    exit 1
+                fi
+                # The MySQL client and PDO both treat "localhost" as the unix socket and ignore the port
+                if [ "${DB_TYPE}" = "mysql" ] && [ "${DB_HOST,,}" = "localhost" ]; then
+                    log "WARNING: DB_HOST=localhost connects through the MySQL socket and ignores DB_PORT=${DB_PORT}; set DB_HOST=127.0.0.1 to use TCP"
+                fi
             fi
             ;;
         *)
@@ -421,6 +514,15 @@ validate_ldap_config() {
                 exit 1
             fi
         done
+    fi
+}
+
+# Warn when header mode is configured without any trusted proxy: the header is ignored then
+validate_remote_user_config() {
+    if [ "$(to_php_bool "${PA_REMOTE_USER_ENABLED:-false}")" = "true" ] \
+       && [ -n "${PA_REMOTE_USER_HEADER:-}" ] \
+       && [ "$(php_str_array "${PA_REMOTE_USER_TRUSTED_PROXIES:-}")" = "[]" ]; then
+        log "WARNING: PA_REMOTE_USER_HEADER is set but PA_REMOTE_USER_TRUSTED_PROXIES is empty. The header will be ignored until the proxy address is listed in PA_REMOTE_USER_TRUSTED_PROXIES"
     fi
 }
 
@@ -581,7 +683,7 @@ create_admin_user() {
     local create_admin
     create_admin=$(to_php_bool "${PA_CREATE_ADMIN:-false}")
 
-    if [ "$create_admin" != "true" ] && [ "$create_admin" != "1" ] && [ "$create_admin" != "yes" ]; then
+    if [ "$create_admin" != "true" ]; then
         debug_log "Admin user creation disabled"
         return 0
     fi
@@ -637,24 +739,9 @@ create_admin_user() {
         "mysql")
             debug_log "Creating admin user in MySQL database"
 
-            # Build MySQL SSL options based on environment variables
-            local -a mysql_ssl_opts
-            mapfile -t mysql_ssl_opts < <(build_mysql_ssl_opts)
-
-            debug_log "MySQL SSL options: ${mysql_ssl_opts[*]:-none}"
-
-            local -a port_opt=()
-            [ -n "${DB_PORT:-}" ] && port_opt=("-P${DB_PORT}")
-
-            local mycnf
-            mycnf=$(make_mysql_defaults_file)
-            # shellcheck disable=SC2064
-            trap "rm -f '${mycnf}'" RETURN
-
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(mysql_client -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
                 || { log "ERROR: Cannot query the users table in MySQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
@@ -663,8 +750,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! mysql --defaults-file="${mycnf}" "${mysql_ssl_opts[@]}" \
-                    -h"${DB_HOST}" "${port_opt[@]}" -u"${DB_USER}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! mysql_client -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -672,12 +758,9 @@ create_admin_user() {
         "pgsql")
             debug_log "Creating admin user in PostgreSQL database"
 
-            local -a port_opt=()
-            [ -n "${DB_PORT:-}" ] && port_opt=(-p "${DB_PORT}")
-
             # Check if user already exists
             local user_exists
-            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(psql_client -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
                 || { log "ERROR: Cannot query the users table in PostgreSQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
@@ -686,7 +769,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            if ! PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" "${port_opt[@]}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
+            if ! psql_client -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"; then
                 insert_result=1
             fi
             ;;
@@ -757,6 +840,8 @@ generate_config() {
     show_zone_comments=$(to_php_bool "${PA_SHOW_ZONE_COMMENTS:-true}")
     local show_record_comments
     show_record_comments=$(to_php_bool "${PA_SHOW_RECORD_COMMENTS:-false}")
+    local show_zone_limit_column
+    show_zone_limit_column=$(to_php_bool "${PA_SHOW_ZONE_LIMIT_COLUMN:-false}")
     local display_serial_in_zone_list
     display_serial_in_zone_list=$(to_php_bool "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}")
     local display_signed_serial_in_zone_list
@@ -777,6 +862,18 @@ generate_config() {
     add_reverse_record=$(to_php_bool "${PA_ADD_REVERSE_RECORD:-true}")
     local add_domain_record
     add_domain_record=$(to_php_bool "${PA_ADD_DOMAIN_RECORD:-true}")
+    local show_dashboard_stats
+    show_dashboard_stats=$(to_php_bool "${PA_SHOW_DASHBOARD_STATS:-true}")
+    local avatar_oauth_enabled
+    avatar_oauth_enabled=$(to_php_bool "${PA_AVATAR_OAUTH_ENABLED:-false}")
+    local avatar_gravatar_enabled
+    avatar_gravatar_enabled=$(to_php_bool "${PA_AVATAR_GRAVATAR_ENABLED:-false}")
+
+    # Convert permission template visibility values to lowercase
+    local show_user_access_templates
+    show_user_access_templates=$(to_php_bool "${PA_SHOW_USER_ACCESS_TEMPLATES:-true}")
+    local show_group_access_templates
+    show_group_access_templates=$(to_php_bool "${PA_SHOW_GROUP_ACCESS_TEMPLATES:-true}")
     local display_hostname_only
     display_hostname_only=$(to_php_bool "${PA_DISPLAY_HOSTNAME_ONLY:-false}")
     local enable_consistency_checks
@@ -793,8 +890,12 @@ generate_config() {
     dns_txt_auto_quote=$(to_php_bool "${PA_DNS_TXT_AUTO_QUOTE:-false}")
     local dns_prevent_duplicate_ptr
     dns_prevent_duplicate_ptr=$(to_php_bool "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}")
+    local dns_bump_serial_on_unchanged_save
+    dns_bump_serial_on_unchanged_save=$(to_php_bool "${PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE:-true}")
     local dns_sync_zone_owner_to_account
     dns_sync_zone_owner_to_account=$(to_php_bool "${PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT:-false}")
+    local dns_adopt_zone_owner_from_account
+    dns_adopt_zone_owner_from_account=$(to_php_bool "${PA_DNS_ADOPT_ZONE_OWNER_FROM_ACCOUNT:-false}")
     local dns_parent_zone_ownership_check
     dns_parent_zone_ownership_check=$(to_php_bool "${PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK:-true}")
 
@@ -802,7 +903,7 @@ generate_config() {
     # real value. The quotes therefore have to be conditional too.
     local dns_default_zone_template="null"
     if [ -n "${PA_DNS_DEFAULT_ZONE_TEMPLATE:-}" ]; then
-        dns_default_zone_template="'$(php_sq_escape "${PA_DNS_DEFAULT_ZONE_TEMPLATE}")'"
+        dns_default_zone_template=$(php_sq "${PA_DNS_DEFAULT_ZONE_TEMPLATE}")
     fi
 
     # Convert DNSSEC boolean values to lowercase
@@ -830,6 +931,18 @@ generate_config() {
     password_require_numbers=$(to_php_bool "${PA_PASSWORD_REQUIRE_NUMBERS:-true}")
     local password_require_special
     password_require_special=$(to_php_bool "${PA_PASSWORD_REQUIRE_SPECIAL:-false}")
+
+    # Lockout IP lists - comma-separated IPs, CIDRs or wildcards to a PHP array
+    local lockout_whitelist_ips
+    lockout_whitelist_ips=$(php_str_array "${PA_LOCKOUT_WHITELIST_IPS:-}")
+    local lockout_blacklist_ips
+    lockout_blacklist_ips=$(php_str_array "${PA_LOCKOUT_BLACKLIST_IPS:-}")
+
+    # The default contains } so it cannot sit inside a ${VAR:-default} expansion
+    local password_special_characters='!@#$%^&*()+-=[]{}|;:,.<>?'
+    if [ -n "${PA_PASSWORD_SPECIAL_CHARACTERS:-}" ]; then
+        password_special_characters="${PA_PASSWORD_SPECIAL_CHARACTERS}"
+    fi
 
     # Convert account lockout boolean values to lowercase
     local lockout_enabled
@@ -860,23 +973,26 @@ generate_config() {
     # IP. The Caddy-only 'private_ranges' keyword is dropped (PHP trusts those
     # automatically). PA_TRUSTED_PROXIES overrides if the two layers must differ;
     # setting it to an empty string clears the application allowlist entirely.
-    local trusted_proxies_php="[]"
     local trusted_proxies_src="${PA_TRUSTED_PROXIES-${TRUSTED_PROXIES:-}}"
-    if [ -n "${trusted_proxies_src}" ]; then
-        local proxy_items=""
-        local proxy_entry
-        for proxy_entry in $(echo "${trusted_proxies_src}" | tr ',' ' ' | tr -s ' '); do
-            [ "${proxy_entry}" = "private_ranges" ] && continue
-            proxy_items="${proxy_items}'${proxy_entry}', "
-        done
-        if [ -n "${proxy_items}" ]; then
-            trusted_proxies_php="[${proxy_items%, }]"
-        fi
-    fi
+    local trusted_proxies_php
+    # Commas or whitespace separate entries, the same as on the Caddy side
+    trusted_proxies_php=$(php_str_array "$(printf '%s' "${trusted_proxies_src}" | tr ', ' '\n\n' | grep -v '^$' | grep -vx 'private_ranges' | paste -sd, -)")
 
     # Convert notification boolean values to lowercase
     local notification_zone_access
     notification_zone_access=$(to_php_bool "${PA_NOTIFICATION_ZONE_ACCESS:-false}")
+    local notification_change_request
+    notification_change_request=$(to_php_bool "${PA_NOTIFICATION_CHANGE_REQUEST:-false}")
+    local notification_change_request_soa_contact
+    notification_change_request_soa_contact=$(to_php_bool "${PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT:-false}")
+
+    # Convert change approval boolean values to lowercase
+    local approval_enabled
+    approval_enabled=$(to_php_bool "${PA_APPROVAL_ENABLED:-false}")
+    local approval_require_review_for_all
+    approval_require_review_for_all=$(to_php_bool "${PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL:-false}")
+    local approval_allow_self_approval
+    approval_allow_self_approval=$(to_php_bool "${PA_APPROVAL_ALLOW_SELF_APPROVAL:-true}")
 
     # Convert user agreement boolean values to lowercase
     local user_agreement_enabled
@@ -961,6 +1077,14 @@ generate_config() {
     saml_sync_user_info=$(to_php_bool "${PA_SAML_SYNC_USER_INFO:-true}")
     local saml_allow_superuser_provisioning
     saml_allow_superuser_provisioning=$(to_php_bool "${PA_SAML_ALLOW_SUPERUSER_PROVISIONING:-false}")
+    local remote_user_enabled remote_user_strip_realm remote_user_hide_login_form
+    local remote_user_auto_provision remote_user_allow_superuser_provisioning remote_user_sync_user_info
+    remote_user_enabled=$(to_php_bool "${PA_REMOTE_USER_ENABLED:-false}")
+    remote_user_strip_realm=$(to_php_bool "${PA_REMOTE_USER_STRIP_REALM:-false}")
+    remote_user_hide_login_form=$(to_php_bool "${PA_REMOTE_USER_HIDE_LOGIN_FORM:-false}")
+    remote_user_auto_provision=$(to_php_bool "${PA_REMOTE_USER_AUTO_PROVISION:-true}")
+    remote_user_allow_superuser_provisioning=$(to_php_bool "${PA_REMOTE_USER_ALLOW_SUPERUSER_PROVISIONING:-false}")
+    remote_user_sync_user_info=$(to_php_bool "${PA_REMOTE_USER_SYNC_USER_INFO:-true}")
     local saml_azure_enabled
     saml_azure_enabled=$(to_php_bool "${PA_SAML_AZURE_ENABLED:-false}")
     local saml_okta_enabled
@@ -1001,28 +1125,27 @@ generate_config() {
     local mod_dns_wizards_enabled
     mod_dns_wizards_enabled=$(to_php_bool "${PA_MODULE_DNS_WIZARDS_ENABLED:-false}")
 
-    # Process DNS record types - convert comma-separated values to PHP array format or null
+    # Record type lists: null keeps the application default, a list overrides it
     local domain_record_types="null"
-    if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
-        domain_record_types="['$(echo "${PA_DNS_DOMAIN_RECORD_TYPES}" | sed "s/,/','/g")']"
+    if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES:-}" ]; then
+        domain_record_types=$(php_str_array "${PA_DNS_DOMAIN_RECORD_TYPES}")
     fi
 
     local reverse_record_types="null"
-    if [ -n "${PA_DNS_REVERSE_RECORD_TYPES}" ]; then
-        reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
+    if [ -n "${PA_DNS_REVERSE_RECORD_TYPES:-}" ]; then
+        reverse_record_types=$(php_str_array "${PA_DNS_REVERSE_RECORD_TYPES}")
     fi
 
-    # Process dns_wizards available types - convert comma-separated values to PHP array format
-    local dns_wizards_types="['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV']"
-    if [ -n "${PA_MODULE_DNS_WIZARDS_TYPES}" ]; then
-        dns_wizards_types="['$(echo "${PA_MODULE_DNS_WIZARDS_TYPES}" | sed "s/,/','/g")']"
+    local dns_wizards_types
+    dns_wizards_types=$(php_str_array "${PA_MODULE_DNS_WIZARDS_TYPES:-DMARC,SPF,DKIM,CAA,TLSA,SRV}")
+
+    local top_record_types="null"
+    if [ -n "${PA_DNS_TOP_RECORD_TYPES:-}" ]; then
+        top_record_types=$(php_str_array "${PA_DNS_TOP_RECORD_TYPES}")
     fi
 
-    # Process custom TLDs - convert comma-separated values to PHP array format or empty array
-    local custom_tlds="[]"
-    if [ -n "${PA_DNS_CUSTOM_TLDS}" ]; then
-        custom_tlds="['$(echo "${PA_DNS_CUSTOM_TLDS}" | sed "s/,/','/g")']"
-    fi
+    local custom_tlds
+    custom_tlds=$(php_str_array "${PA_DNS_CUSTOM_TLDS:-}")
 
     # Helper: convert key=value or key:value mapping to PHP associative array
     # Supports both = and : as delimiters (= preferred, : for backward compatibility)
@@ -1030,43 +1153,33 @@ generate_config() {
     # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed
     parse_mapping() {
-        local input="$1"
-        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | sed 's/ *| */|/g' | \
-            awk -F',' '{
-                for (i=1; i<=NF; i++) {
-                    # Try = first, then :
-                    if (index($i, "=") > 0) {
-                        split($i, a, "=")
-                        key = a[1]
-                        val = a[2]
-                    } else {
-                        # Split on last : for backward compatibility with group:Template format
-                        idx = 0
-                        for (j=1; j<=length($i); j++) {
-                            if (substr($i, j, 1) == ":") idx = j
-                        }
-                        if (idx > 0) {
-                            key = substr($i, 1, idx-1)
-                            val = substr($i, idx+1)
-                        } else {
-                            key = $i
-                            val = ""
-                        }
-                    }
-                    if (i > 1) printf ","
-                    if (index(val, "|") > 0) {
-                        n = split(val, parts, "|")
-                        printf "'\''%s'\'' => [", key
-                        for (k=1; k<=n; k++) {
-                            if (k > 1) printf ", "
-                            printf "'\''%s'\''", parts[k]
-                        }
-                        printf "]"
-                    } else {
-                        printf "'\''%s'\'' => '\''%s'\''", key, val
-                    }
-                }
-            }'
+        local IFS=',' item key val part items="" parts=""
+        for item in $1; do
+            item="${item#"${item%%[![:space:]]*}"}"; item="${item%"${item##*[![:space:]]}"}"
+            [ -n "${item}" ] || continue
+            # = is the delimiter; a bare group:Template pair splits on the last colon
+            if [[ "${item}" == *=* ]]; then
+                key="${item%%=*}"; val="${item#*=}"
+            elif [[ "${item}" == *:* ]]; then
+                key="${item%:*}"; val="${item##*:}"
+            else
+                key="${item}"; val=""
+            fi
+            key="${key%"${key##*[![:space:]]}"}"; val="${val#"${val%%[![:space:]]*}"}"
+            if [[ "${val}" == *\|* ]]; then
+                parts=""
+                local IFS='|'
+                for part in ${val}; do
+                    part="${part#"${part%%[![:space:]]*}"}"; part="${part%"${part##*[![:space:]]}"}"
+                    parts="${parts}$(php_sq "${part}"), "
+                done
+                IFS=','
+                items="${items}$(php_sq "${key}") => [${parts%, }], "
+            else
+                items="${items}$(php_sq "${key}") => $(php_sq "${val}"), "
+            fi
+        done
+        printf '%s' "${items%, }"
     }
 
     # Process OIDC permission template mapping
@@ -1104,6 +1217,17 @@ generate_config() {
         saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
     fi
 
+    # Process remote user permission template and group mappings
+    local remote_user_permission_template_mapping="[]"
+    if [ -n "${PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
+        remote_user_permission_template_mapping="[$(parse_mapping "${PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING}")]"
+    fi
+
+    local remote_user_group_mapping="[]"
+    if [ -n "${PA_REMOTE_USER_GROUP_MAPPING:-}" ]; then
+        remote_user_group_mapping="[$(parse_mapping "${PA_REMOTE_USER_GROUP_MAPPING}")]"
+    fi
+
     # Process WHOIS custom servers mapping
     local whois_custom_servers="[]"
     if [ -n "${PA_MODULE_WHOIS_CUSTOM_SERVERS:-}" ]; then
@@ -1125,98 +1249,96 @@ generate_config() {
     local db_ssl_verify
     db_ssl_verify=$(to_php_bool "${DB_SSL_VERIFY:-false}")
 
-    # Escape secrets/credentials that are interpolated into single-quoted PHP
-    # strings so a value containing a quote can't break the generated config.
-    local db_pass_esc; db_pass_esc=$(php_sq_escape "${DB_PASS:-}")
-    local db_user_esc; db_user_esc=$(php_sq_escape "${DB_USER:-}")
-    local db_name_esc; db_name_esc=$(php_sq_escape "${DB_NAME:-}")
-    local db_host_esc; db_host_esc=$(php_sq_escape "${DB_HOST:-}")
-    local favicon_path_esc; favicon_path_esc=$(php_sq_escape "${PA_FAVICON_PATH:-}")
-    local logo_path_esc; logo_path_esc=$(php_sq_escape "${PA_LOGO_PATH:-}")
-    local recaptcha_site_esc; recaptcha_site_esc=$(php_sq_escape "${PA_RECAPTCHA_SITE_KEY:-}")
-    local recaptcha_secret_esc; recaptcha_secret_esc=$(php_sq_escape "${PA_RECAPTCHA_SECRET_KEY:-}")
-    local smtp_password_esc; smtp_password_esc=$(php_sq_escape "${PA_SMTP_PASSWORD:-}")
-    local pdns_webserver_password_esc; pdns_webserver_password_esc=$(php_sq_escape "${PA_PDNS_WEBSERVER_PASSWORD:-}")
-    local ldap_bind_password_esc; ldap_bind_password_esc=$(php_sq_escape "${PA_LDAP_BIND_PASSWORD:-}")
-    local pdns_api_key_esc; pdns_api_key_esc=$(php_sq_escape "${PA_PDNS_API_KEY:-}")
-    local session_key_esc; session_key_esc=$(php_sq_escape "${session_key}")
-    local oidc_azure_secret_esc; oidc_azure_secret_esc=$(php_sq_escape "${PA_OIDC_AZURE_CLIENT_SECRET:-}")
-    local oidc_google_secret_esc; oidc_google_secret_esc=$(php_sq_escape "${PA_OIDC_GOOGLE_CLIENT_SECRET:-}")
-    local oidc_generic_secret_esc; oidc_generic_secret_esc=$(php_sq_escape "${PA_OIDC_GENERIC_CLIENT_SECRET:-}")
-    local saml_sp_private_key_esc; saml_sp_private_key_esc=$(php_sq_escape "${PA_SAML_SP_PRIVATE_KEY:-}")
+    # Braces cannot sit inside a ${VAR:-default} expansion, so these defaults are assigned first
+    local saml_azure_entity_id='https://sts.windows.net/{tenant}/'
+    local saml_azure_sso_url='https://login.microsoftonline.com/{tenant}/saml2'
+    local saml_azure_slo_url='https://login.microsoftonline.com/{tenant}/saml2'
+    [ -n "${PA_SAML_AZURE_ENTITY_ID:-}" ] && saml_azure_entity_id="${PA_SAML_AZURE_ENTITY_ID}"
+    [ -n "${PA_SAML_AZURE_SSO_URL:-}" ] && saml_azure_sso_url="${PA_SAML_AZURE_SSO_URL}"
+    [ -n "${PA_SAML_AZURE_SLO_URL:-}" ] && saml_azure_slo_url="${PA_SAML_AZURE_SLO_URL}"
 
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
 return [
     'database' => [
-        'type' => '${DB_TYPE}',
-        'host' => '${db_host_esc}',
-        'port' => '${DB_PORT:-}',
-        'user' => '${db_user_esc}',
-        'password' => '${db_pass_esc}',
-        'name' => '${db_name_esc}',
-        'file' => '${DB_FILE:-/db/pdns.db}',
-        'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
+        'type' => $(php_sq "${DB_TYPE}"),
+        'host' => $(php_sq "${DB_HOST:-}"),
+        'port' => $(php_sq "${DB_PORT:-}"),
+        'user' => $(php_sq "${DB_USER:-}"),
+        'password' => $(php_sq "${DB_PASS:-}"),
+        'name' => $(php_sq "${DB_NAME:-}"),
+        'file' => $(php_sq "${DB_FILE:-/db/pdns.db}"),
+        'charset' => $(php_sq "${DB_CHARSET:-latin1}"),
+        'pdns_db_name' => $(php_sq "${PA_PDNS_DB_NAME:-}"),
+        'sqlite_wal' => $(to_php_bool "${DB_SQLITE_WAL:-true}"),
         'ssl' => ${db_ssl},
         'ssl_verify' => ${db_ssl_verify},
-        'ssl_ca' => '${DB_SSL_CA:-}',
-        'ssl_key' => '${DB_SSL_KEY:-}',
-        'ssl_cert' => '${DB_SSL_CERT:-}',
+        'ssl_ca' => $(php_sq "${DB_SSL_CA:-}"),
+        'ssl_key' => $(php_sq "${DB_SSL_KEY:-}"),
+        'ssl_cert' => $(php_sq "${DB_SSL_CERT:-}"),
     ],
     'dns' => [
-        'backend' => '${PA_DNS_BACKEND:-sql}',
-        'hostmaster' => '${DNS_HOSTMASTER:-hostmaster.example.com}',
-        'ns1' => '${DNS_NS1:-ns1.example.com}',
-        'ns2' => '${DNS_NS2:-ns2.example.com}',
-        'ns3' => '${DNS_NS3:-}',
-        'ns4' => '${DNS_NS4:-}',
-        'ttl' => ${PA_DNS_TTL:-86400},
-        'ttl_reverse' => ${PA_DNS_TTL_REVERSE:-null},
-        'soa_refresh' => ${PA_DNS_SOA_REFRESH:-28800},
-        'soa_retry' => ${PA_DNS_SOA_RETRY:-7200},
-        'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
-        'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
-        'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
-        'soa_edit' => '${PA_DNS_SOA_EDIT:-}',
-        'soa_edit_api' => '${PA_DNS_SOA_EDIT_API:-}',
+        'backend' => $(php_sq "${PA_DNS_BACKEND:-sql}"),
+        'hostmaster' => $(php_sq "${DNS_HOSTMASTER:-hostmaster.example.com}"),
+        'ns1' => $(php_sq "${DNS_NS1:-ns1.example.com}"),
+        'ns2' => $(php_sq "${DNS_NS2:-ns2.example.com}"),
+        'ns3' => $(php_sq "${DNS_NS3:-}"),
+        'ns4' => $(php_sq "${DNS_NS4:-}"),
+        'ttl' => $(php_num PA_DNS_TTL "${PA_DNS_TTL:-86400}" 86400),
+        'ttl_reverse' => $(php_num PA_DNS_TTL_REVERSE "${PA_DNS_TTL_REVERSE:-null}" null),
+        'soa_refresh' => $(php_num PA_DNS_SOA_REFRESH "${PA_DNS_SOA_REFRESH:-28800}" 28800),
+        'soa_retry' => $(php_num PA_DNS_SOA_RETRY "${PA_DNS_SOA_RETRY:-7200}" 7200),
+        'soa_expire' => $(php_num PA_DNS_SOA_EXPIRE "${PA_DNS_SOA_EXPIRE:-604800}" 604800),
+        'soa_minimum' => $(php_num PA_DNS_SOA_MINIMUM "${PA_DNS_SOA_MINIMUM:-86400}" 86400),
+        'zone_type_default' => $(php_sq "${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}"),
+        'soa_edit' => $(php_sq "${PA_DNS_SOA_EDIT:-}"),
+        'soa_edit_api' => $(php_sq "${PA_DNS_SOA_EDIT_API:-}"),
         'default_zone_template' => ${dns_default_zone_template},
-        'zone_ownership_mode' => '${PA_DNS_ZONE_OWNERSHIP_MODE:-both}',
+        'zone_ownership_mode' => $(php_sq "${PA_DNS_ZONE_OWNERSHIP_MODE:-both}"),
         'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
+        'adopt_zone_owner_from_account' => ${dns_adopt_zone_owner_from_account},
         'parent_zone_ownership_check' => ${dns_parent_zone_ownership_check},
+        'default_max_zones_per_user' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_USER "${PA_DNS_DEFAULT_MAX_ZONES_PER_USER:-null}" null),
+        'default_max_zones_per_group' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP "${PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP:-null}" null),
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},
         'third_level_check' => ${dns_third_level_check},
         'txt_auto_quote' => ${dns_txt_auto_quote},
         'prevent_duplicate_ptr' => ${dns_prevent_duplicate_ptr},
+        'bump_serial_on_unchanged_save' => ${dns_bump_serial_on_unchanged_save},
         'custom_tlds' => ${custom_tlds},
         'domain_record_types' => ${domain_record_types},
         'reverse_record_types' => ${reverse_record_types},
+        'top_record_types' => ${top_record_types},
     ],
     'dnssec' => [
         'enabled' => ${dnssec_enabled},
     ],
     'security' => [
-        'session_key' => '${session_key_esc}',
-        'password_encryption' => '${PA_PASSWORD_ENCRYPTION:-bcrypt}',
-        'password_cost' => ${PA_PASSWORD_COST:-12},
+        'session_key' => $(php_sq "${session_key}"),
+        'password_encryption' => $(php_sq "${PA_PASSWORD_ENCRYPTION:-bcrypt}"),
+        'password_cost' => $(php_num PA_PASSWORD_COST "${PA_PASSWORD_COST:-12}" 12),
         'login_token_validation' => ${login_token_validation},
         'global_token_validation' => ${global_token_validation},
         'trusted_proxies' => ${trusted_proxies_php},
         'password_policy' => [
             'enable_password_rules' => ${password_rules_enabled},
-            'min_length' => ${PA_PASSWORD_MIN_LENGTH:-6},
+            'min_length' => $(php_num PA_PASSWORD_MIN_LENGTH "${PA_PASSWORD_MIN_LENGTH:-6}" 6),
             'require_uppercase' => ${password_require_uppercase},
             'require_lowercase' => ${password_require_lowercase},
             'require_numbers' => ${password_require_numbers},
             'require_special' => ${password_require_special},
+            'special_characters' => $(php_sq "${password_special_characters}"),
         ],
         'account_lockout' => [
             'enable_lockout' => ${lockout_enabled},
-            'lockout_attempts' => ${PA_LOCKOUT_ATTEMPTS:-5},
-            'lockout_duration' => ${PA_LOCKOUT_DURATION:-15},
+            'lockout_attempts' => $(php_num PA_LOCKOUT_ATTEMPTS "${PA_LOCKOUT_ATTEMPTS:-5}" 5),
+            'lockout_duration' => $(php_num PA_LOCKOUT_DURATION "${PA_LOCKOUT_DURATION:-15}" 15),
             'track_ip_address' => ${lockout_track_ip},
             'clear_attempts_on_success' => ${lockout_clear_on_success},
+            'whitelist_ip_addresses' => ${lockout_whitelist_ips},
+            'blacklist_ip_addresses' => ${lockout_blacklist_ips},
         ],
         'mfa' => [
             'enabled' => ${mfa_enabled},
@@ -1224,63 +1346,75 @@ return [
             'app_enabled' => ${mfa_app_enabled},
             'email_enabled' => ${mfa_email_enabled},
             'skip_for_external_auth' => ${mfa_skip_for_external_auth},
-            'recovery_codes' => ${PA_MFA_RECOVERY_CODES:-8},
-            'recovery_code_length' => ${PA_MFA_RECOVERY_CODE_LENGTH:-10},
-            'max_verify_attempts' => ${PA_MFA_MAX_VERIFY_ATTEMPTS:-5},
-            'verify_lockout_duration' => ${PA_MFA_VERIFY_LOCKOUT_DURATION:-15},
+            'recovery_codes' => $(php_num PA_MFA_RECOVERY_CODES "${PA_MFA_RECOVERY_CODES:-8}" 8),
+            'recovery_code_length' => $(php_num PA_MFA_RECOVERY_CODE_LENGTH "${PA_MFA_RECOVERY_CODE_LENGTH:-10}" 10),
+            'max_verify_attempts' => $(php_num PA_MFA_MAX_VERIFY_ATTEMPTS "${PA_MFA_MAX_VERIFY_ATTEMPTS:-5}" 5),
+            'verify_lockout_duration' => $(php_num PA_MFA_VERIFY_LOCKOUT_DURATION "${PA_MFA_VERIFY_LOCKOUT_DURATION:-15}" 15),
         ],
         'password_reset' => [
             'enabled' => ${password_reset_enabled},
-            'token_lifetime' => ${PA_PASSWORD_RESET_TOKEN_LIFETIME:-3600},
-            'rate_limit_attempts' => ${PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS:-5},
-            'rate_limit_window' => ${PA_PASSWORD_RESET_RATE_LIMIT_WINDOW:-3600},
-            'min_time_between_requests' => ${PA_PASSWORD_RESET_MIN_TIME_BETWEEN:-60},
+            'token_lifetime' => $(php_num PA_PASSWORD_RESET_TOKEN_LIFETIME "${PA_PASSWORD_RESET_TOKEN_LIFETIME:-3600}" 3600),
+            'rate_limit_attempts' => $(php_num PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS "${PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS:-5}" 5),
+            'rate_limit_window' => $(php_num PA_PASSWORD_RESET_RATE_LIMIT_WINDOW "${PA_PASSWORD_RESET_RATE_LIMIT_WINDOW:-3600}" 3600),
+            'min_time_between_requests' => $(php_num PA_PASSWORD_RESET_MIN_TIME_BETWEEN "${PA_PASSWORD_RESET_MIN_TIME_BETWEEN:-60}" 60),
         ],
         'username_recovery' => [
             'enabled' => ${username_recovery_enabled},
-            'rate_limit_attempts' => ${PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS:-5},
-            'rate_limit_window' => ${PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW:-3600},
-            'min_time_between_requests' => ${PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN:-60},
+            'rate_limit_attempts' => $(php_num PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS "${PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS:-5}" 5),
+            'rate_limit_window' => $(php_num PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW "${PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW:-3600}" 3600),
+            'min_time_between_requests' => $(php_num PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN "${PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN:-60}" 60),
         ],
         'recaptcha' => [
             'enabled' => ${recaptcha_enabled},
-            'site_key' => '${recaptcha_site_esc}',
-            'secret_key' => '${recaptcha_secret_esc}',
-            'version' => '${PA_RECAPTCHA_VERSION:-v3}',
-            'v3_threshold' => ${PA_RECAPTCHA_V3_THRESHOLD:-0.5},
+            'site_key' => $(php_sq "${PA_RECAPTCHA_SITE_KEY:-}"),
+            'secret_key' => $(php_sq "${PA_RECAPTCHA_SECRET_KEY:-}"),
+            'version' => $(php_sq "${PA_RECAPTCHA_VERSION:-v3}"),
+            'v3_threshold' => $(php_num PA_RECAPTCHA_V3_THRESHOLD "${PA_RECAPTCHA_V3_THRESHOLD:-0.5}" 0.5),
         ],
     ],
     'mail' => [
         'enabled' => ${mail_enabled},
-        'transport' => '${PA_MAIL_TRANSPORT:-php}',
-        'host' => '${PA_SMTP_HOST:-}',
-        'port' => ${PA_SMTP_PORT:-587},
-        'username' => '${PA_SMTP_USER:-}',
-        'password' => '${smtp_password_esc}',
-        'encryption' => '${PA_SMTP_ENCRYPTION:-tls}',
-        'from' => '${PA_MAIL_FROM:-}',
-        'from_name' => '${PA_MAIL_FROM_NAME:-}',
-        'return_path' => '${PA_MAIL_RETURN_PATH:-poweradmin@example.com}',
+        'transport' => $(php_sq "${PA_MAIL_TRANSPORT:-php}"),
+        'host' => $(php_sq "${PA_SMTP_HOST:-}"),
+        'port' => $(php_num PA_SMTP_PORT "${PA_SMTP_PORT:-587}" 587),
+        'username' => $(php_sq "${PA_SMTP_USER:-}"),
+        'password' => $(php_sq "${PA_SMTP_PASSWORD:-}"),
+        'encryption' => $(php_sq "${PA_SMTP_ENCRYPTION:-tls}"),
+        'from' => $(php_sq "${PA_MAIL_FROM:-}"),
+        'from_name' => $(php_sq "${PA_MAIL_FROM_NAME:-}"),
+        'return_path' => $(php_sq "${PA_MAIL_RETURN_PATH:-poweradmin@example.com}"),
         'auth' => ${mail_auth},
-        'sendmail_path' => '${PA_SENDMAIL_PATH:-/usr/sbin/sendmail -t -i}',
+        'sendmail_path' => $(php_sq "${PA_SENDMAIL_PATH:-/usr/sbin/sendmail -t -i}"),
+    ],
+    'permissions' => [
+        'show_user_access_templates' => ${show_user_access_templates},
+        'show_group_access_templates' => ${show_group_access_templates},
     ],
     'notifications' => [
         'zone_access_enabled' => ${notification_zone_access},
+        'change_request_enabled' => ${notification_change_request},
+        'change_request_soa_contact' => ${notification_change_request_soa_contact},
+    ],
+    'approval' => [
+        'enabled' => ${approval_enabled},
+        'require_review_for_all' => ${approval_require_review_for_all},
+        'allow_self_approval' => ${approval_allow_self_approval},
     ],
     'interface' => [
-        'title' => '${PA_APP_TITLE:-Poweradmin}',
-        'base_url' => '${PA_BASE_URL:-}',
-        'language' => '${PA_DEFAULT_LANGUAGE:-en_EN}',
-        'enabled_languages' => '${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}',
-        'session_timeout' => ${PA_SESSION_TIMEOUT:-1800},
-        'rows_per_page' => ${PA_ROWS_PER_PAGE:-10},
-        'theme' => '${PA_THEME:-default}',
-        'style' => '${PA_STYLE:-light}',
-        'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
-        'favicon_path' => '${favicon_path_esc}',
-        'logo_path' => '${logo_path_esc}',
-        'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
-        'application_url' => '${PA_APPLICATION_URL:-}',
+        'title' => $(php_sq "${PA_APP_TITLE:-Poweradmin}"),
+        'base_url' => $(php_sq "${PA_BASE_URL:-}"),
+        'language' => $(php_sq "${PA_DEFAULT_LANGUAGE:-en_EN}"),
+        'enabled_languages' => $(php_sq "${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}"),
+        'session_timeout' => $(php_num PA_SESSION_TIMEOUT "${PA_SESSION_TIMEOUT:-1800}" 1800),
+        'session_max_lifetime' => $(php_num PA_SESSION_MAX_LIFETIME "${PA_SESSION_MAX_LIFETIME:-0}" 0),
+        'rows_per_page' => $(php_num PA_ROWS_PER_PAGE "${PA_ROWS_PER_PAGE:-10}" 10),
+        'theme' => $(php_sq "${PA_THEME:-default}"),
+        'style' => $(php_sq "${PA_STYLE:-light}"),
+        'theme_base_path' => $(php_sq "${PA_THEME_BASE_PATH:-templates}"),
+        'favicon_path' => $(php_sq "${PA_FAVICON_PATH:-}"),
+        'logo_path' => $(php_sq "${PA_LOGO_PATH:-}"),
+        'base_url_prefix' => $(php_sq "${PA_BASE_URL_PREFIX:-}"),
+        'application_url' => $(php_sq "${PA_APPLICATION_URL:-}"),
         'web_enabled' => ${web_enabled},
         'show_record_id' => ${show_record_id},
         'show_add_record_form' => ${show_add_record_form},
@@ -1290,6 +1424,7 @@ return [
         'position_save_button_top' => ${position_save_button_top},
         'show_zone_comments' => ${show_zone_comments},
         'show_record_comments' => ${show_record_comments},
+        'show_zone_limit_column' => ${show_zone_limit_column},
         'display_serial_in_zone_list' => ${display_serial_in_zone_list},
         'display_signed_serial_in_zone_list' => ${display_signed_serial_in_zone_list},
         'display_template_in_zone_list' => ${display_template_in_zone_list},
@@ -1297,12 +1432,17 @@ return [
         'display_group_in_zone_list' => ${display_group_in_zone_list},
         'display_fullname_in_zone_list' => ${display_fullname_in_zone_list},
         'search_group_records' => ${search_group_records},
-        'reverse_zone_sort' => '${PA_REVERSE_ZONE_SORT:-natural}',
+        'reverse_zone_sort' => $(php_sq "${PA_REVERSE_ZONE_SORT:-natural}"),
         'show_pdns_status' => ${show_pdns_status},
         'add_reverse_record' => ${add_reverse_record},
         'add_domain_record' => ${add_domain_record},
         'display_hostname_only' => ${display_hostname_only},
         'enable_consistency_checks' => ${enable_consistency_checks},
+        'show_dashboard_stats' => ${show_dashboard_stats},
+        'avatar_oauth_enabled' => ${avatar_oauth_enabled},
+        'avatar_gravatar_enabled' => ${avatar_gravatar_enabled},
+        'avatar_priority' => $(php_sq "${PA_AVATAR_PRIORITY:-oauth}"),
+        'avatar_size' => $(php_num PA_AVATAR_SIZE "${PA_AVATAR_SIZE:-40}" 40),
         'show_forward_zone_associations' => ${show_forward_zone_associations},
         'show_zone_record_count' => ${show_zone_record_count},
         'wide_layout' => ${wide_layout},
@@ -1310,73 +1450,74 @@ return [
     'api' => [
         'enabled' => ${api_enabled},
         'basic_auth_enabled' => ${api_basic_auth_enabled},
-        'basic_auth_realm' => '${PA_API_BASIC_AUTH_REALM:-Poweradmin API}',
+        'basic_auth_realm' => $(php_sq "${PA_API_BASIC_AUTH_REALM:-Poweradmin API}"),
         'docs_enabled' => ${api_docs_enabled},
-        'max_keys_per_user' => ${PA_API_MAX_KEYS_PER_USER:-5},
+        'max_keys_per_user' => $(php_num PA_API_MAX_KEYS_PER_USER "${PA_API_MAX_KEYS_PER_USER:-5}" 5),
+        'bulk_max_operations' => $(php_num PA_API_BULK_MAX_OPERATIONS "${PA_API_BULK_MAX_OPERATIONS:-1000}" 1000),
     ],
     'health' => [
         'enabled' => ${health_enabled},
         'ping_enabled' => ${health_ping_enabled},
-        'db_timeout' => ${PA_HEALTH_DB_TIMEOUT:-2},
-        'pdns_timeout' => ${PA_HEALTH_PDNS_TIMEOUT:-2},
-        'token' => '$(php_sq_escape "${PA_HEALTH_TOKEN:-}")',
-        'cache_seconds' => ${PA_HEALTH_CACHE_SECONDS:-0},
+        'db_timeout' => $(php_num PA_HEALTH_DB_TIMEOUT "${PA_HEALTH_DB_TIMEOUT:-2}" 2),
+        'pdns_timeout' => $(php_num PA_HEALTH_PDNS_TIMEOUT "${PA_HEALTH_PDNS_TIMEOUT:-2}" 2),
+        'token' => $(php_sq "${PA_HEALTH_TOKEN:-}"),
+        'cache_seconds' => $(php_num PA_HEALTH_CACHE_SECONDS "${PA_HEALTH_CACHE_SECONDS:-0}" 0),
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},
-        'current_version' => '${PA_USER_AGREEMENT_VERSION:-1.0}',
+        'current_version' => $(php_sq "${PA_USER_AGREEMENT_VERSION:-1.0}"),
         'require_on_version_change' => ${user_agreement_require_on_change},
     ],
     'pdns_api' => [
-        'display_name' => '${PA_PDNS_DISPLAY_NAME:-PowerDNS}',
-        'url' => '${PA_PDNS_API_URL:-}',
-        'key' => '${pdns_api_key_esc}',
-        'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
-        'timeout' => ${PA_PDNS_API_TIMEOUT:-10},
-        'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
-        'webserver_password' => '${pdns_webserver_password_esc}',
+        'display_name' => $(php_sq "${PA_PDNS_DISPLAY_NAME:-PowerDNS}"),
+        'url' => $(php_sq "${PA_PDNS_API_URL:-}"),
+        'key' => $(php_sq "${PA_PDNS_API_KEY:-}"),
+        'server_name' => $(php_sq "${PA_PDNS_SERVER_NAME:-localhost}"),
+        'timeout' => $(php_num PA_PDNS_API_TIMEOUT "${PA_PDNS_API_TIMEOUT:-10}" 10),
+        'webserver_username' => $(php_sq "${PA_PDNS_WEBSERVER_USERNAME:-}"),
+        'webserver_password' => $(php_sq "${PA_PDNS_WEBSERVER_PASSWORD:-}"),
     ],
     'ldap' => [
         'enabled' => ${ldap_enabled},
         'debug' => ${ldap_debug},
-        'uri' => '${PA_LDAP_URI:-}',
-        'base_dn' => '${PA_LDAP_BASE_DN:-}',
-        'bind_dn' => '${PA_LDAP_BIND_DN:-}',
-        'bind_password' => '${ldap_bind_password_esc}',
-        'user_attribute' => '${PA_LDAP_USER_ATTRIBUTE:-uid}',
-        'protocol_version' => ${PA_LDAP_PROTOCOL_VERSION:-3},
-        'search_filter' => '${PA_LDAP_SEARCH_FILTER:-}',
+        'uri' => $(php_sq "${PA_LDAP_URI:-}"),
+        'base_dn' => $(php_sq "${PA_LDAP_BASE_DN:-}"),
+        'bind_dn' => $(php_sq "${PA_LDAP_BIND_DN:-}"),
+        'bind_password' => $(php_sq "${PA_LDAP_BIND_PASSWORD:-}"),
+        'user_attribute' => $(php_sq "${PA_LDAP_USER_ATTRIBUTE:-uid}"),
+        'protocol_version' => $(php_num PA_LDAP_PROTOCOL_VERSION "${PA_LDAP_PROTOCOL_VERSION:-3}" 3),
+        'search_filter' => $(php_sq "${PA_LDAP_SEARCH_FILTER:-}"),
         'sync_user_info' => ${ldap_sync_user_info},
-        'fullname_attribute' => '${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}',
-        'email_attribute' => '${PA_LDAP_EMAIL_ATTRIBUTE:-mail}',
+        'fullname_attribute' => $(php_sq "${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}"),
+        'email_attribute' => $(php_sq "${PA_LDAP_EMAIL_ATTRIBUTE:-mail}"),
         'auto_provision' => ${ldap_auto_provision},
         'allow_superuser_provisioning' => ${ldap_allow_superuser_provisioning},
-        'default_permission_template' => '${PA_LDAP_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
-        'groups_attribute' => '${PA_LDAP_GROUPS_ATTRIBUTE:-memberOf}',
+        'default_permission_template' => $(php_sq "${PA_LDAP_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
+        'groups_attribute' => $(php_sq "${PA_LDAP_GROUPS_ATTRIBUTE:-memberOf}"),
         'permission_template_mapping' => ${ldap_permission_template_mapping},
         'group_mapping' => ${ldap_group_mapping},
-        'session_cache_timeout' => ${PA_LDAP_SESSION_CACHE_TIMEOUT:-300},
+        'session_cache_timeout' => $(php_num PA_LDAP_SESSION_CACHE_TIMEOUT "${PA_LDAP_SESSION_CACHE_TIMEOUT:-300}" 300),
     ],
     'logging' => [
-        'type' => '${PA_LOGGING_TYPE:-null}',
-        'level' => '${PA_LOGGING_LEVEL:-info}',
+        'type' => $(php_sq "${PA_LOGGING_TYPE:-null}"),
+        'level' => $(php_sq "${PA_LOGGING_LEVEL:-info}"),
         'database_enabled' => ${logging_database_enabled},
         'syslog_enabled' => ${logging_syslog_enabled},
-        'syslog_identity' => '${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}',
-        'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
+        'syslog_identity' => $(php_sq "${PA_LOGGING_SYSLOG_IDENTITY:-poweradmin}"),
+        'syslog_facility' => $(php_log_facility PA_LOGGING_SYSLOG_FACILITY "${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER}" LOG_USER),
         'require_change_comment' => ${logging_require_change_comment},
         'api_request_logging' => ${logging_api_request_logging},
-        'api_log_retention_days' => ${PA_LOGGING_API_LOG_RETENTION_DAYS:-0},
+        'api_log_retention_days' => $(php_num PA_LOGGING_API_LOG_RETENTION_DAYS "${PA_LOGGING_API_LOG_RETENTION_DAYS:-0}" 0),
     ],
     'misc' => [
         'display_stats' => ${display_stats},
-        'timezone' => '${PA_TIMEZONE:-UTC}',
+        'timezone' => $(php_sq "${PA_TIMEZONE:-UTC}"),
         'record_comments_sync' => ${record_comments_sync},
-        'edit_conflict_resolution' => '${PA_EDIT_CONFLICT_RESOLUTION:-last_writer_wins}',
+        'edit_conflict_resolution' => $(php_sq "${PA_EDIT_CONFLICT_RESOLUTION:-last_writer_wins}"),
         'display_errors' => ${display_errors},
         'show_generated_passwords' => ${show_generated_passwords},
         'template_cache' => ${template_cache},
-        'template_cache_path' => '${PA_TEMPLATE_CACHE_PATH:-}',
+        'template_cache_path' => $(php_sq "${PA_TEMPLATE_CACHE_PATH:-}"),
     ],
     'oidc' => [
         'enabled' => ${oidc_enabled},
@@ -1385,7 +1526,7 @@ return [
         'require_verified_email' => ${oidc_require_verified_email},
         'sync_user_info' => ${oidc_sync_user_info},
         'allow_superuser_provisioning' => ${oidc_allow_superuser_provisioning},
-        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
+        'default_permission_template' => $(php_sq "${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
         'permission_template_mapping' => ${oidc_permission_template_mapping},
         'group_mapping' => ${oidc_group_mapping},
         'providers' => [
@@ -1395,11 +1536,11 @@ EOF
     if [ "${oidc_azure_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
-                'name' => '${PA_OIDC_AZURE_NAME:-Microsoft Azure AD}',
-                'display_name' => '${PA_OIDC_AZURE_DISPLAY_NAME:-Sign in with Microsoft}',
-                'client_id' => '${PA_OIDC_AZURE_CLIENT_ID:-}',
-                'client_secret' => '${oidc_azure_secret_esc}',
-                'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
+                'name' => $(php_sq "${PA_OIDC_AZURE_NAME:-Microsoft Azure AD}"),
+                'display_name' => $(php_sq "${PA_OIDC_AZURE_DISPLAY_NAME:-Sign in with Microsoft}"),
+                'client_id' => $(php_sq "${PA_OIDC_AZURE_CLIENT_ID:-}"),
+                'client_secret' => $(php_sq "${PA_OIDC_AZURE_CLIENT_SECRET:-}"),
+                'tenant' => $(php_sq "${PA_OIDC_AZURE_TENANT:-common}"),
                 'auto_discovery' => ${oidc_azure_auto_discovery},
                 'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
@@ -1420,10 +1561,10 @@ EOF
     if [ "${oidc_google_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'google' => [
-                'name' => '${PA_OIDC_GOOGLE_NAME:-Google}',
-                'display_name' => '${PA_OIDC_GOOGLE_DISPLAY_NAME:-Sign in with Google}',
-                'client_id' => '${PA_OIDC_GOOGLE_CLIENT_ID:-}',
-                'client_secret' => '${oidc_google_secret_esc}',
+                'name' => $(php_sq "${PA_OIDC_GOOGLE_NAME:-Google}"),
+                'display_name' => $(php_sq "${PA_OIDC_GOOGLE_DISPLAY_NAME:-Sign in with Google}"),
+                'client_id' => $(php_sq "${PA_OIDC_GOOGLE_CLIENT_ID:-}"),
+                'client_secret' => $(php_sq "${PA_OIDC_GOOGLE_CLIENT_SECRET:-}"),
                 'auto_discovery' => ${oidc_google_auto_discovery},
                 'metadata_url' => 'https://accounts.google.com/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
@@ -1443,24 +1584,24 @@ EOF
     if [ "${oidc_generic_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'generic' => [
-                'name' => '${PA_OIDC_GENERIC_NAME:-Generic OIDC}',
-                'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME:-Sign in with OIDC}',
-                'client_id' => '${PA_OIDC_GENERIC_CLIENT_ID:-}',
-                'client_secret' => '${oidc_generic_secret_esc}',
+                'name' => $(php_sq "${PA_OIDC_GENERIC_NAME:-Generic OIDC}"),
+                'display_name' => $(php_sq "${PA_OIDC_GENERIC_DISPLAY_NAME:-Sign in with OIDC}"),
+                'client_id' => $(php_sq "${PA_OIDC_GENERIC_CLIENT_ID:-}"),
+                'client_secret' => $(php_sq "${PA_OIDC_GENERIC_CLIENT_SECRET:-}"),
                 'auto_discovery' => ${oidc_generic_auto_discovery},
-                'metadata_url' => '${PA_OIDC_GENERIC_METADATA_URL:-}',
-                'authorize_url' => '${PA_OIDC_GENERIC_AUTHORIZE_URL:-}',
-                'token_url' => '${PA_OIDC_GENERIC_TOKEN_URL:-}',
-                'userinfo_url' => '${PA_OIDC_GENERIC_USERINFO_URL:-}',
-                'logout_url' => '${PA_OIDC_GENERIC_LOGOUT_URL:-}',
-                'scopes' => '${PA_OIDC_GENERIC_SCOPES:-openid profile email}',
+                'metadata_url' => $(php_sq "${PA_OIDC_GENERIC_METADATA_URL:-}"),
+                'authorize_url' => $(php_sq "${PA_OIDC_GENERIC_AUTHORIZE_URL:-}"),
+                'token_url' => $(php_sq "${PA_OIDC_GENERIC_TOKEN_URL:-}"),
+                'userinfo_url' => $(php_sq "${PA_OIDC_GENERIC_USERINFO_URL:-}"),
+                'logout_url' => $(php_sq "${PA_OIDC_GENERIC_LOGOUT_URL:-}"),
+                'scopes' => $(php_sq "${PA_OIDC_GENERIC_SCOPES:-openid profile email}"),
                 'user_mapping' => [
-                    'username' => '${PA_OIDC_GENERIC_USERNAME_ATTR:-preferred_username}',
-                    'email' => '${PA_OIDC_GENERIC_EMAIL_ATTR:-email}',
-                    'first_name' => '${PA_OIDC_GENERIC_FIRST_NAME_ATTR:-given_name}',
-                    'last_name' => '${PA_OIDC_GENERIC_LAST_NAME_ATTR:-family_name}',
-                    'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME_ATTR:-name}',
-                    'groups' => '${PA_OIDC_GENERIC_GROUPS_ATTR:-groups}',
+                    'username' => $(php_sq "${PA_OIDC_GENERIC_USERNAME_ATTR:-preferred_username}"),
+                    'email' => $(php_sq "${PA_OIDC_GENERIC_EMAIL_ATTR:-email}"),
+                    'first_name' => $(php_sq "${PA_OIDC_GENERIC_FIRST_NAME_ATTR:-given_name}"),
+                    'last_name' => $(php_sq "${PA_OIDC_GENERIC_LAST_NAME_ATTR:-family_name}"),
+                    'display_name' => $(php_sq "${PA_OIDC_GENERIC_DISPLAY_NAME_ATTR:-name}"),
+                    'groups' => $(php_sq "${PA_OIDC_GENERIC_GROUPS_ATTR:-groups}"),
                 ],
             ],
 EOF
@@ -1475,7 +1616,7 @@ EOF
         'link_by_email' => ${saml_link_by_email},
         'sync_user_info' => ${saml_sync_user_info},
         'allow_superuser_provisioning' => ${saml_allow_superuser_provisioning},
-        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}',
+        'default_permission_template' => $(php_sq "${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
         'permission_template_mapping' => ${saml_permission_template_mapping},
         'group_mapping' => ${saml_group_mapping},
 
@@ -1486,39 +1627,39 @@ EOF
     # Add SP settings - use environment variables if set, otherwise auto-generate from PA_BASE_URL
     if [ -n "${PA_SAML_SP_ENTITY_ID}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'entity_id' => '${PA_SAML_SP_ENTITY_ID}',
+            'entity_id' => $(php_sq "${PA_SAML_SP_ENTITY_ID}"),
 EOF
     elif [ -n "${PA_BASE_URL}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'entity_id' => '${PA_BASE_URL}/saml/metadata',
+            'entity_id' => $(php_sq "${PA_BASE_URL}/saml/metadata"),
 EOF
     fi
 
     if [ -n "${PA_SAML_SP_ACS_URL}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'assertion_consumer_service_url' => '${PA_SAML_SP_ACS_URL}',
+            'assertion_consumer_service_url' => $(php_sq "${PA_SAML_SP_ACS_URL}"),
 EOF
     elif [ -n "${PA_BASE_URL}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'assertion_consumer_service_url' => '${PA_BASE_URL}/saml/acs',
+            'assertion_consumer_service_url' => $(php_sq "${PA_BASE_URL}/saml/acs"),
 EOF
     fi
 
     if [ -n "${PA_SAML_SP_SLS_URL}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'single_logout_service_url' => '${PA_SAML_SP_SLS_URL}',
+            'single_logout_service_url' => $(php_sq "${PA_SAML_SP_SLS_URL}"),
 EOF
     elif [ -n "${PA_BASE_URL}" ]; then
         cat >> "${CONFIG_FILE}" << EOF
-            'single_logout_service_url' => '${PA_BASE_URL}/saml/sls',
+            'single_logout_service_url' => $(php_sq "${PA_BASE_URL}/saml/sls"),
 EOF
     fi
 
     # Always include name_id_format, x509cert, and private_key (they have sensible defaults or can be empty)
     cat >> "${CONFIG_FILE}" << EOF
-            'name_id_format' => '${PA_SAML_SP_NAME_ID_FORMAT:-urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress}',
-            'x509cert' => '${PA_SAML_SP_X509_CERT:-}',
-            'private_key' => '${saml_sp_private_key_esc}',
+            'name_id_format' => $(php_sq "${PA_SAML_SP_NAME_ID_FORMAT:-urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress}"),
+            'x509cert' => $(php_sq "${PA_SAML_SP_X509_CERT:-}"),
+            'private_key' => $(php_sq "${PA_SAML_SP_PRIVATE_KEY:-}"),
         ],
 
         // Provider configurations
@@ -1530,19 +1671,20 @@ EOF
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
                 'enabled' => true,
-                'name' => '${PA_SAML_AZURE_NAME:-Microsoft Azure AD SAML}',
-                'display_name' => '${PA_SAML_AZURE_DISPLAY_NAME:-Sign in with Microsoft (SAML)}',
-                'entity_id' => '${PA_SAML_AZURE_ENTITY_ID:-https://sts.windows.net/\{tenant\}/}',
-                'sso_url' => '${PA_SAML_AZURE_SSO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
-                'slo_url' => '${PA_SAML_AZURE_SLO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
-                'x509cert' => '${PA_SAML_AZURE_X509_CERT:-}',
+                'name' => $(php_sq "${PA_SAML_AZURE_NAME:-Microsoft Azure AD SAML}"),
+                'display_name' => $(php_sq "${PA_SAML_AZURE_DISPLAY_NAME:-Sign in with Microsoft (SAML)}"),
+                'entity_id' => $(php_sq "${saml_azure_entity_id}"),
+                'sso_url' => $(php_sq "${saml_azure_sso_url}"),
+                'slo_url' => $(php_sq "${saml_azure_slo_url}"),
+                'x509cert' => $(php_sq "${PA_SAML_AZURE_X509_CERT:-}"),
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_AZURE_ALLOW_IDP_INITIATED:-false}"),
                 'user_mapping' => [
-                    'username' => '${PA_SAML_AZURE_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
-                    'email' => '${PA_SAML_AZURE_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
-                    'first_name' => '${PA_SAML_AZURE_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
-                    'last_name' => '${PA_SAML_AZURE_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
-                    'display_name' => '${PA_SAML_AZURE_DISPLAY_NAME_ATTR:-http://schemas.microsoft.com/identity/claims/displayname}',
-                    'groups' => '${PA_SAML_AZURE_GROUPS_ATTR:-http://schemas.microsoft.com/ws/2008/06/identity/claims/groups}',
+                    'username' => $(php_sq "${PA_SAML_AZURE_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}"),
+                    'email' => $(php_sq "${PA_SAML_AZURE_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}"),
+                    'first_name' => $(php_sq "${PA_SAML_AZURE_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}"),
+                    'last_name' => $(php_sq "${PA_SAML_AZURE_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}"),
+                    'display_name' => $(php_sq "${PA_SAML_AZURE_DISPLAY_NAME_ATTR:-http://schemas.microsoft.com/identity/claims/displayname}"),
+                    'groups' => $(php_sq "${PA_SAML_AZURE_GROUPS_ATTR:-http://schemas.microsoft.com/ws/2008/06/identity/claims/groups}"),
                 ],
             ],
 EOF
@@ -1553,19 +1695,20 @@ EOF
         cat >> "${CONFIG_FILE}" << EOF
             'okta' => [
                 'enabled' => true,
-                'name' => '${PA_SAML_OKTA_NAME:-Okta}',
-                'display_name' => '${PA_SAML_OKTA_DISPLAY_NAME:-Sign in with Okta (SAML)}',
-                'entity_id' => '${PA_SAML_OKTA_ENTITY_ID:-}',
-                'sso_url' => '${PA_SAML_OKTA_SSO_URL:-}',
-                'slo_url' => '${PA_SAML_OKTA_SLO_URL:-}',
-                'x509cert' => '${PA_SAML_OKTA_X509_CERT:-}',
+                'name' => $(php_sq "${PA_SAML_OKTA_NAME:-Okta}"),
+                'display_name' => $(php_sq "${PA_SAML_OKTA_DISPLAY_NAME:-Sign in with Okta (SAML)}"),
+                'entity_id' => $(php_sq "${PA_SAML_OKTA_ENTITY_ID:-}"),
+                'sso_url' => $(php_sq "${PA_SAML_OKTA_SSO_URL:-}"),
+                'slo_url' => $(php_sq "${PA_SAML_OKTA_SLO_URL:-}"),
+                'x509cert' => $(php_sq "${PA_SAML_OKTA_X509_CERT:-}"),
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_OKTA_ALLOW_IDP_INITIATED:-false}"),
                 'user_mapping' => [
-                    'username' => '${PA_SAML_OKTA_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}',
-                    'email' => '${PA_SAML_OKTA_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
-                    'first_name' => '${PA_SAML_OKTA_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
-                    'last_name' => '${PA_SAML_OKTA_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
-                    'display_name' => '${PA_SAML_OKTA_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname}',
-                    'groups' => '${PA_SAML_OKTA_GROUPS_ATTR:-groups}',
+                    'username' => $(php_sq "${PA_SAML_OKTA_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}"),
+                    'email' => $(php_sq "${PA_SAML_OKTA_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}"),
+                    'first_name' => $(php_sq "${PA_SAML_OKTA_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}"),
+                    'last_name' => $(php_sq "${PA_SAML_OKTA_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}"),
+                    'display_name' => $(php_sq "${PA_SAML_OKTA_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname}"),
+                    'groups' => $(php_sq "${PA_SAML_OKTA_GROUPS_ATTR:-groups}"),
                 ],
             ],
 EOF
@@ -1576,19 +1719,20 @@ EOF
         cat >> "${CONFIG_FILE}" << EOF
             'auth0' => [
                 'enabled' => true,
-                'name' => '${PA_SAML_AUTH0_NAME:-Auth0}',
-                'display_name' => '${PA_SAML_AUTH0_DISPLAY_NAME:-Sign in with Auth0 (SAML)}',
-                'entity_id' => '${PA_SAML_AUTH0_ENTITY_ID:-}',
-                'sso_url' => '${PA_SAML_AUTH0_SSO_URL:-}',
-                'slo_url' => '${PA_SAML_AUTH0_SLO_URL:-}',
-                'x509cert' => '${PA_SAML_AUTH0_X509_CERT:-}',
+                'name' => $(php_sq "${PA_SAML_AUTH0_NAME:-Auth0}"),
+                'display_name' => $(php_sq "${PA_SAML_AUTH0_DISPLAY_NAME:-Sign in with Auth0 (SAML)}"),
+                'entity_id' => $(php_sq "${PA_SAML_AUTH0_ENTITY_ID:-}"),
+                'sso_url' => $(php_sq "${PA_SAML_AUTH0_SSO_URL:-}"),
+                'slo_url' => $(php_sq "${PA_SAML_AUTH0_SLO_URL:-}"),
+                'x509cert' => $(php_sq "${PA_SAML_AUTH0_X509_CERT:-}"),
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_AUTH0_ALLOW_IDP_INITIATED:-false}"),
                 'user_mapping' => [
-                    'username' => '${PA_SAML_AUTH0_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier}',
-                    'email' => '${PA_SAML_AUTH0_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
-                    'first_name' => '${PA_SAML_AUTH0_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
-                    'last_name' => '${PA_SAML_AUTH0_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
-                    'display_name' => '${PA_SAML_AUTH0_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}',
-                    'groups' => '${PA_SAML_AUTH0_GROUPS_ATTR:-groups}',
+                    'username' => $(php_sq "${PA_SAML_AUTH0_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier}"),
+                    'email' => $(php_sq "${PA_SAML_AUTH0_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}"),
+                    'first_name' => $(php_sq "${PA_SAML_AUTH0_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}"),
+                    'last_name' => $(php_sq "${PA_SAML_AUTH0_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}"),
+                    'display_name' => $(php_sq "${PA_SAML_AUTH0_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}"),
+                    'groups' => $(php_sq "${PA_SAML_AUTH0_GROUPS_ATTR:-groups}"),
                 ],
             ],
 EOF
@@ -1599,19 +1743,20 @@ EOF
         cat >> "${CONFIG_FILE}" << EOF
             'keycloak' => [
                 'enabled' => true,
-                'name' => '${PA_SAML_KEYCLOAK_NAME:-Keycloak}',
-                'display_name' => '${PA_SAML_KEYCLOAK_DISPLAY_NAME:-Sign in with Keycloak (SAML)}',
-                'entity_id' => '${PA_SAML_KEYCLOAK_ENTITY_ID:-}',
-                'sso_url' => '${PA_SAML_KEYCLOAK_SSO_URL:-}',
-                'slo_url' => '${PA_SAML_KEYCLOAK_SLO_URL:-}',
-                'x509cert' => '${PA_SAML_KEYCLOAK_X509_CERT:-}',
+                'name' => $(php_sq "${PA_SAML_KEYCLOAK_NAME:-Keycloak}"),
+                'display_name' => $(php_sq "${PA_SAML_KEYCLOAK_DISPLAY_NAME:-Sign in with Keycloak (SAML)}"),
+                'entity_id' => $(php_sq "${PA_SAML_KEYCLOAK_ENTITY_ID:-}"),
+                'sso_url' => $(php_sq "${PA_SAML_KEYCLOAK_SSO_URL:-}"),
+                'slo_url' => $(php_sq "${PA_SAML_KEYCLOAK_SLO_URL:-}"),
+                'x509cert' => $(php_sq "${PA_SAML_KEYCLOAK_X509_CERT:-}"),
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_KEYCLOAK_ALLOW_IDP_INITIATED:-false}"),
                 'user_mapping' => [
-                    'username' => '${PA_SAML_KEYCLOAK_USERNAME_ATTR:-username}',
-                    'email' => '${PA_SAML_KEYCLOAK_EMAIL_ATTR:-email}',
-                    'first_name' => '${PA_SAML_KEYCLOAK_FIRST_NAME_ATTR:-given_name}',
-                    'last_name' => '${PA_SAML_KEYCLOAK_LAST_NAME_ATTR:-family_name}',
-                    'display_name' => '${PA_SAML_KEYCLOAK_DISPLAY_NAME_ATTR:-name}',
-                    'groups' => '${PA_SAML_KEYCLOAK_GROUPS_ATTR:-groups}',
+                    'username' => $(php_sq "${PA_SAML_KEYCLOAK_USERNAME_ATTR:-username}"),
+                    'email' => $(php_sq "${PA_SAML_KEYCLOAK_EMAIL_ATTR:-email}"),
+                    'first_name' => $(php_sq "${PA_SAML_KEYCLOAK_FIRST_NAME_ATTR:-given_name}"),
+                    'last_name' => $(php_sq "${PA_SAML_KEYCLOAK_LAST_NAME_ATTR:-family_name}"),
+                    'display_name' => $(php_sq "${PA_SAML_KEYCLOAK_DISPLAY_NAME_ATTR:-name}"),
+                    'groups' => $(php_sq "${PA_SAML_KEYCLOAK_GROUPS_ATTR:-groups}"),
                 ],
             ],
 EOF
@@ -1622,19 +1767,20 @@ EOF
         cat >> "${CONFIG_FILE}" << EOF
             'generic' => [
                 'enabled' => true,
-                'name' => '${PA_SAML_GENERIC_NAME:-Generic SAML IdP}',
-                'display_name' => '${PA_SAML_GENERIC_DISPLAY_NAME:-Sign in with SAML}',
-                'entity_id' => '${PA_SAML_GENERIC_ENTITY_ID:-}',
-                'sso_url' => '${PA_SAML_GENERIC_SSO_URL:-}',
-                'slo_url' => '${PA_SAML_GENERIC_SLO_URL:-}',
-                'x509cert' => '${PA_SAML_GENERIC_X509_CERT:-}',
+                'name' => $(php_sq "${PA_SAML_GENERIC_NAME:-Generic SAML IdP}"),
+                'display_name' => $(php_sq "${PA_SAML_GENERIC_DISPLAY_NAME:-Sign in with SAML}"),
+                'entity_id' => $(php_sq "${PA_SAML_GENERIC_ENTITY_ID:-}"),
+                'sso_url' => $(php_sq "${PA_SAML_GENERIC_SSO_URL:-}"),
+                'slo_url' => $(php_sq "${PA_SAML_GENERIC_SLO_URL:-}"),
+                'x509cert' => $(php_sq "${PA_SAML_GENERIC_X509_CERT:-}"),
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_GENERIC_ALLOW_IDP_INITIATED:-false}"),
                 'user_mapping' => [
-                    'username' => '${PA_SAML_GENERIC_USERNAME_ATTR:-uid}',
-                    'email' => '${PA_SAML_GENERIC_EMAIL_ATTR:-email}',
-                    'first_name' => '${PA_SAML_GENERIC_FIRST_NAME_ATTR:-firstName}',
-                    'last_name' => '${PA_SAML_GENERIC_LAST_NAME_ATTR:-lastName}',
-                    'display_name' => '${PA_SAML_GENERIC_DISPLAY_NAME_ATTR:-displayName}',
-                    'groups' => '${PA_SAML_GENERIC_GROUPS_ATTR:-groups}',
+                    'username' => $(php_sq "${PA_SAML_GENERIC_USERNAME_ATTR:-uid}"),
+                    'email' => $(php_sq "${PA_SAML_GENERIC_EMAIL_ATTR:-email}"),
+                    'first_name' => $(php_sq "${PA_SAML_GENERIC_FIRST_NAME_ATTR:-firstName}"),
+                    'last_name' => $(php_sq "${PA_SAML_GENERIC_LAST_NAME_ATTR:-lastName}"),
+                    'display_name' => $(php_sq "${PA_SAML_GENERIC_DISPLAY_NAME_ATTR:-displayName}"),
+                    'groups' => $(php_sq "${PA_SAML_GENERIC_GROUPS_ATTR:-groups}"),
                 ],
             ],
 EOF
@@ -1643,27 +1789,46 @@ EOF
     cat >> "${CONFIG_FILE}" << EOF
         ],
     ],
+    'remote_user' => [
+        'enabled' => ${remote_user_enabled},
+        'server_variable' => $(php_sq "${PA_REMOTE_USER_SERVER_VARIABLE:-REMOTE_USER}"),
+        'header' => $(php_sq "${PA_REMOTE_USER_HEADER:-}"),
+        'trusted_proxies' => $(php_str_array "${PA_REMOTE_USER_TRUSTED_PROXIES:-}"),
+        'strip_realm' => ${remote_user_strip_realm},
+        'email_attribute' => $(php_sq "${PA_REMOTE_USER_EMAIL_ATTRIBUTE:-}"),
+        'name_attribute' => $(php_sq "${PA_REMOTE_USER_NAME_ATTRIBUTE:-}"),
+        'groups_attribute' => $(php_sq "${PA_REMOTE_USER_GROUPS_ATTRIBUTE:-}"),
+        'groups_separator' => $(php_sq "${PA_REMOTE_USER_GROUPS_SEPARATOR:-,}"),
+        'logout_url' => $(php_sq "${PA_REMOTE_USER_LOGOUT_URL:-}"),
+        'hide_login_form' => ${remote_user_hide_login_form},
+        'auto_provision' => ${remote_user_auto_provision},
+        'allow_superuser_provisioning' => ${remote_user_allow_superuser_provisioning},
+        'sync_user_info' => ${remote_user_sync_user_info},
+        'default_permission_template' => $(php_sq "${PA_REMOTE_USER_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
+        'permission_template_mapping' => ${remote_user_permission_template_mapping},
+        'group_mapping' => ${remote_user_group_mapping},
+    ],
     'modules' => [
         'csv_export' => [
             'enabled' => ${mod_csv_export_enabled},
         ],
         'zone_import_export' => [
             'enabled' => ${mod_zone_import_export_enabled},
-            'auto_ttl_value' => ${PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL:-300},
-            'max_file_size' => ${PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE:-1048576},
+            'auto_ttl_value' => $(php_num PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL "${PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL:-300}" 300),
+            'max_file_size' => $(php_num PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE "${PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE:-1048576}" 1048576),
         ],
         'whois' => [
             'enabled' => ${mod_whois_enabled},
-            'default_server' => '${PA_MODULE_WHOIS_DEFAULT_SERVER:-}',
+            'default_server' => $(php_sq "${PA_MODULE_WHOIS_DEFAULT_SERVER:-}"),
             'custom_servers' => ${whois_custom_servers},
-            'socket_timeout' => ${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10},
+            'socket_timeout' => $(php_num PA_MODULE_WHOIS_SOCKET_TIMEOUT "${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10}" 10),
             'restrict_to_admin' => ${mod_whois_restrict_to_admin},
         ],
         'rdap' => [
             'enabled' => ${mod_rdap_enabled},
-            'default_server' => '${PA_MODULE_RDAP_DEFAULT_SERVER:-}',
+            'default_server' => $(php_sq "${PA_MODULE_RDAP_DEFAULT_SERVER:-}"),
             'custom_servers' => ${rdap_custom_servers},
-            'request_timeout' => ${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10},
+            'request_timeout' => $(php_num PA_MODULE_RDAP_REQUEST_TIMEOUT "${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10}" 10),
             'restrict_to_admin' => ${mod_rdap_restrict_to_admin},
         ],
         'email_previews' => [
@@ -1680,8 +1845,8 @@ EOF
 
     # Set proper permissions (root only - non-root already owns the file)
     if [ "$IS_ROOT" = true ]; then
-        chmod 644 "${CONFIG_FILE}"
-        chown www-data:www-data "${CONFIG_FILE}"
+        chmod 640 "${CONFIG_FILE}"
+        chown www-data:0 "${CONFIG_FILE}"
     fi
 
     log "Configuration file generated successfully"
@@ -1725,8 +1890,8 @@ print_config_summary() {
         log "Modules: csv_export=${PA_MODULE_CSV_EXPORT_ENABLED:-true}, zone_import_export=${PA_MODULE_ZONE_IMPORT_EXPORT_ENABLED:-false}, whois=${PA_MODULE_WHOIS_ENABLED:-false}, rdap=${PA_MODULE_RDAP_ENABLED:-false}, email_previews=${PA_MODULE_EMAIL_PREVIEWS_ENABLED:-false}, dns_wizards=${PA_MODULE_DNS_WIZARDS_ENABLED:-false}"
     fi
 
-    log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
-    if [ "${PA_CREATE_ADMIN:-false}" = "true" ]; then
+    log "Admin User Creation: $(to_php_bool "${PA_CREATE_ADMIN:-false}")"
+    if [ "$(to_php_bool "${PA_CREATE_ADMIN:-false}")" = "true" ]; then
         log "Admin Username: ${PA_ADMIN_USERNAME:-admin}"
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
@@ -1742,19 +1907,23 @@ setup_permissions() {
     # This eliminates the need for volume pre-initialization
 
     # Database directory
+    # Group 0 plus g+w matches the image layout, so a volume first used in root mode still
+    # works when the container later runs as an arbitrary UID (OpenShift, K8s fsGroup)
     if [ -d "${DB_DIR}" ]; then
-        chown -R www-data:www-data "${DB_DIR}"
+        chown -R www-data:0 "${DB_DIR}"
+        chmod -R g+w "${DB_DIR}"
     fi
 
     # Config directory (when using custom PA_CONFIG_PATH)
     config_dir=$(dirname "${CONFIG_FILE}")
     if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
-        chown -R www-data:www-data "${config_dir}"
+        chown -R www-data:0 "${config_dir}"
+        chmod -R g+w "${config_dir}"
     fi
 
     # Caddy data directory (may fail on read-only filesystem, that's OK)
     if [ -d "/var/caddy" ]; then
-        chown -R www-data:www-data /var/caddy 2>/dev/null || true
+        chown -R www-data:0 /var/caddy 2>/dev/null || true
     fi
 
     log "File permissions set successfully"
@@ -1786,9 +1955,14 @@ main() {
         fi
     fi
 
-    # Persist SERVER_PORT for healthcheck early, before any long initialization.
-    # Healthcheck runs as a separate process and does not inherit entrypoint env vars.
+    # Persist SERVER_PORT and the probe path for the healthcheck early, before any long
+    # initialization. The healthcheck is a separate process without the entrypoint env.
     echo "${SERVER_PORT:-80}" > /tmp/.server_port
+    if [ "$(to_php_bool "${PA_HEALTH_PING_ENABLED:-false}")" = "true" ]; then
+        echo "/ping" > /tmp/.health_path
+    else
+        echo "/" > /tmp/.health_path
+    fi
 
     # Install custom CA certificate if provided (must run before any HTTPS calls)
     if [ "$IS_ROOT" = true ]; then
@@ -1842,6 +2016,8 @@ main() {
         debug_log "LDAP validation completed successfully"
         validate_saml_config
         debug_log "SAML validation completed successfully"
+        validate_remote_user_config
+        debug_log "Remote user validation completed successfully"
         validate_oidc_config
         debug_log "OIDC validation completed successfully"
         log "Configuration validation completed successfully"
@@ -1862,6 +2038,9 @@ main() {
 
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
+
+    # exec replaces this shell, so the EXIT trap never fires: drop the credentials file here
+    [ -n "${MYSQL_DEFAULTS_FILE}" ] && rm -f "${MYSQL_DEFAULTS_FILE}"
 
     # Setup permissions and drop privileges (root only)
     if [ "$IS_ROOT" = true ]; then

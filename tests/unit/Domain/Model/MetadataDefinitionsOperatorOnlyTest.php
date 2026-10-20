@@ -55,6 +55,12 @@ class MetadataDefinitionsOperatorOnlyTest extends TestCase
      */
     public function testOperatorOnlyKindsAreAlsoBlockedOnTheApiEndpoint(): void
     {
+        $operatorOnly = array_filter(
+            array_keys(MetadataDefinitions::DEFINITIONS),
+            fn(string $kind): bool => MetadataDefinitions::isOperatorOnly($kind)
+        );
+        $this->assertNotEmpty($operatorOnly, 'no operator-only kind is defined, so nothing is checked');
+
         foreach (array_keys(MetadataDefinitions::DEFINITIONS) as $kind) {
             if (MetadataDefinitions::isOperatorOnly($kind)) {
                 $this->assertFalse(

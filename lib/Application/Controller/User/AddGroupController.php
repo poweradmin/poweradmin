@@ -1,0 +1,172 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\User;
+
+use InvalidArgumentException;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles the add-group form at /groups/add: validates the name and group template, then creates the group.
+ */
+class AddGroupController extends BaseController
+{
+    private ?GroupService $groupService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
+
+    private function groupService(): GroupService
+    {
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+    }
+
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
+    }
+
+    public function run(): void
+    {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
+        // Only admin (überuser) can create groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to create groups.'));
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('add_group');
+        $this->setPageTitle(_('Add group'));
+
+        if ($this->isPost()) {
+            $this->addGroup();
+        } else {
+            $this->renderAddGroupForm();
+        }
+    }
+
+    private function addGroup(): void
+    {
+        if (!$this->validateInput()) {
+            $this->renderAddGroupForm();
+            return;
+        }
+
+        $name = $this->httpRequest->getPostParam('name');
+        $description = $this->httpRequest->getPostParam('description', '');
+        $permTemplId = (int)$this->httpRequest->getPostParam('perm_templ');
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
+
+        // Validate that the template is a group template
+        if (!$this->permissionTemplateRepository()->validateTemplateType($permTemplId, 'group')) {
+            $this->setMessage('add_group', 'error', _('Invalid permission template: must be a group template'));
+            $this->renderAddGroupForm();
+            return;
+        }
+
+        $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones', ''));
+        if (!$zoneLimit['valid']) {
+            $this->setMessage('add_group', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+            $this->renderAddGroupForm();
+            return;
+        }
+
+        try {
+            $group = $this->groupService()->createGroup($name, $permTemplId, $description, $userId);
+            if ($zoneLimit['limit'] !== null) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit((int)$userId, $group->getId(), $zoneLimit['limit']);
+            }
+
+            // Log group creation with template details
+            $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates();
+            $templateName = 'Unknown';
+            foreach ($permTemplates as $template) {
+                if ($template['id'] == $permTemplId) {
+                    $templateName = $template['name'];
+                    break;
+                }
+            }
+
+            $this->services()->auditService()->logGroupCreate($group->getId(), (string)$name, (string)$templateName, $permTemplId);
+
+            $this->setMessage('list_groups', 'success', _('Group has been created successfully.'));
+            $this->redirect('/groups');
+        } catch (InvalidArgumentException $e) {
+            $this->setMessage('add_group', 'error', $e->getMessage());
+            $this->renderAddGroupForm();
+        }
+    }
+
+    private function renderAddGroupForm(): void
+    {
+        $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates('group');
+
+        // Use minimal permission template as default (most secure); preselect
+        // nothing rather than falling back to template id 1 (Administrator).
+        $defaultTemplateId = $this->permissionTemplateRepository()->getMinimalPermissionTemplateId('group') ?? '';
+
+        $this->render('add_group.html', [
+            'name' => $this->httpRequest->getPostParam('name', ''),
+            'description' => $this->httpRequest->getPostParam('description', ''),
+            'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$defaultTemplateId),
+            'perm_templates' => $permTemplates,
+            'max_zones' => (string)$this->httpRequest->getPostParam('max_zones', ''),
+            'zone_limit_default' => $this->defaultGroupLimit(),
+        ]);
+    }
+
+    private function defaultGroupLimit(): ?int
+    {
+        $default = $this->config->get('dns', 'default_max_zones_per_group');
+        return is_numeric($default) ? (int)$default : null;
+    }
+
+    private function validateInput(): bool
+    {
+        $constraints = [
+            'name' => [
+                new Assert\NotBlank(),
+                new Assert\Length(min: 1, max: 255)
+            ],
+            'perm_templ' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+        $data = $this->httpRequest->getPostParams();
+
+        if (!$this->doValidateRequest($data)) {
+            $this->setMessage('add_group', 'error', _('Please fill in all required fields correctly.'));
+            return false;
+        }
+
+        return true;
+    }
+}

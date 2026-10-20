@@ -4,6 +4,10 @@
     {label: 'Add slave zone'|trans},
 ]) }}
 
+{% if zone_limit_note %}
+<div class="alert alert-info py-2 small" data-testid="zone-limit-note">{{ zone_limit_note }}</div>
+{% endif %}
+
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave{% if is_reverse_zone %}?type=reverse{% endif %}" novalidate>
     {{ macros.csrf_field() }}
     {% if is_reverse_zone %}<input type="hidden" name="type" value="reverse">{% endif %}
@@ -67,8 +71,7 @@
                     </div>
                 </div>
                 <div id="user_list" style="max-height: 200px; overflow-y: auto;">
-                    {% for user in users %}
-                    {% if perm_view_others or user['id'] == session_user_id %}
+                    {% for user in selectable_owners %}
                     <div class="form-check mb-2 user-item" data-username="{{ user['fullname']|lower }} {{ user['username']|lower }}">
                         <input class="form-check-input" type="radio" name="owner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}" {% if user['id'] == owner_value %}checked{% endif %}>
                         <label class="form-check-label" for="owner_{{ user['id'] }}">
@@ -77,7 +80,6 @@
                             {% if user['id'] == session_user_id %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
                         </label>
                     </div>
-                    {% endif %}
                     {% endfor %}
                 </div>
                 <small class="text-muted mt-2 d-block">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
@@ -108,7 +110,7 @@
                         <input class="form-check-input group-checkbox" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}checked{% endif %}>
                         <label class="form-check-label" for="group_{{ group.id }}">
                             {{ group.name }}
-                            <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_counts[group.id]|default(0) }} {% trans %}members{% endtrans %}</span>
+                            <span class="badge bg-secondary bg-opacity-25 text-secondary ms-1">{{ group_member_labels[group.id] }}</span>
                             {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
                         </label>
                     </div>

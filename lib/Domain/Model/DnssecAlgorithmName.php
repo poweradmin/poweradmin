@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,12 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Domain\Service\PdnsCapabilities;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 
-class DnssecAlgorithmName
+/**
+ * PowerDNS DNSSEC algorithm names, the subset offered for new keys, and version-gating against the server.
+ */
+final class DnssecAlgorithmName
 {
     public const RSAMD5 = 'rsamd5';
     public const DH = 'dh';
@@ -73,6 +76,21 @@ class DnssecAlgorithmName
     ];
 
     /**
+     * Key sizes each supported algorithm accepts. The curve algorithms have one
+     * fixed size; RSA is capped at 2048 because larger keys bloat responses.
+     */
+    public const ALGORITHM_BITS = [
+        self::RSASHA1 => [1024, 2048],
+        self::RSASHA1_NSEC3_SHA1 => [1024, 2048],
+        self::RSASHA256 => [1024, 2048],
+        self::RSASHA512 => [1024, 2048],
+        self::ECDSA256 => [256],
+        self::ECDSA384 => [384],
+        self::ED25519 => [256],
+        self::ED448 => [456],
+    ];
+
+    /**
      * Algorithms that only became available from a particular PowerDNS
      * release. Anything not listed here has been supported for as long as
      * the API has existed, so we don't gate it.
@@ -102,6 +120,36 @@ class DnssecAlgorithmName
             }
         }
         return $out;
+    }
+
+    /**
+     * algorithm => accepted key sizes, for the algorithms the connected server
+     * offers, so the form's bit list and the server-side check share one source.
+     *
+     * @return array<string, array<int, int>>
+     */
+    public static function getAlgorithmBitsForCapabilities(?PdnsCapabilities $caps): array
+    {
+        $out = [];
+        foreach (self::getSupportedAlgorithmsForCapabilities($caps) as $alg) {
+            $out[$alg] = self::ALGORITHM_BITS[$alg];
+        }
+        return $out;
+    }
+
+    /**
+     * The PowerDNS name of an algorithm number, for the algorithms offered for
+     * new keys only; null for any other number.
+     */
+    public static function fromAlgorithmId(int $id): ?string
+    {
+        $displayName = DnssecAlgorithm::ALGORITHMS[$id] ?? null;
+        foreach (self::SUPPORTED_ALGORITHMS as $alg) {
+            if (self::ALGORITHM_NAMES[$alg] === $displayName) {
+                return $alg;
+            }
+        }
+        return null;
     }
 
     /**

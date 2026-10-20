@@ -22,41 +22,56 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use LogicException;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
-use Poweradmin\Application\Service\ZoneSyncService;
+use Poweradmin\Infrastructure\Service\ZoneSyncService;
 use Poweradmin\Domain\Model\ZoneStartingLetter;
+use Poweradmin\Domain\Model\ZoneDetail;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Service\ZoneAccountSyncService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Database\SharedZoneIds;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Domain\Enum\ZoneSoaHealth;
+use Poweradmin\Infrastructure\Utility\SortHelper;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-readonly class ApiZoneRepository implements ZoneRepositoryInterface
+/**
+ * API-backend zone repository; reads zone state through PowerDNS and ownership from zones and zones_groups.
+ */
+final readonly class ApiZoneRepository implements ZoneRepositoryInterface
 {
     // Failing beats returning an empty set that reads as "this zone has none".
-    private const METADATA_NOT_SUPPORTED = 'Zone metadata is not available through the API zone repository; use PowerdnsApiClient instead.';
 
     private TableNameService $tableNameService;
 
     public function __construct(
         private PDO $db,
-        private DnsBackendProvider $backendProvider,
+        private DnsBackendProviderInterface $backendProvider,
         private string $dbType,
         private ConfigurationInterface $config,
+        private SessionInterface $session,
         private ?LoggerInterface $logger = null
     ) {
         $this->tableNameService = new TableNameService($config);
+    }
+
+    private function canonicalId(string $alias = ''): string
+    {
+        return CanonicalZoneSql::canonicalIdColumn($alias, $this->backendProvider->allocatesZoneIdsLocally());
     }
 
     /**
@@ -70,7 +85,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             return '1 = 0';
         }
 
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn($alias);
+        $canonicalId = $this->canonicalId($alias);
         $condition = "$canonicalId IN (" . implode(',', $owned) . ")";
         $shared = SharedZoneIds::sharedAmong($this->db, $owned);
         if ($shared !== []) {
@@ -78,31 +93,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         return "($condition)";
-    }
-
-    /**
-     * Canonical ids of the zones a user owns directly or through a group, without the
-     * shared ids whose resolved zone they do not own directly (see SharedZoneIds).
-     *
-     * @return int[]
-     */
-    private function getOwnedZoneIds(int $userId): array
-    {
-        // API-mode zones with no domain_id are keyed by zones.id, which the canonical
-        // expression resolves; zones_groups already stores that same value
-        $stmt = $this->db->prepare(
-            "SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS zone_id FROM zones z WHERE z.owner = :uid
-             UNION
-             SELECT DISTINCT zg.domain_id AS zone_id
-             FROM zones_groups zg
-             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-             WHERE ugm.user_id = :uid2"
-        );
-        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
@@ -119,6 +109,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
         $unreachable = $this->unreachableSharedRowsCondition('z');
         $where .= $unreachable === null ? '' : " AND $unreachable";
+
 
         // Punycode zones are listed under one IDN entry, so they do not register as "x".
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->dbType) . "(z.zone_name, 1, 1)) AS letter
@@ -164,7 +155,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // the Forward Zones page first. Throttled to once per 5 minutes. Reads
         // the same zone-list variant as the stats call below so both share one
         // response.
-        (new ZoneSyncService($this->db, $this->backendProvider, 300, $this->logger))->syncIfStale($needsDnssec);
+        (new ZoneSyncService($this->db, $this->backendProvider, $this->session, 300, $this->logger, accountOwners: AccountOwnerLookup::forConfig($this->db, $this->config)))->syncIfStale($needsDnssec);
 
         // Build base query from local zones table
         if ($countOnly) {
@@ -189,7 +180,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // appears in the list, not just the primary owner.
         // Listed under the canonical id, the identifier the rest of the application
         // (links, ownership, zones_groups) uses; the row id only serves the template lookup
-        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
@@ -278,9 +269,9 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $this->enrichZonesWithOwnership($zones, true);
+        $zones = $this->enrichZonesWithOwnership($zones, true);
 
-        return $zones;
+        return array_map(ZoneSummary::fromRow(...), $zones);
     }
 
     /**
@@ -338,14 +329,14 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     /**
      * Fill in every assigned user as an owner for each zone, including
-     * additional users beyond the primary owner. Mutates $zones.
+     * additional users beyond the primary owner.
      *
      * @param bool $canonicalIds Whether $zones carry canonical ids rather than zones.id
      */
-    private function enrichZonesWithOwnership(array &$zones, bool $canonicalIds = false): void
+    private function enrichZonesWithOwnership(array $zones, bool $canonicalIds = false): array
     {
         if (empty($zones)) {
-            return;
+            return $zones;
         }
 
         $zoneIds = array_values(array_unique(array_map(fn($z) => (int)$z['id'], $zones)));
@@ -396,6 +387,44 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
         unset($zone);
+
+        return $zones;
+    }
+
+    public function countZones(string $permType, ?int $userId, string $letterStart = 'all', string $zoneType = 'forward'): int
+    {
+        if ($permType !== 'own' && $permType !== 'all') {
+            return 0;
+        }
+
+        // Only names and ids are counted, so skip the DNSSEC lookup
+        $zones = $this->backendProvider->getZones(false);
+
+        if ($permType === 'own') {
+            if (!$userId) {
+                return 0;
+            }
+            $ownedIds = $this->getOwnedZoneIds($userId);
+            $zones = array_filter($zones, fn($z) => in_array((int)($z['id'] ?? 0), $ownedIds, true));
+        }
+
+        // As in the lists: a shared id counts only the zone it opens (see SharedZoneIds)
+        $openedNames = SharedZoneIds::openedNames($this->db);
+        if ($openedNames !== []) {
+            $zones = array_filter($zones, fn(array $zone): bool => SharedZoneIds::isOpenedZone($openedNames, $zone));
+        }
+
+        if ($letterStart !== ZoneStartingLetter::ALL) {
+            $zones = array_filter($zones, fn($z) => ZoneStartingLetter::matches(rtrim($z['name'] ?? '', '.'), $letterStart));
+        }
+
+        if ($zoneType === 'forward') {
+            $zones = array_filter($zones, fn($z) => !DnsHelper::isReverseZoneName($z['name'] ?? ''));
+        } elseif ($zoneType === 'reverse') {
+            $zones = array_filter($zones, fn($z) => DnsHelper::isReverseZoneName($z['name'] ?? ''));
+        }
+
+        return count($zones);
     }
 
     public function getReverseZoneCounts(string $permType, int $userId): array
@@ -420,17 +449,11 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         ];
     }
 
-    public function getDomainNameById(int $zoneId): ?string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_name'] ?? null;
-    }
-
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
         // Owners are filled in by enrichZonesWithOwnership() so every assigned user
         // appears in the list, not just the primary owner.
-        $query = "SELECT z.id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        $query = "SELECT z.id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.comment
                   FROM zones z
                   LEFT JOIN users u ON z.owner = u.id
@@ -466,6 +489,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 $stats = $zoneStats[$apiName] ?? [];
                 $zones[$name] = [
                     'id' => (int)$row['canonical_id'],
+                    'canonical_id' => (int)$row['canonical_id'],
                     'name' => $name,
                     'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
@@ -480,95 +504,26 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             }
         }
 
-        $this->enrichZonesWithOwnership($zones, true);
+        $zones = $this->enrichZonesWithOwnership($zones, true);
 
-        return array_values($zones);
+        return array_values(array_map(ZoneSummary::fromRow(...), $zones));
     }
 
-    public function zoneExists(int $zoneId, ?int $userId = null): bool
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        if ($canonical === null) {
-            return false;
-        }
-        if ($userId === null) {
-            return true;
-        }
-        if ($this->isSharedZoneId($zoneId)) {
-            // Only the resolved zone's direct owner counts (see SharedZoneIds)
-            return (int)$canonical['owner'] === $userId;
-        }
-        $cid = (int)$canonical['id'];
-        $canonicalId = self::canonicalIdOf($canonical);
-        $stmt = $this->db->prepare(
-            "SELECT 1 FROM zones z
-             WHERE z.id = :cid AND (
-                 z.owner = :userId
-                 OR EXISTS (
-                     SELECT 1 FROM zones zo
-                     WHERE zo.zone_name IS NULL
-                       AND zo.domain_id = :cid_e
-                       AND zo.owner = :userId_own
-                 )
-                 OR EXISTS (
-                     SELECT 1 FROM zones_groups zg
-                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                     WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :userId_group
-                 )
-             )"
-        );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId_own', $userId, PDO::PARAM_INT);
-        $stmt->bindValue(':userId_group', $userId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchColumn() !== false;
-    }
-
-    public function getZone(int $zoneId): ?array
+    public function getZone(int $zoneId): ?ZoneDetail
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return null;
         }
-        $stmt = $this->db->prepare(
-            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                    z.comment, u.username, u.fullname
-             FROM zones z
-             LEFT JOIN users u ON z.owner = u.id
-             WHERE z.id = :id"
-        );
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$zone) {
-            return null;
-        }
-        // The canonical id, the one every zone endpoint and link accepts
-        $zone['id'] = self::canonicalIdOf($canonical);
-        $countRecords = $this->backendProvider->countZoneRecords($zoneId);
         $zoneInfo = $this->backendProvider->getZoneById($zoneId);
-        $zone['count_records'] = $countRecords;
-        $zone['secured'] = $zoneInfo['dnssec'] ?? false;
-        $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
-        $zone['owners'] = [$zone['username']];
-        $zone['full_names'] = [$zone['fullname'] ?: ''];
-        $zone['users'] = [$zone['username']];
-        return $zone;
-    }
 
-    public function getZoneByName(string $zoneName): ?array
-    {
-        $query = "SELECT id FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $zoneId = $stmt->fetchColumn();
-        if (!$zoneId) {
-            return null;
-        }
-        return $this->getZone((int)$zoneId);
+        return ZoneDetail::fromRow(
+            $this->coreRow($canonical, $zoneId) + [
+                'comment' => $canonical['comment'] ?? '',
+                'secured' => $zoneInfo['dnssec'] ?? false,
+            ],
+            $this->getZoneOwners($zoneId)
+        );
     }
 
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array
@@ -608,7 +563,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         // Look up forward zones in local zones table
         $suffixList = array_keys($domainSuffixes);
         $placeholders = implode(',', array_fill(0, count($suffixList), '?'));
-        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS id, z.zone_name as name FROM zones z WHERE z.zone_name IN ($placeholders) AND z.zone_name NOT LIKE '%.arpa'";
+        $query = "SELECT " . $this->canonicalId('z') . " AS id, z.zone_name as name FROM zones z WHERE z.zone_name IN ($placeholders) AND z.zone_name NOT LIKE '%.arpa'";
         $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         $stmt = $this->db->prepare($query);
         $paramIndex = 1;
@@ -648,27 +603,56 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $results;
     }
 
-    public function zoneIdExists(int $zoneId): bool
-    {
-        return $this->resolveCanonicalRow($zoneId) !== null;
-    }
-
-    public function getDomainType(int $zoneId): string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_type'] ?? '';
-    }
-
-    public function getDomainSlaveMaster(int $zoneId): ?string
-    {
-        $canonical = $this->resolveCanonicalRow($zoneId);
-        return $canonical['zone_master'] ?? null;
-    }
-
     public function getZoneComment(int $zoneId): ?string
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
         return $canonical['comment'] ?? null;
+    }
+
+    public function createZoneShell(int $domainId, ?int $owner, int $templateId): int
+    {
+        // createZone() already inserted the row; fill in owner and template
+        // instead of duplicating it.
+        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner, zone_templ_id = :zone_template WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
+        $stmt->bindValue(':zone_template', $templateId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $domainId;
+    }
+
+    public function deleteZoneShell(int $domainId): void
+    {
+        // A creation that reused a row may be undone here; an id it opens may open another zone once it goes
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :did AND zone_name IS NOT NULL");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger ?? new NullLogger());
+
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :did");
+        $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    public function saveZoneComment(int $zoneId, string $comment): void
+    {
+        $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $count = $stmt->fetchColumn();
+
+        if ($count > 0) {
+            $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+        } else {
+            $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+        $stmt->execute();
     }
 
     public function updateZoneComment(int $zoneId, string $comment): bool
@@ -681,6 +665,56 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
         $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
         return $stmt->execute();
+    }
+
+    public function getOwnerIdsByZoneIds(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+
+        $canonicalId = $this->canonicalId();
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare(
+            "SELECT $canonicalId AS domain_id, owner FROM zones WHERE $canonicalId IN ($placeholders)"
+        );
+        // The canonical id is an expression with no column affinity, so the ids go in as
+        // integers or SQLite compares them as text and matches none
+        foreach (array_values($zoneIds) as $i => $zoneId) {
+            $stmt->bindValue($i + 1, (int)$zoneId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $owners = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $owners[(int)$row['domain_id']][] = (int)$row['owner'];
+        }
+        // For a shared id only the resolved zone's direct owner counts (see SharedZoneIds)
+        foreach (SharedZoneIds::sharedAmong($this->db, array_map('intval', $zoneIds)) as $sharedId) {
+            $owner = SharedZoneIds::resolvedOwner($this->db, $sharedId);
+            $owners[$sharedId] = $owner === null ? [] : [$owner];
+        }
+
+        return $owners;
+    }
+
+    public function getOwnedZoneIds(int $userId): array
+    {
+        // API-mode zones with no domain_id are keyed by zones.id, which the canonical
+        // expression resolves; zones_groups already stores that same value
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT " . $this->canonicalId('z') . " AS zone_id FROM zones z WHERE z.owner = :uid
+             UNION
+             SELECT DISTINCT zg.domain_id AS zone_id
+             FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return SharedZoneIds::filterOwned($this->db, $userId, array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)));
     }
 
     public function getZoneOwners(int $zoneId): array
@@ -697,19 +731,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
-        $cid = (int)$canonical['id'];
-        $canonicalId = self::canonicalIdOf($canonical);
-        $stmt = $this->db->prepare(
-            "SELECT DISTINCT u.id, u.username, u.fullname
-             FROM zones z
-             JOIN users u ON z.owner = u.id
-             WHERE z.id = :cid
-                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)"
-        );
-        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
-        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $this->ownersOfCanonical((int)$canonical['id'], self::canonicalIdOf($canonical));
     }
 
     public function isSharedZoneId(int $zoneId): bool
@@ -720,30 +742,213 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $canonical !== null && SharedZoneIds::isShared($this->db, self::canonicalIdOf($canonical));
     }
 
+    /**
+     * Users owning the canonical row or any extra ownership row keyed by the canonical id.
+     *
+     * @return array<int, array{id: int|string, username: string, fullname: string|null}>
+     */
+    private function ownersOfCanonical(int $canonicalRowId, int $canonicalId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT u.id, u.username, u.fullname
+             FROM zones z
+             JOIN users u ON z.owner = u.id
+             WHERE z.id = :cid
+                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)"
+        );
+        $stmt->bindValue(':cid', $canonicalRowId, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function lockZoneOwners(int $zoneId): void
+    {
+        $this->queueOwnershipWriters();
+        $canonical = $this->resolveCanonicalRow($zoneId);
+        if ($canonical === null) {
+            return;
+        }
+
+        $stmt = $this->db->prepare(
+            "SELECT z.id FROM zones z
+             WHERE z.id = :cid
+                OR (z.zone_name IS NULL AND z.domain_id = :cid_e)" . DbCompat::rowLock($this->dbType)
+        );
+        $stmt->bindValue(':cid', (int)$canonical['id'], PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', self::canonicalIdOf($canonical), PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Locks the backend marker row, the one row every writer of zone ownership queues on. The
+     * locking read leaves the MySQL snapshot unset, so what the caller reads after it includes
+     * whatever the writer ahead of it committed. Locking the zones rows instead leaves two
+     * writers each holding a gap the other must insert into, a deadlock on InnoDB.
+     */
+    private function queueOwnershipWriters(): void
+    {
+        BackendModeMarker::markApi($this->db);
+    }
+
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            return $this->insertOwnerRow($zoneId, $userId);
+        }
+
+        // A lost lock race rolls the whole transaction back, so it is replayed whole
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $userId): bool {
+            $transaction->begin();
+            try {
+                $added = $this->insertOwnerRow($zoneId, $userId);
+                $transaction->commit();
+
+                return $added;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    public function handOverNamedZoneRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        if ($fromUserId === $toUserId) {
+            return null;
+        }
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            return $this->moveNamedRow($zoneId, $fromUserId, $toUserId);
+        }
+
+        return DeadlockRetry::run(function () use ($transaction, $zoneId, $fromUserId, $toUserId): ?bool {
+            $transaction->begin();
+            try {
+                $moved = $this->moveNamedRow($zoneId, $fromUserId, $toUserId);
+                $transaction->commit();
+
+                return $moved;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    private function moveNamedRow(int $zoneId, int $fromUserId, int $toUserId): ?bool
+    {
+        $this->queueOwnershipWriters();
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :owner AND zone_name IS NOT NULL AND " . $this->canonicalId() . " = :zone_id");
+        $stmt->bindValue(':owner', $fromUserId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $namedRows = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        if ($namedRows === []) {
+            return null;
+        }
+        if (SharedZoneIds::isShared($this->db, $zoneId)) {
+            // Ownership of a shared id is checked on the row it opens, so only that row may move
+            $stmt = $this->db->prepare(CanonicalZoneSql::selectByZoneId('id, owner'));
+            CanonicalZoneSql::bindZoneId($stmt, $zoneId);
+            $stmt->execute();
+            $opened = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!is_array($opened) || (int)$opened['owner'] !== $fromUserId) {
+                return false;
+            }
+            $namedRows = [(int)$opened['id']];
+        }
+
+        // Conditioned on the owner: the UPDATE reads the current row even where the snapshot predates a change
+        $stmt = $this->db->prepare("UPDATE zones SET owner = :owner WHERE id = :id AND owner = :from_owner");
+        $moved = false;
+        foreach ($namedRows as $rowId) {
+            $stmt->bindValue(':owner', $toUserId, PDO::PARAM_INT);
+            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+            $stmt->bindValue(':from_owner', $fromUserId, PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                $moved = true;
+                $this->syncZoneAccountAfterCommit($rowId);
+            }
+        }
+        if (!$moved) {
+            return null;
+        }
+
+        // The new owner's unnamed row would duplicate the named row it now holds
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id AND owner = :owner");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $toUserId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return true;
+    }
+
+    /**
+     * Adds the owner row once the writers ahead have finished, so a concurrent request for the
+     * same user cannot store a second row. A user who already owns the zone counts as added.
+     */
+    private function insertOwnerRow(int $zoneId, int $userId): bool
+    {
+        $this->queueOwnershipWriters();
         $canonical = $this->resolveCanonicalRow($zoneId);
         // An owner row keyed by a shared id would grant nothing (see SharedZoneIds)
         if ($canonical === null || $this->isSharedZoneId($zoneId)) {
             return false;
         }
         $cid = (int)$canonical['id'];
+        // A joined transaction may hold a snapshot taken before the marker lock was granted
+        if (!$this->zoneRowStillExists($cid)) {
+            return false;
+        }
+        if ($this->isUserZoneOwner($zoneId, $userId)) {
+            return true;
+        }
         $canonicalId = self::canonicalIdOf($canonical);
 
+        // The check sits in the insert: its read is current even where the transaction's snapshot predates the owner row
         $stmt = $this->db->prepare(
             "INSERT INTO zones (domain_id, owner, zone_templ_id)
-             VALUES (:domain_id, :owner, :zone_templ_id)"
+             SELECT :domain_id, :owner, :zone_templ_id
+             WHERE NOT EXISTS (
+                 SELECT 1 FROM zones z
+                 WHERE z.owner = :existing_owner
+                   AND (z.id = :cid OR (z.zone_name IS NULL AND z.domain_id = :cid_e))
+             )"
         );
         $stmt->bindValue(':domain_id', $canonicalId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', (int)($canonical['zone_templ_id'] ?? 0), PDO::PARAM_INT);
+        $stmt->bindValue(':existing_owner', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
+        $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
         $stmt->execute();
 
-        $added = $stmt->rowCount() > 0;
-        if ($added) {
-            $this->syncZoneAccount($cid);
+        if ($stmt->rowCount() > 0) {
+            $this->syncZoneAccountAfterCommit($cid);
         }
-        return $added;
+
+        return true;
+    }
+
+    /**
+     * A locking primary key read, which sees the latest committed row even where the
+     * transaction's snapshot predates a delete.
+     */
+    private function zoneRowStillExists(int $rowId): bool
+    {
+        $stmt = $this->db->prepare("SELECT id FROM zones WHERE id = :id" . DbCompat::rowLock($this->dbType));
+        $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) !== [];
     }
 
     public function removeOwnerFromZone(int $zoneId, int $userId): bool
@@ -764,7 +969,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->execute();
         if ($stmt->rowCount() > 0) {
-            $this->syncZoneAccount($cid);
+            $this->syncZoneAccountAfterCommit($cid);
             return true;
         }
 
@@ -778,7 +983,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $removed = $stmt->rowCount() > 0;
         if ($removed) {
-            $this->syncZoneAccount($cid);
+            $this->syncZoneAccountAfterCommit($cid);
         }
         return $removed;
     }
@@ -805,16 +1010,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $stmt->fetchColumn() !== false;
     }
 
-    public function getZoneIdByName(string $zoneName): ?int
-    {
-        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
-    }
-
     public function deleteZone(int $zoneId): bool
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
@@ -832,8 +1027,37 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 return false;
             }
         }
+        $shared = $this->isSharedZoneId($zoneId);
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            $this->queueOwnershipWriters();
+
+            return $this->deleteLocalZoneRows($cid, $canonicalId, $shared);
+        }
+
+        // Queued on the marker lock first, so an owner add that ran ahead has committed its rows
+        // before they are deleted and one that follows finds no zone to key a row by
+        return DeadlockRetry::run(function () use ($transaction, $cid, $canonicalId, $shared): bool {
+            $transaction->begin();
+            try {
+                $this->queueOwnershipWriters();
+                $deleted = $this->deleteLocalZoneRows($cid, $canonicalId, $shared);
+                $transaction->commit();
+
+                return $deleted;
+            } catch (\Throwable $e) {
+                if ($transaction->inTransaction()) {
+                    $transaction->rollBack();
+                }
+                throw $e;
+            }
+        });
+    }
+
+    private function deleteLocalZoneRows(int $cid, int $canonicalId, bool $shared): bool
+    {
         SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $canonicalId, $cid, $this->logger ?? new NullLogger());
-        if ($this->isSharedZoneId($zoneId)) {
+        if ($shared) {
             // Grants keyed by a shared id cannot be attributed, so they go too rather than
             // falling to the surviving zone; its template links stay, being data, not access
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
@@ -870,8 +1094,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function updateZone(int $zoneId, array $updates): bool
     {
+        $canonical = $this->resolveCanonicalRow($zoneId);
+
         if (isset($updates['name'])) {
-            $currentName = $this->getDomainNameById($zoneId);
+            $currentName = $canonical['zone_name'] ?? null;
             if ($currentName !== null && $updates['name'] !== $currentName) {
                 throw new \InvalidArgumentException(
                     'Zone renaming is not supported in API backend mode. PowerDNS API does not support zone rename operations.'
@@ -880,7 +1106,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             unset($updates['name']);
         }
 
-        $canonical = $this->resolveCanonicalRow($zoneId);
         if ($canonical === null) {
             return false;
         }
@@ -900,29 +1125,6 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return $success;
     }
 
-    public function getAllZones(?int $offset = null, ?int $limit = null): array
-    {
-        $query = "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                         COALESCE(z.owner, 0) as owner
-                  FROM zones z
-                  WHERE z.zone_name IS NOT NULL
-                  ORDER BY z.zone_name";
-        if ($limit !== null && $limit > 0) {
-            $query .= " LIMIT :limit OFFSET :offset";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
-        } else {
-            $stmt = $this->db->prepare($query);
-        }
-        $stmt->execute();
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($results as &$row) {
-            $row['record_count'] = 0; // Skip per-zone API calls for list views
-        }
-        return $results;
-    }
-
     public function getZoneCount(): int
     {
         $query = "SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL";
@@ -930,13 +1132,13 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
-    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?string $nameContains = null): int
     {
         if ($zoneIds !== null && empty($zoneIds)) {
             return 0;
         }
 
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
         $query = "SELECT COUNT(DISTINCT z.id) FROM zones z WHERE z.zone_name IS NOT NULL"
             . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
 
@@ -956,9 +1158,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
      * @param int[]|null $zoneIds Explicit zone-id allowlist, or null for no id restriction
      * @param int|null $userId Owner to filter by, or null for no ownership restriction
      * @param string|null $nameFilter Optional exact zone-name filter
+     * @param string|null $nameContains Optional case-insensitive zone-name substring filter
      * @return array{0: string[], 1: array<string, mixed>} [conditions, bind params]
      */
-    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter): array
+    private function buildZoneFilterConditions(?array $zoneIds, ?int $userId, ?string $nameFilter, ?string $nameContains = null): array
     {
         $conditions = [];
         $params = [];
@@ -969,7 +1172,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                    WHERE zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . " AND ugm.user_id = :user_id_group
+                    WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :user_id_group
                 ))";
             $params[':user_id'] = $userId;
             $params[':user_id_own'] = $userId;
@@ -983,7 +1186,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 $placeholders[] = ":zone_id_$i";
                 $params[":zone_id_$i"] = (int)$zoneId;
             }
-            $conditions[] = CanonicalZoneSql::canonicalIdColumn('z') . " IN (" . implode(', ', $placeholders) . ")";
+            $conditions[] = $this->canonicalId('z') . " IN (" . implode(', ', $placeholders) . ")";
         }
 
         $unreachable = $this->unreachableSharedRowsCondition('z');
@@ -996,7 +1199,29 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $params[':name_filter'] = $nameFilter;
         }
 
+        $nameContains = trim((string)$nameContains);
+        if ($nameContains !== '') {
+            // LOWER() on both sides because PostgreSQL LIKE is case-sensitive
+            $conditions[] = "LOWER(z.zone_name) LIKE LOWER(:name_contains) ESCAPE '!'";
+            $params[':name_contains'] = '%' . DbCompat::escapeLike($nameContains) . '%';
+        }
+
         return [$conditions, $params];
+    }
+
+    /**
+     * ORDER BY for the zone list. The row id tiebreaker keeps pages stable when
+     * sort values repeat; no sort keeps the plain name order the list always had.
+     *
+     * @param list<array{field: string, desc: bool}> $sort
+     */
+    private function zoneListOrder(array $sort): string
+    {
+        return SortHelper::orderBy($sort, [
+            'name' => fn(string $direction): string => SortHelper::naturalSortOrder('z.zone_name', $this->dbType, $direction),
+            'type' => 'z.zone_type',
+            'id' => $this->canonicalId('z'),
+        ], 'z.id', 'z.zone_name');
     }
 
     /**
@@ -1013,25 +1238,25 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             return null;
         }
 
-        return "(" . CanonicalZoneSql::canonicalIdColumn($alias) . " NOT IN (" . implode(', ', array_keys($resolvedRows)) . ")"
+        return "(" . $this->canonicalId($alias) . " NOT IN (" . implode(', ', array_keys($resolvedRows)) . ")"
             . " OR $alias.id IN (" . implode(', ', $resolvedRows) . "))";
     }
 
-    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null, ?string $nameContains = null, array $sort = []): array
     {
         if ($zoneIds !== null && empty($zoneIds)) {
             return [];
         }
 
-        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter);
-        // id is the canonical id every endpoint keys on; canonical_id is the same value
-        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn('z') . " AS id, " . CanonicalZoneSql::canonicalIdColumn('z') . " AS canonical_id,
+        [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
+        // id is the canonical id every endpoint keys on; canonical_id stays for clients that read it
+        $query = "SELECT " . $this->canonicalId('z') . " AS id, " . $this->canonicalId('z') . " AS canonical_id,
                          z.zone_name as name, z.zone_type as type, z.zone_master as master,
                          COALESCE(z.owner, 0) as owner
                   FROM zones z
                   WHERE z.zone_name IS NOT NULL"
             . ($conditions === [] ? '' : ' AND ' . implode(' AND ', $conditions));
-        $query .= " ORDER BY z.zone_name";
+        $query .= " ORDER BY " . $this->zoneListOrder($sort);
         if ($limit !== null && $limit > 0) {
             $query .= " LIMIT :limit OFFSET :offset";
         }
@@ -1056,47 +1281,45 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     public function getZoneById(int $zoneId): ?array
     {
         $canonical = $this->resolveCanonicalRow($zoneId);
-        if ($canonical === null) {
-            return null;
-        }
-        $stmt = $this->db->prepare(
-            "SELECT z.id, z.zone_name as name, z.zone_type as type, z.zone_master as master,
-                    COALESCE(z.owner, 0) as owner
-             FROM zones z
-             WHERE z.id = :id"
-        );
-        $stmt->bindValue(':id', (int)$canonical['id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$result) {
-            return null;
-        }
-        // The canonical id, the one every zone endpoint and link accepts
-        $result['id'] = self::canonicalIdOf($canonical);
-        $result['account'] = '';
-        $result['record_count'] = $this->backendProvider->countZoneRecords($zoneId);
-        return $result;
+        return $canonical === null ? null : $this->coreRow($canonical, $zoneId);
     }
 
     /**
-     * @inheritDoc
+     * The getZoneById() key set, built from a canonical row already in hand.
      */
-    public function getDomainMetadata(int $zoneId): array
+    private function coreRow(array $canonical, int $zoneId): array
     {
-        throw new LogicException(self::METADATA_NOT_SUPPORTED);
+        return [
+            'id' => self::canonicalIdOf($canonical),
+            'name' => $canonical['zone_name'],
+            'type' => $canonical['zone_type'],
+            'master' => $canonical['zone_master'],
+            'owner' => (int)($canonical['owner'] ?? 0),
+            'account' => '',
+            'record_count' => $this->backendProvider->countZoneRecords($zoneId),
+        ];
     }
 
     /**
-     * @inheritDoc
+     * PowerDNS is told only after the surrounding transaction commits, so no HTTP call waits
+     * on the ownership locks it holds; nothing is sent if it rolls back.
      */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
+    private function syncZoneAccountAfterCommit(int $cid): void
     {
-        throw new LogicException(self::METADATA_NOT_SUPPORTED);
+        (new PdoTransaction($this->db))->afterCommit('zone-account:' . $cid, function () use ($cid): void {
+            // The owner change is already committed; a failed push must not report it as failed or replay it
+            try {
+                $this->syncZoneAccount($cid);
+            } catch (\Throwable $e) {
+                error_log(sprintf('Zone account sync for zone %d failed after the owner change: %s', $cid, $e->getMessage()));
+            }
+        });
     }
 
     private function syncZoneAccount(int $cid): void
     {
-        $accountSync = new ZoneAccountSyncService($this->db, $this->config, $this->backendProvider);
+        $owners = new DbZoneAccountOwnerRepository($this->db, $this->backendProvider->allocatesZoneIdsLocally());
+        $accountSync = new ZoneAccountSyncService($owners, $this->config, $this->backendProvider);
         if (!$accountSync->isEnabled()) {
             return;
         }

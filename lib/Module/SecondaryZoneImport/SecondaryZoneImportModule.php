@@ -22,9 +22,10 @@
 
 namespace Poweradmin\Module\SecondaryZoneImport;
 
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Enum\DnsBackendKind;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Module\ModuleInterface;
 
 /**
  * Imports a zone from a live primary server by creating a secondary zone,
@@ -33,23 +34,15 @@ use Poweradmin\Module\ModuleInterface;
  * This relies on PowerDNS performing the transfer, so it is only available
  * with the API backend; it hides itself entirely in SQL-backend mode.
  */
-class SecondaryZoneImportModule implements ModuleInterface
+final class SecondaryZoneImportModule implements ModuleInterface
 {
-    private ?bool $apiBackendMode = null;
+    public function __construct(private readonly ConfigurationInterface $config)
+    {
+    }
 
     public function getName(): string
     {
         return 'secondary_zone_import';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'Import secondary zone';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Import a zone from a live primary server over AXFR (API backend only)';
     }
 
     public function getRoutes(): array
@@ -87,7 +80,7 @@ class SecondaryZoneImportModule implements ModuleInterface
                 'url' => '/zones/import-secondary',
                 'icon' => 'cloud-arrow-down',
                 'page_id' => 'module_secondary_zone_import',
-                'permission' => 'zone_slave_add',
+                'permission' => Permission::PERM_ZONE_SLAVE_ADD,
             ],
         ];
     }
@@ -107,16 +100,8 @@ class SecondaryZoneImportModule implements ModuleInterface
         return __DIR__ . '/templates';
     }
 
-    public function getLocalePath(): string
-    {
-        return '';
-    }
-
     private function isApiBackendMode(): bool
     {
-        if ($this->apiBackendMode === null) {
-            $this->apiBackendMode = DnsBackendProviderFactory::isApiBackend(ConfigurationManager::getInstance());
-        }
-        return $this->apiBackendMode;
+        return DnsBackendKind::fromConfig($this->config)->isApi();
     }
 }

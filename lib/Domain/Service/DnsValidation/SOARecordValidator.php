@@ -23,9 +23,10 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use DateTime;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * SOA record validator
@@ -37,94 +38,76 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * SOA record format:
  * [primary_ns] [admin_email] [serial] [refresh] [retry] [expire] [minimum]
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class SOARecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    // SOA-specific parameters
-    private ?string $dns_hostmaster = null;
-    private ?string $zone = null;
-
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator, ConfigurationInterface $config)
     {
         $this->config = $config;
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
     /**
-     * Set SOA-specific validation parameters
-     *
-     * @param string $dns_hostmaster Hostmaster email address
-     * @param string $zone Zone name
-     */
-    public function setSOAParams(string $dns_hostmaster, string $zone): void
-    {
-        $this->dns_hostmaster = $dns_hostmaster;
-        $this->zone = $zone;
-    }
-
-    /**
-     * Validates SOA record
+     * Validates SOA record through the generic validator interface
      *
      * @param string $content SOA record content
      * @param string $name SOA name
      * @param mixed $prio Priority (not used for SOA records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
-     * @param mixed ...$args Additional parameters: [0] => string|null $dns_hostmaster, [1] => string|null $zone
+     * @param mixed ...$args Required: [0] => string $dns_hostmaster, [1] => string $zone
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        $errors = [];
-
-        // Extract optional parameters
-        $dns_hostmaster = $args[0] ?? null;
+        $dnsHostmaster = $args[0] ?? null;
         $zone = $args[1] ?? null;
-
-        // If params are passed directly, use them; otherwise use the ones set via setSOAParams
-        $dns_hostmaster_to_use = $dns_hostmaster ?? $this->dns_hostmaster ?? null;
-        $zone_to_use = $zone ?? $this->zone ?? null;
-
-        // Check if SOA params have been set
-        if (!isset($dns_hostmaster_to_use) || !isset($zone_to_use)) {
-            return ValidationResult::failure(_('SOA validation parameters not set. Call setSOAParams() first or provide them as arguments.'));
+        if (!is_string($dnsHostmaster) || !is_string($zone)) {
+            return ValidationResult::failure('SOA validation requires the hostmaster address and the zone name.');
         }
 
-        // Set the params for this validation run if passed directly
-        if ($dns_hostmaster !== null && $zone !== null) {
-            $this->dns_hostmaster = $dns_hostmaster;
-            $this->zone = $zone;
-        }
+        return $this->validateSoa($content, $name, $prio, $ttl, $defaultTTL, $dnsHostmaster, $zone);
+    }
 
+    /**
+     * Validates an SOA record against the zone it belongs to
+     *
+     * @param string $content SOA record content
+     * @param string $name SOA name
+     * @param mixed $prio Priority (not used for SOA records)
+     * @param int|string|null $ttl TTL value
+     * @param int $defaultTTL Default TTL value
+     * @param string $dnsHostmaster Hostmaster email address
+     * @param string $zone Zone name
+     *
+     * @return ValidationResult ValidationResult containing validated data or error messages
+     */
+    public function validateSoa(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, string $dnsHostmaster, string $zone): ValidationResult
+    {
         // Validate zone name
-        if ($name != $this->zone) {
+        if ($name != $zone) {
             return ValidationResult::failure(sprintf(
                 _('SOA record name must match the zone apex "%s". Leave the name field blank or enter "@".'),
-                $this->zone
+                $zone
             ));
         }
 
         // Validate hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return $hostnameResult;
+            return $hostnameResult->withField(RecordField::NAME);
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
 
         // Validate SOA content
-        $soaResult = $this->validateSoaContent($content, $this->dns_hostmaster);
+        $soaResult = $this->validateSoaContent($content, $dnsHostmaster);
         if (!$soaResult['isValid']) {
             if (empty($soaResult['errors'])) {
                 return ValidationResult::failure(_('Your content field doesnt have a legit value.'));

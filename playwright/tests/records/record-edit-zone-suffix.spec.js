@@ -1,6 +1,7 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Test for GitHub issue #958: Editing a DNS record removes "Zone" from Name field
@@ -17,47 +18,19 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
  *
  * In both cases, the record name should NOT contain double dots (..) which was the bug symptom.
  */
+const zone = useFileZone('recsuffix');
+
 test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 
   test('should preserve zone name in record name when editing (issue #958)', async ({ page }) => {
-    // Navigate to forward zones page
-    await page.goto('/zones/forward');
-
-    const hasZones = await page.locator('table tbody tr').count() > 0;
-
-    if (!hasZones) {
-      test.skip(true, 'No zones available');
-      return;
-    }
-
-    // Click on first zone to get to edit page
-    const firstZoneRow = page.locator('table tbody tr').first();
-    const editLink = firstZoneRow.locator('a[href*="/edit"]').first();
-    const href = await editLink.getAttribute('href');
-    const zoneIdMatch = href?.match(/\/zones\/(\d+)/);
-
-    if (!zoneIdMatch) {
-      test.skip(true, 'Could not extract zone ID');
-      return;
-    }
-
-    const zoneId = zoneIdMatch[1];
-
-    // Get zone name from the row - second cell (first is checkbox)
-    const zoneNameCell = firstZoneRow.locator('td').nth(1);
-    const zoneName = (await zoneNameCell.textContent())?.trim();
-
-    if (!zoneName || !zoneName.includes('.')) {
-      test.skip(true, 'Could not determine zone name');
-      return;
-    }
+    const zoneId = zone.id;
+    const zoneName = zone.name;
 
     // Create a record with zone name embedded in hostname
-    const timestamp = Date.now();
-    const uniquePrefix = `bug958t${String(timestamp).slice(-5)}`;
+    const uniquePrefix = uniqueName('bug958');
     const recordHostname = `${uniquePrefix}.${zoneName}.sub`;
 
     // Add the record
@@ -84,11 +57,7 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     // On API backend, ID may be an encoded string, not just digits
     const inputName = await recordNameInput.getAttribute('name');
     const recordIdMatch = inputName?.match(/record\[([^\]]+)\]/);
-
-    if (!recordIdMatch) {
-      test.skip(true, 'Could not find record ID');
-      return;
-    }
+    expect(recordIdMatch, 'record id must be present in the input name').toBeTruthy();
 
     const recordId = recordIdMatch[1];
 
@@ -115,97 +84,34 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
   });
 
   test('should handle simple record names correctly', async ({ page }) => {
-    // Navigate to forward zones page
-    await page.goto('/zones/forward?letter=all');
-    await page.waitForLoadState('networkidle');
+    const zoneId = zone.id;
+    const zoneName = zone.name;
 
-    const table = page.locator('table');
-    if (await table.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const hasZones = await table.locator('tbody tr').count() > 0;
-
-    if (!hasZones) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Click on first zone and store zone name before navigating
-    const firstZoneRow = table.locator('tbody tr').first();
-    const editLink = firstZoneRow.locator('a[href*="/edit"]').first();
-
-    if (await editLink.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const href = await editLink.getAttribute('href');
-    const zoneIdMatch = href?.match(/\/zones\/(\d+)/);
-
-    if (!zoneIdMatch) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    const zoneId = zoneIdMatch[1];
-
-    // Store zone name before navigating away
-    const zoneNameCell = firstZoneRow.locator('td').nth(1);
-    const zoneName = (await zoneNameCell.textContent())?.trim();
-
-    const timestamp = Date.now();
-    const uniqueHostname = `simple${String(timestamp).slice(-6)}`;
+    const uniqueHostname = uniqueName('simple');
 
     // Create simple record
     await page.goto(`/zones/${zoneId}/records/add`);
     await page.waitForLoadState('networkidle');
 
-    const typeSelect = page.locator('select[name*="type"]').first();
-    const nameInput = page.locator('input[name*="name"]').first();
-    const contentInput = page.locator('input[name*="content"]').first();
-
-    if (await typeSelect.count() === 0 || await nameInput.count() === 0 || await contentInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await typeSelect.selectOption('A');
-    await nameInput.fill(uniqueHostname);
-    await contentInput.fill('192.168.99.98');
+    await page.locator('select[name*="type"]').first().selectOption('A');
+    await page.locator('input[name*="name"]').first().fill(uniqueHostname);
+    await page.locator('input[name*="content"]').first().fill('192.168.99.98');
 
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
 
     // Find and edit the record
-    await page.goto(`/zones/${zoneId}/edit`);
+    // Filter by the unique name so the row is found whatever page it lands on
+    await page.goto(`/zones/${zoneId}/edit?search=${uniqueHostname}`);
     await page.waitForLoadState('networkidle');
 
-    const recordNameInput = page.locator(`input[value*="${uniqueHostname}"]`).first();
+    const recordNameInput = page.locator(`input[name^="record["][name$="][name]"][value*="${uniqueHostname}"]`).first();
+    await expect(recordNameInput, 'the record added above must be listed on the zone edit page').toBeVisible();
 
-    // Record may not have been created - handle gracefully
-    if (await recordNameInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    // Get the record ID from the input name
+    // The record id is numeric on SQL and an encoded string on the API backend
     const inputName = await recordNameInput.getAttribute('name');
-    const recordIdMatch = inputName?.match(/record\[(\d+)\]/);
-
-    if (!recordIdMatch) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
+    const recordIdMatch = inputName?.match(/record\[([^\]]+)\]/);
+    expect(recordIdMatch, 'record id must be present in the input name').toBeTruthy();
     const recordId = recordIdMatch[1];
 
     // Navigate directly to the single-record edit page
@@ -216,20 +122,17 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     // - When true: Shows hostname only, e.g., "simple123456"
     // - When false (default): Shows full FQDN, e.g., "simple123456.example.com"
     const editNameInput = page.locator('input[name*="name"]').first();
-    if (await editNameInput.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
+    await expect(editNameInput).toBeVisible();
     const nameValue = await editNameInput.inputValue();
 
-    const expectedFullName = zoneName ? `${uniqueHostname}.${zoneName}` : uniqueHostname;
+    const expectedFullName = `${uniqueHostname}.${zoneName}`;
     const isHostnameOnly = nameValue === uniqueHostname;
     const isFullFqdn = nameValue === expectedFullName;
-    // Be more lenient - just verify no fatal errors and name contains our hostname
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).not.toMatch(/fatal|exception/i);
+
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     expect(nameValue).toContain(uniqueHostname);
+    // The field shows either the host on its own or the full name, per the
+    // display_hostname_only setting; anything else is a formatting bug
+    expect(isHostnameOnly || isFullFqdn).toBe(true);
   });
 });

@@ -5,8 +5,10 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 
@@ -33,10 +35,186 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertFalse($this->provider->isApiBackend());
     }
 
+    public function testSqlBackendWritesJoinTheLocalTransaction(): void
+    {
+        $this->assertTrue($this->provider->supportsLocalWriteTransaction());
+    }
+
+    public function testSqlBackendRecordIdsAreNumeric(): void
+    {
+        $this->assertTrue($this->provider->recordIdsAreNumeric());
+    }
+
+    public function testSqlBackendLeavesSoaAndZoneIdsToPoweradmin(): void
+    {
+        $this->assertFalse($this->provider->managesSoaRecord());
+        $this->assertFalse($this->provider->allocatesZoneIdsLocally());
+    }
+
+    public function testSqlBackendSortsListsInTheQueryButHasNoServerSideFeatures(): void
+    {
+        $this->assertTrue($this->provider->supportsRecordCountSort());
+        $this->assertTrue($this->provider->supportsGroupSort());
+        $this->assertFalse($this->provider->providesSignedSerial());
+        $this->assertFalse($this->provider->supportsZoneRetrieve());
+        $this->assertFalse($this->provider->supportsZoneNotify());
+        $this->assertFalse($this->provider->syncsZoneListFromServer());
+    }
+
+    // ---------------------------------------------------------------
+    // Send NOTIFY and retrieve from primary through a configured PowerDNS API
+    // ---------------------------------------------------------------
+
+    private function providerWithApi(?PowerdnsApiClient $client): SqlDnsBackendProvider
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'other.org', 'NATIVE'), (3, 'alpha.net', 'SLAVE'), (4, 'dotted.net.', 'PRODUCER')");
+
+        return new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger(), null, $client);
+    }
+
+    public function testZoneKickCapabilitiesFollowTheApiClient(): void
+    {
+        $with = $this->providerWithApi($this->createMock(PowerdnsApiClient::class));
+        $this->assertTrue($with->supportsZoneRetrieve());
+        $this->assertTrue($with->supportsZoneNotify());
+
+        $without = $this->providerWithApi(null);
+        $this->assertFalse($without->supportsZoneRetrieve());
+        $this->assertFalse($without->supportsZoneNotify());
+    }
+
+    public function testNotifyZoneAsksTheApiWithTheTrailingDotName(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->exactly(2))->method('notifyZone')
+            ->willReturnCallback(fn(string $name) => in_array($name, ['example.com.', 'dotted.net.'], true));
+        $provider = $this->providerWithApi($client);
+
+        $this->assertTrue($provider->notifyZone(1));
+        $this->assertTrue($provider->notifyZone(4));
+    }
+
+    public function testNotifyZoneDoesNothingForWrongKindUnknownZoneOrNoClient(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->never())->method('notifyZone');
+        $provider = $this->providerWithApi($client);
+
+        $this->assertFalse($provider->notifyZone(2));
+        $this->assertFalse($provider->notifyZone(3));
+        $this->assertFalse($provider->notifyZone(99));
+
+        $this->assertFalse($this->providerWithApi(null)->notifyZone(1));
+    }
+
+    public function testRetrieveZoneAsksTheApiForASecondaryOnly(): void
+    {
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->expects($this->once())->method('retrieveZone')->with('alpha.net.')->willReturn(true);
+        $provider = $this->providerWithApi($client);
+
+        $this->assertTrue($provider->retrieveZone(3));
+        $this->assertFalse($provider->retrieveZone(1));
+        $this->assertFalse($provider->retrieveZone(99));
+    }
+
+    public function testRetrieveZoneReturnsFalseWithoutAnApiClient(): void
+    {
+        $this->assertFalse($this->providerWithApi(null)->retrieveZone(3));
+    }
+
+    // ---------------------------------------------------------------
+    // Cross-zone lookups and counts (sqlite in-memory)
+    // ---------------------------------------------------------------
+
+    private function sqliteProvider(): SqlDnsBackendProvider
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'other.org', 'NATIVE'), (3, 'alpha.net', 'SLAVE')");
+        $db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES
+            (10, 1, 'www.example.com', 'A', '192.0.2.1', 3600, 0),
+            (11, 1, 'WWW.example.com', 'TXT', 'hello', 3600, 0),
+            (12, 1, 'mail.example.com', 'MX', 'www.example.com', 3600, 10),
+            (13, 2, 'www.example.com', 'CNAME', 'other.org', 3600, 0),
+            (14, 2, 'ent.other.org', NULL, '', 0, 0),
+            (15, 2, 'empty.other.org', '', '', 0, 0)");
+
+        return new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger());
+    }
+
+    public function testFindRecordsByNameMatchesAcrossZonesCaseInsensitively(): void
+    {
+        $ids = array_map('intval', array_column($this->sqliteProvider()->findRecordsByName('www.EXAMPLE.com.'), 'id'));
+
+        $this->assertSame([10, 11, 13], $ids);
+    }
+
+    public function testFindRecordsByNameFiltersByType(): void
+    {
+        $records = $this->sqliteProvider()->findRecordsByName('www.example.com', 'CNAME');
+
+        $this->assertCount(1, $records);
+        $this->assertSame(2, (int)$records[0]['domain_id']);
+    }
+
+    public function testFindRecordsByContentIsExactAndSkipsEnts(): void
+    {
+        $provider = $this->sqliteProvider();
+
+        $this->assertSame([12], array_map('intval', array_column($provider->findRecordsByContent('www.example.com'), 'id')));
+        $this->assertSame([], $provider->findRecordsByContent('www.example.co'));
+        $this->assertSame([], $provider->findRecordsByContent(''));
+        $this->assertSame([], $provider->findRecordsByContent('www.example.com', 'NS'));
+    }
+
+    public function testGetZonesByIdsSortsByNameAndSkipsUnknownIds(): void
+    {
+        $zones = $this->sqliteProvider()->getZonesByIds([2, 99, 3, 3]);
+
+        $this->assertSame([
+            ['id' => 3, 'name' => 'alpha.net', 'type' => 'SLAVE'],
+            ['id' => 2, 'name' => 'other.org', 'type' => 'NATIVE'],
+        ], $zones);
+        $this->assertSame([], $this->sqliteProvider()->getZonesByIds([]));
+    }
+
+    public function testCountZonesAndRecordsCountEveryRow(): void
+    {
+        $provider = $this->sqliteProvider();
+
+        $this->assertSame(3, $provider->countZones());
+        // ENT rows count too: the dashboard reports table size, not served records
+        $this->assertSame(6, $provider->countRecords());
+    }
+
+    public function testReplaceSoaContentRewritesOnlyTheSoaRowAndKeepsItsTtl(): void
+    {
+        $provider = $this->sqliteProvider();
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+
+        $this->assertTrue($provider->replaceSoaContent(1, $content));
+
+        $soa = $provider->getRecordsByZoneId(1, 'SOA');
+        $this->assertCount(1, $soa);
+        $this->assertSame($content, $soa[0]['content']);
+        $this->assertSame(86400, (int)$soa[0]['ttl']);
+        $this->assertSame('192.0.2.1', $provider->getRecordsByZoneId(1, 'A')[0]['content']);
+    }
+
     public function testRetrieveZoneReturnsFalse(): void
     {
         // SQL backend cannot trigger an immediate transfer; PowerDNS handles it.
         $this->assertFalse($this->provider->retrieveZone(1));
+    }
+
+    public function testNotifyZoneReturnsFalse(): void
+    {
+        $this->assertFalse($this->provider->notifyZone(1));
     }
 
     // ---------------------------------------------------------------
@@ -55,6 +233,22 @@ class SqlDnsBackendProviderTest extends TestCase
         $result = $this->provider->createZone('example.com', 'NATIVE');
 
         $this->assertEquals(42, $result);
+    }
+
+    public function testCreateZoneWritesTheSecondaryPrimaryInTheSameRow(): void
+    {
+        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
+        $provider = new SqlDnsBackendProvider($db, $this->mockConfig, new NullLogger());
+
+        $secondary = $provider->createZone('slave.example', 'SLAVE', '192.0.2.1');
+        $native = $provider->createZone('native.example', 'NATIVE', '192.0.2.1');
+
+        $rows = $db->query('SELECT id, type, master FROM domains ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        $this->assertSame([
+            ['id' => $secondary, 'type' => 'SLAVE', 'master' => '192.0.2.1'],
+            ['id' => $native, 'type' => 'NATIVE', 'master' => null],
+        ], $rows);
     }
 
     public function testSetZoneSerialPolicyReplacesMetadataRows(): void
@@ -87,54 +281,48 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->setZoneSerialPolicy(42, 'example.com', ['account' => 'evil']));
     }
 
-    public function testCreateSlaveZoneSetsMaster(): void
+    #[DataProvider('replicatingZoneProvider')]
+    public function testReplicatingZoneSetsMasterInTheSingleInsert(string $type, string $master): void
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
+        $bound = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, mixed $value) use (&$bound): bool {
+            $bound[$param] = $value;
+            return true;
+        });
 
-        $stmtUpdate = $this->createMock(PDOStatement::class);
-        $stmtUpdate->expects($this->once())->method('execute');
-        $stmtUpdate->method('bindValue');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
         $this->mockDb->method('lastInsertId')->willReturn('43');
 
-        $result = $this->provider->createZone('slave.example.com', 'SLAVE', '192.168.1.1');
-
-        $this->assertEquals(43, $result);
+        $this->assertSame(43, $this->provider->createZone('zone.example.com', $type, $master));
+        $this->assertSame($master, $bound[':master']);
     }
 
-    public function testCreateConsumerZoneSetsMaster(): void
+    public static function replicatingZoneProvider(): array
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
-
-        $stmtUpdate = $this->createMock(PDOStatement::class);
-        $stmtUpdate->expects($this->once())->method('execute');
-        $stmtUpdate->method('bindValue');
-
-        $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls($stmtInsert, $stmtUpdate);
-        $this->mockDb->method('lastInsertId')->willReturn('44');
-
-        $result = $this->provider->createZone('catalog.example.com', 'CONSUMER', '192.0.2.42');
-
-        $this->assertEquals(44, $result);
+        return [
+            'slave' => ['SLAVE', '192.168.1.1'],
+            'consumer' => ['CONSUMER', '192.0.2.42'],
+        ];
     }
 
     public function testCreateProducerZoneDoesNotSetMaster(): void
     {
-        $stmtInsert = $this->createMock(PDOStatement::class);
-        $stmtInsert->expects($this->once())->method('execute');
-        $stmtInsert->method('bindValue');
+        $bound = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute');
+        $stmt->method('bindValue')->willReturnCallback(function (string $param, mixed $value) use (&$bound): bool {
+            $bound[$param] = $value;
+            return true;
+        });
 
-        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmtInsert);
+        $this->mockDb->expects($this->once())->method('prepare')->willReturn($stmt);
         $this->mockDb->method('lastInsertId')->willReturn('45');
 
-        $result = $this->provider->createZone('catalog.example.com', 'PRODUCER', '');
-
-        $this->assertEquals(45, $result);
+        $this->assertSame(45, $this->provider->createZone('catalog.example.com', 'PRODUCER', '192.0.2.42'));
+        $this->assertArrayHasKey(':master', $bound);
+        $this->assertNull($bound[':master']);
     }
 
     public function testDeleteZoneDeletesAllRelatedTables(): void
@@ -355,18 +543,6 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteRecordsByDomainIdDeletesAll(): void
-    {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([':id' => 1]);
-
-        $this->mockDb->method('prepare')->willReturn($stmt);
-
-        $result = $this->provider->deleteRecordsByDomainId(1);
-
-        $this->assertTrue($result);
-    }
-
     // ---------------------------------------------------------------
     // createRecordAtomic
     // ---------------------------------------------------------------
@@ -457,17 +633,6 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->expectExceptionMessage('Syntax error');
 
         $this->provider->createRecordAtomic(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0);
-    }
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function testUpdateSOASerialReturnsTrue(): void
-    {
-        $result = $this->provider->updateSOASerial(1);
-
-        $this->assertTrue($result);
     }
 
     // ---------------------------------------------------------------

@@ -12,7 +12,6 @@ class HostnameValueTest extends TestCase
     {
         $hostname = new HostnameValue('example.com');
         $this->assertEquals('example.com', $hostname->getValue());
-        $this->assertEquals('example.com', (string)$hostname);
     }
 
     public function testValidSubdomainCreation(): void
@@ -107,16 +106,6 @@ class HostnameValueTest extends TestCase
     {
         $hostname = new HostnameValue('test-host.example-domain.com');
         $this->assertEquals('test-host.example-domain.com', $hostname->getValue());
-    }
-
-    public function testEquals(): void
-    {
-        $hostname1 = new HostnameValue('example.com');
-        $hostname2 = new HostnameValue('example.com');
-        $hostname3 = new HostnameValue('different.com');
-
-        $this->assertTrue($hostname1->equals($hostname2));
-        $this->assertFalse($hostname1->equals($hostname3));
     }
 
 

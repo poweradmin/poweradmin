@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * MR (Mail Rename) record validator
@@ -54,21 +54,16 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Modern email systems rarely use MR records for mail forwarding
  * - The content should be a fully qualified domain name
  * - No additional section processing is required for MR records
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class MRRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
         $this->ttlValidator = new TTLValidator();
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
     }
 
     /**
@@ -79,6 +74,7 @@ class MRRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The priority value (not used for MR records)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult Validation result with data or errors
      */
@@ -94,7 +90,7 @@ class MRRecordValidator implements DnsRecordValidatorInterface
         // Validate current mailbox name (should be a valid hostname)
         $nameResult = $this->hostnameValidator->validate($name, false);
         if (!$nameResult->isValid()) {
-            return ValidationResult::failure(_('MR record name must be a valid domain name.'));
+            return ValidationResult::failure(_('MR record name must be a valid domain name.'))->withField(RecordField::NAME);
         }
 
         // Get the validated hostname

@@ -330,6 +330,41 @@ class IpHelperTest extends TestCase
     }
 
     /**
+     * Test displayZoneName shortens a valid ip6.arpa name
+     */
+    public function testDisplayZoneNameShortensIp6Arpa(): void
+    {
+        $input = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->assertEquals('2001:db8::1:0', IpHelper::displayZoneName($input));
+    }
+
+    /**
+     * Test displayZoneName leaves a non-reverse zone name unchanged
+     */
+    public function testDisplayZoneNameLeavesForwardZoneUnchanged(): void
+    {
+        $this->assertEquals('example.com', IpHelper::displayZoneName('example.com'));
+    }
+
+    /**
+     * Test displayZoneName leaves an in-addr.arpa (IPv4 reverse) name unchanged
+     */
+    public function testDisplayZoneNameLeavesInAddrArpaUnchanged(): void
+    {
+        $input = '1.168.192.in-addr.arpa';
+        $this->assertEquals($input, IpHelper::displayZoneName($input));
+    }
+
+    /**
+     * Test displayZoneName falls back to the original name when shortening fails
+     */
+    public function testDisplayZoneNameFallsBackOnInvalidNibbles(): void
+    {
+        $input = 'g.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $this->assertEquals($input, IpHelper::displayZoneName($input));
+    }
+
+    /**
      * Test shortening a full expanded IPv6 address
      */
     public function testShortenIPv6AddressFullExpanded(): void

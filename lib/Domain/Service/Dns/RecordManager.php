@@ -22,78 +22,106 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Closure;
 use Exception;
-use PDO;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Domain\Error\RecordIdNotFoundException;
-use Poweradmin\Application\Service\DnssecProviderFactory;
-use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
+use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
+use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
-use Poweradmin\Domain\Enum\AccessScope;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
- * Service class for managing DNS records
+ * Creates, updates and deletes records for the web UI, with validation, logging and serial updates.
  */
 class RecordManager implements RecordManagerInterface
 {
-    private PDO $db;
-    private ConfigurationManager $config;
-    private MessageService $messageService;
+    private const MAX_BACKEND_REASON_LENGTH = 300;
+
+    private TransactionInterface $transaction;
+    private ConfigurationInterface $config;
     private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
     private SOARecordManagerInterface $soaRecordManager;
     private DomainRepositoryInterface $domainRepository;
-    private DnsBackendProvider $backendProvider;
+    private RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider;
     private LoggerInterface $logger;
-    private RecordChangeLogger $changeLogger;
-    private ?PermissionService $permissionService = null;
+    private RecordChangeWriterInterface $changeLogger;
+    private PermissionService $permissionService;
+    private ActorInterface $actor;
+    private RepositoryFactoryInterface $repositoryFactory;
+    private TemplateRecordLinkRepositoryInterface $templateLinks;
+    private Closure $dnssecProvider;
+    private ?ZoneRectifierInterface $builtDnssecProvider = null;
+    private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
 
     /**
      * Constructor
      *
-     * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
+     * @param TransactionInterface $transaction Wraps a record write and its serial bump
+     * @param ConfigurationInterface $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
-     * @param DnsBackendProvider|null $backendProvider DNS backend provider (auto-created if null)
+     * @param RepositoryFactoryInterface $repositoryFactory Builds the record and comment repositories
+     * @param Closure(): ZoneRectifierInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
+     * @param RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider Writes records and says whether a local transaction wraps them
+     * @param PermissionService $permissionService Edit levels and zone ownership of the acting user
+     * @param RecordChangeWriterInterface $changeLogger Receives the before/after record snapshots
+     * @param TemplateRecordLinkRepositoryInterface $templateLinks Drops the template link of a deleted record
+     * @param ActorInterface $actor The user the edit gates are about
+     * @param ZoneCacheFlusherInterface|null $zoneCacheFlusher Tells PowerDNS about committed writes, null when it needs no telling
      */
     public function __construct(
-        PDO $db,
-        ConfigurationManager $config,
+        TransactionInterface $transaction,
+        ConfigurationInterface $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository,
-        ?DnsBackendProvider $backendProvider = null,
+        RepositoryFactoryInterface $repositoryFactory,
+        Closure $dnssecProvider,
+        RecordWriteBackendInterface&BackendCapabilitiesInterface $backendProvider,
+        PermissionService $permissionService,
+        RecordChangeWriterInterface $changeLogger,
+        TemplateRecordLinkRepositoryInterface $templateLinks,
+        ActorInterface $actor,
         ?LoggerInterface $logger = null,
-        ?RecordChangeLogger $changeLogger = null
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
-        $this->db = $db;
+        $this->zoneCacheFlusher = $zoneCacheFlusher;
+        $this->transaction = $transaction;
+        $this->templateLinks = $templateLinks;
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->dnsFormatter = new DnsFormatter($config);
         $this->validationService = $validationService;
         $this->soaRecordManager = $soaRecordManager;
         $this->domainRepository = $domainRepository;
-        $this->backendProvider = $backendProvider ?? DnsBackendProviderFactory::create($db, $config);
+        $this->backendProvider = $backendProvider;
+        $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
-        $this->changeLogger = $changeLogger ?? new RecordChangeLogger($db);
+        $this->changeLogger = $changeLogger;
+        $this->actor = $actor;
+        $this->repositoryFactory = $repositoryFactory;
+        $this->dnssecProvider = $dnssecProvider;
     }
 
     private function captureChange(callable $callback): void
@@ -106,30 +134,39 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Check if the logged-in user owns the zone directly or via group membership
+     * Check if the acting user owns the zone directly or via group membership
      */
     private function userIsZoneOwner(int $zoneId): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
-        $userRepository = new DbUserRepository($this->db, $this->config);
-        return $userRepository->userOwnsZone($userId, $zoneId);
+        return $this->permissionService->userOwnsZone($userId, $zoneId);
     }
 
     /**
-     * Check if the logged-in user has the given permission (admins always pass).
-     * Memoized service keeps bulk record loops at one permission lookup.
+     * Check if the acting user has the given permission (admins always pass).
      */
     private function userHasPermission(string $permission): bool
     {
-        $userId = (new UserContextService())->getLoggedInUserId();
+        $userId = $this->actor->userId();
         if ($userId === null) {
             return false;
         }
-        $this->permissionService ??= new PermissionService(new DbUserRepository($this->db, $this->config));
         return $this->permissionService->hasPermission($userId, $permission);
+    }
+
+    /**
+     * The acting user's edit level: "all", "own", "own_as_client" or "none".
+     */
+    private function editPermissionLevel(): string
+    {
+        $userId = $this->actor->userId();
+        if ($userId === null) {
+            return 'none';
+        }
+        return $this->permissionService->getEditPermissionLevel($userId);
     }
 
     /**
@@ -141,10 +178,29 @@ class RecordManager implements RecordManagerInterface
      * @return array{0: string, 1: string} Zone name and normalized record name
      * @throws Exception When the record type is restricted for the user
      */
+    /**
+     * The same IPv6 address can be written in several forms ("2001:db8::1", "2001:0db8:0:0::1"), so compare AAAA content by value.
+     */
+    private function equivalentAaaaExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
+    {
+        $packed = $type === RecordType::AAAA ? @inet_pton($content) : false;
+        if ($packed === false) {
+            return false;
+        }
+
+        foreach ($recordRepository->getRRSetRecords($zoneId, $name, RecordType::AAAA) as $record) {
+            if (@inet_pton((string)($record['content'] ?? '')) === $packed) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
-        $hostnameValidator = new HostnameValidator($this->config);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
@@ -167,94 +223,11 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      *
-     * @return boolean true if successful
-     * @throws Exception
+     * @return boolean true if successful; addRecordGetId() carries the reason for a refusal
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
-        $perm_edit = Permission::getEditPermission($this->db);
-
-        $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
-        $zone_type = $this->domainRepository->getDomainType($zone_id);
-
-        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
-
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            throw new Exception(_("You do not have the permission to add a record to this zone."));
-        }
-
-        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-        $dns_ttl = $this->config->get('dns', 'ttl');
-
-        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
-        $content = $this->dnsFormatter->formatContent($type, $content);
-
-        // Now validate the input with normalized name using the validation service
-        $validationResult = $this->validationService->validateRecord(
-            -1,
-            $zone_id,
-            $type,
-            $content,
-            $name,
-            $prio,
-            $ttl,
-            $dns_hostmaster,
-            (int)$dns_ttl
-        );
-        if (!$validationResult->isValid()) {
-            $this->messageService->addSystemError($validationResult->getFirstError());
-            return false;
-        }
-
-        // Extract validated values
-        $validatedData = $validationResult->getData();
-        $content = $validatedData['content'];
-        $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
-        $validatedTtl = $validatedData['ttl'];
-        $validatedPrio = $validatedData['prio'];
-
-        // Create RecordRepository to check if record exists
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
-            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
-            return false;
-        }
-
-        if (!$this->backendProvider->addRecord($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio)) {
-            $this->messageService->addSystemError(_('Failed to add record to DNS backend.'));
-            return false;
-        }
-
-        $this->captureChange(function () use ($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio): void {
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $this->changeLogger->logRecordCreate([
-                'name' => $name,
-                'type' => $type,
-                'content' => $content,
-                'ttl' => $validatedTtl,
-                'prio' => $validatedPrio,
-                'zone_name' => is_string($zone_name) ? $zone_name : null,
-            ], $zone_id);
-        });
-
-        if ($type != 'SOA') {
-            $this->soaRecordManager->updateSOASerial($zone_id);
-        }
-
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                $this->config,
-                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-            );
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            if (is_string($zone_name)) {
-                $dnssecProvider->rectifyZone($zone_name);
-            }
-        }
-
-        return true;
+        return $this->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio)->success;
     }
 
     /**
@@ -270,23 +243,27 @@ class RecordManager implements RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
      *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
-     * @return int|string|null The new record ID, or null on failure
-     * @throws Exception
+     * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->editPermissionLevel();
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
+        try {
+            [$zone, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
+        } catch (Exception $e) {
+            return RecordWriteResult::forbidden($e->getMessage());
+        }
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            throw new Exception(_("You do not have the permission to add a record to this zone."));
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+            return RecordWriteResult::forbidden(_("You do not have the permission to add a record to this zone."));
         }
 
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
@@ -308,8 +285,7 @@ class RecordManager implements RecordManagerInterface
             (int)$dns_ttl
         );
         if (!$validationResult->isValid()) {
-            $this->messageService->addSystemError($validationResult->getFirstError());
-            return null;
+            return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
         }
 
         // Extract validated values
@@ -320,58 +296,117 @@ class RecordManager implements RecordManagerInterface
         $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
-            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
-            return null;
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
+        if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)) {
+            return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
+        // The row and the serial bump land together; a batch caller already holds its own.
+        $ownTransaction = $finalizeZone && $this->backendProvider->supportsLocalWriteTransaction() && !$this->transaction->inTransaction();
+        if ($ownTransaction) {
+            $this->transaction->begin();
+        }
         try {
             // Disabled records need the disabled flag persisted atomically with the
             // insert; the regular insert path has no disabled support.
             $recordId = $disabled
                 ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled, $comment)
                 : $this->backendProvider->addRecordGetId($zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $comment);
-        } catch (RecordIdNotFoundException $e) {
-            $this->logger->error('Failed to get record ID after creation: {error}', ['error' => $e->getMessage()]);
-            return null;
-        }
-        if ($recordId === null) {
-            return null;
-        }
-
-        $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $this->changeLogger->logRecordCreate([
-                'id' => $recordId,
-                'name' => $name,
-                'type' => $type,
-                'content' => $content,
-                'ttl' => $validatedTtl,
-                'prio' => $validatedPrio,
-                'disabled' => (bool)$disabled,
-                'zone_name' => is_string($zone_name) ? $zone_name : null,
-            ], $zone_id);
-        });
-
-        if ($type != 'SOA') {
-            $this->soaRecordManager->updateSOASerial($zone_id);
-        }
-
-        $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        if ($pdnssec_use) {
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                $this->config,
-                DnsBackendProviderFactory::apiClientFrom($this->backendProvider)
-            );
-            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            if (is_string($zone_name)) {
-                $dnssecProvider->rectifyZone($zone_name);
+            if ($recordId === null) {
+                if ($ownTransaction) {
+                    $this->transaction->rollBack();
+                }
+                return $this->writeBackendFailure(_('Failed to add record to DNS backend.'));
             }
+
+            $this->captureChange(function () use ($recordId, $zone_id, $name, $type, $content, $validatedTtl, $validatedPrio, $disabled): void {
+                $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+                $this->changeLogger->logRecordCreate([
+                    'id' => $recordId,
+                    'name' => $name,
+                    'type' => $type,
+                    'content' => $content,
+                    'ttl' => $validatedTtl,
+                    'prio' => $validatedPrio,
+                    'disabled' => (bool)$disabled,
+                    'zone_name' => is_string($zone_name) ? $zone_name : null,
+                ], $zone_id);
+            });
+
+            if ($finalizeZone && $type != 'SOA') {
+                $this->soaRecordManager->updateSOASerial($zone_id);
+            }
+            if ($ownTransaction) {
+                $this->transaction->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownTransaction && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
         }
 
-        return $recordId;
+        if ($finalizeZone) {
+            // The serial already moved inside the transaction above
+            $this->finalizeZone($zone_id, false);
+        }
+
+        return RecordWriteResult::ok($recordId);
+    }
+
+    /**
+     * The content input is flagged only when PowerDNS gave a reason for refusing the write;
+     * a transport fault or an SQL failure says nothing about the content.
+     */
+    private function writeBackendFailure(string $message): RecordWriteResult
+    {
+        $text = self::backendFailureMessage($message, $this->writeRejection());
+
+        return RecordWriteResult::backendFailure($text, $text !== $message ? RecordField::CONTENT : null);
+    }
+
+    private function writeRejection(): ?string
+    {
+        return $this->backendProvider instanceof ReportsWriteRejection ? $this->backendProvider->lastWriteRejection() : null;
+    }
+
+    /**
+     * The failure text with the backend's own reason appended: "Failed to add record to
+     * DNS backend: <reason>". The reason is untranslated text from PowerDNS, stripped of
+     * control characters and capped; the caller escapes it on output like any message.
+     */
+    public static function backendFailureMessage(string $message, ?string $reason): string
+    {
+        if ($reason === null) {
+            return $message;
+        }
+
+        $reason = trim((string)preg_replace('/[\\x00-\\x1F\\x7F]+/u', ' ', $reason));
+        if ($reason === '') {
+            return $message;
+        }
+        if (mb_strlen($reason) > self::MAX_BACKEND_REASON_LENGTH) {
+            $reason = mb_substr($reason, 0, self::MAX_BACKEND_REASON_LENGTH) . '...';
+        }
+
+        return (preg_replace('/[.\x{3002}\x{FF0E}\x{0964}]\s*$/u', '', $message) ?? $message) . ': ' . $reason;
+    }
+
+    /**
+     * Whether two stored copies of a record differ in any field that PowerDNS serves.
+     *
+     * @param array<string, mixed> $before Record row as stored before the edit
+     * @param array<string, mixed> $after Record row as stored after the edit
+     */
+    public static function recordFieldsDiffer(array $before, array $after): bool
+    {
+        // Rows come back as strings from PDO and as ints from the API, so compare by value
+        return strtolower((string)($before['name'] ?? '')) !== strtolower((string)($after['name'] ?? ''))
+            || strtoupper((string)($before['type'] ?? '')) !== strtoupper((string)($after['type'] ?? ''))
+            || (string)($before['content'] ?? '') !== (string)($after['content'] ?? '')
+            || (int)($before['ttl'] ?? 0) !== (int)($after['ttl'] ?? 0)
+            || (int)($before['prio'] ?? 0) !== (int)($after['prio'] ?? 0)
+            || (int)($before['disabled'] ?? 0) !== (int)($after['disabled'] ?? 0);
     }
 
     /**
@@ -380,23 +415,18 @@ class RecordManager implements RecordManagerInterface
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record Record structure to update
-     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
-     *                            backend writes it in the same PATCH as the record, SQL ignores it
-     *
-     * @return boolean true if successful
      */
-    public function editRecord(array $record, ?array $comment = null): bool
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->editPermissionLevel();
 
         // Derive the zone from the record id; a caller-supplied zid could name an
         // owned zone to pass the ownership check while editing another zone's record.
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
         $recordDetails = $recordRepository->getRecordDetailsFromRecordId($record['rid']);
         if (empty($recordDetails)) {
-            $this->messageService->addSystemError(_("Record not found."));
-            return false;
+            return RecordWriteResult::notFound(_("Record not found."));
         }
         $record['zid'] = (int)$recordDetails['zid'];
         // The edit form posts the stored type verbatim, and SQL tools can store it lowercase
@@ -407,7 +437,7 @@ class RecordManager implements RecordManagerInterface
 
         // Normalize the posted name first so the apex comparison below sees the FQDN
         $zone = $this->domainRepository->getDomainNameById($record['zid']);
-        $hostnameValidator = new HostnameValidator($this->config);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
 
         // Both the stored record and the posted state must pass: a client-level
@@ -419,9 +449,8 @@ class RecordManager implements RecordManagerInterface
             // Name the type that actually triggered the refusal: reporting the posted
             // type would call a LUA-to-A retype an SOA denial.
             $refusedType = $storedIsRestricted ? $recordDetails['type'] : $record['type'];
-            $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
 
-            return false;
+            return RecordWriteResult::forbidden(Permission::restrictedRecordTypeMessage($refusedType, 'edit'));
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
@@ -429,162 +458,178 @@ class RecordManager implements RecordManagerInterface
 
         $dns_ttl = $this->config->get('dns', 'ttl');
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            $this->messageService->addSystemError(_("You do not have permission to edit this record."));
-        } else {
-            // Now validate the input with normalized name using the validation service
-            $validationResult = $this->validationService->validateRecord(
-                $record['rid'],
-                $record['zid'],
-                $record['type'],
-                $record['content'],
-                $record['name'],
-                (int)$record['prio'],
-                (int)$record['ttl'],
-                $dns_hostmaster,
-                (int)$dns_ttl
-            );
-            if ($validationResult->isValid()) {
-                // Extract validated values
-                $validatedData = $validationResult->getData();
-                $content = $validatedData['content'];
-                $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
-                $validatedTtl = $validatedData['ttl'];
-                $validatedPrio = $validatedData['prio'];
-
-                if (
-                    !$this->backendProvider->editRecord(
-                        $record['rid'],
-                        $name,
-                        $record['type'],
-                        $content,
-                        $validatedTtl,
-                        $validatedPrio,
-                        $record['disabled'],
-                        $comment
-                    )
-                ) {
-                    $this->messageService->addSystemError(_('Failed to update record in DNS backend.'));
-                    return false;
-                }
-
-                $afterRecord = [
-                    'id' => $record['rid'],
-                    'name' => $name,
-                    'type' => $record['type'],
-                    'content' => $content,
-                    'ttl' => $validatedTtl,
-                    'prio' => $validatedPrio,
-                    'disabled' => $record['disabled'] ?? false,
-                    'zone_name' => is_string($zone) ? $zone : null,
-                ];
-                $beforeForLog = $recordDetails;
-                $beforeForLog['id'] = $record['rid'];
-                $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
-                $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
-                    $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
-                });
-
-                return true;
-            } else {
-                $this->messageService->addSystemError($validationResult->getFirstError());
-            }
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+            return RecordWriteResult::forbidden(_("You do not have permission to edit this record."));
         }
-        return false;
+
+        // Now validate the input with normalized name using the validation service
+        $validationResult = $this->validationService->validateRecord(
+            $record['rid'],
+            $record['zid'],
+            $record['type'],
+            $record['content'],
+            $record['name'],
+            (int)$record['prio'],
+            (int)$record['ttl'],
+            $dns_hostmaster,
+            (int)$dns_ttl
+        );
+        if (!$validationResult->isValid()) {
+            return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
+        }
+
+        // Extract validated values
+        $validatedData = $validationResult->getData();
+        $content = $validatedData['content'];
+        $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
+        $validatedTtl = $validatedData['ttl'];
+        $validatedPrio = $validatedData['prio'];
+
+        $submitted = [
+            'name' => $name,
+            'type' => $record['type'],
+            'content' => $content,
+            'ttl' => $validatedTtl,
+            'prio' => $validatedPrio,
+            'disabled' => $record['disabled'] ?? 0,
+        ];
+        // On the API backend the write itself makes PowerDNS bump the serial through
+        // SOA-EDIT-API, so an opted-out install must not send an identical replacement
+        if (
+            !$this->config->get('dns', 'bump_serial_on_unchanged_save', true)
+            && !self::recordFieldsDiffer($recordDetails, $submitted)
+        ) {
+            return RecordWriteResult::unchanged();
+        }
+
+        if (
+            !$this->backendProvider->editRecord(
+                $record['rid'],
+                $name,
+                $record['type'],
+                $content,
+                $validatedTtl,
+                $validatedPrio,
+                $record['disabled'],
+                $comment
+            )
+        ) {
+            return $this->writeBackendFailure(_('Failed to update record in DNS backend.'));
+        }
+
+        $afterRecord = [
+            'id' => $record['rid'],
+            'name' => $name,
+            'type' => $record['type'],
+            'content' => $content,
+            'ttl' => $validatedTtl,
+            'prio' => $validatedPrio,
+            'disabled' => $record['disabled'] ?? false,
+            'zone_name' => is_string($zone) ? $zone : null,
+        ];
+        $beforeForLog = $recordDetails;
+        $beforeForLog['id'] = $record['rid'];
+        $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+        $this->captureChange(function () use ($beforeForLog, $afterRecord, $record): void {
+            $this->changeLogger->logRecordEdit($beforeForLog, $afterRecord, $record['zid']);
+        });
+
+        if ($finalizeZone) {
+            $this->finalizeZone((int)$record['zid'], $record['type'] !== 'SOA');
+        }
+
+        return RecordWriteResult::ok();
     }
 
     /**
      * Delete a record by a given record id
      *
      * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
      */
-    public function deleteRecord(int|string $rid): bool
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->editPermissionLevel();
 
-        // Create RecordRepository to get record details
-        $recordRepository = (new RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
+        $recordRepository = $this->repositoryFactory->createRecordRepository();
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         if (empty($record)) {
-            $this->messageService->addSystemError(_("Record not found."));
-            return false;
+            return RecordWriteResult::notFound(_("Record not found."));
         }
         $user_is_zone_owner = $this->userIsZoneOwner($record['zid']);
 
         // Secondary and Consumer zones replicate records from a primary - records are read-only
         if (ZoneType::isReadOnly($this->domainRepository->getDomainType($record['zid']))) {
-            $this->messageService->addSystemError(_("You cannot delete records from a read-only zone."));
-            return false;
+            return RecordWriteResult::forbidden(_("You cannot delete records from a read-only zone."));
         }
 
-        if ($perm_edit == "all" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "1")) {
-            $zone = $this->domainRepository->getDomainNameById($record['zid']);
-            $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
-            if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
-                $this->messageService->addSystemError(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
-                return false;
-            }
+        if (!ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+            return RecordWriteResult::forbidden(_("You do not have the permission to delete this record."));
+        }
 
-            $deleted = $this->backendProvider->deleteRecord($rid);
+        $zone = $this->domainRepository->getDomainNameById($record['zid']);
+        $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
+        if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
+            return RecordWriteResult::forbidden(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
+        }
 
-            if ($deleted) {
-                $this->captureChange(function () use ($record, $rid, $zone): void {
-                    $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
-                    $beforeForLog = $record;
-                    $beforeForLog['id'] = $rid;
-                    $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
-                    $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
-                });
-            }
+        if (!$this->backendProvider->deleteRecord($rid)) {
+            return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to delete record from DNS backend.'), $this->writeRejection()));
+        }
 
-            return $deleted;
-        } else {
-            $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
-            return false;
+        $this->captureChange(function () use ($record, $rid, $zone): void {
+            $zoneId = isset($record['zid']) ? (int) $record['zid'] : null;
+            $beforeForLog = $record;
+            $beforeForLog['id'] = $rid;
+            $beforeForLog['zone_name'] = is_string($zone) ? $zone : null;
+            $this->changeLogger->logRecordDelete($beforeForLog, $zoneId);
+        });
+
+        // Nothing points at the row any more: the template link, the record's own
+        // comment, and the RRset comment once no sibling record is left to carry it.
+        $zoneId = (int)$record['zid'];
+        $this->templateLinks->unlinkRecord($rid);
+        $comments = $this->repositoryFactory->createRecordCommentRepository();
+        $this->repositoryFactory->createRecordLinkedCommentRepository()?->deleteByRecordId($rid);
+        if (!$recordRepository->hasSimilarRecords($zoneId, (string)$record['name'], (string)$record['type'], $rid)) {
+            $comments->delete($zoneId, (string)$record['name'], (string)$record['type']);
+        }
+
+        if ($finalizeZone) {
+            $this->finalizeZone($zoneId, $record['type'] !== 'SOA');
+        }
+
+        return RecordWriteResult::ok();
+    }
+
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void
+    {
+        if ($bumpSerial) {
+            $this->soaRecordManager->updateSOASerial($zoneId);
+        }
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if (is_string($zoneName)) {
+            $this->rectifyZone($zoneName);
+            $this->zoneCacheFlusher?->flushZone($zoneName);
         }
     }
 
     /**
-     * Delete record reference to zone template
-     *
-     * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
+     * Rectify after a write when DNSSEC is in use, so signatures cover the change.
+     * The write is already committed, so a failure here is logged, not raised.
      */
-    public static function deleteRecordZoneTempl($db, int|string $rid): bool
+    private function rectifyZone(string $zoneName): void
     {
-        // SQL record IDs live in records_zone_templ; API record IDs (encoded
-        // RecordIdentifier strings) live in records_zone_templ_api. PostgreSQL
-        // rejects encoded strings against the integer record_id column, so
-        // dispatch by ID type instead of probing both tables.
-        if (is_int($rid) || ctype_digit($rid)) {
-            $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
-            $stmt->execute([(int)$rid]);
-        } else {
-            $stmt = $db->prepare("DELETE FROM records_zone_templ_api WHERE record_id = ?");
-            $stmt->execute([$rid]);
+        if (!$this->config->get('dnssec', 'enabled')) {
+            return;
         }
-
-        return true;
-    }
-
-    /**
-     * Get Zone comment
-     *
-     * @param int $zone_id Zone ID
-     *
-     * @return string Zone Comment
-     */
-    public static function getZoneComment($db, int $zone_id): string
-    {
-        $stmt = $db->prepare("SELECT comment FROM zones WHERE " . CanonicalZoneSql::canonicalIdColumn() . " = ?");
-        $stmt->bindValue(1, $zone_id, PDO::PARAM_INT);
-        $stmt->execute();
-        $comment = $stmt->fetchColumn();
-
-        return $comment ?: '';
+        try {
+            $this->builtDnssecProvider ??= ($this->dnssecProvider)();
+            if (!$this->builtDnssecProvider->rectifyZone($zoneName)) {
+                $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
+            }
+        } catch (\Throwable $e) {
+            $this->logger->warning('Zone rectify failed for {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -595,37 +640,21 @@ class RecordManager implements RecordManagerInterface
      * @param int $zone_id Zone ID
      * @param string $comment Comment to set
      *
-     * @return boolean true on success
+     * @return RecordWriteResult Success, or the reason the write was refused
      */
-    public function editZoneComment(int $zone_id, string $comment): bool
+    public function editZoneComment(int $zone_id, string $comment): RecordWriteResult
     {
-        $perm_edit = Permission::getEditPermission($this->db);
+        $perm_edit = $this->editPermissionLevel();
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
-        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $user_is_zone_owner == "0")) {
-            $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
-
-            return false;
-        } else {
-            $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $count = $stmt->fetchColumn();
-
-            if ($count > 0) {
-                $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
-            } else {
-                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
-            }
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
-            $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
-            $stmt->execute();
+        if (ZoneType::isReadOnly($zone_type) || !ZoneAccessPolicy::canEditZone($perm_edit, (bool)$user_is_zone_owner)) {
+            return RecordWriteResult::forbidden(_("You do not have the permission to edit this comment."));
         }
-        return true;
+
+        $this->repositoryFactory->createZoneRepository()->saveZoneComment($zone_id, $comment);
+
+        return RecordWriteResult::ok();
     }
 }

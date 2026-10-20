@@ -1,0 +1,181 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\User;
+
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\User\UserFormMessages;
+use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\Permission;
+
+/**
+ * Handles the delete-user page: deletes the user and transfers or deletes each of their zones as chosen.
+ */
+class DeleteUserController extends BaseController
+{
+    // Above this many total <option> elements the owner dropdowns are rendered
+    // lazily, since zones x users options can exhaust the PHP memory limit
+    private const MAX_INLINE_OWNER_OPTIONS = 10000;
+
+    public function run(): void
+    {
+        $perm_edit_others = $this->hasPermission(Permission::PERM_USER_EDIT_OTHERS);
+        $perm_is_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+
+        $uid = $this->requireNumericParam('id');
+
+        // Check basic permissions first
+        if (($uid != $this->getCurrentUserId() && !$perm_edit_others) || ($uid == $this->getCurrentUserId() && !$perm_is_godlike)) {
+            $this->showError(_("You do not have the permission to delete this user."));
+        }
+
+        // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
+        $targetIsSuperuser = $this->services()->permissionService()->isAdmin($uid);
+
+        if ($targetIsSuperuser && !$perm_is_godlike) {
+            $this->showError(_('You do not have permission to delete a superuser account.'));
+        }
+
+        // All permission checks passed, now handle POST request
+        if ($this->isPost()) {
+            $this->deleteUser($uid);
+        }
+
+        $this->showQuestion($uid);
+    }
+
+    public function deleteUser(int $uid): void
+    {
+        $target = $this->services()->userRepository()->getUserById($uid);
+        if ($target === null) {
+            $this->showError(_('User does not exist.'));
+        }
+        // Captured before deletion since the user won't exist after
+        $targetUsername = (string)$target['username'];
+
+        $zones = array();
+        $zone = $this->httpRequest->getPostParam('zone');
+        if (is_string($zone)) {
+            // Per-zone decisions arrive as one JSON field to stay under PHP's max_input_vars limit
+            $parsed = self::parseZoneDecisions($zone);
+            if ($parsed === null) {
+                $this->showError(_('Invalid or unexpected input given.'));
+                return;
+            }
+            $zones = $parsed;
+        } elseif (is_array($zone)) {
+            // No-JS fallback posts several fields per zone; a missing trailing marker means
+            // the POST was truncated, so abort instead of mishandling the dropped zones
+            if ($this->httpRequest->getPostParam('form_complete') === null) {
+                $this->setMessage('delete_user', 'error', _('The user was not deleted because the form exceeded the server limit on the number of fields. Ask your administrator to increase the PHP "max_input_vars" setting.'));
+                return;
+            }
+            // Reject reassignments without a valid owner (lazily rendered selects post empty without JS)
+            foreach ($zone as $zoneEntry) {
+                if (is_array($zoneEntry) && ($zoneEntry['target'] ?? '') === 'new_owner' && (int)($zoneEntry['newowner'] ?? 0) <= 0) {
+                    $this->showError(_('Invalid or unexpected input given.'));
+                    return;
+                }
+            }
+            $zones = $zone;
+        }
+
+        $deleted = $this->services()->userManagementService()->deleteUserWithZoneDecisions((int)$this->getCurrentUserId(), $uid, $zones);
+        if (!$deleted['success']) {
+            $this->setMessage('delete_user', 'error', UserFormMessages::deleteErrorMessage($deleted));
+            return;
+        }
+
+        $this->services()->auditService()->logUserDelete($targetUsername);
+
+        $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
+        $this->redirect('/users');
+    }
+
+    /**
+     * Parses the JSON zone-decision field into the per-zone array shape used by
+     * UserManagementService::deleteUserWithZoneDecisions(). Returns null when the payload is malformed.
+     */
+    public static function parseZoneDecisions(string $json): ?array
+    {
+        $decoded = json_decode($json, true);
+        if (!is_array($decoded)) {
+            return null;
+        }
+        $zones = [];
+        foreach ($decoded as $decision) {
+            if (!is_array($decision)) {
+                return null;
+            }
+            $zid = (int)($decision['zid'] ?? 0);
+            $target = $decision['target'] ?? '';
+            if ($zid <= 0 || !in_array($target, ['delete', 'new_owner'], true)) {
+                return null;
+            }
+            $zone = ['zid' => $zid, 'target' => $target];
+            if ($target === 'new_owner') {
+                $newOwner = (int)($decision['newowner'] ?? 0);
+                if ($newOwner <= 0) {
+                    return null;
+                }
+                $zone['newowner'] = $newOwner;
+            }
+            $zones[$zid] = $zone;
+        }
+        return array_values($zones);
+    }
+
+    /**
+     * The users a zone of the user being deleted can be handed to: everyone but that user.
+     *
+     * @param array<int, array<string, mixed>> $users
+     * @return list<array<string, mixed>>
+     */
+    public static function newOwnerCandidates(array $users, int $uid): array
+    {
+        return array_values(array_filter($users, static fn(array $user): bool => (int)($user['id'] ?? 0) !== $uid));
+    }
+
+    public function showQuestion(int $uid): void
+    {
+        $user = $this->services()->userRepository()->getUserById($uid);
+        $name = ($user['fullname'] ?? '') ?: ($user['username'] ?? '');
+        $repositoryFactory = $this->services()->repositoryFactory();
+        $domainRepository = $repositoryFactory->createDomainRepository();
+        // The reassignment list renders neither health badges nor record counts
+        $zones = $domainRepository->getZones("own", $uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
+
+        $users = [];
+        if (count($zones) > 0) {
+            $users = self::newOwnerCandidates($this->services()->userRepository()->getUsersWithZoneCounts(), $uid);
+        }
+
+        $this->render('delete_user.html', [
+            'name' => $name,
+            'uid' => $uid,
+            'zones' => $zones,
+            'zones_count' => count($zones),
+            'users' => $users,
+            'lazy_owner_options' => count($zones) * count($users) > self::MAX_INLINE_OWNER_OPTIONS,
+        ]);
+    }
+}

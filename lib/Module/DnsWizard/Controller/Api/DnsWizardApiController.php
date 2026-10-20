@@ -24,25 +24,18 @@ namespace Poweradmin\Module\DnsWizard\Controller\Api;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Application\Service\RecordManagerService;
-use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Application\Service\Record\RecordAddAccess;
 use Poweradmin\Module\DnsWizard\Service\WizardRegistry;
-use Poweradmin\Domain\Utility\DnsHelper;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Domain\Service\SessionKeys;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Poweradmin\Domain\Enum\AccessScope;
+use Poweradmin\Application\Http\RefusalStatus;
 
 /**
- * DNS Wizard Internal API Controller
+ * /api/internal/dns-wizard: validates and previews wizard input for the record form.
  *
  * Handles internal API endpoints for DNS record wizards.
  * These endpoints are used by JavaScript for dynamic wizard interactions.
- *
- * @package Poweradmin\Module\DnsWizard\Controller\Api
  */
 class DnsWizardApiController extends InternalApiController
 {
@@ -323,79 +316,33 @@ class DnsWizardApiController extends InternalApiController
         }
 
         $zone_id = (int)$data['zone_id'];
-        $name = $data['name'];
-        $type = $data['type'];
-        $content = $data['content'];
-        $prio = isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0;
-        $comment = $data['comment'] ?? '';
 
         try {
-            // Check zone existence
-            $zoneRepository = $this->createZoneRepository();
-            $zone_name = $zoneRepository->getDomainNameById($zone_id);
-
-            if ($zone_name === null) {
-                return $this->returnApiError('Zone not found', 404);
+            $recordAdd = $this->moduleServices()->recordAddService();
+            $access = $recordAdd->open($zone_id, (int)$this->getCurrentUserId());
+            if (!$access->isGranted()) {
+                return match ($access->code) {
+                    RecordAddAccess::ZONE_NOT_FOUND => $this->returnApiError('Zone not found', 404),
+                    RecordAddAccess::REQUIRES_APPROVAL => $this->returnApiError(ChangeRequestMessages::requiresApproval(), 403),
+                    default => $this->returnApiError('You do not have permission to add records to this zone', 403),
+                };
             }
 
-            $reverseTtlResolver = $this->createReverseTtlResolver();
-            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
-            $ttl = isset($data['ttl']) && $data['ttl'] !== ''
-                ? (int)$data['ttl']
-                : $reverseTtlResolver->resolveTtlForType($type, $isReverseZone);
-
-            // Check user has permission to edit this zone
-            $domainRepository = $this->createDomainRepository();
-            $zone_type = $domainRepository->getDomainType($zone_id);
-            $perm_edit = Permission::getEditPermission($this->db);
-            $user_is_zone_owner = $this->isZoneOwner($zone_id);
-
-            // Same permission check as AddRecordController
-            if (
-                ZoneType::isReadOnly($zone_type)
-                || $perm_edit == "none"
-                || (AccessScope::fromString($perm_edit)->isOwnedOnly() && !$user_is_zone_owner)
-            ) {
-                return $this->returnApiError('You do not have permission to add records to this zone', 403);
-            }
-
-            // Normalize wizard-provided names (e.g., '@' for zone apex) to actual zone names
-            // This ensures records match the zone apex even when display_hostname_only is disabled
-            $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-
-            // Create the record using RecordManagerService
-            $logger = new LegacyLogger($this->db);
-            $backendProvider = $this->createDnsBackendProvider();
-            $repositoryFactory = $this->getRepositoryFactory($backendProvider);
-            $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-            $recordCommentService = new RecordCommentService($recordCommentRepository);
-            $recordManager = new RecordManagerService(
-                $this->db,
-                $domainRepository,
-                $this->createRecordManager(),
-                $recordCommentService,
-                $logger,
-                $this->config,
-                $backendProvider
-            );
-
-            $userlogin = $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown';
-            $clientIp = $this->request->getClientIp() ?? '0.0.0.0';
-
-            $success = $recordManager->createRecord(
+            $added = $recordAdd->add(
                 $zone_id,
-                $name,
-                $type,
-                $content,
-                $ttl,
-                $prio,
-                $comment,
-                $userlogin,
-                $clientIp
+                $access->zoneName,
+                (string)$data['name'],
+                (string)$data['type'],
+                (string)$data['content'],
+                isset($data['ttl']) && $data['ttl'] !== '' ? (int)$data['ttl'] : null,
+                isset($data['priority']) && $data['priority'] !== '' ? (int)$data['priority'] : 0,
+                (string)($data['comment'] ?? ''),
+                (int)$this->getCurrentUserId(),
+                $this->getUserContextService()->getLoggedInUsername() ?? 'unknown'
             );
 
-            if (!$success) {
-                return $this->returnApiError(_('This record was not valid and could not be added. It may already exist or contain invalid data.'), 400);
+            if (!$added->isOk()) {
+                return $this->returnApiError((string)$added->record->message, RefusalStatus::of($added->record->refusal));
             }
 
             // Set success message for display after page reload

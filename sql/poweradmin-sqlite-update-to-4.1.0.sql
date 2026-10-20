@@ -1,3 +1,6 @@
+-- Run once, only on a database that has not had this update: it rebuilds tables and a
+-- second run drops the columns later updates added (and can empty zones in API mode).
+
 -- Add API key management permission
 INSERT INTO perm_items (id, name, descr) VALUES
 (65, 'api_manage_keys', 'User is allowed to create and manage API keys.');

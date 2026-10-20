@@ -1,0 +1,94 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\Template;
+
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles the add-zone-template form: validates name and description, then creates the template.
+ */
+class AddZoneTemplController extends BaseController
+{
+    public function run(): void
+    {
+        $this->checkPermission(Permission::PERM_ZONE_TEMPL_ADD, _("You do not have the permission to add a zone template."));
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('add_zone_templ');
+        $this->setPageTitle(_('Add zone template'));
+
+        if ($this->isPost()) {
+            $this->addZoneTemplate();
+        } else {
+            $this->showAddZoneTemplate();
+        }
+    }
+
+    private function showAddZoneTemplate(): void
+    {
+        $this->render('add_zone_templ.html', [
+            'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
+            'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
+            'templ_name' => '',
+            'templ_descr' => '',
+        ]);
+    }
+
+    private function addZoneTemplate(): void
+    {
+        $constraints = [
+            'templ_name' => [
+                new Assert\NotBlank(),
+                new Assert\Length(max: 128)
+            ],
+            'templ_descr' => [
+                new Assert\Length(max: 1024)
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        $postParams = $this->httpRequest->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
+        }
+
+        $added = $this->services()->zoneTemplateWriteService()->addZoneTempl($postParams, (int)$this->getCurrentUserId());
+        if ($added->success) {
+            $auditService = $this->services()->auditService();
+            $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');
+            $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
+            $this->redirect('/zones/templates');
+        } else {
+            $this->addSystemMessage('error', (string)$added->message);
+            $this->render('add_zone_templ.html', [
+                'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
+                'templ_name' => $postParams['templ_name'],
+                'templ_descr' => $postParams['templ_descr'],
+                'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
+            ]);
+        }
+    }
+}

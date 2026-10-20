@@ -26,6 +26,8 @@ return [
         'file' => '',          // Only used for SQLite, provide full path to database file (added in 2.1.6)
         'debug' => false,      // Show all SQL queries (added in 2.1.6)
         'pdns_db_name' => '',  // Separate database for PowerDNS, MySQL/MariaDB only (added in 3.8.0)
+        'sqlite_wal' => true,  // SQLite only: WAL journal mode on connect; set false on NFS (added in 4.6.0)
+                               // false does not convert a file already in WAL: run PRAGMA journal_mode = DELETE once
 
         /**
          * SSL/TLS Settings for database connections (added in 4.1.0)
@@ -56,7 +58,7 @@ return [
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
         'trusted_proxies' => [],                 // Reverse proxy IPs/CIDRs/wildcards allowed to set X-Forwarded-For/X-Real-IP; private/loopback peers are always trusted (added in 4.5.0)
-        'protect_last_admin_on_edit' => false,   // Refuse a user edit (edit form or API PUT) that moves the last super admin to a template without super admin; API delete, disable and PATCH always refuse (added in 4.5.0)
+        'protect_last_admin_on_edit' => false,   // Refuse a user edit that moves the last super admin to a template without super admin; delete, disable and API PATCH always refuse (added in 4.5.0)
         'strict_session_gates' => false,         // Hold internal API calls with a 403, and match API paths by segment, while required MFA setup or a user agreement is pending (added in 4.5.0)
         /**
          * Password Policy Settings
@@ -146,6 +148,7 @@ return [
         'enabled_languages' => 'ar_SA,bg_BG,bs_BA,cs_CZ,da_DK,de_DE,el_GR,en_EN,es_ES,et_EE,fa_IR,fi_FI,fr_FR,ga_IE,he_IL,hi_IN,hr_HR,hu_HU,id_ID,it_IT,ja_JP,ko_KR,lt_LT,lv_LV,ms_MY,nb_NO,nl_NL,pl_PL,pt_BR,pt_PT,ro_RO,ru_RU,sk_SK,sl_SI,sq_AL,sr_RS,sv_SE,th_TH,tr_TR,uk_UA,vi_VN,zh_CN,zh_TW', // Added in 3.8.0
         'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes); must be above 0, the timeout cannot be disabled
+        'session_max_lifetime' => 0,          // End a session this many seconds after sign-in, however active; 0 = off (added in 4.6.0)
         'rows_per_page' => 10,
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
         'style' => 'light',                   // UI Style options: 'light', 'dark' (added in 4.0.0)
@@ -171,6 +174,7 @@ return [
         'display_owner_in_zone_list' => true,      // Show owner column in zone lists (added in 4.5.0)
         'display_group_in_zone_list' => true,      // Show group column in zone lists (added in 4.5.0)
         'show_zone_record_count' => true,     // Show record count column in zone lists (added in 4.5.0)
+        'show_zone_limit_column' => false,    // Show owned zones and zone limit in the users and groups lists (added in 4.6.0)
         'display_fullname_in_zone_list' => false,  // Show user's full name instead of username in zone lists (added in 4.0.0)
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
@@ -196,7 +200,7 @@ return [
      * DNS Settings
      */
     'dns' => [
-        'backend' => 'sql',                        // DNS data backend: 'sql' (default, direct database) or 'api' (PowerDNS REST API, experimental) (added in 4.3.0)
+        'backend' => 'sql',                        // DNS data backend: 'sql' (default, direct database) or 'api' (PowerDNS REST API) (added in 4.3.0)
         'hostmaster' => 'hostmaster.example.com',  // Default hostmaster email address
         'ns1' => 'ns1.example.com',
         'ns2' => 'ns2.example.com',
@@ -218,7 +222,10 @@ return [
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
         'default_zone_template' => null,           // Pre-selected template on the add-zone form. Template id (int) or name (string); null for "none" (added in 4.4.0)
         'zone_ownership_mode' => 'both',           // Options: 'both', 'users_only', 'groups_only' (added in 4.4.0)
+        'default_max_zones_per_user' => null,      // How many zones a user may own directly when the user has no own limit; null = unlimited, 0 = none. Superusers are never limited (added in 4.6.0)
+        'default_max_zones_per_group' => null,     // How many zones a group may own when the group has no own limit; null = unlimited, 0 = none (added in 4.6.0)
         'sync_zone_owner_to_account' => false,     // Mirror the oldest zone owner's username into the PowerDNS account field on ownership changes (added in 4.4.0)
+        'adopt_zone_owner_from_account' => false,  // Ownerless zones (e.g. from an autoprimary) go to the user their PowerDNS account names: API-mode zone sync, or the consistency repair (added in 4.6.0)
 
         // Validation Settings
         'strict_tld_check' => false,               // Strict validation of TLDs
@@ -227,6 +234,7 @@ return [
         'parent_zone_ownership_check' => true,     // Block creating a zone that overlaps an existing zone (forward or reverse) owned by another user (added in 4.5.0)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
+        'bump_serial_on_unchanged_save' => true,   // false = leave the SOA serial alone when a save changes no record; true keeps save-to-NOTIFY (added in 4.6.0)
         'custom_tlds' => [],                       // Whitelist of non-IANA TLDs allowed in hostnames and CNAME targets when strict_tld_check is on (e.g., ['lan', 'corp', 'dn42'])
 
         // Record Type Settings (added in 4.0.0)
@@ -284,6 +292,17 @@ return [
      */
     'notifications' => [
         'zone_access_enabled' => false,      // Enable/disable zone access change notifications
+        'change_request_enabled' => false,   // Mail reviewers on new change requests and requesters on decisions (added in 4.6.0)
+        'change_request_soa_contact' => false, // Also mail the zone's SOA contact about new change requests (added in 4.6.0)
+    ],
+
+    /**
+     * Change Approval Settings
+     */
+    'approval' => [
+        'enabled' => false,                  // Route changes of request-only users through review (added in 4.6.0)
+        'require_review_for_all' => false,   // Every zone change becomes a request, even for editors and admins (added in 4.6.0)
+        'allow_self_approval' => true,       // False: a requester cannot approve their own change request (added in 4.6.0)
     ],
 
     /**
@@ -328,7 +347,7 @@ return [
 
         // Audit logging - tracks user, zone, and group operations
         'database_enabled' => false,               // Write audit events to database log tables (log_users, log_zones, log_groups, log_record_changes) (added in 3.2.0)
-        'require_change_comment' => false,         // Require a reason for bulk record changes (added in 4.5.0)
+        'require_change_comment' => false,         // Require a reason for bulk record changes and change requests (added in 4.5.0)
 
         // Per-request API audit logging (writes to log_api; requires database_enabled)
         'api_request_logging' => false,            // Log every public API request; permission violations (401/403) are logged regardless (added in 4.5.0)
@@ -365,18 +384,18 @@ return [
         'default_permission_template' => 'Guest',       // Template for auto-provisioned users when no mapping matches (added in 4.5.0)
         'groups_attribute' => 'memberOf',               // LDAP attribute holding group memberships (added in 4.5.0)
 
-        // Maps LDAP groups (full DN or its first RDN value, e.g. 'dns-admins'
-        // from 'cn=dns-admins,ou=groups,dc=example,dc=com') to permission
-        // template names, same semantics as the oidc/saml sections (added in 4.5.0)
+        // Maps LDAP groups to permission template names. Keys must equal the
+        // groups_attribute value exactly, so the full DN for memberOf; same
+        // semantics as the oidc/saml sections (added in 4.5.0)
         'permission_template_mapping' => [
-            // 'dns-admins' => 'Administrator',
+            // 'cn=dns-admins,ou=groups,dc=example,dc=com' => 'Administrator',
             // 'cn=dns-operators,ou=groups,dc=example,dc=com' => 'Viewer',
         ],
 
         // Maps LDAP groups to Poweradmin group name(s), 1:n supported (added in 4.5.0)
         'group_mapping' => [
-            // 'dns-admins' => 'Administrators',
-            // 'dns-operators' => ['Zone Managers', 'Editors'],
+            // 'cn=dns-admins,ou=groups,dc=example,dc=com' => 'Administrators',
+            // 'cn=dns-operators,ou=groups,dc=example,dc=com' => ['Zone Managers', 'Editors'],
         ],
         'session_cache_timeout' => 300,                 // Session cache timeout in seconds (5 minutes). Set to 0 to disable caching. (added in 4.1.0)
         // Examples:
@@ -409,6 +428,7 @@ return [
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
         'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
         'max_keys_per_user' => 5,                      // Maximum number of API keys per user (admin users have no limit)
+        'bulk_max_operations' => 1000,                 // Maximum operations in one bulk records request; 0 = no limit (added in 4.6.0)
     ],
 
     /**
@@ -729,6 +749,7 @@ return [
                 'sso_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
                 'slo_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
                 'x509cert' => '',             // IdP X.509 Certificate (required)
+                'allow_idp_initiated' => false, // Accept responses not tied to a sign-in started here: IdP-initiated, or no HTTPS (added in 4.6.0)
                 'x509cert_multi' => [         // Multiple certificates for rollover (optional)
                     'signing' => [],
                     'encryption' => []
@@ -753,6 +774,7 @@ return [
                 'sso_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/sso/saml',
                 'slo_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/slo/saml',
                 'x509cert' => '',             // Okta X.509 Certificate
+                'allow_idp_initiated' => false, // Accept responses not tied to a sign-in started here: IdP-initiated, or no HTTPS (added in 4.6.0)
                 'user_mapping' => [
                     'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
                     'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
@@ -773,6 +795,7 @@ return [
                 'sso_url' => 'https://{tenant}.auth0.com/samlp/{client-id}',
                 'slo_url' => 'https://{tenant}.auth0.com/samlp/{client-id}/logout',
                 'x509cert' => '',             // Auth0 X.509 Certificate
+                'allow_idp_initiated' => false, // Accept responses not tied to a sign-in started here: IdP-initiated, or no HTTPS (added in 4.6.0)
                 'user_mapping' => [
                     'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
                     'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
@@ -793,6 +816,7 @@ return [
                 'sso_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
                 'slo_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
                 'x509cert' => '',             // Keycloak X.509 Certificate
+                'allow_idp_initiated' => false, // Accept responses not tied to a sign-in started here: IdP-initiated, or no HTTPS (added in 4.6.0)
                 'user_mapping' => [
                     'username' => 'username',
                     'email' => 'email',
@@ -817,6 +841,7 @@ return [
                 'sso_url' => 'https://your-idp.example.com/sso',
                 'slo_url' => 'https://your-idp.example.com/slo',
                 'x509cert' => '',              // Required: IdP X.509 Certificate (without headers/footers)
+                'allow_idp_initiated' => false, // Accept responses not tied to a sign-in started here: IdP-initiated, or no HTTPS (added in 4.6.0)
 
                 // Attribute mapping - map SAML attributes to Poweradmin user fields
                 'user_mapping' => [
@@ -846,6 +871,40 @@ return [
             ],
             */
         ],
+    ],
+
+    /**
+     * Web Server Authentication (REMOTE_USER) Settings (added in 4.6.0)
+     *
+     * Signs users in as the user the web server or an authenticating reverse proxy
+     * has already verified (Apache or nginx basic auth, Kerberos, mod_auth_mellon,
+     * Authelia, oauth2-proxy). Enable it only when Poweradmin cannot be reached
+     * except through that server: anyone who reaches PHP directly could claim any name.
+     * nginx fills $remote_user from any client's Authorization header, so pass it to PHP
+     * only where auth_basic checks it; behind auth_request use 'header' mode instead.
+     * Only accounts created here or set to web server sign-in by an administrator
+     * can sign in this way; a local, LDAP or SSO account with the same name is refused.
+     * The user form shows the web server box only while this is on, so move accounts
+     * back to a password before turning it off.
+     */
+    'remote_user' => [
+        'enabled' => false,                   // Sign users in from the web server's authenticated user (added in 4.6.0)
+        'server_variable' => 'REMOTE_USER',   // Server variable the web server sets to the user name (client-settable HTTP_* and PHP_AUTH_* names are refused) (added in 4.6.0)
+        'header' => '',                       // Read the user from this proxy header instead (e.g. 'Remote-User'), which the proxy must overwrite, not append to; empty = use server_variable (added in 4.6.0)
+        'trusted_proxies' => [],              // Proxy IPs/CIDRs allowed to send 'header', as PHP sees them (::ffff:10.0.0.5 is not 10.0.0.5); empty = header ignored (added in 4.6.0)
+        'strip_realm' => false,               // Turn user@REALM and DOMAIN\user into user (one realm only: alice@A and alice@B become the same account) (added in 4.6.0)
+        'email_attribute' => '',              // Variable (or header, in header mode) holding the email address, e.g. 'Remote-Email' (added in 4.6.0)
+        'name_attribute' => '',               // Variable (or header) holding the full name, e.g. 'Remote-Name' (added in 4.6.0)
+        'groups_attribute' => '',             // Variable (or header) holding the groups, e.g. 'Remote-Groups' (added in 4.6.0)
+        'groups_separator' => ',',            // Separator between groups in groups_attribute (added in 4.6.0)
+        'logout_url' => '',                   // Where to send users after logout to end the web server's own session; empty = Poweradmin login page (added in 4.6.0)
+        'hide_login_form' => false,           // Hide the password form while the web server signs someone in (posted passwords still work) (added in 4.6.0)
+        'auto_provision' => true,             // Create an account on first sign-in (added in 4.6.0)
+        'allow_superuser_provisioning' => false, // Let mappings grant user_is_ueberuser (added in 4.6.0)
+        'sync_user_info' => true,             // Update name and email from the attributes on each sign-in (added in 4.6.0)
+        'default_permission_template' => 'Guest', // Permission template for new accounts (no permissions until an admin assigns a role) (added in 4.6.0)
+        'permission_template_mapping' => [],  // Group => permission template name, as for 'saml' (added in 4.6.0)
+        'group_mapping' => [],                // Group => Poweradmin group name or list of names, as for 'saml' (added in 4.6.0)
     ],
 
     // Module configuration

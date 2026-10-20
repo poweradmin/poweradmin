@@ -20,58 +20,49 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Controller\Api\V2\Resource\ZoneResource;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipInputFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipInput;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
-use Poweradmin\Domain\Service\ZoneManagementService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Application\Http\RefusalStatus;
 
+/**
+ * /api/v2/zones: lists, creates, updates and deletes zones.
+ */
 class ZonesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zones */
+    private const ZONE_SORT_FIELDS = ['name', 'type', 'id'];
+
     private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
     private ZoneManagementService $zoneManagementService;
-    private ApiPermissionService $permissionService;
+    private ApiPermissionService $apiPermissionService;
     private IPAddressValidator $ipAddressValidator;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->ipAddressValidator = new IPAddressValidator();
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
-        // Initialize zone management service
-        $this->zoneManagementService = new ZoneManagementService(
-            $this->zoneRepository,
-            $this->getConfig(),
-            $this->db
-        );
-
-        $this->auditLogger = new LegacyLogger($this->db);
+        $this->zoneManagementService = $this->createZoneManagementService();
     }
 
     /**
@@ -86,11 +77,10 @@ class ZonesController extends PublicApiController
             'POST' => $this->createZone(),
             'PUT' => $this->updateZone(),
             'DELETE' => $this->deleteZone(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -109,7 +99,7 @@ class ZonesController extends PublicApiController
         name: 'page',
         description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 1)
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
@@ -124,6 +114,21 @@ class ZonesController extends PublicApiController
         required: false,
         schema: new OA\Schema(type: 'string', example: 'example.com')
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the zone name (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'example')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, id. Default: name in database order (sort=name sorts numeric prefixes numerically, then by name)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'type,name:desc')
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'Zones retrieved successfully',
@@ -133,7 +138,6 @@ class ZonesController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'object',
                     properties: [
                         new OA\Property(
                             property: 'zones',
@@ -141,6 +145,7 @@ class ZonesController extends PublicApiController
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: 'id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'canonical_id', type: 'integer', example: 1, description: 'Same as id since 4.6.0, kept for clients that read it'),
                                     new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                                     new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
                                     new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00')
@@ -148,7 +153,8 @@ class ZonesController extends PublicApiController
                                 type: 'object'
                             )
                         )
-                    ]
+                    ],
+                    type: 'object'
                 ),
                 new OA\Property(
                     property: 'pagination',
@@ -170,12 +176,18 @@ class ZonesController extends PublicApiController
 
             // Get filter parameters
             $nameFilter = $this->request->query->get('name');
+            $nameContains = trim((string)$this->request->query->get('q', ''));
+            $nameContains = $nameContains === '' ? null : $nameContains;
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::ZONE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
 
-            // Get pagination parameters (defaults to returning all zones like PowerDNS and PowerDNS-Admin)
-            $perPage = (int)$this->request->query->get('per_page', 0);
+            // Without per_page every zone is returned, like PowerDNS
+            [$page, $perPage] = $this->pagingParameters();
 
             // Get zone IDs that the user can view (null = all zones, [] = no zones, array = specific zones)
-            $visibleZoneIds = $this->permissionService->getUserVisibleZoneIds($userId);
+            $visibleZoneIds = $this->apiPermissionService->getUserVisibleZoneIds($userId);
 
             // Determine the actual userId to pass to repository (only needed for non-uber users)
             $filterUserId = ($visibleZoneIds !== null) ? $userId : null;
@@ -191,61 +203,30 @@ class ZonesController extends PublicApiController
             }
 
             // Get total count for metadata (permission-filtered and name-filtered)
-            $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter);
+            $totalCount = $this->zoneRepository->getZoneCountFiltered($visibleZoneIds, $filterUserId, $nameFilter, $nameContains);
 
             // If user has no view permissions or name filter matches nothing, return empty result immediately
             if ($totalCount === 0) {
-                return $this->returnApiResponse(['zones' => []], true, 'Zones retrieved successfully', 200, [
-                    'meta' => ['timestamp' => date('Y-m-d H:i:s')],
-                    'pagination' => [
-                        'current_page' => 1,
-                        'per_page' => $perPage > 0 ? $perPage : $totalCount,
-                        'total' => 0,
-                        'last_page' => 1
-                    ]
-                ]);
+                return $this->returnApiResponse(
+                    ['zones' => []],
+                    true,
+                    'Zones retrieved successfully',
+                    200,
+                    ['meta' => ['timestamp' => date('Y-m-d H:i:s')]] + ListPaging::extra($page, $perPage, 0)
+                );
             }
 
-            // If per_page is 0 or not specified, return all zones (compatible with PowerDNS/PowerDNS-Admin)
             if ($perPage === 0) {
-                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter);
-                $page = 1;
-                $lastPage = 1;
+                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, null, null, $nameContains, $sort->fields());
             } else {
-                // Use pagination with permission and name filtering at database level
-                $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
-                $offset = ($page - 1) * $perPage;
-
-                $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, $offset, $perPage);
-                $lastPage = (int)ceil($totalCount / $perPage);
+                // Checked before the offset, which overflows to a float for a huge page
+                $zones = ListPaging::isPastEnd($page, $perPage, $totalCount)
+                    ? []
+                    : $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, ($page - 1) * $perPage, $perPage, $nameContains, $sort->fields());
             }
 
-            // Format zone data
-            $formattedZones = array_map(function ($zone) {
-                return [
-                    'id' => (int)$zone['id'],
-                    'name' => $zone['name'],
-                    'type' => $zone['type'] ?? 'MASTER',
-                    'created_at' => $zone['created_at'] ?? null
-                ];
-            }, $zones);
-
-            $responseData = [
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ];
-
-            // Only include pagination metadata if pagination was requested
-            if ($perPage > 0) {
-                $responseData['pagination'] = [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => $lastPage
-                ];
-            }
+            $formattedZones = array_map(ZoneResource::summary(...), $zones);
+            $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]] + ListPaging::extra($page, $perPage, $totalCount);
 
             return $this->returnApiResponse(['zones' => $formattedZones], true, 'Zones retrieved successfully', 200, $responseData);
         } catch (\Throwable $e) {
@@ -286,6 +267,7 @@ class ZonesController extends PublicApiController
                             property: 'zone',
                             properties: [
                                 new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'canonical_id', type: 'integer', example: 1, description: 'Same as id, kept for clients that read it'),
                                 new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
                                 new OA\Property(property: 'masters', type: 'string', nullable: true, example: null),
@@ -323,26 +305,12 @@ class ZonesController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
-            // Get zone comment/description from zones table
-            $comment = $this->zoneRepository->getZoneComment($zoneId);
-
-            // Get zone account and masters from domains table
-            $account = $zone['account'] ?? '';
-            $masters = $zone['master'] ?? '';
-
-            $formattedZone = [
-                'id' => (int)$zone['id'],
-                'name' => $zone['name'],
-                'type' => $zone['type'] ?? 'MASTER',
-                'masters' => $masters !== '' ? $masters : null,
-                'account' => $account !== '' ? $account : null,
-                'description' => ($comment !== null && $comment !== '') ? $comment : null,
-                'created_at' => $zone['created_at'] ?? null
-            ];
+            // The description lives in the zones table, the rest in domains
+            $formattedZone = ZoneResource::detail($zone, $this->zoneRepository->getZoneComment($zoneId));
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone retrieved successfully', 200);
         } catch (\Throwable $e) {
@@ -418,7 +386,8 @@ class ZonesController extends PublicApiController
                     description: 'User ID to assign as zone owner. Defaults to the authenticated user when omitted '
                         . '(even if group_ids is supplied). Send an explicit null to opt out of user ownership and '
                         . 'create a group-only zone (requires zone_ownership_mode that allows groups and a non-empty '
-                        . 'group_ids). Specifying a different user requires zone_content_edit_others permission.',
+                        . 'group_ids). Specifying a different user requires zone_content_edit_others permission '
+                        . 'and the user must exist.',
                     type: 'integer',
                     example: 1,
                     nullable: true
@@ -454,7 +423,28 @@ class ZonesController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'zone_id', type: 'integer', example: 123)
+                        new OA\Property(property: 'zone_id', type: 'integer', example: 123),
+                        new OA\Property(property: 'dnssec', type: 'string', example: 'signed', description: 'Only when enable_dnssec was requested: the signing outcome, e.g. signed, server_disabled or secure_failed'),
+                        new OA\Property(
+                            property: 'shadowed_records',
+                            description: 'Only when the new zone hides records of an existing parent zone and the caller may view that zone: '
+                                . 'the parent zone and the records it no longer serves. Make sure the new zone serves them, then delete them from the parent.',
+                            properties: [
+                                new OA\Property(property: 'parent_zone', type: 'string', example: 'example.com'),
+                                new OA\Property(
+                                    property: 'records',
+                                    type: 'array',
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: 'name', type: 'string', example: 'www.shop.example.com'),
+                                            new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                        ],
+                                        type: 'object'
+                                    )
+                                ),
+                            ],
+                            type: 'object'
+                        )
                     ],
                     type: 'object'
                 ),
@@ -475,6 +465,28 @@ class ZonesController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Zone name is required'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 403,
+        description: 'Forbidden - owner or groups the caller may not assign',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to create zones for other users'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'Not found - owner_user_id or group_ids name an unknown user or group',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Unknown user ID: 42'),
                 new OA\Property(property: 'data', type: 'null')
             ]
         )
@@ -504,9 +516,9 @@ class ZonesController extends PublicApiController
                 );
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
-            if (!$input) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -538,32 +550,17 @@ class ZonesController extends PublicApiController
             // An omitted field and an empty one both mean "apply the config default".
             $soaEditApi = $soaEditApi === '' ? null : $soaEditApi;
 
-            // Validate master servers format if provided
-            if (!empty($slaveMaster)) {
-                $validation = $this->validateMasterServers($slaveMaster);
-                if (!$validation['valid']) {
-                    return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
-                }
-                $slaveMaster = $validation['normalized'];
-            }
-
-            // A SLAVE zone is meaningless without a master to replicate from.
-            if ($type === 'SLAVE' && trim($slaveMaster) === '') {
-                return $this->returnApiError('A SLAVE zone requires at least one master server', 400);
-            }
-
             // Check if user has permission to create zones
-            if (!$this->permissionService->canCreateZone($userId, $type)) {
+            if (!$this->apiPermissionService->canCreateZone($userId, $type)) {
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
 
-            $resolver = new ZoneCreateOwnershipResolver(
-                new ZoneOwnershipModeService($this->getConfig()),
-                $this->permissionService
-            );
-            $resolved = $resolver->resolve($input, $userId);
+            $resolved = ZoneOwnershipInputFactory::fromJsonBody($input);
+            if ($resolved instanceof ZoneOwnershipInput) {
+                $resolved = $this->services()->zoneCreateOwnershipResolver()->resolve($resolved, $userId);
+            }
             if ($resolved->hasError()) {
-                return $this->returnApiError($resolved->error, $resolved->status);
+                return $this->returnApiError($resolved->error, RefusalStatus::of($resolved->refusal));
             }
             $owner = $resolved->owner;
             $groupIds = $resolved->groupIds;
@@ -571,7 +568,7 @@ class ZonesController extends PublicApiController
             // Match ZoneManagementService: when DNSSEC is disabled server-side, enable_dnssec
             // is a silent no-op, so the permission gate would just emit a misleading 403.
             $dnssecEnabledServerSide = (bool) $this->getConfig()->get('dnssec', 'enabled', false);
-            if ($enableDnssec && $dnssecEnabledServerSide && !$this->permissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
+            if ($enableDnssec && $dnssecEnabledServerSide && !$this->apiPermissionService->canManageDnssecForNewZone($userId, $owner, $groupIds)) {
                 return $this->returnApiError('You do not have permission to manage DNSSEC for this zone', 403);
             }
 
@@ -589,9 +586,7 @@ class ZonesController extends PublicApiController
             );
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
-
-                return $this->returnApiError($result['message'], $statusCode, null, [
+                return $this->returnApiError($result['message'], RefusalStatus::of($result['refusal']), null, [
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
@@ -610,20 +605,19 @@ class ZonesController extends PublicApiController
                 $this->updateDomainAccount($zoneId, $account);
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_zone zone_name:%s zone_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $domain,
-                $type
-            ), $zoneId);
+            $this->services()->auditService()->logApiZoneAdd($zoneId, $domain, $type);
 
-            return $this->returnApiResponse(
-                ['zone_id' => $zoneId],
-                true,
-                $result['message'] ?? 'Zone created successfully',
-                201
-            );
+            // Signing is best effort; the outcome tells a client whether it happened
+            $payload = ['zone_id' => $zoneId];
+            if ($result['dnssec'] !== null) {
+                $payload['dnssec'] = $result['dnssec']->outcome->value;
+            }
+            // Only set when the caller may view the parent zone, as in the web form warning
+            if ($result['shadowed'] !== null) {
+                $payload['shadowed_records'] = ZoneResource::shadowedRecords($result['shadowed']);
+            }
+
+            return $this->returnApiResponse($payload, true, 'Zone created successfully', 201);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }
@@ -638,7 +632,7 @@ class ZonesController extends PublicApiController
      */
     private function updateDomainAccount(int $zoneId, string $account): void
     {
-        $backendProvider = DnsBackendProviderFactory::create($this->db, $this->getConfig());
+        $backendProvider = $this->services()->dnsBackendProvider();
         $backendProvider->updateZoneAccount($zoneId, $account);
     }
 
@@ -708,6 +702,7 @@ class ZonesController extends PublicApiController
                             property: 'zone',
                             properties: [
                                 new OA\Property(property: 'id', type: 'integer', example: 123),
+                                new OA\Property(property: 'canonical_id', type: 'integer', example: 123, description: 'Same as id, kept for clients that read it'),
                                 new OA\Property(property: 'name', type: 'string', example: 'example.com'),
                                 new OA\Property(property: 'type', type: 'string', example: 'MASTER'),
                                 new OA\Property(property: 'masters', type: 'string', nullable: true, example: null),
@@ -761,20 +756,20 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
             // Metadata and description are gated separately below; this only rejects
             // callers who may write neither.
-            $mayEditMeta = $this->permissionService->canEditZoneMeta($userId, $zoneId);
-            $mayEditContent = $this->permissionService->hasZoneContentEditPermission($userId, $zoneId);
+            $mayEditMeta = $this->apiPermissionService->canEditZoneMeta($userId, $zoneId);
+            $mayEditContent = $this->apiPermissionService->hasZoneContentEditPermission($userId, $zoneId);
             if (!$mayEditMeta && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -834,7 +829,7 @@ class ZonesController extends PublicApiController
             }
 
             // Converting a zone is equivalent to creating one of the target type.
-            if (isset($updates['type']) && !$this->permissionService->canCreateZone($userId, $updates['type'])) {
+            if (isset($updates['type']) && !$this->apiPermissionService->canCreateZone($userId, $updates['type'])) {
                 return $this->returnApiError('You do not have permission to change this zone to that type', 403);
             }
 
@@ -843,7 +838,7 @@ class ZonesController extends PublicApiController
                 $result = $this->zoneManagementService->updateZone($zoneId, $updates);
 
                 if (!$result['success']) {
-                    $statusCode = $result['status'] ?? 400;
+                    $statusCode = RefusalStatus::ofResult($result);
                     return $this->returnApiError($result['message'], $statusCode);
                 }
             }
@@ -855,19 +850,7 @@ class ZonesController extends PublicApiController
 
             // Return updated zone data
             $zone = $this->zoneRepository->getZoneById($zoneId);
-            $comment = $this->zoneRepository->getZoneComment($zoneId);
-            $account = $zone['account'] ?? '';
-            $masters = $zone['master'] ?? '';
-
-            $formattedZone = [
-                'id' => (int)$zone['id'],
-                'name' => $zone['name'],
-                'type' => $zone['type'] ?? 'MASTER',
-                'masters' => $masters !== '' ? $masters : null,
-                'account' => $account !== '' ? $account : null,
-                'description' => ($comment !== null && $comment !== '') ? $comment : null,
-                'created_at' => $zone['created_at'] ?? null
-            ];
+            $formattedZone = ZoneResource::detail($zone, $this->zoneRepository->getZoneComment($zoneId));
 
             return $this->returnApiResponse(['zone' => $formattedZone], true, 'Zone updated successfully', 200);
         } catch (\Throwable $e) {
@@ -896,14 +879,7 @@ class ZonesController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Zone deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Zone deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Zone deleted successfully'
     )]
     #[OA\Response(
         response: 404,
@@ -932,13 +908,17 @@ class ZonesController extends PublicApiController
             }
 
             // Confirm existence before permission, matching getZone()'s 404-before-403 order.
-            if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
             // Check if user has permission to delete this zone
-            if (!$this->permissionService->canDeleteZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canDeleteZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to delete this zone', 403);
+            }
+
+            if ($this->apiPermissionService->zoneDeleteRequiresApproval($userId, $zoneId)) {
+                return $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403);
             }
 
             // Capture zone name before deletion
@@ -949,16 +929,11 @@ class ZonesController extends PublicApiController
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_zone zone_name:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $zoneName
-            ), $zoneId);
+            $this->services()->auditService()->logApiZoneDelete($zoneId, $zoneName);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

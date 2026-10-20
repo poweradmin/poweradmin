@@ -1,0 +1,1429 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
+
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
+use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\User\UserProfileAssembler;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Psr\Log\LoggerInterface;
+
+#[CoversClass(UserManagementService::class)]
+class UserManagementServiceTest extends TestCase
+{
+    private UserManagementService $service;
+    private UserRepositoryInterface&MockObject $userRepository;
+    private PermissionService&MockObject $permissionService;
+    private UserGroupRepositoryInterface&MockObject $groupRepository;
+    private DomainManagerInterface&MockObject $domainManager;
+    private LoggerInterface&MockObject $logger;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->permissionService = $this->createMock(PermissionService::class);
+        $this->groupRepository = $this->createMock(UserGroupRepositoryInterface::class);
+        $this->domainManager = $this->createMock(DomainManagerInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
+
+        $passwordPolicy = $this->createMock(PasswordPolicyService::class);
+        $passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->service = new UserManagementService(
+            $this->userRepository,
+            $this->permissionService,
+            new UserProfileAssembler($this->permissionService, $this->groupRepository),
+            new UserAuthenticationService('bcrypt', 4),
+            $passwordPolicy,
+            false,
+            $this->domainManager,
+            $this->createMock(ZoneManagementService::class),
+            logger: $this->logger
+        );
+    }
+
+    #[Test]
+    public function testDeleteUserWithZoneDecisionsForgetsEveryReassignedZone(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('deleteUser')->willReturn(true);
+        $this->permissionService->method('canEditZoneMeta')->willReturn(true);
+        $this->domainManager->method('handOverZone')
+            ->willReturnCallback(fn(int $zoneId): ZoneWriteResult => ZoneWriteResult::ok($zoneId));
+
+        $forgotten = [];
+        $this->permissionService->method('forgetZone')
+            ->willReturnCallback(function (int $zoneId) use (&$forgotten): void {
+                $forgotten[] = $zoneId;
+            });
+
+        $result = $this->service->deleteUserWithZoneDecisions(9, 1, [
+            ['zid' => 10, 'target' => 'new_owner', 'newowner' => 2],
+            ['zid' => 11, 'target' => 'new_owner', 'newowner' => 2],
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame([10, 11], $forgotten);
+    }
+
+    #[Test]
+    public function testDeleteUserWithZoneDecisionsReassignsZonesInAscendingOrder(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('deleteUser')->willReturn(true);
+        $this->permissionService->method('canEditZoneMeta')->willReturn(true);
+        $added = [];
+        $this->domainManager->method('handOverZone')
+            ->willReturnCallback(function (int $zoneId, int $fromUserId, int $userId) use (&$added): ZoneWriteResult {
+                $added[] = [$zoneId, $userId];
+                return ZoneWriteResult::ok($zoneId);
+            });
+
+        $this->service->deleteUserWithZoneDecisions(9, 1, [
+            ['zid' => 30, 'target' => 'new_owner', 'newowner' => 2],
+            ['zid' => 7, 'target' => 'new_owner', 'newowner' => 3],
+            ['zid' => 12, 'target' => 'new_owner', 'newowner' => 2],
+        ]);
+
+        $this->assertSame([[7, 3], [12, 2], [30, 2]], $added);
+    }
+
+    // ========== getUserById tests ==========
+
+    #[Test]
+    public function testGetUserByIdReturnsNullWhenUserNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(1)
+            ->willReturn(null);
+
+        $result = $this->service->getUserById(1);
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testGetUserByIdReturnsEnrichedUserData(): void
+    {
+        $userId = 1;
+        $userData = [
+            'id' => $userId,
+            'username' => 'testuser',
+            'fullname' => 'Test User',
+            'email' => 'test@example.com',
+            'description' => 'Test description',
+            'active' => 1,
+            'perm_templ' => 2,
+            'perm_templ_name' => 'Zone Manager',
+            'created_at' => '2024-01-01 00:00:00',
+            'updated_at' => '2024-01-02 00:00:00'
+        ];
+        $permissions = [Permission::PERM_ZONE_CONTENT_VIEW_OWN, Permission::PERM_ZONE_CONTENT_EDIT_OWN];
+
+        $this->userRepository->method('getUserById')
+            ->with($userId)
+            ->willReturn($userData);
+
+        $this->permissionService->method('getUserPermissions')
+            ->with($userId)
+            ->willReturn($permissions);
+
+        $this->permissionService->method('isAdmin')
+            ->with($userId)
+            ->willReturn(false);
+
+        $this->groupRepository->method('findByUserId')
+            ->with($userId)
+            ->willReturn([new UserGroup(3, 'dns-operators', null, 7)]);
+
+        $result = $this->service->getUserById($userId);
+
+        $this->assertEquals($userId, $result['user_id']);
+        $this->assertEquals('testuser', $result['username']);
+        $this->assertEquals('Test User', $result['fullname']);
+        $this->assertEquals('test@example.com', $result['email']);
+        $this->assertTrue($result['active']);
+        $this->assertFalse($result['is_admin']);
+        $this->assertEquals($permissions, $result['permissions']);
+        $this->assertSame(2, $result['perm_templ']);
+        $this->assertSame('Zone Manager', $result['perm_templ_name']);
+        $this->assertSame([['id' => 3, 'name' => 'dns-operators']], $result['groups']);
+    }
+
+    #[Test]
+    public function testGetUserByIdReturnsNullTemplateNameWhenTemplateIsMissing(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(1)
+            ->willReturn(['id' => 1, 'username' => 'orphan', 'active' => 1, 'perm_templ' => 99]);
+
+        $this->permissionService->method('getUserPermissions')->willReturn([]);
+        $this->permissionService->method('isAdmin')->willReturn(false);
+        $this->groupRepository->method('findByUserId')->willReturn([]);
+
+        $result = $this->service->getUserById(1);
+
+        $this->assertSame(99, $result['perm_templ']);
+        $this->assertNull($result['perm_templ_name']);
+        $this->assertSame([], $result['groups']);
+    }
+
+    // ========== getUsersList tests ==========
+
+    #[Test]
+    public function testGetUsersListReturnsEmptyArray(): void
+    {
+        $pagination = new Pagination(1, 10, 0);
+
+        $this->userRepository->method('getUsersList')
+            ->willReturn([]);
+
+        $this->userRepository->method('getTotalUserCount')
+            ->willReturn(0);
+
+        $result = $this->service->getUsersList($pagination);
+
+        $this->assertEquals([], $result['data']);
+        $this->assertEquals(0, $result['total_count']);
+    }
+
+    #[Test]
+    public function testGetUsersListReturnsEnrichedUsers(): void
+    {
+        $pagination = new Pagination(1, 10, 2);
+
+        $users = [
+            ['id' => 1, 'username' => 'admin', 'fullname' => 'Admin', 'email' => 'admin@test.com', 'active' => 1, 'zone_count' => 5, 'perm_templ' => 1, 'perm_templ_name' => 'Administrator'],
+            ['id' => 2, 'username' => 'user', 'fullname' => 'User', 'email' => 'user@test.com', 'active' => 1, 'zone_count' => 2, 'perm_templ' => 4, 'perm_templ_name' => 'Viewer']
+        ];
+
+        $this->userRepository->method('getUsersList')->willReturn($users);
+        $this->userRepository->method('getTotalUserCount')->willReturn(2);
+
+        $this->permissionService->method('isAdmin')
+            ->willReturnMap([
+                [1, true],
+                [2, false]
+            ]);
+
+        // One batched call for the whole page, not one per user
+        $this->groupRepository->expects($this->once())
+            ->method('findByUserIds')
+            ->with([1, 2])
+            ->willReturn([1 => [new UserGroup(1, 'Administrators', null, 6)]]);
+
+        $result = $this->service->getUsersList($pagination);
+
+        $this->assertCount(2, $result['data']);
+        $this->assertEquals(2, $result['total_count']);
+        $this->assertTrue($result['data'][0]['is_admin']);
+        $this->assertFalse($result['data'][1]['is_admin']);
+        $this->assertEquals(5, $result['data'][0]['zone_count']);
+        $this->assertSame(1, $result['data'][0]['perm_templ']);
+        $this->assertSame('Administrator', $result['data'][0]['perm_templ_name']);
+        $this->assertSame([['id' => 1, 'name' => 'Administrators']], $result['data'][0]['groups']);
+        $this->assertSame([], $result['data'][1]['groups']);
+    }
+
+    // ========== userExists tests ==========
+
+    #[Test]
+    public function testUserExistsReturnsTrueWhenUserFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(1)
+            ->willReturn(['id' => 1]);
+
+        $this->assertTrue($this->service->userExists(1));
+    }
+
+    #[Test]
+    public function testUserExistsReturnsFalseWhenUserNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(999)
+            ->willReturn(null);
+
+        $this->assertFalse($this->service->userExists(999));
+    }
+
+    // ========== getUserByUsername tests ==========
+
+    #[Test]
+    public function testGetUserByUsernameReturnsNullWhenNotFound(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->with('nonexistent')
+            ->willReturn(null);
+
+        $result = $this->service->getUserByUsername('nonexistent');
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testGetUserByUsernameReturnsEnrichedData(): void
+    {
+        $userData = ['id' => 1, 'username' => 'testuser', 'fullname' => 'Test', 'email' => 'test@test.com', 'active' => 1, 'perm_templ' => 3, 'perm_templ_name' => 'Editor'];
+
+        $this->userRepository->method('getUserByUsername')
+            ->with('testuser')
+            ->willReturn($userData);
+
+        $this->permissionService->method('isAdmin')
+            ->with(1)
+            ->willReturn(false);
+
+        $this->groupRepository->method('findByUserId')
+            ->with(1)
+            ->willReturn([new UserGroup(8, 'Editors', null, 8)]);
+
+        $result = $this->service->getUserByUsername('testuser');
+
+        $this->assertEquals(1, $result['user_id']);
+        $this->assertEquals('testuser', $result['username']);
+        $this->assertFalse($result['is_admin']);
+        $this->assertSame(3, $result['perm_templ']);
+        $this->assertSame('Editor', $result['perm_templ_name']);
+        $this->assertSame([['id' => 8, 'name' => 'Editors']], $result['groups']);
+    }
+
+    // ========== getUserByEmail tests ==========
+
+    #[Test]
+    public function testGetUserByEmailReturnsNullWhenNotFound(): void
+    {
+        $this->userRepository->method('getUserByEmail')
+            ->with('nonexistent@test.com')
+            ->willReturn(null);
+
+        $result = $this->service->getUserByEmail('nonexistent@test.com');
+        $this->assertNull($result);
+    }
+
+    #[Test]
+    public function testGetUserByEmailReturnsEnrichedData(): void
+    {
+        $userData = ['id' => 1, 'username' => 'testuser', 'fullname' => 'Test', 'email' => 'test@test.com', 'active' => 1];
+
+        $this->userRepository->method('getUserByEmail')
+            ->with('test@test.com')
+            ->willReturn($userData);
+
+        $this->permissionService->method('isAdmin')
+            ->with(1)
+            ->willReturn(true);
+
+        $this->groupRepository->method('findByUserId')
+            ->with(1)
+            ->willReturn([]);
+
+        $result = $this->service->getUserByEmail('test@test.com');
+
+        $this->assertEquals(1, $result['user_id']);
+        $this->assertTrue($result['is_admin']);
+        $this->assertNull($result['perm_templ']);
+        $this->assertNull($result['perm_templ_name']);
+        $this->assertSame([], $result['groups']);
+    }
+
+    /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    private function createUser(array $input): array
+    {
+        $command = UserCommandFactory::create($input);
+
+        return is_array($command) ? $command : $this->service->createUser($command);
+    }
+
+    private function updateUser(int $userId, array $input, ?UserManagementService $service = null): array
+    {
+        $command = UserCommandFactory::update($input);
+
+        return is_array($command) ? $command : ($service ?? $this->service)->updateUser($userId, $command);
+    }
+
+    private function serviceProtectingLastAdminOnEdit(): UserManagementService
+    {
+        $passwordPolicy = $this->createMock(PasswordPolicyService::class);
+        $passwordPolicy->method('validatePassword')->willReturn([]);
+
+        return new UserManagementService(
+            $this->userRepository,
+            $this->permissionService,
+            new UserProfileAssembler($this->permissionService, $this->groupRepository),
+            new UserAuthenticationService('bcrypt', 4),
+            $passwordPolicy,
+            false,
+            $this->domainManager,
+            $this->createMock(ZoneManagementService::class),
+            false,
+            null,
+            true
+        );
+    }
+
+    // ========== createUser tests ==========
+
+    #[Test]
+    public function testCreateUserFailsWithMissingUsername(): void
+    {
+        $result = $this->createUser(['password' => 'test123']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Username is required', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_REQUIRED, $result['code']);
+    }
+
+    #[Test]
+    public function testCreateUserFailsWithMissingPassword(): void
+    {
+        $result = $this->createUser(['username' => 'testuser']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Password is required', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_PASSWORD_REQUIRED, $result['code']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsOverlongUsername(): void
+    {
+        $result = $this->createUser([
+            'username' => str_repeat('a', 65),
+            'password' => 'secret123'
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertStringContainsString('Username', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserFailsWhenUsernameExists(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->with('existinguser')
+            ->willReturn(['id' => 1]);
+
+        $result = $this->createUser([
+            'username' => 'existinguser',
+            'password' => 'test123'
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Username already exists', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
+    }
+
+    #[Test]
+    public function testCreateUserFailsWhenEmailExists(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->willReturn(null);
+
+        $this->userRepository->method('getUserByEmail')
+            ->with('existing@test.com')
+            ->willReturn(['id' => 1]);
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'email' => 'existing@test.com'
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Email already exists', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_EMAIL_EXISTS, $result['code']);
+    }
+
+    #[Test]
+    public function testCreateUserSucceeds(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->willReturn(null);
+
+        $this->userRepository->method('getUserByEmail')
+            ->willReturn(null);
+
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
+        $this->userRepository->method('createUser')
+            ->willReturn(42);
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'email' => 'new@test.com',
+            'perm_templ' => 3
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals(42, $result['user_id']);
+    }
+
+    #[Test]
+    public function testCreateUserFailsOnRepositoryError(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->willReturn(null);
+
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
+        $this->userRepository->method('createUser')
+            ->willReturn(null);
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'perm_templ' => 3
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Failed to create user', $result['message']);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserHandlesException(): void
+    {
+        $this->userRepository->method('getUserByUsername')
+            ->willReturn(null);
+
+        $this->userRepository->method('permissionTemplateExists')
+            ->willReturn(true);
+
+        $this->userRepository->method('createUser')
+            ->willThrowException(new Exception('Database error'));
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'perm_templ' => 3
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Failed to create user', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserLosingAUsernameRaceReportsTheUsernameAsTaken(): void
+    {
+        // Free at the pre-check, taken by a concurrent create when the unique index rejects the insert
+        $this->userRepository->method('getUserByUsername')
+            ->willReturnOnConsecutiveCalls(null, ['id' => 9]);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('createUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry'));
+
+        $result = $this->createUser(['username' => 'newuser', 'password' => 'test123', 'perm_templ' => 3]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserLosingAUsernameRaceReportsTheUsernameAsTaken(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'old', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByUsername')
+            ->willReturnOnConsecutiveCalls(null, ['id' => 2]);
+        $this->userRepository->method('updateUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23505]: Unique violation'));
+
+        $result = $this->updateUser(1, ['username' => 'taken']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_EXISTS, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserWriteFailureKeepingTheUsernameIsNotReportedAsTaken(): void
+    {
+        // Legacy data may hold the name twice; an unchanged name must not turn a write error into a conflict
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'dup', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByUsername')->willReturn(['id' => 2]);
+        $this->userRepository->method('updateUser')->willThrowException(new Exception('Database error'));
+
+        $result = $this->updateUser(1, ['username' => 'dup', 'fullname' => 'X']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_WRITE, $result['code']);
+    }
+
+    #[Test]
+    public function testAWriteExceptionIsLoggedAndKeptOutOfTheMessage(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->willReturn([]);
+        $this->userRepository->method('deleteUser')
+            ->willThrowException(new \PDOException('SQLSTATE[23000]: Integrity constraint violation'));
+        $this->logger->expects($this->once())->method('error')
+            ->with($this->anything(), $this->callback(static fn(array $context): bool => str_contains($context['message'], 'SQLSTATE')));
+
+        $result = $this->service->deleteUser(1);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Failed to delete user', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsZeroPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 0,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsUnknownPermissionTemplateId(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 999,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsNonNumericPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 'admin',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsMalformedNumericString(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => '2foo',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserAcceptsNumericStringPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(3, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('createUser')
+            ->with($this->callback(fn(CreateUserCommand $user): bool => $user->permissionTemplateId === 3))
+            ->willReturn(13);
+
+        $result = $this->createUser([
+            'username' => 'gooduser',
+            'password' => 'test123',
+            'perm_templ' => '3',
+        ]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        // Template id 6 exists as a group template; the type=user check makes it fail.
+        $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'baduser',
+            'password' => 'test123',
+            'perm_templ' => 6,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserAcceptsValidPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('createUser')
+            ->with($this->callback(fn(CreateUserCommand $user): bool => $user->permissionTemplateId === 2))
+            ->willReturn(42);
+
+        $result = $this->createUser([
+            'username' => 'gooduser',
+            'password' => 'test123',
+            'perm_templ' => 2,
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals(42, $result['user_id']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsOmittedPermissionTemplate(): void
+    {
+        // Without a resolved template the row would inherit Administrator.
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsNullPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'perm_templ' => null,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    // ========== updateUser tests ==========
+
+    #[Test]
+    public function testUpdateUserFailsWhenUserNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(999)
+            ->willReturn(null);
+
+        $result = $this->updateUser(999, ['fullname' => 'New Name']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserFailsWhenUsernameExistsForOtherUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('getUserByUsername')
+            ->with('existinguser')
+            ->willReturn(['id' => 2]); // Different user
+
+        $result = $this->updateUser(1, ['username' => 'existinguser']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Username already exists', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserLeavesAnUnchangedEmailAloneEvenWhenDuplicated(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'Shared@example.com']);
+        // Older data may hold the same address twice; echoing it back is not a change.
+        $this->userRepository->expects($this->never())->method('getUserByEmail');
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->updateUser(1, ['email' => 'shared@example.com']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateUserRefusesAMalformedEmail(): void
+    {
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('getUserByEmail')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser([
+            'username' => 'newuser',
+            'password' => 'test123',
+            'email' => "new@example.com\r\nBcc: other@example.net",
+            'perm_templ' => 3
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_INVALID_EMAIL, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserRefusesAChangedMalformedEmail(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'old@example.com']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['email' => "old@example.com\nBcc: other@example.net"]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_INVALID_EMAIL, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserRefusesAChangedEmailAnotherAccountHolds(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'email' => 'old@example.com']);
+        $this->userRepository->method('getUserByEmail')
+            ->with('taken@example.com')
+            ->willReturn(['id' => 2]);
+
+        $result = $this->updateUser(1, ['email' => 'taken@example.com']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_EMAIL_EXISTS, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsSameUsernameForSameUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql', 'username' => 'sameuser']);
+
+        // Legacy data may hold the name twice; echoing it back must not look it up
+        $this->userRepository->expects($this->never())->method('getUserByUsername');
+
+        $this->userRepository->method('updateUser')
+            ->willReturn(true);
+        // No template change, so the cached permission answers stay valid
+        $this->permissionService->expects($this->never())->method('forgetUser');
+
+        $result = $this->updateUser(1, ['username' => 'sameuser']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserFailsWhenDisablingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->with(1)
+            ->willReturn(true);
+
+        $result = $this->updateUser(1, ['active' => false]);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot disable the last remaining super admin', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserBlocksDemotingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => 5], $this->serviceProtectingLastAdminOnEdit());
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot remove super admin from the last remaining super admin', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_LAST_ADMIN_DEMOTE, $result['code']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsLastUberuserToKeepASuperAdminTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->updateUser(1, ['perm_templ' => 1], $this->serviceProtectingLastAdminOnEdit());
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserKeepsTodaysBehaviourWhenTheEditGuardIsOff(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->willReturn(false);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $this->assertTrue($this->updateUser(1, ['perm_templ' => 5])['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsDisablingNonLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+
+        $this->userRepository->method('isLastUberuser')
+            ->with(1)
+            ->willReturn(false);
+
+        $this->userRepository->method('updateUser')
+            ->willReturn(true);
+
+        $result = $this->updateUser(1, ['active' => false]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserPreventsPasswordForOidcUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'oidc']);
+
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('OIDC', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserPreventsPasswordForSamlUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'saml']);
+
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('SAML', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserPreventsPasswordForLdapUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'ldap']);
+
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('LDAP', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsPasswordForSqlUser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+
+        $this->userRepository->method('updateUser')
+            ->willReturn(true);
+
+        $result = $this->updateUser(1, ['password' => 'newpassword']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsZeroPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => 0]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsUnknownPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(999, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => 999]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsNullPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => null]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserAcceptsValidPermissionTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->expects($this->once())
+            ->method('updateUser')
+            ->with(1, $this->callback(fn(UpdateUserCommand $changes): bool => $changes->permissionTemplateId === 2))
+            ->willReturn(true);
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(1);
+
+        $result = $this->updateUser(1, ['perm_templ' => 2]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->with(6, 'user')->willReturn(false);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => 6]);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsMalformedNumericString(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('permissionTemplateExists');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['perm_templ' => '2foo']);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    // ========== deleteUser tests ==========
+
+    #[Test]
+    public function testDeleteUserFailsWhenUserNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(999)
+            ->willReturn(null);
+
+        $result = $this->service->deleteUser(999);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
+    }
+
+    #[Test]
+    public function testDeleteUserFailsWhenDeletingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->with(1)
+            ->willReturn(true);
+
+        $result = $this->service->deleteUser(1);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('Cannot delete the last remaining super admin', $result['message']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testDeleteUserWithZonesRequiresTransferTarget(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserZones')
+            ->with(1)
+            ->willReturn([['id' => 1], ['id' => 2]]);
+
+        $result = $this->service->deleteUser(1);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('transfer_to_user_id', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testDeleteUserFailsWhenTransferTargetNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([
+                [1, ['id' => 1]],
+                [999, null]
+            ]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserZones')
+            ->with(1)
+            ->willReturn([['id' => 1]]);
+
+        $result = $this->service->deleteUser(1, 999);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Transfer target user not found', $result['message']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
+    }
+
+    #[Test]
+    public function testDeleteUserRejectsTransferToSelf(): void
+    {
+        $this->userRepository->method('getUserById')->with(1)->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 1]]);
+
+        // Transferring to the deleted user would orphan the zones - must be rejected
+        // before any transfer or deletion happens.
+        $this->userRepository->expects($this->never())->method('transferUserZones');
+        $this->userRepository->expects($this->never())->method('deleteUser');
+
+        $result = $this->service->deleteUser(1, 1);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertStringContainsString('being deleted', $result['message']);
+    }
+
+    #[Test]
+    public function testDeleteUserWithZonesTransfersSuccessfully(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([
+                [1, ['id' => 1]],
+                [2, ['id' => 2]]
+            ]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserZones')
+            ->with(1)
+            ->willReturn([['id' => 1], ['id' => 2]]);
+
+        $this->userRepository->method('transferUserZones')
+            ->with(1, 2)
+            ->willReturn(true);
+
+        $this->userRepository->method('deleteUser')
+            ->with(1)
+            ->willReturn(true);
+        // The target now owns more zones, so its cached ownership answers are stale
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(2);
+
+        $result = $this->service->deleteUser(1, 2);
+
+        $this->assertTrue($result['success']);
+        $this->assertStringContainsString('2 zones transferred', $result['message']);
+        $this->assertEquals(2, $result['zones_affected']);
+    }
+
+    #[Test]
+    public function testDeleteUserRefusesATransferTheActorMayNotMetaEdit(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('own');
+        $this->permissionService->method('canEditZoneMeta')->with(7, 12)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('transferUserZones');
+        $this->userRepository->expects($this->never())->method('deleteUser');
+
+        $result = $this->service->deleteUser(1, 2, 7);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::FORBIDDEN, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_ZONE_META_FORBIDDEN, $result['code']);
+    }
+
+    #[Test]
+    public function testDeleteUserTransfersWhenTheActorMayMetaEditEveryZone(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('own');
+        $this->permissionService->method('canEditZoneMeta')->with(7, 12)->willReturn(true);
+        $this->userRepository->method('transferUserZones')->with(1, 2)->willReturn(true);
+        $this->userRepository->method('deleteUser')->with(1)->willReturn(true);
+
+        $result = $this->service->deleteUser(1, 2, 7);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testDeleteUserSkipsThePerZoneCheckForAnAllLevelActor(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('all');
+        $this->permissionService->expects($this->never())->method('canEditZoneMeta');
+        $this->userRepository->method('transferUserZones')->with(1, 2)->willReturn(true);
+        $this->userRepository->method('deleteUser')->with(1)->willReturn(true);
+
+        $this->assertTrue($this->service->deleteUser(1, 2, 7)['success']);
+    }
+
+    #[Test]
+    public function testDeleteUserWithoutZonesSucceeds(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('isLastUberuser')
+            ->willReturn(false);
+
+        $this->userRepository->method('getUserZones')
+            ->with(1)
+            ->willReturn([]);
+
+        $this->userRepository->method('deleteUser')
+            ->with(1)
+            ->willReturn(true);
+
+        $result = $this->service->deleteUser(1);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('User deleted successfully', $result['message']);
+        $this->assertEquals(0, $result['zones_affected']);
+    }
+
+    // ========== assignPermissionTemplate tests ==========
+
+    #[Test]
+    public function testAssignPermissionTemplateFailsWhenUserNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->with(999)
+            ->willReturn(null);
+
+        $result = $this->service->assignPermissionTemplate(999, 1);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('User not found', $result['message']);
+        $this->assertSame(Refusal::NOT_FOUND, $result['refusal']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateFailsWhenTemplateNotFound(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('permissionTemplateExists')
+            ->with(999, 'user')
+            ->willReturn(false);
+
+        $result = $this->service->assignPermissionTemplate(1, 999);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateRejectsGroupTemplate(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        // Template id 6 exists only as a group template; the type=user filter rejects it,
+        // so a user cannot be assigned a group template (matches createUser/updateUser).
+        $this->userRepository->method('permissionTemplateExists')
+            ->with(6, 'user')
+            ->willReturn(false);
+        $this->userRepository->expects($this->never())->method('assignPermissionTemplate');
+
+        $result = $this->service->assignPermissionTemplate(1, 6);
+
+        $this->assertFalse($result['success']);
+        $this->assertEquals('Permission template not found', $result['message']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateSucceeds(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1]);
+
+        $this->userRepository->method('permissionTemplateExists')
+            ->with(2, 'user')
+            ->willReturn(true);
+
+        $this->userRepository->method('assignPermissionTemplate')
+            ->with(1, 2)
+            ->willReturn(true);
+        $this->permissionService->expects($this->once())->method('forgetUser')->with(1);
+
+        $result = $this->service->assignPermissionTemplate(1, 2);
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals('Permission template assigned successfully', $result['message']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateBlocksDemotingLastUberuser(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+
+        // The last super admin must not be demoted via a template swap.
+        $this->userRepository->expects($this->never())->method('assignPermissionTemplate');
+
+        $result = $this->service->assignPermissionTemplate(1, 5);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateAllowsDemotionWhenOtherUberusersExist(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(false);
+        $this->userRepository->method('assignPermissionTemplate')->with(1, 5)->willReturn(true);
+
+        $result = $this->service->assignPermissionTemplate(1, 5);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testAssignPermissionTemplateLetsADatabaseErrorPropagate(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(2, 'user')->willReturn(true);
+        $this->userRepository->method('assignPermissionTemplate')
+            ->willThrowException(new \PDOException('SQLSTATE[HY000]: General error'));
+
+        $this->expectException(\PDOException::class);
+        $this->service->assignPermissionTemplate(1, 2);
+    }
+}

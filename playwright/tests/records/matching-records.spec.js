@@ -7,34 +7,18 @@
  * - A record -> matching PTR record in reverse zone
  * - PTR record -> matching A record in forward zone
  *
- * Requires test data loaded via import-test-data.sh:
- * - Forward zone: manager-zone.example.com
- * - Reverse zone: 2.0.192.in-addr.arpa
+ * The writing tests run against a throwaway forward zone (tempZone) and a
+ * throwaway /24 reverse zone under 10.in-addr.arpa. The seeded zones
+ * manager-zone.example.com and 2.0.192.in-addr.arpa are only read.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { createZone, deleteZoneById, getTestZoneId } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Tests run serially to avoid database conflicts
 test.describe.configure({ mode: 'serial' });
-
-// Helper to find a zone ID by name
-async function getZoneIdByName(page, zoneName, zoneType) {
-  const listUrl = zoneType === 'reverse' ? '/zones/reverse?letter=all' : '/zones/forward?letter=all';
-  await page.goto(listUrl);
-
-  // Zone name is in a table cell, not inside the edit link itself.
-  // Find the row containing the zone name, then extract the zone ID from its checkbox.
-  const row = page.locator(`tr:has-text("${zoneName}")`).first();
-  if (await row.count() > 0) {
-    const checkbox = row.locator('input[name="zone_id[]"]');
-    if (await checkbox.count() > 0) {
-      return await checkbox.getAttribute('value');
-    }
-  }
-  return null;
-}
 
 // Check if a record with the given content exists in a zone.
 // Uses the search filter to find records across all pages.
@@ -49,126 +33,135 @@ async function recordExistsInZone(page, zoneId, recordName, recordType, recordCo
     await page.waitForLoadState('domcontentloaded');
   }
 
-  const contentInput = page.locator(`input[value="${recordContent}"]`);
+  // Only record rows count: the filter box above also carries the searched value
+  const contentInput = page.locator(`input[name^="record["][name$="][content]"][value="${recordContent}"]`);
   return await contentInput.count() > 0;
 }
+
+// Random /24 under 10.0.0.0/8 so parallel runs never share a reverse zone
+function randomReverseZone() {
+  const b = 1 + Math.floor(Math.random() * 254);
+  const c = 1 + Math.floor(Math.random() * 254);
+  return { name: `${c}.${b}.10.in-addr.arpa`, ip: (host) => `10.${b}.${c}.${host}` };
+}
+
+// Reverse zones created by the running test; afterEach deletes them even when the
+// test timed out, which a try/finally inside the test body would not survive
+const createdReverseZones = [];
+
+// Create a throwaway reverse zone, run fn(zoneId, zone); cleanup happens in afterEach
+async function withReverseZone(page, fn) {
+  const zone = randomReverseZone();
+  const zoneId = await createZone(page, zone.name);
+  createdReverseZones.push(zoneId);
+  return await fn(zoneId, zone);
+}
+
+test.afterEach(async ({ browser, baseURL }, testInfo) => {
+  const ids = createdReverseZones.splice(0);
+  if (ids.length === 0) {
+    return;
+  }
+  testInfo.setTimeout(testInfo.timeout + 60_000);
+  const context = await browser.newContext({ baseURL });
+  try {
+    const page = await context.newPage();
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password, 3, { fresh: true });
+    for (const id of ids) {
+      await deleteZoneById(page, id);
+    }
+  } finally {
+    await context.close();
+  }
+});
 
 test.describe('Matching Record Creation (Issue #1104)', () => {
   const timestamp = Date.now();
 
   test.describe('A record with Add PTR checkbox', () => {
     const testHostname = `match-ptr-${timestamp}`;
-    const testIP = '192.0.2.99';
 
-    test('should create matching PTR record when adding A record', async ({ page }) => {
+    test('should create matching PTR record when adding A record', async ({ page, tempZone }) => {
+      test.slow(); // creates throwaway zones on top of the test itself
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      // Find forward zone
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone manager-zone.example.com not found - load test data first');
-        return;
-      }
+      await withReverseZone(page, async (reverseZoneId, reverse) => {
+        const forwardZoneId = tempZone.id;
+        const testIP = reverse.ip(99);
 
-      // Find reverse zone (to verify later)
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone 2.0.192.in-addr.arpa not found - load test data first');
-        return;
-      }
+        await page.goto(`/zones/${forwardZoneId}/records/add`);
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
 
-      // Add A record with PTR checkbox
-      await page.goto(`/zones/${forwardZoneId}/records/add`);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+        await page.locator('select[name="records[0][type]"]').selectOption('A');
+        await page.locator('input[name="records[0][name]"]').fill(testHostname);
+        await page.locator('input[name="records[0][content]"]').fill(testIP);
 
-      // Fill in the A record
-      await page.locator('select[name="records[0][type]"]').selectOption('A');
-      await page.locator('input[name="records[0][name]"]').fill(testHostname);
-      await page.locator('input[name="records[0][content]"]').fill(testIP);
+        // Check the PTR checkbox (make visible first since JS hides it for non-A types)
+        const ptrCheckbox = page.locator('input[name="records[0][reverse]"]');
+        await ptrCheckbox.waitFor({ state: 'attached' });
+        await ptrCheckbox.evaluate(el => { el.style.visibility = 'visible'; });
+        await ptrCheckbox.check();
+        expect(await ptrCheckbox.isChecked()).toBe(true);
 
-      // Check the PTR checkbox (make visible first since JS hides it for non-A types)
-      const ptrCheckbox = page.locator('input[name="records[0][reverse]"]');
-      await ptrCheckbox.waitFor({ state: 'attached' });
-      // The checkbox should be visible for A records, but ensure it
-      await ptrCheckbox.evaluate(el => { el.style.visibility = 'visible'; });
-      await ptrCheckbox.check();
-      expect(await ptrCheckbox.isChecked()).toBe(true);
+        await page.locator('button[type="submit"]').first().click();
+        await page.waitForLoadState('domcontentloaded');
 
-      // Submit
-      await page.locator('button[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-      // Verify no errors
-      const resultText = await page.locator('body').textContent();
-      expect(resultText).not.toMatch(/fatal|exception/i);
-
-      // Check success message mentions matching record
-      const hasMatchingMessage = resultText.includes('matching') || resultText.includes('PTR');
-      // Even without specific message, verify the PTR was created
-      const ptrExists = await recordExistsInZone(
-        page, reverseZoneId,
-        '99.2.0.192.in-addr.arpa',
-        'PTR',
-        `${testHostname}.manager-zone.example.com`
-      );
-      expect(ptrExists).toBe(true);
+        // The page must report success, and it must be true: reporting success
+        // for a PTR that was never written was a real defect
+        await expect(page.locator('body')).toContainText('have been added successfully');
+        const ptrExists = await recordExistsInZone(
+          page, reverseZoneId,
+          `99.${reverse.name}`,
+          'PTR',
+          `${testHostname}.${tempZone.name}`
+        );
+        expect(ptrExists).toBe(true);
+      });
     });
   });
 
   test.describe('PTR record with Add A/AAAA checkbox', () => {
-    const testHostname = `match-a-${timestamp}.manager-zone.example.com`;
+    const testLabel = `match-a-${timestamp}`;
     const testPtrName = '98';
 
-    test('should create matching A record when adding PTR record', async ({ page }) => {
+    test('should create matching A record when adding PTR record', async ({ page, tempZone }) => {
+      test.slow(); // creates throwaway zones on top of the test itself
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      const hostname = `${testLabel}.${tempZone.name}`;
 
-      // Find reverse zone
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone 2.0.192.in-addr.arpa not found - load test data first');
-        return;
-      }
+      await withReverseZone(page, async (reverseZoneId, reverse) => {
+        const forwardZoneId = tempZone.id;
 
-      // Find forward zone (to verify later)
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone manager-zone.example.com not found - load test data first');
-        return;
-      }
+        await page.goto(`/zones/${reverseZoneId}/records/add`);
+        const bodyText = await page.locator('body').textContent();
+        expect(bodyText).not.toMatch(/fatal|exception/i);
 
-      // Add PTR record with A/AAAA checkbox
-      await page.goto(`/zones/${reverseZoneId}/records/add`);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+        await page.locator('select[name="records[0][type]"]').selectOption('PTR');
+        await page.locator('input[name="records[0][name]"]').fill(testPtrName);
+        await page.locator('input[name="records[0][content]"]').fill(hostname);
 
-      // Fill in the PTR record
-      await page.locator('select[name="records[0][type]"]').selectOption('PTR');
-      await page.locator('input[name="records[0][name]"]').fill(testPtrName);
-      await page.locator('input[name="records[0][content]"]').fill(testHostname);
+        const domainCheckbox = page.locator('input[name="records[0][create_domain_record]"]');
+        await domainCheckbox.waitFor({ state: 'attached' });
+        await domainCheckbox.check();
+        expect(await domainCheckbox.isChecked()).toBe(true);
 
-      // Check the A/AAAA checkbox
-      const domainCheckbox = page.locator('input[name="records[0][create_domain_record]"]');
-      await domainCheckbox.waitFor({ state: 'attached' });
-      await domainCheckbox.check();
-      expect(await domainCheckbox.isChecked()).toBe(true);
+        await page.locator('button[type="submit"]').first().click();
+        await page.waitForLoadState('domcontentloaded');
 
-      // Submit
-      await page.locator('button[type="submit"]').first().click();
-      await page.waitForLoadState('domcontentloaded');
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-      // Verify no errors
-      const resultText = await page.locator('body').textContent();
-      expect(resultText).not.toMatch(/fatal|exception/i);
-
-      // Verify the A record was created in the forward zone
-      const aRecordExists = await recordExistsInZone(
-        page, forwardZoneId,
-        testHostname,
-        'A',
-        '192.0.2.98'
-      );
-      expect(aRecordExists).toBe(true);
+        // Verify the A record was created in the forward zone
+        const aRecordExists = await recordExistsInZone(
+          page, forwardZoneId,
+          hostname,
+          'A',
+          reverse.ip(98)
+        );
+        expect(aRecordExists).toBe(true);
+      });
     });
   });
 
@@ -176,11 +169,8 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
     test('should show Add PTR checkbox only for A/AAAA records in forward zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const forwardZoneId = await getZoneIdByName(page, 'manager-zone.example.com', 'forward');
-      if (!forwardZoneId) {
-        test.skip('Forward zone not found');
-        return;
-      }
+      const forwardZoneId = await getTestZoneId(page, 'manager');
+      expect(forwardZoneId, 'manager-zone.example.com must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${forwardZoneId}/records/add`);
 
@@ -203,11 +193,8 @@ test.describe('Matching Record Creation (Issue #1104)', () => {
     test('should show Add A/AAAA checkbox in reverse zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      const reverseZoneId = await getZoneIdByName(page, '2.0.192.in-addr.arpa', 'reverse');
-      if (!reverseZoneId) {
-        test.skip('Reverse zone not found');
-        return;
-      }
+      const reverseZoneId = await getTestZoneId(page, 'reverseIPv4');
+      expect(reverseZoneId, '2.0.192.in-addr.arpa must exist in the standard test data').toBeTruthy();
 
       await page.goto(`/zones/${reverseZoneId}/records/add`);
 

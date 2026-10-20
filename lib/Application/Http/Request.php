@@ -22,15 +22,29 @@
 
 namespace Poweradmin\Application\Http;
 
+/**
+ * Snapshot of the $_GET, $_POST and $_SERVER superglobals with typed accessors for controllers.
+ */
 class Request
 {
     protected array $queryParams;
     protected array $postParams;
     protected array $serverParams;
 
-    public function __construct()
+    /**
+     * Without arguments the request is a snapshot of the superglobals; given any,
+     * it is built from those arrays instead (tests, or a request assembled by hand).
+     */
+    public function __construct(?array $queryParams = null, ?array $postParams = null, ?array $serverParams = null)
     {
-        $this->refresh();
+        if ($queryParams === null && $postParams === null && $serverParams === null) {
+            $this->refresh();
+            return;
+        }
+
+        $this->queryParams = $queryParams ?? [];
+        $this->postParams = $postParams ?? [];
+        $this->serverParams = $serverParams ?? [];
     }
 
     /**
@@ -61,6 +75,24 @@ class Request
     public function getPostParam(string $key, $default = null)
     {
         return $this->postParams[$key] ?? $default;
+    }
+
+    /**
+     * 1-based page number from the query string, never below 1.
+     */
+    public function getPage(string $key = 'start'): int
+    {
+        return max(1, (int)filter_var($this->queryParams[$key] ?? 1, FILTER_SANITIZE_NUMBER_INT));
+    }
+
+    /**
+     * Requested page size from the query string, or null when absent or not a positive integer.
+     */
+    public function getRowsPerPage(string $key = 'rows_per_page'): ?int
+    {
+        $value = filter_var($this->queryParams[$key] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+
+        return $value === false ? null : $value;
     }
 
     /**

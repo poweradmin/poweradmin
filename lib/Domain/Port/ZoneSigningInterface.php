@@ -1,0 +1,51 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Port;
+
+/**
+ * Signing state of a zone: securing, unsecuring and reading whether it is signed.
+ */
+interface ZoneSigningInterface
+{
+    public function secureZone(string $zoneName): bool;
+    public function unsecureZone(string $zoneName): bool;
+    public function isZoneSecured(string $zoneName, $config): bool;
+
+    /**
+     * Whether the zone is signed, or null when PowerDNS could not be asked.
+     */
+    public function fetchZoneSecured(string $zoneName): ?bool;
+
+    /**
+     * Whether the zone carries the PRESIGNED metadata, meaning it was signed
+     * at the primary server and DNSSEC cannot be managed locally.
+     */
+    public function isZonePresigned(string $zoneName): bool;
+    public function isDnssecEnabled(): bool;
+
+    /**
+     * Serial as served by PowerDNS with SOA-EDIT applied (the "signed" serial),
+     * or null when the server does not expose it or the zone cannot be read.
+     */
+    public function getEditedSerial(string $zoneName): ?int;
+}

@@ -6,6 +6,11 @@
 
 import { test, expect } from '@playwright/test';
 
+// Seeded by .devcontainer/sql/test-extra-data-*.sql. The reset form only renders
+// for a valid, unexpired token, so the form tests below need this rather than a
+// made-up value.
+const VALID_TOKEN = 'e2e-password-reset-token';
+
 test.describe('Reset Password Page', () => {
   test.describe('Page Access', () => {
     test('should access reset password page with token parameter', async ({ page }) => {
@@ -40,7 +45,7 @@ test.describe('Reset Password Page', () => {
     });
 
     test('should not require authentication', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const url = page.url();
       expect(url).toMatch(/reset/);
@@ -49,7 +54,7 @@ test.describe('Reset Password Page', () => {
 
   test.describe('Form Elements', () => {
     test('should display password input field or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const passwordInput = page.locator('input[name="password"], input#password');
       const alert = page.locator('.alert');
@@ -62,7 +67,7 @@ test.describe('Reset Password Page', () => {
     });
 
     test('should display confirm password field or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const confirmInput = page.locator('input[name="confirm_password"], input#confirm_password');
       const alert = page.locator('.alert');
@@ -74,7 +79,7 @@ test.describe('Reset Password Page', () => {
     });
 
     test('should display reset password button or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const submitBtn = page.locator('button[type="submit"], input[type="submit"]');
       const alert = page.locator('.alert');
@@ -86,7 +91,7 @@ test.describe('Reset Password Page', () => {
     });
 
     test('should have reset token hidden field or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const tokenInput = page.locator('input[name="reset_password_token"]');
       const alert = page.locator('.alert');
@@ -98,7 +103,7 @@ test.describe('Reset Password Page', () => {
     });
 
     test('should have password visibility toggle or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const toggleBtn = page.locator('button[onclick*="showPassword"]');
       const alert = page.locator('.alert');
@@ -112,7 +117,7 @@ test.describe('Reset Password Page', () => {
 
   test.describe('Back to Login Link', () => {
     test('should display back to login link or forgot password link', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const backLink = page.locator('a[href*="login"], a[href*="forgot"]');
       expect(await backLink.count()).toBeGreaterThan(0);
@@ -123,62 +128,61 @@ test.describe('Reset Password Page', () => {
 test.describe('Reset Password Validation', () => {
   test.describe('Empty Field Validation', () => {
     test('should reject empty password', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const submitBtn = page.locator('button[type="submit"]');
 
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
+      expect(await submitBtn.count()).toBeGreaterThan(0);
 
-        const url = page.url();
-        expect(url).toMatch(/reset/);
-      }
+      await submitBtn.click();
+
+      const url = page.url();
+      expect(url).toMatch(/reset/);
     });
 
     test('should mark password as required', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const passwordInput = page.locator('input[name="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const isRequired = await passwordInput.getAttribute('required');
-        expect(isRequired !== null).toBeTruthy();
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const isRequired = await passwordInput.getAttribute('required');
+      expect(isRequired !== null).toBeTruthy();
     });
 
     test('should mark confirm password as required', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const confirmInput = page.locator('input[name="confirm_password"]');
 
-      if (await confirmInput.count() > 0) {
-        const isRequired = await confirmInput.getAttribute('required');
-        expect(isRequired !== null).toBeTruthy();
-      }
+      expect(await confirmInput.count()).toBeGreaterThan(0);
+
+      const isRequired = await confirmInput.getAttribute('required');
+      expect(isRequired !== null).toBeTruthy();
     });
   });
 
   test.describe('Password Match Validation', () => {
     test('should reject mismatched passwords', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
+      // The seeded token renders the real form, so both fields are always present
       const passwordInput = page.locator('input[name="password"]');
       const confirmInput = page.locator('input[name="confirm_password"]');
+      await expect(passwordInput).toHaveCount(1);
+      await expect(confirmInput).toHaveCount(1);
 
-      if (await passwordInput.count() > 0 && await confirmInput.count() > 0) {
-        await passwordInput.fill('Password123!');
-        await confirmInput.fill('DifferentPassword123!');
+      await passwordInput.fill('Password123!');
+      await confirmInput.fill('DifferentPassword123!');
+      await page.locator('button[type="submit"]').click();
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/match|reset|password/i);
-      }
+      // The page says "password" either way, so assert the mismatch message itself
+      await expect(page.locator('body')).toContainText(/Passwords do not match/i);
     });
 
     test('should have client-side password match validation', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const hasForm = await page.locator('form').count() > 0;
       const hasAlert = await page.locator('.alert').count() > 0;
@@ -192,7 +196,7 @@ test.describe('Reset Password Validation', () => {
 test.describe('Reset Password Policy', () => {
   test.describe('Password Requirements Display', () => {
     test('should display password requirements or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       // Either form with password requirements shown OR error alert
       const requirementsInfo = page.locator('.alert-info');
@@ -205,7 +209,7 @@ test.describe('Reset Password Policy', () => {
     });
 
     test('should show minimum length requirement or error alert', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       // Either form with password requirements shown OR error alert
       const requirementsInfo = page.locator('.alert-info');
@@ -218,14 +222,14 @@ test.describe('Reset Password Policy', () => {
     });
   });
 
-  test.describe('Policy Error Display', () => {
-    test('should display policy errors when password does not meet requirements', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+  test.describe('Invalid Token Handling', () => {
+    // Renamed from a policy-error test: an unknown token never reaches the
+    // password form, so policy errors could not be what this exercises.
+    test('should refuse an unknown token instead of offering the form', async ({ page }) => {
+      await page.goto('/password/reset?token=not-a-real-token');
 
-      const bodyText = await page.locator('body').textContent();
-
-      const hasAlertStructure = await page.locator('.alert').count() >= 0;
-      expect(hasAlertStructure).toBeTruthy();
+      await expect(page.locator('.alert')).toContainText(/invalid|expired/i);
+      expect(await page.locator('form').count()).toBe(0);
     });
   });
 });
@@ -233,14 +237,14 @@ test.describe('Reset Password Policy', () => {
 test.describe('Reset Password Success State', () => {
   test.describe('Success Message', () => {
     test('should have success alert template structure', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.length).toBeGreaterThan(0);
     });
 
     test('should have go to login button or forgot password link', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       // Link to login or forgot password (for requesting new reset link)
       const link = page.locator('a[href*="login"], a[href*="forgot"]');
@@ -282,7 +286,7 @@ test.describe('Reset Password Error States', () => {
 test.describe('Reset Password User Display', () => {
   test.describe('Email Display', () => {
     test('should display user email when token valid', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const bodyText = await page.locator('body').textContent();
 
@@ -298,7 +302,7 @@ test.describe('Reset Password User Display', () => {
 test.describe('Reset Password Bootstrap Validation', () => {
   test.describe('Client-Side Validation', () => {
     test('should use Bootstrap validation classes or show error', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const form = page.locator('form.needs-validation');
       const alert = page.locator('.alert');
@@ -310,7 +314,7 @@ test.describe('Reset Password Bootstrap Validation', () => {
     });
 
     test('should have invalid feedback elements or show error', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const invalidFeedback = page.locator('.invalid-feedback');
       const alert = page.locator('.alert');
@@ -326,7 +330,7 @@ test.describe('Reset Password Bootstrap Validation', () => {
 test.describe('Reset Password Accessibility', () => {
   test.describe('Form Labels', () => {
     test('should have label for password input or show error', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const label = page.locator('label[for="password"]');
       const alert = page.locator('.alert');
@@ -338,7 +342,7 @@ test.describe('Reset Password Accessibility', () => {
     });
 
     test('should have label for confirm password input or show error', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const label = page.locator('label[for="confirm_password"]');
       const alert = page.locator('.alert');
@@ -350,38 +354,38 @@ test.describe('Reset Password Accessibility', () => {
     });
 
     test('should have autofocus on password input', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const passwordInput = page.locator('input[name="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const hasAutofocus = await passwordInput.getAttribute('autofocus');
-        expect(hasAutofocus !== null).toBeTruthy();
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const hasAutofocus = await passwordInput.getAttribute('autofocus');
+      expect(hasAutofocus !== null).toBeTruthy();
     });
   });
 
   test.describe('Password Visibility', () => {
     test('should have password type for inputs', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const passwordInput = page.locator('input[name="password"]');
 
-      if (await passwordInput.count() > 0) {
-        const inputType = await passwordInput.getAttribute('type');
-        expect(inputType).toBe('password');
-      }
+      expect(await passwordInput.count()).toBeGreaterThan(0);
+
+      const inputType = await passwordInput.getAttribute('type');
+      expect(inputType).toBe('password');
     });
 
     test('should have password type for confirm input', async ({ page }) => {
-      await page.goto('/password/reset?token=test');
+      await page.goto(`/password/reset?token=${VALID_TOKEN}`);
 
       const confirmInput = page.locator('input[name="confirm_password"]');
 
-      if (await confirmInput.count() > 0) {
-        const inputType = await confirmInput.getAttribute('type');
-        expect(inputType).toBe('password');
-      }
+      expect(await confirmInput.count()).toBeGreaterThan(0);
+
+      const inputType = await confirmInput.getAttribute('type');
+      expect(inputType).toBe('password');
     });
   });
 });

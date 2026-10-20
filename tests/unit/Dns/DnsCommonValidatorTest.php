@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,26 +22,42 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use Poweradmin\Domain\Service\Validation\RecordField;
+use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
  * Tests for common DNS validation functions
  */
-class DnsCommonValidatorTest extends TestCase
+class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
 {
+
     private DnsCommonValidator $validator;
-    private MockObject&PDO $dbMock;
-    private MockObject&ConfigurationManager $configMock;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDO::class);
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->validator = new DnsCommonValidator($this->dbMock, $this->configMock);
+        $this->validator = new DnsCommonValidator($this->sqliteBackendProvider([
+            [10, 1, 'example.com', 'A', '192.0.2.1'],
+            [11, 1, 'has.cname.example.com', 'CNAME', 'example.com'],
+        ]));
+    }
+
+    /**
+     * The record forms enable the priority field from RecordType::TYPES_WITH_PRIORITY;
+     * the list must match what the common validator actually stores.
+     */
+    public function testTypesWithPriorityMatchTheValidator(): void
+    {
+        foreach (['MX', 'SRV'] as $type) {
+            $this->assertContains($type, RecordType::TYPES_WITH_PRIORITY);
+            $this->assertSame(10, $this->validator->validatePriority('10', $type)->getData());
+        }
+        // KX validates its own preference; NAPTR carries it inside the content.
+        $this->assertContains('KX', RecordType::TYPES_WITH_PRIORITY);
+        $this->assertNotContains('NAPTR', RecordType::TYPES_WITH_PRIORITY);
+        $this->assertSame(0, $this->validator->validatePriority('10', 'NAPTR')->getData());
     }
 
     /**
@@ -81,6 +97,7 @@ class DnsCommonValidatorTest extends TestCase
 
         $result8 = $this->validator->validatePriority("invalid", "MX");
         $this->assertFalse($result8->isValid());
+        $this->assertSame(RecordField::PRIO, $result8->getField());
     }
 
     public function testValidatePriorityWithSrvRecords()
@@ -128,19 +145,6 @@ class DnsCommonValidatorTest extends TestCase
      */
     public function testValidateNonAliasTargetWithNoCname()
     {
-        // Configure mock for database name
-        $this->configMock->method('get')
-            ->willReturn('pdns');
-
-        // Configure mock for prepared statement
-        $stmtMock = $this->createMock(\PDOStatement::class);
-        $stmtMock->method('execute')->willReturn(true);
-        $stmtMock->method('fetchColumn')->willReturn(false); // No CNAME found
-
-        $this->dbMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
         $result = $this->validator->validateNonAliasTarget("example.com");
         $this->assertTrue($result->isValid());
         $this->assertTrue($result->getData());
@@ -148,22 +152,10 @@ class DnsCommonValidatorTest extends TestCase
 
     public function testValidateNonAliasTargetWithCname()
     {
-        // Configure mock for database name
-        $this->configMock->method('get')
-            ->willReturn('pdns');
-
-        // Configure mock for prepared statement
-        $stmtMock = $this->createMock(\PDOStatement::class);
-        $stmtMock->method('execute')->willReturn(true);
-        $stmtMock->method('fetchColumn')->willReturn(1); // CNAME found
-
-        $this->dbMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
         $result = $this->validator->validateNonAliasTarget("has.cname.example.com");
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
         $this->assertStringContainsString('You can not point a NS or MX record to a CNAME record', $result->getFirstError());
+        $this->assertSame(RecordField::CONTENT, $result->getField());
     }
 }

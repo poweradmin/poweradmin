@@ -1,11 +1,32 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { createZone, deleteZoneByName, uniqueZoneName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Zone CRUD Operations', () => {
+  const created = [];
+
+  // Zones the form tests may have created; the delete tests remove their own
+  function track(name) {
+    created.push(name);
+    return name;
+  }
+
+  test.afterAll(async ({ browser }) => {
+    const page = await browser.newPage();
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      for (const name of created) {
+        await deleteZoneByName(page, name);
+      }
+    } finally {
+      await page.close();
+    }
+  });
+
   test.describe('List Zones', () => {
     test('admin should see all zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -67,7 +88,7 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should create master zone with valid domain', async ({ page }) => {
-      const uniqueDomain = `master-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.example.com`;
+      const uniqueDomain = track(uniqueZoneName('crudm'));
       await page.goto('/zones/add/master');
 
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(uniqueDomain);
@@ -136,21 +157,21 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should create slave zone with valid data', async ({ page }) => {
-      const uniqueDomain = `slave-${Date.now()}.example.com`;
+      const uniqueDomain = track(uniqueZoneName('crud-slave'));
       await page.goto('/zones/add/slave');
 
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(uniqueDomain);
       await page.locator('input[name*="master"], input[name*="ip"]').first().fill('192.168.1.1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should reject empty master IP', async ({ page }) => {
       await page.goto('/zones/add/slave');
 
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(`slave-${Date.now()}.example.com`);
+      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(track(uniqueZoneName('crud-nomaster')));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       const url = page.url();
@@ -160,11 +181,11 @@ test.describe('Zone CRUD Operations', () => {
     test('should accept IPv6 master address', async ({ page }) => {
       await page.goto('/zones/add/slave');
 
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(`slave-ipv6-${Date.now()}.example.com`);
+      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(track(uniqueZoneName('crud-ipv6')));
       await page.locator('input[name*="master"], input[name*="ip"]').first().fill('2001:db8::1');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
   });
@@ -175,33 +196,27 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should display delete confirmation message', async ({ page }) => {
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      // Own zone: the first delete link on the list belongs to whichever spec got there first
+      const zoneId = await createZone(page, track(uniqueZoneName('crud-dconf')));
+      await page.goto(`/zones/${zoneId}/delete`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
 
-        // Auto-retrying assertion: the click navigation may still be in flight.
-        await expect(page.locator('body')).toContainText(/delete|confirm|sure/i);
-      }
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should cancel delete and return to previous page', async ({ page }) => {
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const zoneName = track(uniqueZoneName('crud-dcancel'));
+      const zoneId = await createZone(page, zoneName);
+      await page.goto(`/zones/${zoneId}/delete`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await page.locator('[data-testid="cancel-delete-zone"]').click();
+      await expect(page).toHaveURL(/zones\/forward/);
 
-        const noBtn = page.locator('a:has-text("No"), button:has-text("No")').first();
-        if (await noBtn.count() > 0) {
-          await noBtn.click();
-
-          const url = page.url();
-          const validReturn = url.includes('zones/forward') || url.includes('/edit');
-          expect(validReturn).toBeTruthy();
-        }
-      }
+      // Cancelling must leave the zone alone
+      await page.goto(`/zones/${zoneId}/delete`);
+      await expect(page.locator('body')).toContainText(zoneName);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 
@@ -214,9 +229,9 @@ test.describe('Zone CRUD Operations', () => {
       // Client may or may not have zone add permissions depending on configuration
       const mainContent = page.locator('main, .content, #content, .container-fluid > .row').first();
       const addMasterBtn = mainContent.locator('a[href*="/zones/add/master"]');
-      // Test passes if no add buttons in main content, or if page loads without error
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
+      expect(await addMasterBtn.count()).toBe(0);
     });
 
     test('viewer should not have delete zone buttons', async ({ page }) => {

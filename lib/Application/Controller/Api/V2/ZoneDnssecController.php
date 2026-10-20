@@ -20,33 +20,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for zone DNSSEC operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\DnssecProvider;
-use Poweradmin\Domain\Service\ZoneValidationService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Port\ZoneSigningInterface;
+use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
+use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/zones/{id}/dnssec: reports the signing status of a zone and signs or unsigns it.
+ */
 #[OA\Schema(
     schema: 'ZoneDnssecStatus',
     description: 'DNSSEC signing status of a zone',
@@ -72,22 +66,22 @@ use Exception;
 )]
 class ZoneDnssecController extends PublicApiController
 {
-    protected ZoneRepositoryInterface $zoneRepository;
+    protected DomainRepositoryInterface $domainRepository;
     protected ApiPermissionService $apiPermissionService;
-    protected DnssecProvider $dnssecProvider;
+    protected ZoneSigningInterface $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, null, $this->logger);
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->dnssecProvider = $this->services()->dnssecProvider();
 
         // DNSSEC works whenever the PowerDNS API is configured, independent of the
         // dns.backend setting; createApiClient() returns null when it is not.
-        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->session(), $this->logger);
     }
 
     public function run(): void
@@ -97,11 +91,10 @@ class ZoneDnssecController extends PublicApiController
         $response = match ($method) {
             'GET' => $this->getStatus(),
             'POST' => $this->setStatus(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // Enabling/disabling DNSSEC on an existing zone is an update, not a create,
@@ -155,7 +148,8 @@ class ZoneDnssecController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -167,11 +161,6 @@ class ZoneDnssecController extends PublicApiController
             return $this->returnApiError('DNSSEC management requires the PowerDNS API to be configured', 501);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
-        }
-
         try {
             $status = $this->buildStatus($zoneName);
             if ($status instanceof JsonResponse) {
@@ -179,7 +168,7 @@ class ZoneDnssecController extends PublicApiController
             }
             return $this->returnApiResponse($status, true, 'DNSSEC status retrieved successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneDnssecController::getStatus', 'Failed to retrieve DNSSEC status');
         }
     }
 
@@ -237,7 +226,8 @@ class ZoneDnssecController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -249,130 +239,50 @@ class ZoneDnssecController extends PublicApiController
             return $this->returnApiError('DNSSEC management requires the PowerDNS API to be configured', 501);
         }
 
-        $data = json_decode($this->request->getContent(), true);
-        $enabled = is_array($data) ? $this->inputBool($data, 'enabled') : null;
+        $data = $this->getValidatedJsonBody();
+        $enabled = $data !== null ? $this->inputBool($data, 'enabled') : null;
         if ($enabled === null) {
             return $this->returnApiError('Missing or invalid required field: enabled (boolean)', 400);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
-        }
-
         try {
-            // Ask first: the server-settings and presigned lookups below read a failed request as "off"
-            $secured = $this->apiClient->fetchZoneSecured(new Zone($zoneName));
-            if ($secured === null) {
-                return $this->unreachable();
-            }
+            $signing = $this->zoneSigningService();
+            $result = $enabled ? $signing->sign($zoneId, $zoneName) : $signing->unsign($zoneId, $zoneName);
 
-            if ($enabled && !$this->dnssecProvider->isDnssecEnabled()) {
-                return $this->returnApiError('DNSSEC is not enabled on the server', 400);
-            }
-
-            if ($this->dnssecProvider->isZonePresigned($zoneName)) {
-                return $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409);
-            }
-
-            // No-op when the zone is already in the requested state: return the current
-            // status without re-signing or bumping the SOA serial (matches the web UI).
-            if ($secured === $enabled) {
+            $message = match ($result->outcome) {
+                ZoneSigningOutcome::SIGNED => 'DNSSEC enabled successfully',
+                ZoneSigningOutcome::UNSIGNED => 'DNSSEC disabled successfully',
+                ZoneSigningOutcome::ALREADY_SIGNED => 'DNSSEC already enabled',
+                ZoneSigningOutcome::NOT_SIGNED => 'DNSSEC already disabled',
+                default => null,
+            };
+            if ($message !== null) {
                 $status = $this->buildStatus($zoneName);
-                if ($status instanceof JsonResponse) {
-                    return $status;
-                }
-                $message = $enabled ? 'DNSSEC already enabled' : 'DNSSEC already disabled';
-                return $this->returnApiResponse($status, true, $message);
+                return $status instanceof JsonResponse ? $status : $this->returnApiResponse($status, true, $message);
             }
 
-            // Mirror the web UI: validate the zone before signing so an invalid zone
-            // is rejected without mutating the SOA serial, bump the serial before
-            // signing (and after unsigning), and rectify after signing.
-            if ($enabled) {
-                $validationError = $this->validateZoneForSigning($zoneId, $zoneName);
-                if ($validationError !== null) {
-                    return $this->returnApiError($validationError, 400);
-                }
-                $this->bumpSoaSerial($zoneId);
-                $result = $this->dnssecProvider->secureZone($zoneName);
-            } else {
-                $result = $this->dnssecProvider->unsecureZone($zoneName);
-            }
-
-            if (!$result) {
-                return $this->returnApiError('Failed to update DNSSEC status', 500);
-            }
-
-            // buildStatus() re-reads the signed state, so use it to both confirm the
-            // change took effect and return the resulting DS records in one pass.
-            $status = $this->buildStatus($zoneName);
-            if ($status instanceof JsonResponse) {
-                // PowerDNS accepted the write, so its follow-up steps still run; only the confirmation is missing
-                $this->finishDnssecChange($zoneId, $zoneName, $enabled);
-                $message = $enabled
-                    ? 'DNSSEC was enabled, but PowerDNS did not confirm the new state'
-                    : 'DNSSEC was disabled, but PowerDNS did not confirm the new state';
-                return $this->returnApiError($message, 502);
-            }
-            if ($status['enabled'] !== $enabled) {
-                return $this->returnApiError('Failed to update DNSSEC status', 500);
-            }
-
-            $this->finishDnssecChange($zoneId, $zoneName, $enabled);
-
-            $message = $enabled ? 'DNSSEC enabled successfully' : 'DNSSEC disabled successfully';
-            return $this->returnApiResponse($status, true, $message);
+            return match ($result->outcome) {
+                ZoneSigningOutcome::UNREACHABLE => $this->unreachable(),
+                ZoneSigningOutcome::UNCONFIRMED => $this->returnApiError(
+                    $enabled ? 'DNSSEC was enabled, but PowerDNS did not confirm the new state' : 'DNSSEC was disabled, but PowerDNS did not confirm the new state',
+                    RefusalStatus::of(Refusal::BACKEND_UNREACHABLE)
+                ),
+                ZoneSigningOutcome::SERVER_DISABLED => $this->returnApiError('DNSSEC is not enabled on the server', 400),
+                ZoneSigningOutcome::PRESIGNED => $this->returnApiError('DNSSEC for this zone is presigned and managed at the primary server', 409),
+                ZoneSigningOutcome::INVALID_ZONE => $this->returnApiError($result->detail, 400),
+                default => $this->returnApiError('Failed to update DNSSEC status', 500),
+            };
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneDnssecController::setStatus', 'Failed to update DNSSEC status');
         }
     }
 
     /**
-     * Rectify after signing or bump the serial after unsigning, and audit the change, as the web UI does.
+     * The signing steps shared with the web pages.
      */
-    private function finishDnssecChange(int $zoneId, string $zoneName, bool $enabled): void
+    protected function zoneSigningService(): ZoneSigningService
     {
-        if ($enabled) {
-            $this->dnssecProvider->rectifyZone($zoneName);
-        } else {
-            $this->bumpSoaSerial($zoneId);
-        }
-
-        $this->logDnssecChange($zoneId, $zoneName, $enabled);
-    }
-
-    /**
-     * Run the same DNSSEC pre-flight validation as the web UI (active SOA and NS
-     * records present). Returns a formatted error message, or null when valid.
-     */
-    protected function validateZoneForSigning(int $zoneId, string $zoneName): ?string
-    {
-        $validator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
-        $result = $validator->validateZoneForDnssec($zoneId, $zoneName);
-        return $result['valid'] ? null : $validator->getFormattedErrorMessage($result);
-    }
-
-    /**
-     * Bump the zone's SOA serial so secondaries pick up the DNSSEC change,
-     * matching the web UI sign/unsign flow.
-     */
-    protected function bumpSoaSerial(int $zoneId): void
-    {
-        DnsServiceFactory::createSOARecordManager($this->db, $this->config)->updateSOASerial($zoneId);
-    }
-
-    /**
-     * Record a DNSSEC sign/unsign action in the audit log, matching the web UI.
-     */
-    protected function logDnssecChange(int $zoneId, string $zoneName, bool $enabled): void
-    {
-        $auditService = new AuditService($this->db);
-        if ($enabled) {
-            $auditService->logDnssecSignZone($zoneId, $zoneName);
-        } else {
-            $auditService->logDnssecUnsignZone($zoneId, $zoneName);
-        }
+        return $this->services()->zoneSigningService();
     }
 
     /**
@@ -383,8 +293,7 @@ class ZoneDnssecController extends PublicApiController
      */
     private function buildStatus(string $zoneName): array|JsonResponse
     {
-        $zone = new Zone($zoneName);
-        $enabled = $this->apiClient->fetchZoneSecured($zone);
+        $enabled = $this->dnssecProvider->fetchZoneSecured($zoneName);
         if ($enabled === null) {
             return $this->unreachable();
         }
@@ -393,7 +302,7 @@ class ZoneDnssecController extends PublicApiController
         $dnskey = null;
 
         if ($enabled) {
-            $keys = $this->apiClient->fetchZoneKeys($zone);
+            $keys = $this->apiClient?->fetchZoneKeys(new Zone($zoneName));
             if ($keys === null) {
                 return $this->unreachable();
             }
@@ -424,7 +333,7 @@ class ZoneDnssecController extends PublicApiController
      */
     private function unreachable(): JsonResponse
     {
-        return $this->returnApiError('Failed to retrieve DNSSEC status from PowerDNS', 502);
+        return $this->returnApiError('Failed to retrieve DNSSEC status from PowerDNS', RefusalStatus::of(Refusal::BACKEND_UNREACHABLE));
     }
 
     /**

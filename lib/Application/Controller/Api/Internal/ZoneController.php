@@ -20,25 +20,20 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Internal API controller for zone operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Internal endpoint /api/internal/zone: lists or fetches zones the logged-in user may view.
+ */
 class ZoneController extends InternalApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
+    private ZoneReadRepositoryInterface $zoneRepository;
     private UserContextService $userContextService;
 
     /**
@@ -50,8 +45,8 @@ class ZoneController extends InternalApiController
     {
         parent::__construct($request);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->userContextService = new UserContextService();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     /**
@@ -75,8 +70,8 @@ class ZoneController extends InternalApiController
      */
     private function hasAnyZoneViewPermission(): bool
     {
-        return $this->hasPermission('zone_content_view_own')
-            || $this->hasPermission('zone_content_view_others');
+        return $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OWN)
+            || $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
     }
 
     /**
@@ -91,7 +86,7 @@ class ZoneController extends InternalApiController
         // Scope to the user's own zones unless they hold zone_content_view_others.
         // Without these args the repository defaults leak every zone in the system.
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-        $viewOthers = $this->hasPermission('zone_content_view_others');
+        $viewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
         $zones = $this->zoneRepository->listZones($userId, $viewOthers);
 
         return $this->returnJsonResponse([
@@ -108,6 +103,9 @@ class ZoneController extends InternalApiController
 
     /**
      * Get a specific zone by ID
+     *
+     * Serialises ZoneDetail::toArray() unchanged, so that method documents the response
+     * keys (master, account, owner, record_count added in 4.6.0).
      */
     private function getZone(): JsonResponse
     {
@@ -122,15 +120,11 @@ class ZoneController extends InternalApiController
             return $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
         }
 
-        $viewOthers = $this->hasPermission('zone_content_view_others');
+        $viewOthers = $this->hasPermission(Permission::PERM_ZONE_CONTENT_VIEW_OTHERS);
 
-        // Check if user can view this zone
-        if (!$viewOthers) {
-            // Verify that the zone belongs to the current user
-            $userId = $this->userContextService->getLoggedInUserId() ?? 0;
-            if (!$this->zoneRepository->zoneExists($zoneId, $userId)) {
-                return $this->returnErrorResponse('Zone not found or access denied', 404);
-            }
+        // A zone the user neither owns nor may view others of reads as missing
+        if (!$viewOthers && !$this->isZoneOwner($zoneId)) {
+            return $this->returnErrorResponse('Zone not found or access denied', 404);
         }
 
         $zone = $this->zoneRepository->getZone($zoneId);
@@ -143,7 +137,7 @@ class ZoneController extends InternalApiController
             'success' => true,
             'message' => 'Zone retrieved successfully',
             'data' => [
-                'zone' => $zone
+                'zone' => $zone->toArray()
             ],
             'meta' => [
                 'timestamp' => date('Y-m-d H:i:s')

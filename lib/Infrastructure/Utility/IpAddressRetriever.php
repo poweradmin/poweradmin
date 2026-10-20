@@ -3,7 +3,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
@@ -25,17 +25,33 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Resolves the client IP from REMOTE_ADDR, honoring forwarded headers only from private or trusted proxy peers.
+ */
 class IpAddressRetriever
 {
     private array $server;
     private IPAddressValidator $ipValidator;
-    private array $trustedProxies;
+    private TrustedProxyList $trustedProxies;
 
-    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, ?array $trustedProxies = null)
+    /**
+     * @param array<int, string> $trustedProxies Public peers whose forwarded headers are honoured (security.trusted_proxies)
+     */
+    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, array $trustedProxies = [])
     {
         $this->server = $server;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
-        $this->trustedProxies = $trustedProxies ?? $this->loadTrustedProxiesFromConfig();
+        $this->trustedProxies = new TrustedProxyList($trustedProxies);
+    }
+
+    /**
+     * Build with the trusted proxy list from security.trusted_proxies.
+     */
+    public static function fromConfig(array $server, ConfigurationInterface $config, ?IPAddressValidator $ipValidator = null): self
+    {
+        $configured = $config->get('security', 'trusted_proxies', []);
+
+        return new self($server, $ipValidator, is_array($configured) ? $configured : []);
     }
 
     /**
@@ -110,7 +126,7 @@ class IpAddressRetriever
         }
 
         for ($i = count($ips) - 1; $i >= 0; $i--) {
-            if (!$this->matchesTrustedProxy($ips[$i])) {
+            if (!$this->trustedProxies->matches($ips[$i])) {
                 return $ips[$i];
             }
         }
@@ -137,96 +153,6 @@ class IpAddressRetriever
      */
     private function isTrustedPeer(string $ip): bool
     {
-        return $this->isPrivateOrReserved($ip) || $this->matchesTrustedProxy($ip);
-    }
-
-    /**
-     * Match a peer address against the configured allowlist, which may contain
-     * exact IPs, CIDR ranges (IPv4 or IPv6), or IPv4 wildcards (e.g. 203.0.113.*).
-     */
-    private function matchesTrustedProxy(string $ip): bool
-    {
-        foreach ($this->trustedProxies as $entry) {
-            if (!is_string($entry) || $entry === '') {
-                continue;
-            }
-
-            if ($this->ipsEqual($entry, $ip)) {
-                return true;
-            }
-
-            if (str_contains($entry, '/')) {
-                if ($this->ipMatchesCidr($ip, $entry)) {
-                    return true;
-                }
-                continue;
-            }
-
-            if (str_contains($entry, '*')) {
-                $pattern = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $entry) . '$/';
-                if (preg_match($pattern, $ip) === 1) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Compare two IP addresses by binary value so equivalent IPv6 forms
-     * (compressed vs expanded) match regardless of textual representation.
-     */
-    private function ipsEqual(string $a, string $b): bool
-    {
-        if ($a === $b) {
-            return true;
-        }
-
-        $aBin = @inet_pton($a);
-        $bBin = @inet_pton($b);
-        return $aBin !== false && $bBin !== false && $aBin === $bBin;
-    }
-
-    private function ipMatchesCidr(string $ip, string $cidr): bool
-    {
-        [$network, $prefix] = explode('/', $cidr, 2);
-        if ($prefix === '' || !ctype_digit($prefix)) {
-            return false;
-        }
-
-        $ipBin = @inet_pton($ip);
-        $netBin = @inet_pton($network);
-        if ($ipBin === false || $netBin === false || strlen($ipBin) !== strlen($netBin)) {
-            return false;
-        }
-
-        $prefix = (int) $prefix;
-        $maxBits = strlen($ipBin) * 8;
-        if ($prefix < 0 || $prefix > $maxBits) {
-            return false;
-        }
-        if ($prefix === 0) {
-            return true;
-        }
-
-        $fullBytes = intdiv($prefix, 8);
-        $remBits = $prefix % 8;
-
-        if ($fullBytes > 0 && substr($ipBin, 0, $fullBytes) !== substr($netBin, 0, $fullBytes)) {
-            return false;
-        }
-        if ($remBits === 0) {
-            return true;
-        }
-
-        $mask = chr((0xFF << (8 - $remBits)) & 0xFF);
-        return (ord($ipBin[$fullBytes]) & ord($mask)) === (ord($netBin[$fullBytes]) & ord($mask));
-    }
-
-    private function loadTrustedProxiesFromConfig(): array
-    {
-        $configured = ConfigurationManager::getInstance()->get('security', 'trusted_proxies', []);
-        return is_array($configured) ? $configured : [];
+        return $this->isPrivateOrReserved($ip) || $this->trustedProxies->matches($ip);
     }
 }

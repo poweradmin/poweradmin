@@ -12,7 +12,21 @@
         <h5 class="mb-0">{% trans %}Log in{% endtrans %}</h5>
     </div>
     <div class="card-body p-4">
-        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/login" novalidate>
+        {% if remote_user_name %}
+        <form method="post" action="{{ base_url_prefix }}/login/remote" class="d-grid">
+            {{ macros.csrf_field(login_token) }}
+            <button type="submit" class="btn btn-primary" data-testid="remote-user-login">
+                <i class="bi bi-person-check me-2 text-white"></i>{{ 'Continue as %user%'|trans({'%user%': remote_user_name}) }}
+            </button>
+        </form>
+        {% if not hide_password_form %}
+        <div class="text-center my-3">
+            <small class="text-muted">{% trans %}Or log in with a password{% endtrans %}</small>
+        </div>
+        {% endif %}
+        {% endif %}
+        <form id="password-login-form" class="needs-validation" method="post" action="{{ base_url_prefix }}/login" novalidate>
+            {% if not hide_password_form %}
             {{ macros.csrf_field(login_token) }}
             <div class="mb-3">
                 <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
@@ -42,6 +56,7 @@
             <div class="d-grid">
                 <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
             </div>
+            {% endif %}
             {% if (oidc_enabled and oidc_providers) or (saml_enabled and saml_providers) %}
             <div class="mt-3">
                 <div class="text-center mb-2">
@@ -71,17 +86,17 @@
                 {% endif %}
             </div>
             {% endif %}
-            {% if password_reset_enabled %}
+            {% if password_reset_enabled and not hide_password_form %}
             <div class="text-center mt-3">
                 <a href="{{ base_url_prefix }}/password/forgot" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
             </div>
             {% endif %}
-            {% if username_recovery_enabled %}
+            {% if username_recovery_enabled and not hide_password_form %}
             <div class="text-center mt-2">
                 <a href="{{ base_url_prefix }}/username/forgot" class="text-decoration-none">{% trans %}Forgot your username?{% endtrans %}</a>
             </div>
             {% endif %}
-            {% if recaptcha_enabled %}
+            {% if recaptcha_enabled and not hide_password_form %}
             <div class="text-center mt-2">
                 <small class="text-muted">
                     This site is protected by reCAPTCHA and the Google
@@ -94,14 +109,14 @@
     </div>
 </div>
 
-{% if recaptcha_enabled %}
+{% if recaptcha_enabled and not hide_password_form %}
     {% if recaptcha_version == 'v2' %}
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {% else %}
     <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
-            var form = document.querySelector('form');
+            var form = document.getElementById('password-login-form');
             var submitButton = document.querySelector('button[name="authenticate"]');
             var isSubmitting = false;
             
@@ -146,6 +161,9 @@
 {% endif %}
 <script type="text/javascript">
     <!--
-    document.getElementById('username').focus();
+    var usernameInput = document.getElementById('username');
+    if (usernameInput) {
+        usernameInput.focus();
+    }
     //-->
 </script>

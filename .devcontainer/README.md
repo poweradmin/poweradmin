@@ -4,13 +4,41 @@ This folder contains the Docker-based development environment for Poweradmin wit
 
 ## Quick Start
 
+The VS Code devcontainer creates the stack as compose project `poweradmin_devcontainer`.
+Reuse that name when driving it by hand, otherwise compose forks a second project with
+empty volumes and aborts on container-name conflicts:
+
 ```bash
-docker-compose up -d
+docker compose -f .devcontainer/docker-compose.yml --project-directory .devcontainer \
+  --project-name poweradmin_devcontainer up -d
 ```
+
+Then load the fixtures: `.devcontainer/scripts/import-test-data.sh`
+
+Each database family runs its own PHP version (set in `.env`), so one E2E sweep over the three
+SQL instances covers three versions at once:
+
+| Family | Instances | PHP |
+|--------|-----------|-----|
+| MySQL/MariaDB | 8080, 8083, 8086, 8088 | `PHP_VERSION_MYSQL` = 8.2 (the supported floor) |
+| SQLite | 8082, 8085 | `PHP_VERSION_SQLITE` = 8.3 |
+| PostgreSQL | 8081 (Apache), 8084 | `PHP_VERSION_PGSQL` = 8.4 (same as the production image) |
+| German-only | 8087 | `PHP_VERSION_DE` = 8.5 (newest release) |
+
+The images are tagged `poweradmin-devcontainer-fpm:<version>`; the first service of a family
+builds, the others reuse the tag. After editing `.devcontainer/Dockerfile` or a version in
+`.env`, run `docker compose ... build` and recreate the app services.
+
+Xdebug is off by default. Set `PHP_XDEBUG=1` in `.env`, rebuild the fpm images and recreate
+the app services; `conf/xdebug.ini` holds the client settings (`host.docker.internal`, port 9003).
+
+Only the web instances (8080-8088) listen on all interfaces. Databases, LDAP, the PowerDNS
+DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from
+other machines on your network.
 
 ## Architecture
 
-Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). All share the same PowerDNS servers (DNSSEC enabled):
+Each database has two Poweradmin instances - one using direct SQL and one using the PowerDNS REST API backend (experimental). Every instance has its own database and its own PowerDNS server (DNSSEC enabled), so the two instances of a family can run at the same time without writing to the same zones, domains or records rows.
 
 ### SQL Backend (default - direct database access)
 
@@ -24,9 +52,17 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 
 | Port | Web Server | Database | PowerDNS DNS | PowerDNS API |
 |------|------------|----------|--------------|--------------|
-| 8083 | Nginx | MySQL/MariaDB | 1053 | 8181 |
-| 8084 | Nginx | PostgreSQL | 1054 | 8182 |
-| 8085 | Nginx | SQLite | 1055 | 8183 |
+| 8083 | Nginx | MySQL/MariaDB (`poweradmin_api` + `pdns_api`) | 1058 | 8186 |
+| 8084 | Nginx | PostgreSQL (`pdns_api`) | 1059 | 8187 |
+| 8085 | Nginx | SQLite (`/data/pdns-api.db`) | 1057 | 8185 |
+
+### Special-purpose instances (MySQL/MariaDB, SQL backend)
+
+| Port | Purpose |
+|------|---------|
+| 8086 | Subfolder deployment, served under http://localhost:8086/poweradmin/ |
+| 8087 | German-only interface (`enabled_languages` restricted to `de_DE`) |
+| 8088 | Web server authentication: nginx asks for a password and Poweradmin signs in `REMOTE_USER` (users `remote-alice`, `remote-bob` and `admin`, password `Poweradmin123`; `admin` is a local account, so it is refused) |
 
 ## Port Mappings
 
@@ -39,11 +75,26 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 - **MySQL + API** (Nginx): http://localhost:8083
 - **PostgreSQL + API** (Nginx): http://localhost:8084
 - **SQLite + API** (Nginx): http://localhost:8085
+- **MySQL + Subfolder** (Nginx): http://localhost:8086/poweradmin/
+- **MySQL + German only** (Nginx): http://localhost:8087
+- **MySQL + web server login** (Nginx basic auth): http://localhost:8088
+
+### Installer
+Every instance serves the installer at `/install/` (subfolder: http://localhost:8086/poweradmin/install/).
+It only runs while `config/settings.php` is absent; with the file in place it reports that
+the installation is skipped. Browsers cache 301 redirects, so if `/install` once sent you to
+`http://localhost/install/` without the port, open the URL with the trailing slash or clear
+the site data for that origin.
 
 ### PowerDNS Servers (with DNSSEC)
-- **MySQL backend**: DNS port 1053, API port 8181
-- **PostgreSQL backend**: DNS port 1054, API port 8182
-- **SQLite backend**: DNS port 1055, API port 8183
+- **MySQL backend** (SQL instance, `pdns`): DNS port 1053, API port 8181
+- **MySQL backend** (API instance, `pdns_api`): DNS port 1058, API port 8186
+- **PostgreSQL backend** (SQL instance, `pdns`): DNS port 1054, API port 8182
+- **PostgreSQL backend** (API instance, `pdns_api`): DNS port 1059, API port 8187
+- **SQLite backend** (SQL instance, `/data/pdns.db`): DNS port 1055, API port 8183
+- **SQLite backend** (API instance, `/data/pdns-api.db`): DNS port 1057, API port 8185
+- **LMDB backend** (opt-in, the only backend with views and network mappings): DNS port 1056, API port 8184.
+  Start it with `docker compose --profile lmdb up -d pdns-lmdb` (same `-f`/`--project-name` flags as above).
 
 ### Admin Tools
 - **Adminer** (DB management): http://localhost:8090
@@ -57,17 +108,18 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 ## Configuration Files
 
 ### Web Server Configs
-- `conf/nginx.conf` - Nginx configuration (MySQL + SQL)
+- `conf/nginx.conf.template` - Nginx configuration shared by every nginx front (`FPM_UPSTREAM` selects the PHP-FPM container)
+- `conf/nginx-subfolder.conf` - Nginx configuration for the subfolder instance
 - `conf/apache-vhost.conf` - Apache virtual host (PostgreSQL + SQL)
 - `conf/Caddyfile` - Caddy configuration (SQLite + SQL)
-- `conf/nginx-mysql-api.conf` - Nginx configuration (MySQL + API)
-- `conf/nginx-pgsql-api.conf` - Nginx configuration (PostgreSQL + API)
-- `conf/nginx-sqlite-api.conf` - Nginx configuration (SQLite + API)
 
 ### PowerDNS Configs (DNSSEC enabled)
-- `conf/pdns-mysql.conf` - PowerDNS for MySQL
-- `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL
-- `conf/pdns-sqlite.conf` - PowerDNS for SQLite
+- `conf/pdns-mysql.conf` - PowerDNS for MySQL (SQL instance)
+- `conf/pdns-mysql-api.conf` - PowerDNS for MySQL (API instance)
+- `conf/pdns-pgsql.conf` - PowerDNS for PostgreSQL (SQL instance)
+- `conf/pdns-pgsql-api.conf` - PowerDNS for PostgreSQL (API instance)
+- `conf/pdns-sqlite.conf` - PowerDNS for SQLite (SQL instance)
+- `conf/pdns-sqlite-api.conf` - PowerDNS for SQLite (API instance)
 
 ### Poweradmin Settings (SQL backend)
 - `conf/settings-mysql-sql.php` - MySQL + SQL backend
@@ -90,12 +142,24 @@ Each database has two Poweradmin instances - one using direct SQL and one using 
 Access Adminer at http://localhost:8090
 
 ### Direct Connection
-- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db)
-- **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
-- **SQLite**: `/data/pdns.db` (mounted in containers)
+- **MariaDB**: user: `pdns`, pass: `poweradmin`, db: `pdns` (app tables in `poweradmin` db); the API instance uses `pdns_api` and `poweradmin_api`; root password `uberuser`
+- **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`; the API instance uses `pdns_api`
+- **SQLite**: `/data/pdns.db` for the SQL instance, `/data/pdns-api.db` for the API instance (both mounted in containers)
 
 ## Test Credentials
 
 After importing test data (`.devcontainer/scripts/import-test-data.sh`):
 - Username: `admin`, `manager`, `client`, `viewer`, `noperm`, `inactive`
-- Password: `poweradmin123`
+- Password: `Poweradmin123`
+
+## LDAP Test Users
+
+The `ldap` container bootstraps `ldap/bootstrap/*.ldif` on first start (users, the
+`dns-admins` group and a `memberof` overlay for `groupOfNames`). The MySQL import adds the
+matching Poweradmin accounts, so LDAP login works on the MySQL instances (8080, 8083, 8086):
+
+- `testuser` / `testpass123` (Administrator template, member of `dns-admins`)
+- `testuser2` / `testpass456` (Zone Manager template)
+
+Check the whole chain with `.devcontainer/scripts/verify-ldap-test-setup.sh`.
+phpLDAPadmin: http://localhost:8443 (login DN `cn=admin,dc=poweradmin,dc=org`, password `poweradmin`).

@@ -22,16 +22,20 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use PDO;
 
-class DbPasswordResetTokenRepository
+/**
+ * SQL persistence for password reset tokens and their rate-limit counters in password_reset_tokens.
+ */
+final class DbPasswordResetTokenRepository implements PasswordResetTokenRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -62,23 +66,6 @@ class DbPasswordResetTokenRepository
             ':expires_at' => $data['expires_at'],
             ':ip_address' => $data['ip_address'] ?? null
         ]);
-    }
-
-    /**
-     * Find all active (non-expired) tokens
-     */
-    public function findActiveTokens(): array
-    {
-        // expires_at is written with PHP's clock, so compare against PHP's clock too;
-        // DbCompat::now() uses the DB session/UTC clock and skews by the tz offset.
-        $sql = "SELECT * FROM password_reset_tokens
-                WHERE expires_at > :now
-                ORDER BY created_at DESC";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -117,9 +104,6 @@ class DbPasswordResetTokenRepository
         return $stmt->execute([':id' => $tokenId]) && $stmt->rowCount() === 1;
     }
 
-    /**
-     * Undo markAsUsed() after the password change it guarded failed, so the link works again.
-     */
     public function releaseClaim(int $tokenId): bool
     {
         $db_type = $this->config->get('database', 'type');
@@ -170,24 +154,6 @@ class DbPasswordResetTokenRepository
     }
 
     /**
-     * Get the last attempt time for an email
-     */
-    public function getLastAttemptTime(string $email): ?string
-    {
-        $sql = "SELECT created_at 
-                FROM password_reset_tokens 
-                WHERE email = :email 
-                ORDER BY created_at DESC 
-                LIMIT 1";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-
-        $result = $stmt->fetchColumn();
-        return $result ?: null;
-    }
-
-    /**
      * Delete expired tokens
      *
      * Current cleanup strategy:
@@ -211,19 +177,6 @@ class DbPasswordResetTokenRepository
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([':now' => date('Y-m-d H:i:s')]);
-
-        return $stmt->rowCount();
-    }
-
-    /**
-     * Delete all tokens for a specific email
-     */
-    public function deleteByEmail(string $email): int
-    {
-        $sql = "DELETE FROM password_reset_tokens WHERE email = :email";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([':email' => $email]);
 
         return $stmt->rowCount();
     }

@@ -1,0 +1,517 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\Auth;
+
+use Exception;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\UserMfa;
+use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
+use Poweradmin\Infrastructure\Session\AuthFlowSessionKeys;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
+use RuntimeException;
+
+/**
+ * Handles the MFA setup page: app or email enrolment, verification, disabling and recovery code regeneration.
+ */
+class MfaSetupController extends BaseController
+{
+    private ?MfaService $mfaService = null;
+
+    private function mfaService(): MfaService
+    {
+        return $this->mfaService ??= $this->services()->mfaService();
+    }
+
+    public function run(): void
+    {
+        // Check if MFA is globally enabled
+        if (!$this->config->get('security', 'mfa.enabled', false)) {
+            $this->addSystemMessage('error', _('MFA is not enabled on this system.'));
+            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+            header("Location: $baseUrlPrefix/");
+            exit;
+        }
+
+        // A session still waiting for its second factor has no user yet, so setup would run as user 0
+        if (!$this->getUserContextService()->isAuthenticated()) {
+            $this->redirect('/login');
+            return;
+        }
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('mfa_setup');
+        $this->setPageTitle(_('MFA Setup'));
+
+        // MFA setup forms processing
+        if ($this->isPost()) {
+            if ($this->httpRequest->getPostParam('setup_app') !== null) {
+                $this->handleAppSetup();
+                return;
+            }
+
+            if ($this->httpRequest->getPostParam('verify_app') !== null) {
+                $this->handleAppVerification();
+                return;
+            }
+
+            if ($this->httpRequest->getPostParam('setup_email') !== null) {
+                $this->handleEmailSetup();
+                return;
+            }
+
+            if ($this->httpRequest->getPostParam('verify_email') !== null) {
+                $this->handleEmailVerification();
+                return;
+            }
+
+            if ($this->httpRequest->getPostParam('disable_mfa') !== null) {
+                $this->handleMfaDisable();
+                return;
+            }
+
+            if ($this->httpRequest->getPostParam('regenerate_codes') !== null) {
+                $this->handleRegenerateRecoveryCodes();
+                return;
+            }
+        }
+
+        // Display the MFA setup page
+        $this->displayMfaSetup();
+    }
+
+    /**
+     * Whether email verification can actually be set up: enabled by the
+     * administrator, and with a mail transport configured.
+     */
+    private function isEmailMfaUsable(): bool
+    {
+        return $this->config->get('security', 'mfa.email_enabled', true)
+            && $this->config->get('mail', 'enabled', false);
+    }
+
+    /**
+     * Whether the app method is offered. `mfa.app_enabled` is honoured only
+     * while email remains usable, so the last method is never withdrawn.
+     */
+    private function isAppMfaEnabled(): bool
+    {
+        if ($this->config->get('security', 'mfa.app_enabled', true)) {
+            return true;
+        }
+
+        return !$this->isEmailMfaUsable();
+    }
+
+    private function handleAppSetup(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+
+        // Mirrors handleEmailSetup(): refuse the POST, not just hide the button.
+        if (!$this->isAppMfaEnabled()) {
+            $this->addSystemMessage('error', _('Authenticator app method is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if MFA is already enabled - use getOrCreate since we're setting up
+        $userMfa = $this->mfaService()->getOrCreateUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('error', _('Failed to create MFA record.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if ($userMfa->isEnabled()) {
+            $this->addSystemMessage('info', _('MFA is already enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Always generate a new TOTP secret for app-based MFA
+        // This ensures we have a proper Base32-encoded secret even if
+        // a previous email verification code was stored
+        $userMfa->setSecret($this->mfaService()->generateSecretKey());
+        $userMfa->setType(UserMfa::TYPE_APP);
+        $this->mfaService()->saveUserMfa($userMfa);
+
+        $this->logger->debug('[MfaSetupController] Generated new secret for app-based MFA for user {user_id}', ['user_id' => $userId]);
+
+        // Display verification page
+        $this->displayAppVerification($userMfa->getSecret());
+    }
+
+    private function handleAppVerification(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+        $code = $this->httpRequest->getPostParam('verification_code', '');
+
+        if (empty($code)) {
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Use getOrCreate since we're in the verification process
+        $userMfa = $this->mfaService()->getOrCreateUserMfa($userId);
+
+        // Verify the code
+        if ($this->mfaService()->verifyCode($userId, $code)) {
+            // Enable MFA
+            $this->mfaService()->enableMfa($userId);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
+
+            $this->services()->auditService()->logMfaEnable('app');
+
+            // Generate recovery codes if they don't exist
+            $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
+            if (empty($recoveryCodes)) {
+                $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
+            }
+
+            $this->addSystemMessage('success', _('MFA has been enabled successfully.'));
+            $this->displayRecoveryCodes($recoveryCodes);
+        } else {
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+            $userMfa = $this->mfaService()->getUserMfa($userId);
+            $this->displayAppVerification($userMfa->getSecret());
+        }
+    }
+
+    private function handleEmailSetup(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+        $email = $this->getUserContextService()->getUserEmail() ?? '';
+
+        // Check if user has an email address set
+        if (empty($email)) {
+            $this->addSystemMessage('error', _('Email address is not available. Please update your email address in your profile.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if mail service is enabled globally
+        if (!$this->config->get('mail', 'enabled', false)) {
+            $this->addSystemMessage('error', _('Email verification method is not available because mail service is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if email MFA is specifically enabled in security settings
+        if (!$this->config->get('security', 'mfa.email_enabled', true)) {
+            $this->addSystemMessage('error', _('Email verification method is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Use getOrCreate since we're setting up MFA
+        $userMfa = $this->mfaService()->getOrCreateUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('error', _('Failed to create MFA record.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if MFA is already enabled
+        if ($userMfa->isEnabled()) {
+            $this->addSystemMessage('info', _('MFA is already enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Generate a secret if needed
+        if (!$userMfa->getSecret()) {
+            $userMfa->setSecret($this->mfaService()->generateSecretKey());
+            $userMfa->setType(UserMfa::TYPE_EMAIL);
+            $this->mfaService()->saveUserMfa($userMfa);
+        }
+
+        try {
+            // Send verification code via email
+            $this->mfaService()->sendEmailVerificationCode($userId, $email);
+
+            // Display email verification form
+            $this->displayEmailVerification($email);
+        } catch (RuntimeException $e) {
+            // Handle mail configuration issues
+            $this->addSystemMessage('error', $e->getMessage());
+            $this->displayMfaSetup();
+            return;
+        } catch (Exception $e) {
+            // Handle other errors
+            $this->logger->error('[MfaSetupController] Email verification error: {error}', ['error' => $e->getMessage()]);
+            $this->addSystemMessage('error', _('Failed to send verification code. Please try again later or use app-based authentication.'));
+            $this->displayMfaSetup();
+            return;
+        }
+    }
+
+    private function displayEmailVerification(string $email): void
+    {
+        $this->render('mfa_verify_email.html', [
+            'email' => $email
+        ]);
+    }
+
+    private function handleEmailVerification(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+        $code = $this->httpRequest->getPostParam('verification_code', '');
+
+        if (empty($code)) {
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Get user MFA record - use getOrCreate since we're in verification
+        $this->mfaService()->getOrCreateUserMfa($userId);
+
+        // Use the MfaService to verify the code instead of direct comparison
+        $isValid = $this->mfaService()->verifyCode($userId, $code);
+
+        if ($isValid) {
+            // Enable MFA
+            $this->mfaService()->enableMfa($userId, UserMfa::TYPE_EMAIL);
+            // The code just entered proves the new factor, so this session needs no second prompt
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
+
+            $this->services()->auditService()->logMfaEnable('email');
+
+            // Generate recovery codes
+            $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
+
+            $this->addSystemMessage('success', _('MFA has been enabled with email verification.'));
+            $this->displayRecoveryCodes($recoveryCodes);
+        } else {
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+            $this->displayEmailVerification($this->getUserContextService()->getSessionData(SessionKeys::EMAIL) ?? '');
+        }
+    }
+
+    private function handleMfaDisable(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+
+        // Check if MFA is enforced for this user
+        if ($this->mfaService()->isMfaEnforced($userId, $this->db, $this->getUserContextService()->getAuthMethod())) {
+            $this->addSystemMessage('error', _('MFA is required by your organization\'s security policy and cannot be disabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if MFA exists before trying to disable it
+        $userMfa = $this->mfaService()->getUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('info', _('MFA is not enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if ($userMfa->isEnabled() && !$this->confirmsCurrentFactor($userId)) {
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Disable MFA
+        $this->mfaService()->disableMfa($userId);
+
+        $this->services()->auditService()->logMfaDisable();
+
+        $this->addSystemMessage('success', _('MFA has been disabled.'));
+        $this->displayMfaSetup();
+    }
+
+    /**
+     * Handle regeneration of recovery codes
+     */
+    private function handleRegenerateRecoveryCodes(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+
+        // Check if MFA is enabled for this user
+        $userMfa = $this->mfaService()->getUserMfa($userId);
+
+        if (!$userMfa || !$userMfa->isEnabled()) {
+            $this->addSystemMessage('error', _('MFA must be enabled to regenerate recovery codes.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if (!$this->confirmsCurrentFactor($userId)) {
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Generate new recovery codes
+        $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
+
+        $this->services()->auditService()->logMfaRecoveryCodesRegenerate();
+
+        $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));
+        $this->displayRecoveryCodes($recoveryCodes);
+    }
+
+    /**
+     * Whether the posted code proves the current second factor, so a hijacked session cannot
+     * switch MFA off or take new recovery codes. Counted apart from login, so failures here
+     * cannot lock the account out of signing in.
+     */
+    private function confirmsCurrentFactor(int $userId): bool
+    {
+        $username = $this->getUserContextService()->getLoggedInUsername() ?? '';
+        $ip = $this->services()->clientContext()->ip;
+        $attempts = $this->services()->loginAttemptService();
+        $stage = LoginAttemptService::STAGE_MFA_STEP_UP;
+
+        if ($attempts->isAccountLocked($username, $ip, $stage, $userId)) {
+            $this->addSystemMessage('error', _('Too many failed attempts. Please try again later.'));
+            return false;
+        }
+
+        $code = trim((string)$this->httpRequest->getPostParam('mfa_code', ''));
+        if ($code === '') {
+            // Email codes only exist once sent, so an empty submit asks for one
+            if ($this->mfaService()->getMfaType($userId) === UserMfa::TYPE_EMAIL && $this->sendStepUpEmailCode($userId)) {
+                $this->addSystemMessage('info', _('A new verification code has been sent to your email.'));
+            }
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            return false;
+        }
+
+        $isValid = $this->mfaService()->verifyCode($userId, $code);
+        $attempts->recordAttempt($username, $ip, $isValid, $stage, $userId);
+        if (!$isValid) {
+            $this->services()->auditService()->logMfaFailed($this->mfaService()->getMfaType($userId) ?? 'unknown');
+            if ($attempts->isAccountLocked($username, $ip, $stage, $userId)) {
+                // Same as the login step: the pending email code dies with the lockout
+                $this->mfaService()->invalidatePendingEmailCode($userId);
+            }
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+        }
+        return $isValid;
+    }
+
+    /**
+     * Sends a code only when none is pending, so repeated submits cannot flood the inbox or
+     * replace a code a login in progress is waiting for.
+     */
+    private function sendStepUpEmailCode(int $userId): bool
+    {
+        try {
+            return $this->mfaService()->refreshEmailVerificationCodeIfNeeded($userId, $this->getUserContextService()->getUserEmail() ?? '') !== null;
+        } catch (RuntimeException $e) {
+            $this->logger->warning('[MfaSetupController] Could not send a step-up code to user {user_id}: {error}', ['user_id' => $userId, 'error' => $e->getMessage()]);
+            $this->addSystemMessage('warning', _('Could not send verification code to your email. Please use a recovery code instead.'));
+            return false;
+        }
+    }
+
+    private function displayMfaSetup(): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+        $userMfa = $this->mfaService()->getUserMfa($userId);
+
+        // Default values if no MFA record exists yet
+        $mfaEnabled = false;
+        $mfaType = UserMfa::TYPE_APP; // Default type
+
+        if ($userMfa) {
+            $mfaEnabled = $userMfa->isEnabled();
+            $mfaType = $userMfa->getType();
+        }
+
+        // Check if mail service is enabled
+        $mailServiceEnabled = $this->config->get('mail', 'enabled', false);
+        // Check if email MFA is specifically enabled in security settings
+        $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
+        // Same helper as the POST guard, so button and handler cannot disagree.
+        $appMfaEnabled = $this->isAppMfaEnabled();
+
+        // Check if MFA is enforced for this user
+        $mfaEnforced = $this->mfaService()->isMfaEnforced($userId, $this->db, $this->getUserContextService()->getAuthMethod());
+
+        // Check if this is an enforced setup from login redirect
+        $setupEnforced = $this->session()->has(AuthFlowSessionKeys::MFA_SETUP_ENFORCED) && $this->session()->get(AuthFlowSessionKeys::MFA_SETUP_ENFORCED) === true;
+
+        // Clear the session flag once we've read it
+        if ($setupEnforced) {
+            $this->session()->remove(AuthFlowSessionKeys::MFA_SETUP_ENFORCED);
+        }
+
+        $this->render('mfa_setup.html', [
+            'mfa_enabled' => $mfaEnabled,
+            'mfa_type' => $mfaType,
+            'email' => $this->getUserContextService()->getUserEmail() ?? '',
+            'mail_service_enabled' => $mailServiceEnabled,
+            'email_mfa_enabled' => $emailMfaEnabled,
+            'app_mfa_enabled' => $appMfaEnabled,
+            'mfa_enforced' => $mfaEnforced,
+            'setup_enforced' => $setupEnforced
+        ]);
+    }
+
+    private function displayAppVerification(#[\SensitiveParameter] string $secret): void
+    {
+        // Get the user's email or username for the authenticator app
+        $email = $this->getUserContextService()->getUserEmail() ?? '';
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+
+        // Make sure we have a valid email for the QR code
+        if (empty($email)) {
+            $this->logger->warning('[MfaSetupController] Empty email when generating QR code for user {user_id}', ['user_id' => $userId]);
+            // Use a generic username if email is missing
+            $email = "user$userId";
+        }
+
+        // Generate the QR code with proper email and secret
+        $qrCode = $this->mfaService()->generateQrCodeSvg($email, $secret);
+
+        // Log QR code generation for debugging
+        $this->logger->debug('[MfaSetupController] Generated QR code for user ID: {user_id}', ['user_id' => $userId]);
+
+        // Render the template with all necessary data
+        $this->render('mfa_verify_app.html', [
+            'secret' => $secret,
+            'qr_code' => $qrCode,
+            'email' => $email
+        ]);
+    }
+
+    private function displayRecoveryCodes(array $recoveryCodes): void
+    {
+        $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
+        $userMfa = $this->mfaService()->getOrCreateUserMfa($userId);
+
+        $this->render('mfa_recovery_codes.html', [
+            'recovery_codes' => $recoveryCodes,
+            'mfa_enabled' => $userMfa->isEnabled(),
+            'mfa_type' => $userMfa->getType()
+        ]);
+    }
+}

@@ -4,6 +4,7 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use TestHelpers\FakeConfiguration;
 
 class IpAddressRetrieverTest extends TestCase
 {
@@ -303,5 +304,18 @@ class IpAddressRetrieverTest extends TestCase
         ];
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('10.5.6.7', $ipRetriever->getClientIp());
+    }
+    public function testFromConfigReadsTheTrustedProxyList()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.42',
+        ];
+        $trusting = new FakeConfiguration(['security' => ['trusted_proxies' => ['203.0.113.0/24']]]);
+        $malformed = new FakeConfiguration(['security' => ['trusted_proxies' => '203.0.113.0/24']]);
+
+        $this->assertEquals('198.51.100.42', IpAddressRetriever::fromConfig($server, $trusting)->getClientIp());
+        $this->assertEquals('203.0.113.10', IpAddressRetriever::fromConfig($server, $malformed)->getClientIp());
+        $this->assertEquals('203.0.113.10', IpAddressRetriever::fromConfig($server, new FakeConfiguration())->getClientIp());
     }
 }

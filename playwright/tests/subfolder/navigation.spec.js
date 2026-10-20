@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
  * Subfolder deployment navigation tests.
@@ -34,6 +34,8 @@ async function subfolderLogin(page, username, password, maxRetries = 3) {
 }
 
 test.describe('Subfolder Navigation', () => {
+  test.skip(({ baseURL }) => !baseURL || !baseURL.includes(':8086'), 'Runs only against the subfolder instance (BASE_URL=http://localhost:8086)');
+
   test.beforeEach(async ({ page }) => {
     await subfolderLogin(page, users.admin.username, users.admin.password);
   });
@@ -136,8 +138,7 @@ test.describe('Subfolder Navigation', () => {
     if (linkExists) {
       await letterLink.click();
       await expect(page).toHaveURL(new RegExp(`${PREFIX}/zones/forward\\?letter=`));
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|not found/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|not found/i);
     }
   });
 

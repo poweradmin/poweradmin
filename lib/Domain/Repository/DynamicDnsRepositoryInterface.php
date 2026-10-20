@@ -25,6 +25,9 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
+/**
+ * Persistence for the dynamic DNS update endpoint.
+ */
 interface DynamicDnsRepositoryInterface
 {
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User;

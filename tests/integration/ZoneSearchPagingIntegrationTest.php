@@ -26,9 +26,8 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Query\ZoneSearch;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Infrastructure\Repository\ZoneSearch;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Zone search pages over zones, not over the rows the owner join produces. A zone with
@@ -124,13 +123,13 @@ class ZoneSearchPagingIntegrationTest extends TestCase
         }
     }
 
+    private int $userId = 1;
+
     private function search(int $userId = 1): ZoneSearch
     {
-        $config = new FakeConfiguration(['database' => ['type' => $this->engine]]);
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn($userId);
+        $this->userId = $userId;
 
-        return new ZoneSearch($this->db, $config, $this->engine, null, $userContext);
+        return new ZoneSearch($this->db, new FakeConfiguration(['database' => ['type' => $this->engine]]), $this->engine);
     }
 
     /**
@@ -140,7 +139,7 @@ class ZoneSearchPagingIntegrationTest extends TestCase
     {
         $parameters = ['query' => $query, 'wildcard' => true, 'reverse' => false, 'zones' => true, 'comments' => $comments];
 
-        return $search->searchZones($parameters, $view, $sort, $direction, self::PER_PAGE, $comments, $page);
+        return $search->searchZones($parameters, $view, $this->userId, $sort, $direction, self::PER_PAGE, $comments, $page);
     }
 
     /** @param list<array<string, mixed>> $zones */

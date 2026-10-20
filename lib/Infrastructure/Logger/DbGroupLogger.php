@@ -23,9 +23,11 @@
 namespace Poweradmin\Infrastructure\Logger;
 
 use PDO;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Domain\Database\DbCompat;
 
+/**
+ * Writes group events to the log_groups table and queries them, joined to user_groups, for the group log page.
+ */
 class DbGroupLogger
 {
     private PDO $db;
@@ -35,25 +37,12 @@ class DbGroupLogger
         $this->db = $db;
     }
 
-    // The event column is varchar(2048) on every database; an overlong message would fail the INSERT.
-    private const EVENT_MAX_LENGTH = 2048;
-
-    private function fitEvent($msg): string
-    {
-        $msg = (string) $msg;
-        if (mb_strlen($msg, 'UTF-8') <= self::EVENT_MAX_LENGTH) {
-            return $msg;
-        }
-
-        return mb_substr($msg, 0, self::EVENT_MAX_LENGTH - 3, 'UTF-8') . '...';
-    }
-
     public function doLog($msg, $group_id, $priority): void
     {
         try {
             $stmt = $this->db->prepare('INSERT INTO log_groups (group_id, event, priority) VALUES (:group_id, :msg, :priority)');
             $stmt->execute([
-                ':msg' => $this->fitEvent($msg),
+                ':msg' => LogEventColumn::fit($msg),
                 ':group_id' => $group_id,
                 ':priority' => $priority,
             ]);
@@ -62,83 +51,6 @@ class DbGroupLogger
             // This prevents breaking group operations when log_groups table hasn't been created
             return;
         }
-    }
-
-    public function countAllLogs()
-    {
-        $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_groups");
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function countLogsByGroup($groupName)
-    {
-        $stmt = $this->db->prepare("
-                    SELECT count(user_groups.id) as number_of_logs
-                    FROM log_groups
-                    INNER JOIN user_groups
-                    ON user_groups.id = log_groups.group_id
-                    WHERE user_groups.name LIKE :search_by ESCAPE '!'
-        ");
-        $name = "%" . DbCompat::escapeLike($groupName) . "%";
-        $stmt->execute(['search_by' => $name]);
-        return $stmt->fetch()['number_of_logs'];
-    }
-
-    public function getAllLogs($limit, $offset): array
-    {
-        $stmt = $this->db->prepare("
-                    SELECT * FROM log_groups
-                    ORDER BY created_at DESC
-                    LIMIT :limit
-                    OFFSET :offset
-        ");
-
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $records = $stmt->fetchAll();
-        return $this->processFetchedLogs($records);
-    }
-
-    public function getLogsForGroup($groupName, $limit, $offset): array
-    {
-        if (!($this->checkIfGroupExist($groupName))) {
-            return array();
-        }
-
-        $stmt = $this->db->prepare("
-            SELECT log_groups.id, log_groups.event, log_groups.created_at, user_groups.name FROM log_groups
-            INNER JOIN user_groups ON user_groups.id = log_groups.group_id
-            WHERE user_groups.name LIKE :search_by ESCAPE '!'
-            ORDER BY log_groups.created_at DESC
-            LIMIT :limit
-            OFFSET :offset");
-
-        $groupName = "%" . DbCompat::escapeLike($groupName) . "%";
-        $stmt->bindValue(':search_by', $groupName, PDO::PARAM_STR);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $records = $stmt->fetchAll();
-        return $this->processFetchedLogs($records);
-    }
-
-    public function checkIfGroupExist($groupSearched): bool
-    {
-        if ($groupSearched == "") {
-            return false;
-        }
-
-        $groupRepository = new DbUserGroupRepository($this->db);
-        $groups = $groupRepository->findAll();
-        foreach ($groups as $group) {
-            if (str_contains($group->getName(), $groupSearched)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function getDistinctEventTypes(): array

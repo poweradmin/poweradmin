@@ -22,25 +22,43 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use PDO;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
 
-class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
+/**
+ * SQL persistence for zone-to-group links in zones_groups; joins domains, or the zones table under the API backend.
+ */
+final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;
     private ?TableNameService $tableNameService;
     private bool $isApiBackend;
+    private string $dbType;
 
     public function __construct(PDO $db, ?ConfigurationInterface $config = null, bool $isApiBackend = false)
     {
         $this->db = $db;
         $this->tableNameService = $config !== null ? new TableNameService($config) : null;
         $this->isApiBackend = $isApiBackend;
+        $this->dbType = (string)($config?->get('database', 'type') ?? '');
+    }
+
+    public function lockZoneGroups(int $domainId): void
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM zones_groups WHERE domain_id = :domain_id" . DbCompat::rowLock($this->dbType)
+        );
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function findByDomainId(int $domainId): array
@@ -51,6 +69,46 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
+    }
+
+    public function findGroupIdsByDomainIds(array $domainIds): array
+    {
+        if ($domainIds === []) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+        $stmt = $this->db->prepare("SELECT domain_id, group_id FROM zones_groups WHERE domain_id IN ($placeholders)");
+        foreach (array_values($domainIds) as $i => $domainId) {
+            $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $groups = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $groups[(int)$row['domain_id']][] = (int)$row['group_id'];
+        }
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        if ($this->isApiBackend) {
+            foreach (SharedZoneIds::sharedAmong($this->db, array_keys($groups)) as $sharedId) {
+                unset($groups[$sharedId]);
+            }
+        }
+
+        return $groups;
+    }
+
+    public function countGrantedZones(int $groupId): int
+    {
+        $stmt = $this->db->prepare('SELECT DISTINCT domain_id FROM zones_groups WHERE group_id = :group_id');
+        $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+        // Group grants on a shared zone id are not honoured (see SharedZoneIds)
+        return $this->isApiBackend
+            ? count(array_diff($zoneIds, SharedZoneIds::sharedAmong($this->db, $zoneIds)))
+            : count($zoneIds);
     }
 
     public function findByGroupId(int $groupId): array
@@ -65,9 +123,9 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         } else {
             $query = "SELECT zg.*, z.zone_name, z.zone_type
                       FROM zones_groups zg
-                      LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z') . "
+                      LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z', $this->isApiBackend) . "
                         AND z.zone_name IS NOT NULL
-                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2') . " = zg.domain_id AND z2.zone_name IS NOT NULL)
+                        AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2', $this->isApiBackend) . " = zg.domain_id AND z2.zone_name IS NOT NULL)
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         }
@@ -89,6 +147,13 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             $stmt->execute([':domain_id' => $domainId, ':group_id' => $groupId]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $this->mapRowToEntity($row);
+        }
+
+        if (!$this->isApiBackend) {
+            // A zone owned only through groups has no owner row; named now, it keeps its id when the API backend takes over.
+            // Named before the grant is stored, so a naming failure leaves no grant behind
+            $domainsTable = $this->tableNameService?->getTable(PdnsTable::DOMAINS) ?? 'domains';
+            SqlZoneNames::ensureNamed($this->db, $domainsTable, $domainId, true);
         }
 
         $query = "INSERT INTO zones_groups (domain_id, group_id, created_at)
@@ -115,6 +180,11 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         ]);
 
         return $stmt->rowCount() > 0;
+    }
+
+    public function removeAllForDomain(int $domainId): void
+    {
+        $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :did")->execute([':did' => $domainId]);
     }
 
     public function exists(int $domainId, int $groupId): bool

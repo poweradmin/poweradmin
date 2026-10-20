@@ -29,8 +29,6 @@ namespace Poweradmin\Domain\Model;
  * a pre-scope key: every zone and every operation is permitted. Restrictions are
  * additive guards layered on top of the creating user's own permissions - they can
  * only narrow access, never widen it.
- *
- * @package Poweradmin\Domain\Model
  */
 final readonly class ApiKeyScope
 {

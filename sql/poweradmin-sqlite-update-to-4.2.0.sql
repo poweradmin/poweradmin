@@ -1,6 +1,8 @@
 -- ============================================================================
 -- Poweradmin 4.2.0 Migration (SQLite)
 -- ============================================================================
+-- Run once, only on a database that has not had this update: it rebuilds tables and a
+-- second run drops the columns later updates added (and can empty zones in API mode).
 
 -- Rename default permission templates for consistency
 -- DNS Editor -> Editor, Read Only -> Viewer, No Access -> Guest

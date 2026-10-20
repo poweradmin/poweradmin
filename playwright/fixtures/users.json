@@ -29,9 +29,24 @@
     "password": "Poweradmin123",
     "description": "Inactive account (cannot login)"
   },
+  "requester": {
+    "username": "requester",
+    "password": "Poweradmin123",
+    "description": "Files change requests for owned zones (cannot edit directly)"
+  },
   "invalidUser": {
     "username": "invaliduser",
     "password": "wrongpassword",
     "description": "Invalid credentials for negative testing"
+  },
+  "ldapUser": {
+    "username": "testuser",
+    "password": "testpass123",
+    "description": "LDAP-authenticated user from the ldap container (Administrator template)"
+  },
+  "ldapUser2": {
+    "username": "testuser2",
+    "password": "testpass456",
+    "description": "Second LDAP-authenticated user (Zone Manager template)"
   }
 }

@@ -26,10 +26,12 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The reverse-zone lookup feeds a zone id straight into the record write, so it
@@ -62,6 +64,7 @@ class ApiDnsBackendProviderReverseZoneTest extends TestCase
             $this->createMock(PowerdnsApiClient::class),
             $this->db,
             $this->createMock(ConfigurationInterface::class),
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
     }

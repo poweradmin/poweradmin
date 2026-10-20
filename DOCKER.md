@@ -170,11 +170,13 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `DB_TYPE` | Database type: `sqlite`, `mysql`, or `pgsql` | none | **Yes** |
 | `DB_HOST` | Database host (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
-| `DB_PORT` | Database port (unused for SQLite) | Empty (uses default: 3306 for MySQL, 5432 for PostgreSQL) | No |
+| `DB_PORT` | Database port, 1-65535 (unused for SQLite). With MySQL, `DB_HOST=localhost` connects through the socket and ignores the port; use `127.0.0.1` for TCP | Empty (uses default: 3306 for MySQL, 5432 for PostgreSQL) | No |
 | `DB_USER` | Database username (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
+| `DB_SQLITE_WAL` | Switch the SQLite file to WAL journal mode on connect (**SQLite only**). Set `false` on NFS and similar file systems, then set the file's journal mode yourself (e.g. `PRAGMA journal_mode = DELETE`) | `true` | No |
+| `DB_CHARSET` | Character set used when Poweradmin creates its MySQL tables: `latin1` or `utf8` | `latin1` | No |
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
 | `DB_SSL` | Enable SSL/TLS connection (**MySQL/PostgreSQL only**) | `false` | No |
 | `DB_SSL_VERIFY` | Verify server SSL certificate (requires `DB_SSL=true`) | `false` | No |
@@ -212,7 +214,11 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DNS_DEFAULT_ZONE_TEMPLATE` | Template pre-selected on the add-zone form, by id or name | Empty | No |
 | `PA_DNS_ZONE_OWNERSHIP_MODE` | Zone ownership model: `both`, `users_only` or `groups_only` | `both` | No |
 | `PA_DNS_SYNC_ZONE_OWNER_TO_ACCOUNT` | Mirror the oldest zone owner's username into the PowerDNS account field | `false` | No |
+| `PA_DNS_ADOPT_ZONE_OWNER_FROM_ACCOUNT` | Give ownerless zones, such as autoprimary ones, to the user their PowerDNS account names, when the API-mode zone sync finds them or the consistency repair runs | `false` | No |
 | `PA_DNS_PARENT_ZONE_OWNERSHIP_CHECK` | Block creating a zone that overlaps a zone owned by another user | `true` | No |
+| `PA_DNS_BUMP_SERIAL_ON_UNCHANGED_SAVE` | Bump the SOA serial even when a save changes no record, so saving can force a NOTIFY; `false` leaves the serial alone | `true` | No |
+| `PA_DNS_DEFAULT_MAX_ZONES_PER_USER` | Zones a user may own directly when the user has no own limit; empty = unlimited, `0` = none. Superusers are never limited | Empty | No |
+| `PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP` | Zones a group may own when the group has no own limit; empty = unlimited, `0` = none | Empty | No |
 
 ### DNS Validation Settings
 
@@ -231,10 +237,12 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `PA_DNS_DOMAIN_RECORD_TYPES` | Comma-separated list of allowed domain zone record types | All defaults | No |
 | `PA_DNS_REVERSE_RECORD_TYPES` | Comma-separated list of allowed reverse zone record types | All defaults | No |
+| `PA_DNS_TOP_RECORD_TYPES` | Comma-separated record types listed first in the type selector, ahead of the alphabetical rest | Alphabetical only | No |
 
 **Examples:**
 - `PA_DNS_DOMAIN_RECORD_TYPES=A,AAAA,CNAME,MX,TXT`
 - `PA_DNS_REVERSE_RECORD_TYPES=PTR,NS,SOA,TXT`
+- `PA_DNS_TOP_RECORD_TYPES=A,AAAA,CNAME,TXT,MX`
 
 ### DNSSEC Configuration
 
@@ -276,6 +284,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PASSWORD_REQUIRE_LOWERCASE` | Require at least one lowercase letter | `true` | No |
 | `PA_PASSWORD_REQUIRE_NUMBERS` | Require at least one number | `true` | No |
 | `PA_PASSWORD_REQUIRE_SPECIAL` | Require at least one special character | `false` | No |
+| `PA_PASSWORD_SPECIAL_CHARACTERS` | Characters that count as special for the rule above | `!@#$%^&*()+-=[]{}\|;:,.<>?` | No |
 
 ### Account Lockout
 
@@ -286,6 +295,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOCKOUT_DURATION` | Lockout duration in minutes | `15` | No |
 | `PA_LOCKOUT_TRACK_IP` | Lock accounts based on IP address | `true` | No |
 | `PA_LOCKOUT_CLEAR_ON_SUCCESS` | Clear failed attempts after successful login | `true` | No |
+| `PA_LOCKOUT_WHITELIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are never locked out; wins over the blacklist | Empty | No |
+| `PA_LOCKOUT_BLACKLIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are always blocked | Empty | No |
 
 ### Multi-Factor Authentication (MFA)
 
@@ -335,6 +346,16 @@ docker run -d --name poweradmin -p 80:80 \
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `PA_NOTIFICATION_ZONE_ACCESS` | Enable zone access change notifications | `false` | No |
+| `PA_NOTIFICATION_CHANGE_REQUEST` | Mail reviewers on new change requests and requesters on decisions | `false` | No |
+| `PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT` | Also mail the zone's SOA contact about new change requests | `false` | No |
+
+### Change Approval
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_APPROVAL_ENABLED` | Route zone changes of request-only users through review | `false` | No |
+| `PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL` | Every zone change becomes a change request, even for editors and admins | `false` | No |
+| `PA_APPROVAL_ALLOW_SELF_APPROVAL` | Set to `false` so a requester cannot approve their own change request | `true` | No |
 
 ### User Agreement
 
@@ -369,6 +390,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_DEFAULT_LANGUAGE` | Default interface language | `en_EN` | No |
 | `PA_ENABLED_LANGUAGES` | Comma-separated list of enabled languages | `cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN` | No |
 | `PA_SESSION_TIMEOUT` | Session timeout in seconds | `1800` | No |
+| `PA_SESSION_MAX_LIFETIME` | End a session this many seconds after sign-in, however active (0 = off) | `0` | No |
 | `PA_ROWS_PER_PAGE` | Number of rows per page | `10` | No |
 | `PA_THEME` | Theme name to use | `default` | No |
 | `PA_STYLE` | UI style: `light` or `dark` | `light` | No |
@@ -392,6 +414,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_POSITION_SAVE_BUTTON_TOP` | Position save button at the top | `false` | No |
 | `PA_SHOW_ZONE_COMMENTS` | Show zone comments | `true` | No |
 | `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
+| `PA_SHOW_ZONE_LIMIT_COLUMN` | Show owned zones and the zone limit in the users and groups lists | `false` | No |
 | `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
 | `PA_DISPLAY_SIGNED_SERIAL_IN_ZONE_LIST` | Display serial served by PowerDNS (SOA-EDIT applied) in zone list; requires API backend | `false` | No |
 | `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |
@@ -408,6 +431,23 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_SHOW_FORWARD_ZONE_ASSOCIATIONS` | Show associated forward zones in reverse zone list | `true` | No |
 | `PA_SHOW_ZONE_RECORD_COUNT` | Show record count column in zone lists | `true` | No |
 | `PA_WIDE_LAYOUT` | Use full browser width instead of a fixed-width page | `false` | No |
+| `PA_SHOW_DASHBOARD_STATS` | Show zone, record, user and group counts on the dashboard | `true` | No |
+
+### User Avatars
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_AVATAR_OAUTH_ENABLED` | Show the avatar supplied by the OAuth provider | `false` | No |
+| `PA_AVATAR_GRAVATAR_ENABLED` | Show Gravatar images | `false` | No |
+| `PA_AVATAR_PRIORITY` | Source used when both are enabled: `oauth` or `gravatar` | `oauth` | No |
+| `PA_AVATAR_SIZE` | Avatar size in pixels | `40` | No |
+
+### Permission Templates
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SHOW_USER_ACCESS_TEMPLATES` | Show per-user permission template assignment | `true` | No |
+| `PA_SHOW_GROUP_ACCESS_TEMPLATES` | Show group-based permission template management | `true` | No |
 
 ### API Configuration
 
@@ -418,6 +458,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_API_BASIC_AUTH_REALM` | Realm name for HTTP Basic Authentication | `Poweradmin API` | No |
 | `PA_API_DOCS_ENABLED` | Enable API documentation at /api/docs | `false` | No |
 | `PA_API_MAX_KEYS_PER_USER` | Maximum API keys per user (admins unlimited) | `5` | No |
+| `PA_API_BULK_MAX_OPERATIONS` | Maximum operations in one bulk records request (0 = no limit) | `1000` | No |
+| `CORS_ALLOW_ORIGIN` | Value of `Access-Control-Allow-Origin` on `/api/*` responses and preflights (the web UI never sends CORS headers) | `*` | No |
 
 ### Health Endpoints
 
@@ -433,9 +475,10 @@ default. Restrict them at your reverse proxy when enabling them.
 | `PA_HEALTH_TOKEN` | When set, /api/health answers only requests sending it in the `X-Health-Token` header (4.5.0+) | - | No |
 | `PA_HEALTH_CACHE_SECONDS` | Reuse the last /api/health result for this many seconds; `0` runs the checks on every request (4.5.0+) | `0` | No |
 
-The image's built-in `HEALTHCHECK` requests `/`, which succeeds even when the database is
-down. To have the container reflect real readiness, enable the endpoint and override the
-healthcheck:
+The image's built-in `HEALTHCHECK` requests `/ping` when `PA_HEALTH_PING_ENABLED=true`
+(so a headless container with `PA_WEB_ENABLED=false` still reports healthy) and `/` otherwise.
+Both succeed even when the database is down. To have the container reflect real readiness,
+enable the readiness endpoint and override the healthcheck:
 
 ```yaml
 services:
@@ -744,6 +787,7 @@ docker run -d \
 | `PA_SAML_AZURE_SSO_URL` | Azure AD SSO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
 | `PA_SAML_AZURE_SLO_URL` | Azure AD SLO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
 | `PA_SAML_AZURE_X509_CERT` | Azure AD X.509 Certificate | Empty | Yes if Azure SAML enabled |
+| `PA_SAML_AZURE_ALLOW_IDP_INITIATED` | Accept Azure AD responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS) | `false` | No |
 | `PA_SAML_AZURE_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AZURE_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AZURE_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -762,6 +806,7 @@ docker run -d \
 | `PA_SAML_OKTA_SSO_URL` | Okta SSO URL | Empty | Yes if Okta SAML enabled |
 | `PA_SAML_OKTA_SLO_URL` | Okta SLO URL | Empty | No |
 | `PA_SAML_OKTA_X509_CERT` | Okta X.509 Certificate | Empty | Yes if Okta SAML enabled |
+| `PA_SAML_OKTA_ALLOW_IDP_INITIATED` | Accept Okta responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS) | `false` | No |
 | `PA_SAML_OKTA_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | No |
 | `PA_SAML_OKTA_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_OKTA_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -780,6 +825,7 @@ docker run -d \
 | `PA_SAML_AUTH0_SSO_URL` | Auth0 SSO URL | Empty | Yes if Auth0 SAML enabled |
 | `PA_SAML_AUTH0_SLO_URL` | Auth0 SLO URL | Empty | No |
 | `PA_SAML_AUTH0_X509_CERT` | Auth0 X.509 Certificate | Empty | Yes if Auth0 SAML enabled |
+| `PA_SAML_AUTH0_ALLOW_IDP_INITIATED` | Accept Auth0 responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS) | `false` | No |
 | `PA_SAML_AUTH0_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` | No |
 | `PA_SAML_AUTH0_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AUTH0_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -798,6 +844,7 @@ docker run -d \
 | `PA_SAML_KEYCLOAK_SSO_URL` | Keycloak SSO URL | Empty | Yes if Keycloak SAML enabled |
 | `PA_SAML_KEYCLOAK_SLO_URL` | Keycloak SLO URL | Empty | No |
 | `PA_SAML_KEYCLOAK_X509_CERT` | Keycloak X.509 Certificate | Empty | Yes if Keycloak SAML enabled |
+| `PA_SAML_KEYCLOAK_ALLOW_IDP_INITIATED` | Accept Keycloak responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS) | `false` | No |
 | `PA_SAML_KEYCLOAK_USERNAME_ATTR` | Username attribute mapping | `username` | No |
 | `PA_SAML_KEYCLOAK_EMAIL_ATTR` | Email attribute mapping | `email` | No |
 | `PA_SAML_KEYCLOAK_FIRST_NAME_ATTR` | First name attribute mapping | `given_name` | No |
@@ -816,12 +863,67 @@ docker run -d \
 | `PA_SAML_GENERIC_SSO_URL` | Generic SAML SSO URL | Empty | Yes if Generic SAML enabled |
 | `PA_SAML_GENERIC_SLO_URL` | Generic SAML SLO URL | Empty | No |
 | `PA_SAML_GENERIC_X509_CERT` | Generic SAML X.509 Certificate | Empty | Yes if Generic SAML enabled |
+| `PA_SAML_GENERIC_ALLOW_IDP_INITIATED` | Accept Generic SAML responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS) | `false` | No |
 | `PA_SAML_GENERIC_USERNAME_ATTR` | Username attribute mapping | `uid` | No |
 | `PA_SAML_GENERIC_EMAIL_ATTR` | Email attribute mapping | `email` | No |
 | `PA_SAML_GENERIC_FIRST_NAME_ATTR` | First name attribute mapping | `firstName` | No |
 | `PA_SAML_GENERIC_LAST_NAME_ATTR` | Last name attribute mapping | `lastName` | No |
 | `PA_SAML_GENERIC_DISPLAY_NAME_ATTR` | Display name attribute mapping | `displayName` | No |
 | `PA_SAML_GENERIC_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
+
+### Web server authentication (REMOTE_USER)
+
+Signs users in as the user name an authenticating web server or reverse proxy supplies.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_REMOTE_USER_ENABLED` | Enable web server authentication | `false` | No |
+| `PA_REMOTE_USER_SERVER_VARIABLE` | Server variable that holds the user name | `REMOTE_USER` | No |
+| `PA_REMOTE_USER_HEADER` | Read the user name from this request header instead (header mode), e.g. `Remote-User` | Empty | No |
+| `PA_REMOTE_USER_TRUSTED_PROXIES` | Comma-separated proxy IPs or CIDRs allowed to send the header. Empty means the header is ignored | Empty | Yes in header mode |
+| `PA_REMOTE_USER_STRIP_REALM` | Turn `user@REALM` and `DOMAIN\user` into `user` | `false` | No |
+| `PA_REMOTE_USER_EMAIL_ATTRIBUTE` | Variable or header holding the email address, e.g. `Remote-Email` | Empty | No |
+| `PA_REMOTE_USER_NAME_ATTRIBUTE` | Variable or header holding the full name, e.g. `Remote-Name` | Empty | No |
+| `PA_REMOTE_USER_GROUPS_ATTRIBUTE` | Variable or header holding the groups, e.g. `Remote-Groups` | Empty | No |
+| `PA_REMOTE_USER_GROUPS_SEPARATOR` | Separator between groups in the groups attribute | `,` | No |
+| `PA_REMOTE_USER_LOGOUT_URL` | Where to send users after logout, to end the proxy's own session | Empty | No |
+| `PA_REMOTE_USER_HIDE_LOGIN_FORM` | Hide the password form while the web server signs users in | `false` | No |
+| `PA_REMOTE_USER_AUTO_PROVISION` | Create an account on first sign-in | `true` | No |
+| `PA_REMOTE_USER_ALLOW_SUPERUSER_PROVISIONING` | Let group mappings grant the superuser flag | `false` | No |
+| `PA_REMOTE_USER_SYNC_USER_INFO` | Update name and email from the attributes on each sign-in | `true` | No |
+| `PA_REMOTE_USER_DEFAULT_PERMISSION_TEMPLATE` | Permission template for new accounts when no mapping matches | `Guest` | No |
+| `PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING` | Map groups to permission templates (format: `group1=Template1,group2=Template2`) | Empty | No |
+| `PA_REMOTE_USER_GROUP_MAPPING` | Map groups to Poweradmin groups (format: `group1=PaGroup1,group2=PaGroup2`) | Empty | No |
+
+**Notes:**
+
+- The image's Caddy server does not authenticate users itself. In Docker this is normally used in header mode, behind an authenticating proxy (Authelia, oauth2-proxy, Authentik outpost) that sets `Remote-User`.
+- `PA_REMOTE_USER_TRUSTED_PROXIES` must list the proxy's address as Poweradmin sees it. It is not taken from `TRUSTED_PROXIES`, and with a header set but no trusted proxies the header is ignored (the container logs a warning at startup).
+- The container must not be reachable except through that proxy, and the proxy must overwrite or strip any `Remote-User` header the client sends.
+
+```yaml
+services:
+  poweradmin:
+    image: poweradmin/poweradmin:latest
+    environment:
+      PA_REMOTE_USER_ENABLED: "true"
+      PA_REMOTE_USER_HEADER: Remote-User
+      PA_REMOTE_USER_TRUSTED_PROXIES: 172.20.0.5
+      PA_REMOTE_USER_EMAIL_ATTRIBUTE: Remote-Email
+      PA_REMOTE_USER_NAME_ATTRIBUTE: Remote-Name
+      PA_REMOTE_USER_GROUPS_ATTRIBUTE: Remote-Groups
+      PA_REMOTE_USER_GROUP_MAPPING: dns-admins=Administrators
+      PA_REMOTE_USER_PERMISSION_TEMPLATE_MAPPING: dns-admins=Administrator
+      PA_REMOTE_USER_LOGOUT_URL: https://auth.example.com/logout
+    networks:
+      app:
+        ipv4_address: 172.20.0.10   # reachable only from the proxy network, no published ports
+
+  authelia-proxy:   # your reverse proxy, forwarding to http://172.20.0.10 with Authelia's headers
+    networks:
+      app:
+        ipv4_address: 172.20.0.5
+```
 
 ### Admin User Creation
 
@@ -977,6 +1079,20 @@ The Docker image uses FrankenPHP with a custom Caddyfile that provides:
 - **Security**: Built-in protection against access to sensitive files and directories
 - **Performance**: Gzip compression and static asset caching
 
+### PHP Settings
+
+PHP runs on `php.ini-production` with these overrides in `/usr/local/etc/php/conf.d/00-poweradmin.ini`:
+
+| Setting | Value |
+|---------|-------|
+| `expose_php` | `Off` |
+| `memory_limit` | `256M` |
+| `upload_max_filesize` / `post_max_size` | `16M` / `20M` |
+| `opcache.validate_timestamps` | `0` (files are cached until the container restarts) |
+| `opcache.max_accelerated_files` | `20000` |
+
+To change any of them, mount your own ini file into `/usr/local/etc/php/conf.d/`. The overrides file loads first, so any other name wins (for example `custom.ini`).
+
 ### Supported PHP Extensions
 
 - `gettext` - Internationalization support
@@ -1027,6 +1143,7 @@ Poweradmin Docker supports **two configuration modes** with automatic priority h
 - **Custom Config**: If `PA_CONFIG_PATH` is set and the file exists, it completely replaces the generated settings
 - **Environment Variables**: If no custom config is provided, settings are generated from environment variables
 - **Automatic Generation**: The container automatically detects which mode to use at startup
+- **Generated once**: `settings.php` is written on the first start only. Changing a `PA_*` or `DB_*` variable later has no effect until the file is deleted (or the `/app/config` volume is recreated)
 
 ### Benefits
 

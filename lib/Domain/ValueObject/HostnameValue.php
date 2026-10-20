@@ -23,21 +23,25 @@
 namespace Poweradmin\Domain\ValueObject;
 
 use InvalidArgumentException;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
+/**
+ * A hostname that passed validation (full HostnameValidator when config is given, a syntax check otherwise).
+ */
 readonly class HostnameValue
 {
     private string $value;
 
-    public function __construct(string $hostname, ?ConfigurationManager $config = null)
+    public function __construct(string $hostname, ?ConfigurationInterface $config = null)
     {
         if (empty($hostname)) {
             throw new InvalidArgumentException('Hostname cannot be empty');
         }
 
         if ($config !== null) {
-            $validator = new HostnameValidator($config);
+            $validator = new HostnameValidator(HostnamePolicy::fromConfig($config));
             $result = $validator->validate($hostname);
 
             if (!$result->isValid()) {
@@ -69,15 +73,5 @@ readonly class HostnameValue
     public function getValue(): string
     {
         return $this->value;
-    }
-
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
-    public function equals(HostnameValue $other): bool
-    {
-        return $this->value === $other->value;
     }
 }

@@ -23,7 +23,7 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
 
 /**
@@ -32,9 +32,9 @@ use Poweradmin\Infrastructure\Repository\ApiRecordRepository;
  */
 class ApiRecordRepositorySortingTest extends TestCase
 {
-    private function backendWithRecords(string $zoneName, array $records): DnsBackendProvider
+    private function backendWithRecords(string $zoneName, array $records): DnsBackendProviderInterface
     {
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('getZoneNameById')->willReturn($zoneName);
         $provider->method('getZoneRecords')->willReturn($records);
         return $provider;
@@ -57,7 +57,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     {
         $repo = new ApiRecordRepository($this->backendWithRecords('example.com', $this->sampleRecords()));
 
-        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'ASC');
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC');
         $order = array_map(fn($r) => $r['name'] . '/' . $r['type'], $records);
 
         $this->assertSame('example.com/SOA', $order[0]);
@@ -82,7 +82,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     {
         $repo = new ApiRecordRepository($this->backendWithRecords('example.com', $this->sampleRecords()));
 
-        $records = $repo->getRecordsFromDomainId('mysql', 1, 0, 100, 'name', 'DESC');
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'DESC');
         $order = array_map(fn($r) => $r['name'] . '/' . $r['type'], $records);
 
         $this->assertSame('example.com/SOA', $order[0]);
@@ -96,7 +96,7 @@ class ApiRecordRepositorySortingTest extends TestCase
     public function testFilteredRecordsAlsoPinApexToTop(): void
     {
         // getFilteredRecords fetches via getRecordsByZoneId and resolves the apex via getZoneNameById.
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
         $provider->method('getZoneNameById')->willReturn('example.com');
         $provider->method('getRecordsByZoneId')->willReturn($this->sampleRecords());
         $repo = new ApiRecordRepository($provider);
@@ -109,5 +109,26 @@ class ApiRecordRepositorySortingTest extends TestCase
         foreach (array_slice($order, 0, 4) as $entry) {
             $this->assertStringStartsWith('example.com/', $entry);
         }
+    }
+
+    public function testCommentsAreCopiedFromTheApiFieldsWhenRequested(): void
+    {
+        $repo = new ApiRecordRepository($this->backendWithRecords('example.com', [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.10', 'api_comment' => 'web', 'api_comment_account' => 'ops', 'api_comment_modified_at' => 1700000000],
+            ['name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com hostmaster.example.com 1'],
+        ]));
+
+        $records = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC', true);
+        $byName = array_column($records, null, 'name');
+
+        $this->assertSame('web', $byName['www.example.com']['comment']);
+        $this->assertSame('ops', $byName['www.example.com']['comment_account']);
+        $this->assertSame(1700000000, $byName['www.example.com']['comment_modified_at']);
+        $this->assertNull($byName['www.example.com']['api_comment'], 'The API naming is not part of the read model');
+        $this->assertNull($byName['example.com']['comment']);
+
+        // Both backends now report an unfetched comment the same way: present and null
+        $plain = $repo->getRecordsFromDomainId(1, 0, 100, 'name', 'ASC');
+        $this->assertNull(array_column($plain, null, 'name')['www.example.com']['comment']);
     }
 }

@@ -20,24 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * API Documentation Controller (Swagger UI)
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class DocsController
- *
- * This controller serves the Swagger UI for API documentation.
+ * Serves the Swagger UI page at /api/docs when API documentation is enabled.
  */
 class DocsController extends BaseController
 {
@@ -69,8 +58,7 @@ class DocsController extends BaseController
             $response->setStatusCode(404);
             $response->headers->set('Content-Type', 'text/html');
             $response->setContent('<html><body><h1>404 Not Found</h1><p>API documentation is disabled.</p></body></html>');
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
 
         // Generate Swagger UI HTML
@@ -80,9 +68,7 @@ class DocsController extends BaseController
         $response = new Response();
         $response->headers->set('Content-Type', 'text/html');
         $response->setContent($html);
-        $response->send();
-
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**

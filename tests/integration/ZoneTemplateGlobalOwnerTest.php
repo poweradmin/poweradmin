@@ -23,8 +23,13 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * A global template (owner 0) is reserved for ueberusers. A user holding only
@@ -44,7 +49,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
 
         // A non-ueberuser "client" who may add and edit templates but is not an admin.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, 'zone_templ_add'), (61, 'zone_templ_edit')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_TEMPL_ADD . "'), (61, '" . Permission::PERM_ZONE_TEMPL_EDIT . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 'Client')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::CLIENT_PERM_TEMPL_ID . ", 60), (" . self::CLIENT_PERM_TEMPL_ID . ", 61)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::CLIENT_USER_ID . ", 'client', " . self::CLIENT_PERM_TEMPL_ID . ")");
@@ -60,7 +65,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::CLIENT_USER_ID
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateNamed('ClientGlobal'), 'A non-ueberuser must not create a global (owner 0) template.');
     }
 
@@ -73,7 +78,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::ADMIN_USER_ID
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(0, $this->ownerOfTemplateNamed('AdminGlobal'), 'A ueberuser may create a global template.');
     }
 
@@ -90,7 +95,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             ['global' => true]
         );
 
-        $this->assertTrue($created);
+        $this->assertTrue($created->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateNamed('ClientSaveAs'), 'Save-as must not produce a global template for a non-ueberuser.');
     }
 
@@ -106,7 +111,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::CLIENT_USER_ID
         );
 
-        $this->assertTrue($updated);
+        $this->assertTrue($updated->success);
         $this->assertSame(self::CLIENT_USER_ID, $this->ownerOfTemplateId(30), 'A non-ueberuser must not promote a template to global.');
     }
 
@@ -121,18 +126,19 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
             self::ADMIN_USER_ID
         );
 
-        $this->assertTrue($updated);
+        $this->assertTrue($updated->success);
         $this->assertSame(0, $this->ownerOfTemplateId(31), 'A ueberuser may promote a template to global.');
     }
 
     private function actAsClient(): void
     {
-        $_SESSION['userid'] = self::CLIENT_USER_ID;
+        $this->session->set('userid', self::CLIENT_USER_ID);
     }
 
-    private function zoneTemplate(): ZoneTemplate
+    private function zoneTemplate(): ZoneTemplateService
     {
-        return new ZoneTemplate($this->db, $this->config);
+        $backend = $this->dnsBackendStub(false);
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
     }
 
     private function ownerOfTemplateNamed(string $name): int

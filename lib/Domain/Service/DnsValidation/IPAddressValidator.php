@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -32,11 +33,6 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  * - RFC 3596: DNS Extensions to Support IP Version 6
  * - RFC 4291: IP Version 6 Addressing Architecture
  * - RFC 5952: A Recommendation for IPv6 Address Text Representation
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class IPAddressValidator
 {
@@ -50,7 +46,7 @@ class IPAddressValidator
     public function validateIPv4(string $ipv4): ValidationResult
     {
         if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-            return ValidationResult::failure(_('This is not a valid IPv4 address.'));
+            return ValidationResult::failure(_('This is not a valid IPv4 address.'))->withField(RecordField::CONTENT);
         }
 
         return ValidationResult::success($ipv4);
@@ -90,7 +86,7 @@ class IPAddressValidator
 
         // First use PHP's filter_var for basic validation
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-            return ValidationResult::failure(_('This is not a valid IPv6 address.'));
+            return ValidationResult::failure(_('This is not a valid IPv6 address.'))->withField(RecordField::CONTENT);
         }
 
         // Additional validation for special IPv6 addresses

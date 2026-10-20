@@ -22,23 +22,16 @@
 
 namespace Poweradmin\Module\Whois;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class WhoisModule implements ModuleInterface
+/**
+ * Module registration for the WHOIS lookup page and its zone-page action.
+ */
+final class WhoisModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'whois';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'WHOIS Lookup';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Lookup domain WHOIS information';
     }
 
     public function getRoutes(): array
@@ -75,12 +68,12 @@ class WhoisModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['whois_lookup'];
+        return [self::CAP_WHOIS_LOOKUP];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'whois_lookup') {
+        if ($capability === self::CAP_WHOIS_LOOKUP) {
             return [
                 [
                     'label' => 'WHOIS',
@@ -95,10 +88,5 @@ class WhoisModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return '';
     }
 }

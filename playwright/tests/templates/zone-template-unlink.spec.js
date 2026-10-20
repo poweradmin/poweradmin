@@ -6,7 +6,34 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { createTemplate, deleteTemplate } from '../../helpers/templates.js';
+import { deleteZoneById, findZoneIdByName, uniqueName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
+
+// Each test builds its own template and linked zone so the zones page under test
+// has something to show whatever else the suite has created or removed.
+async function createLinkedZone(page, label) {
+  const name = uniqueName(`unl-${label}`);
+  const templateId = await createTemplate(page, name);
+  const zoneName = `${name}.example.com`;
+
+  await page.goto('/zones/add/master');
+  await page.locator('#domain').fill(zoneName);
+  await page.locator('#zone_template').selectOption(templateId);
+  await page.locator('button[type="submit"]').first().click();
+
+  const zoneId = await findZoneIdByName(page, zoneName);
+  return { templateId, zoneId, zoneName };
+}
+
+// The confirmation only renders for a POST that selects zones without confirming,
+// so it has to be reached through the form rather than by a URL.
+async function openUnlinkConfirmation(page, templateId, zoneId) {
+  await page.goto(`/zones/templates/${templateId}/zones`);
+  await page.locator(`#unlink-zones-form input[name="zone_ids[]"][value="${zoneId}"]`).check();
+  await page.locator('#bulk-unlink-btn').click();
+  await expect(page.locator('.alert-danger')).toContainText(/unlink/i);
+}
 
 test.describe('Zone Template Unlink Confirmation Page', () => {
   test.describe('Page Access', () => {
@@ -71,60 +98,58 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
       // Look for template links in the main content area (table)
       const templateLinks = page.locator('table a[href*="/zones/templates"]').first();
 
-      if (await templateLinks.count() > 0) {
-        await templateLinks.click();
-        await page.waitForLoadState('networkidle');
+      expect(await templateLinks.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/zone|template|unlink/i);
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.length).toBeGreaterThan(0);
-      }
+      await templateLinks.click();
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('body')).toContainText(/zone|template|unlink/i);
     });
   });
 
   test.describe('Confirmation Form Elements', () => {
-    test('confirmation page should have CSRF token when present', async ({ page }) => {
+    test('confirmation page should carry a CSRF token', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
-
-      const csrfTokens = page.locator('input[name="_token"]');
-      const hasTokens = await csrfTokens.count() >= 0;
-
-      expect(hasTokens).toBeTruthy();
+      const { templateId, zoneId } = await createLinkedZone(page, 'csrf');
+      try {
+        await openUnlinkConfirmation(page, templateId, zoneId);
+        await expect(page.locator('form[action$="/zones/templates/unlink"] input[name="_token"]')).toHaveCount(1);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
 
-    test('should have cancel button structure', async ({ page }) => {
+    test('cancel should link back to the template zones page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId } = await createLinkedZone(page, 'cancel');
+      try {
+        await openUnlinkConfirmation(page, templateId, zoneId);
 
-      const buttons = page.locator('a.btn, button.btn');
-      const hasButtons = await buttons.count() > 0;
-
-      expect(hasButtons || page.url().includes('templates')).toBeTruthy();
+        const cancel = page.locator(`a.btn[href$="/zones/templates/${templateId}/zones"]`);
+        await expect(cancel).toBeVisible();
+        await cancel.click();
+        await expect(page).toHaveURL(new RegExp(`/zones/templates/${templateId}/zones$`));
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
+      }
     });
   });
 
   test.describe('Zones Table Display', () => {
     test('template zones page should show zones in table', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'table');
+      try {
+        expect(zoneId).toBeTruthy();
 
-      // Look for template links in table, not dropdowns
-      const templateLinks = page.locator('table a[href*="/zones/templates"]').first();
+        await page.goto(`/zones/templates/${templateId}/zones`);
 
-      if (await templateLinks.count() > 0) {
-        await templateLinks.click();
-        await page.waitForLoadState('networkidle');
-
-        const bodyText = await page.locator('body').textContent();
-        const table = page.locator('table');
-
-        const hasTable = await table.count() > 0;
-        const hasZoneInfo = bodyText.toLowerCase().includes('zone');
-
-        expect(hasTable || hasZoneInfo).toBeTruthy();
+        await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toHaveCount(1);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
       }
     });
 
@@ -134,58 +159,34 @@ test.describe('Zone Template Unlink Confirmation Page', () => {
 
       // Look for edit links specifically in the templates table, not in dropdown menus
       const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates table, skip
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-        return;
-      }
+      // Seeded templates keep the list table rendered
+      await expect(templateTable.first()).toBeVisible();
 
       // Find a template edit link in the table body
       const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
 
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
+      expect(await editLink.count()).toBeGreaterThan(0);
 
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/zone|template|empty|no.*zone/i);
-      } else {
-        // No edit links found, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-      }
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('body')).toContainText(/zone|template|empty|no.*zone/i);
     });
 
     test('zones table should have type column', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/templates');
+      const { templateId, zoneId, zoneName } = await createLinkedZone(page, 'type');
+      try {
+        expect(zoneId).toBeTruthy();
 
-      // Look for edit links specifically in the templates table
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone|no.*template/i);
-        return;
-      }
+        await page.goto(`/zones/templates/${templateId}/zones`);
 
-      // Find a template edit link in the table body
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-
-        const bodyText = await page.locator('body').textContent();
-        const hasTypeInfo = bodyText.toLowerCase().includes('type') ||
-                            bodyText.toLowerCase().includes('master') ||
-                            bodyText.toLowerCase().includes('slave') ||
-                            bodyText.toLowerCase().includes('native');
-
-        expect(hasTypeInfo || page.url().includes('template')).toBeTruthy();
-      } else {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
+        await expect(page.locator('#unlink-zones-form th').filter({ hasText: 'Type' })).toHaveCount(1);
+        // MASTER zones are labelled "Primary" in the interface
+        await expect(page.locator(`#unlink-zones-form tr:has-text("${zoneName}")`)).toContainText(/primary/i);
+      } finally {
+        await deleteZoneById(page, zoneId);
+        await deleteTemplate(page, templateId);
       }
     });
   });

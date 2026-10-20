@@ -20,31 +20,24 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Internal API controller for field validation
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\Internal;
 
 use Poweradmin\Application\Controller\Api\InternalApiController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Internal endpoint /api/internal/validation: validates a record against a zone before it is submitted.
+ */
 class ValidationController extends InternalApiController
 {
     private DnsRecordValidationService $validationService;
-    private ZoneRepositoryInterface $zoneRepository;
     private ApiPermissionService $apiPermissionService;
     private UserContextService $userContextService;
 
@@ -52,35 +45,30 @@ class ValidationController extends InternalApiController
     {
         parent::__construct($request);
 
-        $validatorRegistry = new DnsValidatorRegistry($this->getConfig(), $this->db);
-        $dnsCommonValidator = new DnsCommonValidator($this->db, $this->getConfig());
-        $this->zoneRepository = $this->createZoneRepository();
-        $dnsViolationValidator = new DNSViolationValidator($this->getRepositoryFactory()->createRecordRepository());
+        $backendProvider = $this->services()->dnsBackendProvider();
+        $validatorRegistry = new DnsValidatorRegistry($this->getConfig(), $backendProvider, fn() => $this->services()->backend()->pdnsCapabilities());
+        $dnsCommonValidator = new DnsCommonValidator($backendProvider);
+        $dnsViolationValidator = new DNSViolationValidator($this->services()->repositoryFactory()->createRecordRepository());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
-            $this->zoneRepository,
+            $this->services()->domainRepository(),
             $dnsViolationValidator
         );
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->userContextService = new UserContextService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     public function run(): void
     {
         $action = $this->request->query->get('action', '');
 
-        switch ($action) {
-            case 'validate_record':
-                $response = $this->validateRecord();
-                $response->send();
-                exit;
-            default:
-                $response = $this->returnErrorResponse('Unknown action', 400);
-                $response->send();
-                exit;
-        }
+        $response = $action === 'validate_record'
+            ? $this->validateRecord()
+            : $this->returnErrorResponse('Unknown action', 400);
+
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -147,46 +135,8 @@ class ValidationController extends InternalApiController
             return $this->returnJsonResponse([
                 'valid' => false,
                 'errors' => $result->getErrors(),
-                'field' => $this->determineFieldWithError($result->getFirstError())
+                'field' => RecordFormFieldPresenter::fieldId($result->getField(), $result->getFirstError())
             ]);
         }
-    }
-
-    /**
-     * Determine which field has an error based on the error message
-     *
-     * @param string $errorMessage The error message
-     * @return string The name of the field with an error
-     */
-    private function determineFieldWithError(string $errorMessage): string
-    {
-        $lowerError = strtolower($errorMessage);
-
-        // Check for specific field mentions in the error message
-        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
-            return 'name';
-        } elseif (
-            strpos($lowerError, 'content') !== false ||
-                 strpos($lowerError, 'value') !== false ||
-                 strpos($lowerError, 'address') !== false ||
-                 strpos($lowerError, 'hostname') !== false
-        ) {
-            return 'content';
-        } elseif (strpos($lowerError, 'ttl') !== false) {
-            return 'ttl';
-        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
-            return 'prio';
-        } elseif (strpos($lowerError, 'already exists') !== false) {
-            return 'name-content-duplicate';
-        } elseif (strpos($lowerError, 'multiple cname') !== false || strpos($lowerError, 'dns violation') !== false) {
-            return 'dns-violation';
-        } elseif (strpos($lowerError, 'conflicts with') !== false) {
-            return 'record-conflict';
-        } elseif (strpos($lowerError, 'cname record cannot coexist') !== false) {
-            return 'cname-conflict';
-        }
-
-        // Default to content field as that's the most common error source
-        return 'content';
     }
 }

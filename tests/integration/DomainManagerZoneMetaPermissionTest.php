@@ -15,13 +15,26 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
+use Poweradmin\Application\Service\Backend\RepositoryFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
+use Poweradmin\Domain\Service\Dns\DomainParsingService;
+use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
+use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use ReflectionClass;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
 use TestHelpers\SqliteIntegrationTestCase;
+use Poweradmin\Infrastructure\Repository\DbTemplateRecordLinkRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneAccountOwnerRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Defense-in-depth coverage for DomainManager::changeZoneType() and
@@ -30,8 +43,8 @@ use TestHelpers\SqliteIntegrationTestCase;
  * not assume the caller checked: a future API or CLI caller that bypasses
  * the controller would silently rewrite zone metadata otherwise.
  *
- * Each test runs in a fresh process because UserManager::verifyPermission
- * caches the first lookup in a static and reuses it across calls.
+ * Each test runs in a fresh process because Permission::$permissionService
+ * memoizes the first PermissionService in a static and reuses it across calls.
  */
 class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 {
@@ -51,8 +64,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     {
         parent::setUp();
 
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
-        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)");
+        $this->createZoneTables();
 
         $this->seedZoneOwnedBy(self::META_EDIT_OWN_USER_ID);
         $this->seedAlternatePermSets();
@@ -61,12 +73,12 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneTypeRefusedWithoutMetaEditPermissions(): void
     {
-        $_SESSION['userid'] = self::NON_PRIVILEGED_USER_ID;
+        $this->session->set('userid', self::NON_PRIVILEGED_USER_ID);
 
         $domainManager = $this->makeDomainManager();
 
         $this->assertFalse(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID),
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success,
             'changeZoneType must reject callers lacking zone_meta_edit permissions even when the controller gate is bypassed.'
         );
     }
@@ -74,7 +86,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testChangeZoneTypeAllowedForOwnerWithMetaEditOwn(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -85,14 +97,14 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success
         );
     }
 
     #[RunInSeparateProcess]
     public function testChangeZoneTypeAllowedForNonOwnerWithMetaEditOthers(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OTHERS_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OTHERS_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -103,14 +115,14 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)
+            $domainManager->changeZoneType('MASTER', self::ZONE_DOMAIN_ID)->success
         );
     }
 
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterRefusedWithoutMetaEditPermissions(): void
     {
-        $_SESSION['userid'] = self::NON_PRIVILEGED_USER_ID;
+        $this->session->set('userid', self::NON_PRIVILEGED_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->never())->method('updateZoneMaster');
@@ -118,14 +130,14 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')->success
         );
     }
 
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterAllowedForOwnerWithMetaEditOwn(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -136,14 +148,14 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, '192.0.2.10')->success
         );
     }
 
     #[RunInSeparateProcess]
     public function testChangeZoneSlaveMasterNormalizesTheListBeforeStoringIt(): void
     {
-        $_SESSION['userid'] = self::META_EDIT_OWN_USER_ID;
+        $this->session->set('userid', self::META_EDIT_OWN_USER_ID);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -154,7 +166,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertTrue(
-            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, ' 192.0.2.10 , 2001:db8::1 ')
+            $domainManager->changeZoneSlaveMaster(self::ZONE_DOMAIN_ID, ' 192.0.2.10 , 2001:db8::1 ')->success
         );
     }
 
@@ -163,11 +175,11 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     {
         // MASTER/NATIVE zones pass '' here. Normalizing that to null would hand null to
         // createZone(string $slaveMaster) and fatal on every non-slave zone creation.
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, '" . Permission::PERM_ZONE_MASTER_ADD . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (103, 'ZoneAdder')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (103, 203)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (103, 'adder', 103)");
-        $_SESSION['userid'] = 103;
+        $this->session->set('userid', 103);
 
         $backend = $this->dnsBackendStub(false);
         $backend->expects($this->once())
@@ -178,7 +190,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
         $domainManager = $this->makeDomainManager($backend);
 
         $this->assertFalse(
-            $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')
+            $domainManager->addDomain('new.example.com', null, 'MASTER', '', 'none')->success
         );
     }
 
@@ -197,11 +209,11 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
     private function seedAlternatePermSets(): void
     {
         // Reserve perm_items ids that don't collide with the base class's
-        // 47/53. Real prod ids differ; only the names matter to verifyPermission.
+        // 47/53. Real prod ids differ; only the names matter to hasPermission.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
-            (200, 'zone_meta_edit_own'),
-            (201, 'zone_meta_edit_others'),
-            (202, 'zone_content_view_own')");
+            (200, '" . Permission::PERM_ZONE_META_EDIT_OWN . "'),
+            (201, '" . Permission::PERM_ZONE_META_EDIT_OTHERS . "'),
+            (202, '" . Permission::PERM_ZONE_CONTENT_VIEW_OWN . "')");
 
         // Empty permission template - 'search' / 'zone_content_view_own' style
         // perms a basic user has, none of which permit metadata edits.
@@ -222,36 +234,28 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 
     private function makeDomainManager(?object $backend = null): DomainManager
     {
-        $config = $this->primeConfig();
-        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $config = $this->sqliteConfiguration();
         $repo = $this->createMock(DomainRepositoryInterface::class);
         $changeLogger = $this->createMock(RecordChangeLogger::class);
+        $backend ??= $this->dnsBackendStub(false);
 
         return new DomainManager(
-            $this->db,
+            new PdoTransaction($this->db),
             $config,
-            $soa,
             $repo,
-            $backend ?? $this->dnsBackendStub(false),
-            null,
-            $changeLogger
+            new RepositoryFactory($this->db, $config, $backend, new ArraySession()),
+            $backend,
+            $this->permissionService($config, $backend->allocatesZoneIdsLocally()),
+            new DbUserRepository($this->db, $config, $backend->allocatesZoneIdsLocally()),
+            $changeLogger,
+            $this->createMock(ZoneTemplateApplier::class),
+            new DbZoneTemplateRepository($this->db, $config, $backend),
+            new ZoneTemplatePlaceholders($config, new DomainParsingService(new PdpPublicSuffixList())),
+            new DbZoneTemplateSyncRepository($this->db, $config),
+            new DbTemplateRecordLinkRepository($this->db, $config, $backend),
+            new DbZoneGroupRepository($this->db, $config, $backend->isApiBackend()),
+            new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $backend->allocatesZoneIdsLocally()), $config, $backend),
+            new SessionActor($this->session)
         );
-    }
-
-    private function primeConfig(): ConfigurationManager
-    {
-        $config = ConfigurationManager::getInstance();
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $settingsProperty->setValue($config, [
-            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
-        ]);
-        $initializedProperty->setValue($config, true);
-
-        return $config;
     }
 }

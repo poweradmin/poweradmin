@@ -3,8 +3,8 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Tests for DNS name normalization
@@ -15,8 +15,7 @@ class DnsNameNormalizationTest extends TestCase
 
     protected function setUp(): void
     {
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $this->validator = new HostnameValidator($configMock);
+        $this->validator = new HostnameValidator(new HostnamePolicy());
     }
 
     /**

@@ -24,8 +24,9 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Infrastructure\Repository\ApiDynamicDnsRepository;
 
@@ -51,13 +52,13 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
 
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'zone_content_edit_own')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (10, 'Editor')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (10, 1)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (1, 'ddns', 10)");
     }
 
-    private function repository(DnsBackendProvider $provider): ApiDynamicDnsRepository
+    private function repository(DnsBackendProviderInterface $provider): ApiDynamicDnsRepository
     {
         return new ApiDynamicDnsRepository(
             $this->db,
@@ -66,9 +67,10 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         );
     }
 
-    private function providerReturningNames(array $namesById): DnsBackendProvider
+    private function providerReturningNames(array $namesById): DnsBackendProviderInterface
     {
-        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider = $this->createMock(DnsBackendProviderInterface::class);
+        $provider->method('allocatesZoneIdsLocally')->willReturn(true);
         $provider->method('getZoneNameById')
             ->willReturnCallback(static fn(int $id): ?string => $namesById[$id] ?? null);
         return $provider;

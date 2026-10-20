@@ -1,0 +1,267 @@
+<?php
+
+namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
+
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
+use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
+use TestHelpers\FakeConfiguration;
+
+class DynamicDnsValidationServiceTest extends TestCase
+{
+    private DynamicDnsValidationService $validationService;
+    private FakeConfiguration $config;
+
+    protected function setUp(): void
+    {
+        $this->config = new FakeConfiguration();
+        $this->validationService = new DynamicDnsValidationService($this->config);
+    }
+
+    public function testValidateRequestWithValidData(): void
+    {
+        $request = new DynamicDnsRequest(
+            'testuser',
+            'testpass',
+            'example.com',
+            '192.168.1.1',
+            '2001:db8::1',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateRequestMissingUserAgent(): void
+    {
+        $request = new DynamicDnsRequest(
+            'testuser',
+            'testpass',
+            'example.com',
+            '192.168.1.1',
+            '',
+            false,
+            ''
+        );
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertFalse($result->isValid());
+        $this->assertContains('User agent is required', $result->getErrors());
+    }
+
+    public function testValidateRequestMissingUsername(): void
+    {
+        $request = new DynamicDnsRequest(
+            '',
+            'testpass',
+            'example.com',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertFalse($result->isValid());
+        $this->assertContains('Username is required', $result->getErrors());
+    }
+
+    public function testValidateRequestMissingHostname(): void
+    {
+        $request = new DynamicDnsRequest(
+            'testuser',
+            'testpass',
+            '',
+            '192.168.1.1',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertFalse($result->isValid());
+        $this->assertContains('Hostname is required', $result->getErrors());
+    }
+
+    public function testValidateRequestMissingIpAddresses(): void
+    {
+        $request = new DynamicDnsRequest(
+            'testuser',
+            'testpass',
+            'example.com',
+            '',
+            '',
+            false,
+            'TestAgent/1.0'
+        );
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertFalse($result->isValid());
+        $this->assertContains('At least one IP address is required', $result->getErrors());
+    }
+
+    public function testValidateHostnameValid(): void
+    {
+        $result = $this->validationService->validateHostname('example.com');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateHostnameInvalid(): void
+    {
+        $result = $this->validationService->validateHostname('invalid..hostname');
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+    }
+
+    public function testValidateIpAddressesValidIPv4(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesValidIPv6(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '2001:db8::1');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesValidBoth(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', '2001:db8::1');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesEmpty(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '');
+        $this->assertFalse($result->isValid());
+        $this->assertContains('At least one valid IP address is required', $result->getErrors());
+    }
+
+    public function testValidateIpAddressesInvalid(): void
+    {
+        $result = $this->validationService->validateIpAddresses('invalid.ip', 'invalid::ip');
+        $this->assertFalse($result->isValid());
+        $this->assertContains('At least one valid IP address is required', $result->getErrors());
+    }
+
+    public function testValidateIpAddressesRejectsMalformedIpv4BesideValidIpv6(): void
+    {
+        // Left unrejected, dualstack_update would delete every A record for the hostname.
+        $result = $this->validationService->validateIpAddresses('garbage', '2001:db8::1');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesRejectsMalformedIpv6BesideValidIpv4(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', 'garbage');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesMalformedFamilyErrorMapsToDnserr(): void
+    {
+        // DynamicDnsUpdateService::determineErrorCode() matches on 'IP address' to return dnserr.
+        $result = $this->validationService->validateIpAddresses('garbage', '2001:db8::1');
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IP address', implode(' ', $result->getErrors()));
+    }
+
+    public function testValidateIpAddressesAcceptsOmittedIpv6(): void
+    {
+        // Single-stack clients omit the other family entirely; this must stay valid.
+        $result = $this->validationService->validateIpAddresses('192.168.1.1', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsOmittedIpv4(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '2001:db8::1');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesRejectsInvalidElementBesideValidIpv4(): void
+    {
+        // The list is the complete record set, so silently dropping 'garbage' would delete
+        // whichever A record it was meant to keep.
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,garbage', '');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesRejectsInvalidElementBesideValidIpv6(): void
+    {
+        $result = $this->validationService->validateIpAddresses('', '2001:db8::1,garbage');
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testValidateIpAddressesInvalidElementErrorMapsToDnserr(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,garbage', '');
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IP address', implode(' ', $result->getErrors()));
+    }
+
+    public function testValidateIpAddressesAcceptsMultipleValidAddresses(): void
+    {
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,192.0.2.2', '2001:db8::1,2001:db8::2');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsTrailingCommaAndSpacing(): void
+    {
+        // A trailing comma or padded element is sloppy but not malformed.
+        $result = $this->validationService->validateIpAddresses(' 192.0.2.1 , 192.0.2.2 ,', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testValidateIpAddressesAcceptsRepeatedAddress(): void
+    {
+        // The list is deduplicated, which must not be mistaken for a dropped invalid entry.
+        $result = $this->validationService->validateIpAddresses('192.0.2.1,192.0.2.1', '');
+        $this->assertTrue($result->isValid());
+    }
+
+    public function testCreateValidatedHostname(): void
+    {
+        $hostname = $this->validationService->createValidatedHostname('example.com');
+        $this->assertEquals('example.com', $hostname->getValue());
+    }
+
+    public function testCreateValidatedHostnameInvalid(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->validationService->createValidatedHostname('');
+    }
+
+    public function testCreateValidatedIpList(): void
+    {
+        $ipList = $this->validationService->createValidatedIpList('192.168.1.1', '2001:db8::1');
+        $this->assertTrue($ipList->hasIpv4Addresses());
+        $this->assertTrue($ipList->hasIpv6Addresses());
+        $this->assertEquals(['192.168.1.1'], $ipList->getIpv4Addresses());
+        $this->assertEquals(['2001:db8::1'], $ipList->getIpv6Addresses());
+    }
+
+    public function testCreateValidatedIpListInvalid(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->validationService->createValidatedIpList('', '');
+    }
+
+    public function testValidateRequestMultipleErrors(): void
+    {
+        $request = new DynamicDnsRequest('', '', '', '', '', false, '');
+
+        $result = $this->validationService->validateRequest($request);
+        $this->assertFalse($result->isValid());
+
+        $errors = $result->getErrors();
+        $this->assertContains('User agent is required', $errors);
+        $this->assertContains('Username is required', $errors);
+        $this->assertContains('Hostname is required', $errors);
+        $this->assertContains('At least one IP address is required', $errors);
+    }
+}

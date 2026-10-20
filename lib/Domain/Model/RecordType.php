@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * Class containing constants for DNS record types.
+ * DNS record type names and the groups the UI and validators select from.
  */
 class RecordType
 {
@@ -125,6 +125,14 @@ class RecordType
         self::ZONEMD,
     ];
 
+    // Types whose preference lives in the separate prio column. NAPTR keeps its
+    // order and preference inside the content and must store prio 0.
+    public const TYPES_WITH_PRIORITY = [
+        self::MX,
+        self::SRV,
+        self::KX,
+    ];
+
     // Deprecated, obsolete, or experimental record types
     public const DEPRECATED_TYPES = [
         self::AFSDB,
@@ -178,6 +186,14 @@ class RecordType
         self::URI,
         self::WALLET,
     ];
+
+    /**
+     * Whether $type keeps its preference in the separate prio column
+     */
+    public static function hasPriority(string $type): bool
+    {
+        return in_array($type, self::TYPES_WITH_PRIORITY, true);
+    }
 
     // Private constructor to prevent instantiation
     private function __construct()

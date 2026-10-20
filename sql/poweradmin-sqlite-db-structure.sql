@@ -50,6 +50,7 @@ CREATE INDEX idx_log_record_changes_changeset_id ON log_record_changes(changeset
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
 
+-- BEGIN generated seed: perm_items (composer sql:seed)
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (41,	'zone_master_add',	'User is allowed to add new master zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (42,	'zone_slave_add',	'User is allowed to add new slave zones.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (43,	'zone_content_view_own',	'User is allowed to see the content of zones he owns.');
@@ -89,9 +90,15 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (77,	'zone_metadata_view
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (81,	'zone_change_request_own',	'User is allowed to request changes to zones they own');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (82,	'zone_change_request_others',	'User is allowed to request changes to any zone');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (83,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (84,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
+-- END generated seed: perm_items
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
+-- BEGIN generated seed: perm_templ (composer sql:seed)
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (1,	'Administrator',	'Administrator template with full rights.',	'user');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (3,	'Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user');
@@ -102,12 +109,14 @@ INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (7,	'Zo
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (9,	'Viewers',	'Read-only zone access for group members.',	'group');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
+-- END generated seed: perm_templ
 
 CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL);
 
 CREATE INDEX idx_perm_templ_items_templ_id ON perm_templ_items(templ_id);
 CREATE INDEX idx_perm_templ_items_perm_id ON perm_templ_items(perm_id);
 
+-- BEGIN generated seed: perm_templ_items (composer sql:seed)
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (1,	1,	53);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (2,	2,	41);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (3,	2,	42);
@@ -164,6 +173,7 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (53,	4,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (54,	7,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (55,	8,	78);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (56,	9,	78);
+-- END generated seed: perm_templ_items
 
 CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
@@ -176,9 +186,10 @@ CREATE INDEX idx_records_zone_templ_api_domain_id ON records_zone_templ_api(doma
 CREATE INDEX idx_records_zone_templ_api_zone_templ_id ON records_zone_templ_api(zone_templ_id);
 
 
-CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql');
+CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1) NOT NULL, use_ldap integer(1) NOT NULL, auth_method VARCHAR(20) NOT NULL DEFAULT 'sql', max_zones integer DEFAULT NULL);
 
 CREATE INDEX idx_users_perm_templ ON users(perm_templ);
+CREATE UNIQUE INDEX idx_users_username ON users(username);
 
 CREATE TABLE login_attempts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -378,6 +389,7 @@ CREATE TABLE user_groups (
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     perm_templ INTEGER NOT NULL,
+    max_zones INTEGER DEFAULT NULL,
     created_by INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -396,12 +408,14 @@ BEGIN
     UPDATE user_groups SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
 
+-- BEGIN generated seed: user_groups (composer sql:seed)
 INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
     (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
     (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
     (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
     (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
     (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+-- END generated seed: user_groups
 
 CREATE TABLE user_group_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -452,5 +466,28 @@ CREATE TABLE app_settings (
     updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
-INSERT INTO "app_settings" ("setting_key", "setting_value", "value_type") VALUES ('backend.zone_ids', 'sql', 'string');
+CREATE TABLE zone_change_requests (
+    id integer PRIMARY KEY,
+    zone_id integer NOT NULL,
+    zone_name VARCHAR(255) NOT NULL,
+    kind VARCHAR(16) NOT NULL,
+    status VARCHAR(16) NOT NULL,
+    requester_id integer,
+    requester_name VARCHAR(64) NOT NULL,
+    request_comment TEXT,
+    base_serial VARCHAR(32),
+    payload TEXT NOT NULL,
+    reviewer_id integer,
+    reviewer_name VARCHAR(64),
+    review_comment TEXT,
+    created_at timestamp DEFAULT current_timestamp NOT NULL,
+    reviewed_at timestamp,
+    applied_at timestamp,
+    error TEXT,
+    snapshot TEXT
+);
+
+CREATE INDEX idx_zone_change_requests_zone_id ON zone_change_requests(zone_id);
+CREATE INDEX idx_zone_change_requests_status ON zone_change_requests(status);
+CREATE INDEX idx_zone_change_requests_requester_id ON zone_change_requests(requester_id);
+CREATE INDEX idx_zone_change_requests_created_at ON zone_change_requests(created_at);

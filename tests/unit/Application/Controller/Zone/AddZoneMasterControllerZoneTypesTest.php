@@ -1,0 +1,110 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Application\Controller\Zone;
+
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Controller\Zone\AddZoneMasterController;
+use Psr\Log\NullLogger;
+use ReflectionClass;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
+
+class AddZoneMasterControllerZoneTypesTest extends TestCase
+{
+    private ArraySession $session;
+
+    private ReflectionClass $reflection;
+
+    protected function setUp(): void
+    {
+        $this->reflection = new ReflectionClass(AddZoneMasterController::class);
+        $this->session = new ArraySession();
+    }
+
+    protected function tearDown(): void
+    {
+        $this->session = new ArraySession();
+        parent::tearDown();
+    }
+
+    private function createController(string $backend): AddZoneMasterController
+    {
+        $controller = $this->reflection->newInstanceWithoutConstructor();
+
+        $config = new FakeConfiguration(['dns' => ['backend' => $backend]]);
+
+        $property = $this->reflection->getParentClass()->getProperty('config');
+        $property->setValue($controller, $config);
+
+        // An expired or missing version cache triggers a refresh, which needs the logger.
+        $logger = $this->reflection->getParentClass()->getProperty('logger');
+        $logger->setValue($controller, new NullLogger());
+
+        $session = $this->reflection->getParentClass()->getProperty('session');
+        $session->setValue($controller, $this->session);
+
+        return $controller;
+    }
+
+    private function invoke(object $controller, string $method, array $args = []): mixed
+    {
+        $reflectionMethod = $this->reflection->getMethod($method);
+        return $reflectionMethod->invokeArgs($controller, $args);
+    }
+
+    private function seedServerVersion(string $version): void
+    {
+        $this->session->set('pdns_server_info', [
+            'fetched_at' => time(),
+            'info' => ['version' => $version],
+        ]);
+    }
+
+    // ---- supportsCatalogKinds: the capability gate ----
+
+    /**
+     * An unknown version must count as unsupported: the 4.7 schema widened
+     * domains.type from VARCHAR(6) to VARCHAR(8), so writing an 8-character
+     * catalog kind to an older schema truncates it.
+     */
+    public function testUnknownVersionHidesCatalogKinds(): void
+    {
+        $this->assertFalse($this->invoke($this->createController('sql'), 'supportsCatalogKinds'));
+        $this->assertFalse($this->invoke($this->createController('api'), 'supportsCatalogKinds'));
+    }
+
+    public function testCatalogKindsHiddenBefore47(): void
+    {
+        $this->seedServerVersion('4.6.0');
+
+        $this->assertFalse($this->invoke($this->createController('api'), 'supportsCatalogKinds'));
+    }
+
+    public function testCatalogKindsOfferedFrom47(): void
+    {
+        $this->seedServerVersion('4.7.0');
+
+        $this->assertTrue($this->invoke($this->createController('api'), 'supportsCatalogKinds'));
+        $this->assertTrue($this->invoke($this->createController('sql'), 'supportsCatalogKinds'));
+    }
+}

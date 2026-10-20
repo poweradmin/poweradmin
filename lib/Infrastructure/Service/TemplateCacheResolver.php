@@ -24,7 +24,10 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Psr\Log\LoggerInterface;
 
-readonly class TemplateCacheResolver
+/**
+ * Resolves the Twig compiled-template cache directory, creating it or falling back to uncached rendering.
+ */
+final readonly class TemplateCacheResolver
 {
     public function __construct(private LoggerInterface $logger)
     {

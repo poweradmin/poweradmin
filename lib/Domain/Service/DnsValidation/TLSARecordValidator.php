@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * TLSA (TLS Authentication) record validator
@@ -68,20 +68,15 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - Without DNSSEC validation, TLSA offers no security advantage
  * - When CNAME records are used, the entire CNAME chain must be DNSSEC-signed
  * - When using SRV records, both SRV and TLSA records must be DNSSEC-signed
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class TLSARecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -95,6 +90,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The priority (unused for TLSA records)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -163,7 +159,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
             // For non-service names, use regular hostname validation
             $hostnameResult = $this->hostnameValidator->validate($name, true);
             if (!$hostnameResult->isValid()) {
-                return $hostnameResult;
+                return $hostnameResult->withField(RecordField::NAME);
             }
             $hostnameData = $hostnameResult->getData();
             $name = $hostnameData['hostname'];

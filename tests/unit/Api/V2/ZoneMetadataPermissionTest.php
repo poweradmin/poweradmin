@@ -24,10 +24,11 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesController;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -142,8 +143,10 @@ class ZoneMetadataPermissionTest extends TestCase
         $permissionService->method('hasZoneContentEditPermission')->willReturn($content);
         $permissionService->method('canCreateZone')->willReturn(true);
 
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('zoneIdExists')->willReturn(true);
+
         $zoneRepository = $this->createMock(DbZoneRepository::class);
-        $zoneRepository->method('zoneIdExists')->willReturn(true);
         $zoneRepository->method('getZoneById')->willReturn($stored + [
             'id' => self::ZONE_ID,
             'name' => 'tenant.example',
@@ -157,8 +160,9 @@ class ZoneMetadataPermissionTest extends TestCase
         $zoneManagementService->method('updateZone')->willReturn(['success' => true]);
 
         $controller = (new ReflectionClass(ZonesController::class))->newInstanceWithoutConstructor();
-        $this->inject($controller, 'permissionService', $permissionService);
+        $this->inject($controller, 'apiPermissionService', $permissionService);
         $this->inject($controller, 'zoneRepository', $zoneRepository);
+        $this->inject($controller, 'domainRepository', $domainRepository);
         $this->inject($controller, 'zoneManagementService', $zoneManagementService);
         $this->inject($controller, 'request', new Request([], [], [], [], [], [], json_encode($body)));
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID]);

@@ -1,0 +1,169 @@
+-- Poweradmin schema update to 4.6.0
+-- Add the zone_change_requests table and the change approval permissions for
+-- the opt-in change approval workflow (approval.enabled). Requests carry a JSON
+-- action list that is replayed against the zone once a reviewer approves it.
+
+-- The 4.1.0 update shipped before 4.6.0 inserted permissions with explicit ids without
+-- advancing the sequences, so the inserts below would collide. Resync them first.
+SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1));
+SELECT setval('perm_templ_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ), 1));
+SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
+
+CREATE SEQUENCE IF NOT EXISTS zone_change_requests_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE IF NOT EXISTS "public"."zone_change_requests" (
+    "id" integer DEFAULT nextval('zone_change_requests_id_seq') NOT NULL,
+    "zone_id" integer NOT NULL,
+    "zone_name" character varying(255) NOT NULL,
+    "kind" character varying(16) NOT NULL,
+    "status" character varying(16) NOT NULL,
+    "requester_id" integer,
+    "requester_name" character varying(64) NOT NULL,
+    "request_comment" text,
+    "base_serial" character varying(32),
+    "payload" text NOT NULL,
+    "reviewer_id" integer,
+    "reviewer_name" character varying(64),
+    "review_comment" text,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "reviewed_at" timestamp,
+    "applied_at" timestamp,
+    "error" text,
+    "snapshot" text,
+    CONSTRAINT "zone_change_requests_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX IF NOT EXISTS "idx_zone_change_requests_zone_id" ON "public"."zone_change_requests" USING btree ("zone_id");
+CREATE INDEX IF NOT EXISTS "idx_zone_change_requests_status" ON "public"."zone_change_requests" USING btree ("status");
+CREATE INDEX IF NOT EXISTS "idx_zone_change_requests_requester_id" ON "public"."zone_change_requests" USING btree ("requester_id");
+CREATE INDEX IF NOT EXISTS "idx_zone_change_requests_created_at" ON "public"."zone_change_requests" USING btree ("created_at");
+
+-- Change approval permissions. No template is granted them automatically;
+-- admins opt in through the permission template editor.
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_change_request_own', 'User is allowed to request changes to zones they own'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_request_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_change_request_others', 'User is allowed to request changes to any zone'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_request_others');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_change_approve_own', 'User is allowed to review change requests for zones they own'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_approve_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_change_approve_others', 'User is allowed to review change requests for any zone'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_approve_others');
+
+-- Restore permissions that the 4.2.0 and 4.5.0 updates failed to add on databases
+-- whose sequences lagged behind, with the view-split grants 4.5.0 gave alongside them.
+DO $$
+DECLARE
+    p record;
+    new_id integer;
+BEGIN
+    FOR p IN SELECT * FROM (VALUES
+        ('user_enforce_mfa', 'User is required to use multi-factor authentication.', NULL),
+        ('zone_dnssec_manage_own', 'User is allowed to manage DNSSEC keys for zones he owns.', NULL),
+        ('zone_logs_view_own', 'User is allowed to view activity logs for zones he owns.', NULL),
+        ('zone_logs_view_others', 'User is allowed to view activity logs for zones he does not own.', NULL),
+        ('user_logs_view', 'User is allowed to view the user activity logs.', NULL),
+        ('group_logs_view', 'User is allowed to view the group activity logs.', NULL),
+        ('zone_content_edit_ns_subzone', 'User is allowed to edit NS records below the zone apex, but not SOA and apex NS records.', NULL),
+        ('zone_metadata_view_own', 'User is allowed to see the meta data of zones he owns.', 'zone_content_view_own'),
+        ('zone_metadata_view_others', 'User is allowed to see the meta data of zones he does not own.', 'zone_content_view_others'),
+        ('zone_ownership_view_own', 'User is allowed to see the owners of zones he owns.', 'zone_content_view_own'),
+        ('zone_ownership_view_others', 'User is allowed to see the owners of zones he does not own.', 'zone_content_view_others'),
+        ('server_status_view', 'User is allowed to view the PowerDNS server status, e.g. for monitoring.', NULL)
+    ) AS t(name, descr, granted_from)
+    LOOP
+        CONTINUE WHEN EXISTS (SELECT 1 FROM perm_items WHERE name = p.name);
+        INSERT INTO perm_items (name, descr) VALUES (p.name, p.descr) RETURNING id INTO new_id;
+        IF p.granted_from IS NOT NULL THEN
+            INSERT INTO perm_templ_items (templ_id, perm_id)
+            SELECT DISTINCT pti.templ_id, new_id
+            FROM perm_templ_items pti
+            JOIN perm_items src ON src.id = pti.perm_id AND src.name = p.granted_from;
+        END IF;
+    END LOOP;
+END $$;
+
+-- The same lagging sequences made the 4.1.0 update drop the Zone Manager template and the
+-- DNS Editor (now Editor) grants (#1673). Restore both, but only where they are still missing.
+INSERT INTO perm_templ (name, descr, template_type)
+SELECT 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.', 'user'
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ WHERE name = 'Zone Manager' AND template_type = 'user');
+
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT pt.id, pi.id
+FROM (VALUES
+    ('Zone Manager', 'zone_master_add'), ('Zone Manager', 'zone_slave_add'),
+    ('Zone Manager', 'zone_content_view_own'), ('Zone Manager', 'zone_content_edit_own'),
+    ('Zone Manager', 'zone_meta_edit_own'), ('Zone Manager', 'search'),
+    ('Zone Manager', 'user_edit_own'), ('Zone Manager', 'zone_templ_add'),
+    ('Zone Manager', 'zone_templ_edit'), ('Zone Manager', 'api_manage_keys'),
+    ('Zone Manager', 'zone_delete_own'), ('Zone Manager', 'zone_metadata_view_own'),
+    ('Zone Manager', 'zone_ownership_view_own'),
+    ('Editor', 'zone_content_view_own'), ('Editor', 'search'),
+    ('Editor', 'user_edit_own'), ('Editor', 'zone_content_edit_own_as_client'),
+    ('Editor', 'zone_metadata_view_own'), ('Editor', 'zone_ownership_view_own')
+) AS g(templ, perm)
+JOIN perm_templ pt ON pt.name = g.templ AND pt.template_type = 'user'
+JOIN perm_items pi ON pi.name = g.perm
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id);
+
+-- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never ran the 4.0.5
+-- update (records_zone_templ primary key, #906), and no update added the zones indexes.
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'records_zone_templ' AND column_name = 'id'
+    ) THEN
+        CREATE SEQUENCE IF NOT EXISTS public.records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+        ALTER TABLE public.records_zone_templ ADD COLUMN id integer DEFAULT nextval('public.records_zone_templ_id_seq') NOT NULL;
+        ALTER TABLE public.records_zone_templ ADD CONSTRAINT records_zone_templ_pkey PRIMARY KEY (id);
+        ALTER SEQUENCE public.records_zone_templ_id_seq OWNED BY public.records_zone_templ.id;
+    END IF;
+END $$;
+
+-- Databases from the 3.9.7 update or the installer already index these columns as zones_*_idx
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'zones'
+          AND indexname IN ('idx_zones_domain_id', 'zones_domain_id_idx')
+    ) THEN
+        CREATE INDEX "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'zones'
+          AND indexname IN ('idx_zones_owner', 'zones_owner_idx')
+    ) THEN
+        CREATE INDEX "idx_zones_owner" ON "public"."zones" USING btree ("owner");
+    END IF;
+END $$;
+
+-- Zone count limit per user and group (#72): NULL uses the dns.default_max_zones_* setting
+ALTER TABLE "public"."users" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
+ALTER TABLE "public"."user_groups" ADD COLUMN IF NOT EXISTS "max_zones" integer DEFAULT NULL;
+
+-- An encoded API record id holds the zone name twice plus the content, so an SOA
+-- in a long zone outgrew varchar(255) and zone creation from a template failed
+ALTER TABLE "public"."records_zone_templ_api" ALTER COLUMN "record_id" TYPE text;
+
+-- Usernames are unique (a rename could collide with another account). Older data may
+-- already hold a name twice; then the index is skipped with a warning. Find those rows with
+--   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;
+-- rename or remove the extra accounts and run this block again.
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM "public"."users" WHERE "username" IS NOT NULL GROUP BY "username" HAVING COUNT(*) > 1) THEN
+        RAISE WARNING 'idx_users_username NOT created: users holds duplicate usernames, resolve them and re-run';
+    ELSE
+        CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_username" ON "public"."users" USING btree ("username");
+    END IF;
+END $$;

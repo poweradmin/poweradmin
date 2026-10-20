@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Dashboard and Navigation', () => {
   test.beforeEach(async ({ page }) => {
@@ -31,17 +31,11 @@ test.describe('Dashboard and Navigation', () => {
   });
 
   test('should have functional zone navigation links', async ({ page }) => {
-    // Forward zones link
-    const forwardLink = page.locator('a').filter({ hasText: 'Forward' });
-    if (await forwardLink.count() > 0) {
-      await expect(forwardLink.first()).toHaveAttribute('href', /.+/);
-    }
-
-    // Add zone links
-    const addZoneLink = page.locator('a').filter({ hasText: /Add.*Zone/i });
-    if (await addZoneLink.count() > 0) {
-      await expect(addZoneLink.first()).toHaveAttribute('href', /.+/);
-    }
+    // The dashboard repeats these as cards, so scope to the header's Zones dropdown
+    await expect(page.locator('header [data-testid="list-forward-zones-link"]'))
+      .toHaveAttribute('href', /\/zones\/forward$/);
+    await expect(page.locator('header [data-testid="add-master-zone-link"]'))
+      .toHaveAttribute('href', /\/zones\/add\/master$/);
   });
 
   test('should navigate to forward zones page', async ({ page }) => {
@@ -68,26 +62,13 @@ test.describe('Dashboard and Navigation', () => {
   test('should show dashboard cards or widgets', async ({ page }) => {
     await page.goto('/');
 
-    // Look for dashboard cards/widgets
-    const hasCards = await page.locator('.card, .widget, .panel').count() > 0;
-    if (hasCards) {
-      await expect(page.locator('.card, .widget, .panel').first()).toBeVisible();
-    } else {
-      // Alternative: check for dashboard links
-      await expect(page.locator('a[data-testid*="link"], button[data-testid*="button"]')).toHaveCount(await page.locator('a[data-testid*="link"], button[data-testid*="button"]').count());
-    }
+    await expect(page.locator('.card, .widget, .panel').first()).toBeVisible();
   });
 
   test('should have breadcrumb navigation on sub-pages', async ({ page }) => {
     await page.goto('/users/add');
 
-    const hasBreadcrumb = await page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').count() > 0;
-    if (hasBreadcrumb) {
-      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
-    } else {
-      // Check for page content indicator (card-header or form)
-      await expect(page.locator('.card-header strong, .card-header, form').first()).toBeVisible();
-    }
+    await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').first()).toBeVisible();
   });
 
   test('should handle responsive navigation', async ({ page }) => {
@@ -96,7 +77,7 @@ test.describe('Dashboard and Navigation', () => {
     await page.goto('/');
 
     // Navigation should still be accessible
-    await expect(page.locator('nav, .navbar, .navigation, header')).toHaveCount(await page.locator('nav, .navbar, .navigation, header').count());
+    await expect(page.locator('nav, .navbar, .navigation, header').first()).toBeVisible();
 
     // Reset viewport
     await page.setViewportSize({ width: 1280, height: 720 });
@@ -116,15 +97,9 @@ test.describe('Dashboard and Navigation', () => {
 
   test('should show appropriate error pages for invalid URLs', async ({ page }) => {
     const response = await page.goto('/nonexistent-page', { waitUntil: 'networkidle' });
+    expect(response?.status()).toBe(404);
 
     const bodyText = await page.locator('body').textContent();
-    const has404 = bodyText?.includes('404') || bodyText?.includes('not found');
-
-    if (has404) {
-      expect(bodyText).toMatch(/404|not found/i);
-    } else {
-      // Might redirect to home or show different error
-      console.log('No 404 page found, application might redirect');
-    }
+    expect(bodyText).toMatch(/404|not found/i);
   });
 });

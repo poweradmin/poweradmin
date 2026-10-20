@@ -22,37 +22,23 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Application\Service\ResultPaginator;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
- * API-backend record repository.
- * Fetches DNS data via PowerDNS REST API, comments from API RRset data.
+ * Record reads for the API backend mode, served from PowerDNS RRsets.
  */
-class ApiRecordRepository implements RecordRepositoryInterface
+final class ApiRecordRepository implements RecordRepositoryInterface
 {
-    private DnsBackendProvider $backendProvider;
+    private DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(DnsBackendProvider $backendProvider)
+    public function __construct(DnsBackendProviderInterface $backendProvider)
     {
         $this->backendProvider = $backendProvider;
-    }
-
-    /**
-     * Enrich records with comments from API RRset data.
-     * The API is the sole source of truth for comments in API mode.
-     */
-    private function enrichRecordsWithComments(array &$records): void
-    {
-        foreach ($records as &$record) {
-            $record['comment'] = $record['api_comment'] ?? null;
-            $record['comment_account'] = $record['api_comment_account'] ?? null;
-            $record['comment_modified_at'] = $record['api_comment_modified_at'] ?? null;
-            unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
-        }
-        unset($record);
     }
 
     public function getZoneIdFromRecordId(int|string $rid): int
@@ -94,7 +80,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $record;
     }
 
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
+    public function getRecordsFromDomainId(int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
         $zoneName = $this->backendProvider->getZoneNameById($id);
         if ($zoneName === null) {
@@ -111,28 +97,21 @@ class ApiRecordRepository implements RecordRepositoryInterface
             $records = ResultPaginator::paginate($records, $rowstart, $rowamount);
         }
 
-        // Enrich with comments if requested
-        if ($fetchComments && !empty($records)) {
-            $this->enrichRecordsWithComments($records);
+        // The API always carries RRset comments; drop them unless asked, so the
+        // two backends agree about what an unfetched comment looks like
+        if (!$fetchComments) {
+            $records = array_map(static function (array $record): array {
+                unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
+                return $record;
+            }, $records);
         }
 
-        return $records;
+        return array_map(RecordRow::fromRow(...), $records);
     }
 
     public function recidToDomid(int|string $id): int
     {
         return $this->backendProvider->getZoneIdFromRecordId($id);
-    }
-
-    public function recordNameExists(string $name): bool
-    {
-        $result = $this->backendProvider->searchDnsData($name, 'record', 1);
-        foreach ($result['records'] as $r) {
-            if ($r['name'] === $name) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public function hasNonDelegationRecords(string $name): bool
@@ -160,23 +139,6 @@ class ApiRecordRepository implements RecordRepositoryInterface
     public function recordExists(int $domain_id, string $name, string $type, string $content): bool
     {
         return $this->backendProvider->recordExists($domain_id, $name, $type, $content);
-    }
-
-    public function getRecordId(int $domain_id, string $name, string $type, string $content, ?int $prio = null, ?int $ttl = null): int|string|null
-    {
-        $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
-        foreach ($records as $r) {
-            if ($r['name'] === $name && $r['type'] === $type && $r['content'] === $content) {
-                if ($prio !== null && ($r['prio'] ?? 0) != $prio) {
-                    continue;
-                }
-                if ($ttl !== null && ($r['ttl'] ?? 0) != $ttl) {
-                    continue;
-                }
-                return $r['id'] ?? null;
-            }
-        }
-        return null;
     }
 
     public function hasPtrRecord(int $domain_id, string $name): bool
@@ -222,6 +184,19 @@ class ApiRecordRepository implements RecordRepositoryInterface
         return $this->backendProvider->getRecordsByName($domainId, $name, $type);
     }
 
+    public function getRecordsAtOrUnder(int $domainId, string $name): array
+    {
+        $name = rtrim($name, '.');
+        // The API has no subtree filter, so the whole zone is fetched and narrowed here
+        $records = array_filter(
+            $this->backendProvider->getRecordsByZoneId($domainId),
+            fn(array $r): bool => empty($r['disabled']) && DnsHelper::isWithinZone(rtrim((string)$r['name'], '.'), $name)
+        );
+        usort($records, fn(array $a, array $b): int => [strtolower($a['name']), $a['type']] <=> [strtolower($b['name']), $b['type']]);
+
+        return array_map(fn(array $r): array => ['name' => $r['name'], 'type' => $r['type'], 'content' => $r['content']], $records);
+    }
+
     public function getFilteredRecords(
         int $zone_id,
         int $row_start,
@@ -242,12 +217,16 @@ class ApiRecordRepository implements RecordRepositoryInterface
         // Paginate
         $records = ResultPaginator::paginate($records, $row_start, $row_amount);
 
-        // Enrich with comments if requested
-        if ($include_comments && !empty($records)) {
-            $this->enrichRecordsWithComments($records);
+        // RecordRow reads either comment naming, so the rows only need the
+        // API keys dropped when the caller did not ask for comments
+        if (!$include_comments) {
+            $records = array_map(static function (array $record): array {
+                unset($record['api_comment'], $record['api_comment_account'], $record['api_comment_modified_at']);
+                return $record;
+            }, $records);
         }
 
-        return $records;
+        return array_map(RecordRow::fromRow(...), $records);
     }
 
     public function getFilteredRecordCount(

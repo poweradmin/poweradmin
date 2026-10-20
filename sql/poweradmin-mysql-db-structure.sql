@@ -88,7 +88,9 @@ CREATE TABLE `users` (
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
                          `auth_method` varchar(20) NOT NULL DEFAULT 'sql',
+                         `max_zones` int(11) DEFAULT NULL,
                          PRIMARY KEY (`id`),
+                         UNIQUE KEY `idx_users_username` (`username`),
                          KEY `idx_users_perm_templ` (`perm_templ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -119,6 +121,7 @@ CREATE TABLE `perm_items` (
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- BEGIN generated seed: perm_items (composer sql:seed)
 INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
                                                      (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
@@ -158,7 +161,12 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
                                                      (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
                                                      (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.'),
-                                                     (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.');
+                                                     (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.'),
+                                                     (81,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
+                                                     (82,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
+                                                     (83,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
+                                                     (84,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
+-- END generated seed: perm_items
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -168,6 +176,7 @@ CREATE TABLE `perm_templ` (
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- BEGIN generated seed: perm_templ (composer sql:seed)
 INSERT INTO `perm_templ` (`id`, `name`, `descr`, `template_type`) VALUES
     (1,	'Administrator',	'Administrator template with full rights.',	'user'),
     (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
@@ -179,6 +188,7 @@ INSERT INTO `perm_templ` (`id`, `name`, `descr`, `template_type`) VALUES
     (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group'),
     (9,	'Viewers',	'Read-only zone access for group members.',	'group'),
     (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
+-- END generated seed: perm_templ
 
 CREATE TABLE `perm_templ_items` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -189,6 +199,7 @@ CREATE TABLE `perm_templ_items` (
                                     KEY `idx_perm_templ_items_perm_id` (`perm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- BEGIN generated seed: perm_templ_items (composer sql:seed)
 INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (1,	1,	53),
     (2,	2,	41),
@@ -246,6 +257,7 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (54,	7,	78),
     (55,	8,	78),
     (56,	9,	78);
+-- END generated seed: perm_templ_items
 
 CREATE TABLE `records_zone_templ` (
                                       `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -466,6 +478,7 @@ CREATE TABLE `user_groups` (
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT,
   `perm_templ` INT NOT NULL,
+  `max_zones` INT DEFAULT NULL,
   `created_by` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -478,12 +491,14 @@ CREATE TABLE `user_groups` (
   CONSTRAINT `fk_user_groups_created_by` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- BEGIN generated seed: user_groups (composer sql:seed)
 INSERT INTO `user_groups` (`id`, `name`, `description`, `perm_templ`, `created_by`) VALUES
     (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
     (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
     (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
     (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
     (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+-- END generated seed: user_groups
 
 CREATE TABLE `user_group_members` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -534,5 +549,28 @@ CREATE TABLE `app_settings` (
     PRIMARY KEY (`setting_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
-INSERT INTO `app_settings` (`setting_key`, `setting_value`, `value_type`) VALUES ('backend.zone_ids', 'sql', 'string');
+CREATE TABLE `zone_change_requests` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `zone_id` int(11) NOT NULL,
+    `zone_name` varchar(255) NOT NULL,
+    `kind` varchar(16) NOT NULL,
+    `status` varchar(16) NOT NULL,
+    `requester_id` int(11) DEFAULT NULL,
+    `requester_name` varchar(64) NOT NULL,
+    `request_comment` text DEFAULT NULL,
+    `base_serial` varchar(32) DEFAULT NULL,
+    `payload` text NOT NULL,
+    `reviewer_id` int(11) DEFAULT NULL,
+    `reviewer_name` varchar(64) DEFAULT NULL,
+    `review_comment` text DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `reviewed_at` timestamp NULL DEFAULT NULL,
+    `applied_at` timestamp NULL DEFAULT NULL,
+    `error` text DEFAULT NULL,
+    `snapshot` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_zone_change_requests_zone_id` (`zone_id`),
+    KEY `idx_zone_change_requests_status` (`status`),
+    KEY `idx_zone_change_requests_requester_id` (`requester_id`),
+    KEY `idx_zone_change_requests_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

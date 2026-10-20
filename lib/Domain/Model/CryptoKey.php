@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * A DNSSEC key of a zone: id, type (ksk/zsk/csk), size, algorithm, active flag, DNSKEY and DS records.
+ */
 class CryptoKey
 {
 
@@ -97,13 +100,27 @@ class CryptoKey
     }
 
     /**
-     * The algorithm number from the DNSKEY record, or 0 without a readable one.
+     * The algorithm number of the DNSKEY record, or 0 without one.
      */
     public function getAlgorithmId(): int
     {
         $fields = $this->dnskeyFields();
 
         return count($fields) >= 3 ? (int)$fields[2] : 0;
+    }
+
+    /**
+     * Whether the DNSKEY carries the SEP flag (257), or null without a readable one.
+     * PowerDNS stores only this; it derives ksk/zsk/csk from the other active keys on every read.
+     */
+    public function isSecureEntryPoint(): ?bool
+    {
+        $fields = $this->dnskeyFields();
+        if ($fields === [] || !ctype_digit($fields[0])) {
+            return null;
+        }
+
+        return ((int)$fields[0] & 1) === 1;
     }
 
     /**

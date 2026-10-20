@@ -1,0 +1,104 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Module;
+
+/**
+ * A feature module: its routes, navigation items, capabilities and templates, enabled through configuration.
+ */
+interface ModuleInterface
+{
+    /** Export formats offered on the zone edit page; the data carries a url_pattern with an {id} placeholder. */
+    public const CAP_ZONE_EXPORT = 'zone_export';
+
+    /** Import of zone data; the edit page shows the import entry when any enabled module provides it. */
+    public const CAP_ZONE_IMPORT = 'zone_import';
+
+    /** WHOIS lookup actions on the zone edit and search pages. */
+    public const CAP_WHOIS_LOOKUP = 'whois_lookup';
+
+    /** RDAP lookup actions on the zone edit and search pages. */
+    public const CAP_RDAP_LOOKUP = 'rdap_lookup';
+
+    /** DNS wizard actions on the zone edit page. */
+    public const CAP_DNS_WIZARD = 'dns_wizard';
+
+    /**
+     * Get unique module identifier (e.g., 'csv_export', 'zone_import_export')
+     */
+    public function getName(): string;
+
+    /**
+     * Get route definitions for this module.
+     *
+     * Each route is an associative array with keys:
+     * - 'name' (string): Route name (e.g., 'module_csv_export')
+     * - 'path' (string): URL path (e.g., '/zones/{id}/export/csv')
+     * - 'controller' (string): Fully qualified controller class::method
+     * - 'methods' (array): HTTP methods (e.g., ['GET'])
+     * - 'requirements' (array, optional): Parameter regex constraints
+     *
+     * @return array<array<string, mixed>>
+     */
+    public function getRoutes(): array;
+
+    /**
+     * Get navigation items to add to the Tools dropdown.
+     *
+     * Each item is an associative array with keys:
+     * - 'label' (string): Display text
+     * - 'url' (string): URL path
+     * - 'icon' (string): Bootstrap Icons class name (without 'bi-' prefix)
+     * - 'page_id' (string): Page identifier for active state detection
+     * - 'permission' (string, optional): Required permission to show this item
+     *
+     * @return array<array<string, string>>
+     */
+    public function getNavItems(): array;
+
+    /**
+     * Get list of capabilities this module provides, from the CAP_* constants above.
+     *
+     * @return string[]
+     */
+    public function getCapabilities(): array;
+
+    /**
+     * Get data for a specific capability.
+     *
+     * For CAP_ZONE_EXPORT, returns an array of export format definitions:
+     * - 'label' (string): Display text (e.g., 'CSV', 'Zone File')
+     * - 'url_pattern' (string): URL with {id} placeholder (e.g., '/zones/{id}/export/csv')
+     * - 'icon' (string): Bootstrap Icons class name (without 'bi-' prefix)
+     *
+     * @param string $capability The capability identifier
+     * @return array<array<string, string>>
+     */
+    public function getCapabilityData(string $capability): array;
+
+    /**
+     * Get the absolute path to the module's template directory.
+     *
+     * Return an empty string if the module has no templates.
+     */
+    public function getTemplatePath(): string;
+}

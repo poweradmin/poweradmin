@@ -20,44 +20,37 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone template operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * /api/v2/zone-templates: lists, creates, updates and deletes zone templates.
+ */
 class ZoneTemplatesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zone-templates */
+    private const TEMPLATE_SORT_FIELDS = ['id', 'name', 'zones_linked'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
     }
 
-    private DbZoneTemplateRepository $repository;
+    private ZoneTemplateRepositoryInterface $repository;
     private ApiPermissionService $apiPermissionService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->repository = $this->services()->zoneTemplateRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -72,18 +65,48 @@ class ZoneTemplatesController extends PublicApiController
             'POST' => $this->createZoneTemplate(),
             'PUT' => $this->updateZoneTemplate(),
             'DELETE' => $this->deleteZoneTemplate(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     #[OA\Get(
         path: '/v2/zone-templates',
+        operationId: 'v2ListZoneTemplates',
         summary: 'Get list of zone templates',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the template name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, zones_linked. Default: name in database order (sort=name uses natural, case-insensitive order)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zones_linked:desc,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -92,6 +115,17 @@ class ZoneTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -116,7 +150,9 @@ class ZoneTemplatesController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -129,7 +165,11 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view zone templates', 403);
             }
 
-            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::TEMPLATE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $templates = $this->repository->listZoneTemplates($userId, $isUeberuser);
 
@@ -144,7 +184,12 @@ class ZoneTemplatesController extends PublicApiController
                 ];
             }, $templates);
 
-            return $this->returnApiResponse(['templates' => $formatted]);
+            // A user sees few templates, all loaded already, so filter, sort and page the formatted list
+            [$formatted, $extra] = $this->filterSortAndPage($formatted, $sort, [
+                'q' => static fn(array $t): array => [$t['name'], $t['description']],
+            ]);
+
+            return $this->returnApiResponse(['templates' => $formatted], true, null, 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplatesController::listZoneTemplates', 'Failed to fetch zone templates');
         }
@@ -152,8 +197,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Get(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2GetZoneTemplate',
         summary: 'Get specific zone template with records',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -222,7 +268,7 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view zone templates', 403);
             }
 
-            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $id = (int)$this->pathParameters['id'];
 
@@ -267,8 +313,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Post(
         path: '/v2/zone-templates',
+        operationId: 'v2CreateZoneTemplate',
         summary: 'Create new zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -335,7 +382,7 @@ class ZoneTemplatesController extends PublicApiController
             $description = trim($data['description']);
             $isGlobal = !empty($data['is_global']);
 
-            if ($isGlobal && !$this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+            if ($isGlobal && !$this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
                 return $this->returnApiError('Only ueberusers can create global zone templates', 403);
             }
 
@@ -346,13 +393,7 @@ class ZoneTemplatesController extends PublicApiController
             $owner = $isGlobal ? 0 : $userId;
             $newId = $this->repository->createZoneTemplate($name, $description, $owner, $userId);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_zone_template template_id:%d template_name:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $newId,
-                str_replace(' ', '_', $name)
-            ));
+            $this->services()->auditService()->logApiZoneTemplateAdd($newId, $name);
 
             return $this->returnApiResponse(['id' => $newId], true, 'Zone template created successfully', 201);
         } catch (\Throwable $e) {
@@ -362,8 +403,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Put(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2UpdateZoneTemplate',
         summary: 'Update zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -431,7 +473,7 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('Zone template not found', 404);
             }
 
-            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
             $owner = $this->repository->getOwner($id);
 
             if ($owner === 0 && !$isUeberuser) {
@@ -474,13 +516,7 @@ class ZoneTemplatesController extends PublicApiController
 
             $this->repository->updateZoneTemplate($id, $name, $description, $newOwner);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_edit_zone_template template_id:%d template_name:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $id,
-                str_replace(' ', '_', $name)
-            ));
+            $this->services()->auditService()->logApiZoneTemplateEdit($id, $name);
 
             return $this->returnApiResponse(null, true, 'Zone template updated successfully');
         } catch (\Throwable $e) {
@@ -490,8 +526,9 @@ class ZoneTemplatesController extends PublicApiController
 
     #[OA\Delete(
         path: '/v2/zone-templates/{id}',
+        operationId: 'v2DeleteZoneTemplate',
         summary: 'Delete zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -540,7 +577,7 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('Zone template not found', 404);
             }
 
-            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
             $owner = $this->repository->getOwner($id);
 
             if ($owner === 0 && !$isUeberuser) {
@@ -553,12 +590,7 @@ class ZoneTemplatesController extends PublicApiController
 
             $this->repository->deleteZoneTemplate($id);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_zone_template template_id:%d',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $id
-            ));
+            $this->services()->auditService()->logApiZoneTemplateDelete($id);
 
             return $this->returnApiResponse(null, true, 'Zone template deleted successfully');
         } catch (\Throwable $e) {

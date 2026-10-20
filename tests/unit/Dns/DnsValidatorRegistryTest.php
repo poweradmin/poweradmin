@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,26 +23,26 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use TestHelpers\FakeConfiguration;
 
 class DnsValidatorRegistryTest extends TestCase
 {
     private DnsValidatorRegistry $registry;
-    private ConfigurationManager $configMock;
-    private PDO $dbMock;
+    private FakeConfiguration $configMock;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDO::class);
-        $this->registry = new DnsValidatorRegistry($this->configMock, $this->dbMock);
+        $this->configMock = new FakeConfiguration();
+        // Only the CNAME validator reads the backend, and no test here validates a record
+        $this->registry = new DnsValidatorRegistry($this->configMock, $this->createMock(DnsBackendProviderInterface::class));
     }
 
     /**
@@ -107,13 +107,10 @@ class DnsValidatorRegistryTest extends TestCase
 
     public function testIsKnownTypeAcceptsTypesTheAdminConfigured(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, string $key): ?array => match ($key) {
-            'domain_record_types' => ['A', 'TYPE65280', 'TYPE65536'],
-            'reverse_record_types' => ['PTR', 'TYPE65281'],
-            default => null,
-        });
-        $registry = new DnsValidatorRegistry($config, $this->createMock(PDO::class));
+        $registry = new DnsValidatorRegistry(
+            new FakeConfiguration(['dns' => ['domain_record_types' => ['A', 'TYPE65280', 'TYPE65536'], 'reverse_record_types' => ['PTR', 'TYPE65281']]]),
+            $this->createMock(DnsBackendProviderInterface::class)
+        );
 
         $this->assertTrue($registry->isKnownType('TYPE65280'));
         $this->assertTrue($registry->isKnownType('TYPE65281'));
@@ -122,6 +119,53 @@ class DnsValidatorRegistryTest extends TestCase
         $this->assertFalse($registry->isKnownType('TYPE65282'));
         // DNS types are 16-bit, so a listed TYPE65536 still cannot be stored
         $this->assertFalse($registry->isKnownType('TYPE65536'));
+    }
+
+    public function testVersionDependentTypeIsRefusedOnlyWhenTheServerIsKnownToBeOlder(): void
+    {
+        $this->assertFalse($this->registryFor('4.9.0')->isTypeSupportedByServer('WALLET'));
+        $this->assertTrue($this->registryFor('5.1.0')->isTypeSupportedByServer('WALLET'));
+        // SQL-only setups never learn the version, so nothing is refused there
+        $this->assertTrue($this->registryFor(null)->isTypeSupportedByServer('WALLET'));
+        $this->assertTrue($this->registry->isTypeSupportedByServer('WALLET'));
+    }
+
+    public function testVersionIsLookedUpOnlyForVersionDependentInput(): void
+    {
+        $lookups = 0;
+        $registry = new DnsValidatorRegistry(new FakeConfiguration(), $this->createMock(DnsBackendProviderInterface::class), function () use (&$lookups) {
+            $lookups++;
+            return PdnsCapabilities::fromVersion('4.9.0');
+        });
+
+        $this->assertTrue($registry->isTypeSupportedByServer(RecordType::A));
+        $this->assertTrue($registry->getValidator(RecordType::SVCB)->validate('1 svc.example.com alpn=h2', 'x.example.com', '', 3600, 86400)->isValid());
+        $this->assertSame(0, $lookups);
+
+        $registry->isTypeSupportedByServer('WALLET');
+        $registry->isTypeSupportedByServer('ZONEMD');
+        $this->assertSame(1, $lookups);
+    }
+
+    public function testSvcParamNamesFromPowerDns51AreRefusedOnOlderServers(): void
+    {
+        foreach ([RecordType::SVCB, RecordType::HTTPS] as $type) {
+            foreach (['dohpath=/dns-query{?dns}', 'ohttp', 'tls-supported-groups=29'] as $param) {
+                $content = '1 svc.example.com alpn=h2 ' . $param;
+                $this->assertFalse($this->registryFor('4.9.0')->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param on 4.9");
+                $this->assertTrue($this->registryFor('5.1.0')->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param on 5.1");
+                $this->assertTrue($this->registryFor(null)->getValidator($type)->validate($content, 'x.example.com', '', 3600, 86400)->isValid(), "$type $param unknown");
+            }
+        }
+    }
+
+    private function registryFor(?string $version): DnsValidatorRegistry
+    {
+        return new DnsValidatorRegistry(
+            new FakeConfiguration(),
+            $this->createMock(DnsBackendProviderInterface::class),
+            fn() => PdnsCapabilities::fromVersion($version)
+        );
     }
 
     /**

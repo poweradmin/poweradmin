@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,9 @@
 
 namespace Poweradmin\Domain\Utility;
 
-use Pdp\CannotProcessHost;
-use Pdp\Rules;
-use Pdp\Domain;
-
+/**
+ * Static name helpers: reverse-zone detection, apex and in-zone tests, and stripping or restoring a zone suffix.
+ */
 class DnsHelper
 {
     private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:[\d\/]+\.){1,4}in-addr\.arpa$/i';
@@ -108,6 +107,36 @@ class DnsHelper
     }
 
     /**
+     * Lowercased ancestor names of a zone, closest parent first, up to the
+     * top-level label: sub.example.com gives example.com, then com.
+     *
+     * @return list<string>
+     */
+    public static function ancestorNames(string $zoneName): array
+    {
+        $labels = explode('.', strtolower(rtrim($zoneName, '.')));
+        $ancestors = [];
+
+        for ($i = 1, $count = count($labels); $i < $count; $i++) {
+            $ancestors[] = implode('.', array_slice($labels, $i));
+        }
+
+        return $ancestors;
+    }
+
+    /**
+     * The form PowerDNS stores in domains.catalog and matches members against:
+     * lowercase, no trailing dot. Its lookup is an exact string match, so any
+     * other spelling names a producer that is accepted and never published.
+     */
+    public static function canonicalZoneName(string $name): string
+    {
+        $trimmed = rtrim(trim($name), '.');
+
+        return $trimmed === '' ? '' : strtolower($trimmed);
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts
@@ -127,19 +156,6 @@ class DnsHelper
         }
 
         return IpHelper::networkToReverseZone($input);
-    }
-
-    /**
-     * @throws CannotProcessHost
-     */
-    public static function getRegisteredDomain(string $domain): string
-    {
-        $rules = Rules::fromPath(__DIR__ . '/../../../data/public_suffix_list.dat');
-
-        $domain = Domain::fromIDNA2008($domain);
-        $result = $rules->resolve($domain);
-
-        return $result->registrableDomain()->toString();
     }
 
     public static function getSubDomainName(string $domain): string

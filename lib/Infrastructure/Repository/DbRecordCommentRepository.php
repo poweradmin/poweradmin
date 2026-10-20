@@ -25,20 +25,24 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Repository\RecordLinkedCommentRepositoryInterface;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Database\PdnsTable;
 
-class DbRecordCommentRepository implements RecordCommentRepositoryInterface
+/**
+ * SQL persistence for record comments in the PowerDNS comments table, linked to records via record_comment_links.
+ */
+final class DbRecordCommentRepository implements RecordCommentRepositoryInterface, RecordLinkedCommentRepositoryInterface
 {
     private PDO $connection;
     private string $comments_table;
     private string $records_table;
     private string $links_table = 'record_comment_links';
-    private ?DnsBackendProvider $backendProvider;
+    private ?BackendCapabilitiesInterface $backendProvider;
 
-    public function __construct(PDO $connection, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
+    public function __construct(PDO $connection, ConfigurationInterface $config, ?BackendCapabilitiesInterface $backendProvider = null)
     {
         $this->connection = $connection;
         $tableNameService = new TableNameService($config);
@@ -47,9 +51,9 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         $this->backendProvider = $backendProvider;
     }
 
-    private function isApiBackend(): bool
+    private function recordIdsAreNumeric(): bool
     {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
+        return $this->backendProvider === null || $this->backendProvider->recordIdsAreNumeric();
     }
 
     public function add(RecordComment $comment): RecordComment
@@ -134,6 +138,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         $query = "SELECT c.* FROM {$this->comments_table} c
                   WHERE c.domain_id = :domain_id AND c.name = :name AND c.type = :type
                   AND NOT EXISTS (SELECT 1 FROM {$this->links_table} rcl WHERE rcl.comment_id = c.id)
+                  ORDER BY c.id
                   LIMIT 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
@@ -295,15 +300,14 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
             return false; // No legacy comment to migrate
         }
 
-        // In API mode, the records table has no local data (records come from the
-        // PowerDNS API), so we cannot enumerate sibling records for migration.
-        // Legacy RRset comments remain visible via fallback enrichment.
-        if ($this->isApiBackend()) {
+        // Sibling records are enumerated from the records table by integer id; encoded
+        // ids have no such table, and legacy RRset comments stay visible via the fallback.
+        if (!$this->recordIdsAreNumeric()) {
             return false;
         }
 
         $dbType = $this->connection->getAttribute(PDO::ATTR_DRIVER_NAME);
-        $castId = \Poweradmin\Infrastructure\Database\DbCompat::castToString($dbType, 'r.id');
+        $castId = \Poweradmin\Domain\Database\DbCompat::castToString($dbType, 'r.id');
 
         // Find all records in the RRset that don't have linked comments (excluding the current record)
         $query = "SELECT r.id FROM {$this->records_table} r

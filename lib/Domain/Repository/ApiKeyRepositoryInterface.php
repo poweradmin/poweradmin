@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2026 Poweradmin Development Team
+ *  Copyright 2010-2025 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,11 +25,7 @@ namespace Poweradmin\Domain\Repository;
 use Poweradmin\Domain\Model\ApiKey;
 
 /**
- * Interface ApiKeyRepositoryInterface
- *
- * Repository interface for API key operations
- *
- * @package Poweradmin\Domain\Repository
+ * Persistence for API keys.
  */
 interface ApiKeyRepositoryInterface
 {

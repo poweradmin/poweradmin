@@ -20,57 +20,33 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for user operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\GroupReferenceResolver;
-use Poweradmin\Domain\Service\PermissionService;
-use Poweradmin\Domain\Service\PermissionTemplateAssignmentGuard;
-use Poweradmin\Domain\Service\SelfEditFieldGuard;
-use Poweradmin\Domain\Service\UserManagementService;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\User\GroupReferenceResolver;
+use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
+use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
+use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
+use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
 
-#[OA\OpenApi(
-    info: new OA\Info(
-        version: '2.0.0',
-        description: 'RESTful API for Poweradmin DNS Management (v2 - with wrapped responses)',
-        title: 'Poweradmin API v2'
-    ),
-    servers: [
-        new OA\Server(url: '/api', description: 'API Server')
-    ]
-)]
-#[OA\SecurityScheme(
-    securityScheme: 'bearerAuth',
-    type: 'http',
-    bearerFormat: 'API Key',
-    scheme: 'bearer'
-)]
-#[OA\SecurityScheme(
-    securityScheme: 'apiKeyHeader',
-    type: 'apiKey',
-    name: 'X-API-Key',
-    in: 'header'
-)]
-
+/**
+ * /api/v2/users: lists, creates, updates and deletes users and assigns their permission template.
+ */
 class UsersController extends PublicApiController
 {
     protected function acceptsZoneRestrictedKey(): bool
@@ -81,34 +57,27 @@ class UsersController extends PublicApiController
     /** Guards against a single request fanning out into thousands of membership queries. */
     private const MAX_GROUPS_PER_REQUEST = 50;
 
+    /** Fields accepted by the `sort` parameter of GET /users */
+    private const USER_SORT_FIELDS = ['id', 'username', 'fullname', 'email'];
+
     private UserManagementService $userManagementService;
     private ApiPermissionService $apiPermissionService;
-    private UserRepository $userRepository;
-    private UserGroupRepositoryInterface $groupRepository;
+    private UserLookupInterface $userRepository;
+    private UserGroupLookupInterface $groupRepository;
     private GroupMembershipService $membershipService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->userRepository = $this->createUserRepository();
-        $this->groupRepository = $this->createUserGroupRepository();
-        $permissionService = new PermissionService($this->userRepository);
-        $this->userManagementService = new UserManagementService(
-            $this->userRepository,
-            $permissionService,
-            $this->groupRepository,
-            (bool)$this->config->get('security', 'protect_last_admin_on_edit', false)
-        );
+        $this->userRepository = $this->services()->userRepository();
+        $this->groupRepository = $this->services()->userGroupRepository();
+        $this->userManagementService = $this->services()->userManagementService();
         $this->membershipService = new GroupMembershipService(
-            $this->createUserGroupMemberRepository(),
+            $this->services()->userGroupMemberRepository(),
             $this->groupRepository
         );
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -124,11 +93,10 @@ class UsersController extends PublicApiController
             'PUT' => $this->updateUser(),
             'PATCH' => $this->assignPermissionTemplate(),
             'DELETE' => $this->deleteUser(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -180,6 +148,7 @@ class UsersController extends PublicApiController
                                 ),
                                 new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
                                 new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                new OA\Property(property: 'max_zones', description: 'Own zone limit; null means the configured default applies', type: 'integer', example: 10, nullable: true),
                                 new OA\Property(
                                     property: 'groups',
                                     type: 'array',
@@ -285,7 +254,7 @@ class UsersController extends PublicApiController
         name: 'page',
         description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 1)
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
@@ -295,18 +264,34 @@ class UsersController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'username',
-        description: 'Filter by username (optional)',
+        description: 'Look up one user by username; the list then holds only that user or is empty, page and per_page are ignored, and sort is checked but not applied (optional)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string')
     )]
     #[OA\Parameter(
         name: 'email',
-        description: 'Filter by email (optional)',
+        description: 'Look up one user by email address, like username, which wins when both are given (optional)',
         in: 'query',
         required: false,
         schema: new OA\Schema(type: 'string')
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on username, full name, email or description (optional, ignored together with username or email)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'admin')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, username, fullname, email. Text fields sort case-insensitively but not naturally (user10 before user9). Default: id',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'username')
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
+    #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(
         response: 200,
         description: 'Users retrieved successfully',
@@ -316,7 +301,6 @@ class UsersController extends PublicApiController
                 new OA\Property(property: 'message', type: 'string', example: 'Users retrieved successfully'),
                 new OA\Property(
                     property: 'data',
-                    type: 'object',
                     properties: [
                         new OA\Property(
                             property: 'users',
@@ -333,6 +317,7 @@ class UsersController extends PublicApiController
                                     new OA\Property(property: 'is_admin', type: 'boolean', example: true),
                                     new OA\Property(property: 'perm_templ', type: 'integer', example: 2, nullable: true),
                                     new OA\Property(property: 'perm_templ_name', type: 'string', example: 'Zone Manager', nullable: true),
+                                    new OA\Property(property: 'max_zones', description: 'Own zone limit; null means the configured default applies', type: 'integer', example: 10, nullable: true),
                                     new OA\Property(
                                         property: 'groups',
                                         type: 'array',
@@ -345,7 +330,8 @@ class UsersController extends PublicApiController
                                 type: 'object'
                             )
                         )
-                    ]
+                    ],
+                    type: 'object'
                 ),
                 new OA\Property(
                     property: 'pagination',
@@ -371,19 +357,25 @@ class UsersController extends PublicApiController
             }
 
             // Get filter parameters
-            $username = $this->request->query->get('username');
-            $email = $this->request->query->get('email');
+            $username = (string)$this->request->query->get('username', '');
+            $email = (string)$this->request->query->get('email', '');
+            $search = trim((string)$this->request->query->get('q', ''));
+            $search = $search === '' ? null : $search;
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::USER_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
 
             // Handle filtering
-            if ($username || $email) {
+            if ($username !== '' || $email !== '') {
                 $users = [];
 
-                if ($username) {
+                if ($username !== '') {
                     $user = $this->userManagementService->getUserByUsername($username);
                     if ($user) {
                         $users[] = $user;
                     }
-                } elseif ($email) {
+                } else {
                     $user = $this->userManagementService->getUserByEmail($email);
                     if ($user) {
                         $users[] = $user;
@@ -393,50 +385,29 @@ class UsersController extends PublicApiController
                 return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200);
             }
 
-            // Get pagination parameters (defaults to returning all users)
-            $perPage = (int)$this->request->query->get('per_page', 0);
+            // Without per_page every user is returned
+            [$page, $perPage] = $this->pagingParameters();
+            $responseData = ['meta' => ['timestamp' => date('Y-m-d H:i:s')]];
 
-            // If per_page is 0 or not specified, return all users
             if ($perPage === 0) {
-                // Get all users without pagination
-                $pagination = new Pagination(0, PHP_INT_MAX, 1);
-                $result = $this->userManagementService->getUsersList($pagination);
-                $users = $result['data'];
-
-                $responseData = [
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ];
-
-                return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
-            } else {
-                // Use pagination
-                $page = max(1, (int)$this->request->query->get('page', 1));
-                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
-
-                // Create pagination object
-                $pagination = new Pagination(0, $perPage, $page);
-
-                // Use the domain service to get users list
-                $result = $this->userManagementService->getUsersList($pagination);
-                $users = $result['data'];
-                $totalCount = $result['total_count'];
-
-                $responseData = [
-                    'pagination' => [
-                        'current_page' => $page,
-                        'per_page' => $perPage,
-                        'total' => $totalCount,
-                        'last_page' => (int)ceil($totalCount / $perPage)
-                    ],
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ];
+                $users = $this->userManagementService->getUsersPage(new Pagination(0, PHP_INT_MAX, 1), $search, $sort->fields());
 
                 return $this->returnApiResponse(['users' => $users], true, 'Users retrieved successfully', 200, $responseData);
             }
+
+            $totalCount = $this->userManagementService->countUsers($search);
+            // Checked before the offset, which overflows to a float for a huge page
+            $users = ListPaging::isPastEnd($page, $perPage, $totalCount)
+                ? []
+                : $this->userManagementService->getUsersPage(new Pagination(0, $perPage, $page), $search, $sort->fields());
+
+            return $this->returnApiResponse(
+                ['users' => $users],
+                true,
+                'Users retrieved successfully',
+                200,
+                $responseData + ListPaging::extra($page, $perPage, $totalCount)
+            );
         } catch (\Throwable $e) {
             return $this->handleException($e, 'UsersController::listUsers', 'Failed to retrieve users');
         }
@@ -468,7 +439,7 @@ class UsersController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'password',
-                    description: 'User password (will be hashed)',
+                    description: 'User password (hashed with the configured algorithm, must satisfy the password policy). Ignored when use_ldap is true.',
                     type: 'string',
                     example: 'secure_password123'
                 ),
@@ -503,8 +474,15 @@ class UsersController extends PublicApiController
                     example: 1
                 ),
                 new OA\Property(
+                    property: 'max_zones',
+                    description: 'How many zones the user may own directly; null uses dns.default_max_zones_per_user. Superusers only.',
+                    type: 'integer',
+                    example: 10,
+                    nullable: true
+                ),
+                new OA\Property(
                     property: 'use_ldap',
-                    description: 'Whether the user should use LDAP authentication',
+                    description: 'Whether the user should use LDAP authentication. Requires LDAP to be enabled; no local password is stored.',
                     type: 'boolean',
                     example: false
                 ),
@@ -568,7 +546,7 @@ class UsersController extends PublicApiController
     )]
     #[OA\Response(
         response: 403,
-        description: 'Forbidden - no permission to create users, or groups was supplied without user_is_ueberuser',
+        description: 'Forbidden - no permission to create users, or groups or max_zones was supplied without user_is_ueberuser',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
@@ -598,10 +576,10 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to create users', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
             // A truthy scalar body reached the array-typed guards below as a TypeError.
-            if (!is_array($input) || $input === []) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -619,24 +597,36 @@ class UsersController extends PublicApiController
             $templateGate = $this->guardPermissionTemplateAssignment(
                 $currentUserId,
                 $input,
-                $this->createPermissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
+                $this->services()->permissionTemplateRepository()->getMinimalPermissionTemplateId('user'),
                 null
             );
             if ($templateGate !== null) {
                 return $templateGate;
             }
 
+            $zoneLimit = $this->readZoneLimit($currentUserId, $input);
+            if ($zoneLimit instanceof JsonResponse) {
+                return $zoneLimit;
+            }
+
             // Use the domain service to create user
-            $result = $this->userManagementService->createUser($input);
+            $result = UserCommandFactory::create($input);
+            if (!is_array($result)) {
+                $result = $this->userManagementService->createUser($result);
+            }
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
                 ]);
+            }
+
+            if (is_array($zoneLimit) && $zoneLimit['limit'] !== null) {
+                $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, (int)$result['user_id'], $zoneLimit['limit']);
             }
 
             $assignedGroups = $this->assignGroups((int)$result['user_id'], $input['username'], $groups);
@@ -725,6 +715,13 @@ class UsersController extends PublicApiController
                     example: 2
                 ),
                 new OA\Property(
+                    property: 'max_zones',
+                    description: 'How many zones the user may own directly; null uses dns.default_max_zones_per_user. Superusers only.',
+                    type: 'integer',
+                    example: 10,
+                    nullable: true
+                ),
+                new OA\Property(
                     property: 'use_ldap',
                     description: 'Whether the user should use LDAP authentication. Must be explicitly included when setting to false - omitting leaves the current value unchanged.',
                     type: 'boolean',
@@ -769,6 +766,17 @@ class UsersController extends PublicApiController
         )
     )]
     #[OA\Response(
+        response: 403,
+        description: 'Forbidden - no permission to edit this user, or max_zones was supplied without user_is_ueberuser',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Only superusers may change zone limits'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
+    #[OA\Response(
         response: 404,
         description: 'Not found - user does not exist',
         content: new OA\JsonContent(
@@ -801,16 +809,16 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit this user', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody();
 
-            if (!$input) {
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
             // Setting another user's password requires user_passwd_edit_others,
             // matching the web flow; without it the password field is not writable.
             if (
-                !empty($input['password'])
+                UserCommandFactory::passwordGiven($input)
                 && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
             ) {
                 return $this->returnApiError('You do not have permission to change this user\'s password', 403);
@@ -828,7 +836,7 @@ class UsersController extends PublicApiController
             $currentUser = $this->userRepository->getUserById($targetUserId);
             if ($currentUser !== null) {
                 $selfEditGate = SelfEditFieldGuard::apply(
-                    $this->apiPermissionService,
+                    $this->apiPermissionService->permissions(),
                     $currentUserId,
                     $targetUserId,
                     $currentUser,
@@ -839,17 +847,29 @@ class UsersController extends PublicApiController
                 }
             }
 
+            $zoneLimit = $this->readZoneLimit($currentUserId, $input);
+            if ($zoneLimit instanceof JsonResponse) {
+                return $zoneLimit;
+            }
+
             // Use the domain service to update user
-            $result = $this->userManagementService->updateUser($targetUserId, $input);
+            $result = UserCommandFactory::update($input);
+            if (!is_array($result)) {
+                $result = $this->userManagementService->updateUser($targetUserId, $result);
+            }
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
 
                 return $this->returnApiError($result['message'], $statusCode, null, [
                     'meta' => [
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
                 ]);
+            }
+
+            if (is_array($zoneLimit)) {
+                $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, $targetUserId, $zoneLimit['limit']);
             }
 
             return $this->returnApiResponse(
@@ -895,7 +915,7 @@ class UsersController extends PublicApiController
             properties: [
                 new OA\Property(
                     property: 'transfer_to_user_id',
-                    description: 'User ID to transfer zones to (required if user owns zones)',
+                    description: 'User ID to transfer zones to (required if user owns zones). The caller needs zone_meta_edit rights on every zone being transferred.',
                     type: 'integer',
                     example: 2
                 )
@@ -936,6 +956,16 @@ class UsersController extends PublicApiController
         )
     )]
     #[OA\Response(
+        response: 403,
+        description: 'Forbidden - caller may not delete this user or may not reassign one of their zones',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to reassign zone 12')
+            ]
+        )
+    )]
+    #[OA\Response(
         response: 409,
         description: 'Conflict - cannot delete the last remaining super admin',
         content: new OA\JsonContent(
@@ -956,15 +986,15 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this user', 403);
             }
 
-            // Get request body for zone transfer options
-            $requestBody = json_decode($this->request->getContent(), true) ?? [];
+            // Get request body for zone transfer options (the body is optional here)
+            $requestBody = $this->getValidatedJsonBody() ?? [];
             $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
 
             // Use the domain service to delete the user
-            $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId);
+            $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId, $currentUserId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
@@ -1074,9 +1104,9 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to edit permission templates', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
+            $input = $this->getValidatedJsonBody() ?? [];
 
-            if (!$input || !isset($input['perm_templ'])) {
+            if (!isset($input['perm_templ'])) {
                 return $this->returnApiError('Missing required field: perm_templ', 400);
             }
 
@@ -1101,7 +1131,7 @@ class UsersController extends PublicApiController
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
             if (!$result['success']) {
-                $statusCode = $result['status'] ?? 400;
+                $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
@@ -1120,7 +1150,7 @@ class UsersController extends PublicApiController
                 ]
             );
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to assign permission template: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'UsersController::assignPermissionTemplate', 'Failed to assign permission template');
         }
     }
 
@@ -1135,7 +1165,7 @@ class UsersController extends PublicApiController
         // Group membership carries permissions through user_groups.perm_templ, and the
         // caller sets the new account's password. canCreateUser() is satisfied by plain
         // user_add_new, so assigning groups needs the gate every other group write uses.
-        if (!$this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('You do not have permission to assign groups', 403);
         }
 
@@ -1143,7 +1173,7 @@ class UsersController extends PublicApiController
             ->resolve($submitted, self::MAX_GROUPS_PER_REQUEST);
 
         if (!$result['success']) {
-            return $this->returnApiError($result['message'], $result['status'] ?? 400);
+            return $this->returnApiError($result['message'], RefusalStatus::ofResult($result));
         }
 
         $groups = $result['groups'];
@@ -1178,23 +1208,38 @@ class UsersController extends PublicApiController
 
             $assigned[] = ['id' => $groupId, 'name' => $group->getName()];
 
-            $this->auditLogger->logGroupInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_members group:%s group_id:%d count:1 members:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                str_replace(' ', '_', $group->getName()),
-                $groupId,
-                $username
-            ), $groupId);
+            $this->services()->auditService()->logApiGroupMemberAdd($groupId, $group->getName(), $username);
         }
 
         return $assigned;
     }
 
+
+    /**
+     * Reads max_zones when the body has it: null when absent, the parsed limit, or the refusal.
+     * Only superusers may send it, so a delegated administrator cannot lift a limit.
+     *
+     * @return array{valid: bool, limit: ?int}|JsonResponse|null
+     */
+    private function readZoneLimit(int $currentUserId, array $input): array|JsonResponse|null
+    {
+        if (!array_key_exists('max_zones', $input)) {
+            return null;
+        }
+        if (!$this->services()->zoneOwnershipLimit()->maySetLimits($currentUserId)) {
+            return $this->returnApiError('Only superusers may change zone limits', RefusalStatus::of(Refusal::FORBIDDEN));
+        }
+        $zoneLimit = ZoneLimitInput::fromJson($input['max_zones']);
+        if (!$zoneLimit['valid']) {
+            return $this->returnApiError('max_zones must be null or a whole number from 0 to ' . ZoneOwnershipLimit::MAX_LIMIT, RefusalStatus::of(Refusal::INVALID_INPUT));
+        }
+
+        return $zoneLimit;
+    }
     private function guardPermissionTemplateAssignment(int $currentUserId, array &$input, ?int $defaultUserTemplateId, ?int $targetUserId): ?JsonResponse
     {
         $error = PermissionTemplateAssignmentGuard::apply(
-            $this->apiPermissionService,
+            $this->apiPermissionService->permissions(),
             $defaultUserTemplateId,
             $currentUserId,
             $input,

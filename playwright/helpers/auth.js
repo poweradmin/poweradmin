@@ -35,15 +35,27 @@ const sessionCache = new Map();
  * @param {string} username - Username for login
  * @param {string} password - Password for login
  * @param {number} maxRetries - Maximum number of retry attempts
+ * @param {{fresh?: boolean}} [options] - fresh: ignore the cache and log in with a new
+ *        server session (not stored in the cache), for auxiliary browser contexts
  * @returns {Promise<void>}
  */
-export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3) {
-  const cached = sessionCache.get(username);
+export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3, options = {}) {
+  const fresh = options.fresh === true;
+  const cached = fresh ? undefined : sessionCache.get(username);
   if (cached) {
     await page.context().addCookies(cached);
-    await page.goto('/');
-    if (!page.url().includes('/login')) {
-      return; // Cached session still valid
+    let reusable = false;
+    try {
+      await page.goto('/');
+      reusable = !page.url().includes('/login');
+    } catch {
+      // A session another test logged out of can leave the server bouncing
+      // between / and /login, which fails the navigation instead of landing
+      // on the form; fall through to a fresh login rather than failing here
+      reusable = false;
+    }
+    if (reusable) {
+      return;
     }
     sessionCache.delete(username);
     await page.context().clearCookies();
@@ -57,7 +69,9 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
         page.waitForURL(url => !url.toString().includes('/login'), { timeout: 10000 }),
         page.click('[data-testid="login-button"]'),
       ]);
-      sessionCache.set(username, await page.context().cookies());
+      if (!fresh) {
+        sessionCache.set(username, await page.context().cookies());
+      }
       return; // Success
     } catch {
       if (attempt === maxRetries) {
@@ -78,16 +92,4 @@ export async function logout(page) {
   // Navigate directly to logout page for reliable logout
   await page.goto('/logout');
   await page.waitForURL(/login/);
-}
-
-/**
- * Check if user is logged in
- *
- * @param {import('@playwright/test').Page} page - Playwright page object
- * @returns {Promise<boolean>}
- */
-export async function isLoggedIn(page) {
-  // Check if we're not on the login page
-  const currentUrl = page.url();
-  return !currentUrl.includes('/login');
 }

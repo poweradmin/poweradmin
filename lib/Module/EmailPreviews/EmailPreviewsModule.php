@@ -22,23 +22,17 @@
 
 namespace Poweradmin\Module\EmailPreviews;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class EmailPreviewsModule implements ModuleInterface
+/**
+ * Module registration for the /tools/email-previews page and its tools menu entry.
+ */
+final class EmailPreviewsModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'email_previews';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'Email Template Previews';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Preview email templates in light and dark modes';
     }
 
     public function getRoutes(): array
@@ -61,7 +55,7 @@ class EmailPreviewsModule implements ModuleInterface
                 'url' => '/tools/email-previews',
                 'icon' => 'envelope-fill',
                 'page_id' => 'module_email_previews',
-                'permission' => 'user_is_ueberuser',
+                'permission' => Permission::PERM_USER_IS_UEBERUSER,
             ],
         ];
     }
@@ -77,11 +71,6 @@ class EmailPreviewsModule implements ModuleInterface
     }
 
     public function getTemplatePath(): string
-    {
-        return '';
-    }
-
-    public function getLocalePath(): string
     {
         return '';
     }

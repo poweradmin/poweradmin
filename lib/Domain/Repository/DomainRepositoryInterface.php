@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,20 +23,22 @@
 namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\ZoneSummary;
 
 /**
- * Interface for domain/zone repository operations
+ * Lookups on the domains table; implemented for SQL and for the API backend mode.
  */
 interface DomainRepositoryInterface
 {
     /**
-     * Check if Zone ID exists
+     * Check if Zone ID exists. Answered from the local database only (the
+     * domains table, or the zones table in API backend mode); PowerDNS is not asked.
      *
      * @param int $zid Zone ID
      *
-     * @return int Domain count or false on failure
+     * @return bool Whether a local row with this id exists
      */
-    public function zoneIdExists(int $zid): int;
+    public function zoneIdExists(int $zid): bool;
 
     /**
      * Get Domain Name by domain ID
@@ -57,33 +59,28 @@ interface DomainRepositoryInterface
     public function getDomainIdByName(string $name): ?int;
 
     /**
-     * Get zone id from name
-     *
-     * @param string $zname Zone name
-     * @return int|null Zone ID or null if not found
-     */
-    public function getZoneIdFromName(string $zname): ?int;
-
-    /**
-     * Get Domain Type for Domain ID
+     * Get the kind of a domain. In API backend mode a zones row without a cached kind
+     * costs one round trip to PowerDNS.
      *
      * @param int $id Domain ID
      *
-     * @return string Domain Type [NATIVE,MASTER,SLAVE]
+     * @return string One of the ZoneKind values (NATIVE, MASTER, SLAVE, PRODUCER, CONSUMER); NATIVE when unknown
      */
     public function getDomainType(int $id): string;
 
     /**
-     * Get Slave Domain's Master
+     * Get the master (primary) server stored for a domain, whatever its kind.
+     * SLAVE and CONSUMER zones both replicate from one; callers that need SLAVE only check the type.
+     * In API backend mode a zones row without a cached kind costs one round trip to PowerDNS.
      *
      * @param int $id Domain ID
      *
-     * @return string|null Master server or null if not found
+     * @return string|null Master server or null if none is stored
      */
-    public function getDomainSlaveMaster(int $id): ?string;
+    public function getDomainMaster(int $id): ?string;
 
     /**
-     * Check if a domain is already existing.
+     * Check if a domain is already existing. An invalid zone name never exists.
      *
      * @param string $domain Domain name
      * @return boolean true if existing, false if it doesn't exist.
@@ -101,7 +98,7 @@ interface DomainRepositoryInterface
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
-     * @return array array of zone details [id,name,type,count_records] (empty array if none found)
+     * @return array<string, ZoneSummary> Keyed by zone name (empty array if none found)
      */
     public function getZones(
         string $perm,
@@ -122,7 +119,7 @@ interface DomainRepositoryInterface
      * Get Zone details from Zone ID
      *
      * @param int $zid Zone ID
-     * @return array array of zone details [type,name,master_ip,record_count]
+     * @return array array of zone details [type,name,master_ip,record_count], or [] when not found
      */
     public function getZoneInfoFromId(int $zid): array;
 
@@ -135,6 +132,13 @@ interface DomainRepositoryInterface
     public function getZoneInfoFromIds(array $zones): array;
 
     /**
+     * Every zone as a picker entry, sorted by name, regardless of who owns it.
+     *
+     * @return list<array{id: int, name: string, type: string}>
+     */
+    public function listZoneNames(): array;
+
+    /**
      * Get Best Matching in-addr.arpa Zone ID from Domain Name
      *
      * @param string $domain Domain name
@@ -142,4 +146,20 @@ interface DomainRepositoryInterface
      * @return int Zone ID
      */
     public function getBestMatchingZoneIdFromName(string $domain): int;
+
+    /**
+     * Zone ids for the given lowercased names, matched case-insensitively.
+     *
+     * @param list<string> $names Lowercased zone names
+     * @return array<string,int> Stored zone name => zone id, for the names that exist
+     */
+    public function findZoneIdsByNames(array $names): array;
+
+    /**
+     * Zones whose name ends in ".$suffix", matched case-insensitively and ordered by name.
+     *
+     * @param string $suffix Lowercased zone name without a trailing dot
+     * @return list<array{id:int,name:string}>
+     */
+    public function findZonesUnder(string $suffix): array;
 }

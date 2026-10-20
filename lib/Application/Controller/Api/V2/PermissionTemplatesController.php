@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,42 +20,41 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for permission template operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Application\Service\PermissionTemplateWriteService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
+/**
+ * /api/v2/permission-templates: lists, creates, updates and deletes permission templates.
+ */
 class PermissionTemplatesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /permission-templates */
+    private const TEMPLATE_SORT_FIELDS = ['id', 'name', 'template_type'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
     }
 
-    private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
     private PermissionTemplateWriteService $permissionTemplateWriteService;
     private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->permissionTemplateWriteService = $this->createPermissionTemplateWriteService();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+        $this->permissionTemplateWriteService = $this->services()->permissionTemplateWriteService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -70,11 +69,10 @@ class PermissionTemplatesController extends PublicApiController
             'POST' => $this->createPermissionTemplate(),
             'PUT' => $this->updatePermissionTemplate(),
             'DELETE' => $this->deletePermissionTemplate(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -82,9 +80,47 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permission-templates',
+        operationId: 'v2ListPermissionTemplates',
         summary: 'Get list of permission templates',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the template name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zone')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, template_type. Default: name in database order (sort=name uses natural, case-insensitive order)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'template_type,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            ),
+            new OA\Parameter(
+                name: 'type',
+                in: 'query',
+                description: 'Only templates of this type',
+                required: false,
+                schema: new OA\Schema(type: 'string', enum: ['user', 'group'])
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -93,6 +129,17 @@ class PermissionTemplatesController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
+                        'pagination' => new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         'data' => new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -115,6 +162,7 @@ class PermissionTemplatesController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort or type parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
@@ -127,17 +175,29 @@ class PermissionTemplatesController extends PublicApiController
 
             // Check if user has permission to view permission templates
             // Must match web UI requirement: templ_perm_edit permission
-            $canView = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canView = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canView) {
                 return $this->returnApiError('You do not have permission to view permission templates', 403);
             }
 
-            $templates = $this->permissionTemplateRepository->listPermissionTemplates();
-            return $this->returnApiResponse(['templates' => $templates]);
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::TEMPLATE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            $type = trim((string)$this->request->query->get('type', ''));
+            if ($type !== '' && !PermissionTemplateType::isValid($type)) {
+                return $this->returnApiError('Invalid type. Must be either "user" or "group"', 400);
+            }
+            $templates = $this->permissionTemplateRepository->listPermissionTemplates($type === '' ? null : $type);
+            [$templates, $extra] = $this->filterSortAndPage($templates, $sort, [
+                'q' => static fn(array $t): array => [$t['name'], $t['descr']],
+            ]);
+
+            return $this->returnApiResponse(['templates' => $templates], true, null, 200, $extra);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission templates: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::listPermissionTemplates', 'Failed to fetch permission templates');
         }
     }
 
@@ -146,8 +206,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2GetPermissionTemplate',
         summary: 'Get specific permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -185,7 +246,7 @@ class PermissionTemplatesController extends PublicApiController
                                                 type: 'object',
                                                 properties: [
                                                     'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                                    'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                                    'name' => new OA\Property(property: 'name', type: 'string', example: Permission::PERM_ZONE_CONTENT_VIEW_OWN),
                                                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
                                                 ]
                                             )
@@ -210,8 +271,8 @@ class PermissionTemplatesController extends PublicApiController
 
             // Check if user has permission to view permission templates
             // Must match web UI requirement: templ_perm_edit permission
-            $canView = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canView = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canView) {
                 return $this->returnApiError('You do not have permission to view permission templates', 403);
@@ -228,7 +289,7 @@ class PermissionTemplatesController extends PublicApiController
 
             return $this->returnApiResponse(['template' => $template]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission template: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionTemplatesController::getPermissionTemplate', 'Failed to fetch permission template');
         }
     }
 
@@ -237,8 +298,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Post(
         path: '/v2/permission-templates',
+        operationId: 'v2CreatePermissionTemplate',
         summary: 'Create new permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -273,7 +335,11 @@ class PermissionTemplatesController extends PublicApiController
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
                         'message' => new OA\Property(property: 'message', type: 'string', example: 'Permission template created successfully'),
-                        'data' => new OA\Property(property: 'data', type: 'object', nullable: true, example: null)
+                        'data' => new OA\Property(
+                            property: 'data',
+                            properties: [new OA\Property(property: 'id', type: 'integer', example: 7)],
+                            type: 'object'
+                        )
                     ]
                 )
             ),
@@ -290,8 +356,8 @@ class PermissionTemplatesController extends PublicApiController
 
             // Check if user has permission to create permission templates
             // Must match web UI requirement: templ_perm_add permission
-            $canCreate = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                         $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_add');
+            $canCreate = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                         $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_ADD);
 
             if (!$canCreate) {
                 return $this->returnApiError('You do not have permission to create permission templates', 403);
@@ -330,7 +396,7 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError($result['message'], $result['status']);
             }
 
-            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
+            return $this->returnApiResponse(['id' => $result['id'] ?? null], true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
         }
@@ -341,8 +407,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Put(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2UpdatePermissionTemplate',
         summary: 'Update permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -404,8 +471,8 @@ class PermissionTemplatesController extends PublicApiController
 
             // Check if user has permission to edit permission templates
             // Must match web UI requirement: templ_perm_edit permission
-            $canEdit = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canEdit = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canEdit) {
                 return $this->returnApiError('You do not have permission to edit permission templates', 403);
@@ -466,8 +533,9 @@ class PermissionTemplatesController extends PublicApiController
      */
     #[OA\Delete(
         path: '/v2/permission-templates/{id}',
+        operationId: 'v2DeletePermissionTemplate',
         summary: 'Delete permission template',
-        tags: ['Permission Templates'],
+        tags: ['permission-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -505,8 +573,8 @@ class PermissionTemplatesController extends PublicApiController
 
             // Check if user has permission to delete permission templates
             // Must match web UI requirement: user_edit_templ_perm permission
-            $canDelete = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                         $this->apiPermissionService->userHasPermission($currentUserId, 'user_edit_templ_perm');
+            $canDelete = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                         $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_EDIT_TEMPL_PERM);
 
             if (!$canDelete) {
                 return $this->returnApiError('You do not have permission to delete permission templates', 403);
@@ -525,11 +593,13 @@ class PermissionTemplatesController extends PublicApiController
 
             $result = $this->permissionTemplateRepository->deletePermissionTemplate($id);
 
-            if ($result) {
-                return $this->returnApiResponse(null, true, 'Permission template deleted successfully');
-            } else {
+            if (!$result->isDeleted()) {
                 return $this->returnApiError('Cannot delete permission template - it is assigned to one or more users', 409);
             }
+
+            $this->services()->auditService()->logPermTemplateDelete((int)$id, (string)($existing['name'] ?? 'unknown'));
+
+            return $this->returnApiResponse(null, true, 'Permission template deleted successfully');
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::deleteTemplate', 'Failed to delete permission template');
         }

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,26 +20,15 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * API Documentation JSON Controller
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\Docs;
 
 use Exception;
 use OpenApi\Generator;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class JsonController
- *
- * This controller serves the OpenAPI JSON specification generated from annotations.
+ * Serves the OpenAPI JSON specification at /api/docs/json, generated from the V2 controller attributes.
  */
 class JsonController extends BaseController
 {
@@ -79,8 +68,7 @@ class JsonController extends BaseController
                 'message' => 'API documentation is disabled',
                 'status' => 404
             ]));
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
 
         // Get version from path parameters, default to v2
@@ -116,7 +104,6 @@ class JsonController extends BaseController
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($decoded, JSON_PRETTY_PRINT));
-            $response->send();
         } catch (Exception $e) {
             // Log the actual error for debugging
             $this->logger->error('OpenAPI generation failed: {error}', ['error' => $e->getMessage()]);
@@ -153,9 +140,8 @@ class JsonController extends BaseController
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($fallbackSpec, JSON_PRETTY_PRINT));
-            $response->send();
         }
 
-        exit;
+        $this->sendAndHalt($response);
     }
 }

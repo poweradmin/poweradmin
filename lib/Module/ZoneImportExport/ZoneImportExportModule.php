@@ -22,23 +22,17 @@
 
 namespace Poweradmin\Module\ZoneImportExport;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class ZoneImportExportModule implements ModuleInterface
+/**
+ * Module registration for the zone file import page and the per-zone BIND export route.
+ */
+final class ZoneImportExportModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'zone_import_export';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'Zone Import/Export';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Import and export zones as BIND zone files';
     }
 
     public function getRoutes(): array
@@ -74,19 +68,19 @@ class ZoneImportExportModule implements ModuleInterface
                 'url' => '/tools/zone-import',
                 'icon' => 'cloud-arrow-down',
                 'page_id' => 'module_zone_import',
-                'permission' => 'zone_master_add',
+                'permission' => Permission::PERM_ZONE_MASTER_ADD,
             ],
         ];
     }
 
     public function getCapabilities(): array
     {
-        return ['zone_export', 'zone_import'];
+        return [self::CAP_ZONE_EXPORT, self::CAP_ZONE_IMPORT];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'zone_export') {
+        if ($capability === self::CAP_ZONE_EXPORT) {
             return [
                 [
                     'label' => 'Zone File',
@@ -101,10 +95,5 @@ class ZoneImportExportModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return __DIR__ . '/templates';
-    }
-
-    public function getLocalePath(): string
-    {
-        return __DIR__ . '/locale';
     }
 }

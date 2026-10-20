@@ -22,32 +22,85 @@
 
 namespace Poweradmin\Tests\Unit\Application\Presenter;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\ZoneStartingLettersPresenter;
 
-#[CoversClass(ZoneStartingLettersPresenter::class)]
 class ZoneStartingLettersPresenterTest extends TestCase
 {
-    private const LAST_LETTER = '<li class="page-item disabled"><span class="page-link" tabindex="-1">z</span></li>';
-    private const SHOW_ALL = '<li class="page-item"><a class="page-link" href="/zones/forward?letter=all">Show all</a></li>';
+    private const HEADING = '<span class="text-secondary">Show zones beginning with</span><br><nav><ul class="pagination pagination-sm d-flex flex-wrap">';
+
+    private function active(string $label): string
+    {
+        return '<li class="page-item active"><span class="page-link" tabindex="-1">' . $label . '</span></li>';
+    }
+
+    private function disabled(string $label): string
+    {
+        return '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $label . '</span></li>';
+    }
+
+    private function link(string $letter, string $label, string $prefix = '', string $rows = ''): string
+    {
+        return '<li class="page-item"><a class="page-link" href="' . $prefix . '/zones/forward?letter=' . $letter . $rows . '">' . $label . '</a></li>';
+    }
+
+    public function testActiveAvailableAndMissingLettersRenderDistinctItems(): void
+    {
+        $html = (new ZoneStartingLettersPresenter())->present(['1', 'a', 'c'], true, 'a');
+
+        $this->assertStringStartsWith(self::HEADING . $this->link('1', '0-9') . $this->active('a') . $this->disabled('b') . $this->link('c', 'c') . $this->disabled('d'), $html);
+        $this->assertStringEndsWith($this->disabled('z') . $this->link('all', 'Show all') . '</ul></nav>', $html);
+    }
+
+    public function testDigitsBucketIsActiveDisabledOrLinked(): void
+    {
+        $presenter = new ZoneStartingLettersPresenter();
+
+        $this->assertStringContainsString($this->active('0-9'), $presenter->present(['1'], true, '1'));
+        $this->assertStringContainsString($this->disabled('0-9'), $presenter->present(['a'], false, 'a'));
+        $this->assertStringContainsString($this->link('1', '0-9'), $presenter->present(['1'], true, 'a'));
+    }
+
+    public function testShowAllIsActiveWhenNoLetterIsSelected(): void
+    {
+        $html = (new ZoneStartingLettersPresenter())->present(['a'], false, 'all');
+
+        $this->assertStringEndsWith('<li class="page-item active"><span class="page-link" href="#">Show all</span></li></ul></nav>', $html);
+        $this->assertStringContainsString($this->link('a', 'a'), $html);
+    }
+
+    public function testPrefixAndRowsPerPageAreAppliedToEveryLink(): void
+    {
+        $html = (new ZoneStartingLettersPresenter())->present(['1', 'b'], true, 'all', '/pa', 25);
+
+        $this->assertStringContainsString($this->link('1', '0-9', '/pa', '&rows_per_page=25'), $html);
+        $this->assertStringContainsString($this->link('b', 'b', '/pa', '&rows_per_page=25'), $html);
+        $this->assertStringNotContainsString($this->link('all', 'Show all'), $html);
+    }
 
     public function testPunycodeZonesShareOneIdnEntryAfterTheAlphabet(): void
     {
         $presenter = new ZoneStartingLettersPresenter();
 
         $html = $presenter->present(['a', 'idn'], false, 'a');
-        $this->assertStringContainsString(self::LAST_LETTER . '<li class="page-item"><a class="page-link" href="/zones/forward?letter=idn">IDN</a></li>' . self::SHOW_ALL, $html);
+        $this->assertStringContainsString($this->disabled('z') . $this->link('idn', 'IDN') . $this->link('all', 'Show all'), $html);
 
         $html = $presenter->present(['idn'], false, 'idn');
-        $this->assertStringContainsString(self::LAST_LETTER . '<li class="page-item active"><span class="page-link" tabindex="-1">IDN</span></li>' . self::SHOW_ALL, $html);
+        $this->assertStringContainsString($this->disabled('z') . $this->active('IDN') . $this->link('all', 'Show all'), $html);
     }
 
     public function testIdnEntryIsLeftOutWithoutPunycodeZones(): void
     {
         $html = (new ZoneStartingLettersPresenter())->present(['a', 'ä', '<'], false, 'a');
 
-        $this->assertStringContainsString(self::LAST_LETTER . self::SHOW_ALL, $html);
+        $this->assertStringContainsString($this->disabled('z') . $this->link('all', 'Show all'), $html);
         $this->assertStringNotContainsString('IDN', $html);
+    }
+
+    public function testBlankInitialsAreIgnored(): void
+    {
+        $html = (new ZoneStartingLettersPresenter())->present(['', 'a'], false, 'all');
+
+        $this->assertStringContainsString($this->disabled('z') . '<li class="page-item active">', $html);
     }
 }

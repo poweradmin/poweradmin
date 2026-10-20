@@ -1,0 +1,338 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Infrastructure\Service\Consistency;
+
+use PDO;
+use PDOStatement;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Domain\Port\ApiStatusInterface;
+use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
+use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
+use Poweradmin\Infrastructure\Session\ArraySession;
+
+/**
+ * Pins the statements each strategy issues against a mocked PDO: the SQL owner
+ * query shape, the API-mode per-zone ownership lookup, and the outage guards.
+ */
+#[CoversClass(SqlConsistencyChecks::class)]
+#[CoversClass(ApiConsistencyChecks::class)]
+class ConsistencyChecksStatementTest extends TestCase
+{
+    private ArraySession $session;
+
+    private PDO&MockObject $db;
+    private ConfigurationInterface&MockObject $config;
+
+    protected function setUp(): void
+    {
+        $this->session = new ArraySession();
+        parent::setUp();
+        $this->db = $this->createMock(PDO::class);
+        $this->config = $this->createMock(ConfigurationInterface::class);
+        // TableNameService asks the config for pdns_db_name; default to no prefix.
+        $this->config->method('get')->willReturnCallback(
+            fn(string $section, string $key, mixed $default = null) => $default
+        );
+        // ApiStatusService is session-backed; start each test with a clean slate.
+        (new ApiStatusService($this->session))->clearError();
+    }
+
+    protected function tearDown(): void
+    {
+        (new ApiStatusService($this->session))->clearError();
+        parent::tearDown();
+    }
+
+    private function apiBackend(array $zones): DnsBackendProviderInterface&MockObject
+    {
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn($zones);
+        return $backend;
+    }
+
+    private function sqlChecks(): ConsistencyCheckerInterface
+    {
+        return new SqlConsistencyChecks($this->db, new TableNameService($this->config), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config));
+    }
+
+    private function apiChecks(DnsBackendProviderInterface $backend, ?ApiStatusInterface $apiStatus = null): ConsistencyCheckerInterface
+    {
+        return new ApiConsistencyChecks($this->db, $backend, $apiStatus ?? new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config));
+    }
+
+    #[Test]
+    public function sqlBackendQueryExcludesZonesThatHaveAnyDirectOwnerOrGroup(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        // No orphan rows -> the query should report success.
+        $stmt->method('fetch')->willReturn(false);
+
+        $this->db->expects($this->once())
+            ->method('query')
+            ->with($this->callback(function (string $sql): bool {
+                return str_contains($sql, 'NOT EXISTS')
+                    && str_contains($sql, 'zones z')
+                    && str_contains($sql, 'z.owner IS NOT NULL AND z.owner <> 0')
+                    && str_contains($sql, 'zones_groups zg');
+            }))
+            ->willReturn($stmt);
+
+        $service = $this->sqlChecks();
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('success', $result['status']);
+        $this->assertSame([], $result['data']);
+    }
+
+    #[Test]
+    public function sqlBackendReportsOrphanRowsReturnedByTheQuery(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 42, 'name' => 'orphan.example.com'],
+            false
+        );
+
+        $this->db->method('query')->willReturn($stmt);
+
+        $service = $this->sqlChecks();
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertCount(1, $result['data']);
+        $this->assertSame(42, $result['data'][0]['id']);
+        $this->assertSame('orphan.example.com', $result['data'][0]['name']);
+        $this->assertNull($result['data'][0]['owner']);
+    }
+
+    #[Test]
+    public function apiBackendTreatsZoneWithGroupOwnershipAsHealthy(): void
+    {
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 7, 'name' => 'group-only.example.com.'],
+        ]);
+
+        // owner_count = 0, group_count = 1 -> not orphaned
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['owner_count' => 0, 'group_count' => 1]);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
+            ->willReturn($stmt);
+
+        $service = $this->apiChecks($backend);
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('success', $result['status']);
+        $this->assertSame([], $result['data']);
+    }
+
+    #[Test]
+    public function apiBackendTreatsZoneWithDirectOwnerAsHealthy(): void
+    {
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 11, 'name' => 'user-owned.example.com.'],
+        ]);
+
+        // Multiple zones rows, at least one with owner -> healthy.
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['owner_count' => 2, 'group_count' => 0]);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
+            ->willReturn($stmt);
+
+        $service = $this->apiChecks($backend);
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('success', $result['status']);
+    }
+
+    #[Test]
+    public function apiBackendFlagsZoneWithNeitherOwnerNorGroup(): void
+    {
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn([
+            ['id' => 99, 'name' => 'orphan.example.com.'],
+        ]);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['owner_count' => 0, 'group_count' => 0]);
+
+        $this->db->expects($this->once())
+            ->method('prepare')
+            ->with($this->callback(fn(string $sql) => str_contains($sql, 'c.zone_name = ?')))
+            ->willReturn($stmt);
+
+        $service = $this->apiChecks($backend);
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertCount(1, $result['data']);
+        $this->assertSame(99, $result['data'][0]['id']);
+        $this->assertSame('orphan.example.com', $result['data'][0]['name']);
+    }
+
+    #[Test]
+    public function apiBackendSkipsUnsyncedZoneInOwnerCheck(): void
+    {
+        // A zone PowerDNS reports but Poweradmin has not synced yet has id 0 and no
+        // local row; it must not be flagged or queried for ownership.
+        $backend = $this->apiBackend([['id' => 0, 'name' => 'unsynced.example.com.']]);
+
+        $this->db->expects($this->never())->method('prepare');
+
+        $service = $this->apiChecks($backend);
+        $result = $service->checkZonesHaveOwners();
+
+        $this->assertSame('success', $result['status']);
+        $this->assertSame([], $result['data']);
+    }
+
+    #[Test]
+    public function fixZoneWithoutOwnerRejectsUnsyncedZone(): void
+    {
+        // domain_id 0 would insert a dangling zones row; the guard must refuse it.
+        $this->db->expects($this->never())->method('prepare');
+
+        $service = $this->sqlChecks();
+
+        $this->assertFalse($service->fixZoneWithoutOwner(0, 1));
+    }
+
+    #[Test]
+    public function runAllChecksReturnsNullWhenZoneListUnavailable(): void
+    {
+        // getZones() swallows an API outage into an empty list but records the error.
+        $backend = $this->apiBackend([]);
+        (new ApiStatusService($this->session))->recordError('connection refused', ['endpoint' => 'zones']);
+
+        $service = $this->apiChecks($backend);
+
+        $this->assertNull($service->runAllChecks());
+    }
+
+    #[Test]
+    public function runAllChecksReturnsNullWhenPerZoneReadFails(): void
+    {
+        $backend = $this->apiBackend([['id' => 5, 'name' => 'z.example.com.', 'type' => 'NATIVE']]);
+        // Zone has an owner, so the ownership check passes...
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
+        $this->db->method('prepare')->willReturn($ownerStmt);
+        // The canonical-id check reads the zones table directly and finds nothing stranded.
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
+
+        // ...but the per-zone SOA read fails and is swallowed into an empty list.
+        $backend->method('getRecordsByZoneId')->willReturnCallback(function () {
+            (new ApiStatusService($this->session))->recordError('502 Bad Gateway', ['endpoint' => 'zone']);
+            return [];
+        });
+
+        $service = $this->apiChecks($backend);
+
+        $this->assertNull($service->runAllChecks());
+    }
+
+    #[Test]
+    public function runAllChecksReturnsResultsWhenApiHealthy(): void
+    {
+        $backend = $this->apiBackend([['id' => 5, 'name' => 'z.example.com.', 'type' => 'NATIVE']]);
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
+        $this->db->method('prepare')->willReturn($ownerStmt);
+        // The canonical-id check reads the zones table directly and finds nothing stranded.
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
+
+        // SOA read succeeds (one SOA record), leaving no recorded API error.
+        $backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 'enc', 'type' => 'SOA'],
+        ]);
+
+        $service = $this->apiChecks($backend);
+        $results = $service->runAllChecks();
+
+        $this->assertIsArray($results);
+        $this->assertArrayHasKey('zones_have_owners', $results);
+        $this->assertArrayHasKey('zones_have_canonical_ids', $results);
+        $this->assertArrayHasKey('zones_without_soa', $results);
+    }
+
+    #[Test]
+    public function injectedApiStatusPortDecidesZoneListOutage(): void
+    {
+        $backend = $this->apiBackend([]);
+        $apiStatus = $this->createMock(ApiStatusInterface::class);
+        $apiStatus->method('getLastError')->willReturn(['message' => 'down', 'context' => [], 'timestamp' => 1]);
+
+        $service = $this->apiChecks($backend, $apiStatus);
+
+        // The session holds no error; only the injected port reports the outage.
+        $this->assertNull($service->runAllChecks());
+    }
+
+    #[Test]
+    public function injectedApiStatusPortDecidesPerZoneReadFailure(): void
+    {
+        $backend = $this->apiBackend([['id' => 5, 'name' => 'z.example.com.', 'type' => 'NATIVE']]);
+        $ownerStmt = $this->createMock(PDOStatement::class);
+        $ownerStmt->method('execute')->willReturn(true);
+        $ownerStmt->method('fetch')->willReturn(['owner_count' => 1, 'group_count' => 0]);
+        $this->db->method('prepare')->willReturn($ownerStmt);
+        $emptyStmt = $this->createMock(PDOStatement::class);
+        $emptyStmt->method('fetch')->willReturn(false);
+        $this->db->method('query')->willReturn($emptyStmt);
+        $backend->method('getRecordsByZoneId')->willReturn([]);
+
+        // The zone list is non-empty so the outage guard never asks; the per-zone read does.
+        $apiStatus = $this->createMock(ApiStatusInterface::class);
+        $apiStatus->method('getLastError')->willReturn(['message' => '502 Bad Gateway', 'context' => [], 'timestamp' => 1]);
+
+        $service = $this->apiChecks($backend, $apiStatus);
+
+        $this->assertNull($service->runAllChecks());
+    }
+}

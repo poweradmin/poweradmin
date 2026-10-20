@@ -8,57 +8,67 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { createTempZone, deleteZoneById, uniqueZoneName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
+// The read-only controls only render for metadata the zone already carries, so
+// admin builds a throwaway zone owned by the viewer user and gives it one row.
+const SEEDED_METADATA_VALUE = '192.0.2.77';
+let viewerZoneId = null;
 
-  // Viewer tests need a zone the viewer owns; resolve viewer-zone by name so we
-  // never grab an arbitrary first-row zone the viewer cannot view metadata for.
-  const namedRow = page.locator('tr', { hasText: 'viewer-zone.example.com' }).first();
-  if (await namedRow.count() > 0) {
-    const namedLink = namedRow.locator('a[href*="/edit"]').first();
-    if (await namedLink.count() > 0) {
-      const href = await namedLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      if (match) {
-        return match[1];
-      }
-    }
-  }
+test.beforeAll(async ({ browser }) => {
+  const page = await browser.newPage();
+  try {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-  // Fallback for non-fixture environments: first zone edit link on the page
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
+    const zone = await createTempZone(page, { name: uniqueZoneName('metaro') });
+    viewerZoneId = zone.id;
+
+    await page.goto(`/zones/${viewerZoneId}/ownership`);
+    await page.locator('.user-item', { has: page.locator('small', { hasText: '(viewer)' }) }).locator('input[name="newowner"]').check();
+    await page.locator('#add-owner-btn').click();
+    await page.waitForLoadState('networkidle');
+
+    await page.goto(`/zones/${viewerZoneId}/metadata`);
+    await page.locator('#add-metadata-row').click();
+    await page.locator('.metadata-kind-select').last().selectOption('ALLOW-AXFR-FROM');
+    await page.locator('.metadata-content').last().fill(SEEDED_METADATA_VALUE);
+    await page.locator('[data-testid="save-zone-metadata"]').click();
+    await expect(page.locator('[data-testid="system-message"]')).toContainText(/successfully/i);
+  } finally {
+    await page.close();
   }
-  return null;
-}
+});
+
+test.afterAll(async ({ browser }) => {
+  if (!viewerZoneId) return;
+  const page = await browser.newPage();
+  try {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await deleteZoneById(page, viewerZoneId);
+  } finally {
+    await page.close();
+  }
+});
 
 test.describe('Zone Metadata Read-Only View', () => {
   test.describe('Viewer User', () => {
     test('should see View Metadata button on zone edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/edit`);
       const metadataLink = page.locator('a[href*="/metadata"]');
-      if (await metadataLink.count() > 0) {
-        await expect(metadataLink.first()).toContainText('View Metadata');
-      }
+      expect(await metadataLink.count()).toBeGreaterThan(0);
+
+      await expect(metadataLink.first()).toContainText('View Metadata');
     });
 
     test('should load metadata page in read-only mode', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       await page.waitForLoadState('networkidle');
@@ -71,32 +81,25 @@ test.describe('Zone Metadata Read-Only View', () => {
 
     test('should have disabled kind dropdowns', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
-      const kindSelect = page.locator('.metadata-kind-select').first();
-      if (await kindSelect.count() > 0) {
-        await expect(kindSelect).toBeDisabled();
-      }
+      await expect(page.locator('.metadata-kind-select').first()).toBeDisabled();
     });
 
     test('should have readonly value inputs', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
-      const contentInput = page.locator('.metadata-content').first();
-      if (await contentInput.count() > 0) {
-        await expect(contentInput).toHaveAttribute('readonly', '');
-      }
+      const contentInput = page.locator(`.metadata-content[value="${SEEDED_METADATA_VALUE}"]`);
+      await expect(contentInput).toHaveAttribute('readonly', '');
+      await expect(contentInput).toHaveValue(SEEDED_METADATA_VALUE);
     });
 
     test('should not show save button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       const saveBtn = page.locator('[data-testid="save-zone-metadata"]');
@@ -105,8 +108,7 @@ test.describe('Zone Metadata Read-Only View', () => {
 
     test('should not show add row button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       const addBtn = page.locator('#add-metadata-row');
@@ -115,8 +117,7 @@ test.describe('Zone Metadata Read-Only View', () => {
 
     test('should not show remove row buttons', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       const removeBtn = page.locator('.metadata-remove-row');
@@ -125,8 +126,7 @@ test.describe('Zone Metadata Read-Only View', () => {
 
     test('should show back to zone link', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       const backLink = page.locator(`a[href*="/zones/${zoneId}/edit"]`);
@@ -137,22 +137,20 @@ test.describe('Zone Metadata Read-Only View', () => {
   test.describe('Admin User', () => {
     test('should see Metadata button (not View Metadata)', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/edit`);
       const metadataLink = page.locator('a[href*="/metadata"]');
-      if (await metadataLink.count() > 0) {
-        await expect(metadataLink.first()).toContainText('Metadata');
-        const text = await metadataLink.first().textContent();
-        expect(text.trim()).not.toMatch(/^View Metadata$/);
-      }
+      expect(await metadataLink.count()).toBeGreaterThan(0);
+
+      await expect(metadataLink.first()).toContainText('Metadata');
+      const text = await metadataLink.first().textContent();
+      expect(text.trim()).not.toMatch(/^View Metadata$/);
     });
 
     test('should see edit controls on metadata page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = viewerZoneId;
 
       await page.goto(`/zones/${zoneId}/metadata`);
       const saveBtn = page.locator('[data-testid="save-zone-metadata"]');

@@ -24,7 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\RESINFORecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 class RESINFORecordValidatorTest extends TestCase
 {
@@ -32,9 +33,7 @@ class RESINFORecordValidatorTest extends TestCase
 
     protected function setUp(): void
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturn('example.com');
-        $this->validator = new RESINFORecordValidator($config);
+        $this->validator = new RESINFORecordValidator(new HostnameValidator(new HostnamePolicy(true, true)));
     }
 
     public function testValidSingleString(): void

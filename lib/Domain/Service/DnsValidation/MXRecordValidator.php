@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * MX Record Validator
@@ -51,10 +51,10 @@ class MXRecordValidator implements DnsRecordValidatorInterface
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
         $this->ttlValidator = new TTLValidator();
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
     }
 
     /**
@@ -65,6 +65,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority value
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or errors
      */
@@ -118,7 +119,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
         if (!$nameResult->isValid()) {
-            return $nameResult;
+            return $nameResult->withField(RecordField::NAME);
         }
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];
@@ -126,7 +127,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $ttlResult);
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;

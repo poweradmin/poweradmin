@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { findZoneIdByName, deleteZoneById } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /*
  * Regression: issue #1323 - creating a "reverse lookup zone" from the reverse
@@ -17,6 +18,10 @@ test.describe('Reverse zone creation from network input (#1323)', () => {
   const ipv4ReverseZone = `${octet}.250.10.in-addr.arpa`;
   const ipv6Network = '2001:db8:beef::/48';
   const ipv6Display = '2001:db8:beef';
+  // The zone the network expands to. Cleanup resolves zones by name, and the
+  // display string above is not one, so the zone would otherwise be left behind
+  // and the next run would fail because it already exists.
+  const ipv6ReverseZone = 'f.e.e.b.8.b.d.0.1.0.0.2.ip6.arpa';
   const createdZones = [];
 
   test.beforeEach(async ({ page }) => {
@@ -26,19 +31,12 @@ test.describe('Reverse zone creation from network input (#1323)', () => {
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    // Resolve by name rather than reading page one of the list: the reverse list
+    // paginates too, and forcing the page size writes a stored user preference
     for (const zone of createdZones) {
-      await page.goto('/zones/reverse?reverse_type=all&rows_per_page=100');
-      await page.waitForLoadState('networkidle');
-      const deleteLink = page.locator(`tr:has-text("${zone}") a[href*="/delete"]`).first();
-      if (await deleteLink.count() === 0) {
-        continue;
-      }
-      await deleteLink.click();
-      await page.waitForLoadState('networkidle');
-      const confirm = page.locator('[data-testid="confirm-delete-zone"], button[type="submit"].btn-danger').first();
-      if (await confirm.count() > 0) {
-        await confirm.click();
-        await page.waitForLoadState('networkidle');
+      const zoneId = await findZoneIdByName(page, zone);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
       }
     }
     await page.close();
@@ -65,7 +63,7 @@ test.describe('Reverse zone creation from network input (#1323)', () => {
   });
 
   test('IPv6 network creates the matching ip6.arpa reverse zone', async ({ page }) => {
-    createdZones.push(ipv6Display);
+    createdZones.push(ipv6ReverseZone);
 
     await page.goto('/zones/add/master?type=reverse');
     await page.waitForLoadState('networkidle');

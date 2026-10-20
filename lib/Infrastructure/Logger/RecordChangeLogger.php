@@ -24,10 +24,14 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use InvalidArgumentException;
 use PDO;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
-class RecordChangeLogger
+/**
+ * Writes before/after record and zone snapshots to log_record_changes, grouped into log_changesets rows.
+ */
+class RecordChangeLogger implements RecordChangeWriterInterface
 {
     public const ACTION_RECORD_CREATE = 'record_create';
     public const ACTION_RECORD_EDIT = 'record_edit';
@@ -51,15 +55,15 @@ class RecordChangeLogger
     private const MAX_COMMENT_LENGTH = 1000;
 
     private PDO $db;
-    private UserContextService $userContext;
-    private ?ConfigurationManager $config;
+    private ActorInterface $actor;
+    private ConfigurationInterface $config;
 
     // Changeset scope, shared across every instance for the life of the request.
     // Write paths build their own logger (RecordManager, the v2 controllers), so an
     // instance-local scope would never reach the object that does the writing. The
     // row is only written once the first change actually lands, so a submission that
-    // turns out to be a no-op leaves no empty group behind. Nested begin/end calls
-    // join the outermost scope.
+    // turns out to be a no-op leaves no empty group behind. Only withChangeset()
+    // opens a scope, so a throwing write path cannot leave one open.
     private static int $changesetDepth = 0;
     private static ?int $changesetId = null;
     private static ?int $changesetZoneId = null;
@@ -67,12 +71,12 @@ class RecordChangeLogger
 
     public function __construct(
         PDO $db,
-        ?UserContextService $userContext = null,
-        ?ConfigurationManager $config = null
+        ConfigurationInterface $config,
+        ActorInterface $actor
     ) {
         $this->db = $db;
-        $this->userContext = $userContext ?? new UserContextService();
         $this->config = $config;
+        $this->actor = $actor;
     }
 
     /**
@@ -80,11 +84,13 @@ class RecordChangeLogger
      * given reason. Pass $zoneId only when the whole scope belongs to one zone; a
      * cross-zone submission leaves it null and the per-change rows carry the truth.
      *
+     * @return mixed Whatever $work returns
      * @throws InvalidArgumentException when the installation requires a reason and none was given
+     * @throws \Throwable Whatever $work throws
      */
-    public static function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
+    public function withChangeset(?int $zoneId, ?string $comment, callable $work): mixed
     {
-        self::beginChangeset($zoneId, $comment);
+        $this->beginChangeset($zoneId, $comment);
         try {
             return $work();
         } finally {
@@ -97,17 +103,15 @@ class RecordChangeLogger
      * is grouped under one row carrying the reason for the change. Nested calls join
      * the outermost scope so a controller can wrap a service that also wraps.
      *
-     * Prefer withChangeset(), which cannot leave a scope open if $work throws.
-     *
      * @throws InvalidArgumentException when the installation requires a reason and none was given
      */
-    public static function beginChangeset(?int $zoneId = null, ?string $comment = null): void
+    private function beginChangeset(?int $zoneId, ?string $comment): void
     {
         $comment = ($comment !== null && trim($comment) !== '') ? trim($comment) : null;
 
         // Enforced here rather than per controller so every write path that opens a
         // scope is covered, and a path that forgets to open one is a visible omission.
-        if ($comment === null && self::$changesetDepth === 0 && self::changeCommentRequired()) {
+        if ($comment === null && self::$changesetDepth === 0 && $this->changeCommentRequired()) {
             throw new InvalidArgumentException('A reason is required for this change.');
         }
 
@@ -119,7 +123,7 @@ class RecordChangeLogger
         self::$changesetDepth++;
     }
 
-    public static function endChangeset(): void
+    private static function endChangeset(): void
     {
         if (self::$changesetDepth === 0) {
             return;
@@ -132,9 +136,9 @@ class RecordChangeLogger
         }
     }
 
-    public static function changeCommentRequired(): bool
+    public function changeCommentRequired(): bool
     {
-        return (bool) ConfigurationManager::getInstance()->get('logging', 'require_change_comment', false);
+        return (bool) $this->config->get('logging', 'require_change_comment', false);
     }
 
     /**
@@ -246,8 +250,8 @@ class RecordChangeLogger
             return;
         }
 
-        $userId = $this->userContext->getLoggedInUserId();
-        $username = $this->userContext->getLoggedInUsername() ?? 'system';
+        $userId = $this->actor->userId();
+        $username = $this->actor->username() ?? 'system';
 
         $changesetId = $this->materializeChangeset($zoneId, $userId, $username);
 
@@ -323,8 +327,7 @@ class RecordChangeLogger
 
     private function isDatabaseLoggingEnabled(): bool
     {
-        $config = $this->config ?? ConfigurationManager::getInstance();
-        return (bool) $config->get('logging', 'database_enabled', false);
+        return (bool) $this->config->get('logging', 'database_enabled', false);
     }
 
     private function encodeRecordSnapshot(array $record): ?string

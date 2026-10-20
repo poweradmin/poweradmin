@@ -22,10 +22,9 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Symfony\Component\HttpFoundation\Request;
-
+/**
+ * Parameters of one DDNS update call: credentials, hostname, IPv4 and IPv6 lists, dualstack flag and user agent.
+ */
 readonly class DynamicDnsRequest
 {
     public function __construct(
@@ -37,88 +36,6 @@ readonly class DynamicDnsRequest
         private bool $dualstackUpdate,
         private string $userAgent
     ) {
-    }
-
-    public static function fromHttpRequest(Request $request): self
-    {
-        $username = $_SERVER['PHP_AUTH_USER'] ?? self::queryString($request, 'username') ?? '';
-        $password = $_SERVER['PHP_AUTH_PW'] ?? self::queryString($request, 'password') ?? '';
-        $hostname = self::queryString($request, 'hostname') ?? '';
-        $ipv4 = self::queryString($request, 'myip') ?? self::queryString($request, 'ip') ?? '';
-        $ipv6 = self::queryString($request, 'myip6') ?? self::queryString($request, 'ip6') ?? '';
-        $dualstackUpdate = self::queryString($request, 'dualstack_update') === '1';
-        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
-
-        [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
-
-        if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
-            $ipRetriever = new IpAddressRetriever($_SERVER);
-            $clientIp = $ipRetriever->getClientIp();
-            $ipValidator = new IPAddressValidator();
-
-            if ($ipv4 === 'whatismyip') {
-                $ipv4 = $ipValidator->isValidIPv4($clientIp) ? $clientIp : '';
-            }
-
-            if ($ipv6 === 'whatismyip') {
-                $ipv6 = $ipValidator->isValidIPv6($clientIp) ? $clientIp : '';
-            }
-        }
-
-        return new self(
-            $username,
-            $password,
-            $hostname,
-            $ipv4,
-            $ipv6,
-            $dualstackUpdate,
-            $userAgent
-        );
-    }
-
-    /**
-     * Read a query value as a string; an array such as myip[]=1 reads as absent,
-     * since InputBag::get() throws on it and the endpoint answered with a 500.
-     */
-    private static function queryString(Request $request, string $key): ?string
-    {
-        $value = $request->query->all()[$key] ?? null;
-
-        return is_scalar($value) ? (string)$value : null;
-    }
-
-    /**
-     * Route each address in `myip` to the slot matching its family. The standard dyndns2
-     * `myip` parameter carries either family, and ddclient 3.11+ sends both as one
-     * comma-separated list - moving the whole value to the v6 slot discarded every IPv4
-     * address, which under `dualstack_update` then deleted the existing A records.
-     *
-     * An explicit `myip6` stays authoritative: v6 values in `myip` are dropped rather than
-     * merged into it.
-     *
-     * @return array{0: string, 1: string} the IPv4 and IPv6 slots
-     */
-    private static function routeAddressFamilies(string $ipv4, string $ipv6): array
-    {
-        if ($ipv4 === '' || $ipv4 === 'whatismyip') {
-            return [$ipv4, $ipv6];
-        }
-
-        $ipv4Parts = [];
-        $ipv6Parts = [];
-        foreach (explode(',', $ipv4) as $address) {
-            $address = trim($address);
-            if ($address === '') {
-                continue;
-            }
-            if (str_contains($address, ':')) {
-                $ipv6Parts[] = $address;
-            } else {
-                $ipv4Parts[] = $address;
-            }
-        }
-
-        return [implode(',', $ipv4Parts), $ipv6 === '' ? implode(',', $ipv6Parts) : $ipv6];
     }
 
     public function getUsername(): string

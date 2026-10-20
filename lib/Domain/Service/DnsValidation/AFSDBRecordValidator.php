@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * AFSDB record validator
@@ -43,20 +43,15 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * Note: RFC 5864 deprecates the use of AFSDB RR to locate AFS cell database servers
  * in favor of SRV records.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class AFSDBRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -68,6 +63,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio The subtype value for AFSDB record (1 or 2)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -82,7 +78,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
         if (!$nameResult->isValid()) {
-            return $nameResult;
+            return $nameResult->withField(RecordField::NAME);
         }
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];
@@ -119,7 +115,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $ttlResult);
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;

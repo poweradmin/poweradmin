@@ -23,6 +23,8 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\PhpSession;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 class LocaleHandler
 {
@@ -88,7 +90,7 @@ class LocaleHandler
 
     public function handleError(): void
     {
-        $messageService = new MessageService();
+        $messageService = new MessageService(new UserContextService(new PhpSession()));
         $messageService->addSystemError(_('Failed to set locale. Selected locale may be unsupported on this system. Please contact your administrator.'));
     }
 }

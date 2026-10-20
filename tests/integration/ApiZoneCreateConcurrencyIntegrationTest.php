@@ -27,133 +27,131 @@ use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
+use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
- * Zones created at the same moment on the API backend. The creators run as separate
- * processes against a scratch database, because a deadlock needs several connections.
- * PowerDNS is stubbed: only the local zones row is under test.
+ * Two zones created at the same moment on the API backend. The creators run as separate
+ * processes against a scratch database, because a deadlock needs two connections.
  *
- * Needs pcntl and the devcontainer databases for MySQL/MariaDB and PostgreSQL; skipped otherwise.
+ * Needs pcntl and the devcontainer (MariaDB, PostgreSQL, PowerDNS); skipped otherwise.
  */
 #[Group('concurrency')]
 class ApiZoneCreateConcurrencyIntegrationTest extends TestCase
 {
-    private const ROUNDS = 10;
-
-    /** Per-process name, so parallel suite runs do not drop each other's scratch data; set before forking. */
+    // Per-process names, so parallel suite runs do not drop each other's scratch data;
+    // set before forking, which the workers inherit
     private static string $scratch = '';
+    private const PDNS_API_URL = 'http://localhost:8181';
+    private const PDNS_API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
+    private const ROUNDS = 25;
 
-    private static function scratch(): string
-    {
-        return self::$scratch;
-    }
-
-    private static function sqliteFile(): string
-    {
-        return sys_get_temp_dir() . '/' . self::scratch() . '.sqlite';
-    }
+    /** @var list<string> */
+    private array $createdZones = [];
 
     protected function setUp(): void
     {
         if (!function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl is not available');
         }
-        self::$scratch = 'poweradmin_it_' . getmypid();
+        self::$scratch = 'poweradmin_it_api_concurrency_' . getmypid();
     }
 
     protected function tearDown(): void
     {
         try {
-            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::scratch());
+            $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost', new ApiStatusService(new ArraySession()));
+            foreach ($this->createdZones as $name) {
+                $client->deleteZone(new Zone($name . '.'));
+            }
+        } catch (\Throwable) {
+        }
+        try {
+            (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::$scratch);
         } catch (PDOException) {
         }
         try {
-            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::scratch() . ' CASCADE');
+            (new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin'))->exec('DROP SCHEMA IF EXISTS ' . self::$scratch . ' CASCADE');
         } catch (PDOException) {
         }
-        @unlink(self::sqliteFile());
     }
 
     /** @return array<string, array{string}> */
     public static function engines(): array
     {
-        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql'], 'sqlite' => ['sqlite']];
+        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql']];
     }
 
     private static function connect(string $engine): PDO
     {
         $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
         if ($engine === 'mysql') {
-            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::scratch(), 'root', 'uberuser', $options);
+            return new PDO('mysql:host=127.0.0.1;port=3306;dbname=' . self::$scratch, 'root', 'uberuser', $options);
         }
-        if ($engine === 'pgsql') {
-            $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
-            $db->exec('SET search_path TO ' . self::scratch());
-
-            return $db;
-        }
-        $db = new PDO('sqlite:' . self::sqliteFile(), null, null, $options);
-        // As PDODatabaseConnection sets it for the application
-        $db->exec('PRAGMA busy_timeout = 5000');
+        $db = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', $options);
+        $db->exec('SET search_path TO ' . self::$scratch);
 
         return $db;
     }
 
-    /** An API-mode install with three zones, with or without the queue row. */
-    private function createScratch(string $engine, bool $withQueueRow): void
+    /** Builds an empty scratch database shaped like an API-mode install with a few zones and the marker. */
+    private function createScratch(string $engine, bool $withMarker = true): void
     {
         try {
             if ($engine === 'mysql') {
                 $root = new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                $root->exec('DROP DATABASE IF EXISTS ' . self::scratch());
-                $root->exec('CREATE DATABASE ' . self::scratch());
-                $id = 'id INT AUTO_INCREMENT PRIMARY KEY';
-            } elseif ($engine === 'pgsql') {
-                $admin = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-                $admin->exec('DROP SCHEMA IF EXISTS ' . self::scratch() . ' CASCADE');
-                $admin->exec('CREATE SCHEMA ' . self::scratch());
-                $id = 'id SERIAL PRIMARY KEY';
+                $root->exec('DROP DATABASE IF EXISTS ' . self::$scratch);
+                $root->exec('CREATE DATABASE ' . self::$scratch);
+                foreach (['zones', 'zones_groups', 'api_key_zones', 'app_settings'] as $table) {
+                    $root->exec('CREATE TABLE ' . self::$scratch . ".$table LIKE poweradmin.$table");
+                }
+                $db = self::connect('mysql');
             } else {
-                @unlink(self::sqliteFile());
-                $id = 'id INTEGER PRIMARY KEY';
+                $admin = new PDO('pgsql:host=127.0.0.1;port=5432;dbname=pdns', 'pdns', 'poweradmin', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+                $admin->exec('DROP SCHEMA IF EXISTS ' . self::$scratch . ' CASCADE');
+                $admin->exec('CREATE SCHEMA ' . self::$scratch);
+                $db = self::connect('pgsql');
+                $db->exec("CREATE TABLE zones (id SERIAL PRIMARY KEY, domain_id INT NULL, owner INT NULL, comment VARCHAR(1024) NULL,
+                    zone_templ_id INT NOT NULL DEFAULT 0, zone_name VARCHAR(255) NULL, zone_type VARCHAR(8) NULL, zone_master VARCHAR(255) NULL)");
+                $db->exec("CREATE UNIQUE INDEX idx_it_zone_name ON zones (zone_name)");
+                $db->exec("CREATE INDEX idx_it_zones_domain_id ON zones (domain_id)");
+                $db->exec("CREATE TABLE zones_groups (id SERIAL PRIMARY KEY, domain_id INT NOT NULL, group_id INT NOT NULL)");
+                $db->exec("CREATE TABLE api_key_zones (id SERIAL PRIMARY KEY, api_key_id INT NOT NULL, zone_id INT NOT NULL)");
+                $db->exec("CREATE TABLE app_settings (setting_key VARCHAR(128) NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type VARCHAR(16) NOT NULL DEFAULT 'string')");
             }
-            $db = self::connect($engine);
         } catch (PDOException $e) {
             $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
-
-        $db->exec("CREATE TABLE zones ($id, domain_id INT NULL, owner INT NULL, comment VARCHAR(1024) NULL,
-            zone_templ_id INT NOT NULL DEFAULT 0, zone_name VARCHAR(255) NULL, zone_type VARCHAR(8) NULL, zone_master VARCHAR(255) NULL)");
-        $db->exec('CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)');
-        $db->exec('CREATE INDEX idx_zones_domain_id ON zones (domain_id)');
-        $db->exec("CREATE TABLE zones_groups ($id, domain_id INT NOT NULL, group_id INT NOT NULL)");
-        $db->exec("CREATE TABLE api_key_zones ($id, api_key_id INT NOT NULL, zone_id INT NOT NULL)");
-        $db->exec("CREATE TABLE app_settings (setting_key VARCHAR(128) NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type VARCHAR(16) NOT NULL DEFAULT 'string')");
 
         $db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (1, 1, 1, 'a.example'), (2, 2, 1, 'b.example'), (3, 3, 1, 'c.example')");
         if ($engine === 'pgsql') {
             $db->exec("SELECT setval('zones_id_seq', 3)");
         }
-        if ($withQueueRow) {
-            $db->exec("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES ('backend.zone_ids', 'sql', 'string')");
+        if ($withMarker) {
+            $db->exec("INSERT INTO app_settings (setting_key, setting_value, value_type) VALUES ('" . BackendModeMarker::MARKER . "', 'api', 'string')");
         }
     }
 
     /**
-     * Runs $work in $count forked processes released at the same instant.
+     * Runs $work in two forked processes released at the same instant.
      *
      * @param callable(int): mixed $work Gets the process index; its return value comes back JSON-encoded
      * @return list<array{ok: bool, value: mixed, error: string}>
      */
-    private function inProcesses(int $count, callable $work): array
+    private function inTwoProcesses(callable $work): array
     {
-        $go = microtime(true) + 0.3;
+        $go = microtime(true) + 0.4;
         $children = [];
-        for ($index = 0; $index < $count; $index++) {
+        foreach ([0, 1] as $index) {
             $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
             $pid = pcntl_fork();
             if ($pid === 0) {
@@ -165,7 +163,7 @@ class ApiZoneCreateConcurrencyIntegrationTest extends TestCase
                 } catch (\Throwable $e) {
                     $reply = ['ok' => false, 'value' => null, 'error' => get_class($e) . ': ' . $e->getMessage()];
                 }
-                fwrite($pair[1], (string)json_encode($reply));
+                fwrite($pair[1], json_encode($reply));
                 fclose($pair[1]);
                 // No shutdown: the parent's connections and PHPUnit state are not this process's to close
                 posix_kill(getmypid(), SIGKILL);
@@ -184,56 +182,158 @@ class ApiZoneCreateConcurrencyIntegrationTest extends TestCase
         return $replies;
     }
 
-    private function provider(PDO $db): ApiDnsBackendProvider
-    {
-        $client = $this->createMock(PowerdnsApiClient::class);
-        $client->method('createZoneWithData')->willReturnCallback(fn(array $zone): array => ['name' => $zone['name']]);
-        $client->method('deleteZone')->willReturn(true);
-
-        return new ApiDnsBackendProvider($client, $db, $this->createMock(ConfigurationInterface::class), new NullLogger());
-    }
-
-    /**
-     * @return list<string> The failures
-     */
-    private function createInParallel(string $engine, bool $withQueueRow, int $creators): array
+    #[DataProvider('engines')]
+    public function testParallelAllocationNeverDeadlocksAndGivesDistinctIds(string $engine): void
     {
         $failures = [];
         for ($round = 0; $round < self::ROUNDS; $round++) {
-            $this->createScratch($engine, $withQueueRow);
-            $replies = $this->inProcesses($creators, function (int $index) use ($engine, $round): int {
-                return (int)$this->provider(self::connect($engine))->createZone("p$index-$round.example", 'NATIVE');
+            $this->createScratch($engine);
+            // No retry here: the lock order alone has to keep the creators apart
+            $replies = $this->inTwoProcesses(function (int $index) use ($engine, $round): int {
+                $db = self::connect($engine);
+                $db->beginTransaction();
+                $allocator = new CanonicalZoneIdAllocator($db);
+                $insert = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, 'NATIVE', '')");
+                $insert->execute([':name' => "p$index-$round.example"]);
+                $zoneId = $allocator->settle((int)$db->lastInsertId('zones_id_seq'));
+                $db->commit();
+
+                return $zoneId;
             });
 
             $ids = [];
             foreach ($replies as $reply) {
-                if ($reply['ok'] && $reply['value'] > 0) {
-                    $ids[] = $reply['value'];
-                } else {
-                    $failures[] = $reply['error'] ?: 'createZone returned false';
-                }
+                $reply['ok'] ? $ids[] = $reply['value'] : $failures[] = $reply['error'];
             }
             $this->assertSame($ids, array_values(array_unique($ids)), 'Parallel creators were given the same zone id');
         }
 
-        return $failures;
-    }
-
-    #[DataProvider('engines')]
-    public function testParallelZoneCreationSucceedsForEveryCreator(string $engine): void
-    {
-        $failures = $this->createInParallel($engine, true, 2);
-
         $this->assertSame([], $failures, count($failures) . ' of ' . (self::ROUNDS * 2) . ' parallel creations failed');
     }
 
-    #[DataProvider('engines')]
-    public function testCreatorsRacingToAddTheMissingQueueRowAllSucceed(string $engine): void
+    /** @return array<string, array{string}> */
+    public static function isolationLevels(): array
     {
-        // An install from a pre-release 4.5.0 build has no queue row; the creators add it first
-        $failures = $this->createInParallel($engine, false, 3);
+        return ['repeatable read' => ['REPEATABLE READ'], 'read committed' => ['READ COMMITTED']];
+    }
 
-        $this->assertSame([], $failures, count($failures) . ' of ' . (self::ROUNDS * 3) . ' parallel creations failed');
-        $this->assertSame('api', self::connect($engine)->query("SELECT setting_value FROM app_settings WHERE setting_key = 'backend.zone_ids'")->fetchColumn());
+    #[DataProvider('isolationLevels')]
+    public function testTheVeryFirstApiWriteRacingForTheMarkerIsRetried(string $isolation): void
+    {
+        // Without a marker row there is no row to queue on: MySQL may pick a deadlock victim, and
+        // under READ COMMITTED the locking read takes no gap lock so both creators try the insert
+        $failures = [];
+        for ($round = 0; $round < self::ROUNDS; $round++) {
+            $this->createScratch('mysql', false);
+            $replies = $this->inTwoProcesses(function (int $index) use ($round, $isolation): int {
+                $db = self::connect('mysql');
+                $db->exec('SET SESSION TRANSACTION ISOLATION LEVEL ' . $isolation);
+
+                return DeadlockRetry::run(static function () use ($db, $index, $round): int {
+                    $db->beginTransaction();
+                    try {
+                        $allocator = new CanonicalZoneIdAllocator($db);
+                        $insert = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, 'NATIVE', '')");
+                        $insert->execute([':name' => "f$index-$round.example"]);
+                        $zoneId = $allocator->settle((int)$db->lastInsertId('zones_id_seq'));
+                        $db->commit();
+
+                        return $zoneId;
+                    } catch (\Throwable $e) {
+                        if ($db->inTransaction()) {
+                            $db->rollBack();
+                        }
+                        throw $e;
+                    }
+                });
+            });
+            foreach ($replies as $reply) {
+                if (!$reply['ok']) {
+                    $failures[] = $reply['error'];
+                }
+            }
+        }
+
+        $this->assertSame([], $failures);
+    }
+
+    private function providerFor(PDO $db): ApiDnsBackendProvider
+    {
+        $client = new PowerdnsApiClient(new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY), 'localhost', new ApiStatusService(new ArraySession()));
+        $config = new FakeConfiguration([
+            'pdns_api' => ['url' => self::PDNS_API_URL, 'key' => self::PDNS_API_KEY, 'server_name' => 'localhost', 'backend' => 'api'],
+            'database' => ['pdns_db_name' => ''],
+        ]);
+
+        return new ApiDnsBackendProvider($client, $db, $config, new ApiStatusService(new ArraySession()), new NullLogger());
+    }
+
+    private function requirePowerDns(): void
+    {
+        $ch = curl_init(self::PDNS_API_URL . '/api/v1/servers/localhost');
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5, CURLOPT_HTTPHEADER => ['X-API-Key: ' . self::PDNS_API_KEY]]);
+        curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        if ($code !== 200) {
+            $this->markTestSkipped('PowerDNS API not available at ' . self::PDNS_API_URL);
+        }
+    }
+
+    public function testParallelZoneCreationSucceedsForBothCreators(): void
+    {
+        $this->requirePowerDns();
+
+        $failures = [];
+        for ($round = 0; $round < self::ROUNDS; $round++) {
+            $this->createScratch('mysql');
+            $prefix = 'conc-' . uniqid();
+            $replies = $this->inTwoProcesses(function (int $index) use ($prefix): int {
+                $zone = "$prefix-$index.example.com";
+
+                return (int)$this->providerFor(self::connect('mysql'))->createZone($zone, 'NATIVE');
+            });
+            foreach ([0, 1] as $index) {
+                $this->createdZones[] = "$prefix-$index.example.com";
+            }
+
+            $ids = [];
+            foreach ($replies as $reply) {
+                $reply['ok'] && $reply['value'] > 0 ? $ids[] = $reply['value'] : $failures[] = $reply['error'] ?: 'createZone returned false';
+            }
+            $this->assertSame($ids, array_values(array_unique($ids)));
+        }
+
+        $this->assertSame([], $failures);
+    }
+
+    public function testAZoneIsNotLeftInPowerDnsWhenItsLocalRowCannotBeStored(): void
+    {
+        $this->requirePowerDns();
+        $this->createScratch('mysql');
+        $db = self::connect('mysql');
+        // Not retryable: the insert fails for good after PowerDNS has accepted the zone
+        $db->exec('DROP TABLE api_key_zones');
+
+        $zone = 'orphan-' . uniqid() . '.example.com';
+        $this->createdZones[] = $zone;
+        try {
+            $this->providerFor($db)->createZone($zone, 'NATIVE');
+            $this->fail('createZone() should have thrown');
+        } catch (PDOException) {
+        }
+
+        $this->assertFalse($this->zoneExists($zone), 'The zone was left behind in PowerDNS');
+    }
+
+    private function zoneExists(string $name): bool
+    {
+        $ch = curl_init(self::PDNS_API_URL . '/api/v1/servers/localhost/zones/' . rawurlencode($name . '.'));
+        curl_setopt_array($ch, [CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5, CURLOPT_HTTPHEADER => ['X-API-Key: ' . self::PDNS_API_KEY]]);
+        curl_exec($ch);
+        $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $code === 200;
     }
 }

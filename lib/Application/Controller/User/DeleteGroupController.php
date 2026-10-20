@@ -1,0 +1,165 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\User;
+
+use InvalidArgumentException;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
+use Poweradmin\Domain\Error\LastZoneOwnerException;
+use Poweradmin\Domain\Model\Permission;
+
+/**
+ * Handles the delete-group confirmation page and deletes the group on confirmed POST.
+ */
+class DeleteGroupController extends BaseController
+{
+    private ?GroupService $groupService = null;
+    private ?ZoneGroupService $zoneGroupService = null;
+
+    private function groupService(): GroupService
+    {
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+    }
+
+    private function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
+    }
+
+    public function run(): void
+    {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
+        // Only admin (überuser) can delete groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to delete groups.'));
+
+        $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
+        if ($groupId <= 0) {
+            $this->setMessage('list_groups', 'error', _('Invalid group ID.'));
+            $this->redirect('/groups');
+            return;
+        }
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('delete_group');
+        $this->setPageTitle(_('Delete group'));
+
+        if ($this->isPost()) {
+            $this->deleteGroup($groupId);
+        } else {
+            $this->showDeleteConfirmation($groupId);
+        }
+    }
+
+    private function deleteGroup(int $groupId): void
+    {
+        $confirm = $this->httpRequest->getPostParam('confirm');
+
+        if ($confirm !== 'yes') {
+            $this->setMessage('list_groups', 'info', _('Group deletion cancelled.'));
+            $this->redirect('/groups');
+            return;
+        }
+
+        try {
+            // Get group details and stats before deletion for logging
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get member and zone counts before deletion
+            $details = $this->groupService()->getGroupDetails($groupId);
+            $memberCount = $details['memberCount'];
+            $zoneCount = $details['zoneCount'];
+
+            $this->groupService()->deleteGroup($groupId);
+
+            $this->services()->auditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
+
+            $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
+            $this->redirect('/groups');
+        } catch (LastZoneOwnerException $e) {
+            $this->setMessage('delete_group', 'error', ZoneOwnershipMessages::groupDeletionRefusal($e->getZoneList()));
+            $this->showDeleteConfirmation($groupId);
+        } catch (InvalidArgumentException $e) {
+            $this->setMessage('delete_group', 'error', $e->getMessage());
+            $this->showDeleteConfirmation($groupId);
+        }
+    }
+
+    private function showDeleteConfirmation(int $groupId): void
+    {
+        try {
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
+
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
+            if (!$group) {
+                $this->setMessage('list_groups', 'error', _('Group not found.'));
+                $this->redirect('/groups');
+                return;
+            }
+
+            $details = $this->groupService()->getGroupDetails($groupId);
+
+            // Get impact information (up to 20 zones)
+            $impact = $this->zoneGroupService()->getGroupDeletionImpact($groupId, 20);
+
+            // Get zone details for display
+            $repositoryFactory = $this->services()->repositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
+
+            $zoneDetails = [];
+            foreach ($impact['zones'] as $zoneGroup) {
+                $domainId = $zoneGroup->getDomainId();
+                $zoneName = $domainRepository->getDomainNameById($domainId);
+
+                if ($zoneName) {
+                    $zoneDetails[] = [
+                        'id' => $domainId,
+                        'name' => $zoneName,
+                    ];
+                }
+            }
+
+            $this->render('delete_group.html', [
+                'group' => $group,
+                'member_count' => $details['memberCount'],
+                'zone_count' => $impact['zoneCount'],
+                'zones_sample' => $zoneDetails,
+                'show_more_zones' => $impact['zoneCount'] > 20,
+            ]);
+        } catch (InvalidArgumentException $e) {
+            $this->setMessage('list_groups', 'error', $e->getMessage());
+            $this->redirect('/groups');
+        }
+    }
+}

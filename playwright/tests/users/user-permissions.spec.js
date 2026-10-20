@@ -8,7 +8,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
@@ -42,7 +42,8 @@ test.describe('User Permission Combinations', () => {
 
     test('should access supermaster management', async ({ page }) => {
       await page.goto('/supermasters');
-      const url = page.url();
+      expect(page.url()).toContain('/supermasters');
+
       const bodyText = await page.locator('body').textContent();
       const hasAccessError = bodyText.match(/you do not have|access denied|not authorized/i);
       expect(hasAccessError).toBeFalsy();
@@ -76,11 +77,9 @@ test.describe('User Permission Combinations', () => {
 
     test('should delete any zone', async ({ page }) => {
       await page.goto('/zones/forward?letter=all');
-      const hasZones = await page.locator('table tr').count() > 1;
-      if (hasZones) {
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+      expect(await page.locator('table tr').count()).toBeGreaterThan(1);
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should access DNSSEC settings', async ({ page }) => {

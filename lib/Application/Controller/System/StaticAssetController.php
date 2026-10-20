@@ -1,0 +1,136 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\System;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
+/**
+ * Serves static assets like CSS, JS, images and fonts.
+ *
+ * Deliberately does not extend BaseController, whose constructor connects to the
+ * database unconditionally. Every shipped web server config serves existing assets
+ * straight from disk, so the requests that reach this class are the ones for files
+ * that do not exist - a database connection per 404 that nothing here needs.
+ */
+readonly class StaticAssetController
+{
+    public function __construct(private array $requestData)
+    {
+    }
+
+    public function run(): void
+    {
+        // Path comes from route parameters merged into request data by the router
+        $path = $this->requestData['path'] ?? '';
+
+        // Security: prevent path traversal attacks
+        if (strpos($path, '..') !== false || strpos($path, '\0') !== false) {
+            $this->sendNotFound();
+            return;
+        }
+
+        // Build the absolute file path
+        $rootPath = dirname(__DIR__, 4);
+        $filePath = $rootPath . '/' . $path;
+
+        // Check if file exists and is readable
+        if (!file_exists($filePath) || !is_readable($filePath)) {
+            $this->sendNotFound();
+            return;
+        }
+
+        // Security: ensure the file is within the allowed directories
+        $realPath = realpath($filePath);
+        $allowedPaths = [
+            realpath($rootPath . '/templates'),
+            realpath($rootPath . '/vendor/twbs')
+        ];
+
+        $isAllowed = false;
+        foreach ($allowedPaths as $allowedPath) {
+            if ($allowedPath && strpos($realPath, $allowedPath) === 0) {
+                $isAllowed = true;
+                break;
+            }
+        }
+
+        if (!$isAllowed) {
+            $this->sendNotFound();
+            return;
+        }
+
+        // Determine MIME type
+        $mimeType = $this->getMimeType($path);
+
+        // Create and send binary file response
+        $response = new BinaryFileResponse($filePath);
+        $response->headers->set('Content-Type', $mimeType);
+
+        // Set cache headers for better performance
+        $response->setMaxAge(3600); // 1 hour
+        $response->setPublic();
+
+        $response->send();
+        exit;
+    }
+
+    /**
+     * Send 404 Not Found response
+     */
+    private function sendNotFound(): void
+    {
+        $response = new Response();
+        $response->setStatusCode(404);
+        $response->headers->set('Content-Type', 'text/plain');
+        $response->setContent('Not Found');
+        $response->send();
+        exit;
+    }
+
+    /**
+     * Get MIME type for file extension
+     *
+     * @param string $path File path
+     * @return string MIME type
+     */
+    private function getMimeType(string $path): string
+    {
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return match ($extension) {
+            'css' => 'text/css',
+            'js' => 'application/javascript',
+            'png' => 'image/png',
+            'jpg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'ico' => 'image/x-icon',
+            'svg' => 'image/svg+xml',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'eot' => 'application/vnd.ms-fontobject',
+            default => 'application/octet-stream'
+        };
+    }
+}

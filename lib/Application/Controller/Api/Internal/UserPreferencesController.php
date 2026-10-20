@@ -25,9 +25,13 @@ namespace Poweradmin\Application\Controller\Api\Internal;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\UserPreference;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\UserPreferenceService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\User\UserPreferenceService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * Internal endpoint /api/internal/user-preferences: reads, updates and resets the logged-in user's preferences.
+ */
 class UserPreferencesController extends InternalApiController
 {
     private UserPreferenceService $userPreferenceService;
@@ -37,111 +41,76 @@ class UserPreferencesController extends InternalApiController
     {
         parent::__construct($request);
 
-        $this->userPreferenceService = $this->createUserPreferenceService();
-        $this->userContextService = new UserContextService();
+        $this->userPreferenceService = $this->services()->userPreferenceService();
+        $this->userContextService = new UserContextService($this->session());
     }
 
     public function run(): void
     {
-        $userId = $this->userContextService->getLoggedInUserId();
-
-        if (!$userId) {
-            $response = $this->returnJsonResponse(['error' => 'Unauthorized'], 401);
-            $response->send();
-            exit;
-        }
-
-        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-
-        switch ($method) {
-            case 'GET':
-                $this->handleGet($userId);
-                break;
-            case 'PUT':
-            case 'POST':
-                $this->handleUpdate($userId);
-                break;
-            case 'DELETE':
-                $this->handleDelete($userId);
-                break;
-            default:
-                $response = $this->returnJsonResponse(['error' => 'Method not allowed'], 405);
-                $response->send();
-                exit;
-        }
+        $this->respond()->send();
     }
 
-    private function handleGet(int $userId): void
+    /**
+     * The response for the current request; the verb picks the handler.
+     */
+    protected function respond(): JsonResponse
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        if (!$userId) {
+            return $this->returnJsonResponse(['error' => 'Unauthorized'], 401);
+        }
+
+        return match (strtoupper($this->request->getMethod())) {
+            'GET' => $this->handleGet($userId),
+            'PUT', 'POST' => $this->handleUpdate($userId),
+            'DELETE' => $this->handleDelete($userId),
+            default => $this->returnJsonResponse(['error' => 'Method not allowed'], 405),
+        };
+    }
+
+    private function handleGet(int $userId): JsonResponse
     {
         $key = $this->request->query->get('key');
-
-        if ($key) {
-            if (!UserPreference::isValidKey($key)) {
-                $response = $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
-                $response->send();
-                exit;
-            }
-
-            $value = $this->userPreferenceService->getPreference($userId, $key);
-            $response = $this->returnJsonResponse(['key' => $key, 'value' => $value]);
-            $response->send();
-            exit;
-        } else {
-            $preferences = $this->userPreferenceService->getAllPreferences($userId);
-            $response = $this->returnJsonResponse(['preferences' => $preferences]);
-            $response->send();
-            exit;
+        if (!$key) {
+            return $this->returnJsonResponse(['preferences' => $this->userPreferenceService->getAllPreferences($userId)]);
         }
+        if (!UserPreference::isValidKey($key)) {
+            return $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
+        }
+
+        return $this->returnJsonResponse(['key' => $key, 'value' => $this->userPreferenceService->getPreference($userId, $key)]);
     }
 
-    private function handleUpdate(int $userId): void
+    private function handleUpdate(int $userId): JsonResponse
     {
         $input = $this->getJsonInput();
-
         if (!$input || !isset($input['key']) || !isset($input['value'])) {
-            $response = $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
-            $response->send();
-            exit;
+            return $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
         }
 
         $key = $input['key'];
         $value = $input['value'];
-
         try {
             $this->userPreferenceService->setPreference($userId, $key, $value);
-            $response = $this->returnJsonResponse([
-                'success' => true,
-                'key' => $key,
-                'value' => $value
-            ]);
-            $response->send();
-            exit;
         } catch (InvalidArgumentException $e) {
-            $response = $this->returnJsonResponse(['error' => $e->getMessage()], 400);
-            $response->send();
-            exit;
+            return $this->returnJsonResponse(['error' => $e->getMessage()], 400);
         }
+
+        return $this->returnJsonResponse(['success' => true, 'key' => $key, 'value' => $value]);
     }
 
-    private function handleDelete(int $userId): void
+    private function handleDelete(int $userId): JsonResponse
     {
         $key = $this->request->query->get('key');
-
         if (!$key) {
-            $response = $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);
-            $response->send();
-            exit;
+            return $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);
         }
-
         if (!UserPreference::isValidKey($key)) {
-            $response = $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
-            $response->send();
-            exit;
+            return $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
         }
 
         $this->userPreferenceService->resetPreference($userId, $key);
-        $response = $this->returnJsonResponse(['success' => true, 'key' => $key]);
-        $response->send();
-        exit;
+
+        return $this->returnJsonResponse(['success' => true, 'key' => $key]);
     }
 }

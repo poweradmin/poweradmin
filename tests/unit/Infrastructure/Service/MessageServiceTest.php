@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,31 +26,31 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
 #[CoversClass(MessageService::class)]
 class MessageServiceTest extends TestCase
 {
+    private ArraySession $session;
+
     private MessageService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        // Initialize session
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
+        $this->session = new ArraySession();
 
         // Clear any existing messages
-        $_SESSION['messages'] = [];
-        $_SESSION['form_data'] = [];
+        $this->session->set('messages', []);
 
-        $this->service = new MessageService();
+        $this->service = new MessageService(new UserContextService($this->session));
     }
 
     protected function tearDown(): void
     {
-        $_SESSION = [];
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -61,10 +61,10 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addMessage('test_script', 'info', 'Test message');
 
-        $this->assertArrayHasKey('test_script', $_SESSION['messages']);
-        $this->assertCount(1, $_SESSION['messages']['test_script']);
-        $this->assertEquals('info', $_SESSION['messages']['test_script'][0]['type']);
-        $this->assertEquals('Test message', $_SESSION['messages']['test_script'][0]['content']);
+        $this->assertArrayHasKey('test_script', $this->session->get('messages'));
+        $this->assertCount(1, $this->session->get('messages')['test_script']);
+        $this->assertEquals('info', $this->session->get('messages')['test_script'][0]['type']);
+        $this->assertEquals('Test message', $this->session->get('messages')['test_script'][0]['content']);
     }
 
     #[Test]
@@ -72,7 +72,7 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addMessage('test_script', 'error', 'Error occurred', 'record123');
 
-        $this->assertStringContainsString('record123', $_SESSION['messages']['test_script'][0]['content']);
+        $this->assertStringContainsString('record123', $this->session->get('messages')['test_script'][0]['content']);
     }
 
     #[Test]
@@ -82,7 +82,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Same message');
         $this->service->addMessage('test_script', 'info', 'Same message');
 
-        $this->assertCount(1, $_SESSION['messages']['test_script']);
+        $this->assertCount(1, $this->session->get('messages')['test_script']);
     }
 
     #[Test]
@@ -91,7 +91,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Same message');
         $this->service->addMessage('test_script', 'error', 'Same message');
 
-        $this->assertCount(2, $_SESSION['messages']['test_script']);
+        $this->assertCount(2, $this->session->get('messages')['test_script']);
     }
 
     #[Test]
@@ -100,7 +100,7 @@ class MessageServiceTest extends TestCase
         $this->service->addMessage('test_script', 'info', 'Message 1');
         $this->service->addMessage('test_script', 'info', 'Message 2');
 
-        $this->assertCount(2, $_SESSION['messages']['test_script']);
+        $this->assertCount(2, $this->session->get('messages')['test_script']);
     }
 
     // ========== getMessages tests ==========
@@ -114,7 +114,7 @@ class MessageServiceTest extends TestCase
         $messages = $this->service->getMessages('test_script');
 
         $this->assertCount(2, $messages);
-        $this->assertArrayNotHasKey('test_script', $_SESSION['messages']);
+        $this->assertArrayNotHasKey('test_script', $this->session->get('messages'));
     }
 
     #[Test]
@@ -132,164 +132,8 @@ class MessageServiceTest extends TestCase
     {
         $this->service->addSystemError('System error occurred');
 
-        $this->assertArrayHasKey('system', $_SESSION['messages']);
-        $this->assertEquals('error', $_SESSION['messages']['system'][0]['type']);
-    }
-
-
-    // ========== generateFormToken tests ==========
-
-    #[Test]
-    public function testGenerateFormTokenReturnsHexString(): void
-    {
-        $token = $this->service->generateFormToken();
-
-        $this->assertMatchesRegularExpression('/^[a-f0-9]+$/', $token);
-    }
-
-    #[Test]
-    public function testGenerateFormTokenReturns32CharString(): void
-    {
-        $token = $this->service->generateFormToken();
-
-        $this->assertEquals(32, strlen($token));
-    }
-
-    #[Test]
-    public function testGenerateFormTokenReturnsUniqueTokens(): void
-    {
-        $token1 = $this->service->generateFormToken();
-        $token2 = $this->service->generateFormToken();
-
-        $this->assertNotEquals($token1, $token2);
-    }
-
-    // ========== storeFormData tests ==========
-
-    #[Test]
-    public function testStoreFormDataStoresInSession(): void
-    {
-        $token = 'test_token_123';
-        $data = ['field1' => 'value1', 'field2' => 'value2'];
-
-        $this->service->storeFormData($token, $data);
-
-        $this->assertArrayHasKey($token, $_SESSION['form_data']);
-        $this->assertEquals($data, $_SESSION['form_data'][$token]['data']);
-    }
-
-    #[Test]
-    public function testStoreFormDataSetsExpiration(): void
-    {
-        $token = 'test_token_123';
-        $data = ['field1' => 'value1'];
-
-        $this->service->storeFormData($token, $data);
-
-        $this->assertArrayHasKey('expires', $_SESSION['form_data'][$token]);
-        $this->assertGreaterThan(time(), $_SESSION['form_data'][$token]['expires']);
-    }
-
-    // ========== getFormData tests ==========
-
-    #[Test]
-    public function testGetFormDataReturnsStoredData(): void
-    {
-        $token = 'test_token_123';
-        $data = ['field1' => 'value1'];
-
-        $this->service->storeFormData($token, $data);
-        $retrieved = $this->service->getFormData($token);
-
-        $this->assertEquals($data, $retrieved);
-    }
-
-    #[Test]
-    public function testGetFormDataRemovesDataAfterRetrieval(): void
-    {
-        $token = 'test_token_123';
-        $data = ['field1' => 'value1'];
-
-        $this->service->storeFormData($token, $data);
-        $this->service->getFormData($token);
-        $secondRetrieval = $this->service->getFormData($token);
-
-        $this->assertNull($secondRetrieval);
-    }
-
-    #[Test]
-    public function testGetFormDataReturnsNullForNonexistentToken(): void
-    {
-        $result = $this->service->getFormData('nonexistent_token');
-
-        $this->assertNull($result);
-    }
-
-    #[Test]
-    public function testGetFormDataReturnsNullForExpiredData(): void
-    {
-        $token = 'test_token_123';
-
-        // Manually set expired data
-        $_SESSION['form_data'][$token] = [
-            'data' => ['field1' => 'value1'],
-            'expires' => time() - 100 // Already expired
-        ];
-
-        $result = $this->service->getFormData($token);
-
-        $this->assertNull($result);
-    }
-
-    // ========== cleanupFormData tests ==========
-
-    #[Test]
-    public function testCleanupFormDataRemovesExpiredEntries(): void
-    {
-        $_SESSION['form_data'] = [
-            'expired_token' => [
-                'data' => ['field1' => 'value1'],
-                'expires' => time() - 100
-            ],
-            'valid_token' => [
-                'data' => ['field2' => 'value2'],
-                'expires' => time() + 300
-            ]
-        ];
-
-        $this->service->cleanupFormData();
-
-        $this->assertArrayNotHasKey('expired_token', $_SESSION['form_data']);
-        $this->assertArrayHasKey('valid_token', $_SESSION['form_data']);
-    }
-
-    #[Test]
-    public function testCleanupFormDataHandlesEmptySession(): void
-    {
-        unset($_SESSION['form_data']);
-
-        // Should not throw an exception
-        $this->service->cleanupFormData();
-
-        $this->assertTrue(true); // If we get here, no exception was thrown
-    }
-
-    // ========== Method chaining tests ==========
-
-    #[Test]
-    public function testWithRecordContextReturnsInstance(): void
-    {
-        $result = $this->service->withRecordContext('record1');
-
-        $this->assertInstanceOf(MessageService::class, $result);
-    }
-
-    #[Test]
-    public function testDontExitReturnsInstance(): void
-    {
-        $result = $this->service->dontExit();
-
-        $this->assertInstanceOf(MessageService::class, $result);
+        $this->assertArrayHasKey('system', $this->session->get('messages'));
+        $this->assertEquals('error', $this->session->get('messages')['system'][0]['type']);
     }
 
     // ========== Multiple scripts tests ==========
@@ -316,7 +160,7 @@ class MessageServiceTest extends TestCase
     public function testDirectSystemErrorReportsServerError(): void
     {
         ob_start();
-        $this->service->dontExit()->displayDirectSystemError('Configuration is broken');
+        $this->service->displayDirectSystemError('Configuration is broken', false);
         $body = (string)ob_get_clean();
 
         $this->assertSame(500, http_response_code());
@@ -330,7 +174,7 @@ class MessageServiceTest extends TestCase
     public function testDirectSystemErrorEscapesTheMessage(): void
     {
         ob_start();
-        $this->service->dontExit()->displayDirectSystemError('<script>alert(1)</script>');
+        $this->service->displayDirectSystemError('<script>alert(1)</script>', false);
         $body = (string)ob_get_clean();
 
         $this->assertStringContainsString('&lt;script&gt;', $body);

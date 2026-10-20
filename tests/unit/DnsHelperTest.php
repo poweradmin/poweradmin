@@ -64,31 +64,6 @@ class DnsHelperTest extends TestCase
         $this->assertTrue(DnsHelper::isReverseZoneName($classless), 'Namespace check accepts the classless name.');
     }
 
-    public function testGetRegisteredDomainWithSimpleDomain()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('example.com'));
-    }
-
-    public function testGetRegisteredDomainWithSubdomain()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('sub.example.com'));
-    }
-
-    public function testGetRegisteredDomainWithMultipleSubdomains()
-    {
-        $this->assertEquals('example.com', DnsHelper::getRegisteredDomain('sub.sub2.example.com'));
-    }
-
-    public function testGetRegisteredDomainWithCountryCodeTLD()
-    {
-        $this->assertEquals('example.co.uk', DnsHelper::getRegisteredDomain('sub.example.co.uk'));
-    }
-
-//    public function testGetRegisteredDomainWithSinglePartDomain()
-//    {
-//        $this->assertEquals('localhost', DnsHelper::getRegisteredDomain('localhost'));
-//    }
-
     public function testGetDomainNameWithSubdomain()
     {
         $this->assertEquals('sub', DnsHelper::getSubDomainName('sub.example.com'));
@@ -343,5 +318,20 @@ class DnsHelperTest extends TestCase
         $this->assertFalse(DnsHelper::isZoneApex('example.com', 'sub.example.com'));
         $this->assertFalse(DnsHelper::isZoneApex('other.org', 'example.com'));
         $this->assertFalse(DnsHelper::isZoneApex('testexample.com', 'example.com'), 'A suffix match without a dot boundary is not the apex.');
+    }
+
+    public function testCanonicalZoneNameLowercasesAndDropsTheTrailingDot(): void
+    {
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('producer.example.com.'));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('Producer.Example.COM'));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName(' Producer.Example.COM. '));
+        $this->assertSame('producer.example.com', DnsHelper::canonicalZoneName('producer.example.com'));
+    }
+
+    public function testCanonicalZoneNameMapsTheRootAndBlankToEmpty(): void
+    {
+        $this->assertSame('', DnsHelper::canonicalZoneName('.'));
+        $this->assertSame('', DnsHelper::canonicalZoneName(''));
+        $this->assertSame('', DnsHelper::canonicalZoneName('   '));
     }
 }

@@ -97,6 +97,7 @@ CREATE TABLE "public"."perm_items" (
                                        CONSTRAINT "perm_items_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+-- BEGIN generated seed: perm_items (composer sql:seed)
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (41,	'zone_master_add',	'User is allowed to add new master zones.'),
                                                      (42,	'zone_slave_add',	'User is allowed to add new slave zones.'),
@@ -136,7 +137,12 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (77,	'zone_metadata_view_others',	'User is allowed to see the meta data of zones he does not own.'),
                                                      (78,	'zone_ownership_view_own',	'User is allowed to see the owners of zones he owns.'),
                                                      (79,	'zone_ownership_view_others',	'User is allowed to see the owners of zones he does not own.'),
-                                                     (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.');
+                                                     (80,	'server_status_view',	'User is allowed to view the PowerDNS server status, e.g. for monitoring.'),
+                                                     (81,	'zone_change_request_own',	'User is allowed to request changes to zones they own'),
+                                                     (82,	'zone_change_request_others',	'User is allowed to request changes to any zone'),
+                                                     (83,	'zone_change_approve_own',	'User is allowed to review change requests for zones they own'),
+                                                     (84,	'zone_change_approve_others',	'User is allowed to review change requests for any zone');
+-- END generated seed: perm_items
 
 SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
 
@@ -151,6 +157,7 @@ CREATE TABLE "public"."perm_templ" (
                                        CONSTRAINT "perm_templ_template_type_check" CHECK (template_type IN ('user', 'group'))
 ) WITH (oids = false);
 
+-- BEGIN generated seed: perm_templ (composer sql:seed)
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES
     (1,	'Administrator',	'Administrator template with full rights.',	'user'),
     (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
@@ -162,6 +169,7 @@ INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES
     (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group'),
     (9,	'Viewers',	'Read-only zone access for group members.',	'group'),
     (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
+-- END generated seed: perm_templ
 
 SELECT setval('perm_templ_id_seq', (SELECT MAX(id) FROM perm_templ));
 
@@ -177,6 +185,7 @@ CREATE TABLE "public"."perm_templ_items" (
 CREATE INDEX "idx_perm_templ_items_templ_id" ON "public"."perm_templ_items" USING btree ("templ_id");
 CREATE INDEX "idx_perm_templ_items_perm_id" ON "public"."perm_templ_items" USING btree ("perm_id");
 
+-- BEGIN generated seed: perm_templ_items (composer sql:seed)
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (1,	1,	53),
     (2,	2,	41),
@@ -234,6 +243,7 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (54,	7,	78),
     (55,	8,	78),
     (56,	9,	78);
+-- END generated seed: perm_templ_items
 
 SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 
@@ -282,10 +292,12 @@ CREATE TABLE "public"."users" (
                                   "active" integer,
                                   "use_ldap" integer,
                                   "auth_method" character varying(20) DEFAULT 'sql' NOT NULL,
+                                  "max_zones" integer DEFAULT NULL,
                                   CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
 CREATE INDEX "idx_users_perm_templ" ON "public"."users" USING btree ("perm_templ");
+CREATE UNIQUE INDEX "idx_users_username" ON "public"."users" USING btree ("username");
 
 CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -524,6 +536,7 @@ CREATE TABLE user_groups (
     name VARCHAR(255) NOT NULL UNIQUE,
     description TEXT,
     perm_templ INTEGER NOT NULL REFERENCES perm_templ(id),
+    max_zones INTEGER DEFAULT NULL,
     created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -546,12 +559,14 @@ CREATE TRIGGER trigger_user_groups_updated_at
     FOR EACH ROW
     EXECUTE FUNCTION update_user_groups_updated_at();
 
+-- BEGIN generated seed: user_groups (composer sql:seed)
 INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
     (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
     (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
     (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
     (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
     (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+-- END generated seed: user_groups
 
 SELECT setval('user_groups_id_seq', (SELECT MAX(id) FROM user_groups));
 
@@ -603,5 +618,31 @@ CREATE TABLE app_settings (
     PRIMARY KEY (setting_key)
 );
 
--- Zone creators in API backend mode lock this row; the first zone written in that mode sets it to 'api'
-INSERT INTO "app_settings" ("setting_key", "setting_value", "value_type") VALUES ('backend.zone_ids', 'sql', 'string');
+CREATE SEQUENCE zone_change_requests_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."zone_change_requests" (
+    "id" integer DEFAULT nextval('zone_change_requests_id_seq') NOT NULL,
+    "zone_id" integer NOT NULL,
+    "zone_name" character varying(255) NOT NULL,
+    "kind" character varying(16) NOT NULL,
+    "status" character varying(16) NOT NULL,
+    "requester_id" integer,
+    "requester_name" character varying(64) NOT NULL,
+    "request_comment" text,
+    "base_serial" character varying(32),
+    "payload" text NOT NULL,
+    "reviewer_id" integer,
+    "reviewer_name" character varying(64),
+    "review_comment" text,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "reviewed_at" timestamp,
+    "applied_at" timestamp,
+    "error" text,
+    "snapshot" text,
+    CONSTRAINT "zone_change_requests_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX "idx_zone_change_requests_zone_id" ON "public"."zone_change_requests" USING btree ("zone_id");
+CREATE INDEX "idx_zone_change_requests_status" ON "public"."zone_change_requests" USING btree ("status");
+CREATE INDEX "idx_zone_change_requests_requester_id" ON "public"."zone_change_requests" USING btree ("requester_id");
+CREATE INDEX "idx_zone_change_requests_created_at" ON "public"."zone_change_requests" USING btree ("created_at");

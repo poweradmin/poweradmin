@@ -113,6 +113,14 @@ test.describe('404 Error Page', () => {
 });
 
 test.describe('User Agreement Page', () => {
+  test('should redirect to the dashboard when the agreement is disabled', async ({ adminPage: page }) => {
+    // user_agreement.enabled is false on every devcontainer instance
+    await page.goto('/user-agreement');
+
+    await expect(page).not.toHaveURL(/user-agreement/);
+    expect(new URL(page.url()).pathname).toBe('/');
+  });
+
   test.describe('Page Access', () => {
     test('should access user agreement page when logged in', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
@@ -224,85 +232,46 @@ test.describe('User Agreement Page', () => {
 
     test('should include CSRF token', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
+      test.skip(!page.url().includes('user-agreement'), 'user_agreement is disabled on this instance');
 
-      const csrfToken = page.locator('input[name="_token"]');
-      const hasToken = await csrfToken.count() > 0;
-
-      expect(hasToken || !page.url().includes('user-agreement')).toBeTruthy();
+      await expect(page.locator('input[name="_token"]')).toHaveCount(1);
     });
 
     test('should include agreement version', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
+      test.skip(!page.url().includes('user-agreement'), 'user_agreement is disabled on this instance');
 
-      // Template has: <input type="hidden" name="agreement_version" value="{{ agreement_version }}">
-      const versionInput = page.locator('input[name="agreement_version"]');
-      const bodyText = await page.locator('body').textContent();
-
-      const hasVersion = await versionInput.count() > 0;
-      const hasAgreement = bodyText.toLowerCase().includes('agreement');
-
-      expect(hasVersion || hasAgreement || !page.url().includes('user-agreement')).toBeTruthy();
+      await expect(page.locator('input[name="agreement_version"]')).toHaveCount(1);
     });
   });
 
   test.describe('Agreement Validation', () => {
     test('should require checkbox to be checked', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
+      test.skip(!page.url().includes('user-agreement'), 'user_agreement is disabled on this instance');
 
-      const checkbox = page.locator('input[name="accept_agreement"]');
-
-      if (await checkbox.count() > 0) {
-        // Check if required attribute exists
-        const isRequired = await checkbox.getAttribute('required');
-        expect(isRequired !== null).toBeTruthy();
-      }
+      await expect(page.locator('input[name="accept_agreement"]')).toHaveAttribute('required', '');
     });
 
     test('should show validation error when checkbox not checked', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
+      test.skip(!page.url().includes('user-agreement'), 'user_agreement is disabled on this instance');
 
-      const submitBtn = page.locator('button[type="submit"]');
+      await page.locator('form.needs-validation button[type="submit"]').click();
 
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
-
-        // Should show validation error or stay on page
-        const invalidFeedback = page.locator('.invalid-feedback');
-        const bodyText = await page.locator('body').textContent();
-
-        const hasError = await invalidFeedback.count() > 0;
-        const hasValidation = bodyText.toLowerCase().includes('must accept') ||
-                               bodyText.toLowerCase().includes('required');
-
-        expect(hasError || hasValidation || page.url().includes('user-agreement')).toBeTruthy();
-      }
+      await expect(page).toHaveURL(/user-agreement/);
+      await expect(page.locator('form.needs-validation')).toHaveClass(/was-validated/);
     });
   });
 
   test.describe('Decline Action', () => {
     test('decline should link to logout', async ({ adminPage: page }) => {
       await page.goto('/user-agreement');
+      test.skip(!page.url().includes('user-agreement'), 'user_agreement is disabled on this instance');
 
-      // Look for the decline button specifically (not the navbar logout)
-      const declineLink = page.locator('a[href*="logout"]:has-text("Decline"), a.btn[href*="logout"]');
-      const anyLogoutLink = page.locator('a[href*="logout"]');
-      const bodyText = await page.locator('body').textContent();
-
-      if (await declineLink.count() > 0) {
-        const href = await declineLink.first().getAttribute('href');
-        expect(href).toContain('logout');
-      } else if (await anyLogoutLink.count() > 0) {
-        // At least a logout link exists on the page
-        const href = await anyLogoutLink.first().getAttribute('href');
-        expect(href).toContain('logout');
-      } else {
-        // User agreement page may not be shown if agreement is not required
-        // or user has already accepted - check that we're on some valid page
-        const redirectedAway = !page.url().includes('user-agreement');
-        const hasAgreementContent = bodyText.toLowerCase().includes('agreement');
-
-        expect(redirectedAway || hasAgreementContent).toBeTruthy();
-      }
+      const declineLink = page.locator('form.needs-validation a.btn[href*="logout"]');
+      await expect(declineLink).toHaveCount(1);
+      await expect(declineLink).toHaveAttribute('href', /logout/);
     });
   });
 });

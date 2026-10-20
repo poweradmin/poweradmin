@@ -24,12 +24,14 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\UserProvisioningService;
+use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\ValueObject\LdapUserInfo;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\NullLogHandler;
-use ReflectionClass;
+use Poweradmin\Infrastructure\Repository\DbExternalIdentityRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Exercises the LDAP identity-sync, auto-provisioning and group-mapping paths
@@ -205,10 +207,19 @@ class LdapUserProvisioningIntegrationTest extends TestCase
 
     private function service(): UserProvisioningService
     {
-        return new UserProvisioningService($this->db, $this->configManager(), new Logger(new NullLogHandler(), 'error'));
+        $config = $this->configManager();
+
+        return new UserProvisioningService(
+            $config,
+            new NullLogger(),
+            new DbUserRepository($this->db, $config, false),
+            new DbExternalIdentityRepository($this->db),
+            new DbUserGroupRepository($this->db),
+            new DbUserGroupMemberRepository($this->db)
+        );
     }
 
-    private function configManager(): ConfigurationManager
+    private function configManager(): FakeConfiguration
     {
         $settings = [
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
@@ -224,14 +235,7 @@ class LdapUserProvisioningIntegrationTest extends TestCase
             ],
         ];
 
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $config = $reflection->newInstanceWithoutConstructor();
-        $settingsProp = $reflection->getProperty('settings');
-        $settingsProp->setValue($config, $settings);
-        $initProp = $reflection->getProperty('initialized');
-        $initProp->setValue($config, true);
-
-        return $config;
+        return new FakeConfiguration($settings);
     }
 
     private function userInfo(string $uid): LdapUserInfo

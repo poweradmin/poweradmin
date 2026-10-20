@@ -1,0 +1,95 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Service\Auth;
+
+use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Port\LoginThrottleInterface;
+use Poweradmin\Domain\Port\PasswordHasherInterface;
+use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
+
+/**
+ * Checks a DDNS client's password (with login-attempt lockout) and which zones that user may update.
+ */
+readonly class DynamicDnsAuthenticationService
+{
+    public function __construct(
+        private DynamicDnsRepositoryInterface $repository,
+        private PasswordHasherInterface $userAuthService,
+        private ?LoginThrottleInterface $loginAttemptService = null
+    ) {
+    }
+
+    /**
+     * Authenticate a DDNS update request.
+     *
+     * @param string $clientIp client IP for lockout tracking; pass '' to disable
+     *                         per-IP throttle for callers that don't have a stable
+     *                         peer address (e.g. CLI bootstrap).
+     */
+    public function authenticateUser(DynamicDnsRequest $request, string $clientIp = ''): ?User
+    {
+        if (!$request->hasUsername()) {
+            return null;
+        }
+
+        $username = $request->getUsername();
+
+        if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            return null;
+        }
+
+        $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
+        if (!$user) {
+            // Answering without a hash check would tell the caller which usernames hold the permission.
+            $this->verifyAgainstDummyHash($request->getPassword());
+            return null;
+        }
+
+        // Provisioned users (LDAP/OIDC/SAML) have no local password hash. Verifying against an
+        // empty hash would throw, surfacing a 500 and skipping the attempt recording below.
+        $hash = $user->getPassword();
+        if (password_get_info($hash)['algo'] === null) {
+            $this->verifyAgainstDummyHash($request->getPassword());
+        }
+        $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
+        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
+
+        return $passwordValid ? $user : null;
+    }
+
+    private function verifyAgainstDummyHash(#[\SensitiveParameter] string $password): void
+    {
+        $this->userAuthService->verifyPassword($password, $this->userAuthService->dummyVerificationHash());
+    }
+
+    public function getUserZones(User $user): array
+    {
+        return $this->repository->getUserZones($user);
+    }
+
+    public function userCanUpdateZone(User $user, int $zoneId): bool
+    {
+        return array_key_exists($zoneId, $this->getUserZones($user));
+    }
+}

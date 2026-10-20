@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 /**
- * Interface for SOA record management operations
+ * SOA record and serial handling.
  */
 interface SOARecordManagerInterface
 {

@@ -24,5 +24,5 @@ LOAD_TEST_RAMP_UP=10
 
 # Dynamic DNS test user (created by dynamic_dns_api_setup.sh)
 DYNAMIC_DNS_USER=ddns_user
-DYNAMIC_DNS_PASS=ddns_password
+DYNAMIC_DNS_PASS=Ddns_Passw0rd
 DYNAMIC_DNS_HOSTNAME=test.example.com

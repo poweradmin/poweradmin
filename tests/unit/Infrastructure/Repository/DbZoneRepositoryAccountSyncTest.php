@@ -22,116 +22,155 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
-use PDO;
-use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use TestHelpers\SqliteIntegrationTestCase;
 
 /**
- * Tests that zone ownership changes propagate to the PowerDNS account field (Issue #1358)
+ * Zone ownership changes propagate to the PowerDNS account field (Issue #1358).
+ * The account follows the oldest remaining direct owner, so a zone kept by a
+ * second owner does not lose its account when the first one is removed.
  */
 #[CoversClass(DbZoneRepository::class)]
-class DbZoneRepositoryAccountSyncTest extends TestCase
+class DbZoneRepositoryAccountSyncTest extends SqliteIntegrationTestCase
 {
-    private PDO&MockObject $db;
-    private ConfigurationManager&MockObject $config;
-    private DnsBackendProvider&MockObject $backendProvider;
+    private const ZONE = 42;
+    private const ALICE = 10;
+    private const BOB = 11;
+
+    private DnsBackendProviderInterface&MockObject $backendProvider;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->db = $this->createMock(PDO::class);
-        $this->config = $this->createMock(ConfigurationManager::class);
-        $this->backendProvider = $this->createMock(DnsBackendProvider::class);
+        $this->createZoneTables();
+        $this->createDomainsTable();
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::ZONE . ", 'sync.example', 'NATIVE')");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES
+            (" . self::ALICE . ", 'alice', 1), (" . self::BOB . ", 'bob', 1)");
+
+        $this->backendProvider = $this->createMock(DnsBackendProviderInterface::class);
+        $this->backendProvider->method('allocatesZoneIdsLocally')->willReturn(false);
     }
 
-    private function setupConfig(bool $syncEnabled): void
+    private function repository(bool $syncEnabled, bool $withProvider = true): DbZoneRepository
     {
-        $this->config->method('get')
-            ->willReturnCallback(function ($group, $key, $default = null) use ($syncEnabled) {
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null;
-                }
-                if ($group === 'dns' && $key === 'sync_zone_owner_to_account') {
-                    return $syncEnabled;
-                }
-                return $default;
-            });
+        return new DbZoneRepository(
+            $this->db,
+            $this->syncConfiguration($syncEnabled),
+            $withProvider ? $this->backendProvider : null
+        );
     }
 
-    private function setupStatements(string $ownerUsername): void
+    private function syncConfiguration(bool $syncEnabled): ConfigurationInterface
     {
-        $this->db->method('prepare')
-            ->willReturnCallback(function ($query) use ($ownerUsername) {
-                $stmt = $this->createMock(PDOStatement::class);
-                $stmt->method('execute')->willReturn(true);
-                $stmt->method('bindValue')->willReturn(true);
-                $stmt->method('rowCount')->willReturn(1);
-                if (str_contains($query, 'zone_templ_id FROM zones')) {
-                    $stmt->method('fetch')->willReturn(['zone_templ_id' => 0]);
-                }
-                if (str_contains($query, 'u.username')) {
-                    $stmt->method('fetchColumn')->willReturn($ownerUsername);
-                }
-                return $stmt;
-            });
+        return $this->sqliteConfiguration(['dns' => ['sync_zone_owner_to_account' => $syncEnabled]]);
+    }
+
+    /** @return list<array{domain_id: int, owner: int, zone_templ_id: int}> */
+    private function zoneRows(): array
+    {
+        $rows = $this->db->query("SELECT domain_id, owner, zone_templ_id FROM zones ORDER BY id")->fetchAll();
+
+        return array_map(
+            fn(array $row): array => [
+                'domain_id' => (int)$row['domain_id'],
+                'owner' => (int)$row['owner'],
+                'zone_templ_id' => (int)$row['zone_templ_id'],
+            ],
+            $rows
+        );
     }
 
     #[Test]
-    public function addOwnerToZoneSyncsAccountWhenEnabled(): void
+    public function addingAnOwnerWritesTheRowAndPushesTheAccount(): void
     {
-        $this->setupConfig(true);
-        $this->setupStatements('alice');
         $this->backendProvider->expects($this->once())
             ->method('updateZoneAccount')
-            ->with(42, 'alice')
+            ->with(self::ZONE, 'alice')
             ->willReturn(true);
 
-        $repository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-        $this->assertTrue($repository->addOwnerToZone(42, 5));
+        $this->assertTrue($this->repository(true)->addOwnerToZone(self::ZONE, self::ALICE));
+        $this->assertSame(
+            [['domain_id' => self::ZONE, 'owner' => self::ALICE, 'zone_templ_id' => 0]],
+            $this->zoneRows()
+        );
     }
 
     #[Test]
-    public function removeOwnerFromZoneSyncsAccountWhenEnabled(): void
+    public function aZoneThatNoLongerExistsGetsNoOwnerRow(): void
     {
-        $this->setupConfig(true);
-        $this->setupStatements('bob');
-        $this->backendProvider->expects($this->once())
-            ->method('updateZoneAccount')
-            ->with(42, 'bob')
-            ->willReturn(true);
-
-        $repository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-        $this->assertTrue($repository->removeOwnerFromZone(42, 5));
-    }
-
-    #[Test]
-    public function addOwnerToZoneLeavesAccountAloneWhenDisabled(): void
-    {
-        $this->setupConfig(false);
-        $this->setupStatements('alice');
         $this->backendProvider->expects($this->never())->method('updateZoneAccount');
 
-        $repository = new DbZoneRepository($this->db, $this->config, $this->backendProvider);
-        $this->assertTrue($repository->addOwnerToZone(42, 5));
+        $this->assertFalse($this->repository(true)->addOwnerToZone(self::ZONE + 1, self::ALICE));
+        $this->assertSame([], $this->zoneRows());
     }
 
     #[Test]
-    public function addOwnerToZoneToleratesMissingBackendProvider(): void
+    public function anAddedOwnerInheritsTheTemplateOfTheExistingRow(): void
     {
-        $this->setupConfig(true);
-        $this->setupStatements('alice');
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . self::ZONE . ", " . self::ALICE . ", 3)");
+        $this->backendProvider->method('updateZoneAccount')->willReturn(true);
 
-        $repository = new DbZoneRepository($this->db, $this->config);
-        $this->assertTrue($repository->addOwnerToZone(42, 5));
+        $this->assertTrue($this->repository(true)->addOwnerToZone(self::ZONE, self::BOB));
+        $this->assertSame(
+            [
+                ['domain_id' => self::ZONE, 'owner' => self::ALICE, 'zone_templ_id' => 3],
+                ['domain_id' => self::ZONE, 'owner' => self::BOB, 'zone_templ_id' => 3],
+            ],
+            $this->zoneRows()
+        );
+    }
+
+    #[Test]
+    public function removingAnOwnerDeletesTheRowAndPushesTheRemainingOwner(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES
+            (" . self::ZONE . ", " . self::ALICE . "), (" . self::ZONE . ", " . self::BOB . ")");
+
+        $this->backendProvider->expects($this->once())
+            ->method('updateZoneAccount')
+            ->with(self::ZONE, 'bob')
+            ->willReturn(true);
+
+        $this->assertTrue($this->repository(true)->removeOwnerFromZone(self::ZONE, self::ALICE));
+        $this->assertSame(
+            [['domain_id' => self::ZONE, 'owner' => self::BOB, 'zone_templ_id' => 0]],
+            $this->zoneRows()
+        );
+    }
+
+    #[Test]
+    public function removingAnOwnerThatDoesNotOwnTheZoneChangesNothing(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::ZONE . ", " . self::ALICE . ")");
+        $this->backendProvider->expects($this->never())->method('updateZoneAccount');
+
+        $this->assertFalse($this->repository(true)->removeOwnerFromZone(self::ZONE, self::BOB));
+        $this->assertSame(
+            [['domain_id' => self::ZONE, 'owner' => self::ALICE, 'zone_templ_id' => 0]],
+            $this->zoneRows()
+        );
+    }
+
+    #[Test]
+    public function theAccountIsLeftAloneWhenTheSettingIsOff(): void
+    {
+        $this->backendProvider->expects($this->never())->method('updateZoneAccount');
+
+        $this->assertTrue($this->repository(false)->addOwnerToZone(self::ZONE, self::ALICE));
+        $this->assertCount(1, $this->zoneRows());
+    }
+
+    #[Test]
+    public function aMissingBackendProviderDoesNotBreakTheOwnerWrite(): void
+    {
+        $this->assertTrue($this->repository(true, false)->addOwnerToZone(self::ZONE, self::ALICE));
+        $this->assertCount(1, $this->zoneRows());
     }
 }

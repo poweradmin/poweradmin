@@ -37,10 +37,13 @@ class ZoneSaveOutcomeTest extends TestCase
         $this->assertTrue(ZoneSaveOutcome::NO_CHANGES->wasWritten());
         $this->assertFalse(ZoneSaveOutcome::WRITE_FAILED->wasWritten());
         $this->assertFalse(ZoneSaveOutcome::SERIAL_CONFLICT->wasWritten());
+        $this->assertFalse(ZoneSaveOutcome::FORBIDDEN->wasWritten());
+        $this->assertFalse(ZoneSaveOutcome::READ_ONLY->wasWritten());
+        $this->assertFalse(ZoneSaveOutcome::NOTHING_SAVED->wasWritten());
     }
 
     public function testEveryCaseIsClassified(): void
     {
-        $this->assertCount(4, ZoneSaveOutcome::cases());
+        $this->assertCount(7, ZoneSaveOutcome::cases());
     }
 }

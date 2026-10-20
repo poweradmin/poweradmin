@@ -1,0 +1,87 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+namespace Poweradmin\Application\Controller\Dnssec;
+
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Utility\DnsHelper;
+
+/**
+ * Renders the DS and DNSKEY records page for a zone.
+ */
+class DnssecDsDnskeyController extends BaseController
+{
+
+    public function run(): void
+    {
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
+
+        $zone_id = $this->requireNumericParam('id');
+
+        // Early permission check - validate DNSSEC access before any operations
+        $this->requireZoneView($zone_id);
+
+        // Validate zone existence
+        $domainRepository = $this->services()->domainRepository();
+        if (!$domainRepository->zoneIdExists($zone_id)) {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        $can_manage_dnssec = $this->services()->permissionService()->canManageDnssecForZone($this->getCurrentUserId(), $zone_id);
+
+        $this->showKeys($zone_id, $pdnssec_use, $can_manage_dnssec);
+    }
+
+    public function showKeys(int $zone_id, $pdnssec_use, bool $can_manage_dnssec): void
+    {
+        $domainRepository = $this->services()->domainRepository();
+
+        $domain_name = $domainRepository->getDomainNameById($zone_id);
+        $domain_type = $domainRepository->getDomainType($zone_id);
+        $record_count = $this->services()->recordRepository()->countZoneRecords($zone_id);
+        $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
+
+        $dnssecProvider = $this->services()->dnssecProvider();
+        $dnskey_records = $dnssecProvider->getDnsKeyRecords($domain_name);
+        $ds_records = $dnssecProvider->getDsRecords($domain_name);
+
+        $idn_zone_name = DnsIdnService::toIdnAlias($domain_name);
+
+        $this->render('dnssec_ds_dnskey.html', [
+            'domain_name' => $domain_name,
+            'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($domain_name),
+            'domain_type' => $domain_type,
+            'dnskey_records' => $dnskey_records,
+            'ds_records' => $ds_records,
+            'pdnssec_use' => $pdnssec_use,
+            'record_count' => $record_count,
+            'zone_id' => $zone_id,
+            'zone_template_id' => $zone_template_id,
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($domain_name),
+            'can_manage_dnssec' => $can_manage_dnssec,
+        ]);
+    }
+}

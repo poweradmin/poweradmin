@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,45 +22,22 @@
 
 namespace Poweradmin\Domain\Repository;
 
+/**
+ * Persistence for the user agreement versions each user has accepted.
+ */
 interface UserAgreementRepositoryInterface
 {
-    /**
-     * Check if user has accepted the specified agreement version
-     *
-     * @param int $userId
-     * @param string $version
-     * @return bool
-     */
     public function hasUserAcceptedAgreement(int $userId, string $version): bool;
 
     /**
-     * Record user agreement acceptance
-     *
-     * @param int $userId
-     * @param string $version
-     * @param string $ipAddress
-     * @param string $userAgent
-     * @return bool
+     * Stores the acceptance, or refreshes it when the user already accepted this version.
      */
-    public function recordAcceptance(
-        int $userId,
-        string $version,
-        string $ipAddress,
-        string $userAgent
-    ): bool;
+    public function recordAcceptance(int $userId, string $version, string $ipAddress, string $userAgent): bool;
 
     /**
-     * Get all agreements for a specific user
+     * The user's acceptances, newest first.
      *
-     * @param int $userId
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public function getUserAgreements(int $userId): array;
-
-    /**
-     * Get all agreement records for administrative purposes
-     *
-     * @return array
-     */
-    public function getAllAgreements(): array;
 }

@@ -264,3 +264,10 @@ ORDER BY d."name";
 SELECT "name", "secret_key", "disabled", "expires_at"
 FROM "api_keys"
 ORDER BY "name";
+
+-- Password reset token for the e2e suite; plaintext 'e2e-password-reset-token'.
+INSERT INTO password_reset_tokens (email, token, expires_at, ip_address, used)
+SELECT 'admin@example.com', 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c', '2037-12-31 23:59:59', '127.0.0.1', 0
+WHERE NOT EXISTS (
+    SELECT 1 FROM password_reset_tokens WHERE token = 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c'
+);

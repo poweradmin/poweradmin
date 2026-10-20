@@ -22,13 +22,15 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Model\CryptoKey;
+use Poweradmin\Domain\Service\Zone\DnssecKeyOutcome;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
 
 /**
- * Null Object implementation of DnssecProvider
+ * Null Object implementation of DnssecProviderInterface
  * Used when PowerDNS API is not configured or DNSSEC is disabled
  */
-class NullDnssecProvider implements DnssecProvider
+class NullDnssecProvider implements DnssecProviderInterface
 {
     public function rectifyZone(string $zoneName): bool
     {
@@ -46,6 +48,11 @@ class NullDnssecProvider implements DnssecProvider
     }
 
     public function isZoneSecured(string $zoneName, $config): bool
+    {
+        return false;
+    }
+
+    public function fetchZoneSecured(string $zoneName): ?bool
     {
         return false;
     }
@@ -80,29 +87,19 @@ class NullDnssecProvider implements DnssecProvider
         return [];
     }
 
-    public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
-    {
-        return false;
-    }
-
     public function removeZoneKey(string $zoneName, int $keyId): bool
     {
         return false;
     }
 
-    public function keyExists(string $zoneName, int $keyId): bool
+    public function fetchZoneKeys(string $zoneName): ?array
     {
-        return false;
+        return null;
     }
 
-    public function isKeyListAvailable(string $zoneName): bool
+    public function createZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm, bool $active): ?CryptoKey
     {
-        return false;
-    }
-
-    public function getZoneKey(string $zoneName, int $keyId): array
-    {
-        return [];
+        return null;
     }
 
     public function isDnssecEnabled(): bool
@@ -115,12 +112,16 @@ class NullDnssecProvider implements DnssecProvider
         return null;
     }
 
-    public function importZoneKey(string $zoneName, string $keyType, string $algorithm, #[\SensitiveParameter] string $privateKeyPem): bool
-    {
-        return false;
+    public function importZoneKeyFromPrivateKey(
+        string $zoneName,
+        string $keyType,
+        #[\SensitiveParameter] string $privateKey,
+        bool $active
+    ): CryptoKey|DnssecKeyOutcome {
+        return DnssecKeyOutcome::FAILED;
     }
 
-    public function exportZoneKeyPem(string $zoneName, int $keyId): ?string
+    public function exportZonePrivateKey(string $zoneName, int $keyId): ?string
     {
         return null;
     }

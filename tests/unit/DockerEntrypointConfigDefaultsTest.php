@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -103,8 +104,8 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
      * check the container starts and only fails at login time.
      *
      * @param array<int, string> $expectedVariables
-     * @dataProvider ssoValidatorProvider
      */
+    #[DataProvider('ssoValidatorProvider')]
     public function testEntrypointRequiresAUrlSourceForSso(string $function, array $expectedVariables): void
     {
         $body = $this->validatorBody($function);
@@ -141,15 +142,78 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
     {
         $body = $this->validatorBody('create_admin_user');
 
-        $this->assertStringContainsString('port_opt=("-P${DB_PORT}")', $body);
-        $this->assertStringContainsString('port_opt=(-p "${DB_PORT}")', $body);
+        $this->assertSame(2, substr_count($body, 'mysql_client -'), 'Expected the existence check and the insert through mysql_client');
+        $this->assertSame(2, substr_count($body, 'psql_client -'), 'Expected the existence check and the insert through psql_client');
+        $this->assertSame(0, preg_match_all('/(?:^|[\s(!])(?:PGPASSWORD=\S+\s+)?(?:mysql|psql)\s/m', $body), 'Database client called directly, bypassing the port');
 
-        $calls = preg_match_all('/\b(?:mysql --defaults-file|psql -h)\b.*?"\$\{DB_NAME\}"/s', $body, $matches);
-        $this->assertSame(4, $calls, 'Expected the existence check and the insert for both MySQL and PostgreSQL');
+        $this->assertStringContainsString('[ -n "${DB_PORT:-}" ] && printf \'%s\n\' "-P${DB_PORT}"', $this->validatorBody('mysql_connection_args'));
+        $this->assertStringContainsString('mapfile -t args < <(mysql_connection_args)', $this->validatorBody('mysql_client'));
 
-        foreach ($matches[0] as $call) {
-            $this->assertStringContainsString('"${port_opt[@]}"', $call, 'Database client call without the port: ' . $call);
-        }
+        $psql = $this->validatorBody('psql_client');
+        $this->assertStringContainsString('port_opt=(-p "${DB_PORT}")', $psql);
+        $this->assertStringContainsString('psql -h "${DB_HOST}" "${port_opt[@]}"', $psql);
+    }
+
+    /**
+     * The change approval switches ship off, and the entrypoint must both read
+     * the PA_* variable with the same default and emit it into the matching
+     * settings group.
+     */
+    #[DataProvider('approvalVariableProvider')]
+    public function testEntrypointApprovalDefaultsMatchShippedDefaults(string $variable, string $group, string $key, string $shellVariable): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $this->assertNotFalse($entrypoint, 'docker-entrypoint.sh could not be read');
+
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+        $this->assertArrayHasKey($key, $defaults[$group], sprintf('%s.%s missing from settings.defaults.php', $group, $key));
+        $this->assertFalse($defaults[$group][$key], sprintf('%s.%s must ship disabled', $group, $key));
+
+        $this->assertStringContainsString(
+            sprintf('%s=$(to_php_bool "${%s:-false}")', $shellVariable, $variable),
+            $entrypoint,
+            sprintf('%s must default to false in docker-entrypoint.sh', $variable)
+        );
+
+        $this->assertStringContainsString(
+            sprintf("'%s' => \${%s},", $key, $shellVariable),
+            $this->settingsGroupBody($entrypoint, $group),
+            sprintf('%s must be emitted as %s.%s in the generated settings.php', $variable, $group, $key)
+        );
+    }
+
+    public static function approvalVariableProvider(): array
+    {
+        return [
+            'approval enabled' => ['PA_APPROVAL_ENABLED', 'approval', 'enabled', 'approval_enabled'],
+            'approval require review for all' => ['PA_APPROVAL_REQUIRE_REVIEW_FOR_ALL', 'approval', 'require_review_for_all', 'approval_require_review_for_all'],
+            'change request notifications' => ['PA_NOTIFICATION_CHANGE_REQUEST', 'notifications', 'change_request_enabled', 'notification_change_request'],
+            'change request SOA contact mail' => ['PA_NOTIFICATION_CHANGE_REQUEST_SOA_CONTACT', 'notifications', 'change_request_soa_contact', 'notification_change_request_soa_contact'],
+        ];
+    }
+
+    public function testSelfApprovalVariableDefaultsToTrue(): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+
+        $this->assertTrue($defaults['approval']['allow_self_approval']);
+        $this->assertStringContainsString('approval_allow_self_approval=$(to_php_bool "${PA_APPROVAL_ALLOW_SELF_APPROVAL:-true}")', $entrypoint);
+        $this->assertStringContainsString("'allow_self_approval' => \${approval_allow_self_approval},", $this->settingsGroupBody($entrypoint, 'approval'));
+    }
+
+    private function settingsGroupBody(string $entrypoint, string $group): string
+    {
+        $start = strpos($entrypoint, sprintf("    '%s' => [\n", $group));
+        $this->assertNotFalse($start, sprintf("'%s' group not found in the generated settings.php", $group));
+
+        $end = strpos($entrypoint, "\n    ],\n", $start);
+        $this->assertNotFalse($end, sprintf("'%s' group has no closing bracket", $group));
+
+        return substr($entrypoint, $start, $end - $start);
     }
 
     private function validatorBody(string $function): string

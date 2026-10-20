@@ -6,13 +6,15 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { addTemplateRecord, createTemplate, deleteTemplate } from '../../helpers/templates.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Zone Template Records', () => {
-  const templateName = `templ-rec-${Date.now()}`;
+  const templateName = uniqueName('trec');
   let templateId = null;
 
   // Helper to create a template and get its ID
@@ -278,30 +280,7 @@ test.describe('Zone Template Records', () => {
     test('admin should manage template records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      if (!templateId) {
-        // Try to find any existing template to test with
-        await page.goto('/zones/templates');
-        await page.waitForLoadState('networkidle');
-
-        const templateTable = page.locator('table');
-        if (await templateTable.count() > 0) {
-          const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-          if (await editLink.count() > 0) {
-            const href = await editLink.getAttribute('href');
-            const match = href?.match(/\/zones\/templates\/(\d+)\/edit/);
-            if (match) {
-              templateId = match[1];
-            }
-          }
-        }
-
-        if (!templateId) {
-          // No templates available, just verify page loaded
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-          return;
-        }
-      }
+      expect(templateId, 'template created in beforeAll').toBeTruthy();
 
       await page.goto(`/zones/templates/${templateId}/records/add`);
       await page.waitForLoadState('networkidle');
@@ -314,41 +293,30 @@ test.describe('Zone Template Records', () => {
 
     test('manager should access template records for own templates', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/zones/templates');
-      await page.waitForLoadState('networkidle');
 
-      const templateTable = page.locator('table');
-      if (await templateTable.count() === 0) {
-        // No templates, just verify page loaded
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/template|zone/i);
-        return;
-      }
+      const ownName = uniqueName('tmgr');
+      const ownId = await createTemplate(page, ownName);
+      try {
+        expect(ownId).toBeTruthy();
 
-      const editLink = templateTable.locator('tbody a[href*="templates"][href*="edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+        await addTemplateRecord(page, ownId, { type: 'A', name: 'www', content: '192.0.2.30' });
+
+        await page.goto(`/zones/templates/${ownId}/edit`);
+        await expect(page.locator('table tbody tr').filter({ hasText: 'www' }).first()).toContainText('192.0.2.30');
+      } finally {
+        await deleteTemplate(page, ownId);
       }
     });
   });
 
-  // Cleanup
   test.afterAll(async ({ browser }) => {
+    if (!templateId) return;
     const page = await browser.newPage();
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/templates');
-    const row = page.locator(`tr:has-text("${templateName}")`);
-    if (await row.count() > 0) {
-      const deleteLink = row.locator('a[href*="/delete"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
-      }
+    try {
+      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await deleteTemplate(page, templateId);
+    } finally {
+      await page.close();
     }
-    await page.close();
   });
 });

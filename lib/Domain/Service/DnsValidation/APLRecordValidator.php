@@ -22,8 +22,9 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Validator for APL (Address Prefix List) DNS records
@@ -49,27 +50,23 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - "1:192.0.2.0/24" (IPv4 subnet)
  * - "2:2001:db8::/32" (IPv6 subnet)
  * - "!1:192.0.2.0/24 2:2001:db8::/32" (Negated IPv4 subnet plus IPv6 subnet)
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class APLRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param HostnameValidator $hostnameValidator
+     * @param ConfigurationInterface $config Read for dns.domain only
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator, ConfigurationInterface $config)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = new IPAddressValidator();
         $this->config = $config;
@@ -83,6 +80,7 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for APL records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -120,7 +118,7 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         // 1. Validate hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return $hostnameResult;
+            return $hostnameResult->withField(RecordField::NAME);
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];

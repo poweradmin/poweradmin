@@ -4,7 +4,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 
 /**
  * Tests for the SRVRecordValidator
@@ -14,15 +15,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class SRVRecordValidatorTest extends TestCase
 {
     private SRVRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new SRVRecordValidator($this->configMock);
+        $this->validator = new SRVRecordValidator($this->hostnameValidator);
     }
 
     /**
@@ -178,7 +177,6 @@ class SRVRecordValidatorTest extends TestCase
         // we'll test the private validateTarget method directly using reflection
 
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateTarget');
-        $method->setAccessible(true);
 
         $dotResult = $method->invoke($this->validator, '.');
 
@@ -441,7 +439,6 @@ class SRVRecordValidatorTest extends TestCase
     {
         // Using reflection to access private method
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvName');
-        $method->setAccessible(true);
 
         // Test valid name
         $validResult = $method->invoke($this->validator, '_sip._tcp.example.com');
@@ -466,7 +463,6 @@ class SRVRecordValidatorTest extends TestCase
     {
         // Using reflection to access private method
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvContent');
-        $method->setAccessible(true);
 
         // Test valid content
         $validResult = $method->invoke($this->validator, '20 5060 sip.example.com', '_sip._tcp.example.com');

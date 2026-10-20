@@ -74,10 +74,11 @@ locale/**/*.po.backup.*
 /.playwright-mcp/
 
 # PHP tools
-/.php-cs-fixer.cache
 /.phpstan-cache/
 .phan/phan.phar
-.phpdoc/phpDocumentor.phar
+.phan/phan.phar.tmp
+.doctum/*
+!.doctum/theme/
 
 # Node.js version manager
 /.nvmrc

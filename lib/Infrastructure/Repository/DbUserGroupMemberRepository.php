@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,10 @@ use PDO;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 
-class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
+/**
+ * SQL persistence for group membership rows in the user_group_members table.
+ */
+final class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
 {
     private PDO $db;
 

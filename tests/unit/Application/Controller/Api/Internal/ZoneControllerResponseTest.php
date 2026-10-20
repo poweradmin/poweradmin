@@ -16,6 +16,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\Internal;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\Internal\ZoneController;
+use Poweradmin\Domain\Model\Permission;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -37,11 +38,9 @@ class ZoneControllerResponseTest extends TestCase
         // collaborators need to be wired up.
         $request = Request::create('/api/internal/zone?action=get&id=0');
         $property = new ReflectionProperty($controller, 'request');
-        $property->setAccessible(true);
         $property->setValue($controller, $request);
 
         $method = new ReflectionMethod($controller, 'getZone');
-        $method->setAccessible(true);
         $response = $method->invoke($controller);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -70,11 +69,9 @@ class ZoneControllerResponseTest extends TestCase
     private function invokeWith(ZoneController $controller, string $method, string $uri): JsonResponse
     {
         $property = new ReflectionProperty($controller, 'request');
-        $property->setAccessible(true);
         $property->setValue($controller, Request::create($uri));
 
         $reflected = new ReflectionMethod($controller, $method);
-        $reflected->setAccessible(true);
 
         return $reflected->invoke($controller);
     }
@@ -108,7 +105,7 @@ class ZoneControllerResponseTest extends TestCase
         $this->expectException(\Error::class);
 
         $this->invokeWith(
-            $this->controllerHolding(['zone_content_view_own']),
+            $this->controllerHolding([Permission::PERM_ZONE_CONTENT_VIEW_OWN]),
             'getZone',
             '/api/internal/zone?action=get&id=5'
         );

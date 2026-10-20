@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,20 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Internal API controller for session-authenticated endpoints
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Application\Service\CsrfTokenService;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Application\Service\Auth\CsrfTokenService;
 
+/**
+ * Base for session-authenticated internal API endpoints: requires a login and the X-CSRF-Token header on writes.
+ */
 abstract class InternalApiController extends AbstractApiController
 {
     /**
@@ -50,6 +43,7 @@ abstract class InternalApiController extends AbstractApiController
         // Additional validation for internal API
         $this->validateAuthentication();
         $this->validateCsrfHeader();
+        $this->refuseArrayQueryParameters();
     }
 
     /**
@@ -68,10 +62,20 @@ abstract class InternalApiController extends AbstractApiController
         }
 
         $token = (string) $this->request->headers->get('X-CSRF-Token', '');
-        if (!(new CsrfTokenService())->validateToken($token)) {
+        if (!(new CsrfTokenService($this->session()))->validateToken($token)) {
             $response = $this->returnApiError('Invalid CSRF token', 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
+        }
+    }
+
+    /**
+     * Answer 400 when a query parameter arrives as an array; see arrayQueryParameter().
+     */
+    protected function refuseArrayQueryParameters(): void
+    {
+        $key = $this->arrayQueryParameter();
+        if ($key !== null) {
+            $this->sendAndHalt($this->returnErrorResponse(sprintf("Query parameter '%s' must be a single value", $key), 400));
         }
     }
 
@@ -84,8 +88,7 @@ abstract class InternalApiController extends AbstractApiController
         // userid is not a positive int is not authenticated anywhere else either
         if (!$this->getUserContextService()->isAuthenticated()) {
             $response = $this->returnErrorResponse('Unauthorized access', 401);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
     }
 
@@ -98,46 +101,7 @@ abstract class InternalApiController extends AbstractApiController
     {
         if (!$this->hasPermission($permission)) {
             $response = $this->returnErrorResponse('Forbidden: insufficient permissions', 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt($response);
         }
-    }
-
-    /**
-     * Return API response with standard format for internal API
-     *
-     * @param mixed $data The data to return
-     * @param bool $success Whether the request was successful
-     * @param string|null $message Optional message
-     * @param int $status HTTP status code
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $headers = []): JsonResponse
-    {
-        $response = [
-            'success' => $success,
-            'data' => $data
-        ];
-
-        if ($message !== null) {
-            $response['message'] = $message;
-        }
-
-        return $this->returnJsonResponse($response, $status, $headers);
-    }
-
-    /**
-     * Return API error response for internal API
-     *
-     * @param string $message Error message
-     * @param int $status HTTP status code
-     * @param mixed $data Additional error data
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
-    {
-        return $this->returnApiResponse($data, false, $message, $status, $headers);
     }
 }

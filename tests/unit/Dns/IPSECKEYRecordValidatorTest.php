@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPSECKEYRecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Tests for the IPSECKEYRecordValidator using ValidationResult
@@ -34,15 +34,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class IPSECKEYRecordValidatorTest extends TestCase
 {
     private IPSECKEYRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->configMock->method('get')
-            ->willReturn('example.com');
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy(true, true));
 
-        $this->validator = new IPSECKEYRecordValidator($this->configMock);
+        $this->validator = new IPSECKEYRecordValidator($this->hostnameValidator);
     }
 
     public function testValidateWithValidDataNoGateway()
@@ -116,7 +114,6 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         // Inject the mock into the validator instance
         $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
 
         $content = '10 3 2 gateway.example.com AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
@@ -158,7 +155,6 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         // Inject the mock into the validator instance
         $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
 
         $content = '10 3 2 invalid-gateway!.com AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
@@ -252,7 +248,6 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         // Inject the mock into the validator instance
         $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
 
         $content = '10 1 2 192.0.2.1 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
@@ -305,7 +300,6 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         // Inject the mock into the validator instance
         $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
 
         // In IPSECKEY records, the validator requires 5 fields minimum according to validateIPSECKEYContent

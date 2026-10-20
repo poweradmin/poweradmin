@@ -8,6 +8,10 @@
 {% include 'message_alert.html' with {message: message} only %}
 {% endif %}
 
+{% if zone_limit_note %}
+<div class="alert alert-info py-2 small" data-testid="zone-limit-note">{{ zone_limit_note }}</div>
+{% endif %}
+
 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/bulk-registration" novalidate>
     {{ macros.csrf_field() }}
 
@@ -75,12 +79,10 @@
                             {% if group_owner_allowed and all_groups is not empty %}
                             <option value="" {% if owner_value == '' %}selected{% endif %}>{% trans %}No user owner{% endtrans %}</option>
                             {% endif %}
-                            {% for user in users %}
-                                {% if perm_view_others or user['id'] == userid %}
+                            {% for user in selectable_owners %}
                                 <option value="{{ user['id'] }}" {% if user['id'] == owner_value %}selected{% endif %}>
                                     {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
                                 </option>
-                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>

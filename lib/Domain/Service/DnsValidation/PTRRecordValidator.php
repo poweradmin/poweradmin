@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Validator for PTR (Pointer) DNS records
@@ -91,11 +91,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - No additional section processing is required for PTR records
  * - RFC 2317 zones require proper delegation from parent /24 zone
  * - PowerDNS natively supports RFC 2317 zone names with forward slashes
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class PTRRecordValidator implements DnsRecordValidatorInterface
 {
@@ -105,11 +100,11 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param HostnameValidator $hostnameValidator
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -121,6 +116,7 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for PTR records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -139,7 +135,7 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
         // Validate name as hostname
         $nameResult = $this->hostnameValidator->validate($name, true);
         if (!$nameResult->isValid()) {
-            return $nameResult;
+            return $nameResult->withField(RecordField::NAME);
         }
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];

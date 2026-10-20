@@ -22,13 +22,20 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
+use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\PdnsCapabilities;
-use Poweradmin\Domain\Service\RecordTypeService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Model\PdnsCapabilities;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
+use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
 
 /**
  * Covers BaseController::getRecordTypeCapabilities(), which decides whether
@@ -38,22 +45,17 @@ use ReflectionClass;
  */
 class BaseControllerRecordTypeCapabilitiesTest extends TestCase
 {
-    private array $configBackup = [];
-    private bool $configInitializedBackup = false;
+    private ArraySession $session;
 
     protected function setUp(): void
     {
         parent::setUp();
-        [$settings, $initialized] = $this->readConfigState();
-        $this->configBackup = $settings;
-        $this->configInitializedBackup = $initialized;
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
     }
 
     protected function tearDown(): void
     {
-        $this->writeConfigState($this->configBackup, $this->configInitializedBackup);
-        unset($_SESSION['pdns_server_info'], $_SESSION['pdns_version_last_attempt']);
+        $this->session = new ArraySession();
         parent::tearDown();
     }
 
@@ -95,7 +97,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
     {
         $caps = $this->resolveCapabilities(['dns' => ['backend' => 'sql']]);
 
-        $recordConfig = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationInterface::class);
+        $recordConfig = $this->createMock(\Poweradmin\Domain\Config\ConfigurationInterface::class);
         $recordConfig->method('get')->willReturn(null);
         $types = (new RecordTypeService($recordConfig))->getAllTypes($caps);
 
@@ -110,64 +112,46 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
         $controller = (new ReflectionClass(RecordTypeCapabilitiesTestController::class))
             ->newInstanceWithoutConstructor();
 
+        $config = $this->buildConfig($overrides);
         $configProperty = (new ReflectionClass(BaseController::class))->getProperty('config');
-        $configProperty->setAccessible(true);
-        $configProperty->setValue($controller, $this->buildConfig($overrides));
+        $configProperty->setValue($controller, $config);
+
+        // The backend question goes through the service factory's provider
+        $db = $this->createMock(PDO::class);
+        $provider = $config->get('dns', 'backend') === 'api'
+            ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $db, $config, new ApiStatusService(new ArraySession()), new NullLogger())
+            : new SqlDnsBackendProvider($db, $config, new NullLogger());
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('dnsBackendProvider')->willReturn($provider);
+        $factoryProperty = (new ReflectionClass(BaseController::class))->getProperty('serviceFactory');
+        $factoryProperty->setValue($controller, $factory);
 
         // An expired or missing cache now triggers a refresh, which logs failures.
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
-        $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($controller, new NullLogger());
 
+        $sessionProperty = (new ReflectionClass(BaseController::class))->getProperty('session');
+        $sessionProperty->setValue($controller, $this->session);
+
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
-        $method->setAccessible(true);
 
         return $method->invoke($controller);
     }
 
     private function cacheVersion(string $version): void
     {
-        $_SESSION['pdns_server_info'] = [
+        $this->session->set('pdns_server_info', [
             'fetched_at' => time(),
             'info' => ['version' => $version, 'daemon_type' => 'authoritative', 'id' => 'localhost'],
-        ];
+        ]);
     }
 
-    private function buildConfig(array $overrides): ConfigurationManager
+    private function buildConfig(array $overrides): FakeConfiguration
     {
         $settings = ['database' => ['type' => 'mysql']];
         foreach ($overrides as $group => $values) {
             $settings[$group] = array_merge($settings[$group] ?? [], $values);
         }
-        $this->writeConfigState($settings, true);
-        return ConfigurationManager::getInstance();
-    }
-
-    /**
-     * @return array{0: array, 1: bool}
-     */
-    private function readConfigState(): array
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        return [$settingsProperty->getValue($config), $initializedProperty->getValue($config)];
-    }
-
-    private function writeConfigState(array $settings, bool $initialized): void
-    {
-        $reflection = new ReflectionClass(ConfigurationManager::class);
-        $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
-        $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
-
-        $config = ConfigurationManager::getInstance();
-        $settingsProperty->setValue($config, $settings);
-        $initializedProperty->setValue($config, $initialized);
+        return new FakeConfiguration($settings);
     }
 }

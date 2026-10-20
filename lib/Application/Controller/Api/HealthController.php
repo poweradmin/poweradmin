@@ -22,15 +22,17 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use Poweradmin\Application\Boot\BootContext;
+use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Http\Request;
-use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Domain\Service\DatabaseCredentialMapper;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Database\BackendModeMarker;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Infrastructure\Session\ArraySession;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Throwable;
@@ -40,8 +42,8 @@ use Throwable;
  * own dependencies. Disabled by default.
  *
  * Deliberately does not extend BaseController: that constructor connects to the
- * database unconditionally (AppInitializer), so a dead database would escape as
- * a generic 500 instead of being reported here as a failed check.
+ * database unconditionally (Kernel::controllerEnvironment()), so a dead database
+ * would escape as a generic 500 instead of being reported here as a failed check.
  *
  * The body carries no version, host, driver or error text. Anyone can call this,
  * so a check either passed or it did not.
@@ -55,38 +57,36 @@ class HealthController
 
     private const NO_STORE = ['Cache-Control' => 'no-store'];
 
-    private ?ConfigurationInterface $config = null;
+    private ConfigurationInterface $config;
 
     private ?LoggerInterface $logger = null;
 
     /**
-     * Resolved lazily so tests can substitute settings without a constructor
-     * argument the router would have to supply.
+     * @param BootContext $context The booted context; the router passes it to every controller outside BaseController
+     */
+    public function __construct(BootContext $context)
+    {
+        $this->config = $context->config;
+        $this->logger = $context->logger;
+    }
+
+    /**
+     * Overridable so tests can substitute settings without a boot context.
      */
     protected function config(): ConfigurationInterface
     {
-        if ($this->config === null) {
-            $manager = ConfigurationManager::getInstance();
-            $manager->initialize();
-            $this->config = $manager;
-        }
-
         return $this->config;
     }
 
     /**
-     * Built from configuration alone, so it still works while the database is down.
-     * Honours logging.type, which is 'null' by default: an operator who turned
-     * diagnostic logging off does not get a line per scrape.
+     * The kernel's logger, built from configuration alone so it works while the
+     * database is down. Honours logging.type, which is 'null' by default: an
+     * operator who turned diagnostic logging off does not get a line per scrape.
      */
     protected function logger(): LoggerInterface
     {
-        // Memoised so a request where both checks fail does not emit Logger's
-        // unrecognised-level warning twice.
-        return $this->logger ??= new Logger(
-            LoggerHandlerFactory::create($this->config()->getAll()),
-            (string) $this->config()->get('logging', 'level', 'info')
-        );
+        // A test double that skipped the constructor gets the same logger built once
+        return $this->logger ??= Logger::fromConfig($this->config());
     }
 
     public function run(): void
@@ -223,8 +223,18 @@ class HealthController
             // unauthenticated request for the OS TCP timeout, around 30 seconds.
             $credentials['db_connect_timeout'] = (int) $this->config()->get('health', 'db_timeout', 2);
 
-            $db = (new DatabaseService(new PDODatabaseConnection()))->connect($credentials);
+            $db = Kernel::connect($credentials);
             $db->query('SELECT 1');
+
+            // Every other request is refused then, so the instance must not look ready
+            if (!DnsBackendProviderFactory::isApiBackend($this->config())) {
+                $domainsTable = (new TableNameService($this->config()))->getTable(PdnsTable::DOMAINS);
+                $refusal = BackendModeMarker::sqlModeRefusal($db, $domainsTable);
+                if ($refusal !== null) {
+                    $this->logger()->error('Health check: ' . $refusal . ' ' . BackendModeMarker::OVERRIDE_HINT);
+                    return self::STATUS_DOWN;
+                }
+            }
 
             return self::STATUS_OK;
         } catch (Throwable $e) {
@@ -242,10 +252,11 @@ class HealthController
     protected function checkPowerdnsApi(): string
     {
         try {
-            // Short timeout, not the interactive pdns_api.timeout: HttpClient retries a
-            // GET once, so a 10s default could hold this unauthenticated request ~20s.
+            // Short timeout (HttpClient retries a GET once, so 10s could hold this ~20s);
+            // a probe keeps no session, so the client records into a throwaway one
             $client = DnsBackendProviderFactory::createApiClient(
                 $this->config(),
+                new ArraySession(),
                 null,
                 (int) $this->config()->get('health', 'pdns_timeout', 2)
             );

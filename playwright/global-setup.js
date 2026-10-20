@@ -10,14 +10,20 @@
 import { chromium } from '@playwright/test';
 import { loginAndWaitForDashboard } from './helpers/auth.js';
 import { ensureZoneExists } from './helpers/zones.js';
-import users from './fixtures/users.json' assert { type: 'json' };
-import zones from './fixtures/zones.json' assert { type: 'json' };
+import users from './fixtures/users.json' with { type: 'json' };
+import zones from './fixtures/zones.json' with { type: 'json' };
 
 async function globalSetup(config) {
   const baseURL = config.projects[0]?.use?.baseURL || 'http://localhost:8080';
 
   console.log('\n[Global Setup] Starting test data preparation...');
   console.log(`[Global Setup] Base URL: ${baseURL}`);
+
+  // The web server sign-in instance sits behind basic auth, and its spec needs no zones
+  if (baseURL.includes(':8088')) {
+    console.log('[Global Setup] Web server sign-in instance, nothing to prepare');
+    return;
+  }
 
   const browser = await chromium.launch();
   const context = await browser.newContext({ baseURL });
@@ -30,11 +36,10 @@ async function globalSetup(config) {
     console.log('[Global Setup] Login successful');
 
     // Create zones from fixtures
-    let created = 0;
     let existing = 0;
     let failed = 0;
 
-    for (const [key, zone] of Object.entries(zones)) {
+    for (const zone of Object.values(zones)) {
       // Skip slave zones as they require a running master
       if (zone.type.toUpperCase() === 'SLAVE') {
         console.log(`[Global Setup] Skipping slave zone: ${zone.name}`);

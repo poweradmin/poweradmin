@@ -22,14 +22,17 @@
 
 namespace Poweradmin\Tests\Unit\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FlakyMarkerLockPdo;
 use RuntimeException;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * createZone() writes the zones row and backfills its domain_id. Committed apart, an
@@ -58,19 +61,19 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         );
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
+        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
     }
 
-    private function provider(?PDO $db = null, ?PowerdnsApiClient $client = null): ApiDnsBackendProvider
+    private function provider(?PDO $db = null): ApiDnsBackendProvider
     {
-        if ($client === null) {
-            $client = $this->createMock(PowerdnsApiClient::class);
-            $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
-        }
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
 
         return new ApiDnsBackendProvider(
             $client,
             $db ?? $this->db,
             $this->createMock(ConfigurationInterface::class),
+            new ApiStatusService(new ArraySession()),
             new NullLogger()
         );
     }
@@ -114,100 +117,33 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame(4011, $this->provider()->createZone('example.com', 'MASTER'));
     }
 
-    public function testNoZonesRowSurvivesAFailedBackfill(): void
+    public function testAStaleRowOnASharedIdIsReplacedSoTheOtherZoneKeepsItsOwnerAndNoGrants(): void
     {
-        // The regression: the insert used to autocommit on its own, so a failure here left
-        // a row stranded at domain_id 0 forever.
-        $db = new class ('sqlite::memory:') extends PDO {
-            public bool $failUpdates = false;
-
-            public function prepare(string $query, array $options = []): \PDOStatement|false
-            {
-                if ($this->failUpdates && str_starts_with($query, 'UPDATE zones SET domain_id')) {
-                    throw new RuntimeException('connection lost');
-                }
-                return parent::prepare($query, $options);
-            }
-        };
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $db->exec(
-            "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, comment TEXT NULL,
-             zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)"
-        );
-        $db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
-        $db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
-        $db->failUpdates = true;
-
-        try {
-            $this->provider($db)->createZone('example.com', 'MASTER');
-            $this->fail('Expected the backfill failure to propagate');
-        } catch (RuntimeException $e) {
-            $this->assertSame('connection lost', $e->getMessage());
-        }
-
-        $this->assertSame(0, (int)$db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
-        $this->assertFalse($db->inTransaction(), 'transaction left open after rollback');
-    }
-
-    public function testLeavesNoTransactionOpenOnSuccess(): void
-    {
-        $this->provider()->createZone('example.com', 'MASTER');
-
-        $this->assertFalse($this->db->inTransaction());
-    }
-
-    public function testDoesNotCommitATransactionItDidNotOpen(): void
-    {
-        $this->db->beginTransaction();
-
-        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
-
-        $this->assertTrue($this->db->inTransaction(), 'the caller still owns its transaction');
-        $this->db->rollBack();
-        $this->assertSame([], $this->row($zoneId), 'the row must roll back with the caller');
-    }
-
-    public function testExistingZoneRowIsUpdatedRatherThanReinserted(): void
-    {
-        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, 9, 'example.com')");
-
-        $zoneId = $this->provider()->createZone('example.com', 'SLAVE', '10.0.0.1');
-
-        $this->assertSame(9, $zoneId);
-        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
-        $this->assertFalse($this->db->inTransaction());
-    }
-
-    /** @return int[] */
-    private function idsOf(string $sql): array
-    {
-        return array_map('intval', $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
-    }
-
-    public function testAStrandedRowIsReusedWithItsOwnIdAsDomainId(): void
-    {
-        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, NULL, 'example.com')");
-
-        $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
-        $this->assertSame(9, (int)$this->row(9)['domain_id'], 'the caller updates the owner by domain_id');
-    }
-
-    public function testAStaleRowOnASharedIdIsReplacedSoTheOtherZoneKeepsItsOwner(): void
-    {
-        // Row 7 was migrated with canonical id 4011; zone a.example was later created with row id 4011
+        // Row 7 was migrated with canonical id 4011; a.example was later created with row id 4011
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 4011, 1, 'example.com'), (4011, 4011, 2, 'a.example')");
         // A group grant and an extra owner on 4011 cannot be told apart, so they must not pass to a.example
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 9), (5, 9)");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (50, 4011, 3, NULL), (51, 5, 3, NULL)");
 
         $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+        // The owner update ApiZoneRepository::createZoneShell runs next, keyed by canonical id
+        $stmt = $this->db->prepare("UPDATE zones SET owner = 8 WHERE domain_id = :domain_id");
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
 
         $this->assertNotSame(4011, $zoneId);
         $this->assertSame([], $this->row(7), 'the stale row was kept');
-        $this->assertSame($zoneId, (int)$this->db->query("SELECT domain_id FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertSame(8, (int)$this->db->query("SELECT owner FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertSame(2, (int)$this->db->query("SELECT owner FROM zones WHERE zone_name = 'a.example'")->fetchColumn(), 'a.example changed owner');
         $this->assertSame([4011], $this->idsOf("SELECT id FROM zones WHERE domain_id = 4011"), 'only a.example keeps id 4011');
         $this->assertSame([5], $this->idsOf("SELECT domain_id FROM zones_groups"), 'the grant on the shared id was kept');
         $this->assertSame([51], $this->idsOf("SELECT id FROM zones WHERE zone_name IS NULL"), 'the extra owner on the shared id was kept');
+    }
+
+    /** @return int[] */
+    private function idsOf(string $sql): array
+    {
+        return array_map('intval', $this->db->query($sql)->fetchAll(PDO::FETCH_COLUMN));
     }
 
     /** @return array<int, int[]> */
@@ -254,28 +190,193 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame([1 => [9], 3 => [30]], $this->keyScopes());
     }
 
-    public function testTheQueueRowIsCreatedAndMarkedWhenMissing(): void
+    public function testNoZonesRowSurvivesAFailedBackfill(): void
     {
-        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
-        $this->db->exec("INSERT INTO app_settings (setting_key, setting_value) VALUES ('unrelated', 'x')");
+        // The regression: the insert used to autocommit on its own, so a failure here left
+        // a row stranded at domain_id 0 forever.
+        $db = new class ('sqlite::memory:') extends PDO {
+            public bool $failUpdates = false;
 
-        $this->provider()->createZone('example.com', 'MASTER');
-        $this->db->exec("UPDATE app_settings SET setting_value = 'sql' WHERE setting_key = 'backend.zone_ids'");
-        $this->provider()->createZone('next.example.com', 'MASTER');
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                if ($this->failUpdates && str_starts_with($query, 'UPDATE zones SET domain_id')) {
+                    throw new RuntimeException('connection lost');
+                }
+                return parent::prepare($query, $options);
+            }
+        };
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec(
+            "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, comment TEXT NULL,
+             zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)"
+        );
+        $db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
+        $db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
+        $db->failUpdates = true;
 
-        $this->assertSame('api', $this->db->query("SELECT setting_value FROM app_settings WHERE setting_key = 'backend.zone_ids'")->fetchColumn());
+        try {
+            $this->provider($db)->createZone('example.com', 'MASTER');
+            $this->fail('Expected the backfill failure to propagate');
+        } catch (RuntimeException $e) {
+            $this->assertSame('connection lost', $e->getMessage());
+        }
+
+        $this->assertSame(0, (int)$db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+        $this->assertFalse($db->inTransaction(), 'transaction left open after rollback');
     }
 
-    public function testTheZoneIsRemovedFromPowerDnsWhenItsLocalRowCannotBeStored(): void
+    public function testLeavesNoTransactionOpenOnSuccess(): void
     {
-        $this->db->exec("DROP TABLE api_key_zones");
+        $this->provider()->createZone('example.com', 'MASTER');
+
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
+    }
+
+    public function testDoesNotCommitATransactionItDidNotOpen(): void
+    {
+        $this->db->beginTransaction();
+
+        $zoneId = $this->provider()->createZone('example.com', 'MASTER');
+
+        $this->assertTrue((new PdoTransaction($this->db))->inTransaction(), 'the caller still owns its transaction');
+        $this->db->rollBack();
+        $this->assertSame([], $this->row($zoneId), 'the row must roll back with the caller');
+    }
+
+    public function testExistingZoneRowIsUpdatedRatherThanReinserted(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, 9, 'example.com')");
+
+        $zoneId = $this->provider()->createZone('example.com', 'SLAVE', '10.0.0.1');
+
+        $this->assertSame(9, $zoneId);
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+        $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
+    }
+
+    public function testARowAdoptedByAConcurrentSyncBeforeTheMarkerLockIsSettledOnNotInserted(): void
+    {
+        // The sync commits its row after createZone() starts but before the allocator holds the marker lock
+        $db = new class ('sqlite::memory:') extends PDO {
+            public bool $adopted = false;
+
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                if (!$this->adopted && str_starts_with($query, 'SELECT setting_value FROM app_settings')) {
+                    $this->adopted = true;
+                    $this->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES (5, 5, 'example.com', 'NATIVE')");
+                }
+                return parent::prepare($query, $options);
+            }
+        };
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        foreach ($this->db->query("SELECT sql FROM sqlite_master WHERE type = 'table'")->fetchAll(PDO::FETCH_COLUMN) as $ddl) {
+            $db->exec($ddl);
+        }
+        $db->exec("CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)");
         $client = $this->createMock(PowerdnsApiClient::class);
         $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
-        $client->expects($this->once())->method('deleteZone')
-            ->with($this->callback(fn(Zone $zone): bool => $zone->getName() === 'example.com.'))
-            ->willReturn(true);
+        $client->expects($this->never())->method('deleteZone');
+
+        $zoneId = $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+
+        $this->assertSame(5, $zoneId);
+        $this->assertSame(1, (int)$db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+        $this->assertSame('MASTER', $db->query("SELECT zone_type FROM zones WHERE id = 5")->fetchColumn());
+        $this->assertFalse($db->inTransaction());
+    }
+
+    /** A connection whose first N attempts at the marker lock fail as a deadlock victim, or always with another error. */
+    private function flakyDb(int $deadlocks, ?string $alwaysFail = null): FlakyMarkerLockPdo
+    {
+        $db = new FlakyMarkerLockPdo('sqlite::memory:');
+        $db->deadlocks = $deadlocks;
+        $db->alwaysFail = $alwaysFail;
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        foreach ($this->db->query("SELECT sql FROM sqlite_master WHERE type = 'table'")->fetchAll(PDO::FETCH_COLUMN) as $ddl) {
+            $db->exec($ddl);
+        }
+
+        return $db;
+    }
+
+    private function providerWithClient(PowerdnsApiClient $client, PDO $db, ?\Psr\Log\LoggerInterface $logger = null): ApiDnsBackendProvider
+    {
+        return new ApiDnsBackendProvider($client, $db, $this->createMock(ConfigurationInterface::class), new ApiStatusService(new ArraySession()), $logger ?? new NullLogger());
+    }
+
+    public function testADeadlockVictimIsRetriedAndNoZoneIsRemovedFromPowerDns(): void
+    {
+        $db = $this->flakyDb(2);
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->never())->method('deleteZone');
+
+        $zoneId = $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+
+        $this->assertGreaterThan(0, $zoneId);
+        $this->assertSame(3, $db->attempts);
+        $this->assertSame(1, (int)$db->query("SELECT COUNT(*) FROM zones WHERE zone_name = 'example.com'")->fetchColumn());
+        $this->assertFalse($db->inTransaction());
+    }
+
+    public function testTheZoneIsRemovedFromPowerDnsWhenItsLocalRowKeepsFailing(): void
+    {
+        $db = $this->flakyDb(0, 'disk is full');
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $deleted = [];
+        $client->expects($this->once())->method('deleteZone')->willReturnCallback(function ($zone) use (&$deleted): bool {
+            $deleted[] = $zone->getName();
+
+            return true;
+        });
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with(
+            $this->stringContains('could not be stored'),
+            $this->callback(static fn(array $context): bool => $context['class'] === \PDOException::class && str_contains($context['error'], 'disk is full'))
+        );
+
+        try {
+            $this->providerWithClient($client, $db, $logger)->createZone('example.com', 'MASTER');
+            $this->fail('Expected the local failure to propagate');
+        } catch (\PDOException $e) {
+            $this->assertStringContainsString('disk is full', $e->getMessage());
+        }
+
+        $this->assertSame(['example.com.'], $deleted);
+        $this->assertSame(1, $db->attempts, 'A failure that is not a lock conflict is not retried');
+    }
+
+    public function testAZoneStillFailingAfterEveryRetryIsRemovedFromPowerDns(): void
+    {
+        $db = $this->flakyDb(100);
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->expects($this->once())->method('deleteZone')->willReturn(true);
+
+        try {
+            $this->providerWithClient($client, $db)->createZone('example.com', 'MASTER');
+            $this->fail('Expected the deadlock to propagate once the retries ran out');
+        } catch (\PDOException $e) {
+            $this->assertSame('40001', $e->errorInfo[0]);
+        }
+
+        $this->assertSame(\Poweradmin\Infrastructure\Database\DeadlockRetry::MAX_ATTEMPTS, $db->attempts);
+    }
+
+    public function testAFailedCleanupDoesNotHideTheOriginalError(): void
+    {
+        $db = $this->flakyDb(0, 'disk is full');
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('createZoneWithData')->willReturn(['name' => 'example.com.']);
+        $client->method('deleteZone')->willThrowException(new RuntimeException('pdns down'));
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->exactly(2))->method('error');
 
         $this->expectException(\PDOException::class);
-        $this->provider(null, $client)->createZone('example.com', 'MASTER');
+        $this->expectExceptionMessage('disk is full');
+        $this->providerWithClient($client, $db, $logger)->createZone('example.com', 'MASTER');
     }
 }

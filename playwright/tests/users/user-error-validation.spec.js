@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { uniqueName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Management Error Validation', () => {
   test.beforeEach(async ({ page }) => {
@@ -9,52 +10,17 @@ test.describe('User Management Error Validation', () => {
 
   test('should show error when changing password with incorrect current password', async ({ page }) => {
     await page.goto('/password/change');
-    await page.waitForLoadState('networkidle');
 
-    // Check if password change form exists
-    const currentPasswordField = page.locator('input[name*="current"], input[name*="old"], input[type="password"]').first();
-    if (await currentPasswordField.count() === 0) {
-      // Password change page may not exist or may require different setup
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/password|change|not found/i);
-      return;
-    }
+    // A wrong current password is refused, so admin's own password is never changed
+    await page.locator('input[name="old_password"]').fill('wrongpassword');
+    await page.locator('input[name="new_password"]').fill('NewPassword123!');
+    await page.locator('input[name="new_password2"]').fill('NewPassword123!');
 
-    // Fill in incorrect current password
-    await currentPasswordField.fill('wrongpassword');
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Fill in new password
-    const newPasswordField = page.locator('input[type="password"]').nth(1);
-    if (await newPasswordField.count() > 0) {
-      await newPasswordField.fill('newpassword123');
-    }
-
-    // Confirm new password (find third password field if exists)
-    const passwordFields = await page.locator('input[type="password"]').count();
-    if (passwordFields > 2) {
-      await page.locator('input[type="password"]').nth(2).fill('newpassword123');
-    }
-
-    // Submit form
-    const submitBtn = page.locator('button[type="submit"], input[type="submit"]').first();
-    if (await submitBtn.count() === 0) {
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
-      return;
-    }
-
-    await submitBtn.click();
-    await page.waitForLoadState('networkidle');
-
-    // Should show error message or page should handle the error gracefully
-    const bodyText = await page.locator('body').textContent();
-    // If incorrect password was rejected, body should contain error-related text OR stay on the same page
-    const hasError = bodyText.toLowerCase().includes('incorrect') ||
-                     bodyText.toLowerCase().includes('wrong') ||
-                     bodyText.toLowerCase().includes('invalid') ||
-                     bodyText.toLowerCase().includes('error') ||
-                     bodyText.toLowerCase().includes('password');
-    expect(hasError || page.url().includes('password')).toBeTruthy();
+    await expect(page.locator('[data-testid="system-message"]'))
+      .toContainText(/did not enter the correct current password/i);
+    await expect(page).toHaveURL(/\/password\/change/);
   });
 
   test('should show error when new passwords do not match', async ({ page }) => {
@@ -97,40 +63,36 @@ test.describe('User Management Error Validation', () => {
     expect(currentUrl).toMatch(/password.*change/i);
   });
 
-  test('should update user description successfully', async ({ page }) => {
-    await page.goto('/users');
+  test('should update user description successfully', async ({ page }, testInfo) => {
+    // Edits a throwaway user so the seeded accounts keep their data
+    const username = uniqueName('uev', testInfo);
+    const rowFor = () => page.locator(`tr:has(input[value="${username}"])`);
+    try {
+      await page.goto('/users/add');
+      await page.locator('input[name="username"]').fill(username);
+      await page.locator('input[name="fullname"]').fill(username);
+      await page.locator('input[name="email"]').fill(`${username}@example.com`);
+      await page.locator('input[name="password"]').fill('TestP@ssw0rd123');
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await expect(page.locator('[data-testid="system-message"]'))
+        .toContainText(/user has been created successfully/i);
 
-    // Find first user edit link or go to user edit page
-    const editLinks = await page.locator('table a[href*="/users/"][href$="/edit"]').count();
+      await page.goto(`/users?search=${username}`);
+      await expect(rowFor()).toHaveCount(1);
+      await rowFor().locator('a[href$="/edit"]').first().click();
 
-    if (editLinks > 0) {
-      await page.locator('table a[href*="/users/"][href$="/edit"]').first().click();
-
-      // Update description field
       const descriptionField = page.locator('input[name*="description"], textarea[name*="description"], input[name*="descr"]').first();
       await descriptionField.fill('Updated test description');
 
-      // Submit form
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Should show success message or redirect
-      const successIndicators = [
-        page.locator('[data-testid="success-message"]'),
-        page.locator('.alert-success'),
-        page.locator('.success')
-      ];
-
-      let foundSuccess = false;
-      for (const indicator of successIndicators) {
-        if (await indicator.count() > 0) {
-          foundSuccess = true;
-          break;
-        }
-      }
-
-      // If no success message, at least verify we're not on an error page
-      if (!foundSuccess) {
-        await expect(page.locator('.alert-danger, .error')).not.toBeVisible();
+      await expect(page.locator('[data-testid="system-message"]')).toContainText(/updated successfully/i);
+    } finally {
+      await page.goto(`/users?search=${username}`);
+      if (await rowFor().count() > 0) {
+        await rowFor().locator('a[href*="/delete"]').first().click();
+        await page.locator('button[type="submit"][name="commit"]').click();
+        await page.waitForLoadState('domcontentloaded');
       }
     }
   });

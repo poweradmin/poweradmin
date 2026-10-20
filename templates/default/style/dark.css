@@ -276,6 +276,7 @@ table tfoot tr td,
 .input-group-text {
     background-color: var(--bg-dark-secondary) !important;
     border-color: var(--border-dark) !important;
+    color: var(--text-light) !important;
 }
 
 .input-group-text .bi-search {

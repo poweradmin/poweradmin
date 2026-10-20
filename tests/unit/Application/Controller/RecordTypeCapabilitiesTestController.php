@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
-use Poweradmin\BaseController;
+use Poweradmin\Application\Controller\BaseController;
 
 /**
  * Minimal concrete BaseController so getRecordTypeCapabilities() can be

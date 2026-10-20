@@ -25,12 +25,3 @@ export async function expectAccessDenied(page, contentSelector) {
     await expect(page.locator(contentSelector)).toHaveCount(0);
   }
 }
-
-/**
- * Same, for the API, which answers denial as JSON rather than a rendered page.
- *
- * @param {import('@playwright/test').Response} response
- */
-export function expectApiAccessDenied(response) {
-  expect(response.status()).toBe(403);
-}

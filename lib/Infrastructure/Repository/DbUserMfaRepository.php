@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,18 +27,21 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-class DbUserMfaRepository implements UserMfaRepositoryInterface
+/**
+ * SQL persistence for per-user MFA settings in the user_mfa table.
+ */
+final class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationManager $config, ?LoggerInterface $logger = null)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
         $this->config = $config;

@@ -1,0 +1,451 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Domain\Service\User;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Application\Service\User\UserCommandFactory;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
+use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\User\UserProfileAssembler;
+use Poweradmin\Domain\Service\Validation\Refusal;
+
+/**
+ * Password hashing, password policy and LDAP handling in UserManagementService.
+ * The API and the web UI must store credentials the same way.
+ */
+#[CoversClass(UserManagementService::class)]
+class UserManagementServiceCredentialsTest extends TestCase
+{
+    private const HASHED = '$configured$hash';
+
+    private UserRepositoryInterface&MockObject $userRepository;
+    private PasswordPolicyService&MockObject $passwordPolicy;
+    private UserAuthenticationService&MockObject $hasher;
+    /** Command handed to the repository by the last captured create or update call. */
+    private CreateUserCommand|UpdateUserCommand|null $stored = null;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserByUsername')->willReturn(null);
+        $this->userRepository->method('getUserByEmail')->willReturn(null);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'sql']);
+
+        $this->passwordPolicy = $this->createMock(PasswordPolicyService::class);
+        $this->hasher = $this->createMock(UserAuthenticationService::class);
+        $this->hasher->method('hashPassword')->willReturn(self::HASHED);
+    }
+
+    private function service(bool $ldapEnabled = false, bool $remoteUserEnabled = false): UserManagementService
+    {
+        return new UserManagementService(
+            $this->userRepository,
+            $permissions = $this->createMock(PermissionService::class),
+            new UserProfileAssembler($permissions, $this->createMock(UserGroupRepositoryInterface::class)),
+            $this->hasher,
+            $this->passwordPolicy,
+            $ldapEnabled,
+            $this->createMock(DomainManagerInterface::class),
+            $this->createMock(ZoneManagementService::class),
+            $remoteUserEnabled
+        );
+    }
+
+    private function remoteUserService(): UserManagementService
+    {
+        return $this->service(true, true);
+    }
+
+    /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    private function createUser(bool $ldapEnabled, array $input): array
+    {
+        $command = UserCommandFactory::create($input);
+
+        return is_array($command) ? $command : $this->service($ldapEnabled)->createUser($command);
+    }
+
+    private function updateUser(bool $ldapEnabled, int $userId, array $input): array
+    {
+        $command = UserCommandFactory::update($input);
+
+        return is_array($command) ? $command : $this->service($ldapEnabled)->updateUser($userId, $command);
+    }
+
+    private function captureWrite(string $method): void
+    {
+        $this->userRepository->method($method)
+            ->willReturnCallback(function (...$args) use ($method) {
+                $this->stored = end($args);
+                return $method === 'createUser' ? 42 : true;
+            });
+    }
+
+    #[Test]
+    public function testCreateUserHashesWithConfiguredHasher(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->hasher->expects($this->once())->method('hashPassword')->with('Secret123!');
+        $this->captureWrite('createUser');
+
+        $result = $this->createUser(false, [
+            'username' => 'newuser',
+            'password' => 'Secret123!',
+            'perm_templ' => 3,
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(self::HASHED, $this->stored->password);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsPasswordFailingPolicy(): void
+    {
+        $this->passwordPolicy->method('validatePassword')
+            ->with('short')
+            ->willReturn(['Password must be at least 8 characters long', 'Password must contain at least one number']);
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser(false, [
+            'username' => 'newuser',
+            'password' => 'short',
+            'perm_templ' => 3,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame('Password must be at least 8 characters long', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsLdapWhenLdapDisabled(): void
+    {
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser(false, [
+            'username' => 'ldapuser',
+            'use_ldap' => true,
+            'perm_templ' => 3,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame('LDAP authentication is not enabled', $result['message']);
+    }
+
+    #[Test]
+    public function testCreateUserTreatsStringFalseAsSqlAccount(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->captureWrite('createUser');
+
+        $result = $this->createUser(true, [
+            'username' => 'newuser',
+            'use_ldap' => 'false',
+            'password' => 'Secret123!',
+            'perm_templ' => 3,
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(0, (int)$this->stored->useLdap);
+        $this->assertSame(self::HASHED, $this->stored->password);
+    }
+
+    #[Test]
+    public function testCreateUserRejectsNonBooleanUseLdap(): void
+    {
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser(true, [
+            'username' => 'newuser',
+            'use_ldap' => 'maybe',
+            'password' => 'Secret123!',
+            'perm_templ' => 3,
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame('use_ldap must be a boolean', $result['message']);
+    }
+
+    public static function ldapCreatePayloads(): array
+    {
+        return [
+            'no password' => [[]],
+            'password supplied' => [['password' => 'Secret123!']],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('ldapCreatePayloads')]
+    public function testCreateLdapUserStoresPlaceholderWithoutHashingOrPolicy(array $extra): void
+    {
+        $this->passwordPolicy->expects($this->never())->method('validatePassword');
+        $this->hasher->expects($this->never())->method('hashPassword');
+        $this->captureWrite('createUser');
+
+        $result = $this->createUser(true, ['username' => 'ldapuser', 'use_ldap' => 1, 'perm_templ' => 3] + $extra);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(1, (int)$this->stored->useLdap);
+    }
+
+    #[Test]
+    public function testUpdateUserHashesWithConfiguredHasher(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->hasher->expects($this->once())->method('hashPassword')->with('Another1!');
+        $this->captureWrite('updateUser');
+
+        $result = $this->updateUser(false, 7, ['password' => 'Another1!']);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(self::HASHED, $this->stored->password);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsPasswordFailingPolicyBeforeLookups(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->willReturn(['Password must contain at least one uppercase letter']);
+        $this->userRepository->expects($this->never())->method('getUserByUsername');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(false, 7, ['username' => 'renamed', 'password' => 'lowercase1!']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame('Password must contain at least one uppercase letter', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsPasswordWhenSwitchingToLdap(): void
+    {
+        $this->passwordPolicy->expects($this->never())->method('validatePassword');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(true, 7, ['use_ldap' => 1, 'password' => 'Secret123!']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertStringContainsString('LDAP', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserRejectsLdapWhenLdapDisabled(): void
+    {
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(false, 7, ['use_ldap' => 1]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('LDAP authentication is not enabled', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsPasswordWhenSwitchingLdapUserBackToSql(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
+        $this->passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->captureWrite('updateUser');
+
+        $result = $this->updateUser(true, 7, ['use_ldap' => 0, 'password' => 'Secret123!']);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(self::HASHED, $this->stored->password);
+    }
+
+    #[Test]
+    public function testUpdateUserEnteringLdapStoresPlaceholder(): void
+    {
+        $this->hasher->expects($this->never())->method('hashPassword');
+        $this->captureWrite('updateUser');
+
+        $result = $this->updateUser(true, 7, ['use_ldap' => true]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::LDAP_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(1, (int)$this->stored->useLdap);
+    }
+
+    #[Test]
+    public function testUpdateUserLeavingLdapRequiresPassword(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(true, 7, ['use_ldap' => false]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame('Password is required when disabling LDAP authentication', $result['message']);
+    }
+
+    #[Test]
+    public function testUpdateUserOfLdapAccountWithoutFlagChangeKeepsPassword(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'ldap']);
+        $this->captureWrite('updateUser');
+
+        $result = $this->updateUser(true, 7, ['fullname' => 'Renamed']);
+
+        $this->assertTrue($result['success']);
+        $this->assertNull($this->stored->password);
+    }
+
+    #[Test]
+    public function testUpdateUserTreatsZeroAsAPassword(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->with('0')->willReturn(['Password must be at least 8 characters long']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(false, 7, ['password' => '0']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+    }
+
+    #[Test]
+    public function testUpdateUserWithoutPasswordSkipsPolicyAndHasher(): void
+    {
+        $this->passwordPolicy->expects($this->never())->method('validatePassword');
+        $this->hasher->expects($this->never())->method('hashPassword');
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->updateUser(false, 7, ['fullname' => 'New Name']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testCreateWebServerUserStoresPlaceholderWithoutHashingOrPolicy(): void
+    {
+        $this->passwordPolicy->expects($this->never())->method('validatePassword');
+        $this->hasher->expects($this->never())->method('hashPassword');
+        $this->captureWrite('createUser');
+
+        $command = UserCommandFactory::create(['username' => 'alice', 'password' => 'ignored', 'perm_templ' => 3], true);
+        $result = $this->remoteUserService()->createUser($command);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethod());
+    }
+
+    #[Test]
+    public function testWebServerAuthenticationIsRefusedWhileTheFeatureIsOff(): void
+    {
+        $this->userRepository->expects($this->never())->method('createUser');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $created = $this->service(true)->createUser(UserCommandFactory::create(['username' => 'alice', 'perm_templ' => 3], true));
+        $updated = $this->service(true)->updateUser(7, UserCommandFactory::update([], true));
+
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $created['code']);
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $updated['code']);
+    }
+
+    #[Test]
+    public function testAnAccountCannotUseLdapAndTheWebServerAtOnce(): void
+    {
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['use_ldap' => true], true));
+
+        $this->assertSame(UserManagementService::ERR_INVALID_AUTH_METHOD, $result['code']);
+    }
+
+    /**
+     * The old hash must stop working once the web server signs the account in.
+     */
+    #[Test]
+    public function testSwitchingToTheWebServerReplacesThePassword(): void
+    {
+        $this->captureWrite('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['use_ldap' => false], true));
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER, $this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethodAfter(AuthMethod::SQL));
+    }
+
+    #[Test]
+    public function testPasswordIsRefusedWhenSwitchingToTheWebServer(): void
+    {
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update(['password' => 'Secret123!'], true));
+
+        $this->assertSame(UserManagementService::ERR_PASSWORD_FORBIDDEN, $result['code']);
+    }
+
+    #[Test]
+    public function testLeavingTheWebServerRequiresAPassword(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'remote_user']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->remoteUserService()->updateUser(7, UserCommandFactory::update([], false));
+
+        $this->assertSame(UserManagementService::ERR_PASSWORD_REQUIRED, $result['code']);
+        $this->assertSame('Password is required when disabling web server authentication', $result['message']);
+    }
+
+    /**
+     * Switching LDAP off on a web server account, or the feature being off and its
+     * box missing, leaves the account with the web server.
+     */
+    #[Test]
+    public function testWebServerAccountKeepsItsMethodWhenOnlyLdapIsSwitchedOff(): void
+    {
+        $this->userRepository = $this->createMock(UserRepositoryInterface::class);
+        $this->userRepository->method('getUserById')->willReturn(['id' => 7, 'auth_method' => 'remote_user']);
+        $this->captureWrite('updateUser');
+
+        $result = $this->service(true)->updateUser(7, UserCommandFactory::update(['use_ldap' => false, 'fullname' => 'Alice']));
+
+        $this->assertTrue($result['success']);
+        $this->assertNull($this->stored->password);
+        $this->assertSame(AuthMethod::REMOTE_USER, $this->stored->authMethodAfter(AuthMethod::REMOTE_USER));
+    }
+}

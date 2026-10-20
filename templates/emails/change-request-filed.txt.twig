@@ -1,0 +1,25 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
+CHANGE REQUEST FILED
+====================
+
+{{ greeting }}
+
+A change request is waiting for your review:
+
+Zone: {{ zoneName }}
+Request: #{{ requestId }}
+Requested by: {{ requesterName }}
+Kind: {{ kindLabel }}
+{% if comment %}Comment: {{ comment }}
+{% endif %}Date: {{ filedAt }}
+
+Open the request to see the proposed changes and approve or reject them.
+
+{% if requestUrl %}To review the request, visit:
+{{ requestUrl }}
+{% endif %}
+
+You receive this message because you can review change requests for this zone.
+{% endblock %}

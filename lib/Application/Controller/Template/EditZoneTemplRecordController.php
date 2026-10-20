@@ -1,0 +1,157 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\Template;
+
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Dns\RecordTypeService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles the edit form for one zone template record and saves the change on POST.
+ */
+class EditZoneTemplRecordController extends BaseController
+{
+    private ?RecordTypeService $recordTypeService = null;
+    private ?ZoneTemplateService $zoneTemplate = null;
+
+    private function recordTypeService(): RecordTypeService
+    {
+        return $this->recordTypeService ??= new RecordTypeService($this->getConfig());
+    }
+
+    private function zoneTemplate(): ZoneTemplateService
+    {
+        return $this->zoneTemplate ??= $this->services()->zoneTemplateService();
+    }
+
+    public function run(): void
+    {
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'template_id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($this->requestData)) {
+            $this->showFirstValidationError($this->requestData);
+        }
+
+        $record_id = (int)$this->getSafeRequestValue('id');
+        $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
+
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
+        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone template records."));
+
+        if ($this->isPost()) {
+            $this->updateZoneTemplateRecord($zone_templ_id);
+        }
+
+        $this->showZoneTemplateRecordForm($record_id, $zone_templ_id);
+    }
+
+    public function showZoneTemplateRecordForm(int $record_id, int $zone_templ_id): void
+    {
+        $record = $this->services()->zoneTemplateRepository()->getZoneTemplateRecordById($record_id, $zone_templ_id);
+
+        // The lookup is scoped to the template, so a record id from another template comes back empty
+        if (!$record) {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
+
+        // Get count of zones using this template
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $linked_zones = $this->zoneTemplate()->getListZoneUseTempl($zone_templ_id, $userId);
+        $zones_linked_count = count($linked_zones);
+
+        $this->render('edit_zone_templ_record.html', [
+            'record' => $record,
+            'zone_templ_id' => $zone_templ_id,
+            'record_id' => $record_id,
+            'templ_details' => $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [],
+            'record_types' => $this->recordTypeService()->getAllTypes($this->getRecordTypeCapabilities()),
+            'zones_linked_count' => $zones_linked_count,
+        ]);
+    }
+
+    public function updateZoneTemplateRecord(int $zone_templ_id): void
+    {
+        $constraints = [
+            'name' => [
+                new Assert\NotBlank()
+            ],
+            'type' => [
+                new Assert\NotBlank()
+            ],
+            'content' => [
+                new Assert\NotBlank()
+            ],
+            'ttl' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ],
+            'prio' => [
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        $postParams = $this->httpRequest->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
+            return;
+        }
+
+        $edited = $this->zoneTemplate()->editZoneTemplRecord($postParams, $zone_templ_id);
+        if (!$edited->success) {
+            $this->addSystemMessage('error', (string)$edited->message);
+        } else {
+            // Mark template as modified to track sync status
+            $syncService = $this->services()->zoneTemplateSync();
+            $syncService->markTemplateAsModified($zone_templ_id);
+
+            $auditService = $this->services()->auditService();
+            $auditService->logZoneTemplateRecordEdit(
+                $zone_templ_id,
+                (int)$this->getSafeRequestValue('rid'),
+                $this->getSafeRequestValue('name'),
+                $this->getSafeRequestValue('type')
+            );
+
+            $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
+            $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
+        }
+    }
+}

@@ -100,8 +100,7 @@ test.describe('Forgot Username', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       await page.waitForLoadState('domcontentloaded');
 
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|500/i);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception|500/i);
     });
   });
 
@@ -109,14 +108,9 @@ test.describe('Forgot Username', () => {
     test('should navigate back to login page', async ({ page }) => {
       await page.goto('/username/forgot');
 
-      const loginLink = page.locator('a[href*="/login"], a:has-text("Login"), a:has-text("Back")').first();
-      if (await loginLink.count() > 0) {
-        await loginLink.click();
-        await page.waitForLoadState('domcontentloaded');
+      await page.locator('a[href*="/login"], a:has-text("Login"), a:has-text("Back")').first().click();
 
-        const url = page.url();
-        expect(url).toMatch(/login/);
-      }
+      await expect(page).toHaveURL(/login/);
     });
   });
 });

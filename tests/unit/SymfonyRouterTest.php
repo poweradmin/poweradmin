@@ -6,6 +6,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\BootContexts;
+use TestHelpers\FakeConfiguration;
 
 class SymfonyRouterTest extends TestCase
 {
@@ -26,10 +28,10 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\IndexController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\System\IndexController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals('home', $routeInfo['route']);
         $this->assertTrue($router->isRouteFound());
@@ -39,10 +41,10 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/login';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\LoginController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Auth\LoginController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals('login', $routeInfo['route']);
     }
@@ -51,10 +53,10 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/users/123/edit';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\EditUserController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\User\EditUserController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
         $this->assertEquals('user_edit', $routeInfo['route']);
@@ -64,10 +66,10 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/zones/456/records/789/edit';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('Poweradmin\Application\Controller\EditRecordController', $routeInfo['controller']);
+        $this->assertEquals('Poweradmin\Application\Controller\Record\EditRecordController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals(['zone_id' => '456', 'id' => '789'], $routeInfo['parameters']);
         $this->assertEquals('record_edit', $routeInfo['route']);
@@ -77,7 +79,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
@@ -89,7 +91,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesController', $routeInfo['controller']);
@@ -102,7 +104,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones/123/records';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
@@ -114,7 +116,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones/123/records/456';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V2\ZonesRecordsController', $routeInfo['controller']);
@@ -128,7 +130,7 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['REQUEST_URI'] = $path;
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V1GoneController', $routeInfo['controller']);
@@ -153,7 +155,7 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('run', $routeInfo['method']);
@@ -164,7 +166,7 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('run', $routeInfo['method']);
@@ -175,7 +177,7 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'PUT';
         $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('run', $routeInfo['method']);
@@ -186,7 +188,7 @@ class SymfonyRouterTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
         $_SERVER['REQUEST_URI'] = '/api/v2/zones/123';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('run', $routeInfo['method']);
@@ -196,10 +198,10 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/non-existent-route';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('\Poweradmin\Application\Controller\NotFoundController', $routeInfo['controller']);
+        $this->assertEquals('\Poweradmin\Application\Controller\System\NotFoundController', $routeInfo['controller']);
         $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals('404', $routeInfo['route']);
         $this->assertFalse($router->isRouteFound());
@@ -209,12 +211,11 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
 
         // Use reflection to test private method
         $reflection = new \ReflectionClass($router);
         $method = $reflection->getMethod('isApiRoute');
-        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($router));
     }
@@ -223,19 +224,18 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/users';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
 
         // Use reflection to test private method
         $reflection = new \ReflectionClass($router);
         $method = $reflection->getMethod('isApiRoute');
-        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($router));
     }
 
     public function testUrlGeneration(): void
     {
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
 
         $url = $router->generateUrl('user_edit', ['id' => 123]);
         $this->assertEquals('/users/123/edit', $url);
@@ -246,7 +246,7 @@ class SymfonyRouterTest extends TestCase
 
     public function testGetRequest(): void
     {
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $request = $router->getRequest();
 
         $this->assertInstanceOf(Request::class, $request);
@@ -256,7 +256,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/users/123/edit';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $router->match(); // Need to match first to populate parameters
 
         $parameters = $router->getRouteParameters();
@@ -269,10 +269,10 @@ class SymfonyRouterTest extends TestCase
         // Test that non-numeric ID gets 404
         $_SERVER['REQUEST_URI'] = '/users/abc/edit';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
-        $this->assertEquals('\Poweradmin\Application\Controller\NotFoundController', $routeInfo['controller']);
+        $this->assertEquals('\Poweradmin\Application\Controller\System\NotFoundController', $routeInfo['controller']);
         $this->assertFalse($router->isRouteFound());
     }
 
@@ -281,12 +281,26 @@ class SymfonyRouterTest extends TestCase
      * Exception carrying a 405. Route-level method lists are asserted in
      * RoutingConfigurationTest instead.
      */
+    public function testRoutesFromTheBootedModuleRegistry(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/whois';
+
+        $context = BootContexts::over(new FakeConfiguration(['modules' => ['whois.enabled' => true]]));
+        $router = new SymfonyRouter($context);
+
+        $registry = $router->getModuleRegistry();
+        $this->assertSame($context->moduleRegistry, $registry);
+        $this->assertSame(['whois'], array_keys($registry->getEnabledModules()));
+        $this->assertContains('module_whois', array_column($registry->getRoutes(), 'name'));
+        $this->assertSame('module_whois', $router->match()['route']);
+    }
+
     public function testDisallowedMethodBecomes405(): void
     {
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/zones/1/dnssec/keys/2/toggle';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Method not allowed');
@@ -298,7 +312,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/docs';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\DocsController', $routeInfo['controller']);
@@ -309,7 +323,7 @@ class SymfonyRouterTest extends TestCase
     {
         $_SERVER['REQUEST_URI'] = '/api/docs/json';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\Docs\JsonController', $routeInfo['controller']);
@@ -319,12 +333,26 @@ class SymfonyRouterTest extends TestCase
     public function testInternalApiRoutes(): void
     {
         $_SERVER['REQUEST_URI'] = '/api/internal/validation';
+        $_SERVER['REQUEST_METHOD'] = 'POST';
 
-        $router = new SymfonyRouter();
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\Internal\ValidationController', $routeInfo['controller']);
         $this->assertEquals('api_internal_validation', $routeInfo['route']);
+    }
+
+    public function testInternalValidationRefusesGet(): void
+    {
+        // A GET must not reach the body-handling action: InternalApiController only
+        // applies the X-CSRF-Token check to non-GET requests
+        $_SERVER['REQUEST_URI'] = '/api/internal/validation';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration()));
+
+        $this->expectExceptionMessage('Method not allowed');
+        $router->match();
     }
 
     protected function tearDown(): void

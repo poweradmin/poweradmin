@@ -22,17 +22,25 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
-class DbPermissionTemplateRepository
+/**
+ * SQL persistence for permission templates in perm_templ and their perm_items links in perm_templ_items.
+ */
+final class DbPermissionTemplateRepository implements PermissionTemplateRepositoryInterface
 {
     private object $db;
+    private ?TransactionInterface $transactionPort = null;
 
     // $config is unused but kept so every Db*Repository is constructed alike.
-    public function __construct($db, ConfigurationManager $config)
+    public function __construct($db, ConfigurationInterface $config)
     {
         $this->db = $db;
     }
@@ -44,13 +52,13 @@ class DbPermissionTemplateRepository
      *
      * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
      *
-     * @return boolean true on success, false otherwise
+     * @return int The new template's id
      */
-    public function addPermissionTemplate(array $details): bool
+    public function addPermissionTemplate(array $details): int
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
             $stmt->execute([
@@ -72,10 +80,10 @@ class DbPermissionTemplateRepository
                 }
             }
 
-            $this->db->commit();
-            return true;
+            $this->transaction()->commit();
+            return (int)$perm_templ_id;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -143,7 +151,7 @@ class DbPermissionTemplateRepository
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $this->db->beginTransaction();
+        $this->transaction()->begin();
         try {
             $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
             $stmt->execute([
@@ -169,10 +177,10 @@ class DbPermissionTemplateRepository
                 }
             }
 
-            $this->db->commit();
+            $this->transaction()->commit();
             return true;
         } catch (Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction()->rollBack();
             throw $e;
         }
     }
@@ -262,7 +270,7 @@ class DbPermissionTemplateRepository
                       SELECT 1
                       FROM perm_templ_items sup
                       INNER JOIN perm_items spi ON sup.perm_id = spi.id
-                      WHERE sup.templ_id = pt.id AND spi.name = 'user_is_ueberuser'
+                      WHERE sup.templ_id = pt.id AND spi.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
                   )";
 
         if ($templateType !== null) {
@@ -284,42 +292,37 @@ class DbPermissionTemplateRepository
     }
 
     /**
-     * Delete Permission Template ID
-     *
-     * @param int $id Permission template ID
-     *
-     * @return boolean true on success, false otherwise
+     * Delete a permission template and its items, unless a user or group still holds it.
      */
-    public function deletePermissionTemplate(int $id): bool
+    public function deletePermissionTemplate(int $id): PermissionTemplateDeleteResult
     {
-        // Check if template is assigned to users
         $stmt = $this->db->prepare("SELECT id FROM users WHERE perm_templ = :id");
         $stmt->execute([':id' => $id]);
-        $usedByUsers = $stmt->fetchColumn();
+        $usedByUsers = (bool)$stmt->fetchColumn();
 
-        // Check if template is assigned to groups
         $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE perm_templ = :id");
         $stmt->execute([':id' => $id]);
-        $usedByGroups = $stmt->fetchColumn();
+        $usedByGroups = (bool)$stmt->fetchColumn();
 
         if ($usedByUsers || $usedByGroups) {
-            $messageService = new MessageService();
-            if ($usedByUsers && $usedByGroups) {
-                $messageService->addSystemError(_('This template is assigned to at least one user and one group.'));
-            } elseif ($usedByUsers) {
-                $messageService->addSystemError(_('This template is assigned to at least one user.'));
-            } else {
-                $messageService->addSystemError(_('This template is assigned to at least one group.'));
-            }
-
-            return false;
-        } else {
-            $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
-            $stmt->execute([':id' => $id]);
-
-            $stmt = $this->db->prepare("DELETE FROM perm_templ WHERE id = :id");
-            $stmt->execute([':id' => $id]);
-            return true;
+            return PermissionTemplateDeleteResult::inUse($usedByUsers, $usedByGroups);
         }
+
+        $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
+        $stmt->execute([':id' => $id]);
+
+        $stmt = $this->db->prepare("DELETE FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+
+        return PermissionTemplateDeleteResult::DELETED;
+    }
+
+    /**
+     * Transactions go through the port: on SQLite one can be open without PDO
+     * knowing, and opening a second one on the same handle then fails.
+     */
+    private function transaction(): TransactionInterface
+    {
+        return $this->transactionPort ??= new PdoTransaction($this->db);
     }
 }

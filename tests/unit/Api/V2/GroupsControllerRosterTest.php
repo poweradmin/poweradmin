@@ -24,12 +24,13 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\GroupsController;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\GroupService;
-use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\UserGroupMember;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use ReflectionMethod;
 use ReflectionProperty;
 
@@ -86,7 +87,7 @@ class GroupsControllerRosterTest extends TestCase
 
         $apiPermissionService = $this->createMock(ApiPermissionService::class);
         $apiPermissionService->method('userHasPermission')
-            ->with(self::CALLER_ID, 'user_is_ueberuser')
+            ->with(self::CALLER_ID, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn($isAdmin);
 
         $this->setProperty($controller, 'groupService', $groupService);
@@ -97,7 +98,6 @@ class GroupsControllerRosterTest extends TestCase
         $this->setProperty($controller, 'pathParameters', ['id' => (string)self::GROUP_ID]);
 
         $method = new ReflectionMethod(GroupsController::class, 'getGroup');
-        $method->setAccessible(true);
         $response = $method->invoke($controller);
 
         return json_decode($response->getContent(), true);
@@ -115,7 +115,6 @@ class GroupsControllerRosterTest extends TestCase
     private function setProperty(object $controller, string $name, mixed $value): void
     {
         $property = new ReflectionProperty(GroupsController::class, $name);
-        $property->setAccessible(true);
         $property->setValue($controller, $value);
     }
 }

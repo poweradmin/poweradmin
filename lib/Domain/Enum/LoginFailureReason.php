@@ -22,11 +22,18 @@
 
 namespace Poweradmin\Domain\Enum;
 
+/**
+ * Why a login attempt failed; distinguishes a wrong password from an unknown, disabled or
+ * duplicated account, and the LDAP infrastructure failures that are logged as login_error.
+ * The values are the reason:<code> tokens in the audit log, so they must not change.
+ */
 enum LoginFailureReason: string
 {
     case NO_SUCH_USER = 'no_such_user';
     case WRONG_PASSWORD = 'wrong_password';
     case ACCOUNT_DISABLED = 'account_disabled';
     case DUPLICATE_USERS = 'duplicate_users';
+    case LDAP_CONNECT_FAILED = 'ldap_connect';
+    case LDAP_BIND_FAILED = 'ldap_bind';
     case LDAP_SEARCH_FAILED = 'ldap_search_failed';
 }

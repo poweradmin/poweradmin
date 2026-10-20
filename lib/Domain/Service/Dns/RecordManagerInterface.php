@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Exception;
-
 /**
- * Interface for DNS record management operations
+ * Record creation, update and deletion.
  */
 interface RecordManagerInterface
 {
@@ -39,8 +37,7 @@ interface RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      *
-     * @return boolean true if successful
-     * @throws Exception
+     * @return boolean true if successful; addRecordGetId() carries the reason for a refusal
      */
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool;
 
@@ -54,51 +51,42 @@ interface RecordManagerInterface
      * @param int $ttl Time-To-Live of record
      * @param mixed $prio Priority of record
      * @param int $disabled Whether the record is created in disabled state (0 or 1)
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
      *                            backend writes it in the same PATCH as the record, SQL ignores it
      *
-     * @return int|string|null The new record ID, or null on failure
-     * @throws Exception
+     * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
 
     /**
-     * Edit a record
+     * Edit a record. An unchanged save is skipped entirely when
+     * dns.bump_serial_on_unchanged_save is off, so nothing bumps the serial then;
+     * the result then reports changed = false.
      *
      * @param array $record Record structure to update
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string] to
      *                            store with the record where the backend keeps them together
-     *
-     * @return boolean true if successful
      */
-    public function editRecord(array $record, ?array $comment = null): bool;
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
 
     /**
-     * Delete a record by a given record id
+     * What every single write ends with: bump the serial (unless told not to) and
+     * rectify. Batch callers pass finalizeZone=false to the writes and call this
+     * once when they are done; one holding a transaction bumps the serial inside
+     * it and calls this with bumpSerial=false after the commit, since PowerDNS
+     * rectifies from committed rows.
+     */
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void;
+
+    /**
+     * Delete a record and everything that pointed at it (template link, comments)
      *
      * @param int|string $rid Record ID
-     *
-     * @return boolean true on success
+     * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      */
-    public function deleteRecord(int|string $rid): bool;
-
-    /**
-     * Delete record reference to zone template
-     *
-     * @param int $rid Record ID
-     *
-     * @return boolean true on success
-     */
-    public static function deleteRecordZoneTempl($db, int|string $rid): bool;
-
-    /**
-     * Get Zone comment
-     *
-     * @param int $zone_id Zone ID
-     *
-     * @return string Zone Comment
-     */
-    public static function getZoneComment($db, int $zone_id): string;
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult;
 
     /**
      * Edit the zone comment
@@ -106,7 +94,7 @@ interface RecordManagerInterface
      * @param int $zone_id Zone ID
      * @param string $comment Comment to set
      *
-     * @return boolean true on success
+     * @return RecordWriteResult Success, or the reason the write was refused
      */
-    public function editZoneComment(int $zone_id, string $comment): bool;
+    public function editZoneComment(int $zone_id, string $comment): RecordWriteResult;
 }

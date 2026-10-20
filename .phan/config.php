@@ -366,6 +366,7 @@ return [
     // your application should be included in this list.
     'directory_list' => [
         'addons',
+        'bin',
         'config',
         'install',
         'lib',
@@ -379,5 +380,6 @@ return [
     'file_list' => [
         'index.php',
         'dynamic_update.php',
+        'bin/poweradmin',
     ],
 ];

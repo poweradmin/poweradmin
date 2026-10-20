@@ -3,10 +3,10 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\LoginAttemptService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
+use Poweradmin\Domain\Repository\LoginAttemptRepositoryInterface;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
 
 class IpListMatchingTest extends TestCase
 {
@@ -15,14 +15,12 @@ class IpListMatchingTest extends TestCase
 
     protected function setUp(): void
     {
-        $pdoLayerMock = $this->createMock(PDO::class);
-        $configManagerMock = $this->createMock(ConfigurationManager::class);
-        $this->loginAttemptService = new LoginAttemptService($pdoLayerMock, $configManagerMock);
+        $attemptsMock = $this->createMock(LoginAttemptRepositoryInterface::class);
+        $this->loginAttemptService = new LoginAttemptService($attemptsMock, new FakeConfiguration());
 
         // Use reflection to access the private isIpInList method
         $reflection = new ReflectionClass(LoginAttemptService::class);
         $this->isIpInListMethod = $reflection->getMethod('isIpInList');
-        $this->isIpInListMethod->setAccessible(true);
     }
 
     public function testExactIpMatch()

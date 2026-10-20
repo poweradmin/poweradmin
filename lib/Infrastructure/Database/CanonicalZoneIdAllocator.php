@@ -23,7 +23,7 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
-use PDOException;
+use Poweradmin\Domain\Database\DbCompat;
 
 /**
  * Settles the canonical id of zone rows this application creates in API backend mode.
@@ -32,70 +32,31 @@ use PDOException;
  * an API key scope already uses that number as a zone id. Then the row itself moves to an
  * id above all of them, so it never takes over (or inherits the grants of) another zone's
  * id, and rows created after it get their own ids again. Build one per transaction before
- * inserting: it locks the queue row first and then reads the zones rows, so concurrent
- * creators queue up instead of deadlocking.
+ * inserting: the backend marker row is locked first, so concurrent creators queue up, and the
+ * zones rows are then read with a lock.
  */
 final class CanonicalZoneIdAllocator
 {
     /** Advisory lock key for zone id allocation on PostgreSQL (the issue that introduced it). */
     private const PGSQL_LOCK_KEY = 1559;
 
-    /** The app_settings row creators queue on. Its value records that zone ids were written in API mode. */
-    public const QUEUE_KEY = 'backend.zone_ids';
-
     /** @var array<int, true> */
     private array $used = [];
     private int $highest = 0;
     private string $driver;
 
-    /**
-     * Creates the queue row when it is missing, as its own statement outside any transaction:
-     * an insert racing inside the creators' transactions would deadlock them. Returns whether
-     * the row can be locked; false when a transaction is already open or app_settings is missing.
-     */
-    public static function ensureQueueRow(PDO $db): bool
-    {
-        if ($db->inTransaction()) {
-            return false;
-        }
-
-        try {
-            $stmt = $db->prepare("SELECT 1 FROM app_settings WHERE setting_key = :key");
-            $stmt->execute([':key' => self::QUEUE_KEY]);
-            if ($stmt->fetchColumn() !== false) {
-                return true;
-            }
-
-            $values = "(setting_key, setting_value, value_type) VALUES (:key, 'api', 'string')";
-            $insert = match ((string)$db->getAttribute(PDO::ATTR_DRIVER_NAME)) {
-                'mysql' => "INSERT IGNORE INTO app_settings $values",
-                'pgsql' => "INSERT INTO app_settings $values ON CONFLICT (setting_key) DO NOTHING",
-                default => "INSERT OR IGNORE INTO app_settings $values",
-            };
-            $db->prepare($insert)->execute([':key' => self::QUEUE_KEY]);
-
-            return true;
-        } catch (PDOException) {
-            return false;
-        }
-    }
-
-    /**
-     * @param bool $queue Whether ensureQueueRow() returned true; the queue row is then locked first
-     */
-    public function __construct(private readonly PDO $db, bool $queue = false)
+    public function __construct(private readonly PDO $db)
     {
         $this->driver = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
-        if ($queue) {
-            // An exclusive row lock on MySQL and a write-first transaction on SQLite, where
-            // busy_timeout then applies. Locking zones first deadlocks on InnoDB gap locks.
-            $lock = $db->prepare("UPDATE app_settings SET setting_value = 'api' WHERE setting_key = :key");
-            $lock->execute([':key' => self::QUEUE_KEY]);
-        }
         if ($this->driver === 'pgsql') {
             // Row locks only cover rows a statement sees; this serializes creators even with none
             $db->prepare("SELECT pg_advisory_xact_lock(" . self::PGSQL_LOCK_KEY . ")")->execute();
         }
+        // Locks the one marker row so creators queue before touching zones: locking the zones
+        // rows first leaves two creators each holding the gap the other must insert into, a
+        // deadlock on InnoDB. Rows written from here on carry canonical ids, which the SQL
+        // backend cannot read
+        BackendModeMarker::markApi($db);
         $zones = $db->prepare("SELECT id, domain_id FROM zones" . DbCompat::rowLock($this->driver));
         $zones->execute();
         foreach ($zones->fetchAll(PDO::FETCH_ASSOC) as $row) {

@@ -34,43 +34,41 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Exception;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\DnsBackendProviderFactory;
-use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ZoneDnssecRectifyController extends PublicApiController
 {
-    protected ZoneRepositoryInterface $zoneRepository;
+    protected DomainRepositoryInterface $domainRepository;
     protected ApiPermissionService $apiPermissionService;
-    protected DnssecProvider $dnssecProvider;
+    protected DnssecProviderInterface $dnssecProvider;
     protected ?PowerdnsApiClient $apiClient = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->dnssecProvider = DnssecProviderFactory::create($this->db, $this->config, null, $this->logger);
-        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->logger);
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->dnssecProvider = $this->services()->dnssecProvider();
+        $this->apiClient = DnsBackendProviderFactory::createApiClient($this->config, $this->session(), $this->logger);
     }
 
     public function run(): void
     {
         $response = match ($this->request->getMethod()) {
             'POST' => $this->rectify(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['POST']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     // Rectifying changes an existing zone, so it needs update rather than create rights.
@@ -116,7 +114,8 @@ class ZoneDnssecRectifyController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        $zoneName = $this->domainRepository->getDomainNameById($zoneId);
+        if ($zoneName === null) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -128,13 +127,8 @@ class ZoneDnssecRectifyController extends PublicApiController
             return $this->returnApiError('Rectifying requires the PowerDNS API to be configured', 501);
         }
 
-        $zoneName = $this->zoneRepository->getDomainNameById($zoneId);
-        if ($zoneName === null) {
-            return $this->returnApiError('Zone not found', 404);
-        }
-
         // Secondary and consumer zones take their records from elsewhere, so there is nothing of ours to rectify
-        if (ZoneType::isReadOnly($this->zoneRepository->getDomainType($zoneId))) {
+        if (ZoneType::isReadOnly($this->domainRepository->getDomainType($zoneId))) {
             return $this->returnApiError('Secondary and consumer zones cannot be rectified', 409);
         }
 
@@ -158,7 +152,7 @@ class ZoneDnssecRectifyController extends PublicApiController
 
             return $this->returnApiResponse(null, true, 'Zone rectified successfully');
         } catch (Exception $e) {
-            return $this->handleException($e, 'Failed to rectify zone', 'Failed to rectify zone');
+            return $this->handleException($e, 'ZoneDnssecRectifyController::rectify', 'Failed to rectify zone');
         }
     }
 }

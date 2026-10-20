@@ -24,12 +24,15 @@
  * Reports Playwright tests that can never fail.
  *
  * A test is flagged when every expect() it contains sits inside an existence
- * guard such as `if (await locator.count() > 0)`, or behind a bare
- * `if (!id) return;`. When the element or fixture is missing the body is
+ * guard such as `if (await locator.count() > 0)`, or after a bare early
+ * return at the top level of the test body (`if (!id) return;` or
+ * `if (!id) { return; }`). When the element or fixture is missing the body is
  * skipped, no assertion runs, and the test reports green - so the very
- * regression it guards against is what makes it pass.
+ * regression it guards against is what makes it pass. Returns inside nested
+ * callbacks or helpers do not count, and hooks (beforeAll, afterAll) are not tests.
  *
- * Advisory only: prints a report and always exits 0.
+ * Exits 1 on a flagged test missing from assertions-baseline.txt or a baseline
+ * entry that no longer flags; otherwise prints the baselined backlog and exits 0.
  */
 
 const fs = require('fs');
@@ -38,11 +41,43 @@ const path = require('path');
 const TESTS_DIR = path.join(__dirname, '..', 'tests');
 
 // test.describe must not match - a describe block spans the whole file and would swallow its tests
-const TEST_START = /^\s*test(?!\.describe)(?:\.\w+)*\s*\(\s*['"`](.+?)['"`]/;
+const TEST_START = /^\s*test(?!\.(?:describe|step)\b)(?:\.\w+)*\s*\(\s*['"`](.+?)['"`]/;
 const EXISTENCE_GUARD = /if\s*\(\s*await\s+.*\.(?:count\s*\(\s*\)\s*[>!=]|isVisible\s*\(\s*\))/;
-const SILENT_RETURN = /if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*return\s*;/;
+const SILENT_RETURN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*(?:return\s*;?\s*$|\{\s*return\s*;?\s*\})/;
+const SILENT_RETURN_BLOCK_OPEN = /^\s*if\s*\(\s*![A-Za-z_$][\w$]*\s*\)\s*\{\s*$/;
+const BARE_RETURN = /^\s*return\s*;?\s*$/;
+const BLOCK_ENDERS = /expect\(|test\.skip\(|\bthrow\b/;
 
-/** Blank out comments, strings and regex literals so brace counting is not fooled by braces inside them. */
+/**
+ * Index of the callback body's opening brace on this line, or -1. The brace counts only at
+ * paren depth 1 (directly inside test(...)) after `=>` or the `)` closing a function's
+ * parameters, so an options object or a destructured parameter is never taken for the body.
+ * `state` carries the paren depth across lines for multi-line headers.
+ */
+function findBodyBrace(code, state) {
+  for (let k = 0; k < code.length; k++) {
+    const c = code[k];
+    if (c === '(') {
+      state.parens++;
+      if (state.parens === 2 && /function\s*[\w$]*\s*$/.test(code.slice(0, k))) {
+        state.funcParen = 2;
+      }
+    } else if (c === ')') {
+      if (state.parens === state.funcParen && state.funcParen > 0) {
+        state.armed = true;
+        state.funcParen = 0;
+      }
+      state.parens--;
+    } else if (c === '=' && code[k + 1] === '>' && state.parens === 1) {
+      state.armed = true;
+    } else if (c === '{' && state.armed && state.parens === 1) {
+      return k;
+    }
+  }
+  return -1;
+}
+
+/** Blank out comments and string literals so brace counting is not fooled by braces inside them. */
 function stripNoise(line) {
   return line
     .replace(/\\./g, '')
@@ -82,11 +117,19 @@ function analyseFile(file) {
     const assertions = [];
     let depth = 0;
     let opened = false;
+    const header = { parens: 0, armed: false, funcParen: 0 };
     let base = null;
     let j = i;
     let skipsSilently = false;
+    let pendingBlockReturn = null;
+    let returnDepth = null;
 
     for (; j < lines.length; j++) {
+      // Tests cannot nest, so a new declaration means this opener was missed (braceless callback)
+      if (!opened && j > i && TEST_START.test(lines[j])) {
+        j--;
+        break;
+      }
       const raw = lines[j];
       const code = stripNoise(raw);
       const depthBefore = depth;
@@ -94,29 +137,44 @@ function analyseFile(file) {
       if (EXISTENCE_GUARD.test(code)) {
         guardDepths.add(depthBefore);
       }
-      if (SILENT_RETURN.test(code)) {
-        skipsSilently = true;
+      // Only a return directly in the test body counts; deeper ones belong to callbacks or loops.
+      const bodyDepth = base === null ? null : base + 1;
+      if (opened && depthBefore === bodyDepth && returnDepth === null) {
+        if (SILENT_RETURN.test(code)) {
+          returnDepth = depthBefore;
+          skipsSilently = true;
+        } else if (SILENT_RETURN_BLOCK_OPEN.test(code)) {
+          pendingBlockReturn = depthBefore;
+        }
+      } else if (pendingBlockReturn !== null && code.trim() !== '') {
+        // Other statements (an annotation push, a log) may sit between the guard and its return
+        if (BARE_RETURN.test(code) && depthBefore === pendingBlockReturn + 1) {
+          returnDepth = pendingBlockReturn;
+          skipsSilently = true;
+          pendingBlockReturn = null;
+        } else if (BLOCK_ENDERS.test(code) || depthBefore <= pendingBlockReturn || code.trim().startsWith('}')) {
+          pendingBlockReturn = null;
+        }
       }
       if (code.includes('expect(')) {
-        assertions.push({ depth: depthBefore, line: j + 1 });
+        assertions.push({ depth: depthBefore, line: j + 1, afterReturn: returnDepth !== null });
       }
 
-      depth += (code.match(/{/g) || []).length - (code.match(/}/g) || []).length;
-      if (!opened && code.includes('{')) {
+      const braceAt = opened ? -1 : findBodyBrace(code, header);
+      if (braceAt >= 0) {
+        const before = code.slice(0, braceAt);
+        base = depthBefore + (before.match(/{/g) || []).length - (before.match(/}/g) || []).length;
         opened = true;
-        base = depth - 1;
       }
+      depth += (code.match(/{/g) || []).length - (code.match(/}/g) || []).length;
       if (opened && depth <= base) {
         break;
       }
     }
 
-    const unguarded = assertions.filter((a) => ![...guardDepths].some((g) => a.depth > g));
+    const unguarded = assertions.filter((a) => !a.afterReturn && ![...guardDepths].some((g) => a.depth > g));
     if (assertions.length > 0 && unguarded.length === 0) {
-      const reasons = ['every assertion is behind an existence guard'];
-      if (skipsSilently) {
-        reasons.push('silent early return');
-      }
+      const reasons = [skipsSilently ? 'assertions sit behind a silent early return' : 'every assertion is behind an existence guard'];
       flagged.push({ name, line: i + 1, assertions: assertions.length, reason: reasons.join('; ') });
     }
 
@@ -144,6 +202,40 @@ function main() {
     }
   }
 
+  // The known cases are frozen in a baseline so the backlog can be worked down
+  // without blocking, while anything new fails the run.
+  const baselinePath = path.join(__dirname, 'assertions-baseline.txt');
+  const baseline = fs.existsSync(baselinePath)
+    ? new Set(fs.readFileSync(baselinePath, 'utf8').split('\n').map(l => l.trim()).filter(Boolean))
+    : new Set();
+
+  const seen = new Set();
+  const added = [];
+  for (const { file, flagged } of results) {
+    for (const t of flagged) {
+      const key = `${file}::${t.name}`;
+      seen.add(key);
+      if (!baseline.has(key)) {
+        added.push(`${file}:${t.line}  ${t.name}`);
+      }
+    }
+  }
+  const stale = [...baseline].filter(key => !seen.has(key));
+
+  if (added.length > 0) {
+    console.log(`New Playwright tests whose assertions can never run: ${added.length}`);
+    console.log('Give the test an assertion that runs when the element is absent, or');
+    console.log('add it to playwright/tools/assertions-baseline.txt with a reason in the commit.\n');
+    added.forEach(line => console.log(`  ${line}`));
+    process.exit(1);
+  }
+
+  if (stale.length > 0) {
+    console.log(`These baseline entries no longer flag; remove them from playwright/tools/assertions-baseline.txt:\n`);
+    stale.forEach(key => console.log(`  ${key}`));
+    process.exit(1);
+  }
+
   if (total === 0) {
     console.log('No Playwright tests with unreachable assertions.');
     process.exit(0);
@@ -153,7 +245,7 @@ function main() {
   results.sort((a, b) => b.flagged.length - a.flagged.length);
 
   console.log(`Playwright tests whose assertions can never run: ${total} in ${results.length} files`);
-  console.log('(advisory - these pass when the element under test is absent)\n');
+  console.log('(all are in the baseline; these pass when the element under test is absent)\n');
 
   for (const { file, flagged } of results) {
     console.log(`${String(flagged.length).padStart(3)}  ${file}`);

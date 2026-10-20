@@ -4,12 +4,13 @@
 auth:
   - changed-files:
     - any-glob-to-any-file:
+      - 'lib/Application/Service/Auth/**'
       - 'lib/**/Service/*Authentication*.php'
       - 'lib/**/Service/*Authenticator*.php'
       - 'lib/**/Middleware/*Authentication*.php'
-      - 'lib/Application/Service/SessionService.php'
+      - 'lib/Infrastructure/Session/*.php'
       - 'lib/Application/Service/MfaService.php'
-      - 'lib/Application/Service/LoginAttemptService.php'
+      - 'lib/Application/Service/Auth/LoginAttemptService.php'
       - 'tests/**/*Authentication*.php'
       - 'tests/**/*Authenticator*.php'
 
@@ -21,8 +22,7 @@ dns:
       - 'lib/**/Service/*Record*.php'
       - 'lib/**/Repository/*Record*.php'
       - 'lib/**/Repository/*Zone*.php'
-      - 'lib/Domain/Service/DnsRecordValidationService.php'
-      - 'lib/Domain/Service/DnssecService.php'
+      - 'lib/Domain/Service/Dns/DnsRecordValidationService.php'
       - 'tests/**/*Record*.php'
       - 'tests/**/*Zone*.php'
 
@@ -30,7 +30,6 @@ dnssec:
   - changed-files:
     - any-glob-to-any-file:
       - 'lib/**/*Dnssec*.php'
-      - 'lib/Domain/Service/DnssecService.php'
       - 'tests/**/*Dnssec*.php'
       - 'docs/**/*dnssec*.md'
       - 'docs/**/*DNSSEC*.md'
@@ -39,7 +38,7 @@ api:
   - changed-files:
     - any-glob-to-any-file:
       - 'lib/Application/Controller/Api/**'
-      - 'lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php'
+      - 'lib/Application/Service/Auth/ApiKeyAuthenticationMiddleware.php'
       - 'tests/**/Api/**'
       - 'docs/API*.md'
 
@@ -73,7 +72,7 @@ validation:
     - any-glob-to-any-file:
       - 'lib/**/Validation/**'
       - 'lib/**/Validator/**'
-      - 'lib/Domain/Service/DnsRecordValidationService.php'
+      - 'lib/Domain/Service/Dns/DnsRecordValidationService.php'
       - 'lib/Domain/Service/IpAddressValidator.php'
       - 'tests/**/*Validation*.php'
 
@@ -103,8 +102,15 @@ core:
     - any-glob-to-any-file:
       - 'lib/Domain/**'
       - 'lib/Application/Controller/*.php'
+      - 'lib/Application/Controller/System/**'
+      - 'lib/Application/Controller/Log/**'
+      - 'lib/Application/Controller/Template/**'
+      - 'lib/Application/Controller/User/**'
+      - 'lib/Application/Controller/Auth/**'
+      - 'lib/Application/Controller/Dnssec/**'
+      - 'lib/Application/Controller/Record/**'
+      - 'lib/Application/Controller/Zone/**'
       - 'lib/Application/Service/UserManager.php'
-      - 'lib/Application/Service/ZoneService.php'
       - 'lib/Application/Service/RecordManager.php'
       - 'index.php'
       - 'dynamic_update.php'

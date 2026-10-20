@@ -3,7 +3,8 @@
 ##############################################################################
 # Poweradmin API v2 Test Suite
 # Comprehensive testing for API v2 endpoints
-# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata, Users
+# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups, Metadata, Users,
+#        limited-user permission gates (identity matrix, basic auth)
 ##############################################################################
 
 set -euo pipefail
@@ -28,6 +29,7 @@ NC='\033[0m' # No Color
 TOTAL_TESTS=0
 PASSED_TESTS=0
 FAILED_TESTS=0
+SKIPPED_TESTS=0
 
 # Stored IDs
 TEST_ZONE_ID=""
@@ -69,6 +71,20 @@ print_pass() {
 print_fail() {
     echo -e "${RED}✗ FAIL: $1${NC}"
     FAILED_TESTS=$((FAILED_TESTS + 1))
+}
+
+# A skip is for a feature the instance does not offer (disabled, unsupported
+# by PowerDNS) or a runner without the tools a test needs. Never use it to
+# hide a failure. Counts toward the total so passed+failed+skipped adds up.
+skip() {
+    increment_test
+    skip_counted "$1"
+}
+
+# For callers that already called increment_test for the test being skipped.
+skip_counted() {
+    echo -e "${YELLOW}- SKIP: $1${NC}"
+    SKIPPED_TESTS=$((SKIPPED_TESTS + 1))
 }
 
 print_info() {
@@ -350,6 +366,8 @@ test_rrsets() {
 
     # Test 11: Delete non-existent RRSet
     api_request_v2 "DELETE" "/zones/$TEST_ZONE_ID/rrsets/nonexistent/A" "" 404 "Delete non-existent RRSet returns 404"
+    api_request_v2 "DELETE" "/zones/$TEST_ZONE_ID/rrsets/www/AAAAA" "" 400 "Delete with an unknown record type returns 400"
+    assert_json "Unknown type answers like create and replace" "$LAST_RESPONSE_BODY" '.message' "Invalid record type."
 
     # Test 12: Invalid RRSet creation (empty records)
     local invalid_rrset='{"name":"invalid","type":"A","ttl":3600,"records":[]}'
@@ -371,6 +389,150 @@ test_rrsets() {
     api_request_v2 "PUT" "/zones/$TEST_ZONE_ID/rrsets" "$apex_rrset" 200 "Create zone apex RRSet (@)"
 
     print_info "RRSet tests completed"
+}
+
+##############################################################################
+# Test: Record and RRSet Listing (filter, sort, paging)
+##############################################################################
+
+test_record_listing() {
+    print_section "Record and RRSet Listing Tests (filter, sort, paging)"
+
+    local zone_id
+    if api_request_v2 "POST" "/zones" '{"name":"listing-test.example.com","type":"MASTER"}' 201 "Create zone for listing tests"; then
+        zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create zone - skipping listing tests"
+        return 1
+    fi
+
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"www","type":"A","ttl":3600,"records":[{"content":"192.0.2.1","disabled":false},{"content":"192.0.2.2","disabled":false}]}' 200 "Create www A RRSet"
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"mail","type":"A","ttl":300,"records":[{"content":"198.51.100.7","disabled":false}]}' 200 "Create mail A RRSet"
+    api_request_v2 "PUT" "/zones/${zone_id}/rrsets" '{"name":"api","type":"AAAA","ttl":600,"records":[{"content":"2001:db8::10","disabled":false}]}' 200 "Create api AAAA RRSet"
+
+    local base="/zones/${zone_id}"
+
+    # Without per_page nothing changes: no pagination object
+    api_request_v2 "GET" "${base}/records" "" 200 "List records without paging"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+
+    # Substring filters, case-insensitive
+    api_request_v2 "GET" "${base}/records?name=WWW" "" 200 "Filter records by name"
+    assert_json "Name filter keeps the two www records" "$LAST_RESPONSE_BODY" '.data.records | length' "2"
+    api_request_v2 "GET" "${base}/records?content=db8" "" 200 "Filter records by content"
+    assert_json "Content filter finds the AAAA record" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | unique | join(",")' "AAAA"
+    api_request_v2 "GET" "${base}/records?q=MAIL" "" 200 "Filter records with q on the name"
+    assert_json "q finds the mail record by name" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7"
+    api_request_v2 "GET" "${base}/records?q=db8" "" 200 "Filter records with q on the content"
+    assert_json "q finds the AAAA record by content" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | unique | join(",")' "AAAA"
+
+    # Sorting
+    api_request_v2 "GET" "${base}/records?type=A&sort=ttl,content:desc" "" 200 "Sort A records by ttl, content desc"
+    assert_json "Sorted by ttl, then content descending" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7,192.0.2.2,192.0.2.1"
+    api_request_v2 "GET" "${base}/records?sort=owner" "" 400 "Reject unknown record sort field"
+    api_request_v2 "GET" "${base}/records?sort=name:up" "" 400 "Reject unknown sort direction"
+    api_request_v2 "GET" "${base}/records?type%5B%5D=A" "" 400 "Reject a filter sent as an array"
+    assert_json "Array parameter is named" "$LAST_RESPONSE_BODY" '.message' "Query parameter 'type' must be a single value"
+    api_request_v2 "GET" "${base}/records?page%5B%5D=x" "" 400 "Reject page sent as an array"
+
+    # Paging after filter and sort
+    api_request_v2 "GET" "${base}/records?type=A&sort=content&per_page=2&page=2" "" 200 "Second page of A records"
+    assert_json "Second page holds the last A record" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "198.51.100.7"
+    assert_json "Pagination total counts the filtered records" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    assert_json "Pagination last_page" "$LAST_RESPONSE_BODY" '.pagination.last_page' "2"
+    assert_json "Pagination current_page" "$LAST_RESPONSE_BODY" '.pagination.current_page' "2"
+    api_request_v2 "GET" "${base}/records?per_page=2&page=99999999999999999999" "" 200 "A huge page number is an empty page"
+    assert_json "Huge page holds no records" "$LAST_RESPONSE_BODY" '.data.records | length' "0"
+
+    # RRSets
+    api_request_v2 "GET" "${base}/rrsets?content=192.0.2.2" "" 200 "Filter RRSets by member content"
+    assert_json "Content filter keeps the whole www RRSet" "$LAST_RESPONSE_BODY" '[.data.rrsets[] | select(.type == "A") | .records | length] | join(",")' "2"
+    api_request_v2 "GET" "${base}/rrsets?q=198.51" "" 200 "Filter RRSets with q on the content"
+    assert_json "q keeps only the mail RRSet" "$LAST_RESPONSE_BODY" '[.data.rrsets[].records[].content] | join(",")' "198.51.100.7"
+    api_request_v2 "GET" "${base}/rrsets?type=A&sort=ttl:desc&per_page=1" "" 200 "First page of A RRSets by ttl desc"
+    assert_json "Highest TTL first" "$LAST_RESPONSE_BODY" '.data.rrsets[0].ttl' "3600"
+    assert_json "RRSet pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "${base}/rrsets?sort=content" "" 400 "Reject unknown RRSet sort field"
+
+    api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Delete listing test zone" || true
+}
+
+##############################################################################
+# Test: Zone and User Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local zones users id
+    zones=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zones" 2>/dev/null)
+    for id in $(echo "$zones" | jq -r '.data.zones[]? | select(.name | IN("zlist-a.example.com", "zlist-b.example.com", "zlist-c.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+
+    users=$(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/users" 2>/dev/null)
+    for id in $(echo "$users" | jq -r '.data.users[]? | select(.username | IN("zlist_user_a", "zlist_user_b")) | .user_id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_user_listing() {
+    print_section "Zone and User Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_listing_test_data
+
+    local zone_ids=()
+    local zone
+    for zone in '{"name":"zlist-b.example.com","type":"MASTER"}' '{"name":"zlist-a.example.com","type":"NATIVE"}' '{"name":"zlist-c.example.com","type":"MASTER"}'; do
+        if api_request_v2 "POST" "/zones" "$zone" 201 "Create zone for listing tests"; then
+            zone_ids+=("$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")")
+        fi
+    done
+
+    # Substring filter on the zone name, case-insensitive
+    api_request_v2 "GET" "/zones?q=ZLIST-" "" 200 "Filter zones by name substring"
+    assert_json "q finds the three listing zones" "$LAST_RESPONSE_BODY" '.data.zones | length' "3"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+
+    # Sorting
+    api_request_v2 "GET" "/zones?q=zlist-&sort=type:desc,name" "" 200 "Sort zones by type desc, then name"
+    assert_json "NATIVE before MASTER, then by name" "$LAST_RESPONSE_BODY" '.data.zones | map(.name) | join(",")' "zlist-a.example.com,zlist-b.example.com,zlist-c.example.com"
+    api_request_v2 "GET" "/zones?sort=count_records" "" 400 "Reject unknown zone sort field"
+
+    # Paging after filter and sort
+    api_request_v2 "GET" "/zones?q=zlist-&sort=name:desc&per_page=2&page=2" "" 200 "Second page of filtered zones"
+    assert_json "Second page holds the last zone" "$LAST_RESPONSE_BODY" '.data.zones | map(.name) | join(",")' "zlist-a.example.com"
+    assert_json "Pagination total counts the filtered zones" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    assert_json "Pagination last_page" "$LAST_RESPONSE_BODY" '.pagination.last_page' "2"
+
+    local user_ids=()
+    local user
+    for user in '{"username":"zlist_user_b","password":"SecureTestPass1234","fullname":"Listing Bravo","email":"zlist-b@example.com","description":"","perm_templ":1,"active":true}' \
+                '{"username":"zlist_user_a","password":"SecureTestPass1234","fullname":"Listing Alpha","email":"zlist-a@example.com","description":"","perm_templ":1,"active":true}'; do
+        if api_request_v2 "POST" "/users" "$user" 201 "Create user for listing tests"; then
+            user_ids+=("$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')")
+        fi
+    done
+
+    api_request_v2 "GET" "/users?q=ZLIST&sort=username:desc" "" 200 "Filter and sort users"
+    assert_json "q finds both users, sorted by username descending" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_b,zlist_user_a"
+    api_request_v2 "GET" "/users?q=listing%20alpha" "" 200 "Filter users by full name"
+    assert_json "Full name search finds one user" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_a"
+    api_request_v2 "GET" "/users?q=zlist&sort=email&per_page=1&page=2" "" 200 "Second page of filtered users"
+    assert_json "Second page by email holds user b" "$LAST_RESPONSE_BODY" '.data.users | map(.username) | join(",")' "zlist_user_b"
+    assert_json "User pagination total counts the filtered users" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/users?sort=password" "" 400 "Reject unknown user sort field"
+
+    local id
+    for id in "${user_ids[@]}"; do
+        api_request_v2 "DELETE" "/users/${id}" "" 200 "Delete listing test user" || true
+    done
+    for id in "${zone_ids[@]}"; do
+        api_request_v2 "DELETE" "/zones/${id}" "" 204 "Delete listing test zone" || true
+    done
 }
 
 ##############################################################################
@@ -422,6 +584,11 @@ test_ptr_autocreation() {
         fi
     fi
 
+    # The reverse zone outlives a run, so a PTR left by the previous run would make creation report "already exists"
+    if [[ -n "$TEST_REVERSE_ZONE_ID" ]]; then
+        cleanup_stale_ptr_records "100.2.0.192.in-addr.arpa"
+    fi
+
     # Test 1: Create A record WITH PTR auto-creation
     local record_with_ptr='{
         "name": "host1",
@@ -434,14 +601,11 @@ test_ptr_autocreation() {
 
     # Check if PTR was created (response should mention it)
     increment_test
-    if [[ "$LAST_RESPONSE_BODY" =~ "ptr_created" ]]; then
-        if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_created\":true" ]]; then
-            print_pass "PTR record auto-creation succeeded"
-        else
-            print_info "PTR record auto-creation was attempted but may have failed (check reverse zone)"
-        fi
+    if [[ "$LAST_RESPONSE_BODY" =~ "\"ptr_created\":true" ]]; then
+        print_pass "PTR record auto-creation succeeded"
     else
-        print_info "Response doesn't include PTR status (old API version?)"
+        print_fail "PTR record auto-creation did not report ptr_created:true"
+        echo "Response: $LAST_RESPONSE_BODY"
     fi
 
     # Test 2: Create A record WITHOUT PTR auto-creation (default)
@@ -481,7 +645,7 @@ test_ptr_autocreation() {
         if [[ "$LAST_RESPONSE_BODY" =~ "100.2.0.192.in-addr.arpa" ]]; then
             print_pass "PTR record found in reverse zone"
         else
-            print_info "PTR record not found (may require manual verification)"
+            print_fail "PTR record 100.2.0.192.in-addr.arpa not found in the reverse zone"
         fi
     fi
 
@@ -513,8 +677,8 @@ test_ptr_update() {
     print_section "PTR Update Tests"
 
     if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
-        print_info "Skipping PTR update tests - PTR auto-creation didn't run"
-        return 0
+        print_fail "PTR update tests need the forward and reverse test zones, which were not set up"
+        return 1
     fi
 
     cleanup_stale_ptr_records "200.2.0.192.in-addr.arpa" "201.2.0.192.in-addr.arpa" "202.2.0.192.in-addr.arpa"
@@ -528,7 +692,7 @@ test_ptr_update() {
         "create_ptr": true
     }'
     if ! api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records" "$seed" 201 "Seed A record (192.0.2.200) with PTR"; then
-        print_info "Failed to seed record - skipping PTR update tests"
+        print_fail "Failed to seed record - skipping PTR update tests"
         return 1
     fi
     local PTR_UPD_RECORD_ID
@@ -601,8 +765,8 @@ test_ttl_defaults() {
     print_section "TTL Default Resolution Tests"
 
     if [[ -z "$TEST_ZONE_ID" || -z "$TEST_REVERSE_ZONE_ID" ]]; then
-        print_info "Skipping TTL default tests - PTR auto-creation didn't run"
-        return 0
+        print_fail "TTL default tests need the forward and reverse test zones, which were not set up"
+        return 1
     fi
 
     # Create an A record on the forward zone without a ttl field.
@@ -730,17 +894,18 @@ test_bulk_operations() {
     # Test 5: Verify rollback (valid record should not exist)
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
 
-    increment_test
     if [[ "${DNS_BACKEND:-sql}" == "api" ]]; then
         # Writes go straight to PowerDNS over REST, which no PDO transaction can
         # undo, so the controller deliberately skips one (ZonesRecordsBulkController
         # sets $useTransaction = !isApiBackend()). A partial batch is expected here.
-        print_info "Atomic rollback is not available on the API backend - skipping"
+        skip "Atomic rollback is not available on the API backend"
     # Match the full field: a bare 192.0.2.20 is also a prefix of the
     # 192.0.2.20x addresses the PTR tests leave in this same zone
     elif [[ ! "$LAST_RESPONSE_BODY" =~ \"content\":\"192\.0\.2\.20\" ]]; then
+        increment_test
         print_pass "Transaction rolled back correctly (no partial records)"
     else
+        increment_test
         print_fail "Rollback failed - found record that should have been rolled back"
     fi
 
@@ -1013,6 +1178,15 @@ test_zone_status_codes() {
     fi
     api_request_v2 "POST" "/zones" "$dup_zone" 409 "Reject duplicate zone name (already exists)"
 
+    # One zone id (#1559): every listed id is the canonical id and opens that same zone
+    api_request_v2 "GET" "/zones?per_page=1000" "" 200 "List zones for the id check"
+    assert_json "Every listed id equals canonical_id" "$LAST_RESPONSE_BODY" '[.data.zones[] | select(.id != .canonical_id)] | length' "0"
+    if [[ -n "$dup_zone_id" ]]; then
+        assert_json "The created zone is listed under the id the create returned" "$LAST_RESPONSE_BODY" "[.data.zones[] | select(.id == ${dup_zone_id}) | .name] | join(\",\")" "dup-status-test.example.com"
+        api_request_v2 "GET" "/zones/${dup_zone_id}" "" 200 "Open the created zone by its listed id"
+        assert_json "The listed id opens that zone" "$LAST_RESPONSE_BODY" '.data.zone.name' "dup-status-test.example.com"
+    fi
+
     # Operations on a non-existent zone return 404 (existence checked before permission)
     api_request_v2 "PUT" "/zones/999999" '{"type":"NATIVE"}' 404 "Update non-existent zone returns 404"
     assert_json "Update 404 uses v2 wrapper" "$LAST_RESPONSE_BODY" '.success' 'false'
@@ -1236,8 +1410,8 @@ test_groups() {
                 print_fail "Failed to assign zone"
             fi
         elif [[ "$http_code" == "400" ]]; then
-            print_info "Zone assignment skipped (may already exist or invalid zone)"
-            PASSED_TESTS=$((PASSED_TESTS + 1))
+            print_fail "Zone assignment returned 400, expected 201"
+            echo "Response: $body"
         else
             print_fail "Failed to assign zone (HTTP $http_code)"
         fi
@@ -1256,8 +1430,8 @@ test_groups() {
         http_code=$(echo "$response" | tail -n1)
         body=$(echo "$response" | sed '$d')
 
-        if [[ "$http_code" == "200" ]] || [[ "$http_code" == "404" ]]; then
-            print_pass "Zone unassigned (or not found)"
+        if [[ "$http_code" == "200" ]]; then
+            print_pass "Zone unassigned"
         else
             print_fail "Failed to unassign zone (HTTP $http_code)"
         fi
@@ -1305,6 +1479,94 @@ test_groups() {
     fi
 
     print_info "Groups API tests completed"
+}
+
+##############################################################################
+# Test: Group Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_group_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups" 2>/dev/null \
+        | jq -r '.data.groups[]? | select(.name | IN("glist-alpha", "glist-beta")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones" 2>/dev/null \
+        | jq -r '.data.zones[]? | select(.name | IN("glist-a.example.com", "glist-b.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users" 2>/dev/null \
+        | jq -r '.data.users[]? | select(.username == "glist_member") | .user_id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_group_listing() {
+    print_section "Group Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_group_listing_test_data
+
+    local alpha_id beta_id zone_a zone_b member_id
+    if api_request_v2 "POST" "/groups" '{"name":"glist-alpha","description":"Listing ops group","perm_templ_id":6}' 201 "Create group for listing tests"; then
+        alpha_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.group.id')
+    else
+        print_fail "Failed to create group - skipping group listing tests"
+        return 1
+    fi
+    if api_request_v2 "POST" "/groups" '{"name":"glist-beta","description":"Listing web group","perm_templ_id":6}' 201 "Create second group for listing tests"; then
+        beta_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.group.id')
+    fi
+    if api_request_v2 "POST" "/zones" '{"name":"glist-b.example.com","type":"MASTER"}' 201 "Create zone for group listing tests"; then
+        zone_b=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2 "POST" "/zones" '{"name":"glist-a.example.com","type":"MASTER"}' 201 "Create second zone for group listing tests"; then
+        zone_a=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    if api_request_v2 "POST" "/users" '{"username":"glist_member","password":"SecureTestPass1234","fullname":"Listing Member","email":"glist@example.com","description":"","perm_templ":1,"active":true}' 201 "Create user for group listing tests"; then
+        member_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+    fi
+    api_request_v2 "POST" "/groups/${alpha_id}/zones" "{\"zone_id\":${zone_b}}" 201 "Assign zone to group"
+    api_request_v2 "POST" "/groups/${alpha_id}/zones" "{\"zone_id\":${zone_a}}" 201 "Assign second zone to group"
+    api_request_v2 "POST" "/groups/${alpha_id}/members" "{\"user_id\":${member_id}}" 201 "Add member to group"
+    local admin_id
+    admin_id=$(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/users?username=admin" 2>/dev/null | jq -r '.data.users[0]?.user_id // empty')
+    api_request_v2 "POST" "/groups/${alpha_id}/members" "{\"user_id\":${admin_id}}" 201 "Add admin to group"
+
+    # Group list
+    api_request_v2 "GET" "/groups?q=GLIST-" "" 200 "Filter groups by name substring"
+    assert_json "q finds both listing groups" "$LAST_RESPONSE_BODY" '.data.groups | length' "2"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    api_request_v2 "GET" "/groups?q=web%20group" "" 200 "Filter groups by description"
+    assert_json "Description filter finds one group" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-beta"
+    api_request_v2 "GET" "/groups?q=glist-&sort=name:desc&per_page=1&page=2" "" 200 "Second page of groups by name desc"
+    assert_json "Second page holds glist-alpha" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-alpha"
+    assert_json "Group pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    assert_json "Counts are filled on a paged list" "$LAST_RESPONSE_BODY" '.data.groups[0].zone_count' "2"
+    api_request_v2 "GET" "/groups?q=glist-&sort=zone_count:asc" "" 200 "Sort groups by zone count"
+    assert_json "Group without zones first, unlike the name order" "$LAST_RESPONSE_BODY" '.data.groups | map(.name) | join(",")' "glist-beta,glist-alpha"
+    api_request_v2 "GET" "/groups?sort=perm_templ_id" "" 400 "Reject unknown group sort field"
+
+    # Members and zones of a group
+    api_request_v2 "GET" "/groups/${alpha_id}/members?q=GLIST" "" 200 "Filter group members"
+    assert_json "q finds the listing member" "$LAST_RESPONSE_BODY" '.data.members | map(.username) | join(",")' "glist_member"
+    # Both directions, since both members may join in the same second and tie in the default order
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=username:asc&per_page=1" "" 200 "First page of members by username asc"
+    assert_json "admin sorts first ascending" "$LAST_RESPONSE_BODY" '.data.members[0].username' "admin"
+    assert_json "Member pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=username:desc&per_page=1" "" 200 "First page of members by username desc"
+    assert_json "glist_member sorts first descending" "$LAST_RESPONSE_BODY" '.data.members[0].username' "glist_member"
+    api_request_v2 "GET" "/groups/${alpha_id}/members?sort=password" "" 400 "Reject unknown member sort field"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?q=GLIST-A" "" 200 "Filter group zones"
+    assert_json "q finds one zone" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-a.example.com"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=zone_name:asc&per_page=1&page=2" "" 200 "Second page of group zones by name asc"
+    assert_json "Second page ascending holds glist-b" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-b.example.com"
+    assert_json "Zone pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=zone_name:desc&per_page=1&page=2" "" 200 "Second page of group zones by name desc"
+    assert_json "Second page descending holds glist-a" "$LAST_RESPONSE_BODY" '.data.zones | map(.zone_name) | join(",")' "glist-a.example.com"
+    api_request_v2 "GET" "/groups/${alpha_id}/zones?sort=owner" "" 400 "Reject unknown group zone sort field"
+
+    cleanup_existing_group_listing_test_data
 }
 
 ##############################################################################
@@ -1488,6 +1750,151 @@ test_zone_templates() {
     api_request_v2 "DELETE" "/zone-templates/999999" "" 404 "Delete non-existent template returns 404"
 
     print_info "Zone Templates API tests completed"
+}
+
+##############################################################################
+# Test: Permission Listing (q filter, sort, paging)
+##############################################################################
+
+test_permission_listing() {
+    print_section "Permission Listing Tests (q filter, sort, paging)"
+
+    # The permission catalogue is fixed and the default templates are seeded, so no test data is needed
+    api_request_v2 "GET" "/permissions" "" 200 "List permissions without the new parameters"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    local total
+    total=$(echo "$LAST_RESPONSE_BODY" | jq '.data.permissions | length')
+
+    api_request_v2 "GET" "/permissions?q=UEBERUSER" "" 200 "Filter permissions by name"
+    assert_json "q finds user_is_ueberuser" "$LAST_RESPONSE_BODY" '.data.permissions | map(.name) | join(",")' "user_is_ueberuser"
+    api_request_v2 "GET" "/permissions?sort=name:desc&per_page=5&page=1" "" 200 "First page of permissions by name desc"
+    assert_json "Permission pagination total counts the catalogue" "$LAST_RESPONSE_BODY" '.pagination.total' "$total"
+    assert_json "Names descend" "$LAST_RESPONSE_BODY" '[.data.permissions[].name] == ([.data.permissions[].name] | sort | reverse)' "true"
+    api_request_v2 "GET" "/permissions?sort=descr" "" 400 "Reject unknown permission sort field"
+
+    api_request_v2 "GET" "/permission-templates?type=group" "" 200 "Filter permission templates by type"
+    assert_json "The seeded group templates exist" "$LAST_RESPONSE_BODY" '.data.templates | length > 0' "true"
+    assert_json "Only group templates" "$LAST_RESPONSE_BODY" '[.data.templates[].template_type] | unique | join(",")' "group"
+    api_request_v2 "GET" "/permission-templates?q=administrator&type=user" "" 200 "Filter permission templates by name"
+    assert_json "q finds the Administrator template" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | index("Administrator") != null' "true"
+    api_request_v2 "GET" "/permission-templates?sort=template_type,name&per_page=1" "" 200 "First page of permission templates"
+    assert_json "Group templates sort before user templates" "$LAST_RESPONSE_BODY" '.data.templates[0].template_type' "group"
+    api_request_v2 "GET" "/permission-templates?type=admins" "" 400 "Reject unknown permission template type"
+    api_request_v2 "GET" "/permission-templates?sort=owner" "" 400 "Reject unknown permission template sort field"
+}
+
+##############################################################################
+# Test: Zone create reports hidden parent records (gh #1641)
+##############################################################################
+
+cleanup_existing_shadow_test_zones() {
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones" 2>/dev/null \
+        | jq -r '.data.zones[]? | select(.name | IN("shadow-test.example.com", "sub.shadow-test.example.com", "other.shadow-test.example.com")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_create_shadowed_records() {
+    print_section "Zone Create Shadowed Records Tests (gh #1641)"
+
+    cleanup_existing_shadow_test_zones
+
+    local parent_id sub_id other_id
+    if api_request_v2 "POST" "/zones" '{"name":"shadow-test.example.com","type":"MASTER"}' 201 "Create parent zone"; then
+        parent_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create parent zone - skipping shadowed record tests"
+        return 1
+    fi
+    assert_json "A zone without a parent reports nothing hidden" "$LAST_RESPONSE_BODY" '.data | has("shadowed_records")' "false"
+    api_request_v2 "PUT" "/zones/${parent_id}/rrsets" '{"name":"www.sub","type":"A","ttl":300,"records":[{"content":"192.0.2.10","disabled":false}]}' 200 "Add a record the subzone will hide"
+
+    if api_request_v2 "POST" "/zones" '{"name":"sub.shadow-test.example.com","type":"MASTER"}' 201 "Create subzone under the record"; then
+        sub_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    assert_json "The parent zone is named" "$LAST_RESPONSE_BODY" '.data.shadowed_records.parent_zone' "shadow-test.example.com"
+    assert_json "The hidden record is listed" "$LAST_RESPONSE_BODY" '[.data.shadowed_records.records[] | select(.name == "www.sub.shadow-test.example.com") | .type] | join(",")' "A"
+
+    if api_request_v2 "POST" "/zones" '{"name":"other.shadow-test.example.com","type":"MASTER"}' 201 "Create subzone that hides nothing"; then
+        other_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    fi
+    assert_json "A subzone that hides nothing reports nothing" "$LAST_RESPONSE_BODY" '.data | has("shadowed_records")' "false"
+
+    local id
+    for id in "$sub_id" "$other_id" "$parent_id"; do
+        if [[ -n "$id" ]]; then
+            api_request_v2 "DELETE" "/zones/${id}" "" 204 "Delete shadowed record test zone" || true
+        fi
+    done
+}
+
+##############################################################################
+# Test: Zone Template Listing (q filter, sort, paging)
+##############################################################################
+
+cleanup_existing_template_listing_test_data() {
+    # The listing tests assert exact counts, so leftovers of an aborted run must go first
+    local id
+    for id in $(curl -s -H "X-API-Key: ${API_KEY}" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/zone-templates" 2>/dev/null \
+        | jq -r '.data.templates[]? | select(.name | IN("tlist-alpha", "tlist-beta")) | .id' 2>/dev/null); do
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" \
+            "${API_BASE_URL}/api/v2/zone-templates/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+test_zone_template_listing() {
+    print_section "Zone Template Listing Tests (q filter, sort, paging)"
+
+    cleanup_existing_template_listing_test_data
+
+    local alpha_id beta_id
+    if api_request_v2 "POST" "/zone-templates" '{"name":"tlist-alpha","description":"Listing mail setup"}' 201 "Create template for listing tests"; then
+        alpha_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+    else
+        print_fail "Failed to create template - skipping template listing tests"
+        return 1
+    fi
+    if api_request_v2 "POST" "/zone-templates" '{"name":"tlist-beta","description":"Listing web setup"}' 201 "Create second template for listing tests"; then
+        beta_id=$(extract_json_field "$LAST_RESPONSE_BODY" "id")
+    fi
+
+    # Template list
+    api_request_v2 "GET" "/zone-templates?q=TLIST-" "" 200 "Filter templates by name substring"
+    assert_json "q finds both listing templates" "$LAST_RESPONSE_BODY" '.data.templates | length' "2"
+    assert_json "No pagination without per_page" "$LAST_RESPONSE_BODY" 'has("pagination")' "false"
+    api_request_v2 "GET" "/zone-templates?q=web%20setup" "" 200 "Filter templates by description"
+    assert_json "Description filter finds one template" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | join(",")' "tlist-beta"
+    api_request_v2 "GET" "/zone-templates?q=tlist-&sort=name:desc&per_page=1&page=2" "" 200 "Second page of templates by name desc"
+    assert_json "Second page holds tlist-alpha" "$LAST_RESPONSE_BODY" '.data.templates | map(.name) | join(",")' "tlist-alpha"
+    assert_json "Template pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
+    api_request_v2 "GET" "/zone-templates?sort=owner" "" 400 "Reject unknown template sort field"
+
+    # Template records
+    local base="/zone-templates/${alpha_id}/records"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx2.[ZONE]","ttl":3600,"priority":20}' 201 "Add MX template record"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx1.[ZONE]","ttl":3600,"priority":10}' 201 "Add second MX template record"
+    api_request_v2 "POST" "$base" '{"name":"www.[ZONE]","type":"A","content":"192.0.2.10","ttl":300,"priority":0}' 201 "Add A template record"
+    api_request_v2 "POST" "$base" '{"name":"[ZONE]","type":"MX","content":"mx3.[ZONE]","ttl":3600,"priority":30}' 201 "Add third MX template record"
+
+    api_request_v2 "GET" "${base}?type=mx&sort=priority" "" 200 "Filter template records by type, sort by priority"
+    assert_json "MX records sorted by priority" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "mx1.[ZONE],mx2.[ZONE],mx3.[ZONE]"
+    api_request_v2 "GET" "${base}?name=WWW" "" 200 "Filter template records by name"
+    assert_json "Name filter finds the A record" "$LAST_RESPONSE_BODY" '.data.records | map(.type) | join(",")' "A"
+    api_request_v2 "GET" "${base}?content=mx1" "" 200 "Filter template records by content"
+    assert_json "Content filter finds one record" "$LAST_RESPONSE_BODY" '.data.records | length' "1"
+    api_request_v2 "GET" "${base}?type=MX&sort=priority:desc&per_page=1" "" 200 "First page of MX records by priority desc"
+    assert_json "Highest priority first" "$LAST_RESPONSE_BODY" '.data.records[0].content' "mx3.[ZONE]"
+    assert_json "Template record pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "3"
+    api_request_v2 "GET" "${base}?sort=prio" "" 400 "Reject unknown template record sort field"
+
+    local id
+    for id in "$alpha_id" "$beta_id"; do
+        if [[ -n "$id" ]]; then
+            api_request_v2 "DELETE" "/zone-templates/${id}" "" 200 "Delete listing test template" || true
+        fi
+    done
 }
 
 ##############################################################################
@@ -1915,7 +2322,7 @@ test_zone_dnssec() {
         "${API_BASE_URL}/api/v2/zones/${TEST_DNSSEC_ZONE_ID}/dnssec")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "DNSSEC endpoints return 501 (PowerDNS API not configured) - skipping live sign/unsign tests"
+        skip "DNSSEC sign/unsign tests: endpoints return 501 (PowerDNS API not configured)"
     else
         # Status on an unsigned zone
         api_request_v2 "GET" "/zones/${TEST_DNSSEC_ZONE_ID}/dnssec" "" 200 "Get DNSSEC status (unsigned)"
@@ -2017,7 +2424,7 @@ test_server_status() {
         "${API_BASE_URL}/api/v2/server/status")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "Server status endpoint returns 501 (PowerDNS API not configured) - skipping live checks"
+        skip "Server status live checks: endpoint returns 501 (PowerDNS API not configured)"
         return 0
     fi
 
@@ -2040,9 +2447,13 @@ test_server_status() {
 # Access checks run before the PowerDNS API check, so they need no live PowerDNS.
 test_server_status_access() {
     local mgr_id
-    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
-        print_info "Database access not available - skipping server status access tests"
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null); then
+        skip "Server status access tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$mgr_id" ]]; then
+        print_fail "Seeded user 'manager' not found - server status access tests cannot run"
+        return 1
     fi
     mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
     local owner_id
@@ -2094,7 +2505,7 @@ test_zone_dnssec_keys() {
         "${API_BASE_URL}/api/v2/zones/${zone_id}/dnssec/keys")
 
     if [[ "$probe_code" == "501" ]]; then
-        print_info "DNSSEC key endpoints return 501 (PowerDNS API not configured) - skipping live key tests"
+        skip "DNSSEC key tests: endpoints return 501 (PowerDNS API not configured)"
     else
         api_request_v2 "POST" "/zones/${zone_id}/records" \
             "{\"name\":\"${zone_name}\",\"type\":\"NS\",\"content\":\"ns1.example.com\"}" 201 "Add apex NS1 record"
@@ -2164,6 +2575,25 @@ test_zone_dnssec_keys() {
             print_fail "Expected a new active ZSK: $LAST_RESPONSE_BODY"
         fi
         api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${zsk_id}" "" 200 "Delete active ZSK"
+
+        # Import from an ISC/BIND private key (test-only ECDSA P-256 key)
+        local isc_key='Private-key-format: v1.2\nAlgorithm: 13 (ECDSAP256SHA256)\nPrivateKey: 8oJBqwnnl8Tnp7LrlF26dio/Wl/qIuxVmtCCjVFqsbs=\n'
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"privatekey":"x"}' 400 "Reject import without type"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"type":"zsk","privatekey":"not a key"}' 400 "Reject import of a non-ISC key"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" '{"type":"zsk","privatekey":"-----BEGIN PRIVATE KEY-----\nMIGHAgEA\n-----END PRIVATE KEY-----\n"}' 400 "Reject import of a PEM key"
+        api_request_v2 "POST" "/zones/${zone_id}/dnssec/keys/import" "{\"type\":\"zsk\",\"privatekey\":\"${isc_key}\"}" 201 "Import ZSK from ISC private key"
+        local imported_id
+        imported_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id' 2>/dev/null)
+        increment_test
+        if [[ "$imported_id" =~ ^[0-9]+$ ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.algorithm')" == "ecdsa256" ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.dnskey')" == 256\ 3\ 13\ * ]] \
+            && [[ "$(echo "$LAST_RESPONSE_BODY" | jq '.data | has("privatekey")')" == "false" ]]; then
+            print_pass "Imported key $imported_id takes its algorithm from the key and never echoes it"
+        else
+            print_fail "Import response wrong: $LAST_RESPONSE_BODY"
+        fi
+        api_request_v2 "DELETE" "/zones/${zone_id}/dnssec/keys/${imported_id}" "" 200 "Delete imported key"
 
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/${key_id}" "" 200 "Get single key"
         api_request_v2 "GET" "/zones/${zone_id}/dnssec/keys/999999" "" 404 "Get non-existent key"
@@ -2297,8 +2727,8 @@ test_users_group_assignment() {
         | jq -r --arg n "$group_name" '.data.groups[]? | select(.name == $n) | .id' 2>/dev/null)
 
     if [[ -z "$group_id" || "$group_id" == "null" ]]; then
-        print_info "Skipping group-assignment tests: seeded group '$group_name' not found"
-        return
+        print_fail "Seeded group '$group_name' not found - group-assignment tests cannot run"
+        return 1
     fi
 
     # An ID and that same group's name in one list must collapse to a single membership
@@ -2486,6 +2916,8 @@ cleanup_existing_test_zones() {
         "metadata-test.example.com"
         "disabled-test.example.com"
         "group-assign-test.example.com"
+        "change-request-test.example.com"
+        "listing-test.example.com"
     )
 
     local all_zones
@@ -2538,8 +2970,9 @@ test_users_ldap_sync() {
         print_fail "Expected LDAP-related error message, got: $LAST_RESPONSE_BODY"
     fi
 
-    # Switch user back to SQL; password updates must work again.
-    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false}' 200 "Disable use_ldap"
+    # Switch user back to SQL: the placeholder password must be replaced in the same request.
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false}' 400 "Reject disabling use_ldap without a password"
+    api_request_v2 "PUT" "/users/${ldap_user_id}" '{"use_ldap":false,"password":"ResetPass123"}' 200 "Disable use_ldap with a new password"
     api_request_v2 "PUT" "/users/${ldap_user_id}" '{"password":"NewPass123"}' 200 "Allow password change after disabling LDAP"
 
     api_request_v2 "DELETE" "/users/${ldap_user_id}" "" 200 "Delete LDAP test user"
@@ -2774,6 +3207,406 @@ test_users_perm_templ_validation() {
 }
 
 ##############################################################################
+# Test: Limited-user permission gates (identity matrix)
+##############################################################################
+
+# Every other suite authenticates with the ueberuser key, which satisfies every
+# gate. These identities are created through the API and authenticate with
+# basic auth so the 403 branches in the v2 controllers actually run.
+LUG_PASSWORD="LimitedUs3r#Pass1"
+LUG_ZONE_ID=""          # owned by lug_client and lug_content
+LUG_OTHER_ZONE_ID=""    # owned by the admin key only
+LUG_GLOBAL_ZT_ID=""     # global zone template (owner 0)
+LUG_ADMIN_ZT_ID=""      # personal zone template owned by the admin user
+LUG_ADMIN_USER_ID=""
+LUG_ADMIN_TEMPL_ID=""
+LUG_GROUP_ID=""
+# Per-identity user/template ids, assigned by lug_make_identity (bash 3 has no
+# associative arrays).
+LUG_UID_nobody="" LUG_UID_client="" LUG_UID_content="" LUG_UID_useredit=""
+LUG_TID_nobody="" LUG_TID_client=""
+
+# lug_as USER METHOD ENDPOINT DATA STATUS DESCRIPTION - a mismatch is counted
+# but never aborts the run, so every gate in the matrix gets reported.
+lug_as() {
+    local user="$1"
+    shift
+    api_request_v2_basic "$1" "$2" "$3" "$4" "$5" "$user" "$LUG_PASSWORD" || true
+}
+
+# Admin-key variant with the same never-abort behaviour.
+lug_admin() {
+    api_request_v2 "$1" "$2" "$3" "$4" "$5" || true
+}
+
+lug_admin_get() {
+    curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" "${API_BASE_URL}/api/v2$1"
+}
+
+lug_lookup_perm_templ() {
+    lug_admin_get "/permission-templates" | jq -r --arg n "$1" '.data.templates[]? | select(.name == $n) | .id' | head -1
+}
+
+lug_lookup_user() {
+    lug_admin_get "/users?username=$1" | jq -r '.data.users[0]?.user_id // empty'
+}
+
+# Removes anything a previous aborted run left behind. Zones first: a user who
+# still owns zones cannot be deleted without a transfer target.
+lug_cleanup() {
+    local id
+    for id in $(lug_admin_get "/zones" | jq -r '.data.zones[]? | select(.name | startswith("lug-")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/zones/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/zone-templates" | jq -r '.data.templates[]? | select(.name | startswith("lug_")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/zone-templates/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/users" | jq -r '.data.users[]? | select(.username | startswith("lug_")) | .user_id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/users/${id}" >/dev/null 2>&1 || true
+    done
+    for id in $(lug_admin_get "/permission-templates" | jq -r '.data.templates[]? | select(.name | startswith("lug_")) | .id'); do
+        curl -s -X DELETE -H "X-API-Key: $API_KEY" "${API_BASE_URL}/api/v2/permission-templates/${id}" >/dev/null 2>&1 || true
+    done
+}
+
+# lug_make_identity NAME "perm ids as JSON array" - template + user, both prefixed lug_.
+lug_make_identity() {
+    local name="$1" perms="$2" templ_id user_id
+    if ! api_request_v2 "POST" "/permission-templates" \
+        "{\"name\":\"lug_${name}_templ\",\"descr\":\"limited-user gate matrix\",\"permissions\":${perms}}" \
+        201 "Create template for lug_${name}"; then
+        return 1
+    fi
+    templ_id=$(lug_lookup_perm_templ "lug_${name}_templ")
+    if [[ -z "$templ_id" ]]; then
+        increment_test
+        print_fail "Could not resolve template id for lug_${name}"
+        return 1
+    fi
+    eval "LUG_TID_${name}=\"$templ_id\""
+
+    local body
+    body=$(jq -n --arg u "lug_${name}" --arg pw "$LUG_PASSWORD" --argjson t "$templ_id" \
+        '{username: $u, password: $pw, fullname: ("LUG " + $u), email: ($u + "@example.com"), perm_templ: $t, active: true}')
+    if ! api_request_v2 "POST" "/users" "$body" 201 "Create user lug_${name}"; then
+        return 1
+    fi
+    user_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id')
+    eval "LUG_UID_${name}=\"$user_id\""
+}
+
+lug_setup() {
+    lug_cleanup
+
+    # Permission ids from the perm_items seed: 41 zone_master_add, 43 content_view_own,
+    # 44 content_edit_own, 54 user_view_others, 55 user_add_new, 57 user_edit_others,
+    # 60 templ_perm_add, 61 templ_perm_edit, 62 content_edit_own_as_client,
+    # 63 zone_templ_add, 64 zone_templ_edit.
+    lug_make_identity "nobody" "[]" || return 1
+    lug_make_identity "client" "[43,62,63,64]" || return 1
+    lug_make_identity "content" "[43,44]" || return 1
+    lug_make_identity "useradd" "[54,55]" || return 1
+    lug_make_identity "useredit" "[54,57]" || return 1
+    lug_make_identity "templ" "[60,61]" || return 1
+
+    LUG_ADMIN_USER_ID=$(lug_lookup_user "admin")
+    if [[ -n "$LUG_ADMIN_USER_ID" ]]; then
+        LUG_ADMIN_TEMPL_ID=$(lug_admin_get "/users/${LUG_ADMIN_USER_ID}" | jq -r '.data.user.perm_templ // empty')
+    fi
+    LUG_GROUP_ID=$(lug_admin_get "/groups" | jq -r '.data.groups[0]?.id // empty')
+
+    if ! api_request_v2 "POST" "/zones" '{"name":"lug-owned.example.com","type":"MASTER"}' 201 "Create zone owned by limited users"; then
+        return 1
+    fi
+    LUG_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    lug_admin "POST" "/zones/${LUG_ZONE_ID}/owners" "{\"user_id\":${LUG_UID_client}}" 201 "Make lug_client an owner"
+    lug_admin "POST" "/zones/${LUG_ZONE_ID}/owners" "{\"user_id\":${LUG_UID_content}}" 201 "Make lug_content an owner"
+
+    if ! api_request_v2 "POST" "/zones" '{"name":"lug-other.example.com","type":"MASTER"}' 201 "Create zone no limited user owns"; then
+        return 1
+    fi
+    LUG_OTHER_ZONE_ID=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+
+    if api_request_v2 "POST" "/zone-templates" '{"name":"lug_global_zt","description":"global","is_global":true}' 201 "Create global zone template"; then
+        LUG_GLOBAL_ZT_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id')
+    fi
+    if api_request_v2 "POST" "/zone-templates" '{"name":"lug_admin_zt","description":"admin-owned"}' 201 "Create admin-owned zone template"; then
+        LUG_ADMIN_ZT_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id')
+    fi
+}
+
+lug_test_nobody() {
+    print_section "Limited users - no permissions at all"
+    local me="${LUG_UID_nobody}" other="${LUG_UID_content}" z="$LUG_ZONE_ID"
+
+    lug_as lug_nobody "GET" "/users" "" 403 "nobody: list users rejected"
+    lug_as lug_nobody "GET" "/users/${me}" "" 200 "nobody: may read own account"
+    lug_as lug_nobody "GET" "/users/${other}" "" 403 "nobody: other account hidden"
+    lug_as lug_nobody "POST" "/users" '{"username":"lug_by_nobody","password":"LimitedUs3r#Pass1"}' 403 "nobody: create user rejected"
+    lug_as lug_nobody "PUT" "/users/${other}" '{"fullname":"x"}' 403 "nobody: edit other user rejected"
+    lug_as lug_nobody "DELETE" "/users/${other}" "" 403 "nobody: delete other user rejected"
+    lug_as lug_nobody "PATCH" "/users/${other}" '{"perm_templ":1}' 403 "nobody: retemplate other user rejected"
+
+    lug_as lug_nobody "GET" "/groups" "" 200 "nobody: group list is own groups only"
+    assert_json "nobody: sees no groups" "$LAST_RESPONSE_BODY" '.data.groups | length' "0"
+    lug_as lug_nobody "POST" "/groups" '{"name":"lug_group","description":"x","perm_templ_id":6}' 403 "nobody: create group rejected"
+    if [[ -n "$LUG_GROUP_ID" ]]; then
+        local g="$LUG_GROUP_ID"
+        lug_as lug_nobody "GET" "/groups/${g}" "" 403 "nobody: non-member cannot read group"
+        lug_as lug_nobody "PUT" "/groups/${g}" '{"name":"lug_renamed"}' 403 "nobody: update group rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}" "" 403 "nobody: delete group rejected"
+        lug_as lug_nobody "GET" "/groups/${g}/members" "" 403 "nobody: list members rejected"
+        lug_as lug_nobody "POST" "/groups/${g}/members" "{\"user_id\":${me}}" 403 "nobody: add member rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}/members/${me}" "" 403 "nobody: remove member rejected"
+        lug_as lug_nobody "GET" "/groups/${g}/zones" "" 403 "nobody: list group zones rejected"
+        lug_as lug_nobody "POST" "/groups/${g}/zones" "{\"zone_id\":${z}}" 403 "nobody: assign zone to group rejected"
+        lug_as lug_nobody "DELETE" "/groups/${g}/zones/${z}" "" 403 "nobody: unassign zone from group rejected"
+    fi
+
+    lug_as lug_nobody "GET" "/permissions" "" 403 "nobody: list permissions rejected"
+    lug_as lug_nobody "GET" "/permissions/53" "" 403 "nobody: read permission rejected"
+    lug_as lug_nobody "GET" "/permission-templates" "" 403 "nobody: list permission templates rejected"
+    lug_as lug_nobody "GET" "/permission-templates/${LUG_TID_nobody}" "" 403 "nobody: read permission template rejected"
+    lug_as lug_nobody "POST" "/permission-templates" '{"name":"lug_x","descr":"x"}' 403 "nobody: create permission template rejected"
+    lug_as lug_nobody "PUT" "/permission-templates/${LUG_TID_nobody}" '{"name":"lug_x","descr":"x"}' 403 "nobody: update permission template rejected"
+    lug_as lug_nobody "DELETE" "/permission-templates/${LUG_TID_nobody}" "" 403 "nobody: delete permission template rejected"
+
+    lug_as lug_nobody "POST" "/zones" '{"name":"lug-nobody.example.com","type":"MASTER"}' 403 "nobody: create zone rejected"
+    lug_as lug_nobody "GET" "/zones" "" 200 "nobody: zone list is filtered"
+    assert_json "nobody: sees no zones" "$LAST_RESPONSE_BODY" '.data.zones | length' "0"
+    lug_as lug_nobody "GET" "/zones/${z}" "" 403 "nobody: read zone rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "nobody: update zone rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}" "" 403 "nobody: delete zone rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/records" "" 403 "nobody: list records rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/records" '{"name":"x","type":"A","content":"192.0.2.9"}' 403 "nobody: create record rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/rrsets" "" 403 "nobody: list rrsets rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}/rrsets" '{"name":"x","type":"A","records":[{"content":"192.0.2.9"}]}' 403 "nobody: replace rrset rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/rrsets/x/A" "" 403 "nobody: delete rrset rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"x","type":"A","content":"192.0.2.9"}]}' 403 "nobody: bulk records rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/owners" "" 403 "nobody: list owners rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/owners" "{\"user_id\":${me}}" 403 "nobody: add owner rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/owners/${other}" "" 403 "nobody: remove owner rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/metadata" "" 403 "nobody: list metadata rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/metadata/ALLOW-AXFR-FROM" "" 403 "nobody: read metadata kind rejected"
+    lug_as lug_nobody "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "nobody: set metadata rejected"
+    lug_as lug_nobody "DELETE" "/zones/${z}/metadata/ALLOW-AXFR-FROM" "" 403 "nobody: delete metadata rejected"
+    lug_as lug_nobody "GET" "/zones/${z}/dnssec" "" 403 "nobody: dnssec status rejected"
+    lug_as lug_nobody "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "nobody: dnssec enable rejected"
+
+    lug_as lug_nobody "GET" "/zone-templates" "" 403 "nobody: list zone templates rejected"
+    lug_as lug_nobody "POST" "/zone-templates" '{"name":"lug_nobody_zt","description":"x"}' 403 "nobody: create zone template rejected"
+    if [[ -n "$LUG_GLOBAL_ZT_ID" ]]; then
+        lug_as lug_nobody "GET" "/zone-templates/${LUG_GLOBAL_ZT_ID}" "" 403 "nobody: read zone template rejected"
+        lug_as lug_nobody "GET" "/zone-templates/${LUG_GLOBAL_ZT_ID}/records" "" 403 "nobody: list template records rejected"
+    fi
+
+    lug_as lug_nobody "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com","ipv4":"192.0.2.9"}' 403 "nobody: dynamic DNS rejected"
+}
+
+lug_test_client() {
+    print_section "Limited users - client-level record editor (own_as_client)"
+    local z="$LUG_ZONE_ID" oz="$LUG_OTHER_ZONE_ID" a_id soa_id
+
+    lug_as lug_client "GET" "/zones/${z}" "" 200 "client: may read owned zone"
+    lug_as lug_client "GET" "/zones/${oz}" "" 403 "client: zone owned by someone else hidden"
+    lug_as lug_client "GET" "/zones" "" 200 "client: zone list filtered to owned zones"
+    assert_json "client: list excludes the other zone" "$LAST_RESPONSE_BODY" "[.data.zones[] | select(.id == ${oz})] | length" "0"
+
+    # Record-type gate: A passes, SOA/NS are refused on create, retype, edit and delete.
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"www","type":"A","content":"192.0.2.10"}' 201 "client: may create an A record"
+    a_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id // empty')
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"sub","type":"NS","content":"ns1.example.com"}' 403 "client: NS create rejected"
+    lug_as lug_client "POST" "/zones/${z}/records" '{"name":"sub","type":"LUA","content":"A \"192.0.2.1\""}' 403 "client: LUA create rejected"
+    if [[ -n "$a_id" ]]; then
+        lug_as lug_client "PUT" "/zones/${z}/records/${a_id}" '{"name":"sub","type":"NS","content":"ns1.example.com"}' 403 "client: retyping A to NS rejected"
+        lug_as lug_client "PUT" "/zones/${z}/records/${a_id}" '{"content":"192.0.2.11"}' 200 "client: may edit own A record"
+    fi
+    soa_id=$(lug_admin_get "/zones/${z}/records?type=SOA" | jq -r '.data.records[] | select(.type == "SOA") | .id' | head -1)
+    if [[ -n "$soa_id" ]]; then
+        lug_as lug_client "PUT" "/zones/${z}/records/${soa_id}" '{"ttl":300}' 403 "client: SOA edit rejected"
+        lug_as lug_client "PUT" "/zones/${z}/records/${soa_id}" '{"type":"A","content":"192.0.2.1"}' 403 "client: relabelling SOA as A rejected"
+        lug_as lug_client "DELETE" "/zones/${z}/records/${soa_id}" "" 403 "client: SOA delete rejected"
+    fi
+    lug_as lug_client "POST" "/zones/${oz}/records" '{"name":"www","type":"A","content":"192.0.2.10"}' 403 "client: record write on unowned zone rejected"
+
+    lug_as lug_client "PUT" "/zones/${z}/rrsets" '{"name":"rr","type":"A","records":[{"content":"192.0.2.20"}]}' 200 "client: may replace an A rrset"
+    lug_as lug_client "PUT" "/zones/${z}/rrsets" '{"name":"rr","type":"NS","records":[{"content":"ns1.example.com"}]}' 403 "client: NS rrset replace rejected"
+    lug_as lug_client "DELETE" "/zones/${z}/rrsets/rr/NS" "" 403 "client: NS rrset delete rejected"
+    lug_as lug_client "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"bulk","type":"NS","content":"ns1.example.com"}]}' 403 "client: bulk NS create rejected"
+    lug_as lug_client "POST" "/zones/${z}/records/bulk" '{"operations":[{"action":"create","name":"bulk","type":"A","content":"192.0.2.30"}]}' 200 "client: bulk A create allowed"
+
+    # Content rights are not meta/ownership/dnssec/delete rights.
+    lug_as lug_client "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "client: zone settings change rejected"
+    lug_as lug_client "DELETE" "/zones/${z}" "" 403 "client: zone delete rejected"
+    lug_as lug_client "GET" "/zones/${z}/owners" "" 403 "client: owners hidden without ownership_view"
+    lug_as lug_client "POST" "/zones/${z}/owners" "{\"user_id\":${LUG_UID_nobody}}" 403 "client: add owner rejected"
+    lug_as lug_client "DELETE" "/zones/${z}/owners/${LUG_UID_content}" "" 403 "client: remove owner rejected"
+    lug_as lug_client "GET" "/zones/${z}/metadata" "" 403 "client: metadata hidden without metadata_view"
+    lug_as lug_client "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "client: set metadata rejected"
+    lug_as lug_client "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "client: dnssec enable rejected"
+
+    # Dynamic DNS: a client-level owner may update, and only within owned zones.
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com","ipv4":"192.0.2.12"}' 200 "client: dynamic DNS update on owned zone"
+    assert_json "client: dynamic DNS reports the change" "$LAST_RESPONSE_BODY" '.data.changed' "true"
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-other.example.com","ipv4":"192.0.2.12"}' 404 "client: dynamic DNS on unowned zone is nohost"
+    lug_as lug_client "POST" "/dynamic-dns" '{"hostname":"www.lug-owned.example.com"}' 400 "client: dynamic DNS without an address rejected"
+
+    # Zone templates: personal only, and the record-type gate applies to template records.
+    local zt_id rec_id ns_id
+    lug_as lug_client "POST" "/zone-templates" '{"name":"lug_client_zt","description":"x","is_global":true}' 403 "client: global zone template create rejected"
+    lug_as lug_client "POST" "/zone-templates" '{"name":"lug_client_zt","description":"x"}' 201 "client: may create a personal zone template"
+    zt_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+    if [[ -n "$zt_id" ]]; then
+        lug_as lug_client "PUT" "/zone-templates/${zt_id}" '{"name":"lug_client_zt","description":"y","is_global":true}' 403 "client: promoting own template to global rejected"
+        lug_as lug_client "PUT" "/zone-templates/${zt_id}" '{"name":"lug_client_zt","description":"y"}' 200 "client: may edit own template"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"www","type":"A","content":"192.0.2.40"}' 201 "client: may add an A template record"
+        rec_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"NS","content":"ns1.example.com"}' 403 "client: NS template record rejected"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"SOA","content":"ns1.example.com hostmaster.example.com 0 28800 7200 604800 86400"}' 403 "client: SOA template record rejected"
+        lug_as lug_client "POST" "/zone-templates/${zt_id}/records" '{"name":"lua","type":"LUA","content":"A \"192.0.2.1\""}' 403 "client: LUA template record rejected"
+        if [[ -n "$rec_id" ]]; then
+            lug_as lug_client "PUT" "/zone-templates/${zt_id}/records/${rec_id}" '{"name":"www","type":"NS","content":"ns1.example.com"}' 403 "client: retyping template A to NS rejected"
+        fi
+        # An admin-authored NS record in the client's template stays out of reach.
+        if lug_admin "POST" "/zone-templates/${zt_id}/records" '{"name":"[ZONE]","type":"NS","content":"ns1.example.com"}' 201 "admin: seed NS record into client template"; then
+            ns_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // empty')
+            if [[ -n "$ns_id" ]]; then
+                lug_as lug_client "PUT" "/zone-templates/${zt_id}/records/${ns_id}" '{"name":"www","type":"A","content":"192.0.2.41"}' 403 "client: relabelling template NS as A rejected"
+                lug_as lug_client "DELETE" "/zone-templates/${zt_id}/records/${ns_id}" "" 403 "client: template NS delete rejected"
+            fi
+        fi
+    fi
+    if [[ -n "$LUG_GLOBAL_ZT_ID" ]]; then
+        lug_as lug_client "PUT" "/zone-templates/${LUG_GLOBAL_ZT_ID}" '{"name":"lug_global_zt","description":"y"}' 403 "client: editing a global template rejected"
+        lug_as lug_client "DELETE" "/zone-templates/${LUG_GLOBAL_ZT_ID}" "" 403 "client: deleting a global template rejected"
+        lug_as lug_client "POST" "/zone-templates/${LUG_GLOBAL_ZT_ID}/records" '{"name":"www","type":"A","content":"192.0.2.40"}' 403 "client: adding to a global template rejected"
+    fi
+    if [[ -n "$LUG_ADMIN_ZT_ID" ]]; then
+        lug_as lug_client "GET" "/zone-templates/${LUG_ADMIN_ZT_ID}" "" 403 "client: another user's template hidden"
+        lug_as lug_client "PUT" "/zone-templates/${LUG_ADMIN_ZT_ID}" '{"name":"lug_admin_zt","description":"y"}' 403 "client: editing another user's template rejected"
+        lug_as lug_client "DELETE" "/zone-templates/${LUG_ADMIN_ZT_ID}" "" 403 "client: deleting another user's template rejected"
+    fi
+}
+
+lug_test_content() {
+    print_section "Limited users - content editor without meta rights"
+    local z="$LUG_ZONE_ID"
+
+    # Positive control for the record-type gate: content_edit_own may write NS.
+    lug_as lug_content "POST" "/zones/${z}/records" '{"name":"sub2","type":"NS","content":"ns1.example.com"}' 201 "content: NS create allowed at own level"
+    lug_as lug_content "PUT" "/zones/${z}" '{"description":"content editors may describe"}' 200 "content: description update allowed"
+    lug_as lug_content "PUT" "/zones/${z}" '{"type":"NATIVE"}' 403 "content: zone type change needs meta rights"
+    lug_as lug_content "POST" "/zones/${z}/owners" "{\"user_id\":${LUG_UID_nobody}}" 403 "content: add owner needs meta rights"
+    lug_as lug_content "DELETE" "/zones/${z}/owners/${LUG_UID_client}" "" 403 "content: remove owner needs meta rights"
+    lug_as lug_content "PUT" "/zones/${z}/metadata/ALLOW-AXFR-FROM" '{"values":["192.0.2.0/24"]}' 403 "content: set metadata needs meta rights"
+    lug_as lug_content "DELETE" "/zones/${z}" "" 403 "content: zone delete needs delete rights"
+    lug_as lug_content "POST" "/zones" '{"name":"lug-content.example.com","type":"MASTER"}' 403 "content: zone create needs zone_master_add"
+    lug_as lug_content "POST" "/zones/${z}/dnssec" '{"enabled":true}' 403 "content: dnssec needs dnssec_manage_own"
+}
+
+lug_test_useradd() {
+    print_section "Limited users - user_add_new without ueberuser"
+    local other="${LUG_UID_content}" created
+
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_useradd "POST" "/users" \
+            "{\"username\":\"lug_escalated\",\"password\":\"${LUG_PASSWORD}\",\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" \
+            403 "useradd: creating a superuser rejected"
+        assert_json "useradd: no superuser row was created" "$(lug_admin_get '/users?username=lug_escalated')" '.data.users | length' "0"
+    fi
+    if [[ -n "$LUG_GROUP_ID" ]]; then
+        lug_as lug_useradd "POST" "/users" \
+            "{\"username\":\"lug_grouped\",\"password\":\"${LUG_PASSWORD}\",\"groups\":[${LUG_GROUP_ID}]}" \
+            403 "useradd: assigning groups needs ueberuser"
+        assert_json "useradd: no grouped row was created" "$(lug_admin_get '/users?username=lug_grouped')" '.data.users | length' "0"
+    fi
+
+    # Omitted perm_templ must land on the minimal template, never Administrator.
+    lug_as lug_useradd "POST" "/users" "{\"username\":\"lug_defaulted\",\"password\":\"${LUG_PASSWORD}\"}" 201 "useradd: may create a user without perm_templ"
+    created=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user_id // empty')
+    if [[ -n "$created" ]]; then
+        lug_admin "GET" "/users/${created}" "" 200 "admin: read defaulted user"
+        assert_json "useradd: defaulted user is not an admin" "$LAST_RESPONSE_BODY" '.data.user.is_admin' "false"
+        if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+            increment_test
+            if [[ "$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.user.perm_templ')" != "$LUG_ADMIN_TEMPL_ID" ]]; then
+                print_pass "useradd: defaulted user is not on the superuser template"
+            else
+                print_fail "useradd: defaulted user landed on the superuser template"
+            fi
+        fi
+    fi
+
+    lug_as lug_useradd "PUT" "/users/${other}" '{"fullname":"x"}' 403 "useradd: editing users needs user_edit_others"
+    lug_as lug_useradd "DELETE" "/users/${other}" "" 403 "useradd: deleting users needs user_edit_others"
+    lug_as lug_useradd "PATCH" "/users/${other}" "{\"perm_templ\":${LUG_TID_nobody}}" 403 "useradd: retemplating users rejected"
+}
+
+lug_test_useredit() {
+    print_section "Limited users - user_edit_others without password/template rights"
+    local me="${LUG_UID_useredit}" target="${LUG_UID_nobody}"
+
+    lug_as lug_useredit "PUT" "/users/${target}" '{"fullname":"Renamed by delegate"}' 200 "useredit: may edit another user's details"
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"password\":\"${LUG_PASSWORD}\"}" 403 "useredit: password change needs user_passwd_edit_others"
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" 403 "useredit: promoting a user to superuser rejected"
+        lug_as lug_useredit "PUT" "/users/${me}" "{\"perm_templ\":${LUG_ADMIN_TEMPL_ID}}" 403 "useredit: self-promotion rejected"
+    fi
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_TID_client}}" 403 "useredit: retemplating needs user_edit_templ_perm"
+    lug_as lug_useredit "PUT" "/users/${target}" "{\"perm_templ\":${LUG_TID_nobody},\"fullname\":\"Round trip\"}" 200 "useredit: restating the current template is not a change"
+    lug_as lug_useredit "PATCH" "/users/${target}" "{\"perm_templ\":${LUG_TID_client}}" 403 "useredit: PATCH retemplate needs user_edit_templ_perm"
+    lug_admin "GET" "/users/${target}" "" 200 "admin: read target after delegate edits"
+    assert_json "useredit: target template unchanged" "$LAST_RESPONSE_BODY" '.data.user.perm_templ' "${LUG_TID_nobody}"
+
+    if [[ -n "$LUG_ADMIN_USER_ID" ]]; then
+        lug_as lug_useredit "PUT" "/users/${LUG_ADMIN_USER_ID}" '{"fullname":"x"}' 403 "useredit: delegate cannot edit a superuser"
+        lug_as lug_useredit "DELETE" "/users/${LUG_ADMIN_USER_ID}" "" 403 "useredit: delegate cannot delete a superuser"
+    fi
+    lug_as lug_useredit "DELETE" "/users/${me}" "" 403 "useredit: self-delete rejected"
+}
+
+lug_test_templ() {
+    print_section "Limited users - permission template editor without ueberuser"
+    local created
+
+    lug_as lug_templ "GET" "/permissions" "" 200 "templ: may list permissions"
+    lug_as lug_templ "GET" "/permission-templates" "" 200 "templ: may list permission templates"
+    lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_escalate_templ","descr":"x","permissions":[53]}' 403 "templ: template granting ueberuser rejected"
+    assert_json "templ: no escalation template was created" "$(lug_admin_get '/permission-templates')" '[.data.templates[] | select(.name == "lug_escalate_templ")] | length' "0"
+    lug_as lug_templ "POST" "/permission-templates" '{"name":"lug_created_templ","descr":"x","permissions":[56]}' 201 "templ: may create an ordinary template"
+    local created_body="$LAST_RESPONSE_BODY"
+    created=$(lug_lookup_perm_templ "lug_created_templ")
+    assert_json "templ: create returns the new template id" "$created_body" '.data.id | tostring' "$created"
+    if [[ -n "$created" ]]; then
+        lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"x","permissions":[56,53]}' 403 "templ: adding ueberuser to own template rejected"
+        lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"y","permissions":[56,43]}' 200 "templ: may edit an ordinary template"
+        lug_as lug_templ "DELETE" "/permission-templates/${created}" "" 403 "templ: delete needs user_edit_templ_perm"
+    fi
+    if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
+        lug_as lug_templ "PUT" "/permission-templates/${LUG_ADMIN_TEMPL_ID}" '{"name":"lug_admin_renamed","descr":"x"}' 403 "templ: editing the superuser template rejected"
+    fi
+}
+
+test_limited_user_gates() {
+    print_section "Limited-user permission gates"
+
+    if ! lug_setup; then
+        print_fail "Limited-user setup failed - skipping matrix"
+        lug_cleanup
+        return 0
+    fi
+
+    lug_test_nobody
+    lug_test_client
+    lug_test_content
+    lug_test_useradd
+    lug_test_useredit
+    lug_test_templ
+
+    lug_cleanup
+}
+
+##############################################################################
 # Test: Granular API Key Permissions (gh #795)
 ##############################################################################
 
@@ -2862,9 +3695,13 @@ test_api_key_scopes() {
     # These tests seed scoped keys directly in the database; skip cleanly when
     # the DB client or credentials are not available to this runner.
     local owner_id
-    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null) || [[ -z "$owner_id" ]]; then
-        print_info "Database access not available - skipping API key scope tests"
+    if ! owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null); then
+        skip "API key scope tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$owner_id" ]]; then
+        print_fail "Seeded user 'admin' not found - API key scope tests cannot run"
+        return 1
     fi
     owner_id=$(echo "$owner_id" | tr -d '[:space:]')
 
@@ -2876,7 +3713,7 @@ test_api_key_scopes() {
     # Clean any leftovers from a previous run, then seed fresh keys.
     db_exec "DELETE FROM api_keys WHERE name IN ('scopetest-ro','scopetest-ops','scopetest-zone','scopetest-cu');" >/dev/null 2>&1 || true
 
-    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, 1);" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by, is_readonly) VALUES ('scopetest-ro', '$(hash_api_key "$ro_secret")', ${owner_id}, TRUE);" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-ops', '$(hash_api_key "$ops_secret")', ${owner_id}, 'view,create');" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('scopetest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
     db_exec "INSERT INTO api_keys (name, secret_key, created_by, allowed_operations) VALUES ('scopetest-cu', '$(hash_api_key "$cu_secret")', ${owner_id}, 'view,create,update');" >/dev/null 2>&1
@@ -2986,9 +3823,13 @@ test_zone_overlap_guard() {
     # Seeds a non-ueberuser key directly in the DB (ueberusers bypass the guard);
     # skip cleanly when the DB client or credentials are unavailable.
     local mgr_id
-    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null) || [[ -z "$mgr_id" ]]; then
-        print_info "Database access not available - skipping zone overlap guard tests"
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null); then
+        skip "Zone overlap guard tests: database client or credentials not available to this runner"
         return 0
+    fi
+    if [[ -z "$mgr_id" ]]; then
+        print_fail "Seeded user 'manager' not found - zone overlap guard tests cannot run"
+        return 1
     fi
     mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
 
@@ -3039,10 +3880,11 @@ test_api_documentation() {
     print_test "Swagger UI endpoint"
     response=$(curl -s -w "%{http_code}" "${API_BASE_URL}/api/docs" 2>/dev/null || echo "000")
     http_code="${response: -3}"
+    body="${response%???}"
     if [[ "$http_code" == "200" ]]; then
         print_pass "Swagger UI endpoint accessible"
-    elif [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
-        print_info "Swagger UI endpoint not available in test environment"
+    elif [[ ( "$http_code" == "404" || "$http_code" == "503" ) && "$body" == *"API documentation is disabled"* ]]; then
+        skip_counted "Swagger UI endpoint not available (HTTP $http_code, API docs disabled)"
     else
         print_fail "Swagger UI endpoint - Unexpected status $http_code"
     fi
@@ -3057,8 +3899,8 @@ test_api_documentation() {
         body="${response%???}"
 
         if [[ "$http_code" != "200" ]]; then
-            if [[ "$http_code" == "404" || "$http_code" == "503" ]]; then
-                print_info "${docs_path} not available in test environment"
+            if [[ ( "$http_code" == "404" || "$http_code" == "503" ) && "$body" == *"API documentation is disabled"* ]]; then
+                skip_counted "OpenAPI spec at ${docs_path} not available (HTTP $http_code, API docs disabled)"
             else
                 print_fail "${docs_path} - Unexpected status $http_code"
             fi
@@ -3123,6 +3965,68 @@ test_v1_removed() {
     fi
 }
 
+##############################################################################
+# Test: Change requests (approval.enabled)
+##############################################################################
+
+test_change_requests() {
+    print_section "Change Requests API Tests"
+
+    # The feature is opt-in: every endpoint answers 404 while approval.enabled is off
+    local probe_code
+    probe_code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v2/change-requests" 2>/dev/null || echo "000")
+    if [[ "$probe_code" == "404" ]]; then
+        skip "Change request tests: approval.enabled is off (GET /change-requests answered 404)"
+        return 0
+    fi
+
+    local zone_id=""
+    if api_request_v2 "POST" "/zones" '{"name":"change-request-test.example.com","type":"MASTER"}' 201 "Create test zone for change requests"; then
+        zone_id=$(extract_json_field "$LAST_RESPONSE_BODY" "zone_id")
+    else
+        print_fail "Failed to create test zone - skipping change request tests"
+        return 1
+    fi
+
+    # An admin key may file even though its own writes stay direct
+    local request_id=""
+    local file_body='{"comment":"api suite","actions":[{"op":"add","record":{"name":"www","type":"A","content":"192.0.2.77","ttl":3600}}]}'
+    if api_request_v2 "POST" "/zones/${zone_id}/change-requests" "$file_body" 201 "File an add change request"; then
+        request_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.change_request.id')
+        assert_json "Filed request is pending" "$LAST_RESPONSE_BODY" '.data.change_request.status' "pending"
+        assert_json "Filed request stores the add action" "$LAST_RESPONSE_BODY" '.data.change_request.actions[0].op' "add"
+        assert_json "Filed request names the zone" "$LAST_RESPONSE_BODY" '.data.change_request.zone_name' "change-request-test.example.com"
+    fi
+
+    if [[ -n "$request_id" && "$request_id" != "null" ]]; then
+        api_request_v2 "GET" "/zones/${zone_id}/records?type=A" "" 200 "Record is not written before approval" || true
+        assert_json "No A record exists while the request is pending" "$LAST_RESPONSE_BODY" '[.data.records[]? | select(.content=="192.0.2.77")] | length' "0"
+
+        api_request_v2 "GET" "/change-requests?zone_id=${zone_id}" "" 200 "List pending change requests for the zone" || true
+        assert_json "Pending list contains the filed request" "$LAST_RESPONSE_BODY" "[.data.change_requests[] | select(.id==${request_id})] | length" "1"
+
+        api_request_v2 "GET" "/change-requests/${request_id}" "" 200 "Get the change request" || true
+        assert_json "Detail carries stale_actions" "$LAST_RESPONSE_BODY" '.data.stale_actions | length' "0"
+        assert_json "Detail carries base_serial_mismatch" "$LAST_RESPONSE_BODY" '.data.base_serial_mismatch' "false"
+
+        api_request_v2 "POST" "/change-requests/${request_id}/approve" '{"comment":"ok"}' 200 "Approve the change request" || true
+        assert_json "Approved request is applied" "$LAST_RESPONSE_BODY" '.data.change_request.status' "approved"
+        assert_json "Reviewer is recorded" "$LAST_RESPONSE_BODY" '.data.change_request.reviewer.id != null' "true"
+
+        api_request_v2 "GET" "/zones/${zone_id}/records?type=A" "" 200 "Record exists after approval" || true
+        assert_json "Approved add wrote the A record" "$LAST_RESPONSE_BODY" '[.data.records[]? | select(.content=="192.0.2.77")] | length' "1"
+
+        api_request_v2 "POST" "/change-requests/${request_id}/approve" "" 409 "Approving a decided request is refused" || true
+    fi
+
+    # A mixed body is refused before anything is filed
+    api_request_v2 "POST" "/zones/${zone_id}/change-requests" '{"actions":[{"op":"zone_delete"},{"op":"delete","record_id":1}]}' 400 "zone_delete must be the only action" || true
+    assert_json "Mixed body message" "$LAST_RESPONSE_BODY" '.message' "Only one action per change request is supported"
+
+    api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Cleanup change request test zone" || true
+}
+
 main() {
     trap delete_created_zones EXIT
     print_header "PowerAdmin API v2 Test Suite"
@@ -3138,29 +4042,39 @@ main() {
 
     # Run test suites. The docs and removed-v1 checks are independent of test
     # data, so they run first and still report if a later suite aborts the run.
-    test_api_documentation
-    test_v1_removed
-    test_rrsets
-    test_ptr_autocreation
-    test_ptr_update
-    test_ttl_defaults
-    test_bulk_operations
-    test_disabled_records
-    test_master_port_syntax
-    test_zone_status_codes
-    test_groups
-    test_zone_owners
-    test_zone_metadata
-    test_zone_dnssec
-    test_server_status
-    test_zone_dnssec_keys
-    test_users_crud
-    test_zone_templates
-    test_users_ldap_sync
-    test_users_perm_templ_validation
-    test_users_self_edit_guard
-    test_api_key_scopes
-    test_zone_overlap_guard
+    # errexit is suspended inside each suite (it is called left of ||), so every
+    # assertion runs and is tallied; keep running the rest.
+    test_api_documentation || true
+    test_v1_removed || true
+    test_rrsets || true
+    test_record_listing || true
+    test_zone_user_listing || true
+    test_ptr_autocreation || true
+    test_ptr_update || true
+    test_ttl_defaults || true
+    test_bulk_operations || true
+    test_disabled_records || true
+    test_master_port_syntax || true
+    test_zone_status_codes || true
+    test_groups || true
+    test_group_listing || true
+    test_zone_owners || true
+    test_zone_metadata || true
+    test_zone_dnssec || true
+    test_server_status || true
+    test_zone_dnssec_keys || true
+    test_users_crud || true
+    test_zone_templates || true
+    test_zone_template_listing || true
+    test_zone_create_shadowed_records || true
+    test_permission_listing || true
+    test_users_ldap_sync || true
+    test_users_perm_templ_validation || true
+    test_users_self_edit_guard || true
+    test_limited_user_gates || true
+    test_api_key_scopes || true
+    test_zone_overlap_guard || true
+    test_change_requests || true
 
     # Cleanup
     cleanup
@@ -3170,6 +4084,7 @@ main() {
     echo -e "Total Tests: ${TOTAL_TESTS}"
     echo -e "${GREEN}Passed: ${PASSED_TESTS}${NC}"
     echo -e "${RED}Failed: ${FAILED_TESTS}${NC}"
+    echo -e "${YELLOW}Skipped: ${SKIPPED_TESTS}${NC}"
 
     local pass_rate=0
     if [[ $TOTAL_TESTS -gt 0 ]]; then
@@ -3177,12 +4092,22 @@ main() {
     fi
     echo -e "Pass Rate: ${pass_rate}%"
 
+    local unaccounted=$((TOTAL_TESTS - PASSED_TESTS - FAILED_TESTS - SKIPPED_TESTS))
+    if [[ $unaccounted -ne 0 ]]; then
+        echo -e "${RED}${unaccounted} test(s) were started but never passed, failed or skipped${NC}"
+        exit 1
+    fi
+
     # Exit with error if any tests failed
     if [[ $FAILED_TESTS -gt 0 ]]; then
         exit 1
     fi
 
-    echo -e "\n${GREEN}All tests passed!${NC}\n"
+    if [[ $SKIPPED_TESTS -gt 0 ]]; then
+        echo -e "\n${GREEN}All executed tests passed${NC} ${YELLOW}(${SKIPPED_TESTS} skipped)${NC}\n"
+    else
+        echo -e "\n${GREEN}All tests passed!${NC}\n"
+    fi
 }
 
 # Run main function

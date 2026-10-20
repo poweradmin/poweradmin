@@ -22,15 +22,19 @@
 
 namespace Poweradmin\Module\CsvExport\Controller;
 
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Domain\Service\Auth\UserContextService;
 
+/**
+ * GET /zones/{id}/export/csv - downloads the zone's records as a CSV file.
+ */
 class CsvExportController extends BaseController
 {
     public function run(): void
     {
-        $userContextService = new UserContextService();
+        $userContextService = new UserContextService($this->session());
         if (!$userContextService->isAuthenticated()) {
             $this->showError(_('You need to be logged in to export zone data.'));
             return;
@@ -43,7 +47,7 @@ class CsvExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->moduleServices()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
@@ -52,15 +56,14 @@ class CsvExportController extends BaseController
             return;
         }
 
-        $zoneRepository = $this->createZoneRepository();
-        $zone_name = $zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->moduleServices()->domainRepository()->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        $records = $this->createRecordRepository()->getRecordsFromDomainId($this->getConfig()->get('database', 'type', 'mysql'), $zone_id, fetchComments: (bool)$this->getConfig()->get('interface', 'show_record_comments', false));
+        $records = $this->fetchZoneRecords($zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));
@@ -81,14 +84,50 @@ class CsvExportController extends BaseController
         // Add BOM for UTF-8
         fputs($output, "\xEF\xBB\xBF");
 
-        $header = ['Name', 'Type', 'Content', 'Priority', 'TTL', 'Disabled'];
+        $this->writeCsv($output, $records);
 
-        if ($this->getConfig()->get('interface', 'show_record_comments', false)) {
+        fclose($output);
+        exit();
+    }
+
+    private function commentsEnabled(): bool
+    {
+        return (bool)$this->getConfig()->get('interface', 'show_record_comments', false);
+    }
+
+    /**
+     * Comments are only loaded when the Comment column is exported.
+     *
+     * @return list<RecordRow>
+     */
+    private function fetchZoneRecords(int $zoneId): array
+    {
+        return $this->moduleServices()->recordRepository()->getRecordsFromDomainId(
+            $zoneId,
+            0,
+            Constants::DEFAULT_MAX_ROWS,
+            'name',
+            'ASC',
+            $this->commentsEnabled()
+        );
+    }
+
+    /**
+     * @param resource $output
+     * @param list<RecordRow> $records
+     */
+    private function writeCsv($output, array $records): void
+    {
+        $withComments = $this->commentsEnabled();
+
+        $header = ['Name', 'Type', 'Content', 'Priority', 'TTL', 'Disabled'];
+        if ($withComments) {
             $header[] = 'Comment';
         }
 
         fputcsv($output, $header, ',', '"', '');
 
+        $escaper = $this->moduleServices()->csvFormulaEscaper();
         foreach ($records as $record) {
             $row = [
                 $record['name'],
@@ -99,14 +138,11 @@ class CsvExportController extends BaseController
                 $record['disabled'] ? 'Yes' : 'No'
             ];
 
-            if ($this->getConfig()->get('interface', 'show_record_comments', false)) {
+            if ($withComments) {
                 $row[] = $record['comment'] ?? '';
             }
 
-            fputcsv($output, CsvFormulaEscaper::escapeRow($row), ',', '"', '');
+            fputcsv($output, $escaper->escapeRow($row), ',', '"', '');
         }
-
-        fclose($output);
-        exit();
     }
 }

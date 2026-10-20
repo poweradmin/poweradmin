@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,38 +20,37 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for permission operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * /api/v2/permissions: read-only listing of the permission catalogue and single permissions.
+ */
 class PermissionsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /permissions */
+    private const PERMISSION_SORT_FIELDS = ['id', 'name'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
     }
 
-    private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private PermissionTemplateRepositoryInterface $permissionTemplateRepository;
     private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->permissionTemplateRepository = $this->createPermissionTemplateRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->permissionTemplateRepository = $this->services()->permissionTemplateRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -63,11 +62,10 @@ class PermissionsController extends PublicApiController
 
         $response = match ($method) {
             'GET' => isset($this->pathParameters['id']) ? $this->getPermission() : $this->listPermissions(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -75,9 +73,40 @@ class PermissionsController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permissions',
+        operationId: 'v2ListPermissions',
         summary: 'Get list of available permissions',
-        tags: ['Permissions'],
+        tags: ['permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        parameters: [
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the permission name or description',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'zone')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name. Default: name in database order (sort=name uses natural, case-insensitive order)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'name:desc')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+            ),
+        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -86,6 +115,17 @@ class PermissionsController extends PublicApiController
                     type: 'object',
                     properties: [
                         'success' => new OA\Property(property: 'success', type: 'boolean', example: true),
+                        'pagination' => new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         'data' => new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -97,7 +137,7 @@ class PermissionsController extends PublicApiController
                                         type: 'object',
                                         properties: [
                                             'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                            'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                            'name' => new OA\Property(property: 'name', type: 'string', example: Permission::PERM_ZONE_CONTENT_VIEW_OWN),
                                             'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
                                         ]
                                     )
@@ -107,7 +147,9 @@ class PermissionsController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -118,17 +160,25 @@ class PermissionsController extends PublicApiController
 
             // Check if user has permission to view permissions
             // Must match web UI requirement: templ_perm_edit permission
-            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canViewPermissions) {
                 return $this->returnApiError('You do not have permission to view permissions', 403);
             }
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::PERMISSION_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
-            return $this->returnApiResponse(['permissions' => $permissions]);
+            [$permissions, $extra] = $this->filterSortAndPage($permissions, $sort, [
+                'q' => static fn(array $p): array => [$p['name'], $p['descr']],
+            ]);
+
+            return $this->returnApiResponse(['permissions' => $permissions], true, null, 200, $extra);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permissions: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionsController::listPermissions', 'Failed to fetch permissions');
         }
     }
 
@@ -137,8 +187,9 @@ class PermissionsController extends PublicApiController
      */
     #[OA\Get(
         path: '/v2/permissions/{id}',
+        operationId: 'v2GetPermission',
         summary: 'Get a specific permission',
-        tags: ['Permissions'],
+        tags: ['permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -164,7 +215,7 @@ class PermissionsController extends PublicApiController
                                     property: 'permission',
                                     properties: [
                                         'id' => new OA\Property(property: 'id', type: 'integer', example: 1),
-                                        'name' => new OA\Property(property: 'name', type: 'string', example: 'zone_content_view_own'),
+                                        'name' => new OA\Property(property: 'name', type: 'string', example: Permission::PERM_ZONE_CONTENT_VIEW_OWN),
                                         'descr' => new OA\Property(property: 'descr', type: 'string', example: 'User may view the content of zones he owns')
                                     ],
                                     type: 'object'
@@ -176,6 +227,7 @@ class PermissionsController extends PublicApiController
                 )
             ),
             new OA\Response(response: 401, description: 'Unauthorized'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Permission not found'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
@@ -187,8 +239,8 @@ class PermissionsController extends PublicApiController
 
             // Check if user has permission to view permissions
             // Must match web UI requirement: templ_perm_edit permission
-            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_USER_IS_UEBERUSER) ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, Permission::PERM_TEMPL_PERM_EDIT);
 
             if (!$canViewPermissions) {
                 return $this->returnApiError('You do not have permission to view permissions', 403);
@@ -209,7 +261,7 @@ class PermissionsController extends PublicApiController
 
             return $this->returnApiResponse(['permission' => array_values($permission)[0]]);
         } catch (\Throwable $e) {
-            return $this->returnApiError('Failed to fetch permission: ' . $e->getMessage(), 500);
+            return $this->handleException($e, 'PermissionsController::getPermission', 'Failed to fetch permission');
         }
     }
 }

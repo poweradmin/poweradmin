@@ -24,22 +24,22 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 
 /**
- * API-backend record comment repository.
+ * Record comment persistence for the API backend mode.
  *
  * Uses PowerDNS REST API RRset comments as the sole storage backend.
  * Comments are per-RRset (name + type), not per individual record.
  * No database fallback - the API is the single source of truth.
  */
-class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
+final class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PowerdnsApiClient $apiClient;
-    private DnsBackendProvider $backendProvider;
+    private ZoneReadBackendInterface $backendProvider;
 
-    public function __construct(PowerdnsApiClient $apiClient, DnsBackendProvider $backendProvider)
+    public function __construct(PowerdnsApiClient $apiClient, ZoneReadBackendInterface $backendProvider)
     {
         $this->apiClient = $apiClient;
         $this->backendProvider = $backendProvider;
@@ -137,32 +137,6 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
         return $result;
     }
 
-    public function findByRecordId(int|string $recordId): ?RecordComment
-    {
-        // Per-record comments are not supported in API mode.
-        // Comments are shared across all records in an RRset.
-        return null;
-    }
-
-    public function deleteByRecordId(int|string $recordId): bool
-    {
-        // Per-record deletes are a no-op in API mode to avoid
-        // clearing the shared RRset comment.
-        return true;
-    }
-
-    public function linkRecordToComment(int|string $recordId, int $commentId): bool
-    {
-        // Per-record linking is not supported in API mode.
-        return true;
-    }
-
-    public function unlinkRecord(int|string $recordId): bool
-    {
-        // Per-record unlinking is not supported in API mode.
-        return true;
-    }
-
     public function addForRecord(int|string $recordId, RecordComment $comment): ?RecordComment
     {
         // Per-record isolation is not possible in API mode since comments
@@ -176,12 +150,6 @@ class ApiRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         return $this->writeRRsetComment($comment);
-    }
-
-    public function migrateLegacyComments(int $domainId, string $name, string $type, int|string $excludeRecordId): bool
-    {
-        // Not applicable for API mode
-        return false;
     }
 
     /**

@@ -4,9 +4,9 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use TestHelpers\StubActor;
+use TestHelpers\FakeConfiguration;
 
 class RecordChangeLoggerTest extends TestCase
 {
@@ -45,19 +45,11 @@ class RecordChangeLoggerTest extends TestCase
             )'
         );
 
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'logging' && $key === 'database_enabled') {
-                return true;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => true]]);
 
-        $this->logger = new RecordChangeLogger($this->db, $userContext, $config);
+        $this->logger = new RecordChangeLogger($this->db, $config, $userContext);
     }
 
     private function fetchAll(): array
@@ -297,19 +289,11 @@ class RecordChangeLoggerTest extends TestCase
 
     public function testInsertSkippedWhenDatabaseLoggingIsDisabled(): void
     {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(7);
-        $userContext->method('getLoggedInUsername')->willReturn('alice');
+        $userContext = new StubActor(7, 'alice');
 
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(function ($group, $key, $default = null) {
-            if ($group === 'logging' && $key === 'database_enabled') {
-                return false;
-            }
-            return $default;
-        });
+        $config = new FakeConfiguration(['logging' => ['database_enabled' => false]]);
 
-        $logger = new RecordChangeLogger($this->db, $userContext, $config);
+        $logger = new RecordChangeLogger($this->db, $config, $userContext);
         $logger->logRecordCreate(
             ['id' => 99, 'name' => 'www.example.com', 'type' => 'A', 'content' => '1.2.3.4', 'ttl' => 3600, 'prio' => 0],
             5

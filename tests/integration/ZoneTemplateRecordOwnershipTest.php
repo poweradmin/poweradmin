@@ -23,8 +23,12 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
  * IDOR guard for zone-template-record edit/delete. Ownership is checked against
@@ -57,7 +61,7 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         $result = $this->zoneTemplate()->editZoneTemplRecord($this->forgedEditPayload(), self::OWNED_TEMPLATE_ID);
 
-        $this->assertFalse($result, 'Editing a record that belongs to another template must be rejected.');
+        $this->assertFalse($result->success, 'Editing a record that belongs to another template must be rejected.');
         $this->assertSame('1.1.1.1', $this->recordContent(self::FOREIGN_RECORD_ID), 'The foreign record must be untouched.');
     }
 
@@ -66,7 +70,7 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         $result = $this->zoneTemplate()->editZoneTemplRecord($this->forgedEditPayload(), self::FOREIGN_TEMPLATE_ID);
 
-        $this->assertTrue($result, 'Editing a record in the authorized template must succeed.');
+        $this->assertTrue($result->success, 'Editing a record in the authorized template must succeed.');
         $this->assertSame('6.6.6.6', $this->recordContent(self::FOREIGN_RECORD_ID));
     }
 
@@ -75,7 +79,7 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         $result = $this->zoneTemplate()->deleteZoneTemplRecord(self::FOREIGN_RECORD_ID, self::OWNED_TEMPLATE_ID);
 
-        $this->assertFalse($result, 'Deleting a record that belongs to another template must be rejected.');
+        $this->assertFalse($result->success, 'Deleting a record that belongs to another template must be rejected.');
         $this->assertTrue($this->recordExists(self::FOREIGN_RECORD_ID), 'The foreign record must still exist.');
     }
 
@@ -84,19 +88,20 @@ class ZoneTemplateRecordOwnershipTest extends SqliteIntegrationTestCase
     {
         $result = $this->zoneTemplate()->deleteZoneTemplRecord(self::FOREIGN_RECORD_ID, self::FOREIGN_TEMPLATE_ID);
 
-        $this->assertTrue($result, 'Deleting a record in the authorized template must succeed.');
+        $this->assertTrue($result->success, 'Deleting a record in the authorized template must succeed.');
         $this->assertFalse($this->recordExists(self::FOREIGN_RECORD_ID));
     }
 
     #[RunInSeparateProcess]
     public function testDeleteRejectsUnknownRecordId(): void
     {
-        $this->assertFalse($this->zoneTemplate()->deleteZoneTemplRecord(9999, self::FOREIGN_TEMPLATE_ID));
+        $this->assertFalse($this->zoneTemplate()->deleteZoneTemplRecord(9999, self::FOREIGN_TEMPLATE_ID)->success);
     }
 
-    private function zoneTemplate(): ZoneTemplate
+    private function zoneTemplate(): ZoneTemplateService
     {
-        return new ZoneTemplate($this->db, $this->config);
+        $backend = $this->dnsBackendStub(false);
+        return ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
     }
 
     private function forgedEditPayload(): array

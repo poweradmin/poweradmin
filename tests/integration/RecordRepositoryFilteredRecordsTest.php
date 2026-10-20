@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,604 +24,207 @@ namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
+use TestHelpers\RecordCommentFixture;
 
 /**
- * Integration tests for RecordRepository::getFilteredRecords() SQL query behavior
- *
- * Tests the SQL query patterns used in getFilteredRecords() across all supported
- * database types (MySQL, PostgreSQL, SQLite) to ensure:
- * - LIMIT/OFFSET with bound parameters work correctly
- * - ORDER BY with JOINs doesn't cause ambiguous column errors
- * - Pagination works correctly across all databases
- *
+ * SqlRecordRepository::getFilteredRecords() on each engine: LIMIT/OFFSET with bound
+ * parameters, ORDER BY next to the comment join without ambiguous columns, the
+ * apex pinning, the filters and pagination. MySQL and PostgreSQL run when the
+ * devcontainer is up and are skipped visibly when it is not.
  */
 class RecordRepositoryFilteredRecordsTest extends TestCase
 {
-    private ?PDO $mysqlConnection = null;
-    private ?PDO $pgsqlConnection = null;
-    private ?PDO $sqliteConnection = null;
+    private const ZONE_ID = 1;
 
-    private const TEST_ZONE_ID = 1;
-
-    protected function setUp(): void
-    {
-        try {
-            $this->mysqlConnection = new PDO(
-                'mysql:host=127.0.0.1;port=3306;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->setupMySQLTables($this->mysqlConnection);
-        } catch (PDOException $e) {
-            $this->mysqlConnection = null;
-        }
-
-        try {
-            $this->pgsqlConnection = new PDO(
-                'pgsql:host=127.0.0.1;port=5432;dbname=pdns',
-                'pdns',
-                'poweradmin',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-            );
-            $this->setupPgSQLTables($this->pgsqlConnection);
-        } catch (PDOException $e) {
-            $this->pgsqlConnection = null;
-        }
-
-        $this->sqliteConnection = new PDO(
-            'sqlite::memory:',
-            null,
-            null,
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
-        $this->setupSQLiteTables($this->sqliteConnection);
-    }
+    private ?PDO $db = null;
+    private string $engine = '';
 
     protected function tearDown(): void
     {
-        if ($this->mysqlConnection) {
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_comments");
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_records");
-            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_domains");
+        $this->close();
+    }
+
+    private function close(): void
+    {
+        if ($this->db !== null) {
+            RecordCommentFixture::drop($this->db, $this->engine);
+            $this->db = null;
         }
-        if ($this->pgsqlConnection) {
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_comments");
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_records");
-            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_domains");
+    }
+
+    private function open(string $engine): SqlRecordRepository
+    {
+        $this->close();
+        try {
+            $db = RecordCommentFixture::connect($engine);
+        } catch (PDOException $e) {
+            $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
         }
-        // SQLite in-memory is automatically cleaned up
+        $this->db = $db;
+        $this->engine = $engine;
+        RecordCommentFixture::createSchema($db, $engine);
+        $this->seed($db);
+
+        return new SqlRecordRepository($db, RecordCommentFixture::config($engine));
     }
 
-    private function setupMySQLTables(PDO $db): void
+    private function seed(PDO $db): void
     {
-        $db->exec("DROP TABLE IF EXISTS test_comments");
-        $db->exec("DROP TABLE IF EXISTS test_records");
-        $db->exec("DROP TABLE IF EXISTS test_domains");
-
-        $db->exec("CREATE TABLE test_domains (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            name VARCHAR(255) NOT NULL
-        )");
-
-        $db->exec("CREATE TABLE test_records (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            domain_id INT NOT NULL,
-            name VARCHAR(255),
-            type VARCHAR(10),
-            content TEXT,
-            ttl INT,
-            prio INT,
-            disabled TINYINT DEFAULT 0,
-            auth TINYINT DEFAULT 1
-        )");
-
-        $db->exec("CREATE TABLE test_comments (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            domain_id INT NOT NULL,
-            name VARCHAR(255),
-            type VARCHAR(10),
-            comment TEXT
-        )");
-
-        $this->insertTestData($db);
-    }
-
-    private function setupPgSQLTables(PDO $db): void
-    {
-        $db->exec("DROP TABLE IF EXISTS test_comments");
-        $db->exec("DROP TABLE IF EXISTS test_records");
-        $db->exec("DROP TABLE IF EXISTS test_domains");
-
-        $db->exec("CREATE TABLE test_domains (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(255) NOT NULL
-        )");
-
-        $db->exec("CREATE TABLE test_records (
-            id SERIAL PRIMARY KEY,
-            domain_id INT NOT NULL,
-            name VARCHAR(255),
-            type VARCHAR(10),
-            content TEXT,
-            ttl INT,
-            prio INT,
-            disabled SMALLINT DEFAULT 0,
-            auth SMALLINT DEFAULT 1
-        )");
-
-        $db->exec("CREATE TABLE test_comments (
-            id SERIAL PRIMARY KEY,
-            domain_id INT NOT NULL,
-            name VARCHAR(255),
-            type VARCHAR(10),
-            comment TEXT
-        )");
-
-        $this->insertTestData($db);
-    }
-
-    private function setupSQLiteTables(PDO $db): void
-    {
-        $db->exec("CREATE TABLE test_domains (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL
-        )");
-
-        $db->exec("CREATE TABLE test_records (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            domain_id INTEGER NOT NULL,
-            name TEXT,
-            type TEXT,
-            content TEXT,
-            ttl INTEGER,
-            prio INTEGER,
-            disabled INTEGER DEFAULT 0,
-            auth INTEGER DEFAULT 1
-        )");
-
-        $db->exec("CREATE TABLE test_comments (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            domain_id INTEGER NOT NULL,
-            name TEXT,
-            type TEXT,
-            comment TEXT
-        )");
-
-        $this->insertTestData($db);
-    }
-
-    private function insertTestData(PDO $db): void
-    {
-        // Insert test domain
-        $db->exec("INSERT INTO test_domains (id, name) VALUES (1, 'example.com')");
-
-        // Insert test records with various types
         $records = [
-            [1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 3600 900 604800 86400', 86400, 0],
-            [1, 'example.com', 'NS', 'ns1.example.com', 86400, 0],
-            [1, 'example.com', 'NS', 'ns2.example.com', 86400, 0],
-            [1, 'example.com', 'A', '192.0.2.1', 3600, 0],
-            [1, 'www.example.com', 'A', '192.0.2.2', 3600, 0],
-            [1, 'mail.example.com', 'A', '192.0.2.3', 3600, 0],
-            [1, 'example.com', 'MX', 'mail.example.com', 3600, 10],
-            [1, 'example.com', 'TXT', '"v=spf1 mx -all"', 3600, 0],
-            [1, 'ftp.example.com', 'CNAME', 'www.example.com', 3600, 0],
-            [1, 'api.example.com', 'A', '192.0.2.4', 3600, 0],
+            ['example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 3600 900 604800 86400', 86400, 0],
+            ['example.com', 'NS', 'ns1.example.com', 86400, 0],
+            ['example.com', 'NS', 'ns2.example.com', 86400, 0],
+            ['example.com', 'A', '192.0.2.1', 3600, 0],
+            ['www.example.com', 'A', '192.0.2.2', 3600, 0],
+            ['mail.example.com', 'A', '192.0.2.3', 3600, 0],
+            ['example.com', 'MX', 'mail.example.com', 3600, 10],
+            ['example.com', 'TXT', '"v=spf1 mx -all"', 3600, 0],
+            ['ftp.example.com', 'CNAME', 'www.example.com', 3600, 0],
+            ['api.example.com', 'A', '192.0.2.4', 3600, 0],
         ];
-
-        $stmt = $db->prepare("INSERT INTO test_records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, ?, ?, ?, ?)");
-        foreach ($records as $record) {
-            $stmt->execute($record);
+        foreach ($records as $index => [$name, $type, $content, $ttl, $prio]) {
+            RecordCommentFixture::addRecord($db, $index + 1, $name, $type, $content, $ttl, $prio);
         }
 
-        // Insert comments for some records (to test JOIN scenario)
-        $comments = [
-            [1, 'example.com', 'A', 'Main website IP'],
-            [1, 'www.example.com', 'A', 'WWW subdomain'],
-            [1, 'mail.example.com', 'A', 'Mail server'],
-        ];
+        RecordCommentFixture::addComment($db, 1, 'example.com', 'A', 'Main website IP');
+        RecordCommentFixture::addComment($db, 2, 'www.example.com', 'A', 'WWW subdomain');
+        RecordCommentFixture::addComment($db, 3, 'mail.example.com', 'A', 'Mail server');
+    }
 
-        $stmt = $db->prepare("INSERT INTO test_comments (domain_id, name, type, comment) VALUES (?, ?, ?, ?)");
-        foreach ($comments as $comment) {
-            $stmt->execute($comment);
-        }
+    /** @return array<string, array{string}> */
+    public static function engines(): array
+    {
+        return RecordCommentFixture::engines();
+    }
+
+    /** @return array<string, array{string}> */
+    public static function otherEngines(): array
+    {
+        return ['mysql' => ['mysql'], 'pgsql' => ['pgsql']];
+    }
+
+    /** @return list<RecordRow> */
+    private function filtered(
+        SqlRecordRepository $repo,
+        int $start = 0,
+        int $amount = 100,
+        string $sortBy = 'name',
+        string $direction = 'ASC',
+        bool $comments = false,
+        string $search = '',
+        string $type = '',
+        string $content = ''
+    ): array {
+        return $repo->getFilteredRecords(self::ZONE_ID, $start, $amount, $sortBy, $direction, $comments, $search, $type, $content);
     }
 
     /**
-     * Execute the getFilteredRecords query pattern
-     *
-     * This replicates the exact SQL query pattern from RecordRepository::getFilteredRecords()
+     * @param list<RecordRow> $rows
+     * @return list<string>
      */
-    private function executeFilteredRecordsQuery(
-        PDO $db,
-        int $zoneId,
-        int $rowStart,
-        int $rowAmount,
-        string $sortBy,
-        string $sortDirection,
-        bool $includeComments
-    ): array {
-        $query = "SELECT test_records.id, test_records.domain_id, test_records.name, test_records.type,
-                 test_records.content, test_records.ttl, test_records.prio, test_records.disabled, test_records.auth";
+    private static function summary(array $rows): array
+    {
+        $lines = array_map(fn(RecordRow $r): string => "$r->name $r->type $r->content " . ($r->comment ?? '-'), $rows);
+        sort($lines);
 
-        if ($includeComments) {
-            $query .= ", c.comment";
+        return $lines;
+    }
+
+    #[DataProvider('engines')]
+    public function testBasicQueryWithoutComments(string $engine): void
+    {
+        $rows = $this->filtered($this->open($engine));
+
+        $this->assertCount(10, $rows);
+        $this->assertNull($rows[0]->comment);
+    }
+
+    #[DataProvider('engines')]
+    public function testApexRecordsComeFirstAndTheRestIsSortedByName(string $engine): void
+    {
+        $rows = $this->filtered($this->open($engine));
+
+        $this->assertSame('SOA', $rows[0]->type);
+        $this->assertSame(['example.com'], array_values(array_unique(array_map(fn(RecordRow $r) => $r->name, array_slice($rows, 0, 6)))));
+        $this->assertSame(
+            ['api.example.com', 'ftp.example.com', 'mail.example.com', 'www.example.com'],
+            array_map(fn(RecordRow $r) => $r->name, array_slice($rows, 6))
+        );
+    }
+
+    #[DataProvider('engines')]
+    public function testCommentsJoinAttachesTheCommentsAndKeepsEveryRecord(string $engine): void
+    {
+        $rows = $this->filtered($this->open($engine), comments: true);
+
+        $this->assertCount(10, $rows);
+        $comments = [];
+        foreach ($rows as $row) {
+            $comments[$row->name . '/' . $row->type] = $row->comment;
         }
-
-        $query .= " FROM test_records";
-
-        if ($includeComments) {
-            $query .= " LEFT JOIN test_comments c ON test_records.domain_id = c.domain_id
-                      AND test_records.name = c.name AND test_records.type = c.type";
-        }
-
-        $query .= " WHERE test_records.domain_id = :zone_id AND test_records.type IS NOT NULL AND test_records.type != ''";
-        $query .= " ORDER BY test_records.$sortBy $sortDirection LIMIT :row_amount OFFSET :row_start";
-
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-        $stmt->bindValue(':row_amount', $rowAmount, PDO::PARAM_INT);
-        $stmt->bindValue(':row_start', $rowStart, PDO::PARAM_INT);
-
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $this->assertSame('Main website IP', $comments['example.com/A']);
+        $this->assertSame('WWW subdomain', $comments['www.example.com/A']);
+        $this->assertSame('Mail server', $comments['mail.example.com/A']);
+        $this->assertNull($comments['example.com/MX']);
     }
 
-    // ===========================================
-    // SQLite Tests
-    // ===========================================
-
-    public function testSQLiteBasicQueryWithoutComments(): void
+    #[DataProvider('engines')]
+    public function testPaginationWithBoundParameters(string $engine): void
     {
-        $results = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            false
-        );
+        $repo = $this->open($engine);
 
-        $this->assertCount(10, $results);
-        $this->assertEquals('api.example.com', $results[0]['name']);
-    }
-
-    public function testSQLiteQueryWithCommentsJoin(): void
-    {
-        // This tests the scenario from PR #952 - JOIN with ORDER BY
-        $results = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            true
-        );
-
-        $this->assertCount(10, $results);
-        $this->assertArrayHasKey('comment', $results[0]);
-    }
-
-    public function testSQLitePaginationWithBoundParameters(): void
-    {
-        // Test LIMIT/OFFSET with bound parameters
-        $page1 = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            0,
-            3,
-            'name',
-            'ASC',
-            false
-        );
-
-        $page2 = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            3,
-            3,
-            'name',
-            'ASC',
-            false
-        );
+        $page1 = $this->filtered($repo, 0, 3);
+        $page2 = $this->filtered($repo, 3, 3);
 
         $this->assertCount(3, $page1);
         $this->assertCount(3, $page2);
-        $this->assertNotEquals($page1[0]['id'], $page2[0]['id']);
+        $this->assertSame([], array_intersect(array_map(fn(RecordRow $r) => $r->id, $page1), array_map(fn(RecordRow $r) => $r->id, $page2)));
     }
 
-    public function testSQLiteOrderByWithJoinDoesNotCauseAmbiguousColumn(): void
+    #[DataProvider('engines')]
+    public function testOrderByWithTheCommentJoinDoesNotCauseAnAmbiguousColumn(string $engine): void
     {
-        // Test various sort columns with JOIN - should not cause "ambiguous column" error
-        $sortColumns = ['id', 'name', 'type', 'content', 'ttl'];
+        $repo = $this->open($engine);
 
-        foreach ($sortColumns as $column) {
-            $results = $this->executeFilteredRecordsQuery(
-                $this->sqliteConnection,
-                self::TEST_ZONE_ID,
-                0,
-                5,
-                $column,
-                'ASC',
-                true  // Include comments JOIN
-            );
-
-            $this->assertNotEmpty($results, "Query with ORDER BY $column should return results");
+        foreach (['id', 'name', 'type', 'content', 'ttl'] as $column) {
+            $this->assertCount(5, $this->filtered($repo, 0, 5, $column, 'ASC', true), "ORDER BY $column");
         }
     }
 
-    public function testSQLiteZeroOffset(): void
+    #[DataProvider('engines')]
+    public function testZeroOffsetReturnsTheFirstPage(string $engine): void
     {
-        // Edge case: OFFSET 0
-        $results = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            0,
-            5,
-            'name',
-            'ASC',
-            true
-        );
-
-        $this->assertCount(5, $results);
+        $this->assertCount(5, $this->filtered($this->open($engine), 0, 5, comments: true));
     }
 
-    public function testSQLiteLargeOffset(): void
+    #[DataProvider('engines')]
+    public function testAnOffsetPastTheEndReturnsNothing(string $engine): void
     {
-        // Edge case: OFFSET larger than result set
-        $results = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            100,
-            10,
-            'name',
-            'ASC',
-            true
-        );
-
-        $this->assertEmpty($results);
+        $this->assertSame([], $this->filtered($this->open($engine), 100, 10, comments: true));
     }
 
-    // ===========================================
-    // MySQL Tests
-    // ===========================================
-
-    public function testMySQLBasicQueryWithoutComments(): void
+    #[DataProvider('engines')]
+    public function testSearchTypeAndContentFilters(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $repo = $this->open($engine);
 
-        $results = $this->executeFilteredRecordsQuery(
-            $this->mysqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            false
-        );
-
-        $this->assertCount(10, $results);
+        $this->assertCount(2, $this->filtered($repo, search: 'mail'));
+        $this->assertCount(4, $this->filtered($repo, type: 'A'));
+        $this->assertSame(['ftp.example.com'], array_map(fn(RecordRow $r) => $r->name, $this->filtered($repo, content: 'www.example')));
     }
 
-    public function testMySQLQueryWithCommentsJoin(): void
+    #[DataProvider('otherEngines')]
+    public function testEveryEngineReturnsTheSameRecordsAsSQLite(string $engine): void
     {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
+        $expected = self::summary($this->filtered($this->open('sqlite'), comments: true));
+        $this->assertCount(10, $expected);
 
-        $results = $this->executeFilteredRecordsQuery(
-            $this->mysqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            true
-        );
+        $actual = self::summary($this->filtered($this->open($engine), comments: true));
 
-        $this->assertCount(10, $results);
-        $this->assertArrayHasKey('comment', $results[0]);
-    }
-
-    public function testMySQLPaginationWithBoundParameters(): void
-    {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
-
-        $page1 = $this->executeFilteredRecordsQuery(
-            $this->mysqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            3,
-            'name',
-            'ASC',
-            false
-        );
-
-        $page2 = $this->executeFilteredRecordsQuery(
-            $this->mysqlConnection,
-            self::TEST_ZONE_ID,
-            3,
-            3,
-            'name',
-            'ASC',
-            false
-        );
-
-        $this->assertCount(3, $page1);
-        $this->assertCount(3, $page2);
-        $this->assertNotEquals($page1[0]['id'], $page2[0]['id']);
-    }
-
-    public function testMySQLOrderByWithJoinDoesNotCauseAmbiguousColumn(): void
-    {
-        if (!$this->mysqlConnection) {
-            $this->markTestSkipped('MySQL connection not available');
-        }
-
-        $sortColumns = ['id', 'name', 'type', 'content', 'ttl'];
-
-        foreach ($sortColumns as $column) {
-            $results = $this->executeFilteredRecordsQuery(
-                $this->mysqlConnection,
-                self::TEST_ZONE_ID,
-                0,
-                5,
-                $column,
-                'ASC',
-                true
-            );
-
-            $this->assertNotEmpty($results, "Query with ORDER BY $column should return results");
-        }
-    }
-
-    // ===========================================
-    // PostgreSQL Tests
-    // ===========================================
-
-    public function testPgSQLBasicQueryWithoutComments(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeFilteredRecordsQuery(
-            $this->pgsqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            false
-        );
-
-        $this->assertCount(10, $results);
-    }
-
-    public function testPgSQLQueryWithCommentsJoin(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $results = $this->executeFilteredRecordsQuery(
-            $this->pgsqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            10,
-            'name',
-            'ASC',
-            true
-        );
-
-        $this->assertCount(10, $results);
-        $this->assertArrayHasKey('comment', $results[0]);
-    }
-
-    public function testPgSQLPaginationWithBoundParameters(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $page1 = $this->executeFilteredRecordsQuery(
-            $this->pgsqlConnection,
-            self::TEST_ZONE_ID,
-            0,
-            3,
-            'name',
-            'ASC',
-            false
-        );
-
-        $page2 = $this->executeFilteredRecordsQuery(
-            $this->pgsqlConnection,
-            self::TEST_ZONE_ID,
-            3,
-            3,
-            'name',
-            'ASC',
-            false
-        );
-
-        $this->assertCount(3, $page1);
-        $this->assertCount(3, $page2);
-        $this->assertNotEquals($page1[0]['id'], $page2[0]['id']);
-    }
-
-    public function testPgSQLOrderByWithJoinDoesNotCauseAmbiguousColumn(): void
-    {
-        if (!$this->pgsqlConnection) {
-            $this->markTestSkipped('PostgreSQL connection not available');
-        }
-
-        $sortColumns = ['id', 'name', 'type', 'content', 'ttl'];
-
-        foreach ($sortColumns as $column) {
-            $results = $this->executeFilteredRecordsQuery(
-                $this->pgsqlConnection,
-                self::TEST_ZONE_ID,
-                0,
-                5,
-                $column,
-                'ASC',
-                true
-            );
-
-            $this->assertNotEmpty($results, "Query with ORDER BY $column should return results");
-        }
-    }
-
-    // ===========================================
-    // Cross-database consistency tests
-    // ===========================================
-
-    public function testAllDatabasesReturnSameRecordCount(): void
-    {
-        $sqliteResults = $this->executeFilteredRecordsQuery(
-            $this->sqliteConnection,
-            self::TEST_ZONE_ID,
-            0,
-            100,
-            'name',
-            'ASC',
-            true
-        );
-
-        $this->assertNotEmpty($sqliteResults);
-
-        if ($this->mysqlConnection) {
-            $mysqlResults = $this->executeFilteredRecordsQuery(
-                $this->mysqlConnection,
-                self::TEST_ZONE_ID,
-                0,
-                100,
-                'name',
-                'ASC',
-                true
-            );
-            $this->assertCount(count($sqliteResults), $mysqlResults, 'MySQL should return same count as SQLite');
-        }
-
-        if ($this->pgsqlConnection) {
-            $pgsqlResults = $this->executeFilteredRecordsQuery(
-                $this->pgsqlConnection,
-                self::TEST_ZONE_ID,
-                0,
-                100,
-                'name',
-                'ASC',
-                true
-            );
-            $this->assertCount(count($sqliteResults), $pgsqlResults, 'PostgreSQL should return same count as SQLite');
-        }
+        $this->assertSame($expected, $actual, "$engine should return the same records and comments as SQLite");
     }
 }

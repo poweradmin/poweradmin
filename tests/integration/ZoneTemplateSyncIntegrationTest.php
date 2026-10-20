@@ -20,13 +20,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-namespace integration;
+namespace Poweradmin\Tests\Integration;
 
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ZoneTemplateSyncService;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateSyncRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Integration test covering zone_template_sync reconciliation against a real database.
@@ -86,12 +86,12 @@ class ZoneTemplateSyncIntegrationTest extends TestCase
         $this->db = null;
     }
 
-    private function makeService(): ZoneTemplateSyncService
+    private function makeService(): DbZoneTemplateSyncRepository
     {
         $config = new FakeConfiguration([
             'database' => ['type' => 'mysql'],
         ]);
-        return new ZoneTemplateSyncService($this->db, $config);
+        return new DbZoneTemplateSyncRepository($this->db, $config);
     }
 
     private function createTemplate(string $name): int

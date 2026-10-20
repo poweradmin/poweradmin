@@ -20,42 +20,44 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for group zone assignment operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\ZoneGroupService;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/groups/{id}/zones: lists, assigns and unassigns the zones a group owns.
+ */
 class GroupZonesController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups/{id}/zones */
+    private const ZONE_SORT_FIELDS = ['zone_id', 'zone_name', 'zone_type', 'created_at'];
+
     private ZoneGroupService $zoneGroupService;
     private ApiPermissionService $apiPermissionService;
-    private ZoneRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $zoneGroupRepository = $this->createZoneGroupRepository();
-        $groupRepository = $this->createUserGroupRepository();
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository, $this->zoneRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->zoneGroupService = $this->services()->zoneGroupService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->domainRepository = $this->services()->domainRepository();
     }
 
     /**
@@ -69,11 +71,10 @@ class GroupZonesController extends PublicApiController
             'GET' => $this->listZones(),
             'POST' => $this->assignZone(),
             'DELETE' => $this->unassignZone(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -98,6 +99,34 @@ class GroupZonesController extends PublicApiController
             )
         ]
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the zone name',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'example')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: zone_id, zone_name, zone_type, created_at. Default: newest assignment first',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'zone_name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Zones retrieved successfully',
@@ -105,6 +134,17 @@ class GroupZonesController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Zones retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     type: 'object',
@@ -128,11 +168,13 @@ class GroupZonesController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Group not found')]
     private function listZones(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can view group zones', 403);
         }
 
@@ -140,6 +182,10 @@ class GroupZonesController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::ZONE_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
             // Do not disclose zones outside a zone-scoped key's allowlist.
             $scope = $this->getApiKeyScope();
             $zonesData = [];
@@ -155,11 +201,16 @@ class GroupZonesController extends PublicApiController
                 ];
             }
 
-            return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully');
+            // Filtered after the scope check, so the total never counts a hidden zone
+            [$zonesData, $extra] = $this->filterSortAndPage($zonesData, $sort, [
+                'q' => static fn(array $z): array => [$z['zone_name']],
+            ]);
+
+            return $this->returnApiResponse(['zones' => $zonesData], true, 'Zones retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupZonesController::listZones', 'Failed to retrieve zones');
         }
     }
 
@@ -209,13 +260,14 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
+    #[OA\Response(response: 409, description: 'The group has reached its zone limit')]
     private function assignZone(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can assign zones to groups', 403);
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
         if (!$ownershipMode->isGroupOwnerAllowed()) {
             return $this->returnApiError(
                 'Group-ownership assignment is disabled by the current zone ownership mode (users_only).',
@@ -225,7 +277,7 @@ class GroupZonesController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['zone_id'])) {
                 return $this->returnApiError('Missing required field: zone_id', 400);
@@ -241,17 +293,23 @@ class GroupZonesController extends PublicApiController
                 return $scopeError;
             }
 
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
+            $assigned = $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
+            if ($assigned instanceof ZoneLimitBreach) {
+                return $this->returnApiError($assigned->message(), RefusalStatus::of(Refusal::CONFLICT));
+            }
 
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (group already owns this zone) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupZonesController::assignZone', 'Failed to assign zone');
         }
     }
 
@@ -300,7 +358,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 404, description: 'Zone or assignment not found')]
     private function unassignZone(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can unassign zones from groups', 403);
         }
 
@@ -316,59 +374,16 @@ class GroupZonesController extends PublicApiController
                 return $scopeError;
             }
 
-            if (!$this->zoneRepository->zoneExists($zoneId)) {
+            if (!$this->domainRepository->zoneIdExists($zoneId)) {
                 return $this->returnApiError('Zone not found', 404);
             }
 
-            $zoneGroupRepo = $this->createZoneGroupRepository();
-            $existingGroups = $zoneGroupRepo->findByDomainId($zoneId);
-            $hasThisGroup = false;
-            foreach ($existingGroups as $zg) {
-                if ($zg->getGroupId() === $groupId) {
-                    $hasThisGroup = true;
-                    break;
-                }
-            }
-            // Group grants on a shared zone id are not honoured, so removing one strands no one
-            if ($hasThisGroup && !$this->zoneRepository->isSharedZoneId($zoneId)) {
-                $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $wouldRemoveLast = count($existingGroups) <= 1;
-                $ownershipMode = new ZoneOwnershipModeService($this->config);
-
-                if ($wouldRemoveLast && $remainingOwners === 0) {
-                    if ($ownershipMode->isUserOwnerAllowed() && $ownershipMode->isGroupOwnerAllowed()) {
-                        $hint = 'Add another group or a user owner first.';
-                    } elseif ($ownershipMode->isGroupOwnerAllowed()) {
-                        $hint = 'Add another group first (zone ownership mode is groups_only).';
-                    } else {
-                        $hint = 'Add a user owner first (zone ownership mode is users_only).';
-                    }
-                    return $this->returnApiError(
-                        'Cannot remove the last owner: this would leave the zone with no ownership. ' . $hint,
-                        400
-                    );
-                }
-                // groups_only requires at least one group regardless of legacy user owners.
-                if ($wouldRemoveLast && !$ownershipMode->isUserOwnerAllowed()) {
-                    return $this->returnApiError(
-                        'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.',
-                        400
-                    );
-                }
-                // users_only requires at least one user owner: refuse to remove
-                // any group from a zone that has zero user owners (legacy state)
-                // until a user owner is added to bring the zone into compliance.
-                if (!$ownershipMode->isGroupOwnerAllowed() && $remainingOwners === 0) {
-                    return $this->returnApiError(
-                        'Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.',
-                        400
-                    );
-                }
+            $result = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
+            if ($result instanceof ZoneOwnershipRefusal) {
+                return $this->returnApiError(self::refusalMessage($result), 400);
             }
 
-            $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
-
-            if (!$success) {
+            if (!$result) {
                 return $this->returnApiError('Zone assignment not found', 404);
             }
 
@@ -376,7 +391,24 @@ class GroupZonesController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupZonesController::unassignZone', 'Failed to unassign zone');
         }
+    }
+
+    /**
+     * The contract wording for a refused group removal; the hint names the kind
+     * of owner the ownership mode still accepts.
+     */
+    private static function refusalMessage(ZoneOwnershipRefusal $refusal): string
+    {
+        return match ($refusal->code) {
+            ZoneOwnershipRefusal::LAST_GROUP_GROUPS_ONLY => 'Cannot remove the last group: zone ownership mode is groups_only and requires at least one group. Add another group first.',
+            ZoneOwnershipRefusal::USERS_ONLY_NO_USER_OWNERS => 'Cannot remove group: zone ownership mode is users_only and the zone has no user owners. Add a user owner first.',
+            default => 'Cannot remove the last owner: this would leave the zone with no ownership. ' . match ($refusal->mode) {
+                ZoneOwnershipModeService::MODE_GROUPS_ONLY => 'Add another group first (zone ownership mode is groups_only).',
+                ZoneOwnershipModeService::MODE_USERS_ONLY => 'Add a user owner first (zone ownership mode is users_only).',
+                default => 'Add another group or a user owner first.',
+            },
+        };
     }
 }

@@ -3,13 +3,14 @@
 namespace Poweradmin\Tests\Unit\Api\V2;
 
 use Poweradmin\Application\Controller\Api\V2\ZoneDnssecController;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnssecProvider;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Port\DnssecProviderInterface;
+use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Test double that injects mocks and skips the parent constructor (which performs
@@ -21,6 +22,7 @@ class TestableZoneDnssecController extends ZoneDnssecController
     public ?array $loggedChange = null;
     public array $soaBumps = [];
     public ?string $signingValidationError = null;
+    private ZoneSigningService $zoneSigningService;
 
     /**
      * @phpstan-ignore-next-line constructor.unusedParameter
@@ -30,12 +32,12 @@ class TestableZoneDnssecController extends ZoneDnssecController
         $this->request = new Request();
         $this->pathParameters = $pathParameters;
         $this->authenticatedUserId = 1;
-        $this->config = ConfigurationManager::getInstance();
+        $this->config = new FakeConfiguration();
     }
 
-    public function setZoneRepository(ZoneRepositoryInterface $repository): void
+    public function setDomainRepository(DomainRepositoryInterface $repository): void
     {
-        $this->zoneRepository = $repository;
+        $this->domainRepository = $repository;
     }
 
     public function setApiPermissionService(ApiPermissionService $service): void
@@ -43,7 +45,7 @@ class TestableZoneDnssecController extends ZoneDnssecController
         $this->apiPermissionService = $service;
     }
 
-    public function setDnssecProvider(DnssecProvider $provider): void
+    public function setDnssecProvider(DnssecProviderInterface $provider): void
     {
         $this->dnssecProvider = $provider;
     }
@@ -68,18 +70,13 @@ class TestableZoneDnssecController extends ZoneDnssecController
         return $this->setStatus();
     }
 
-    protected function validateZoneForSigning(int $zoneId, string $zoneName): ?string
+    public function setZoneSigningService(ZoneSigningService $service): void
     {
-        return $this->signingValidationError;
+        $this->zoneSigningService = $service;
     }
 
-    protected function bumpSoaSerial(int $zoneId): void
+    protected function zoneSigningService(): ZoneSigningService
     {
-        $this->soaBumps[] = $zoneId;
-    }
-
-    protected function logDnssecChange(int $zoneId, string $zoneName, bool $enabled): void
-    {
-        $this->loggedChange = ['zoneId' => $zoneId, 'zoneName' => $zoneName, 'enabled' => $enabled];
+        return $this->zoneSigningService;
     }
 }

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,13 +23,13 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 /**
- * Service for safely handling and sanitizing User-Agent strings
+ * Reads and sanitizes the request User-Agent for logging and bot detection.
  *
  * This service provides methods to safely retrieve and sanitize User-Agent
  * strings for logging purposes, preventing potential security issues such as
  * log injection attacks.
  */
-class UserAgentService
+final class UserAgentService
 {
     private const MAX_LENGTH = 512;
     private const DEFAULT_USER_AGENT = 'unknown';

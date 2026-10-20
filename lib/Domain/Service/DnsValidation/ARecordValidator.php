@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Validator for A DNS records
@@ -33,11 +33,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - RFC 791: Internet Protocol
  *
  * A records map domain names to IPv4 addresses.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class ARecordValidator implements DnsRecordValidatorInterface
 {
@@ -48,11 +43,11 @@ class ARecordValidator implements DnsRecordValidatorInterface
     /**
      * Constructor
      *
-     * @param ConfigurationManager $config
+     * @param HostnameValidator $hostnameValidator
      */
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ttlValidator = new TTLValidator();
     }
@@ -65,6 +60,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for A records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or errors
      */
@@ -81,7 +77,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $hostnameResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $hostnameResult->withField(RecordField::NAME));
         }
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
@@ -89,7 +85,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $ttlResult);
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
@@ -97,7 +93,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
         // Validate priority (should be 0 for A records)
         $prioResult = $this->validatePriority($prio);
         if (!$prioResult->isValid()) {
-            return ValidationResult::errors(array_merge($errors, $prioResult->getErrors()));
+            return ValidationResult::mergeErrors($errors, $prioResult);
         }
         $validatedPrio = $prioResult->getData();
 

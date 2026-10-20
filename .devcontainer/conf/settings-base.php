@@ -1,0 +1,225 @@
+<?php
+
+/**
+ * Poweradmin devcontainer settings shared by every instance.
+ *
+ * Instance files call devcontainer_settings('<family>') and override what differs
+ * (title, backend mode, ...). Families (mysql, pgsql, sqlite) live in settings-<family>.php
+ * next to this file. Edit shared behaviour here, once.
+ */
+
+// Inside a container only the instance file is mounted, so siblings resolve through /app.
+if (!function_exists('devcontainer_settings')) {
+    function devcontainer_conf_dir(): string
+    {
+        return is_file(__DIR__ . '/settings-base.php') ? __DIR__ : '/app/.devcontainer/conf';
+    }
+
+    function devcontainer_settings(string $family): array
+    {
+        $settings = require devcontainer_conf_dir() . '/settings-base.php';
+        $overrides = require devcontainer_conf_dir() . "/settings-$family.php";
+        // The database block is a different shape per engine, so it replaces as a whole
+        if (isset($overrides['database'])) {
+            $settings['database'] = $overrides['database'];
+            unset($overrides['database']);
+        }
+        return array_replace_recursive($settings, $overrides);
+    }
+
+    // The PowerDNS REST API backend (experimental) instead of direct SQL writes
+    function devcontainer_api_backend(array $settings): array
+    {
+        $settings['dns']['backend'] = 'api';
+        $settings['interface']['display_signed_serial_in_zone_list'] = true;
+        $settings['modules']['secondary_zone_import'] = ['enabled' => true];
+        return $settings;
+    }
+}
+
+return [
+    /**
+     * Database Settings
+     */
+    'database' => [
+        'host' => 'mariadb',
+        'port' => '3306',
+        'name' => 'poweradmin',
+        'user' => 'pdns',
+        'password' => 'poweradmin',
+        'type' => 'mysql',
+        'charset' => 'utf8',
+        'pdns_db_name' => 'pdns',
+    ],
+
+    /**
+     * Security Settings
+     */
+    'security' => [
+        'session_key' => 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L',
+        'password_encryption' => 'bcrypt',
+        'login_token_validation' => true,
+        'global_token_validation' => true,
+        'mfa' => [
+            'enabled' => true,
+            'enforced' => false,
+            'email_enabled' => true,
+        ],
+        'password_reset' => [
+            'enabled' => true,
+            'token_lifetime' => 3600,
+        ],
+        'username_recovery' => [
+            'enabled' => true,
+        ],
+    ],
+
+    /**
+     * Mail Settings (Logger transport for development)
+     */
+    'mail' => [
+        'enabled' => true,
+        'transport' => 'logger',
+        'from' => 'poweradmin@example.com',
+    ],
+
+    /**
+     * Interface Settings
+     */
+    'interface' => [
+        'language' => 'en_EN',
+        'title' => 'Poweradmin (MySQL + SQL)',
+        'show_pdns_status' => true,
+        'show_record_comments' => true,
+        'show_zone_comments' => false,
+        'enable_consistency_checks' => true,
+        'add_reverse_record' => true,
+        'search_group_records' => true,
+        'show_add_record_form' => true,
+    ],
+
+    /**
+     * DNS Settings
+     */
+    'dns' => [
+        'hostmaster' => 'hostmaster.example.com',
+        'ns1' => 'ns1.example.com',
+        'ns2' => 'ns2.example.com',
+    ],
+
+    /**
+     * DNSSEC Settings
+     */
+    'dnssec' => [
+        'enabled' => true,
+    ],
+
+    /**
+     * User Agreement Settings
+     */
+    'user_agreement' => [
+        'enabled' => false,
+        'current_version' => '1.0',
+        'require_on_version_change' => true,
+    ],
+
+    /**
+     * Miscellaneous Settings
+     */
+    'misc' => [
+        'record_comments_sync' => true,
+        'email_previews_enabled' => true,
+        // Turns on Twig strict_variables so an undefined template variable fails loudly.
+        'display_errors' => true,
+    ],
+
+    /**
+     * API Settings
+     */
+    'api' => [
+        'enabled' => true,
+        'docs_enabled' => true,
+        'basic_auth_enabled' => true,
+    ],
+
+    /**
+     * Health Check Settings
+     */
+    'health' => [
+        'enabled' => true,
+        'ping_enabled' => true,
+    ],
+
+    /**
+     * Change approval workflow (require_review_for_all stays off)
+     */
+    'approval' => [
+        'enabled' => true,
+    ],
+
+    /**
+     * PowerDNS API Settings
+     */
+    'pdns_api' => [
+        'display_name' => 'PowerDNS',
+        'url' => 'http://pdns-mysql:8081',
+        'key' => 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA',
+        'server_name' => 'localhost',
+        'webserver_username' => '',
+        'webserver_password' => 'poweradmin',
+    ],
+
+    /**
+     * Logging Settings
+     */
+    'logging' => [
+        'type' => 'native',
+        'level' => 'debug',
+        'database_enabled' => true,
+        'syslog_enabled' => false,
+    ],
+
+    /**
+     * LDAP Settings
+     */
+    'ldap' => [
+        'enabled' => true,
+        'debug' => false,
+        'uri' => 'ldap://ldap',
+        'base_dn' => 'ou=users,dc=poweradmin,dc=org',
+        'bind_dn' => 'cn=admin,dc=poweradmin,dc=org',
+        'bind_password' => 'poweradmin',
+        'user_attribute' => 'uid',
+        'protocol_version' => 3,
+        'search_filter' => '',
+        'session_cache_timeout' => 300,
+    ],
+
+    /**
+     * Module Settings
+     */
+    'modules' => [
+        'csv_export' => [
+            'enabled' => true,
+        ],
+        'zone_import_export' => [
+            'enabled' => true,
+            'auto_ttl_value' => 300,
+            'max_file_size' => 1048576,
+        ],
+        'whois' => [
+            'enabled' => true,
+            'restrict_to_admin' => false,
+        ],
+        'rdap' => [
+            'enabled' => true,
+            'restrict_to_admin' => false,
+        ],
+        'email_previews' => [
+            'enabled' => true,
+        ],
+        'dns_wizards' => [
+            'enabled' => true,
+        ],
+    ],
+];

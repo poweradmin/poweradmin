@@ -25,10 +25,19 @@ namespace Poweradmin\Tests\Unit\Application\Presenter;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\OwnerGroupColumnPresenter;
+use Poweradmin\Domain\Model\UserGroup;
 
 #[CoversClass(OwnerGroupColumnPresenter::class)]
 class OwnerGroupColumnPresenterTest extends TestCase
 {
+    public function testGroupNamesAreKeyedById(): void
+    {
+        $groups = [new UserGroup(3, 'ops', null, 1), new UserGroup(9, 'dns', null, 1)];
+
+        $this->assertSame([3 => 'ops', 9 => 'dns'], OwnerGroupColumnPresenter::namesById($groups));
+        $this->assertSame([], OwnerGroupColumnPresenter::namesById([]));
+    }
+
     public function testEmptyOwners(): void
     {
         $result = OwnerGroupColumnPresenter::presentOwners([], []);

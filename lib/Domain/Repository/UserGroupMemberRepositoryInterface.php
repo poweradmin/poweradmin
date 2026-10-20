@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Repository;
 
 use Poweradmin\Domain\Model\UserGroupMember;
 
+/**
+ * Persistence for user group membership.
+ */
 interface UserGroupMemberRepositoryInterface
 {
     /**

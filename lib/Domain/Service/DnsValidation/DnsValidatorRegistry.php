@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,10 +22,11 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Closure;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Registry for DNS record validators
@@ -33,15 +34,23 @@ use PDO;
 class DnsValidatorRegistry
 {
     private array $validators = [];
-    private ConfigurationManager $config;
-    private PDO $db;
-    private ?DnsBackendProvider $backendProvider;
+    private ConfigurationInterface $config;
+    private DnsBackendProviderInterface $backendProvider;
+    private HostnameValidator $hostnameValidator;
+    /** @var (Closure(): PdnsCapabilities)|null */
+    private ?Closure $capabilitiesResolver;
+    private ?PdnsCapabilities $capabilities = null;
 
-    public function __construct(ConfigurationManager $config, PDO $db, ?DnsBackendProvider $backendProvider = null)
+    /**
+     * @param (Closure(): PdnsCapabilities)|null $capabilities Resolves the connected PowerDNS version,
+     *     called only when a version-dependent type or SVCB/HTTPS parameter is validated
+     */
+    public function __construct(ConfigurationInterface $config, DnsBackendProviderInterface $backendProvider, ?Closure $capabilities = null)
     {
         $this->config = $config;
-        $this->db = $db;
         $this->backendProvider = $backendProvider;
+        $this->capabilitiesResolver = $capabilities;
+        $this->hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($config));
         $this->registerValidators();
     }
 
@@ -52,64 +61,64 @@ class DnsValidatorRegistry
     {
         // Register all validators (sorted alphabetically by record type)
         $this->validators = [
-            RecordType::A => new ARecordValidator($this->config),
-            RecordType::AAAA => new AAAARecordValidator($this->config),
-            RecordType::AFSDB => new AFSDBRecordValidator($this->config),
-            RecordType::ALIAS => new ALIASRecordValidator($this->config),
-            RecordType::APL => new APLRecordValidator($this->config),
-            RecordType::BRID => new BRIDRecordValidator($this->config),
-            RecordType::CAA => new CAARecordValidator($this->config),
-            RecordType::CDNSKEY => new CDNSKEYRecordValidator($this->config),
-            RecordType::CDS => new CDSRecordValidator($this->config),
-            RecordType::CERT => new CERTRecordValidator($this->config),
-            RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db, $this->backendProvider),
-            RecordType::CSYNC => new CSYNCRecordValidator($this->config),
-            RecordType::DHCID => new DHCIDRecordValidator($this->config),
-            RecordType::DLV => new DLVRecordValidator($this->config),
-            RecordType::DNAME => new DNAMERecordValidator($this->config),
-            RecordType::DNSKEY => new DNSKEYRecordValidator($this->config),
-            RecordType::DS => new DSRecordValidator($this->config),
-            RecordType::EUI48 => new EUI48RecordValidator($this->config),
-            RecordType::EUI64 => new EUI64RecordValidator($this->config),
-            RecordType::HHIT => new HHITRecordValidator($this->config),
-            RecordType::HINFO => new HINFORecordValidator($this->config),
-            RecordType::HTTPS => new HTTPSRecordValidator($this->config),
-            RecordType::IPSECKEY => new IPSECKEYRecordValidator($this->config),
-            RecordType::KEY => new KEYRecordValidator($this->config),
-            RecordType::KX => new KXRecordValidator($this->config),
-            RecordType::L32 => new L32RecordValidator($this->config),
-            RecordType::L64 => new L64RecordValidator($this->config),
-            RecordType::LOC => new LOCRecordValidator($this->config),
-            RecordType::LP => new LPRecordValidator($this->config),
-            RecordType::LUA => new LUARecordValidator($this->config),
-            RecordType::MINFO => new MINFORecordValidator($this->config),
-            RecordType::MR => new MRRecordValidator($this->config),
-            RecordType::MX => new MXRecordValidator($this->config),
-            RecordType::NAPTR => new NAPTRRecordValidator($this->config),
-            RecordType::NID => new NIDRecordValidator($this->config),
-            RecordType::NS => new NSRecordValidator($this->config),
-            RecordType::NSEC => new NSECRecordValidator($this->config),
-            RecordType::NSEC3 => new NSEC3RecordValidator($this->config),
-            RecordType::NSEC3PARAM => new NSEC3PARAMRecordValidator($this->config),
-            RecordType::OPENPGPKEY => new OPENPGPKEYRecordValidator($this->config),
-            RecordType::PTR => new PTRRecordValidator($this->config),
-            RecordType::RESINFO => new RESINFORecordValidator($this->config),
-            RecordType::RKEY => new RKEYRecordValidator($this->config),
-            RecordType::RP => new RPRecordValidator($this->config),
-            RecordType::RRSIG => new RRSIGRecordValidator($this->config),
-            RecordType::SMIMEA => new SMIMEARecordValidator($this->config),
-            RecordType::SOA => new SOARecordValidator($this->config),
-            RecordType::SPF => new SPFRecordValidator($this->config),
-            RecordType::SRV => new SRVRecordValidator($this->config),
-            RecordType::SSHFP => new SSHFPRecordValidator($this->config),
-            RecordType::SVCB => new SVCBRecordValidator($this->config),
-            RecordType::TKEY => new TKEYRecordValidator($this->config),
-            RecordType::TLSA => new TLSARecordValidator($this->config),
-            RecordType::TSIG => new TSIGRecordValidator($this->config),
-            RecordType::TXT => new TXTRecordValidator($this->config),
-            RecordType::URI => new URIRecordValidator($this->config),
-            RecordType::WALLET => new WALLETRecordValidator($this->config),
-            RecordType::ZONEMD => new ZONEMDRecordValidator($this->config),
+            RecordType::A => new ARecordValidator($this->hostnameValidator),
+            RecordType::AAAA => new AAAARecordValidator($this->hostnameValidator),
+            RecordType::AFSDB => new AFSDBRecordValidator($this->hostnameValidator),
+            RecordType::ALIAS => new ALIASRecordValidator($this->hostnameValidator),
+            RecordType::APL => new APLRecordValidator($this->hostnameValidator, $this->config),
+            RecordType::BRID => new BRIDRecordValidator($this->hostnameValidator),
+            RecordType::CAA => new CAARecordValidator($this->hostnameValidator),
+            RecordType::CDNSKEY => new CDNSKEYRecordValidator($this->hostnameValidator),
+            RecordType::CDS => new CDSRecordValidator($this->hostnameValidator),
+            RecordType::CERT => new CERTRecordValidator($this->hostnameValidator),
+            RecordType::CNAME => new CNAMERecordValidator($this->hostnameValidator, $this->backendProvider),
+            RecordType::CSYNC => new CSYNCRecordValidator($this->hostnameValidator),
+            RecordType::DHCID => new DHCIDRecordValidator($this->hostnameValidator),
+            RecordType::DLV => new DLVRecordValidator($this->hostnameValidator),
+            RecordType::DNAME => new DNAMERecordValidator($this->hostnameValidator),
+            RecordType::DNSKEY => new DNSKEYRecordValidator($this->hostnameValidator),
+            RecordType::DS => new DSRecordValidator($this->hostnameValidator),
+            RecordType::EUI48 => new EUI48RecordValidator($this->hostnameValidator),
+            RecordType::EUI64 => new EUI64RecordValidator($this->hostnameValidator),
+            RecordType::HHIT => new HHITRecordValidator($this->hostnameValidator),
+            RecordType::HINFO => new HINFORecordValidator($this->hostnameValidator),
+            RecordType::HTTPS => new HTTPSRecordValidator($this->hostnameValidator, $this->svcParamSupported(...)),
+            RecordType::IPSECKEY => new IPSECKEYRecordValidator($this->hostnameValidator),
+            RecordType::KEY => new KEYRecordValidator($this->hostnameValidator),
+            RecordType::KX => new KXRecordValidator($this->hostnameValidator),
+            RecordType::L32 => new L32RecordValidator($this->hostnameValidator),
+            RecordType::L64 => new L64RecordValidator($this->hostnameValidator),
+            RecordType::LOC => new LOCRecordValidator($this->hostnameValidator),
+            RecordType::LP => new LPRecordValidator($this->hostnameValidator),
+            RecordType::LUA => new LUARecordValidator($this->hostnameValidator),
+            RecordType::MINFO => new MINFORecordValidator($this->hostnameValidator),
+            RecordType::MR => new MRRecordValidator($this->hostnameValidator),
+            RecordType::MX => new MXRecordValidator($this->hostnameValidator),
+            RecordType::NAPTR => new NAPTRRecordValidator($this->hostnameValidator),
+            RecordType::NID => new NIDRecordValidator(),
+            RecordType::NS => new NSRecordValidator($this->hostnameValidator),
+            RecordType::NSEC => new NSECRecordValidator($this->hostnameValidator),
+            RecordType::NSEC3 => new NSEC3RecordValidator($this->hostnameValidator),
+            RecordType::NSEC3PARAM => new NSEC3PARAMRecordValidator($this->hostnameValidator),
+            RecordType::OPENPGPKEY => new OPENPGPKEYRecordValidator($this->hostnameValidator),
+            RecordType::PTR => new PTRRecordValidator($this->hostnameValidator),
+            RecordType::RESINFO => new RESINFORecordValidator($this->hostnameValidator),
+            RecordType::RKEY => new RKEYRecordValidator($this->hostnameValidator),
+            RecordType::RP => new RPRecordValidator($this->hostnameValidator),
+            RecordType::RRSIG => new RRSIGRecordValidator($this->hostnameValidator),
+            RecordType::SMIMEA => new SMIMEARecordValidator($this->hostnameValidator),
+            RecordType::SOA => new SOARecordValidator($this->hostnameValidator, $this->config),
+            RecordType::SPF => new SPFRecordValidator($this->hostnameValidator),
+            RecordType::SRV => new SRVRecordValidator($this->hostnameValidator),
+            RecordType::SSHFP => new SSHFPRecordValidator($this->hostnameValidator),
+            RecordType::SVCB => new SVCBRecordValidator($this->hostnameValidator, null, $this->svcParamSupported(...)),
+            RecordType::TKEY => new TKEYRecordValidator($this->hostnameValidator),
+            RecordType::TLSA => new TLSARecordValidator($this->hostnameValidator),
+            RecordType::TSIG => new TSIGRecordValidator($this->hostnameValidator),
+            RecordType::TXT => new TXTRecordValidator($this->hostnameValidator),
+            RecordType::URI => new URIRecordValidator($this->hostnameValidator),
+            RecordType::WALLET => new WALLETRecordValidator($this->hostnameValidator),
+            RecordType::ZONEMD => new ZONEMDRecordValidator($this->hostnameValidator),
         ];
 
         // For record types not yet implemented, we'll use DefaultRecordValidator
@@ -124,7 +133,7 @@ class DnsValidatorRegistry
      */
     public function getValidator(string $recordType): DnsRecordValidatorInterface
     {
-        return $this->validators[$recordType] ?? new DefaultRecordValidator($this->config, $recordType);
+        return $this->validators[$recordType] ?? new DefaultRecordValidator($recordType);
     }
 
     /**
@@ -152,6 +161,35 @@ class DnsValidatorRegistry
         }
 
         return false;
+    }
+
+    /**
+     * False only when the connected PowerDNS version is known and predates the type.
+     */
+    public function isTypeSupportedByServer(string $recordType): bool
+    {
+        $minVersion = PdnsCapabilities::recordTypeMinVersion($recordType);
+        if ($minVersion === null) {
+            return true;
+        }
+
+        $capabilities = $this->capabilities();
+        return $capabilities === null || !$capabilities->isKnown() || $capabilities->isAtLeast($minVersion);
+    }
+
+    private function svcParamSupported(string $key): bool
+    {
+        return PdnsCapabilities::svcParamMinVersion($key) === null
+            || ($this->capabilities()?->supportsSvcParam($key) ?? true);
+    }
+
+    private function capabilities(): ?PdnsCapabilities
+    {
+        if ($this->capabilitiesResolver === null) {
+            return null;
+        }
+
+        return $this->capabilities ??= ($this->capabilitiesResolver)();
     }
 
     /**

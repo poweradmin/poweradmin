@@ -26,9 +26,10 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Extra owners live in `zones` rows with a NULL zone_name, keyed by the canonical
@@ -47,6 +48,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
             zone_type TEXT, zone_master TEXT, comment TEXT, owner INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT, value_type TEXT)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
@@ -66,9 +68,10 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     {
         return new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProvider::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration(),
+            new ArraySession()
         );
     }
 
@@ -88,25 +91,15 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
     }
 
     #[Test]
-    public function theExtraOwnerCanSeeTheZone(): void
-    {
-        // zoneExists doubles as the access gate on the internal zone endpoint, so a
-        // miss here is a 404 on the user's own zone.
-        $this->assertTrue($this->repository()->zoneExists(4, 2));
-    }
-
-    #[Test]
     public function aStrangerIsStillRefused(): void
     {
         $this->assertFalse($this->repository()->isUserZoneOwner(4, 3));
-        $this->assertFalse($this->repository()->zoneExists(4, 3));
     }
 
     #[Test]
     public function thePrimaryOwnerIsUnaffected(): void
     {
         $this->assertTrue($this->repository()->isUserZoneOwner(4, 1));
-        $this->assertTrue($this->repository()->zoneExists(4, 1));
     }
 
     #[Test]
@@ -121,7 +114,6 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
 
         $this->assertSame(['extra', 'primary', 'stranger'], $owners);
         $this->assertTrue($this->repository()->isUserZoneOwner(4, 3));
-        $this->assertTrue($this->repository()->zoneExists(4, 3));
     }
 
     #[Test]
@@ -151,13 +143,14 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         // canonical row's own primary key would leave the row orphaned.
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2905, 9)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('deleteZone')->willReturn(true);
         $repository = new ApiZoneRepository(
             $this->db,
             $backend,
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration(),
+            new ArraySession()
         );
 
         $this->assertTrue($repository->deleteZone(4));
@@ -174,13 +167,14 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         // A different zone's mappings must survive.
         $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (4, 12, 3)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('deleteZone')->willReturn(true);
         $repository = new ApiZoneRepository(
             $this->db,
             $backend,
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration(),
+            new ArraySession()
         );
 
         $this->assertTrue($repository->deleteZone(4));

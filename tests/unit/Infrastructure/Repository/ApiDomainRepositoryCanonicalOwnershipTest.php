@@ -23,21 +23,24 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The zone list is keyed by canonical id, so the ownership map has to be too. Keying it on
  * the raw domain_id collapsed every unresolved row onto 0, which both hid the owner and
  * let one zone's owners surface on another.
  */
+#[BackupGlobals(true)]
 class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -60,15 +63,15 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'alice', 'Alice'), (2, 'bob', 'Bob')");
 
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = new FakeConfiguration();
     }
 
-    private function backendReturning(array $zones): DnsBackendProvider
+    private function backendReturning(array $zones): DnsBackendProviderInterface
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn($zones);
         $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
@@ -86,7 +89,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 11, 'name' => 'alice.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 12, 'name' => 'bob.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -104,7 +107,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 21, 'name' => 'null.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 300, 'name' => 'migrated.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -123,7 +126,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
 
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 31, 'name' => 'shared.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
@@ -142,7 +145,7 @@ class ApiDomainRepositoryCanonicalOwnershipTest extends TestCase
         $repo = new ApiDomainRepository($this->db, $this->config, $this->backendReturning([
             ['id' => 41, 'name' => 'mine.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 42, 'name' => 'theirs.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
-        ]));
+        ]), new ArraySession());
 
         $result = $repo->getZones('own', 1, 'all', 0, 100, 'name', 'ASC', false, true);
 

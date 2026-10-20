@@ -23,11 +23,15 @@
 namespace Poweradmin\Tests\Integration;
 
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\Template\ZoneTemplateService;
+use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Psr\Log\NullLogger;
 use TestHelpers\SqliteIntegrationTestCase;
+use TestHelpers\ZoneTemplateServiceBuilder;
 
 /**
- * Regression tests for ZoneTemplate::getZoneAndDomainIdsByTemplate().
+ * Regression tests for ZoneTemplateService::getZoneAndDomainIdsByTemplate().
  *
  * Guards two failure modes from the same code path:
  * - #1210: returning a single id confuses callers that need either the Poweradmin
@@ -37,8 +41,8 @@ use TestHelpers\SqliteIntegrationTestCase;
  *   domains table) feed null into getDomainNameById and crash the template
  *   update with a TypeError. The INNER JOIN guard must drop those.
  *
- * Each test runs in its own process to keep the static permission cache inside
- * UserManager::verifyPermission from leaking across cases.
+ * Each test runs in its own process to keep the PermissionService memoized in
+ * Permission::$permissionService from leaking across cases.
  */
 class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
 {
@@ -89,7 +93,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $domainId = $this->makeDomain('example.com');
         $zoneId = $this->linkZone($domainId, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -108,7 +113,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         // Orphan: domains row never inserted, so INNER JOIN must drop this one.
         $orphanZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -128,7 +134,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $templateId = $this->makeTemplate();
         $apiZoneId = $this->linkZone(99999, $templateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(true));
+        $backend = $this->dnsBackendStub(true);
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($templateId, self::ADMIN_USER_ID);
 
@@ -149,7 +156,8 @@ class ZoneTemplateGetZoneAndDomainIdsTest extends SqliteIntegrationTestCase
         $targetZoneId = $this->linkZone($targetDomainId, $targetTemplateId);
         $this->linkZone($otherDomainId, $otherTemplateId);
 
-        $zoneTemplate = new ZoneTemplate($this->db, $this->config, $this->dnsBackendStub(false));
+        $backend = $this->dnsBackendStub(false);
+        $zoneTemplate = ZoneTemplateServiceBuilder::build(new DbZoneTemplateRepository($this->db, $this->config, $backend), $this->config, $backend, $this->permissionService(), new SessionActor($this->session), new NullLogger());
 
         $rows = $zoneTemplate->getZoneAndDomainIdsByTemplate($targetTemplateId, self::ADMIN_USER_ID);
 

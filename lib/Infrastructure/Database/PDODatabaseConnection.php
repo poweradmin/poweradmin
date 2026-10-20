@@ -25,9 +25,11 @@ namespace Poweradmin\Infrastructure\Database;
 use Exception;
 use PDO;
 use PDOException;
-use Poweradmin\Domain\Service\DatabaseConnection;
 
-class PDODatabaseConnection implements DatabaseConnection
+/**
+ * Opens the PDO connection from the database credentials, building the DSN and SSL options per driver.
+ */
+class PDODatabaseConnection
 {
     public function connect(array $credentials): PDO
     {
@@ -58,16 +60,43 @@ class PDODatabaseConnection implements DatabaseConnection
             if ($credentials['db_type'] === 'sqlite') {
                 $pdo->exec('PRAGMA foreign_keys = ON');
                 // Wait for competing writers instead of failing immediately
-                // with "database is locked" when requests run concurrently
+                // with "database is locked" when requests run concurrently.
+                // Set before the journal switch below, which needs the wait.
                 $pdo->exec('PRAGMA busy_timeout = 5000');
-                // Shorter write-lock windows; corruption-safe in all journal
-                // modes, trades only last-commit durability on power loss
-                $pdo->exec('PRAGMA synchronous = NORMAL');
+                if ($credentials['db_sqlite_wal'] ?? true) {
+                    $this->enableWalMode($pdo);
+                }
+                // NORMAL is corruption-safe only in WAL (it trades last-commit durability);
+                // a rollback journal needs FULL, also when the switch to WAL failed
+                $journalMode = strtolower((string) $pdo->query('PRAGMA journal_mode')->fetchColumn());
+                $pdo->exec($journalMode === 'wal' ? 'PRAGMA synchronous = NORMAL' : 'PRAGMA synchronous = FULL');
             }
 
             return $pdo;
         } catch (PDOException $e) {
             throw new Exception("Database connection error: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * PowerDNS reads the same file Poweradmin writes, and in the default
+     * rollback journal a reader blocks a writer outright, so a zone save fails
+     * with "database is locked". WAL lets the two overlap.
+     *
+     * Switching needs an exclusive lock and a writable file and directory, so
+     * it can fail on a read-only database or while another connection is
+     * reading. That must not take the whole application down: the old journal
+     * mode still works, it is only more prone to lock errors under contention.
+     *
+     * database.sqlite_wal = false skips the switch for file systems where WAL
+     * cannot work, such as NFS; the file then keeps the journal mode it has.
+     */
+    private function enableWalMode(PDO $pdo): void
+    {
+        try {
+            $pdo->exec('PRAGMA journal_mode = WAL');
+        } catch (PDOException) {
+            // Keep whatever mode the file already has
         }
     }
 

@@ -4,9 +4,11 @@ namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use ReflectionClass;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class PowerdnsStatusServiceTest extends TestCase
 {
@@ -15,15 +17,29 @@ class PowerdnsStatusServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->service = new PowerdnsStatusService();
+        $this->service = new PowerdnsStatusService(new FakeConfiguration(), new ArraySession());
         $this->reflection = new ReflectionClass($this->service);
+    }
+
+    public function testApiSettingsAreReadFromTheInjectedConfiguration(): void
+    {
+        $service = new PowerdnsStatusService(new FakeConfiguration(['pdns_api' => [
+            'url' => 'http://127.0.0.1:8081/api',
+            'key' => 'secret',
+            'display_name' => '  Edge  ',
+        ]]), new ArraySession());
+
+        $this->assertTrue($service->isApiEnabled());
+        $displayName = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('displayName');
+        $this->assertSame('Edge', $displayName->getValue($service));
+        $this->assertSame('http://127.0.0.1:8081/api/metrics', $this->invokePrivate($service, 'buildMetricsUrl'));
+        $this->assertFalse((new PowerdnsStatusService(new FakeConfiguration(), new ArraySession()))->isApiEnabled());
     }
 
     #[DataProvider('displayNameProvider')]
     public function testSanitizeDisplayName($input, string $expected): void
     {
         $method = $this->reflection->getMethod('sanitizeDisplayName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $input);
         $this->assertSame($expected, $result);
@@ -63,14 +79,12 @@ class PowerdnsStatusServiceTest extends TestCase
     private function setApiUrl(object $service, string $url): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiUrl');
-        $property->setAccessible(true);
         $property->setValue($service, $url);
     }
 
     private function invokePrivate(object $service, string $method, array $args = []): mixed
     {
         $reflectionMethod = (new ReflectionClass(PowerdnsStatusService::class))->getMethod($method);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($service, $args);
     }
 
@@ -121,7 +135,6 @@ class PowerdnsStatusServiceTest extends TestCase
     private function enableApi(object $service): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiEnabled');
-        $property->setAccessible(true);
         $property->setValue($service, true);
     }
 
@@ -139,7 +152,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testFastAutoprimaryProbesAllRunWithinBudget(): void
     {
-        $service = new class extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration(), new ArraySession()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): ?string
@@ -159,7 +172,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testSlowAutoprimaryProbesStopAtTheBudgetAndRestAreSkipped(): void
     {
-        $service = new class extends PowerdnsStatusService {
+        $service = new class (new FakeConfiguration(), new ArraySession()) extends PowerdnsStatusService {
             public int $probes = 0;
 
             protected function probeHost(string $host): string
@@ -185,17 +198,18 @@ class PowerdnsStatusServiceTest extends TestCase
         $client = $this->createMock(PowerdnsApiClient::class);
         $client->method('getServerInfo')->willReturn(['id' => 'localhost', 'daemon_type' => 'authoritative', 'version' => '4.9.4']);
         $client->method('getMetrics')->willReturn([['name' => 'udp-queries', 'value' => '42']]);
-        $this->enableApi($service);
-        foreach (['apiClient' => $client, 'apiUrl' => 'http://127.0.0.1:8081'] as $name => $value) {
-            $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty($name);
-            $property->setAccessible(true);
-            $property->setValue($service, $value);
-        }
+        $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiClient');
+        $property->setValue($service, $client);
+    }
+
+    private static function apiConfig(): FakeConfiguration
+    {
+        return new FakeConfiguration(['pdns_api' => ['url' => 'http://127.0.0.1:8081', 'key' => 'secret']]);
     }
 
     public function testServerStatusSkipsThePrometheusEndpoint(): void
     {
-        $service = new class () extends PowerdnsStatusService {
+        $service = new class (self::apiConfig(), new ArraySession()) extends PowerdnsStatusService {
             public int $prometheusFetches = 0;
 
             protected function fetchMetricsWithAuth(string $url): string
@@ -216,7 +230,7 @@ class PowerdnsStatusServiceTest extends TestCase
 
     public function testDetailedServerStatusAttachesDescriptionsWithoutDuplicatingMetrics(): void
     {
-        $service = new class () extends PowerdnsStatusService {
+        $service = new class (self::apiConfig(), new ArraySession()) extends PowerdnsStatusService {
             protected function fetchMetricsWithAuth(string $url): string
             {
                 return "# HELP pdns_auth_udp_queries Number of UDP queries received\n"

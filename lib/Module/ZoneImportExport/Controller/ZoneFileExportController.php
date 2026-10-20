@@ -22,16 +22,18 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
-use Poweradmin\BaseController;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Network\ProxyContext;
-use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 
+/**
+ * GET /zones/{id}/export/zonefile - downloads the zone in BIND format, from the API or the records table.
+ */
 class ZoneFileExportController extends BaseController
 {
     public function run(): void
     {
-        $userContextService = new UserContextService();
+        $userContextService = new UserContextService($this->session());
         if (!$userContextService->isAuthenticated()) {
             $this->showError(_('You need to be logged in to export zone data.'));
             return;
@@ -44,7 +46,7 @@ class ZoneFileExportController extends BaseController
         }
 
         $userId = $userContextService->getLoggedInUserId();
-        $permissionService = $this->createPermissionService();
+        $permissionService = $this->moduleServices()->permissionService();
         $perm_view = $permissionService->getViewPermissionLevel($userId);
         $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
@@ -53,8 +55,7 @@ class ZoneFileExportController extends BaseController
             return;
         }
 
-        $zoneRepository = $this->createZoneRepository();
-        $zone_name = $zoneRepository->getDomainNameById($zone_id);
+        $zone_name = $this->moduleServices()->domainRepository()->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
@@ -100,31 +101,44 @@ class ZoneFileExportController extends BaseController
 
             $options = [
                 'http' => [
-                    'header' => "X-API-Key: $apiKey\r\n",
+                    'header' => "X-API-Key: $apiKey\r\nAccept: text/plain\r\n",
                     'method' => 'GET',
                     'ignore_errors' => true,
                     'timeout' => 10,
                 ]
             ];
 
-            $context = stream_context_create(ProxyContext::applyTo($options, $url));
+            $context = stream_context_create($this->moduleServices()->proxyContext()->applyTo($options, $url));
 
-            $response = @file_get_contents($url, false, $context);
+            $stream = @fopen($url, 'r', false, $context);
+            if ($stream === false) {
+                return null;
+            }
 
-            if ($response === false) {
+            $response = @stream_get_contents($stream);
+            $meta = stream_get_meta_data($stream);
+            fclose($stream);
+
+            if ($response === false || !empty($meta['timed_out'])) {
                 return null;
             }
 
             $responseCode = 0;
-            if (!empty($http_response_header)) {
-                foreach ($http_response_header as $header) {
+            $contentType = '';
+            $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+            if (!empty($responseHeaders)) {
+                foreach ($responseHeaders as $header) {
                     if (preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $matches)) {
                         $responseCode = (int)$matches[1];
+                        $contentType = '';
+                    } elseif (stripos($header, 'Content-Type:') === 0) {
+                        $contentType = strtolower(trim(substr($header, 13)));
                     }
                 }
             }
 
-            if ($responseCode === 200 && !empty(trim($response))) {
+            // PowerDNS answers with JSON instead of a zone file unless text/plain is accepted.
+            if ($responseCode === 200 && str_starts_with($contentType, 'text/plain') && !empty(trim($response))) {
                 return $response;
             }
         } catch (\Exception $e) {
@@ -136,10 +150,7 @@ class ZoneFileExportController extends BaseController
 
     private function generateFromDb(int $zone_id, string $zone_name): ?string
     {
-        $records = $this->createRecordRepository()->getRecordsFromDomainId(
-            $this->getConfig()->get('database', 'type', 'mysql'),
-            $zone_id
-        );
+        $records = $this->moduleServices()->recordRepository()->getRecordsFromDomainId($zone_id);
 
         if (empty($records)) {
             return null;

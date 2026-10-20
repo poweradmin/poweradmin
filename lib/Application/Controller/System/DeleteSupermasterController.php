@@ -1,0 +1,111 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\System;
+
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles the delete-supermaster confirmation page and removes the supermaster on confirmed POST.
+ */
+class DeleteSupermasterController extends BaseController
+{
+
+    public function run(): void
+    {
+        $this->checkPermission(Permission::PERM_SUPERMASTER_EDIT, _("You do not have the permission to delete a supermaster."));
+
+        if ($this->httpRequest->getPostParam('confirm') !== null) {
+            $this->deleteSuperMaster();
+        } else {
+            $this->showDeleteSuperMaster();
+        }
+    }
+
+    private function deleteSuperMaster(): void
+    {
+        $constraints = [
+            'master_ip' => [
+                new Assert\NotBlank(),
+                new Assert\Ip(['version' => 'all'])
+            ],
+            'ns_name' => [
+                new Assert\NotBlank(),
+                new Assert\Hostname()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($this->httpRequest->getPostParams())) {
+            $this->showFirstValidationError($this->httpRequest->getPostParams());
+            return;
+        }
+
+        $master_ip = filter_var((string)$this->httpRequest->getPostParam('master_ip'), FILTER_VALIDATE_IP);
+        $ns_name = filter_var((string)$this->httpRequest->getPostParam('ns_name'), FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME);
+
+        if ($master_ip === false) {
+            $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));
+            $this->redirect('/supermasters');
+        }
+
+        if (empty($ns_name)) {
+            $this->setMessage('list_supermasters', 'error', _('Invalid NS name.'));
+            $this->redirect('/supermasters');
+        }
+
+        $supermasterManager = $this->services()->supermasterManager();
+        if (!$supermasterManager->supermasterIpNameExists($master_ip, $ns_name)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('/supermasters');
+        }
+        $deleted = $supermasterManager->deleteSupermaster($master_ip, $ns_name);
+        if ($deleted->success) {
+            $this->services()->auditService()->logSupermasterDelete($master_ip, $ns_name);
+            $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
+        } else {
+            $this->setMessage('list_supermasters', 'error', (string)$deleted->message);
+        }
+        $this->redirect('/supermasters');
+    }
+
+    private function showDeleteSuperMaster(): void
+    {
+        $master_ip = (string)$this->httpRequest->getQueryParam('master_ip');
+        $supermasterManager = $this->services()->supermasterManager();
+        $info = $supermasterManager->getSupermasterInfoFromIp($master_ip);
+
+        if (empty($info)) {
+            $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
+            $this->redirect('/supermasters');
+            return;
+        }
+
+        $this->render('delete_supermaster.html', [
+            'master_ip' => $master_ip,
+            'info' => $info
+        ]);
+    }
+}

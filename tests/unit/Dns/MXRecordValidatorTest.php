@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,9 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use ReflectionMethod;
 
 class MXRecordValidatorTest extends BaseDnsTest
@@ -34,20 +36,8 @@ class MXRecordValidatorTest extends BaseDnsTest
     protected function setUp(): void
     {
         parent::setUp();
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns') {
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'strict_tld_check') {
-                        return false;
-                    }
-                }
-                return 'example.com'; // Default value for tests from ValidationResultTest
-            });
-        $this->validator = new MXRecordValidator($configMock);
+        $hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $this->validator = new MXRecordValidator($hostnameValidator);
     }
 
     public function testValidateMXRecord()
@@ -95,6 +85,7 @@ class MXRecordValidatorTest extends BaseDnsTest
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     public function testInvalidPriority()
@@ -138,6 +129,7 @@ class MXRecordValidatorTest extends BaseDnsTest
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     public function testDefaultTTL()
@@ -159,7 +151,6 @@ class MXRecordValidatorTest extends BaseDnsTest
     {
         // Test validatePriority with reflection to access private method
         $reflectionMethod = new \ReflectionMethod(MXRecordValidator::class, 'validatePriority');
-        $reflectionMethod->setAccessible(true);
 
         // Valid priority
         $result = $reflectionMethod->invoke($this->validator, 10);

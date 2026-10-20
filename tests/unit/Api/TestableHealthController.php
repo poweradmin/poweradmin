@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Api;
 
 use Poweradmin\Application\Controller\Api\HealthController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 
 /**
  * Test double stubbing the probes so the payload can be asserted on without a

@@ -1,0 +1,13 @@
+{# Forward zone letter filter built from ZoneStartingLettersPresenter::items(). Pass `items`. #}
+<span class="text-secondary">{% trans %}Show zones beginning with{% endtrans %}</span><br><nav><ul class="pagination pagination-sm d-flex flex-wrap">
+{%- for item in items -%}
+    {%- if item.active -%}
+        <li class="page-item active"><span class="page-link" {% if item.letter == 'all' %}href="#"{% else %}tabindex="-1"{% endif %}>{{ item.label }}</span></li>
+    {%- elseif item.disabled -%}
+        <li class="page-item disabled"><span class="page-link" tabindex="-1">{{ item.label }}</span></li>
+    {%- else -%}
+        <li class="page-item"><a class="page-link" href="{{ item.url }}">{{ item.label }}</a></li>
+    {%- endif -%}
+{%- endfor -%}
+</ul></nav>
+{#- no trailing newline: the output must equal ZoneStartingLettersPresenter::present() -#}

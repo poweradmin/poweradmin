@@ -26,7 +26,7 @@ use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
@@ -53,7 +53,7 @@ class DbZoneRepositoryUpdateZoneRenameTest extends TestCase
             VALUES (1, 1, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 1 10800 3600 604800 3600'),
                    (2, 1, 'www.example.com', 'A', '192.0.2.1')");
 
-        $config = $this->createMock(ConfigurationManager::class);
+        $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')
             ->willReturnCallback(function ($group, $key, $default = null) {
                 if ($group === 'database' && $key === 'type') {

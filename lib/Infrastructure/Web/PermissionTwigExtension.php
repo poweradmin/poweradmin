@@ -25,7 +25,10 @@ namespace Poweradmin\Infrastructure\Web;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class PermissionTwigExtension extends AbstractExtension
+/**
+ * Twig function can() that asks the injected permission checker whether the current user holds a permission.
+ */
+final class PermissionTwigExtension extends AbstractExtension
 {
     /** @var callable(string): bool */
     private $permissionChecker;

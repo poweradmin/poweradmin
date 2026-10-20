@@ -22,41 +22,29 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
-use Poweradmin\Infrastructure\Database\TableNameService;
-use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\RecordReadBackendInterface;
+use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Port\SerialBackendInterface;
+use Poweradmin\Domain\Port\ZoneReadBackendInterface;
 
 /**
- * Service class for managing SOA records
+ * Reads and rewrites SOA records and bumps their serial.
  */
 class SOARecordManager implements SOARecordManagerInterface
 {
     /** Zone serials are 32-bit unsigned values (RFC 1982). */
     public const MAX_SERIAL = 4294967295;
 
-    private PDO $db;
-    private ConfigurationManager $config;
-    private ?DnsBackendProvider $backendProvider;
+    private RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider;
 
     /**
-     * Constructor
-     *
-     * @param PDO $db Database connection
-     * @param ConfigurationManager $config Configuration manager
-     * @param DnsBackendProvider|null $backendProvider Optional DNS backend provider
+     * @param RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider Reads and writes the SOA record and reports the serial policy
      */
-    public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null)
-    {
-        $this->db = $db;
-        $this->config = $config;
+    public function __construct(
+        RecordReadBackendInterface&RecordWriteBackendInterface&ZoneReadBackendInterface&SerialBackendInterface&BackendCapabilitiesInterface $backendProvider
+    ) {
         $this->backendProvider = $backendProvider;
-    }
-
-    private function isApiBackend(): bool
-    {
-        return $this->backendProvider !== null && $this->backendProvider->isApiBackend();
     }
 
     /**
@@ -68,16 +56,7 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function getSOARecord(int $zone_id): string
     {
-        if ($this->isApiBackend()) {
-            return $this->backendProvider->getSOARecord($zone_id);
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ?");
-        $stmt->execute(['SOA', $zone_id]);
-        return $stmt->fetchColumn() ?: '';
+        return $this->backendProvider->getSOARecord($zone_id);
     }
 
     /**
@@ -235,22 +214,7 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOARecord(int $domain_id, string $content): bool
     {
-        if ($this->isApiBackend()) {
-            $zoneName = $this->backendProvider->getZoneNameById($domain_id);
-            if ($zoneName === null) {
-                return false;
-            }
-            $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
-            return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
-        }
-
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE domain_id = ? AND type = ?");
-        $stmt->execute([$content, $domain_id, 'SOA']);
-
-        return true;
+        return $this->backendProvider->replaceSoaContent($domain_id, $content);
     }
 
     /**
@@ -306,11 +270,9 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOASerial(int $domain_id): bool
     {
-        if ($this->isApiBackend()) {
-            if ($this->backendProvider->hasSoaEditApi($domain_id)) {
-                return true;
-            }
-            // PowerDNS soa_edit_api is not configured, update SOA serial via API PATCH
+        // PowerDNS bumps the serial itself under SOA-EDIT-API; the SQL backend never reports it
+        if ($this->backendProvider->hasSoaEditApi($domain_id)) {
+            return true;
         }
 
         $soa_rec = $this->getSOARecord($domain_id);

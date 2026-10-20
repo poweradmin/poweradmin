@@ -7,18 +7,20 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { deleteZoneById, findZoneIdByName, uniqueName, zoneExists } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Bulk Zone Registration', () => {
-  const timestamp = Date.now();
+  const timestamp = uniqueName('bulkreg');
   const testDomains = [
     `bulk-zone-a-${timestamp}.example.com`,
     `bulk-zone-b-${timestamp}.example.com`,
     `bulk-zone-c-${timestamp}.example.com`
   ];
+  const singleDomain = `bulk-single-${timestamp}.example.com`;
 
   test.describe('Bulk Registration Page Access', () => {
     test('should access bulk registration page', async ({ page }) => {
@@ -69,45 +71,39 @@ test.describe('Bulk Zone Registration', () => {
 
     test('should register single zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const singleDomain = `bulk-single-${timestamp}.example.com`;
       await page.goto('/zones/bulk-registration');
 
       await page.locator('textarea[name="domains"]').fill(singleDomain);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Verify success or check zone list
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-      // Clean up
-      await page.goto('/zones/forward?letter=all');
-      const row = page.locator(`tr:has-text("${singleDomain}")`);
-      if (await row.count() > 0) {
-        await row.locator('a[href*="/delete"]').first().click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
-      }
+      expect(await zoneExists(page, singleDomain), `zone ${singleDomain} must be created`).toBe(true);
     });
 
     test('should register multiple zones', async ({ page }) => {
+      test.slow();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/bulk-registration');
 
       await page.locator('textarea[name="domains"]').fill(testDomains.join('\n'));
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Verify success
-      // Auto-retrying assertion: the click navigation may still be in flight
+      await page.waitForLoadState('networkidle');
       await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     });
 
     test('should show created zones in list', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
 
-      // Verify at least one test zone exists
-      const bodyText = await page.locator('body').textContent();
-      const hasTestZone = testDomains.some(domain => bodyText.includes(domain));
+      // Verify at least one test zone exists somewhere in the paginated list
+      let hasTestZone = false;
+      for (const domain of testDomains) {
+        if (await zoneExists(page, domain)) {
+          hasTestZone = true;
+          break;
+        }
+      }
       expect(hasTestZone).toBeTruthy();
     });
   });
@@ -145,18 +141,10 @@ test.describe('Bulk Zone Registration', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/zones/forward?letter=all');
-
-    for (const domain of testDomains) {
-      const row = page.locator(`tr:has-text("${domain}")`);
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]').first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) await yesBtn.click();
-          await page.waitForTimeout(300);
-        }
+    for (const domain of [singleDomain, ...testDomains]) {
+      const zoneId = await findZoneIdByName(page, domain);
+      if (zoneId) {
+        await deleteZoneById(page, zoneId);
       }
     }
 

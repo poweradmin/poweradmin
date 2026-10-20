@@ -52,7 +52,7 @@
                                 <label for="prio" class="form-label">{% trans %}Priority{% endtrans %}</label>
                                 <input class="form-control form-control-sm" type="number" id="prio" name="prio" value="{{ prio }}" min="0" max="65535" pattern="[0-9]*" readonly>
                                 <div class="invalid-feedback">{% trans %}Valid range: 0-65535{% endtrans %}</div>
-                                <small class="text-muted">{% trans %}Only for MX, SRV, KX, NAPTR{% endtrans %}</small>
+                                <small class="text-muted">{% trans with {'%types%': record_types_with_priority|join(', ')} %}Only for %types%{% endtrans %}</small>
                             </div>
                         </div>
                         <div class="col-md-4">
@@ -183,7 +183,7 @@
 
 <script>
     // Record types that support priority
-    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    const RECORD_TYPES_WITH_PRIORITY = {{ record_types_with_priority|json_encode|raw }};
     
     // Function to check if a record type supports priority
     function supportsPriority(recordType) {

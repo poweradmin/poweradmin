@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Footer render checks (visible + poweradmin link + version + copyright) live
 // in playwright/tests/layout/footer.spec.js - the footer is one shared partial,
@@ -37,10 +37,8 @@ test.describe('Layout - Navigation', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/');
 
-      const supermastersLink = page.locator('a[href*="supermaster"], a:has-text("Supermaster")');
-      if (await supermastersLink.count() > 0) {
-        await expect(supermastersLink.first()).toBeVisible();
-      }
+      // The dashboard shows this card to anyone holding supermaster_view
+      await expect(page.locator('[data-testid="list-supermasters-link"]')).toBeVisible();
     });
 
     test('should show permission templates link', async ({ page }) => {
@@ -56,10 +54,10 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/');
 
       const zonesLink = page.locator('a[href*="/zones/forward"]').first();
-      if (await zonesLink.count() > 0) {
-        await zonesLink.click();
-        await expect(page).toHaveURL(/.*zones\/forward/);
-      }
+      expect(await zonesLink.count()).toBeGreaterThan(0);
+
+      await zonesLink.click();
+      await expect(page).toHaveURL(/.*zones\/forward/);
     });
 
     test('should navigate to users page', async ({ page }) => {
@@ -67,30 +65,24 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/');
 
       const usersLink = page.locator('a[href="/users"]').first();
-      if (await usersLink.count() > 0) {
-        await usersLink.click();
-        await expect(page).toHaveURL(/.*\/users/);
-      }
+      expect(await usersLink.count()).toBeGreaterThan(0);
+
+      await usersLink.click();
+      await expect(page).toHaveURL(/.*\/users/);
     });
 
     test('should logout successfully', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/');
 
-      const logoutLink = page.locator('a[href*="logout"]');
-      if (await logoutLink.count() > 0) {
-        const isVisible = await logoutLink.first().isVisible();
-        if (!isVisible) {
-          const accountDropdown = page.locator('button:has-text("Account"), [data-bs-toggle="dropdown"]:has-text("Account")');
-          if (await accountDropdown.count() > 0) {
-            await accountDropdown.first().click();
-          }
-        }
-        await logoutLink.first().click();
-        await page.waitForLoadState('networkidle');
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText.toLowerCase()).toMatch(/login|password|username/i);
-      }
+      // The logout link lives in the Account dropdown, so open that first
+      await page.locator('a.dropdown-toggle:has-text("Account")').click();
+
+      const logoutLink = page.locator('a[href*="logout"]').first();
+      await expect(logoutLink).toBeVisible();
+
+      await logoutLink.click();
+      await expect(page).toHaveURL(/login/);
     });
   });
 
@@ -159,10 +151,12 @@ test.describe('Layout - Navigation', () => {
       await page.goto('/zones/forward?letter=all');
 
       const activeLink = page.locator('.active, .current, [aria-current="page"]');
+      expect(await activeLink.count()).toBeGreaterThan(0);
+
       const zonesLink = page.locator('a[href*="/zones"]').first();
-      if (await zonesLink.count() > 0) {
-        await expect(zonesLink).toBeVisible();
-      }
+      expect(await zonesLink.count()).toBeGreaterThan(0);
+
+      await expect(zonesLink).toBeVisible();
     });
   });
 
@@ -218,13 +212,16 @@ test.describe('Layout - Breadcrumbs', () => {
     await page.goto('/zones/forward?letter=all');
     const editLink = page.locator('table a[href*="/edit"]').first();
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    expect(await editLink.count()).toBeGreaterThan(0);
 
-      const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
-      // Auto-retrying assertion: the click navigation may still be in flight
-      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-    }
+    await editLink.click();
+
+    // Auto-retrying assertion: the click navigation may still be in flight
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+    // Auto-retrying: count() would read the list page if the click is still in flight
+    const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
+    await expect(breadcrumbs.first()).toBeVisible();
   });
 
   test('should display breadcrumbs on add record page', async ({ page }) => {
@@ -232,16 +229,16 @@ test.describe('Layout - Breadcrumbs', () => {
     await page.goto('/zones/forward?letter=all');
     const editLink = page.locator('table a[href*="/edit"]').first();
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    expect(await editLink.count()).toBeGreaterThan(0);
 
-      const addRecordLink = page.locator('a[href*="/records/add"]').first();
-      if (await addRecordLink.count() > 0) {
-        await addRecordLink.click();
+    await editLink.click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+    const addRecordLink = page.locator('a[href*="/records/add"]').first();
+    if (await addRecordLink.count() > 0) {
+      await addRecordLink.click();
+
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
     }
   });
 });

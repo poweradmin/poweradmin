@@ -20,31 +20,31 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for zone owner operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\AuditService;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\ZoneOwnershipModeService;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
+use Poweradmin\Domain\Repository\UserLookupInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/zones/{id}/owners: lists, adds and removes the users who own a zone.
+ */
 class ZoneOwnersController extends PublicApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
-    private UserRepository $userRepository;
+    private ZoneOwnershipRepositoryInterface $zoneRepository;
+    private DomainRepositoryInterface $domainRepository;
+    private UserLookupInterface $userRepository;
     private ApiPermissionService $apiPermissionService;
     private AuditService $auditService;
 
@@ -52,10 +52,11 @@ class ZoneOwnersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->userRepository = $this->createUserRepository();
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->auditService = new AuditService($this->db);
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->domainRepository = $this->services()->domainRepository();
+        $this->userRepository = $this->services()->userRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
+        $this->auditService = $this->services()->auditService();
     }
 
     /**
@@ -63,7 +64,24 @@ class ZoneOwnersController extends PublicApiController
      */
     private function auditZoneName(int $zoneId): string
     {
-        return $this->createDomainRepository()->getDomainNameById($zoneId) ?? '';
+        return $this->domainRepository->getDomainNameById($zoneId) ?? '';
+    }
+
+    /**
+     * The contract wording for a refused owner removal; the hint names the kind
+     * of owner the ownership mode still accepts.
+     */
+    private static function refusalMessage(ZoneOwnershipRefusal $refusal): string
+    {
+        return match ($refusal->code) {
+            ZoneOwnershipRefusal::LAST_USER_OWNER_USERS_ONLY => 'Cannot remove the last user owner: zone ownership mode is users_only and requires at least one user owner. Add another user owner first.',
+            ZoneOwnershipRefusal::GROUPS_ONLY_NO_GROUPS => 'Cannot remove user owner: zone ownership mode is groups_only and the zone has no group owners. Add a group first.',
+            default => 'Cannot remove the last owner: this would leave the zone with no ownership. ' . match ($refusal->mode) {
+                ZoneOwnershipModeService::MODE_USERS_ONLY => 'Add another user owner first (zone ownership mode is users_only).',
+                ZoneOwnershipModeService::MODE_GROUPS_ONLY => 'Add a group first (zone ownership mode is groups_only).',
+                default => 'Add another owner or a group first.',
+            },
+        };
     }
 
     /**
@@ -77,11 +95,10 @@ class ZoneOwnersController extends PublicApiController
             'GET' => $this->listOwners(),
             'POST' => $this->addOwner(),
             'DELETE' => $this->removeOwner(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -146,7 +163,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -165,7 +182,7 @@ class ZoneOwnersController extends PublicApiController
 
             return $this->returnApiResponse(['owners' => $ownersData], true, 'Owners retrieved successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::listOwners', 'Failed to retrieve owners');
         }
     }
 
@@ -219,6 +236,8 @@ class ZoneOwnersController extends PublicApiController
                         new OA\Property(property: 'added', type: 'array', items: new OA\Items(type: 'integer'), example: [5, 6]),
                         new OA\Property(property: 'skipped', type: 'array', items: new OA\Items(type: 'integer'), example: [7]),
                         new OA\Property(property: 'not_found', type: 'array', items: new OA\Items(type: 'integer'), example: []),
+                        new OA\Property(property: 'over_limit', type: 'array', items: new OA\Items(type: 'integer'), example: [], description: 'Users not added because they own as many zones as their zone limit allows'),
+                        new OA\Property(property: 'failed', type: 'array', items: new OA\Items(type: 'integer'), example: [], description: 'Users the write failed for; the others in the batch are unaffected'),
                     ],
                     type: 'object',
                     nullable: true
@@ -227,11 +246,11 @@ class ZoneOwnersController extends PublicApiController
             type: 'object'
         )
     )]
-    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped or not found)')]
+    #[OA\Response(response: 200, description: 'Batch processed but no owners were added (all skipped, not found or over their zone limit)')]
     #[OA\Response(response: 400, description: 'Invalid input')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
-    #[OA\Response(response: 409, description: 'User is already an owner of this zone (single mode only), or the zone ID is shared with another zone')]
+    #[OA\Response(response: 409, description: 'User is already an owner of this zone or has reached their zone limit (single mode only), or the zone ID is shared with another zone')]
     #[OA\Response(response: 500, description: 'Failed to add owner due to a server error')]
     private function addOwner(): JsonResponse
     {
@@ -241,7 +260,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -249,7 +268,7 @@ class ZoneOwnersController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone ownership', 403);
         }
 
-        $ownershipMode = new ZoneOwnershipModeService($this->config);
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
         if (!$ownershipMode->isUserOwnerAllowed()) {
             return $this->returnApiError(
                 'User-owner assignment is disabled by the current zone ownership mode (groups_only).',
@@ -262,7 +281,7 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Owners cannot be added to this zone: its ID is shared with another zone', 409);
             }
 
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             // Batch mode: user_ids array
             if (!empty($data['user_ids']) && is_array($data['user_ids'])) {
@@ -288,14 +307,43 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('User is already an owner of this zone', 409);
             }
 
-            $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $added = $this->services()->zoneOwnershipLimit()->addUserOwner($userId, fn(): bool => $this->addOwnerOnce($zoneId, $userId), $zoneId);
+            if ($added instanceof ZoneLimitBreach) {
+                return $this->returnApiError($added->message(), RefusalStatus::of(Refusal::CONFLICT));
+            }
+            if ($added === false) {
+                return $this->addOwnerFailure($zoneId);
+            }
+
+            $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerAdd($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner added successfully', 201);
         } catch (Exception $e) {
             // A throw here is a repository/DB failure, not bad input - mirror removeOwner()'s 500.
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::addOwner', 'Failed to add owner');
         }
+    }
+
+    /**
+     * The answer when the repository refused the write: the zone was deleted since the
+     * existence check, or the write itself failed.
+     */
+    private function addOwnerFailure(int $zoneId): JsonResponse
+    {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
+            return $this->returnApiError('Zone not found', 404);
+        }
+
+        return $this->returnApiError('Failed to add owner', 500);
+    }
+
+    /**
+     * Adds the owner unless a concurrent request already did; run under the zone limit's lock.
+     */
+    private function addOwnerOnce(int $zoneId, int $userId): bool
+    {
+        return $this->zoneRepository->isUserZoneOwner($zoneId, $userId) || $this->zoneRepository->addOwnerToZone($zoneId, $userId);
     }
 
     /**
@@ -310,7 +358,10 @@ class ZoneOwnersController extends PublicApiController
         $added = [];
         $skipped = [];
         $notFound = [];
+        $overLimit = [];
+        $failed = [];
         $zoneName = $this->auditZoneName($zoneId);
+        $ownershipLimit = $this->services()->zoneOwnershipLimit();
 
         foreach ($userIds as $uid) {
             // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.
@@ -329,9 +380,31 @@ class ZoneOwnersController extends PublicApiController
                 continue;
             }
 
-            $this->zoneRepository->addOwnerToZone($zoneId, $userId);
+            $granted = $ownershipLimit->addUserOwner($userId, fn(): bool => $this->addOwnerOnce($zoneId, $userId), $zoneId);
+            if ($granted instanceof ZoneLimitBreach) {
+                $overLimit[] = $userId;
+                continue;
+            }
+            if ($granted === false) {
+                // Earlier owners of this batch went with a deleted zone; otherwise only this user failed
+                if (!$this->domainRepository->zoneIdExists($zoneId)) {
+                    return $this->returnApiError('Zone not found', 404);
+                }
+                $failed[] = $userId;
+                continue;
+            }
+
             $this->auditService->logZoneOwnerAdd($zoneId, $zoneName, $userId);
             $added[] = $userId;
+        }
+
+        if ($added !== []) {
+            $this->services()->permissionService()->forgetZone($zoneId);
+        }
+
+        // Nothing was decided but failures: a plain error, not a success that added nobody
+        if ($failed !== [] && $added === [] && $skipped === [] && $notFound === [] && $overLimit === []) {
+            return $this->returnApiError('Failed to add owner', 500);
         }
 
         $message = count($added) . ' owner(s) added';
@@ -341,10 +414,16 @@ class ZoneOwnersController extends PublicApiController
         if (!empty($notFound)) {
             $message .= ', ' . count($notFound) . ' not found';
         }
+        if (!empty($overLimit)) {
+            $message .= ', ' . count($overLimit) . ' at their zone limit';
+        }
+        if (!empty($failed)) {
+            $message .= ', ' . count($failed) . ' failed';
+        }
 
         // 201 only when something was actually created; a batch that added nothing is a plain 200.
         return $this->returnApiResponse(
-            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound],
+            ['added' => $added, 'skipped' => $skipped, 'not_found' => $notFound, 'over_limit' => $overLimit, 'failed' => $failed],
             true,
             $message,
             empty($added) ? 200 : 201
@@ -402,7 +481,7 @@ class ZoneOwnersController extends PublicApiController
             return $scopeError;
         }
 
-        if (!$this->zoneRepository->zoneExists($zoneId)) {
+        if (!$this->domainRepository->zoneIdExists($zoneId)) {
             return $this->returnApiError('Zone not found', 404);
         }
 
@@ -417,56 +496,21 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
 
-            if ($this->zoneRepository->isUserZoneOwner($zoneId, $userId)) {
-                $remainingOwners = count($this->zoneRepository->getZoneOwners($zoneId));
-                $zoneGroupRepo = $this->createZoneGroupRepository();
-                // Group grants on a shared zone id are not honoured, so they keep no one in charge
-                $remainingGroups = $this->zoneRepository->isSharedZoneId($zoneId) ? 0 : count($zoneGroupRepo->findByDomainId($zoneId));
-                $wouldRemoveLast = $remainingOwners <= 1;
-                $ownershipMode = new ZoneOwnershipModeService($this->config);
-
-                if ($wouldRemoveLast && $remainingGroups === 0) {
-                    if ($ownershipMode->isUserOwnerAllowed() && $ownershipMode->isGroupOwnerAllowed()) {
-                        $hint = 'Add another owner or a group first.';
-                    } elseif ($ownershipMode->isUserOwnerAllowed()) {
-                        $hint = 'Add another user owner first (zone ownership mode is users_only).';
-                    } else {
-                        $hint = 'Add a group first (zone ownership mode is groups_only).';
-                    }
-                    return $this->returnApiError(
-                        'Cannot remove the last owner: this would leave the zone with no ownership. ' . $hint,
-                        400
-                    );
-                }
-                // users_only requires at least one user owner regardless of legacy groups.
-                if ($wouldRemoveLast && !$ownershipMode->isGroupOwnerAllowed()) {
-                    return $this->returnApiError(
-                        'Cannot remove the last user owner: zone ownership mode is users_only and requires at least one user owner. Add another user owner first.',
-                        400
-                    );
-                }
-                // groups_only requires at least one group: refuse to remove any
-                // user owner from a zone that has zero groups (legacy state)
-                // until a group is added to bring the zone into compliance.
-                if (!$ownershipMode->isUserOwnerAllowed() && $remainingGroups === 0) {
-                    return $this->returnApiError(
-                        'Cannot remove user owner: zone ownership mode is groups_only and the zone has no group owners. Add a group first.',
-                        400
-                    );
-                }
+            $outcome = $this->services()->zoneOwnershipGuard()->removeUserOwner($zoneId, $userId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                return $this->returnApiError(self::refusalMessage($outcome), 400);
             }
 
-            $success = $this->zoneRepository->removeOwnerFromZone($zoneId, $userId);
-
-            if (!$success) {
+            if (!$outcome) {
                 return $this->returnApiError('Owner not found for this zone', 404);
             }
 
+            $this->services()->permissionService()->forgetZone($zoneId);
             $this->auditService->logZoneOwnerRemove($zoneId, $this->auditZoneName($zoneId), $userId);
 
             return $this->returnApiResponse(null, true, 'Owner removed successfully');
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'ZoneOwnersController::removeOwner', 'Failed to remove owner');
         }
     }
 }

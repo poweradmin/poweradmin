@@ -20,73 +20,53 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone records operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
+use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\RecordCommentService;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
+use Poweradmin\Application\Service\Record\RecordAddResult;
+use Poweradmin\Application\Service\Record\RecordEditRequest;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
-use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Domain\Service\ReverseTtlResolver;
-use Poweradmin\Infrastructure\Database\DbCompat;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordListingInterface;
+use Poweradmin\Domain\Repository\RecordLookupInterface;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
+use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
+/**
+ * /api/v2/zones/{id}/records: lists, creates, updates and deletes single records in a zone.
+ */
 class ZonesRecordsController extends PublicApiController
 {
-    private ZoneRepositoryInterface $zoneRepository;
-    private RecordRepositoryInterface $recordRepository;
+    /** Fields accepted by the `sort` parameter of GET /zones/{id}/records */
+    private const RECORD_SORT_FIELDS = ['name', 'type', 'content', 'ttl', 'priority'];
+
+    private ZoneReadRepositoryInterface $zoneRepository;
+    private RecordLookupInterface&RecordListingInterface $recordRepository;
     private RecordManagerInterface $recordManager;
-    private SOARecordManagerInterface $soaRecordManager;
-    private ApiPermissionService $permissionService;
-    private RecordCommentService $recordCommentService;
-    private DnsBackendProvider $backendProvider;
-    private LegacyLogger $auditLogger;
-    private RecordChangeLogger $changeLogger;
-    private IpAddressRetriever $ipAddressRetriever;
+    private ApiPermissionService $apiPermissionService;
     private ReverseTtlResolver $reverseTtlResolver;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $this->backendProvider = $this->createDnsBackendProvider();
-        $this->reverseTtlResolver = $this->createReverseTtlResolver();
-        $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-        $this->zoneRepository = $this->createZoneRepository();
-        $this->recordRepository = $repositoryFactory->createRecordRepository();
-        $this->permissionService = new ApiPermissionService($this->db);
+        $this->reverseTtlResolver = $this->services()->reverseTtlResolver();
+        $this->zoneRepository = $this->services()->zoneRepository();
+        $this->recordRepository = $this->services()->recordRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
 
-        $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
-        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-
-        $this->soaRecordManager = DnsServiceFactory::createSOARecordManager($this->db, $this->getConfig(), $this->backendProvider);
-        $this->recordManager = DnsServiceFactory::createRecordManager($this->db, $this->getConfig(), $this->backendProvider);
-
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->changeLogger = new RecordChangeLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->recordManager = $this->services()->recordManager();
     }
 
     /**
@@ -101,11 +81,10 @@ class ZonesRecordsController extends PublicApiController
             'POST' => $this->createRecord(),
             'PUT' => $this->updateRecord(),
             'DELETE' => $this->deleteRecord(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -117,6 +96,7 @@ class ZonesRecordsController extends PublicApiController
         path: '/v2/zones/{id}/records',
         operationId: 'v2ListZoneRecords',
         summary: 'List all records in a zone',
+        description: 'Record names in the listing are fully qualified (www.example.com); the single-record endpoints (GET, POST, PUT /zones/{id}/records/{record_id}) report the name relative to the zone (www, or @ for the apex).',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -133,6 +113,49 @@ class ZonesRecordsController extends PublicApiController
         description: 'Filter by record type',
         schema: new OA\Schema(type: 'string', example: 'A')
     )]
+    #[OA\Parameter(
+        name: 'name',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record name',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'www')
+    )]
+    #[OA\Parameter(
+        name: 'content',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record content',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: '192.0.2.')
+    )]
+    #[OA\Parameter(
+        name: 'q',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record name or content',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'www')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        in: 'query',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: type, then name (PowerDNS order in API backend mode)',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'type,name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        in: 'query',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        in: 'query',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(
         response: 200,
         description: 'Records retrieved successfully',
@@ -140,6 +163,17 @@ class ZonesRecordsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Records retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 100),
+                        new OA\Property(property: 'total', type: 'integer', example: 250),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 3),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     properties: [
@@ -149,7 +183,7 @@ class ZonesRecordsController extends PublicApiController
                             items: new OA\Items(
                                 properties: [
                                     new OA\Property(property: 'id', oneOf: [new OA\Schema(type: 'integer'), new OA\Schema(type: 'string')], example: 1),
-                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified name, unlike the relative name of the single-record endpoints'),
                                     new OA\Property(property: 'type', type: 'string', example: 'A'),
                                     new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                                     new OA\Property(property: 'ttl', type: 'integer', example: 3600),
@@ -184,35 +218,38 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
             // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
             // These records have NULL/empty type and are not user-manageable.
             // Note: Repository already filters these, but kept as defensive measure.
-            $validRecords = array_filter($records, function ($record) {
+            // array_values() so dropped rows cannot leave gaps in the keys, which
+            // would serialize the records list as a JSON object instead of an array.
+            $validRecords = array_values(array_filter($records, function ($record) {
                 return !empty($record['type']) && !empty($record['name']);
-            });
+            }));
 
-            // Format record data
-            $formattedRecords = array_map(function ($record) {
-                return [
-                    'id' => $this->formatRecordId($record['id']),
-                    'name' => $record['name'],
-                    'type' => $record['type'],
-                    'content' => $this->stripTxtQuotes($record['content'], $record['type']),
-                    'ttl' => (int)$record['ttl'],
-                    'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
-                    'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
-                    'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
-                ];
-            }, $validRecords);
+            $formattedRecords = array_map(fn(array $record): array => RecordResource::listItem($record, $this->formatRecordId(...)), $validRecords);
 
-            return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200);
+            // Records come from the database or the PowerDNS API depending on the
+            // backend, so filtering, sorting and paging happen here, on the values
+            // the client sees, and behave the same for both.
+            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
+                'name' => static fn(array $r): array => [$r['name']],
+                'content' => static fn(array $r): array => [$r['content']],
+                'q' => static fn(array $r): array => [$r['name'], $r['content']],
+            ]);
+
+            return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesRecordsController::listRecords', 'Failed to retrieve records');
         }
@@ -224,7 +261,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2GetZoneRecord',
         summary: 'Get a specific record',
         tags: ['records'],
@@ -238,7 +275,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -297,7 +334,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to view this zone
-            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+            if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
@@ -307,21 +344,9 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
-            $formattedRecord = [
-                'id' => $this->formatRecordId($record['id']),
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($record['name'], $zoneName),
-                'type' => $record['type'],
-                'content' => $this->stripTxtQuotes($record['content'], $record['type']),
-                'ttl' => (int)$record['ttl'],
-                'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
-                'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
-                'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
-            ];
+            $formattedRecord = RecordResource::item($record, $zoneId, $zoneName, $this->formatRecordId(...));
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record retrieved successfully', 200);
         } catch (\Throwable $e) {
@@ -359,7 +384,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live (TTL) in seconds'),
                 new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled). Default: false'),
-                new OA\Property(property: 'create_ptr', type: 'boolean', example: false, description: 'Automatically create PTR record (reverse DNS). Only applicable for A and AAAA records. Requires matching reverse zone. Default: false')
+                new OA\Property(property: 'create_ptr', type: 'boolean', example: false, description: 'Automatically create PTR record (reverse DNS). Only applicable for A and AAAA records. Requires matching reverse zone. Default: false'),
+                new OA\Property(property: 'comment', type: 'string', example: 'web server', description: 'Optional change-log/RRset comment stored with the record')
             ]
         )
     )]
@@ -417,6 +443,17 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(
+        response: 409,
+        description: 'An identical record (name, type and content) already exists',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'A record with this hostname, type, and content already exists'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
     private function createRecord(): JsonResponse
     {
         try {
@@ -437,12 +474,16 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
+            }
+
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
             }
 
@@ -460,11 +501,9 @@ class ZonesRecordsController extends PublicApiController
             $type = strtoupper(trim($this->inputString($input, 'type', '')));
             $originalContent = trim($this->inputString($input, 'content', ''));
             $content = $originalContent;
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
             if ($zoneName === null) {
-                return $this->returnApiError(_('Zone not found.'), 404);
+                return $this->returnApiError('Zone not found', 404);
             }
             $isReverseZone = DnsHelper::isReverseZoneName($zoneName);
             $ttl = $this->inputInt($input, 'ttl', $this->reverseTtlResolver->resolveTtlForType($type, $isReverseZone));
@@ -477,8 +516,9 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Validate TTL
-            if ($ttl < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
+            // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
+            if ($ttl < 0) {
+                return $this->returnApiError('TTL must not be negative', 400);
             }
 
             // Validate disabled field
@@ -486,161 +526,81 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
-            // Validate the record using the validation service
-            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
+            // Punycode plus the zone suffix, so @ becomes the apex and IDN labels match storage
+            $name = $this->normalizeV2RecordName($name, $zoneName);
 
-            // Normalize record name to full FQDN (always, regardless of display setting)
-            // This converts @ to zone apex and ensures proper zone suffix
-            $name = DnsHelper::restoreZoneSuffix($name, $zoneName);
-
-            // Normalize the hostname
-            $hostnameValidator = new HostnameValidator($this->getConfig());
-            $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
+            // Normalize the hostname so the record-type permission check sees the FQDN
+            $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
+            $normalizedName = strtolower($hostnameValidator->normalizeRecordName($name, $zoneName));
 
             // Block SOA/NS edits for users limited to zone_content_edit_own_as_client;
             // checked after normalization so the subzone NS exemption sees the FQDN
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $normalizedName, $zoneName)) {
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $type, $zone['type'] ?? null, $normalizedName, $zoneName)) {
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Format content, with V2 API always auto-quoting TXT records
             $content = $this->formatV2RecordContent($type, $content);
 
-            // Validate the record
-            $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
-            $dns_ttl = $this->getConfig()->get('dns', 'ttl');
+            $comment = trim((string)$this->inputString($input, 'comment', ''));
 
-            $validationResult = $validationService->validateRecord(
-                -1,
+            // The same add flow as the web forms: validation, the duplicate check, the
+            // serial bump, the change log, rectify, the record comment and the companion
+            // PTR (whose TTL honours dns.ttl_reverse) all follow the shared rules.
+            $companion = ($createPtr && ($type === 'A' || $type === 'AAAA')) ? RecordAddResult::COMPANION_PTR : '';
+            $added = $this->services()->recordAddService()->add(
                 $zoneId,
+                $zoneName,
+                $normalizedName,
                 $type,
                 $content,
-                $normalizedName,
-                $priority,
                 $ttl,
-                $dns_hostmaster,
-                (int)$dns_ttl
+                $priority,
+                $comment,
+                $userId,
+                $this->getAuthenticatedUsername(),
+                $companion,
+                $disabled,
+                AuditLoggerInterface::ORIGIN_API
             );
-
-            if (!$validationResult->isValid()) {
-                $errorMessage = $validationResult->getFirstError();
-                return $this->returnApiError($errorMessage, 400);
+            if (!$added->isOk()) {
+                return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), RefusalStatus::of($added->record->refusal));
             }
+            $newRecordId = $added->record->recordId;
 
-            // Get validated and normalized values from validation result
-            $validatedData = $validationResult->getData();
-            $validatedContent = $validatedData['content'] ?? $content;
-            $validatedTtl = $validatedData['ttl'] ?? $ttl;
-            $validatedPriority = $validatedData['prio'] ?? $priority;
-
-            // If validation passes, insert the record via backend provider
-            // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
-            // API backend polls the DB for the new record ID after the HTTP call;
-            // opening a transaction before that would hide the row due to MVCC snapshot isolation.
-            $useTransaction = !$this->backendProvider->isApiBackend();
-            if ($useTransaction) {
-                $this->db->beginTransaction();
-            }
-
-            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
-
-            if ($newRecordId === null) {
-                if ($useTransaction) {
-                    $this->db->rollBack();
-                }
-                return $this->returnApiError('Failed to create record', 500);
-            }
-
-            // Update SOA serial for the zone
-            if ($type !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-
-            if ($useTransaction) {
-                $this->db->commit();
-            }
-            $this->rectifyZoneAfterWrite($zoneName);
-
-            try {
-                $zoneName = $this->backendProvider->getZoneNameById($zoneId);
-                $this->changeLogger->logRecordCreate([
-                    'id' => $newRecordId,
-                    'name' => $normalizedName,
-                    'type' => $type,
-                    'content' => $validatedContent,
-                    'ttl' => $validatedTtl,
-                    'prio' => $validatedPriority,
-                    'disabled' => (bool) $disabled,
-                    'zone_name' => is_string($zoneName) ? $zoneName : null,
-                ], $zoneId);
-            } catch (\Throwable $e) {
-                $this->logger->warning('Failed to write record create log: {error}', ['error' => $e->getMessage()]);
-            }
-
-            // Fetch the newly created record
+            // Fetch the newly created record; the stored values are what the manager validated
             $newRecord = $this->recordRepository->getRecordById($newRecordId);
 
-            // Create PTR record if requested and record type is A or AAAA
-            $ptrCreated = false;
+            $ptrCreated = $added->companionCreated;
             $ptrMessage = '';
-            if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
-                try {
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
-
-                    $ptrResult = $reverseRecordCreator->createReverseRecord(
-                        $name,
-                        $type,
-                        $validatedContent,
-                        $zoneId,
-                        $validatedTtl,
-                        $validatedPriority
-                    );
-
-                    if ($ptrResult['success']) {
-                        $ptrCreated = true;
-                        $ptrMessage = ' PTR record created successfully.';
-                    } else {
-                        // PTR creation failed but don't fail the entire request
-                        $ptrMessage = ' PTR record creation failed: ' . $ptrResult['message'];
+            if ($companion === RecordAddResult::COMPANION_PTR) {
+                if ($ptrCreated) {
+                    $ptrMessage = ' PTR record created successfully.';
+                    if ($added->companionWarning && $added->companionMessage !== null) {
+                        $ptrMessage .= ' ' . $added->companionMessage;
                     }
-                } catch (Exception $e) {
-                    // Log error but don't fail the entire request
-                    $ptrMessage = ' PTR record creation failed: ' . $e->getMessage();
-                    $this->logger->error('PTR record creation failed: {error}', ['error' => $e->getMessage()]);
+                } else {
+                    // PTR creation failed but the record itself is in, as before
+                    $ptrMessage = ' PTR record creation failed: ' . ($added->companionMessage ?? '');
                 }
             }
 
-            // Return stored content (not raw input) so POST and GET responses are consistent
-            $storedContent = $newRecord ? $this->stripTxtQuotes($newRecord['content'], $type) : $originalContent;
-
-            $responseData = [
-                'id' => $newRecord ? $this->formatRecordId($newRecord['id']) : null,
-                'zone_id' => $zoneId,
-                'name' => DnsHelper::stripZoneSuffix($name, $zoneName),
+            // The stored content, ttl and priority (not the raw input) so POST and GET
+            // agree; the name and the disabled flag are the submitted ones.
+            $responseData = RecordResource::item([
+                'id' => $newRecord['id'] ?? null,
+                'name' => $name,
                 'type' => $type,
-                'content' => $storedContent,
-                'ttl' => $validatedTtl,
-                'priority' => $validatedPriority,
-                'disabled' => (bool)$disabled,
+                'content' => $newRecord['content'] ?? $originalContent,
+                'ttl' => $newRecord['ttl'] ?? $ttl,
+                'prio' => $newRecord['prio'] ?? $priority,
+                'disabled' => $disabled,
                 'auth' => true,
-                'ptr_created' => $ptrCreated
-            ];
-
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $name,
-                $type,
-                $content
-            ), $zoneId);
+            ], $zoneId, $zoneName, $this->formatRecordId(...)) + ['ptr_created' => $ptrCreated];
 
             $message = 'Record created successfully' . $ptrMessage;
             return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
         } catch (\Throwable $e) {
-            if ($this->db->inTransaction()) {
-                $this->db->rollBack();
-            }
             return $this->handleException($e, 'ZonesRecordsController::createRecord', 'Failed to create record');
         }
     }
@@ -651,7 +611,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2UpdateZoneRecord',
         summary: 'Update an existing record',
         tags: ['records'],
@@ -665,7 +625,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -682,7 +642,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
-                new OA\Property(property: 'update_ptr', type: 'boolean', example: false, description: 'Sync PTR record with new value (A/AAAA only). Default: false')
+                new OA\Property(property: 'update_ptr', type: 'boolean', example: false, description: 'Sync PTR record with new value (A/AAAA only). Default: false'),
+                new OA\Property(property: 'comment', type: 'string', example: 'Web server', description: 'Record comment to store; an empty string clears it. Omit to leave the comment unchanged')
             ]
         )
     )]
@@ -751,8 +712,12 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
+            }
+
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
             }
 
             // Get existing record
@@ -762,22 +727,13 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Block SOA/NS edits for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, (string)$existingRecord['type'], $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
                 return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
-            $input = json_decode($this->request->getContent(), true);
-            if (!$input) {
+            $input = $this->getValidatedJsonBody();
+            if ($input === null) {
                 return $this->returnApiError('Invalid JSON in request body', 400);
-            }
-
-            // Block changing the record into one the user may not manage, e.g.
-            // retyping to SOA/NS or renaming a subzone NS onto the zone apex
-            $hostnameValidator = new HostnameValidator($this->getConfig());
-            $newType = strtoupper(trim((string)($input['type'] ?? $existingRecord['type'])));
-            $newName = $hostnameValidator->normalizeRecordName(trim((string)($input['name'] ?? $existingRecord['name'])), (string)$zone['name']);
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
-                return $this->returnApiError('You do not have permission to edit this record type', 403);
             }
 
             // Prepare record data for update - use existing values if not provided
@@ -786,172 +742,83 @@ class ZonesRecordsController extends PublicApiController
             $content = $this->inputString($input, 'content', $existingRecord['content']);
             $ttl = $this->inputInt($input, 'ttl', (int)$existingRecord['ttl']);
             $prio = $this->inputInt($input, 'priority', (int)($existingRecord['prio'] ?? 0));
-            $disabled = $this->inputIntFromBool($input, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
+            $disabled = $this->inputIntFromBool($input, 'disabled', !empty($existingRecord['disabled']) ? 1 : 0);
             $updatePtr = $this->inputBool($input, 'update_ptr', false);
-            if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
+            // A comment in the body is stored the way the edit form stores one;
+            // without it the record's comment is left alone (a rename carries it along)
+            $comment = $this->inputString($input, 'comment');
+            if (
+                $name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null
+                || ($comment === null && array_key_exists('comment', $input))
+            ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
 
-            $oldType = strtoupper((string)$existingRecord['type']);
-            $oldContent = (string)$existingRecord['content'];
-            $oldName = (string)$existingRecord['name'];
+            // Block changing the record into one the user may not manage, e.g.
+            // retyping to SOA/NS or renaming a subzone NS onto the zone apex
+            $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
+            $newType = strtoupper(trim($type));
+            $newName = $hostnameValidator->normalizeRecordName(trim($name), (string)$zone['name']);
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, $newType, $zone['type'] ?? null, $newName, $zone['name'] ?? null)) {
+                return $this->returnApiError('You do not have permission to edit this record type', 403);
+            }
+            $name = $this->normalizeV2RecordName($name, (string)$zone['name']);
 
             // Format content the same way create does so TXT records round-trip
             // (GET strips the quotes V2 adds; a PUT echoing GET output must re-quote).
             $content = $this->formatV2RecordContent($type, $content);
 
-            $recordData = [
-                'rid' => $recordId,
-                'zid' => $zoneId,
-                'name' => $name,
-                'type' => strtoupper($type),
-                'content' => $content,
-                'ttl' => $ttl,
-                'prio' => $prio,
-                'disabled' => $disabled
-            ];
-
             // Validate TTL
-            if ($recordData['ttl'] < 1) {
-                return $this->returnApiError('TTL must be greater than 0', 400);
+            // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
+            if ($ttl < 0) {
+                return $this->returnApiError('TTL must not be negative', 400);
             }
 
             // Validate disabled field
-            if ($recordData['disabled'] !== 0 && $recordData['disabled'] !== 1) {
+            if ($disabled !== 0 && $disabled !== 1) {
                 return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
-            // Pre-validate here so a rejected record returns 400 with the specific
-            // reason. editRecord() otherwise swallows the validation message and the
-            // caller can only report a generic 500.
-            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $this->backendProvider);
-            $normalizedEditName = $hostnameValidator->normalizeRecordName($recordData['name'], (string)$zone['name']);
-            $editValidation = $validationService->validateRecord(
-                $recordId,
+            // The same edit flow as the edit-record page: the write, the PTR sync,
+            // the audit line and the record comment follow the shared rules
+            $edited = $this->services()->recordEditService()->edit(new RecordEditRequest(
                 $zoneId,
-                $recordData['type'],
-                $recordData['content'],
-                $normalizedEditName,
-                $recordData['prio'],
-                $recordData['ttl'],
-                $this->getConfig()->get('dns', 'hostmaster'),
-                (int)$this->getConfig()->get('dns', 'ttl')
-            );
-            if (!$editValidation->isValid()) {
-                return $this->returnApiError($editValidation->getFirstError(), 400);
+                (string)$zone['name'],
+                $recordId,
+                $existingRecord,
+                $name,
+                $newType,
+                $content,
+                $ttl,
+                $prio,
+                $disabled,
+                $comment,
+                $updatePtr,
+                false,
+                $this->getAuthenticatedUserId(),
+                $this->getAuthenticatedUsername(),
+                AuditLoggerInterface::ORIGIN_API
+            ));
+            if (!$edited->isOk()) {
+                return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), RefusalStatus::of($edited->write->refusal));
             }
 
-            // Use RecordManager to edit the record
-            $success = $this->recordManager->editRecord($recordData);
-
-            if (!$success) {
-                return $this->returnApiError('Failed to update record', 500);
+            $ptrMessage = '';
+            if ($edited->ptrUpdated === true) {
+                $ptrMessage = ' ' . $edited->ptrMessage;
+            } elseif ($edited->ptrFailed()) {
+                $ptrMessage = ' PTR record update failed: ' . $edited->ptrMessage;
             }
-
-            // Update SOA serial after editing the record (except for SOA records themselves)
-            if ($recordData['type'] !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-            $this->rectifyZoneAfterWrite((string)$zone['name']);
-
-            // Get the updated record to return.
-            // In API mode the record ID may change when name/type/content/prio change,
-            // so fall back to the submitted data if the old ID no longer resolves.
-            $updatedRecord = $this->recordRepository->getRecordById($recordId);
 
             // Get zone name for stripping suffix
-            $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
-            $domainRepository = $repositoryFactory->createDomainRepository();
-            $zoneName = $domainRepository->getDomainNameById($zoneId);
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
-            $ptrUpdated = false;
-            $ptrMessage = '';
-            if ($updatePtr && ($oldType === 'A' || $oldType === 'AAAA' || $recordData['type'] === 'A' || $recordData['type'] === 'AAAA')) {
-                try {
-                    $newName = $updatedRecord['name'] ?? $recordData['name'];
-                    $newName = DnsHelper::restoreZoneSuffix($newName, $zoneName ?: '');
-                    $newContent = $updatedRecord['content'] ?? $recordData['content'];
-
-                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $this->auditLogger, $this->createDomainRepository(), $this->createRecordManager(), $this->recordCommentService, $this->createDnsBackendProvider());
-
-                    $ptrResult = $reverseRecordCreator->updateReverseRecord(
-                        $oldType,
-                        $oldContent,
-                        $oldName,
-                        $recordData['type'],
-                        (string)$newContent,
-                        $newName,
-                        $zoneId,
-                        (int)($updatedRecord['ttl'] ?? $recordData['ttl']),
-                        (int)($updatedRecord['prio'] ?? $recordData['prio'])
-                    );
-
-                    if ($ptrResult['success']) {
-                        $ptrUpdated = true;
-                        $ptrMessage = ' ' . $ptrResult['message'];
-                    } else {
-                        $ptrMessage = ' PTR record update failed: ' . $ptrResult['message'];
-                    }
-                } catch (Exception $e) {
-                    $ptrMessage = ' PTR record update failed: ' . $e->getMessage();
-                    $this->logger->error('PTR record update failed: {error}', ['error' => $e->getMessage()]);
-                }
-            }
-
-            if ($updatedRecord !== null) {
-                $formattedRecord = [
-                    'id' => $this->formatRecordId($updatedRecord['id']),
-                    'zone_id' => $zoneId,
-                    'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
-                    'type' => $updatedRecord['type'],
-                    'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
-                    'ttl' => (int)$updatedRecord['ttl'],
-                    'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
-                    'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
-                    'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true,
-                    'ptr_updated' => $ptrUpdated
-                ];
-            } else {
-                // The old id is dead once name/type/content/prio change, so look up
-                // the one the record now has. Returning the old one would hand the
-                // caller an identifier that 404s on its next request.
-                $newRecordId = $this->recordRepository->getNewRecordId(
-                    $zoneId,
-                    DnsHelper::restoreZoneSuffix($recordData['name'], $zoneName ?: ''),
-                    $recordData['type'],
-                    $recordData['content']
-                ) ?? $recordId;
-
-                $formattedRecord = [
-                    'id' => $this->formatRecordId($newRecordId),
-                    'zone_id' => $zoneId,
-                    'name' => DnsHelper::stripZoneSuffix($recordData['name'], $zoneName),
-                    'type' => $recordData['type'],
-                    'content' => $this->stripTxtQuotes($recordData['content'], $recordData['type']),
-                    'ttl' => $recordData['ttl'],
-                    'priority' => $recordData['prio'],
-                    'disabled' => (bool)$recordData['disabled'],
-                    'auth' => true,
-                    'ptr_updated' => $ptrUpdated
-                ];
-            }
-
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s old_name:%s old_type:%s old_content:%s'
-                . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $formattedRecord['name'],
-                $formattedRecord['type'],
-                $formattedRecord['content'],
-                DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName),
-                $existingRecord['type'],
-                $this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type']),
-                $formattedRecord['ttl'],
-                $formattedRecord['priority'],
-                $existingRecord['ttl'],
-                $existingRecord['prio'] ?? 0
-            ), $zoneId);
+            $formattedRecord = RecordResource::item(
+                ['id' => $edited->recordId ?? $recordId] + $edited->record,
+                $zoneId,
+                $zoneName,
+                $this->formatRecordId(...)
+            ) + ['ptr_updated' => $edited->ptrUpdated === true];
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully' . $ptrMessage, 200);
         } catch (\Throwable $e) {
@@ -965,7 +832,7 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Delete(
-        path: '/v2/zones/{id}/records/{recordId}',
+        path: '/v2/zones/{id}/records/{record_id}',
         operationId: 'v2DeleteZoneRecord',
         summary: 'Delete a record',
         tags: ['records'],
@@ -979,7 +846,7 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Parameter(
-        name: 'recordId',
+        name: 'record_id',
         in: 'path',
         description: 'Record ID',
         required: true,
@@ -987,14 +854,7 @@ class ZonesRecordsController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Record deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Record deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Record deleted successfully'
     )]
     #[OA\Response(
         response: 404,
@@ -1029,8 +889,12 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // Check if user has permission to edit this zone
-            if (!$this->permissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneContent($userId, $zoneId, $zone['type'] ?? null)) {
                 return $this->returnApiError($this->zoneEditDeniedMessage($zone['type'] ?? null), 403);
+            }
+
+            if (($approval = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $approval;
             }
 
             // Verify record exists in this zone
@@ -1039,43 +903,21 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
-            // Get record type before deletion (for SOA serial update logic)
+            // The stored type decides which records a client-limited caller may touch
             $recordType = $existingRecord['type'];
 
             // Block SOA/NS deletes for users limited to zone_content_edit_own_as_client
-            if (!$this->permissionService->canEditZoneRecord($userId, $zoneId, (string)$recordType, $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
+            if (!$this->apiPermissionService->canEditZoneRecord($userId, $zoneId, (string)$recordType, $zone['type'] ?? null, (string)$existingRecord['name'], $zone['name'] ?? null)) {
                 return $this->returnApiError('You do not have permission to delete this record type', 403);
             }
 
-            // Use RecordManager to delete the record
-            $success = $this->recordManager->deleteRecord($recordId);
-
-            if (!$success) {
-                return $this->returnApiError('Failed to delete record', 500);
+            $result = $this->recordManager->deleteRecord($recordId);
+            if (!$result->success) {
+                // Backend faults keep the generic contract string; refusals carry their reason
+                return $this->returnApiError($result->refusal === Refusal::BACKEND_FAILURE ? 'Failed to delete record' : (string)$result->message, RefusalStatus::of($result->refusal));
             }
 
-            // Delete comment for this specific record (per-record comment by record_id)
-            $this->recordCommentService->deleteCommentByRecordId($recordId);
-
-            // For backward compatibility, also clean up RRset-based comments if no similar records remain
-            if (!$this->recordRepository->hasSimilarRecords($zoneId, $existingRecord['name'], $existingRecord['type'], $recordId)) {
-                $this->recordCommentService->deleteComment($zoneId, $existingRecord['name'], $existingRecord['type']);
-            }
-
-            // Update SOA serial after deleting the record (except for SOA records themselves)
-            if ($recordType !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-            $this->rectifyZoneAfterWrite((string)$zone['name']);
-
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $existingRecord['name'] ?? '',
-                $existingRecord['type'] ?? '',
-                $existingRecord['content'] ?? ''
-            ), $zoneId);
+            $this->services()->auditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (\Throwable $e) {
@@ -1092,66 +934,5 @@ class ZonesRecordsController extends PublicApiController
     private function formatRecordId(mixed $id): int|string
     {
         return RecordIdHelper::normalizeId($id);
-    }
-
-    /**
-     * Insert a validated record directly into the database (API-specific method)
-     *
-     * @param int $zoneId Zone ID
-     * @param string $name Record name (already normalized)
-     * @param string $type Record type
-     * @param string $content Record content (already validated)
-     * @param int $ttl TTL value
-     * @param int $priority Priority value
-     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
-     * @return int|string|null The new record ID, or null on failure
-     */
-    private function insertRecordViaBackend(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): int|string|null
-    {
-        try {
-            return $this->backendProvider->createRecordAtomic($zoneId, $name, $type, $content, $ttl, $priority, $disabled);
-        } catch (\Throwable $e) {
-            $this->logger->error('Failed to insert record: {message}', ['message' => $e->getMessage()]);
-            return null;
-        }
-    }
-
-    /**
-     * Update SOA serial for a zone
-     *
-     * Delegates to SOARecordManager which handles all edge cases:
-     * - 100+ changes per day (increments date instead of breaking)
-     * - Non-date based serials (simple increment)
-     * - Future-dated serials (preserved)
-     * - Overflow protection at 1979999999
-     *
-     * @param int $zoneId Zone ID
-     * @return void
-     */
-    private function updateSOASerial(int $zoneId): void
-    {
-        $this->soaRecordManager->updateSOASerial($zoneId);
-    }
-
-    /**
-     * Whether a record fetched by id belongs to the zone addressed in the path. A zone
-     * moved from SQL to API backend mode can be addressed by its zones row id while its
-     * records carry the canonical id, so the zone's own canonical id (resolved by name,
-     * the way the record lookup resolves it) also matches.
-     *
-     * @param array<string, mixed> $record
-     */
-    private function recordBelongsToZone(array $record, int $zoneId, ?string $zoneName): bool
-    {
-        $recordZoneId = (int)($record['domain_id'] ?? 0);
-        if ($recordZoneId === $zoneId) {
-            return true;
-        }
-        $zoneName ??= $this->zoneRepository->getZoneById($zoneId)['name'] ?? null;
-        if ($recordZoneId <= 0 || $zoneName === null || $zoneName === '') {
-            return false;
-        }
-
-        return $recordZoneId === $this->backendProvider->getZoneIdByName($zoneName);
     }
 }

@@ -2,9 +2,9 @@ name: validations
 
 on:
   push:
-    branches: [ "master", "develop", "release/4.2.x", "release/4.3.x", "release/4.4.x", "release/4.5.x" ]
+    branches: [ "master", "release/4.2.x", "release/4.3.x", "release/4.4.x", "release/4.5.x" ]
   pull_request:
-    branches: [ "master", "develop", "release/4.2.x", "release/4.3.x", "release/4.4.x", "release/4.5.x" ]
+    branches: [ "master", "release/4.2.x", "release/4.3.x", "release/4.4.x", "release/4.5.x" ]
   workflow_dispatch:
 
 concurrency:
@@ -18,6 +18,7 @@ jobs:
   composer-validate:
     name: Composer Manifest Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -33,6 +34,7 @@ jobs:
   syntax-check:
     name: PHP Syntax Validation
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -48,35 +50,13 @@ jobs:
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Regenerate autoloader
-      run: composer dump-autoload --no-interaction
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Security audit
       run: composer audit
@@ -84,68 +64,30 @@ jobs:
   code-style:
     name: Code Style Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Check code style
       run: composer check:all
 
-    - name: Check E2E navigation paths resolve to routes
-      run: composer lint:e2e-routes
+    - name: Run convention lints
+      run: composer lint:all
 
   phpstan:
     name: PHPStan Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Cache PHPStan result cache
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -161,39 +103,26 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
-      with:
-        php-version: '8.4'
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
+    - name: Set up PHP and Composer dependencies
+      uses: ./.github/actions/php-composer
 
     - name: Run test suite
       run: composer tests
 
+    # Runs on in-memory SQLite; tests that need MySQL, PostgreSQL or LDAP skip
+    # themselves, and the WHOIS tests that query public servers are excluded.
+    - name: Run integration suite
+      run: composer tests:integration -- --exclude-group network
+
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     strategy:
       fail-fast: false
@@ -203,29 +132,10 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup PHP ${{ matrix.php-version }}
-      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+    - name: Set up PHP ${{ matrix.php-version }} and Composer dependencies
+      uses: ./.github/actions/php-composer
       with:
         php-version: ${{ matrix.php-version }}
-        coverage: none
-
-    - name: Get Composer cache directory
-      id: composer-cache-dir
-      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-    - name: Cache Composer dependencies
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-      with:
-        path: ${{ steps.composer-cache-dir.outputs.dir }}
-        key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress
-
-    - name: Fix vendor binary permissions
-      run: chmod +x vendor/bin/*
 
     # All four matrix jobs re-download the same pinned phan phar otherwise.
     # Keyed on composer.json so a phan version bump invalidates it.
@@ -248,23 +158,10 @@ jobs:
         echo "" >> "$GITHUB_STEP_SUMMARY"
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> "$GITHUB_STEP_SUMMARY"
 
-  twig-csrf-check:
-    name: Twig CSRF Field Name Check
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-    - name: Check for incorrect CSRF token field names
-      run: |
-        if grep -rn 'name="csrf_token"' templates/ --include='*.html'; then
-          echo "ERROR: Use name=\"_token\" instead of name=\"csrf_token\" for CSRF token fields"
-          exit 1
-        fi
-
   vendor-check:
     name: Vendor Integrity
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -291,6 +188,7 @@ jobs:
   pin-check:
     name: Digest Pin Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -306,7 +204,7 @@ jobs:
         fi
         # Local reusable workflows (uses: ./...) live in this repo, so there is no
         # third-party SHA to pin.
-        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ \
+        if grep -rnE '^[[:space:]]*-?[[:space:]]*uses:' .github/workflows/ .github/actions/ \
              | grep -v 'uses: \./' | grep -vE '@[0-9a-f]{40}'; then
           echo "::error::Actions must be pinned to a full 40-character commit SHA"
           fail=1
@@ -316,6 +214,7 @@ jobs:
   locale-check:
     name: Locale Empty Translation Check
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -342,57 +241,20 @@ jobs:
         echo "All locale files have complete translations."
 
     # --statistics above reports only empty msgstr. Format specifiers are checked
-    # by --check, and only its exit code says whether a translation dropped one.
+    # by msgfmt --check, and only its exit code says whether a translation dropped one.
     - name: Validate format specifiers and plural forms
-      run: |
-        errors=0
-        for f in locale/*/LC_MESSAGES/*.po lib/Module/*/locale/*/*.po; do
-          [ -f "$f" ] || continue
-          if ! msgfmt --check -o /dev/null "$f" 2>/dev/null; then
-            echo "ERROR: $f"
-            msgfmt --check -o /dev/null "$f" 2>&1 | grep -v 'warning:' | head -5
-            errors=$((errors + 1))
-          fi
-        done
-        if [ "$errors" -gt 0 ]; then
-          echo ""
-          echo "Found $errors locale file(s) with invalid placeholders or plural forms."
-          exit 1
-        fi
-        echo "All locale files pass msgfmt --check."
+      run: composer locale:msgfmt
 
     # A .mo that no longer matches its .po ships the old text: gettext reads the
-    # .mo at runtime and never looks at the .po. Module catalogues are excluded -
-    # they ship .po only and have no compiled form to fall out of date.
+    # .mo at runtime and never looks at the .po.
     - name: Check compiled .mo files are up to date
-      run: |
-        errors=0
-        for f in locale/*/LC_MESSAGES/*.po; do
-          [ -f "$f" ] || continue
-          mo="${f%.po}.mo"
-          if [ ! -f "$mo" ]; then
-            echo "ERROR: $mo is missing"
-            errors=$((errors + 1))
-            continue
-          fi
-          msgfmt -o /tmp/mo-check.mo "$f" 2>/dev/null || continue
-          if ! cmp -s /tmp/mo-check.mo "$mo"; then
-            echo "ERROR: $mo is stale - run python3 scripts/compile_messages.py"
-            errors=$((errors + 1))
-          fi
-        done
-        rm -f /tmp/mo-check.mo
-        if [ "$errors" -gt 0 ]; then
-          echo ""
-          echo "Found $errors stale or missing .mo file(s)."
-          exit 1
-        fi
-        echo "All compiled .mo files match their .po source."
+      run: composer locale:mo-sync
 
   summary:
     name: Validation Summary
     runs-on: ubuntu-latest
-    needs: [composer-validate, syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, twig-csrf-check, vendor-check, pin-check, locale-check]
+    timeout-minutes: 15
+    needs: [composer-validate, syntax-check, security-audit, code-style, phpstan, unit-tests, compatibility, vendor-check, pin-check, locale-check]
     if: always()
 
     steps:
@@ -406,7 +268,6 @@ jobs:
         PHPSTAN_RESULT: ${{ needs.phpstan.result }}
         UNIT_TESTS_RESULT: ${{ needs.unit-tests.result }}
         COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
-        TWIG_CSRF_RESULT: ${{ needs.twig-csrf-check.result }}
         VENDOR_RESULT: ${{ needs.vendor-check.result }}
         PIN_RESULT: ${{ needs.pin-check.result }}
         LOCALE_RESULT: ${{ needs.locale-check.result }}
@@ -462,12 +323,6 @@ jobs:
           echo "- ❌ PHP Compatibility (8.2, 8.3, 8.4, 8.5)" >> "$GITHUB_STEP_SUMMARY"
         fi
 
-        if [ "$TWIG_CSRF_RESULT" = "success" ]; then
-          echo "- ✅ Twig CSRF Field Name Check" >> "$GITHUB_STEP_SUMMARY"
-        else
-          echo "- ❌ Twig CSRF Field Name Check" >> "$GITHUB_STEP_SUMMARY"
-        fi
-
         if [ "$VENDOR_RESULT" = "success" ]; then
           echo "- ✅ Vendor Integrity" >> "$GITHUB_STEP_SUMMARY"
         else
@@ -498,7 +353,6 @@ jobs:
         needs.phpstan.result != 'success' ||
         needs.unit-tests.result != 'success' ||
         needs.compatibility.result != 'success' ||
-        needs.twig-csrf-check.result != 'success' ||
         needs.vendor-check.result != 'success' ||
         needs.pin-check.result != 'success' ||
         needs.locale-check.result != 'success'

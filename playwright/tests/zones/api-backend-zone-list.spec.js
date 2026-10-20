@@ -13,7 +13,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { getColumnIndex, isApiModeInstance } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone list in API backend mode', () => {
   test.beforeEach(async ({ page, baseURL }) => {
@@ -37,7 +37,7 @@ test.describe('Zone list in API backend mode', () => {
     await page.waitForLoadState('networkidle');
 
     const rows = page.locator('tbody tr');
-    test.skip(await rows.count() === 0, 'No forward zones in this environment');
+    await expect(rows.first()).toBeVisible();
 
     const recordsIdx = await getColumnIndex(page, 'Records');
     test.skip(recordsIdx === -1, 'show_zone_record_count not enabled on this instance');

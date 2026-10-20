@@ -1,0 +1,186 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Utility;
+
+/**
+ * Converts domain names between punycode and Unicode for storage and display.
+ */
+class DnsIdnService
+{
+    /**
+     * Convert a domain name to its Unicode representation
+     *
+     * @param string $domainName The domain name to convert (can be IDN punycode or UTF-8)
+     * @return string The domain name in UTF-8 format
+     */
+    /**
+     * Human-readable form of a zone name: punycode decoded, anything else unchanged.
+     */
+    public static function toDisplay(string $domainName): string
+    {
+        return self::isIdn($domainName) ? self::toUtf8($domainName) : $domainName;
+    }
+
+    /**
+     * UTF-8 alias to show alongside a punycode zone name. Returns an empty string
+     * when the name is not punycode, or when the zone name is unknown.
+     */
+    public static function toIdnAlias(?string $domainName): string
+    {
+        if ($domainName === null || !self::isIdn($domainName)) {
+            return '';
+        }
+
+        // A label that does not decode leaves the name as is, and the alias would repeat it
+        $decoded = self::toUtf8($domainName);
+        return $decoded !== $domainName ? $decoded : '';
+    }
+
+    public static function toUtf8(string $domainName): string
+    {
+        if ($domainName === '') {
+            return '';
+        }
+
+        // Convert punycode (xn--) to UTF-8. idn_to_utf8 returns false for inputs
+        // it cannot decode (e.g. malformed punycode like "xn--a.com"); fall back
+        // to the original name so display code never gets a bool.
+        $result = idn_to_utf8($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
+        return $result !== false ? $result : $domainName;
+    }
+
+    /**
+     * Convert a domain name to its Punycode representation
+     *
+     * @param string $domainName The domain name to convert (can be IDN UTF-8 or punycode)
+     * @return string The domain name in Punycode format
+     */
+    public static function toPunycode(string $domainName): string
+    {
+        if ($domainName === '') {
+            return '';
+        }
+
+        // Convert UTF-8 to punycode (xn--)
+        // idn_to_ascii returns false for inputs it cannot convert (e.g., root label ".")
+        $result = idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
+        return $result !== false ? $result : $domainName;
+    }
+
+    /**
+     * Check if a domain name is an IDN
+     *
+     * @param string $domainName The domain name to check
+     * @return bool True if domain is an IDN
+     */
+    public static function isIdn(string $domainName): bool
+    {
+        foreach (explode('.', $domainName) as $label) {
+            if (str_starts_with($label, 'xn--')) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private const DOMAIN_CONTENT_TYPES = [
+        'CNAME', 'DNAME', 'ALIAS', 'NS', 'PTR', 'MR',
+        'MX', 'KX', 'AFSDB',
+    ];
+
+    private const COMPOUND_CONTENT_TYPES = [
+        'SRV', 'NAPTR', 'RP', 'MINFO',
+        'HTTPS', 'SVCB', 'LP',
+    ];
+
+    /**
+     * Convert domain names in record content to punycode based on record type
+     *
+     * @param string $type DNS record type
+     * @param string $content Record content
+     * @return string Content with domain names converted to punycode
+     */
+    public static function convertContentToPunycode(string $type, string $content): string
+    {
+        if ($content === '') {
+            return '';
+        }
+
+        $type = strtoupper($type);
+
+        if (in_array($type, self::DOMAIN_CONTENT_TYPES)) {
+            return self::toPunycode($content);
+        }
+
+        if (!in_array($type, self::COMPOUND_CONTENT_TYPES)) {
+            return $content;
+        }
+
+        $parts = preg_split('/\s+/', $content);
+
+        return match ($type) {
+            'SRV', 'NAPTR' => self::convertLastPartToPunycode($parts),
+            'RP', 'MINFO' => self::convertAllPartsToPunycode($parts),
+            'HTTPS', 'SVCB', 'LP' => self::convertSecondPartToPunycode($parts),
+        };
+    }
+
+    /**
+     * Convert the last part (target domain) of compound content to punycode.
+     * Used for SRV (weight port target) and NAPTR (order pref flags service regexp replacement).
+     *
+     * @param string[] $parts
+     */
+    private static function convertLastPartToPunycode(array $parts): string
+    {
+        if (count($parts) >= 2) {
+            $parts[count($parts) - 1] = self::toPunycode($parts[count($parts) - 1]);
+        }
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Convert the second part (target domain) of compound content to punycode.
+     * Used for HTTPS/SVCB (priority target [params]) and LP (preference fqdn).
+     *
+     * @param string[] $parts
+     */
+    private static function convertSecondPartToPunycode(array $parts): string
+    {
+        if (count($parts) >= 2) {
+            $parts[1] = self::toPunycode($parts[1]);
+        }
+        return implode(' ', $parts);
+    }
+
+    /**
+     * Convert all parts to punycode.
+     * Used for RP (mbox_domain txt_domain) and MINFO (rmailbx emailbx).
+     *
+     * @param string[] $parts
+     */
+    private static function convertAllPartsToPunycode(array $parts): string
+    {
+        return implode(' ', array_map([self::class, 'toPunycode'], $parts));
+    }
+}

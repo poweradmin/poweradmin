@@ -25,26 +25,29 @@ namespace TestHelpers;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Base test case for integration tests that need a throwaway in-memory SQLite
  * database with Poweradmin's permission system wired up enough to satisfy
- * Permission::getEditPermission() / UserManager::verifyPermission().
+ * PermissionService::hasPermission() and the permission level lookups.
  *
  * What you get out of the box:
  *   - $this->db         : in-memory PDO with PRAGMA foreign_keys ON
  *   - $this->config     : FakeConfiguration with database.type=sqlite, no PDNS prefix
  *   - The perm tables and an admin user (id = ADMIN_USER_ID) holding
- *     user_is_ueberuser, so getEditPermission() resolves to "all".
+ *     user_is_ueberuser, so getEditPermissionLevel() resolves to "all".
  *
  * Tests are responsible for creating any domain-specific tables they need
  * (zones, domains, etc.) inside their own setUp().
  *
- * Note: UserManager::verifyPermission() caches results in a function-level
- * static, which leaks across tests sharing a process. Add #[RunInSeparateProcess]
- * to test methods that change permissions or want a clean cache.
+ * PermissionService caches permissions per user, so build a fresh one
+ * (permissionService()) after changing a user's grants.
  */
 abstract class SqliteIntegrationTestCase extends TestCase
 {
@@ -53,6 +56,9 @@ abstract class SqliteIntegrationTestCase extends TestCase
 
     protected PDO $db;
     protected FakeConfiguration $config;
+
+    /** The session the services under test read the acting user from */
+    protected ArraySession $session;
 
     protected function setUp(): void
     {
@@ -68,46 +74,93 @@ abstract class SqliteIntegrationTestCase extends TestCase
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
         ]);
 
-        $_SESSION['userid'] = static::ADMIN_USER_ID;
-    }
-
-    protected function tearDown(): void
-    {
-        unset($_SESSION['userid']);
+        $this->session = new ArraySession(['userid' => static::ADMIN_USER_ID]);
     }
 
     /**
-     * Stub provider that lets tests pick whether the API or SQL code path runs.
+     * The sqlite settings as a configuration, with extra sections merged in.
+     *
+     * @param array<string, array<string, mixed>> $overrides extra sections, e.g. ['dns' => [...]]
      */
-    protected function dnsBackendStub(bool $isApi): DnsBackendProvider&MockObject
+    protected function sqliteConfiguration(array $overrides = []): ConfigurationInterface
     {
-        $stub = $this->createMock(DnsBackendProvider::class);
+        return new FakeConfiguration(array_merge([
+            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
+        ], $overrides));
+    }
+
+    /**
+     * A permission service reading this test's database.
+     *
+     * @param bool $isApiBackend Pass true for API-mode fixtures, where a zones row may have no domain_id
+     */
+    protected function permissionService(?ConfigurationInterface $config = null, bool $isApiBackend = false): PermissionService
+    {
+        return new PermissionService(new DbUserRepository($this->db, $config ?? $this->config, $isApiBackend));
+    }
+
+    /**
+     * The Poweradmin-native zone tables DomainManager writes on create and delete.
+     */
+    protected function createZoneTables(): void
+    {
+        foreach (
+            [
+                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)",
+                "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER NOT NULL, zone_id INTEGER NOT NULL)",
+                "CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id INTEGER, zone_templ_id INTEGER)",
+                "CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id TEXT, zone_templ_id INTEGER)",
+                "CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0, last_synced TEXT, template_last_modified TEXT)",
+            ] as $sql
+        ) {
+            $this->db->exec($sql);
+        }
+    }
+
+    /**
+     * The PowerDNS domains table for SQL-backend fixtures whose backend is a stub; zone row
+     * writes read the zone name from it.
+     */
+    protected function createDomainsTable(): void
+    {
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')");
+    }
+
+    protected function dnsBackendStub(bool $isApi): DnsBackendProviderInterface&MockObject
+    {
+        $stub = $this->createMock(DnsBackendProviderInterface::class);
         $stub->method('isApiBackend')->willReturn($isApi);
+        $stub->method('supportsLocalWriteTransaction')->willReturn(!$isApi);
+        $stub->method('recordIdsAreNumeric')->willReturn(!$isApi);
+        $stub->method('managesSoaRecord')->willReturn($isApi);
+        $stub->method('allocatesZoneIdsLocally')->willReturn($isApi);
         return $stub;
     }
 
     /**
-     * Tables that UserManager::verifyPermission walks via its UNION query:
+     * Tables that PermissionService::hasPermission walks via its UNION query:
      * users -> perm_templ -> perm_templ_items -> perm_items, plus the
      * user_groups / user_group_members branch.
      */
     private function bootstrapPermissionTables(): void
     {
         $this->db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
-        $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '')");
+        $this->db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', template_type TEXT NOT NULL DEFAULT 'user')");
         $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER NOT NULL, perm_id INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, perm_templ INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER)");
+        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, perm_templ INTEGER NOT NULL,
+            fullname TEXT, email TEXT, description TEXT, active INTEGER NOT NULL DEFAULT 1, use_ldap INTEGER NOT NULL DEFAULT 0, auth_method TEXT, max_zones INTEGER)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER, max_zones INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
     }
 
     private function seedAdminWithUeberuser(): void
     {
         // perm_items ids and the ueberuser shortcut match Poweradmin's seed
-        // data so verifyPermission's `user_is_ueberuser` check resolves true.
+        // data so hasPermission's `user_is_ueberuser` check resolves true.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES
-            (47, 'zone_content_edit_others'),
-            (53, 'user_is_ueberuser')");
+            (47, '" . Permission::PERM_ZONE_CONTENT_EDIT_OTHERS . "'),
+            (53, '" . Permission::PERM_USER_IS_UEBERUSER . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . static::ADMIN_PERM_TEMPL_ID . ", 'Administrator')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES
             (" . static::ADMIN_PERM_TEMPL_ID . ", 47),

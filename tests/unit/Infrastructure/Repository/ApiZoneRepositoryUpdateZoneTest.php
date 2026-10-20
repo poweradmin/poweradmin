@@ -16,9 +16,10 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * In API mode, updateZone() must only mirror a change into the local zones cache
@@ -48,33 +49,33 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         // The row is id 1 / domain_id 10, and the provider is given the identifier the rest
         // of the application uses, so its own lookup resolves back to this same row. The
         // provider owns the cache write, which is covered in ApiDnsBackendProviderTest.
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneType')
             ->with(10, 'MASTER')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(1, ['type' => 'MASTER']));
     }
 
     public function testMasterUpdateIsDelegatedWithTheResolvedZoneId(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(1, ['master' => '192.0.2.1']));
     }
 
     public function testLocalCacheUntouchedWhenApiFails(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER']));
         // The API rejected the change, so local state must stay as it was.
@@ -85,10 +86,10 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
     {
         // A failed type update must skip the master update entirely so a single
         // request cannot partially apply while reporting overall failure.
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('updateZoneType')->willReturn(false);
         $backend->expects($this->never())->method('updateZoneMaster');
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertFalse($repo->updateZone(1, ['type' => 'MASTER', 'master' => '192.0.2.1']));
         $this->assertSame('', (string) $this->db->query("SELECT zone_master FROM zones WHERE id = 1")->fetchColumn());
@@ -102,12 +103,12 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
             VALUES (10, 77, 'other.example.com', 'NATIVE', '', 1, 0)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(10, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(10, ['master' => '192.0.2.1']));
     }
@@ -121,12 +122,12 @@ class ApiZoneRepositoryUpdateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, owner, zone_templ_id)
             VALUES (21, 20, 'shadow.example.com', 'NATIVE', '', 1, 0)");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())
             ->method('updateZoneMaster')
             ->with(20, '192.0.2.1')
             ->willReturn(true);
-        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', $this->createMock(ConfigurationManager::class));
+        $repo = new ApiZoneRepository($this->db, $backend, 'mysql', new FakeConfiguration(), new ArraySession());
 
         $this->assertTrue($repo->updateZone(20, ['master' => '192.0.2.1']));
     }

@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Change Request {{ statusLabel }}{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Change Request {{ statusLabel }}</h2>
+    <p>{{ greeting }}</p>
+    {% if status == 'approved' %}
+    <p>Your change request has been approved and applied to the zone.</p>
+    {% elseif status == 'rejected' %}
+    <p>Your change request has been rejected. The zone was not changed.</p>
+    {% else %}
+    <p>Your change request was approved, but applying it to the zone failed. The zone may be partially changed; please check it and contact your administrator.</p>
+    {% endif %}
+
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;" class="table-border">
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Zone:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ zoneName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Request:</strong></td>
+            <td style="padding: 10px;" class="table-border">#{{ requestId }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Status:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ statusLabel }}</td>
+        </tr>
+        {% if reviewerName %}
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Reviewed by:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ reviewerName }}</td>
+        </tr>
+        {% endif %}
+        {% if reviewComment %}
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Review comment:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ reviewComment|nl2br }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Date:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ decidedAt }}</td>
+        </tr>
+    </table>
+
+    {% if requestUrl %}
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ requestUrl }}" style="display: inline-block; padding: 12px 30px; text-decoration: none; border-radius: 4px;" class="button-primary">
+            View Request
+        </a>
+    </div>
+    {% endif %}
+
+    <p style="font-size: 14px;" class="disclaimer-text">
+        You receive this message because you filed this change request.
+    </p>
+{% endblock %}

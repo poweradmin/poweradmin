@@ -20,47 +20,39 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API controller for zone template record operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
-use Poweradmin\Domain\Service\ZoneTemplateRecordValidationService;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateRecordValidationService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
+/**
+ * /api/v2/zone-templates/{id}/records: lists, creates, updates and deletes the records of a zone template.
+ */
 class ZoneTemplateRecordsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /zone-templates/{id}/records */
+    private const RECORD_SORT_FIELDS = ['name', 'type', 'content', 'ttl', 'priority'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
     }
 
-    private DbZoneTemplateRepository $repository;
+    private ZoneTemplateRepositoryInterface $repository;
     private ApiPermissionService $apiPermissionService;
-    private LegacyLogger $auditLogger;
-    private IpAddressRetriever $ipAddressRetriever;
     private ?ZoneTemplateRecordValidationService $recordValidationService = null;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
-        $this->repository = new DbZoneTemplateRepository($this->db, $this->config);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
-        $this->auditLogger = new LegacyLogger($this->db);
-        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->repository = $this->services()->zoneTemplateRepository();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -72,7 +64,7 @@ class ZoneTemplateRecordsController extends PublicApiController
     private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
-            new DnsValidatorRegistry($this->config, $this->db)
+            $this->services()->dnsValidatorRegistry()
         );
 
         $result = $this->recordValidationService->validate(
@@ -99,11 +91,10 @@ class ZoneTemplateRecordsController extends PublicApiController
             'POST' => $this->createRecord(),
             'PUT' => $this->updateRecord(),
             'DELETE' => $this->deleteRecord(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     private function canViewTemplate(int $userId, int $templateId): bool
@@ -114,7 +105,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             return false;
         }
 
-        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
             return true;
         }
 
@@ -132,7 +123,7 @@ class ZoneTemplateRecordsController extends PublicApiController
             return false;
         }
 
-        if ($this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser')) {
+        if ($this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER)) {
             return true;
         }
 
@@ -158,8 +149,9 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     #[OA\Get(
         path: '/v2/zone-templates/{id}/records',
+        operationId: 'v2ListZoneTemplateRecords',
         summary: 'List all records in a zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -168,6 +160,55 @@ class ZoneTemplateRecordsController extends PublicApiController
                 in: 'path',
                 required: true,
                 schema: new OA\Schema(type: 'integer')
+            ),
+            new OA\Parameter(
+                name: 'type',
+                in: 'query',
+                description: 'Filter by record type (case-insensitive exact match)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'MX')
+            ),
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record name',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
+                name: 'content',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record content',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: '[NS1]')
+            ),
+            new OA\Parameter(
+                name: 'q',
+                in: 'query',
+                description: 'Case-insensitive substring filter on the record name or content',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'mail')
+            ),
+            new OA\Parameter(
+                name: 'sort',
+                in: 'query',
+                description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: name, type, content, ttl, priority. Default: name in database order (sort=name uses natural, case-insensitive order)',
+                required: false,
+                schema: new OA\Schema(type: 'string', example: 'type,name')
+            ),
+            new OA\Parameter(
+                name: 'page',
+                in: 'query',
+                description: 'Page number, starting at 1 (only used together with per_page)',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+            ),
+            new OA\Parameter(
+                name: 'per_page',
+                in: 'query',
+                description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+                required: false,
+                schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
             )
         ],
         responses: [
@@ -178,6 +219,17 @@ class ZoneTemplateRecordsController extends PublicApiController
                     type: 'object',
                     properties: [
                         new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'pagination',
+                            description: 'Only present when per_page is given',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                                new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                                new OA\Property(property: 'total', type: 'integer', example: 40),
+                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                            ]
+                        ),
                         new OA\Property(
                             property: 'data',
                             type: 'object',
@@ -202,6 +254,7 @@ class ZoneTemplateRecordsController extends PublicApiController
                     ]
                 )
             ),
+            new OA\Response(response: 400, description: 'Invalid sort parameter'),
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Zone template not found'),
@@ -213,7 +266,6 @@ class ZoneTemplateRecordsController extends PublicApiController
         try {
             $userId = $this->getAuthenticatedUserId();
             $templateId = (int)$this->pathParameters['id'];
-
             if (!$this->repository->zoneTemplateExists($templateId)) {
                 return $this->returnApiError('Zone template not found', 404);
             }
@@ -222,10 +274,25 @@ class ZoneTemplateRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view this zone template', 403);
             }
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::RECORD_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
             $records = $this->repository->getZoneTemplateRecords($templateId);
             $formattedRecords = array_map([$this, 'formatRecord'], $records);
 
-            return $this->returnApiResponse(['records' => array_values($formattedRecords)]);
+            // Filter, sort and page the values the client sees, like the zone record list
+            $type = trim((string)$this->request->query->get('type', ''));
+            if ($type !== '') {
+                $formattedRecords = array_filter($formattedRecords, static fn(array $r): bool => strcasecmp($r['type'], $type) === 0);
+            }
+            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
+                'name' => static fn(array $r): array => [$r['name']],
+                'content' => static fn(array $r): array => [$r['content']],
+                'q' => static fn(array $r): array => [$r['name'], $r['content']],
+            ]);
+
+            return $this->returnApiResponse(['records' => $formattedRecords], true, null, 200, $extra);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZoneTemplateRecordsController::listRecords', 'Failed to fetch zone template records');
         }
@@ -233,8 +300,9 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     #[OA\Post(
         path: '/v2/zone-templates/{id}/records',
+        operationId: 'v2CreateZoneTemplateRecord',
         summary: 'Create a new record in a zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -324,15 +392,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $recordId = $this->repository->addRecord($templateId, $name, $type, $content, $ttl, $priority);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_add_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $templateId,
-                $recordId,
-                str_replace(' ', '_', $name),
-                $type
-            ));
+            $this->services()->auditService()->logApiZoneTemplateRecordAdd($templateId, $recordId, $name, $type);
 
             return $this->returnApiResponse(['id' => $recordId], true, null, 201);
         } catch (\Throwable $e) {
@@ -342,8 +402,9 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     #[OA\Get(
         path: '/v2/zone-templates/{template_id}/records/{id}',
+        operationId: 'v2GetZoneTemplateRecord',
         summary: 'Get a specific record in a zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -424,8 +485,9 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     #[OA\Put(
         path: '/v2/zone-templates/{template_id}/records/{id}',
+        operationId: 'v2UpdateZoneTemplateRecord',
         summary: 'Update a record in a zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -528,15 +590,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->updateRecord($recordId, $name, $type, $content, $ttl, $priority);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_edit_zone_template_record template_id:%d record_id:%d record_name:%s record_type:%s',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $templateId,
-                $recordId,
-                str_replace(' ', '_', $name),
-                $type
-            ));
+            $this->services()->auditService()->logApiZoneTemplateRecordEdit($templateId, $recordId, $name, $type);
 
             return $this->returnApiResponse(null, true, 'Zone template record updated successfully');
         } catch (\Throwable $e) {
@@ -546,8 +600,9 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     #[OA\Delete(
         path: '/v2/zone-templates/{template_id}/records/{id}',
+        operationId: 'v2DeleteZoneTemplateRecord',
         summary: 'Delete a record from a zone template',
-        tags: ['Zone Templates'],
+        tags: ['zone-templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         parameters: [
             new OA\Parameter(
@@ -611,13 +666,7 @@ class ZoneTemplateRecordsController extends PublicApiController
 
             $this->repository->deleteRecord($recordId);
 
-            $this->auditLogger->logInfo(sprintf(
-                'client_ip:%s user:%s operation:api_delete_zone_template_record template_id:%d record_id:%d',
-                $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
-                $templateId,
-                $recordId
-            ));
+            $this->services()->auditService()->logApiZoneTemplateRecordDelete($templateId, $recordId);
 
             return $this->returnApiResponse(null, true, 'Zone template record deleted successfully');
         } catch (\Throwable $e) {

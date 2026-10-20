@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
@@ -72,14 +72,11 @@ test.describe('Group Logs', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/groups/logs?name=Zone+Managers');
 
-      const clearBtn = page.locator('a:has-text("Clear")');
-      if (await clearBtn.count() > 0) {
-        await clearBtn.click();
+      // The control is icon-only, so it is found by its title rather than its text
+      await page.locator('a[title="Clear"]').click();
 
-        await page.waitForLoadState('domcontentloaded');
-        const url = page.url();
-        expect(url).not.toMatch(/name=/);
-      }
+      await page.waitForLoadState('domcontentloaded');
+      expect(page.url()).not.toMatch(/name=/);
     });
   });
 

@@ -206,4 +206,63 @@ class RequestTest extends TestCase
         $request->refresh();
         $this->assertSame('2', $request->getQueryParam('v'));
     }
+
+    public function testGetPageIsOneBasedAndSanitised(): void
+    {
+        $_GET = ['start' => '3'];
+        $this->assertSame(3, (new Request())->getPage());
+
+        $_GET = ['start' => '0'];
+        $this->assertSame(1, (new Request())->getPage());
+
+        $_GET = ['start' => 'abc'];
+        $this->assertSame(1, (new Request())->getPage());
+
+        $_GET = [];
+        $this->assertSame(1, (new Request())->getPage());
+    }
+
+    public function testGetRowsPerPageAcceptsOnlyPositiveIntegers(): void
+    {
+        $_GET = ['rows_per_page' => '50'];
+        $this->assertSame(50, (new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => '0'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => '-5'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = ['rows_per_page' => 'abc'];
+        $this->assertNull((new Request())->getRowsPerPage());
+
+        $_GET = [];
+        $this->assertNull((new Request())->getRowsPerPage());
+    }
+
+    public function testExplicitArraysReplaceTheSuperglobalSnapshot(): void
+    {
+        $_GET = ['from' => 'globals'];
+        $_POST = ['from' => 'globals'];
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $request = new Request(['q' => '1'], ['field' => 'v'], ['REQUEST_METHOD' => 'POST', 'REQUEST_URI' => '/zones']);
+
+        $this->assertSame(['q' => '1'], $request->getQueryParams());
+        $this->assertSame(['field' => 'v'], $request->getPostParams());
+        $this->assertSame('POST', $request->getMethod());
+        $this->assertSame('/zones', $request->getUri());
+        $this->assertSame('v', $request->getParam('field'));
+    }
+
+    public function testAnyExplicitArrayLeavesTheOthersEmptyInsteadOfReadingGlobals(): void
+    {
+        $_GET = ['from' => 'globals'];
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        $request = new Request(postParams: ['field' => 'v']);
+
+        $this->assertSame([], $request->getQueryParams());
+        $this->assertSame('GET', $request->getMethod());
+    }
 }

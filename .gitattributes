@@ -4,7 +4,6 @@
 .gitignore export-ignore
 .hadolint.yaml export-ignore
 .phan/ export-ignore
-.php-cs-fixer.php export-ignore
 .vscode/ export-ignore
 CONTRIBUTING.md export-ignore
 docs/ export-ignore

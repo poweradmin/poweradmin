@@ -1,0 +1,307 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Model;
+
+/**
+ * Maps a PowerDNS Authoritative Server version string to feature capability flags
+ * used by the UI to show, hide, or default behaviour appropriately.
+ *
+ * The version timeline reflected here is taken from the upstream changelog
+ * (docs/changelog/4.4.rst .. 5.1.rst). When the connected version is unknown
+ * (empty string, or detection failed) every capability method returns false
+ * (strict mode): the UI must hide newer features whose support cannot be
+ * confirmed. This is the fail-safe choice - showing options the server then
+ * rejects is worse than briefly hiding them while the API is unreachable.
+ *
+ * Views are the exception: they also depend on two runtime settings read from
+ * the API, and there an unknown value means "leave the feature visible". See
+ * viewsUnavailableReason().
+ */
+final readonly class PdnsCapabilities
+{
+    /** Reasons Views and Networks cannot be used. @see viewsUnavailableReason() */
+    public const VIEWS_NEED_VERSION = 'version';
+    public const VIEWS_NEED_LMDB = 'lmdb';
+    public const VIEWS_NEED_SETTING = 'setting';
+
+    private string $version;
+    private string $backends;
+    private string $viewsSetting;
+
+    private function __construct(string $version, string $backends = '', string $viewsSetting = '')
+    {
+        $this->version = $version;
+        $this->backends = $backends;
+        $this->viewsSetting = $viewsSetting;
+    }
+
+    /**
+     * Build a capability set from a raw version string. Strips any non-numeric
+     * prefix (PowerDNS sometimes prefixes the build with text like "git-").
+     * A null or empty version yields an "unknown" capability set.
+     */
+    public static function fromVersion(?string $version): self
+    {
+        return new self(self::normalizeVersion($version));
+    }
+
+    /**
+     * Build a capability set from the session-cached server info, which may
+     * carry the `launch` and `views` settings alongside the version. Missing
+     * or empty entries are treated as "not read", not as "not supported".
+     *
+     * @param array{version?: string, backends?: string, views?: string}|null $info
+     */
+    public static function fromServerInfo(?array $info): self
+    {
+        return new self(
+            self::normalizeVersion($info['version'] ?? null),
+            (string) ($info['backends'] ?? ''),
+            (string) ($info['views'] ?? '')
+        );
+    }
+
+    private static function normalizeVersion(?string $version): string
+    {
+        return preg_replace('/^[^0-9]*/', '', (string) $version) ?? '';
+    }
+
+    public function version(): string
+    {
+        return $this->version;
+    }
+
+    public function isKnown(): bool
+    {
+        return $this->version !== '';
+    }
+
+    /**
+     * True when the connected server is at least $minVersion. When the version
+     * is unknown, returns $whenUnknown (default false - conservative).
+     */
+    public function isAtLeast(string $minVersion, bool $whenUnknown = false): bool
+    {
+        if ($this->version === '') {
+            return $whenUnknown;
+        }
+        return version_compare($this->version, $minVersion, '>=');
+    }
+
+    /* ----- Terminology ------------------------------------------------- */
+
+    /** Primary/Secondary aliases were added in 4.5; older servers only know Master/Slave. */
+    public function prefersPrimarySecondaryTerminology(): bool
+    {
+        return $this->isAtLeast('4.5.0');
+    }
+
+    /* ----- Zone kinds -------------------------------------------------- */
+
+    /** Catalog zones (Producer/Consumer kinds) introduced in 4.7. */
+    public function supportsCatalogZones(): bool
+    {
+        return $this->isAtLeast('4.7.0');
+    }
+
+    /** Per-zone/network Views introduced in 5.0, and only on LMDB with views=yes. */
+    public function supportsViews(): bool
+    {
+        return $this->viewsUnavailableReason() === null;
+    }
+
+    /**
+     * Which Views prerequisite the connected server fails, or null when it
+     * meets all of them.
+     *
+     * Unlike every other gate here, an unread setting counts as passing. The
+     * two settings come from an extra API call that a restrictive proxy can
+     * block, and hiding Views from an installation where they demonstrably
+     * work is a worse failure than the status quo of showing them and letting
+     * PowerDNS refuse. Only a value we actually read closes the gate.
+     *
+     * @phpstan-return self::VIEWS_NEED_VERSION|self::VIEWS_NEED_LMDB|self::VIEWS_NEED_SETTING|null
+     */
+    public function viewsUnavailableReason(): ?string
+    {
+        if (!$this->isAtLeast('5.0.0')) {
+            return self::VIEWS_NEED_VERSION;
+        }
+        if ($this->backends !== '' && !$this->backendsIncludeLmdb()) {
+            return self::VIEWS_NEED_LMDB;
+        }
+        if ($this->viewsSetting !== '' && !self::isEnabled($this->viewsSetting)) {
+            return self::VIEWS_NEED_SETTING;
+        }
+        return null;
+    }
+
+    /** The reason from viewsUnavailableReason() as a sentence for the UI. */
+    public function viewsUnavailableMessage(): ?string
+    {
+        return match ($this->viewsUnavailableReason()) {
+            self::VIEWS_NEED_VERSION => _('Views require PowerDNS 5.0 or newer.'),
+            self::VIEWS_NEED_LMDB => _('Views require the LMDB backend. The connected server runs a backend that does not implement them.'),
+            self::VIEWS_NEED_SETTING => _('Views require "views=yes" in pdns.conf. The connected server has them disabled.'),
+            // Not `default`: a new reason without a message here must fail
+            // loudly rather than reopen the page for a server that refuses.
+            null => null,
+        };
+    }
+
+    /**
+     * `launch` is a comma or space separated list and each entry may carry an
+     * instance suffix ("lmdb:one"), so a plain string match is not enough.
+     */
+    private function backendsIncludeLmdb(): bool
+    {
+        foreach (preg_split('/[\s,]+/', $this->backends) ?: [] as $backend) {
+            if (strtolower(explode(':', $backend, 2)[0]) === 'lmdb') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** PowerDNS reports booleans as yes/no, and older builds as true/1. */
+    private static function isEnabled(string $value): bool
+    {
+        return in_array(strtolower(trim($value)), ['yes', 'true', 'on', '1'], true);
+    }
+
+    /* ----- Record types ------------------------------------------------ */
+
+    /**
+     * Whether the connected server understands the given DNS record type.
+     * Only types whose support actually changed across recent versions are
+     * gated here; common types (A, AAAA, MX, etc.) are assumed always
+     * supported and return true.
+     */
+    public function supportsRecordType(string $type): bool
+    {
+        $minVersion = self::recordTypeMinVersion($type);
+
+        if ($minVersion === null) {
+            return true;
+        }
+        return $this->isAtLeast($minVersion);
+    }
+
+    /**
+     * The first PowerDNS version that understands the record type, or null when
+     * every supported version does.
+     */
+    public static function recordTypeMinVersion(string $type): ?string
+    {
+        return match (strtoupper(trim($type))) {
+            'SVCB', 'HTTPS', 'APL' => '4.4.0',
+            'CSYNC', 'NID', 'L32', 'L64', 'LP' => '4.5.0',
+            'ZONEMD' => '4.8.0',
+            'RESINFO', 'WALLET', 'HHIT', 'BRID' => '5.1.0',
+            default => null,
+        };
+    }
+
+    /**
+     * Whether the connected server can load an SVCB/HTTPS parameter written by
+     * this name. Older servers cannot load the record at all. An unknown version
+     * allows the name, since SQL-only setups never learn the version.
+     */
+    public function supportsSvcParam(string $key): bool
+    {
+        $minVersion = self::svcParamMinVersion($key);
+
+        return $minVersion === null || $this->isAtLeast($minVersion, true);
+    }
+
+    /**
+     * The first PowerDNS version that knows the SVCB/HTTPS parameter name, or null
+     * when every supported version does.
+     */
+    public static function svcParamMinVersion(string $key): ?string
+    {
+        return match (strtolower($key)) {
+            'dohpath', 'ohttp', 'tls-supported-groups' => '5.1.0',
+            default => null,
+        };
+    }
+
+    /* ----- API endpoints ---------------------------------------------- */
+
+    /** Filtering a zone read down to one RRset (rrset_name/rrset_type) added in 4.7. */
+    public function supportsIndividualRrsetFetch(): bool
+    {
+        return $this->isAtLeast('4.7.0');
+    }
+
+    /** Autoprimary management via API added in 4.6. */
+    public function supportsAutoprimariesApi(): bool
+    {
+        return $this->isAtLeast('4.6.0');
+    }
+
+    /** Per-record last-modified timestamps in API responses added in 4.9.8; of the stock backends only LMDB fills them. */
+    public function supportsRecordTimestamps(): bool
+    {
+        return $this->isAtLeast('4.9.8');
+    }
+
+    /* ----- DNSSEC ----------------------------------------------------- */
+
+    /**
+     * PowerDNS 4.0+ uses CSK (Combined Signing Key) by default. Older servers
+     * default to KSK+ZSK and the UI should reflect that.
+     */
+    public function supportsDefaultCsk(): bool
+    {
+        return $this->isAtLeast('4.0.0');
+    }
+
+    /** Creating a DNSSEC key from a private key (POST /cryptokeys with privatekey) added in 4.1. */
+    public function supportsPrivateKeyImport(): bool
+    {
+        return $this->isAtLeast('4.1.0');
+    }
+
+    /** RFC 9615 authenticated DNSSEC bootstrapping added in 5.0. */
+    public function supportsRfc9615Bootstrap(): bool
+    {
+        return $this->isAtLeast('5.0.0');
+    }
+
+    /* ----- Zone metadata ---------------------------------------------- */
+
+    /**
+     * Whether a metadata kind whose minimum version is $minVersion should be
+     * shown for the connected server. A null/empty minimum means the kind has
+     * always been supported. When the connected version is unknown the kind is
+     * hidden (strict mode) so admins don't get options the server may reject.
+     */
+    public function supportsMetadataKind(?string $minVersion): bool
+    {
+        if ($minVersion === null || $minVersion === '') {
+            return true;
+        }
+        return $this->isAtLeast($minVersion);
+    }
+}

@@ -8,20 +8,27 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\GroupService;
+use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 
 #[CoversClass(GroupService::class)]
 class GroupServiceTest extends TestCase
 {
     private MockObject&UserGroupRepositoryInterface $groupRepo;
+    private MockObject&ZoneOwnershipGuard $ownershipGuard;
     private GroupService $service;
 
     protected function setUp(): void
     {
         $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->service = new GroupService($this->groupRepo);
+        $this->ownershipGuard = $this->createMock(ZoneOwnershipGuard::class);
+        // The real guard runs the deletion inside its own transaction; stand in
+        // for that by running the callback, so the service is what is tested.
+        $this->ownershipGuard->method('deleteGroup')
+            ->willReturnCallback(static fn(int $groupId, callable $delete): array|bool => $delete());
+        $this->service = new GroupService($this->groupRepo, $this->ownershipGuard);
     }
 
     // --- listGroups ---

@@ -1,0 +1,95 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\Api\V2\Resource;
+
+use Poweradmin\Domain\Model\ZoneSummary;
+use Poweradmin\Domain\Service\Zone\ShadowedRecords;
+
+/**
+ * The JSON shape of a zone on /api/v2: the listing carries a summary, the
+ * single-zone endpoints the full detail.
+ */
+final class ZoneResource
+{
+    /**
+     * A zone as GET /zones lists it.
+     *
+     * @param array<string, mixed>|ZoneSummary $zone
+     * @return array<string, mixed>
+     */
+    public static function summary(array|ZoneSummary $zone): array
+    {
+        if ($zone instanceof ZoneSummary) {
+            $zone = $zone->toArray();
+        }
+
+        return [
+            'id' => (int)$zone['id'],
+            // Equal to id since 4.6.0; kept for clients that read it
+            'canonical_id' => (int)($zone['canonical_id'] ?? $zone['id']),
+            'name' => $zone['name'],
+            'type' => $zone['type'] ?? 'MASTER',
+            'created_at' => $zone['created_at'] ?? null,
+        ];
+    }
+
+    /**
+     * A zone as GET and PUT /zones/{id} emit it; empty masters, account and
+     * description read as null.
+     *
+     * @param array<string, mixed> $zone
+     * @return array<string, mixed>
+     */
+    public static function detail(array $zone, ?string $comment): array
+    {
+        $account = $zone['account'] ?? '';
+        $masters = $zone['master'] ?? '';
+
+        return [
+            'id' => (int)$zone['id'],
+            'canonical_id' => (int)$zone['id'],
+            'name' => $zone['name'],
+            'type' => $zone['type'] ?? 'MASTER',
+            'masters' => $masters !== '' ? $masters : null,
+            'account' => $account !== '' ? $account : null,
+            'description' => ($comment !== null && $comment !== '') ? $comment : null,
+            'created_at' => $zone['created_at'] ?? null,
+        ];
+    }
+
+    /**
+     * The parent-zone records a newly created zone hides, as POST /zones reports them.
+     *
+     * @return array{parent_zone: string, records: list<array{name: string, type: string}>}
+     */
+    public static function shadowedRecords(ShadowedRecords $shadowed): array
+    {
+        return [
+            'parent_zone' => $shadowed->parentZoneName,
+            'records' => array_map(
+                static fn(array $record): array => ['name' => $record['name'], 'type' => $record['type']],
+                $shadowed->records
+            ),
+        ];
+    }
+}

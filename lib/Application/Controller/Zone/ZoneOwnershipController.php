@@ -1,0 +1,288 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+namespace Poweradmin\Application\Controller\Zone;
+
+use InvalidArgumentException;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\Zone\ZoneAccessNotificationService;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipMessages;
+use Poweradmin\Domain\Error\GroupNotFoundException;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Service\Auth\ZoneAccessPolicy;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
+use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
+
+/**
+ * Handles the zone ownership page: adds and removes user and group owners of a zone.
+ */
+class ZoneOwnershipController extends BaseController
+{
+    private ?ZoneOwnershipRepositoryInterface $zoneRepository = null;
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?PermissionService $permissionService = null;
+
+    private function zoneRepository(): ZoneOwnershipRepositoryInterface
+    {
+        return $this->zoneRepository ??= $this->services()->zoneRepository();
+    }
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
+    }
+
+    public function run(): void
+    {
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('edit');
+        $this->setPageTitle(_('Edit zone'));
+
+        $zone_id = $this->requireNumericParam('id');
+
+        // Check permissions
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_ownership_view = $this->permissionService()->getZoneOwnershipViewPermissionLevel($userId);
+        $perm_meta_edit = $this->permissionService()->getZoneMetaEditPermissionLevel($userId);
+        $perm_view_others = $this->permissionService()->canViewOthersContent($userId);
+        $user_is_zone_owner = $this->isZoneOwner($zone_id);
+
+        if ($perm_ownership_view !== "all" && !($perm_ownership_view === "own" && $user_is_zone_owner)) {
+            $this->showError(_('You do not have permission to access this zone.'));
+            return;
+        }
+
+        $meta_edit = ZoneAccessPolicy::levelAppliesToZone($perm_meta_edit, $user_is_zone_owner);
+
+        // Get zone information
+        $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
+
+        // Handle form submissions
+        if ($this->isPost()) {
+            $this->handleFormSubmission($zone_id, $zone_name, $userId, $meta_edit);
+        }
+
+        // Get owners
+        $users = $this->services()->userRepository()->getUsersWithZoneCounts();
+        $owners = $this->zoneRepository()->getZoneOwners($zone_id);
+
+        // Filter out users who are already owners
+        $ownerIds = array_column($owners, 'id');
+        $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
+            return !in_array($user['id'], $ownerIds);
+        }));
+
+        // Fetch group ownership
+        $zoneGroupRepo = $this->services()->zoneGroupRepository();
+        $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
+
+        // Fetch groups - all for name lookup, filtered for dropdown
+        $userGroupRepo = $this->services()->userGroupRepository();
+        $allGroups = $userGroupRepo->findAll();
+        $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $userGroups = $isAdmin ? $allGroups : $userGroupRepo->findByUserId($userId);
+
+        // Filter out groups that are already owners (from user's visible groups)
+        $groupOwnerIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
+        $availableGroups = array_values(array_filter($userGroups, function ($group) use ($groupOwnerIds) {
+            return !in_array($group->getId(), $groupOwnerIds);
+        }));
+
+        // Map group IDs to group data for display
+        $groupOwners = array_map(function ($zg) use ($allGroups) {
+            $groupId = $zg->getGroupId();
+            $groupName = 'Group #' . $groupId;
+
+            foreach ($allGroups as $group) {
+                if ($group->getId() === $groupId) {
+                    $groupName = $group->getName();
+                    break;
+                }
+            }
+
+            return [
+                'id' => $groupId,
+                'name' => $groupName
+            ];
+        }, $groupOwnerships);
+
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
+
+        $has_user_owners = $owners !== [];
+
+        // Render the ownership page
+        $this->render('zone-ownership.html', [
+            'zone_id' => $zone_id,
+            'zone_name' => $zone_name,
+            'is_reverse_zone' => DnsHelper::isReverseZoneName($zone_name),
+            'users' => $availableUsers,
+            'selectable_owners' => $this->services()->zoneOwnershipFormResolver()->selectableOwners($availableUsers, (int)$this->getCurrentUserId()),
+            'owners' => $owners,
+            'group_owners' => $groupOwners,
+            'has_user_owners' => $has_user_owners,
+            'has_group_owners' => $groupOwners !== [],
+            'all_groups' => $availableGroups,
+            'meta_edit' => $meta_edit,
+            'perm_view_others' => $perm_view_others,
+            'session_userid' => $userId,
+            'user_owner_allowed' => $ownershipMode->isUserOwnerAllowed(),
+            'group_owner_allowed' => $ownershipMode->isGroupOwnerAllowed(),
+        ]);
+    }
+
+    private function handleFormSubmission(int $zone_id, string $zone_name, int $userId, bool $meta_edit): void
+    {
+        $auditService = $this->services()->auditService();
+        $ownershipMode = $this->services()->zoneOwnershipModeService();
+
+        // Add owner
+        $newowner = $this->httpRequest->getPostParam('newowner');
+        if ($newowner !== null && is_numeric($newowner) && $meta_edit) {
+            if (!$ownershipMode->isUserOwnerAllowed()) {
+                $this->setMessage('zone-ownership', 'error', _('User-owner assignment is disabled by the current zone ownership mode.'));
+                return;
+            }
+            // DomainManager is the one guarded write: it refuses unknown users.
+            $result = $this->services()->domainManager()->addOwnerToZone($zone_id, (int)$newowner);
+            $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
+
+            if ($result->success) {
+                $this->permissionService()->forgetZone($zone_id);
+                $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
+
+                // Send zone access granted notification
+                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                    $notificationService = $this->createZoneAccessNotificationService();
+                    $notificationService->notifyAccessGranted($zone_id, (int)$newowner, $userId);
+                }
+            }
+        }
+
+        // Delete owner
+        $delete_owner = $this->httpRequest->getPostParam('delete_owner');
+        if ($delete_owner !== null && is_numeric($delete_owner) && $meta_edit) {
+            $deleteUserId = (int)$delete_owner;
+            $outcome = $this->services()->zoneOwnershipGuard()->removeUserOwner($zone_id, $deleteUserId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::userOwnerRefusal($outcome));
+                return;
+            }
+            $ownerRemoved = $outcome;
+
+            if ($ownerRemoved) {
+                $this->permissionService()->forgetZone($zone_id);
+                $auditService->logZoneOwnerRemove($zone_id, $zone_name, (int)$delete_owner);
+                $this->setMessage('zone-ownership', 'success', _('Owner has been removed successfully.'));
+
+                // Send zone access revoked notification
+                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                    $notificationService = $this->createZoneAccessNotificationService();
+                    $notificationService->notifyAccessRevoked($zone_id, (int)$delete_owner, $userId);
+                }
+            }
+        }
+
+        // Add group
+        $newgroup = $this->httpRequest->getPostParam('newgroup');
+        if ($newgroup !== null && is_numeric($newgroup) && $meta_edit) {
+            if (!$ownershipMode->isGroupOwnerAllowed()) {
+                $this->setMessage('zone-ownership', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
+                return;
+            }
+            $groupId = (int)$newgroup;
+
+            // Validate group ID against user's allowed groups
+            $isAdmin = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+            if (!$isAdmin) {
+                $userGroupRepo = $this->services()->userGroupRepository();
+                $allowedGroups = $userGroupRepo->findByUserId($userId);
+                $allowedGroupIds = array_map(fn($g) => $g->getId(), $allowedGroups);
+                if (!in_array($groupId, $allowedGroupIds)) {
+                    $this->setMessage('zone-ownership', 'error', _('You do not have permission to assign this group.'));
+                    return;
+                }
+            }
+
+            // Through the service, so the shared-id guard and the group's zone limit apply
+            try {
+                $assigned = $this->services()->zoneGroupService()->addGroupToZone($zone_id, $groupId);
+            } catch (GroupNotFoundException) {
+                $this->setMessage('zone-ownership', 'error', _('Group not found.'));
+                return;
+            } catch (InvalidArgumentException) {
+                $this->setMessage('zone-ownership', 'error', _('This group cannot be added to the zone.'));
+                return;
+            }
+            if ($assigned instanceof ZoneLimitBreach) {
+                $this->setMessage('zone-ownership', 'error', $assigned->localizedMessage());
+                return;
+            }
+            $this->permissionService()->forgetZone($zone_id);
+            $auditService->logZoneGroupAdd($zone_id, $zone_name, $groupId);
+            $this->setMessage('zone-ownership', 'success', _('Group has been added successfully.'));
+        }
+
+        // Delete group
+        $delete_group = $this->httpRequest->getPostParam('delete_group');
+        if ($delete_group !== null && is_numeric($delete_group) && $meta_edit) {
+            $deleteGroupId = (int)$delete_group;
+            $outcome = $this->services()->zoneOwnershipGuard()->removeGroup($zone_id, $deleteGroupId);
+            if ($outcome instanceof ZoneOwnershipRefusal) {
+                $this->setMessage('zone-ownership', 'error', ZoneOwnershipMessages::groupRefusal($outcome));
+                return;
+            }
+            $this->permissionService()->forgetZone($zone_id);
+            $auditService->logZoneGroupRemove($zone_id, $zone_name, $deleteGroupId);
+            $this->setMessage('zone-ownership', 'success', _('Group has been removed successfully.'));
+        }
+    }
+
+    private function createZoneAccessNotificationService(): ZoneAccessNotificationService
+    {
+        $mailService = $this->services()->mailService();
+        $emailTemplateService = $this->services()->emailTemplateService();
+
+        return new ZoneAccessNotificationService(
+            $this->services()->userRepository(),
+            $this->config,
+            $mailService,
+            $emailTemplateService,
+            $this->domainRepository(),
+            $this->services()->urlService(),
+            $this->logger
+        );
+    }
+}

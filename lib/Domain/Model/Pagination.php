@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Model;
 
 use InvalidArgumentException;
 
+/**
+ * Page arithmetic for a list: current page, page count, page-link window, and the SQL offset and limit.
+ */
 readonly class Pagination
 {
     private int $totalItems;

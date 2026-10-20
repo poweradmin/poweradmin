@@ -23,18 +23,23 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
+use Poweradmin\Infrastructure\Database\DeadlockRetry;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
-use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Domain\Port\ApiStatusRecorderInterface;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
-use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -45,21 +50,27 @@ use Psr\Log\NullLogger;
  * Zone metadata is stored locally in the Poweradmin zones table.
  * Records are identified by encoded composite keys (no PowerDNS DB access needed).
  */
-class ApiDnsBackendProvider implements DnsBackendProvider
+final class ApiDnsBackendProvider implements DnsBackendProviderInterface, ReportsWriteRejection
 {
     private PowerdnsApiClient $client;
     private PDO $db;
+    private TransactionInterface $transaction;
+    private ConfigurationInterface $config;
     private LoggerInterface $logger;
+    private ApiStatusRecorderInterface $apiStatus;
 
     /** @var array<string, int>|null Zone name to local id, resolved once per request. */
     private ?array $localZoneIds = null;
 
-    // $config is unused here but kept so both DnsBackendProvider implementations
-    // are constructed alike; the API backend needs no table-name resolution.
-    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
+    private ?string $lastWriteRejection = null;
+
+    public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ApiStatusRecorderInterface $apiStatus, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
+        $this->apiStatus = $apiStatus;
+        $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->client = $client;
         $this->db = $db;
+        $this->config = $config;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -95,15 +106,20 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return false;
         }
 
-        // The zone now exists in PowerDNS; if its local row cannot be written it must not stay
-        // behind, or the user sees a failure and a retry then collides with the orphan
+        // The zone now exists in PowerDNS; if the local row cannot be written it must not stay
+        // behind, or the user sees a failure and a retry then collides with the orphan.
         try {
             $zonesId = $this->storeLocalZoneRow($domain, $type, $slaveMaster);
         } catch (\Throwable $e) {
-            $this->logger->error('Zone {zone} was created in PowerDNS but its local row could not be stored: {error}', [
-                'zone' => $domain,
-                'error' => $e->getMessage(),
-            ]);
+            $this->logger->error(
+                'Zone {zone} was created in PowerDNS but its local row could not be stored ({class}, SQLSTATE {state}): {error}',
+                [
+                    'zone' => $domain,
+                    'class' => get_class($e),
+                    'state' => $e instanceof \PDOException ? (string)($e->errorInfo[0] ?? $e->getCode()) : '-',
+                    'error' => $e->getMessage(),
+                ]
+            );
             $this->removeOrphanedZone($apiName);
             throw $e;
         }
@@ -115,105 +131,106 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     }
 
     /**
-     * Records the zone in the local zones table and returns its canonical id. The caller
-     * (DomainManager) fills in the owner and template of the row.
+     * Records the zone in the local zones table and returns its canonical id. Retries the
+     * transaction when the database rolls it back as a deadlock victim.
      */
     private function storeLocalZoneRow(string $domain, string $type, string $slaveMaster): int
     {
-        $queued = CanonicalZoneIdAllocator::ensureQueueRow($this->db);
-
+        // The caller (DomainManager) will fill in the owner and template of this row.
         // The insert and its domain_id backfill must land together. Committed apart, an
         // interrupted request strands the row at a domain_id no canonical read resolves.
-        $ownsTransaction = !$this->db->inTransaction();
-        if ($ownsTransaction) {
-            $this->db->beginTransaction();
-        }
+        $ownsTransaction = !$this->transaction->inTransaction();
+        $attempt = function () use ($domain, $type, $slaveMaster, $ownsTransaction): int {
+            if ($ownsTransaction) {
+                $this->transaction->begin();
+            }
 
-        try {
-            // Queues on one row before reading zones, so concurrent creators wait instead of deadlocking
-            $allocator = new CanonicalZoneIdAllocator($this->db, $queued);
+            try {
+                // Locks the backend marker row first, so concurrent creators queue instead of deadlocking
+                $allocator = new CanonicalZoneIdAllocator($this->db);
 
-            // Read under the lock, so a zone a concurrent sync just adopted is found, not collided with
-            $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
-            $stmt->execute([':name' => $domain]);
-            $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+                // Read under the marker lock, so a zone adopted by a concurrent sync is seen, not collided with
+                $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
+                $stmt->execute([':name' => $domain]);
+                $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (is_array($existing)) {
-                $zonesId = $this->reuseExistingRow((int)$existing['id'], (int)($existing['domain_id'] ?: $existing['id']), $type, $slaveMaster);
-                if ($zonesId !== null) {
+                if (is_array($existing) && $this->dropStaleSharedRow((int)$existing['id'], (int)($existing['domain_id'] ?: $existing['id']))) {
+                    $existing = false;
+                }
+
+                if (is_array($existing)) {
+                    $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
+                    $stmt->bindValue(':type', strtoupper($type));
+                    $stmt->bindValue(':master', $slaveMaster);
+                    $stmt->bindValue(':id', (int)$existing['id'], PDO::PARAM_INT);
+                    $stmt->execute();
                     if ($ownsTransaction) {
-                        $this->db->commit();
+                        $this->transaction->commit();
                     }
 
-                    return $zonesId;
+                    // Callers address the zone by its canonical id, which differs from the row id on migrated rows
+                    return (int)($existing['domain_id'] ?: $existing['id']);
                 }
+
+                // Insert a placeholder entry. The caller will update it with owner/template info.
+                $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
+                $stmt->bindValue(':name', $domain);
+                $stmt->bindValue(':type', strtoupper($type));
+                $stmt->bindValue(':master', $slaveMaster);
+                $stmt->execute();
+
+                // The canonical id: the row id, unless another zone or grant already uses that number
+                $zonesId = $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
+
+                if ($ownsTransaction) {
+                    $this->transaction->commit();
+                }
+
+                return $zonesId;
+            } catch (\Throwable $e) {
+                if ($ownsTransaction) {
+                    $this->rollBackIfOpen();
+                }
+                throw $e;
             }
+        };
 
-            // Insert a placeholder entry. The caller will update it with owner/template info.
-            $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name, zone_type, zone_master) VALUES (NULL, NULL, 0, :name, :type, :master)");
-            $stmt->bindValue(':name', $domain);
-            $stmt->bindValue(':type', strtoupper($type));
-            $stmt->bindValue(':master', $slaveMaster);
-            $stmt->execute();
-
-            // The canonical id: the row id, unless another zone or grant already uses that number
-            $zonesId = $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
-
-            if ($ownsTransaction) {
-                $this->db->commit();
-            }
-        } catch (\Throwable $e) {
-            if ($ownsTransaction) {
-                $this->rollBackIfOpen();
-            }
-            throw $e;
-        }
-
-        return $zonesId;
+        // A caller's transaction cannot be replayed from here, so only our own is retried
+        return $ownsTransaction ? DeadlockRetry::run($attempt) : $attempt();
     }
 
     /**
-     * Reuse the row a zone of this name already has and return its canonical id, or null
-     * after deleting it. PowerDNS has just accepted the zone, so a row whose id another zone
-     * shares is left from a zone deleted there, and the caller's owner update by canonical id
-     * would also rewrite the other zone. Grants and extra owners on that id go with it.
+     * Delete the row a zone of this name already has when another zone shares its canonical
+     * id. PowerDNS has just accepted the zone, so that row is left from a zone deleted there,
+     * and the caller's owner update by canonical id would also rewrite the other zone.
      */
-    private function reuseExistingRow(int $rowId, int $zoneId, string $type, string $slaveMaster): ?int
+    private function dropStaleSharedRow(int $rowId, int $zoneId): bool
     {
-        if (SharedZoneIds::isShared($this->db, $zoneId)) {
-            SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $zoneId, $rowId, $this->logger);
-            // Grants keyed by a shared id cannot be attributed, so they go too rather than
-            // falling to the surviving zone, as in zone delete
-            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->execute();
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->execute();
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
-            $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            return null;
+        if (!SharedZoneIds::isShared($this->db, $zoneId)) {
+            return false;
         }
 
-        // domain_id too, so a row stranded without one is found by the caller's owner update
-        $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master, domain_id = :zone_id WHERE id = :id");
-        $stmt->bindValue(':type', strtoupper($type));
-        $stmt->bindValue(':master', $slaveMaster);
+        SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $zoneId, $rowId, $this->logger);
+        // Grants keyed by a shared id cannot be attributed, so they go too rather than
+        // falling to the surviving zone, as in zone delete
+        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
         $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Callers address the zone by its canonical id, which differs from the row id on migrated rows
-        return $zoneId;
+        return true;
     }
 
     private function removeOrphanedZone(string $apiName): void
     {
         try {
             $removed = $this->client->deleteZone(new Zone($apiName));
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
             $removed = false;
         }
         if (!$removed) {
@@ -227,13 +244,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      */
     private function rollBackIfOpen(): void
     {
-        if ($this->db->inTransaction()) {
-            $this->db->rollBack();
+        if ($this->transaction->inTransaction()) {
+            $this->transaction->rollBack();
         }
     }
 
     public function deleteZone(int $domainId, string $zoneName): bool
     {
+        // Without a name there is nothing to address; "." would target the root zone
+        if ($zoneName === '') {
+            return false;
+        }
+
         $apiName = self::ensureTrailingDot($zoneName);
         $zone = new Zone($apiName);
 
@@ -297,6 +319,19 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         return $this->client->retrieveZone(self::ensureTrailingDot($zone['zone_name']));
     }
 
+    public function notifyZone(int $domainId): bool
+    {
+        $zone = $this->resolveCanonicalZoneRow($domainId);
+        // A row the zone sync has not filled in yet has no cached type; ask PowerDNS then
+        $kind = $zone === null ? null : $this->resolveKindAndMaster($domainId);
+
+        if ($zone === null || $kind === null || !ZoneType::notifies($kind['type'])) {
+            return false;
+        }
+
+        return $this->client->notifyZone(self::ensureTrailingDot($zone['zone_name']));
+    }
+
     public function updateZoneAccount(int $domainId, string $account): bool
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
@@ -313,7 +348,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     {
         return array_map(
             fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'kind' => $zone['kind']],
-            $this->zonesMatching(fn(array $zone): bool => $zone['catalog'] === $catalogName)
+            $this->zonesMatching(fn(array $zone): bool => $zone['catalog'] === $catalogName, null)
         );
     }
 
@@ -323,7 +358,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
         return array_map(
             fn(array $zone): array => ['id' => $zone['id'], 'name' => $zone['name'], 'catalog' => $zone['catalog']],
-            $this->zonesMatching(fn(array $zone): bool => $zone['kind'] === $wanted)
+            $this->zonesMatching(fn(array $zone): bool => $zone['kind'] === $wanted, $wanted)
         );
     }
 
@@ -331,18 +366,28 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      * Zones from the bulk list that satisfy $match, name-sorted.
      *
      * @param callable(array{id: int, name: string, kind: string, catalog: string}): bool $match
+     * @param string|null $kind Only zones of this kind, checked before any per-zone catalog read
      * @return array<int, array{id: int, name: string, kind: string, catalog: string}>
      */
-    private function zonesMatching(callable $match): array
+    private function zonesMatching(callable $match, ?string $kind): array
     {
+        // A producer or consumer lookup reads no catalog, so it skips the server version probe too
+        $readsCatalogPerZone = !in_array($kind, [ZoneType::PRODUCER, ZoneType::CONSUMER], true)
+            && $this->client->zoneListOmitsCatalog();
         $zones = [];
         foreach ($this->readZoneKinds() as $apiName => $entry) {
+            if ($kind !== null && $entry['kind'] !== $kind) {
+                continue;
+            }
             $name = rtrim($apiName, '.');
             $zone = [
                 'id' => $this->localIdForZoneName($name),
                 'name' => $name,
                 'kind' => $entry['kind'],
-                'catalog' => $entry['catalog'],
+                // Producers and consumers cannot be members, so their catalog is never read
+                'catalog' => $readsCatalogPerZone && !in_array($entry['kind'], [ZoneType::PRODUCER, ZoneType::CONSUMER], true)
+                    ? $this->client->getZoneCatalogName($apiName)
+                    : $entry['catalog'],
             ];
 
             if ($match($zone)) {
@@ -413,17 +458,28 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // Record operations
     // ---------------------------------------------------------------
 
+    public function replaceSoaContent(int $zoneId, string $content): bool
+    {
+        $zoneName = $this->getZoneNameByLocalId($zoneId);
+        if ($zoneName === null) {
+            return false;
+        }
+        $soaTtl = (int)$this->config->get('dns', 'ttl', 86400);
+
+        return $this->addRecord($zoneId, $zoneName, 'SOA', $content, $soaTtl, 0);
+    }
+
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, null) !== null;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): ?string
     {
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, 0, $comment);
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): ?string
     {
         return $this->appendRecord($domainId, $name, $type, $content, $ttl, $prio, $disabled, $comment);
     }
@@ -433,8 +489,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
      */
     private function appendRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment): ?string
     {
+        $this->lastWriteRejection = null;
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
+            $this->logger->error('Cannot create record: zone id {id} has no local zones row', ['id' => $domainId]);
             return null;
         }
 
@@ -471,6 +529,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
 
         if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
             return null;
         }
 
@@ -479,6 +538,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
     {
+        $this->lastWriteRejection = null;
         // Decode the encoded record ID to get the old record identity
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("editRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
@@ -599,7 +659,17 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         }
         $rrsets[] = $target;
 
-        return $this->client->patchZoneRRsets($apiZoneName, $rrsets);
+        if (!$this->client->patchZoneRRsets($apiZoneName, $rrsets)) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            return false;
+        }
+
+        return true;
+    }
+
+    public function lastWriteRejection(): ?string
+    {
+        return $this->lastWriteRejection;
     }
 
     /**
@@ -620,6 +690,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function deleteRecord(int|string $recordId): bool
     {
+        $this->lastWriteRejection = null;
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("deleteRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
             return false;
@@ -674,12 +745,11 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             ];
         }
 
-        return $this->client->patchZoneRRsets($apiZoneName, [$rrset]);
-    }
+        if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
+            $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            return false;
+        }
 
-    public function deleteRecordsByDomainId(int $domainId): bool
-    {
-        // Zone deletion via API handles this automatically
         return true;
     }
 
@@ -700,12 +770,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         if ($zoneName === null) {
             return null;
         }
-        $zone = $this->getZoneByName($zoneName);
-        if ($zone === null) {
+        $zoneData = $this->client->getZone(self::ensureTrailingDot($zoneName), false);
+        if ($zoneData === null) {
             return null;
         }
-        $zone['id'] = $domainId;
-        return $zone;
+
+        return [
+            'id' => $domainId,
+            'name' => $zoneName,
+            'type' => strtoupper($zoneData['kind'] ?? ''),
+            'master' => self::formatMasters($zoneData['masters'] ?? []),
+            'dnssec' => $zoneData['dnssec'] ?? false,
+        ];
     }
 
     public function getZoneNameById(int $domainId): ?string
@@ -719,7 +795,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return null;
         }
 
-        $stmt = $this->db->prepare("SELECT " . CanonicalZoneSql::canonicalIdColumn() . " FROM zones WHERE zone_name = :name");
+        $stmt = $this->db->prepare("SELECT " . CanonicalZoneSql::canonicalIdColumn('', $this->allocatesZoneIdsLocally()) . " FROM zones WHERE zone_name = :name");
         $stmt->execute([':name' => $zoneName]);
         $id = $stmt->fetchColumn();
 
@@ -728,33 +804,39 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getZoneTypeById(int $domainId): string
     {
-        // First check local cache
-        $type = $this->resolveCanonicalZoneRow($domainId)['zone_type'] ?? null;
-
-        if ($type !== null && $type !== '') {
-            return $type;
-        }
-
-        // Fallback to API
-        $zone = $this->getZoneById($domainId);
-        return $zone ? ($zone['type'] ?: 'NATIVE') : 'NATIVE';
+        return ($this->resolveKindAndMaster($domainId)['type'] ?? '') ?: 'NATIVE';
     }
 
     public function getZoneMasterById(int $domainId): ?string
     {
-        // First check local cache
+        return ($this->resolveKindAndMaster($domainId)['master'] ?? '') ?: null;
+    }
+
+    /**
+     * Reads the kind and master from the local zones row; only a row with no kind cached
+     * (written before the sync stored types) costs a round trip to PowerDNS.
+     *
+     * @return array{type: string, master: string}|null Null when neither side knows the zone
+     */
+    private function resolveKindAndMaster(int $domainId): ?array
+    {
         $row = $this->resolveCanonicalZoneRow($domainId);
-
-        if ($row !== null && strtoupper($row['zone_type'] ?? '') === 'SLAVE') {
-            return $row['zone_master'] ?: null;
-        }
-
-        // Fallback to API
-        $zone = $this->getZoneById($domainId);
-        if ($zone === null || strtoupper($zone['type']) !== 'SLAVE') {
+        if ($row === null) {
             return null;
         }
-        return $zone['master'] ?: null;
+        if (!empty($row['zone_type'])) {
+            return ['type' => $row['zone_type'], 'master' => (string)($row['zone_master'] ?? '')];
+        }
+
+        $zoneData = $this->client->getZone(self::ensureTrailingDot($row['zone_name']), false);
+        if ($zoneData === null) {
+            return null;
+        }
+
+        return [
+            'type' => strtoupper($zoneData['kind'] ?? ''),
+            'master' => self::formatMasters($zoneData['masters'] ?? []),
+        ];
     }
 
     // ---------------------------------------------------------------
@@ -893,6 +975,37 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         ));
     }
 
+    public function findRecordsByName(string $name, ?string $type = null): array
+    {
+        $name = rtrim($name, '.');
+
+        return $this->searchRecordsMatching(
+            $name,
+            fn(array $r): bool => strcasecmp($r['name'], $name) === 0 && ($type === null || $r['type'] === $type)
+        );
+    }
+
+    public function findRecordsByContent(string $content, ?string $type = null): array
+    {
+        return $this->searchRecordsMatching(
+            $content,
+            fn(array $r): bool => $r['content'] === $content && ($type === null || $r['type'] === $type)
+        );
+    }
+
+    /**
+     * The search endpoint matches names and contents alike and caps at 100 candidates,
+     * so the exact predicate is applied here.
+     *
+     * @param callable(array): bool $match
+     */
+    private function searchRecordsMatching(string $query, callable $match): array
+    {
+        $records = $this->searchDnsData($query, 'record', 100)['records'];
+
+        return array_values(array_filter($records, $match));
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $zoneName = $this->getZoneNameByLocalId($domainId);
@@ -927,7 +1040,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // Return the canonical id, the value every other zone id in this backend
         // carries. Returning zones.id let the resolver prefer an unrelated row
         // whose domain_id happened to equal it, writing the PTR into that zone.
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn();
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn('', $this->allocatesZoneIdsLocally());
         $stmt = $this->db->query("SELECT $canonicalId AS id, zone_name FROM zones WHERE zone_name IS NOT NULL");
         $foundId = -1;
         $bestLength = -1;
@@ -957,19 +1070,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     public function getZones(bool $withDnssec = true): array
     {
-        $statusService = new ApiStatusService();
         try {
             $apiZones = $this->client->getAllZones($withDnssec);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to get zones from API: {error}', ['error' => $e->getMessage()]);
-            $statusService->recordError($e->getMessage(), [
+            $this->apiStatus->recordError($e->getMessage(), [
                 'endpoint' => 'zones',
                 'http_code' => $e->getDetail('http_code', $e->getCode()),
                 'url' => $e->getDetail('url'),
             ]);
             return [];
         }
-        $statusService->clearError();
+        $this->apiStatus->clearError();
 
         // Pull kind/masters from the same /zones list response so type stays in
         // sync when changed externally (e.g. pdnsutil set-kind). Reading the
@@ -1019,33 +1131,40 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 'type' => $type,
                 'master' => $master,
                 'dnssec' => $zone->isSecured(),
+                'account' => (string)($kind['account'] ?? ''),
             ];
         }
 
         return $zones;
     }
 
-    public function getZoneByName(string $zoneName): ?array
+    public function getZonesByIds(array $domainIds): array
     {
-        $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZone($apiName, false);
-        if ($zoneData === null) {
-            return null;
+        $zones = [];
+        // Name and kind come from the local zones row; only a row with no cached kind
+        // costs a round trip (getZoneTypeById).
+        foreach (array_unique(array_map('intval', $domainIds)) as $id) {
+            $row = $this->resolveCanonicalZoneRow($id);
+            if ($row !== null) {
+                $type = !empty($row['zone_type']) ? (string)$row['zone_type'] : $this->getZoneTypeById($id);
+                $zones[] = ['id' => $id, 'name' => (string)$row['zone_name'], 'type' => $type];
+            }
         }
+        usort($zones, fn(array $a, array $b): int => strcasecmp($a['name'], $b['name']));
 
-        // Get local zone ID
-        $stmt = $this->db->prepare("SELECT id, domain_id FROM zones WHERE zone_name = :name");
-        $stmt->execute([':name' => $zoneName]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $id = $row !== false ? (int)($row['domain_id'] ?: $row['id']) : 0;
+        return $zones;
+    }
 
-        return [
-            'id' => $id,
-            'name' => $zoneName,
-            'type' => strtoupper($zoneData['kind'] ?? ''),
-            'master' => self::formatMasters($zoneData['masters'] ?? []),
-            'dnssec' => $zoneData['dnssec'] ?? false,
-        ];
+    public function countZones(): int
+    {
+        // Only the number is needed, so skip the per-zone DNSSEC lookup
+        return count($this->getZones(false));
+    }
+
+    public function countRecords(): ?int
+    {
+        // PowerDNS keeps no global record count and the zone list carries none
+        return null;
     }
 
     public function getZoneSoaHealth(string $zoneName, string $kind): ?array
@@ -1140,8 +1259,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                 $content = $record['content'] ?? '';
                 $prio = 0;
 
-                // Extract priority from content for MX/SRV
-                if ($type === 'MX' || $type === 'SRV') {
+                // Priority-bearing types carry the preference in front of the content
+                if (RecordType::hasPriority($type)) {
                     $parts = explode(' ', $content, 2);
                     if (count($parts) === 2) {
                         $prio = (int)$parts[0];
@@ -1164,10 +1283,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'api_comment' => $rrsetComment,
                     'api_comment_account' => $rrsetCommentAccount,
                     'api_comment_modified_at' => $rrsetCommentModifiedAt,
-                    // PowerDNS 4.9+ exposes a Unix timestamp per record. Older
-                    // servers, the DB-backed provider, and freshly-created
-                    // records all leave this null; the UI hides the column
-                    // when no record has it.
+                    // PowerDNS 4.9.8+ sends this only from LMDB (gsql never stores it), and every
+                    // write restamps the whole RRset
                     'modified_at' => isset($record['modified_at']) ? (int)$record['modified_at'] : null,
                 ];
             }
@@ -1187,6 +1304,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
         $zones = [];
         $records = [];
+        $comments = [];
 
         // Build local zone lookup
         $stmt = $this->db->query("SELECT id, domain_id, zone_name FROM zones WHERE zone_name IS NOT NULL");
@@ -1209,12 +1327,25 @@ class ApiDnsBackendProvider implements DnsBackendProvider
                     'name' => $name,
                     'type' => strtoupper($result['kind'] ?? ''),
                 ];
+            } elseif ($objType === 'comment') {
+                $zoneName = rtrim($result['zone'] ?? '', '.');
+                $domainId = 0;
+                if (isset($localZones[$zoneName])) {
+                    $domainId = (int)($localZones[$zoneName]['domain_id'] ?: $localZones[$zoneName]['id']);
+                }
+                $comments[] = [
+                    'domain_id' => $domainId,
+                    'zone_name' => $zoneName,
+                    'name' => $name,
+                    'type' => $result['type'] ?? '',
+                    'comment' => $result['content'] ?? '',
+                ];
             } elseif ($objType === 'record') {
                 $content = $result['content'] ?? '';
                 $type = $result['type'] ?? '';
                 $prio = 0;
 
-                if ($type === 'MX' || $type === 'SRV') {
+                if (RecordType::hasPriority($type)) {
                     $parts = explode(' ', $content, 2);
                     if (count($parts) === 2) {
                         $prio = (int)$parts[0];
@@ -1244,17 +1375,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             }
         }
 
-        return ['zones' => $zones, 'records' => $records];
-    }
-
-    // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function updateSOASerial(int $domainId): bool
-    {
-        // In API mode, PowerDNS handles SOA serial increments automatically
-        return true;
+        return ['zones' => $zones, 'records' => $records, 'comments' => $comments];
     }
 
     // ---------------------------------------------------------------
@@ -1321,6 +1442,56 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // ---------------------------------------------------------------
 
     public function isApiBackend(): bool
+    {
+        return true;
+    }
+
+    public function supportsLocalWriteTransaction(): bool
+    {
+        return false;
+    }
+
+    public function recordIdsAreNumeric(): bool
+    {
+        return false;
+    }
+
+    public function managesSoaRecord(): bool
+    {
+        return true;
+    }
+
+    public function allocatesZoneIdsLocally(): bool
+    {
+        return true;
+    }
+
+    public function providesSignedSerial(): bool
+    {
+        return true;
+    }
+
+    public function supportsRecordCountSort(): bool
+    {
+        return false;
+    }
+
+    public function supportsGroupSort(): bool
+    {
+        return false;
+    }
+
+    public function supportsZoneRetrieve(): bool
+    {
+        return true;
+    }
+
+    public function supportsZoneNotify(): bool
+    {
+        return true;
+    }
+
+    public function syncsZoneListFromServer(): bool
     {
         return true;
     }
@@ -1423,7 +1594,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     private function formatRecordContent(string $type, string $content, int $prio): string
     {
-        if ($type === 'MX' || $type === 'SRV') {
+        if (RecordType::hasPriority($type)) {
             return $prio . ' ' . self::ensureTrailingDot($content);
         }
 
@@ -1446,7 +1617,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
     private function stripTrailingDotFromContent(string $type, string $content): string
     {
-        $hostnameTypes = ['CNAME', 'NS', 'MX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
+        $hostnameTypes = ['CNAME', 'NS', 'MX', 'KX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
         if (in_array($type, $hostnameTypes, true)) {
             return rtrim($content, '.');
         }

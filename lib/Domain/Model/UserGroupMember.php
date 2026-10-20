@@ -23,7 +23,7 @@
 namespace Poweradmin\Domain\Model;
 
 /**
- * UserGroupMember domain entity
+ * One user's membership in a group, with the user columns the member list shows.
  *
  * Represents the membership relationship between a user and a group
  */

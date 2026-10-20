@@ -26,12 +26,10 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Domain\Service\ZoneCountService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The forward zone list's letter filter lists punycode zones under one 'idn' entry and
@@ -97,8 +95,7 @@ class ZoneStartingLetterIntegrationTest extends TestCase
         }
 
         $this->db->exec('CREATE TABLE domains (id INT PRIMARY KEY, name VARCHAR(255) NOT NULL, type VARCHAR(8) NOT NULL, master VARCHAR(128) NULL, account VARCHAR(40) NULL)');
-        $disabled = $engine === 'pgsql' ? 'BOOL NOT NULL DEFAULT false' : 'INT NOT NULL DEFAULT 0';
-        $this->db->exec("CREATE TABLE records (id INT PRIMARY KEY, domain_id INT NOT NULL, name VARCHAR(255) NULL, type VARCHAR(10) NULL, content VARCHAR(255) NULL, disabled $disabled)");
+        $this->db->exec('CREATE TABLE records (id INT PRIMARY KEY, domain_id INT NOT NULL, name VARCHAR(255) NULL, type VARCHAR(10) NULL, content VARCHAR(255) NULL)');
         $this->db->exec('CREATE TABLE zones (id INT PRIMARY KEY, domain_id INT NOT NULL, owner INT NULL, comment VARCHAR(1024) NULL, zone_templ_id INT NOT NULL DEFAULT 0)');
         $this->db->exec('CREATE TABLE zone_templ (id INT PRIMARY KEY, name VARCHAR(128) NOT NULL)');
         $this->db->exec('CREATE TABLE users (id INT PRIMARY KEY, username VARCHAR(64) NOT NULL, fullname VARCHAR(255) NULL)');
@@ -121,21 +118,12 @@ class ZoneStartingLetterIntegrationTest extends TestCase
         return new FakeConfiguration(['database' => ['type' => $this->engine]]);
     }
 
-    private function counted(string $perm, string $letter): int
-    {
-        $userContext = $this->createMock(UserContextService::class);
-        $userContext->method('getLoggedInUserId')->willReturn(1);
-
-        return (new ZoneCountService($this->db, $this->config(), $userContext))->countZones($perm, $letter);
-    }
-
     /** @return list<string> */
-    private function listed(string $letter): array
+    private function listed(string $letter, string $perm = 'all', int $userId = 1): array
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn(string $group, ?string $key = null, mixed $default = null): mixed => $group === 'database' && $key === 'type' ? $this->engine : $default);
-        $zones = (new SqlDomainRepository($this->db, $config))->getZones('all', 1, $letter, 0, 50);
-        $names = array_map(static fn(array $zone): string => $zone['name'], array_values($zones));
+        $zones = (new SqlDomainRepository($this->db, $this->config()))
+            ->getZones($perm, $userId, $letter, 0, 50, 'name', 'ASC', true, false, false, false, false);
+        $names = array_map(static fn(ZoneSummary $zone): string => $zone->name, $zones);
         sort($names);
         return array_values($names);
     }
@@ -154,6 +142,7 @@ class ZoneStartingLetterIntegrationTest extends TestCase
     public function testCountAndListAgreeForEachBucket(string $engine): void
     {
         $this->createScratch($engine);
+        $repository = new DbZoneRepository($this->db, $this->config());
 
         $expected = [
             'idn' => ['xn--e1afmkfd.example', 'xn--mnchen-3ya.example'],
@@ -163,8 +152,8 @@ class ZoneStartingLetterIntegrationTest extends TestCase
         ];
         foreach ($expected as $letter => $names) {
             $this->assertSame($names, $this->listed($letter), "list for $letter");
-            $this->assertSame(count($names), $this->counted('all', $letter), "count for $letter");
-            $this->assertSame(count($names), $this->counted('own', $letter), "own count for $letter");
+            $this->assertSame(count($names), $repository->countZones('all', 1, $letter), "count for $letter");
+            $this->assertSame(count($names), $repository->countZones('own', 1, $letter), "own count for $letter");
         }
     }
 }

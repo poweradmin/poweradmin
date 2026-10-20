@@ -22,23 +22,16 @@
 
 namespace Poweradmin\Module\CsvExport;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class CsvExportModule implements ModuleInterface
+/**
+ * Module registration for the CSV zone export route and its zone-page action button.
+ */
+final class CsvExportModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'csv_export';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'CSV Export';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Export zone records as CSV files';
     }
 
     public function getRoutes(): array
@@ -61,12 +54,12 @@ class CsvExportModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['zone_export'];
+        return [self::CAP_ZONE_EXPORT];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'zone_export') {
+        if ($capability === self::CAP_ZONE_EXPORT) {
             return [
                 [
                     'label' => 'CSV',
@@ -81,10 +74,5 @@ class CsvExportModule implements ModuleInterface
     public function getTemplatePath(): string
     {
         return '';
-    }
-
-    public function getLocalePath(): string
-    {
-        return __DIR__ . '/locale';
     }
 }

@@ -11,6 +11,8 @@
     "web-pgsql-api:8084",
     "web-sqlite-api:8085",
     "web-subfolder:8086",
+    "web-mysql-de:8087",
+    "web-mysql-remote-user:8088",
     "mysql:3306",
     "pgsql:5432",
     "adminer:8090",
@@ -20,7 +22,14 @@
     "pdns-pgsql:8182",
     "pdns-sqlite:1055",
     "pdns-sqlite:8183",
+    "pdns-sqlite-api:1057",
+    "pdns-sqlite-api:8185",
+    "pdns-mysql-api:1058",
+    "pdns-mysql-api:8186",
+    "pdns-pgsql-api:1059",
+    "pdns-pgsql-api:8187",
     "ldap:389",
+    "ldap:636",
     "ldapadmin:8443"
   ],
   "portsAttributes": {
@@ -52,6 +61,14 @@
       "label": "Poweradmin (MySQL + Subfolder)",
       "onAutoForward": "notify"
     },
+    "web-mysql-de:8087": {
+      "label": "Poweradmin (MySQL + SQL, German only)",
+      "onAutoForward": "notify"
+    },
+    "web-mysql-remote-user:8088": {
+      "label": "Poweradmin (MySQL + SQL, web server login)",
+      "onAutoForward": "notify"
+    },
     "mysql:3306": {
       "label": "MariaDB"
     },
@@ -79,12 +96,32 @@
     "pdns-sqlite:8183": {
       "label": "PowerDNS SQLite (API)"
     },
+    "pdns-sqlite-api:1057": {
+      "label": "PowerDNS SQLite, API instance (DNS)"
+    },
+    "pdns-sqlite-api:8185": {
+      "label": "PowerDNS SQLite, API instance (API)"
+    },
+    "pdns-mysql-api:1058": {
+      "label": "PowerDNS MySQL, API instance (DNS)"
+    },
+    "pdns-mysql-api:8186": {
+      "label": "PowerDNS MySQL, API instance (API)"
+    },
+    "pdns-pgsql-api:1059": {
+      "label": "PowerDNS PostgreSQL, API instance (DNS)"
+    },
+    "pdns-pgsql-api:8187": {
+      "label": "PowerDNS PostgreSQL, API instance (API)"
+    },
     "ldap:389": {
       "label": "LDAP"
+    },
+    "ldap:636": {
+      "label": "LDAPS"
     },
     "ldapadmin:8443": {
       "label": "phpLDAPadmin v2"
     }
-  },
-  "postStartCommand": "bash .devcontainer/ldap/setup-ldap-test.sh"
+  }
 }

@@ -23,17 +23,20 @@
 namespace Poweradmin\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Application\Service\Auth\OidcConfigurationService;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
-use Poweradmin\Application\Service\OidcService;
+use Poweradmin\Application\Service\Auth\OidcService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
-use Poweradmin\Application\Service\UserProvisioningService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use PDO;
+use Poweradmin\Application\Service\Auth\UserProvisioningService;
+use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Application\Service\Auth\AuthenticationService;
 use ReflectionMethod;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 class OidcServiceIdTokenTest extends TestCase
 {
@@ -42,24 +45,24 @@ class OidcServiceIdTokenTest extends TestCase
 
     protected function setUp(): void
     {
-        $configManager = $this->createMock(ConfigurationManager::class);
-        $configManager->method('get')->willReturn(null);
+        $configManager = new FakeConfiguration();
 
         $oidcConfigService = $this->createMock(OidcConfigurationService::class);
         $userProvisioningService = $this->createMock(UserProvisioningService::class);
         $logger = $this->createMock(Logger::class);
-        $db = $this->createMock(PDO::class);
 
         $this->service = new OidcService(
             $configManager,
             $oidcConfigService,
             $userProvisioningService,
             $logger,
-            $db
+            $this->createMock(AuthenticationService::class),
+            $this->createMock(AuditService::class),
+            $this->createMock(MfaService::class),
+            new ArraySession()
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');
-        $this->decodeMethod->setAccessible(true);
     }
 
     private function buildJwt(array $payload): string
@@ -127,7 +130,6 @@ class OidcServiceIdTokenTest extends TestCase
         $token = new AccessToken($options);
 
         $method = new ReflectionMethod(OidcService::class, 'getUserInfo');
-        $method->setAccessible(true);
 
         return $method->invoke($this->service, $provider, $token, 'test-provider');
     }

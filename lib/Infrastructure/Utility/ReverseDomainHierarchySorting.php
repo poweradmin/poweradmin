@@ -25,11 +25,7 @@ namespace Poweradmin\Infrastructure\Utility;
 use Poweradmin\Domain\Enum\SortDirection;
 
 /**
- * Class ReverseDomainHierarchySorting
- *
- * Provides hierarchical sorting for reverse DNS zones based on network structure.
- * This class creates a sorting order that organizes reverse zones by their network hierarchy,
- * grouping all zones related to the same network together and sorting them logically.
+ * ORDER BY clauses and a PHP comparator that sort reverse zones by network hierarchy (10., 172., 192.168.).
  */
 class ReverseDomainHierarchySorting
 {

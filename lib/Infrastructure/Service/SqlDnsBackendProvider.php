@@ -22,33 +22,44 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PdnsTable;
-use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Domain\Database\TableNameService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * SQL-based DNS backend provider.
+ * DnsBackendProviderInterface over direct SQL on the PowerDNS tables.
  *
  * Performs DNS data operations directly against the PowerDNS database tables.
  * This is the default backend and preserves the existing behavior.
  */
-class SqlDnsBackendProvider implements DnsBackendProvider
+final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 {
     private PDO $db;
+    private TransactionInterface $transaction;
     private TableNameService $tableNameService;
     private LoggerInterface $logger;
 
-    public function __construct(PDO $db, ConfigurationInterface $config, ?LoggerInterface $logger = null)
-    {
+    public function __construct(
+        PDO $db,
+        ConfigurationInterface $config,
+        ?LoggerInterface $logger = null,
+        ?TransactionInterface $transaction = null,
+        private readonly ?PowerdnsApiClient $apiClient = null
+    ) {
+        // Ownership is decided through the port: on SQLite a transaction can be
+        // open without PDO knowing, and opening a second one then fails.
+        $this->transaction = $transaction ?? new PdoTransaction($db);
         $this->db = $db;
         $this->tableNameService = new TableNameService($config);
         $this->logger = $logger ?? new NullLogger();
@@ -58,26 +69,20 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // Zone operations
     // ---------------------------------------------------------------
 
-    public function createZone(string $domain, string $type, string $slaveMaster = ''): int|false
+    public function createZone(string $domain, string $type, string $slaveMaster = ''): int
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("INSERT INTO $domainsTable (name, type) VALUES (:domain, :type)");
+        // One statement, so a failure cannot leave a row without its primary
+        $master = ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '' ? $slaveMaster : null;
+        $stmt = $this->db->prepare("INSERT INTO $domainsTable (name, type, master) VALUES (:domain, :type, :master)");
         $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':master', $master, $master === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
         $stmt->execute();
 
         // Pass the Postgres sequence name explicitly; MySQL/SQLite ignore it.
-        $domainId = (int)$this->db->lastInsertId('domains_id_seq');
-
-        if (ZoneType::replicatesFromPrimary($type) && $slaveMaster !== '') {
-            $stmt = $this->db->prepare("UPDATE $domainsTable SET master = :master WHERE id = :id");
-            $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
-            $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
-            $stmt->execute();
-        }
-
-        return $domainId;
+        return (int)$this->db->lastInsertId('domains_id_seq');
     }
 
     public function deleteZone(int $domainId, string $zoneName): bool
@@ -90,7 +95,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         // Callers run this before opening their own transaction, so wrapping the
         // dependent deletes here makes the backend cleanup atomic: a mid-sequence
         // failure rolls back instead of leaving a half-deleted zone.
-        $this->db->beginTransaction();
+        $this->transaction->begin();
 
         try {
             foreach (
@@ -105,10 +110,10 @@ class SqlDnsBackendProvider implements DnsBackendProvider
                 $stmt->execute([':id' => $domainId]);
             }
 
-            $this->db->commit();
+            $this->transaction->commit();
             return true;
         } catch (\Throwable $e) {
-            $this->db->rollBack();
+            $this->transaction->rollBack();
             return false;
         }
     }
@@ -143,9 +148,52 @@ class SqlDnsBackendProvider implements DnsBackendProvider
 
     public function retrieveZone(int $domainId): bool
     {
-        // PowerDNS pulls secondaries on its own refresh schedule with the SQL
-        // backend; there is no way to trigger an immediate transfer from here.
-        return false;
+        // Without a PowerDNS API there is no way to trigger a transfer; PowerDNS pulls on its refresh schedule
+        if ($this->apiClient === null) {
+            return false;
+        }
+
+        $zone = $this->findZoneNameAndType($domainId);
+        if ($zone === null || strtoupper($zone['type']) !== ZoneType::SLAVE) {
+            return false;
+        }
+
+        return $this->apiClient->retrieveZone($zone['name']);
+    }
+
+    public function notifyZone(int $domainId): bool
+    {
+        if ($this->apiClient === null) {
+            return false;
+        }
+
+        $zone = $this->findZoneNameAndType($domainId);
+        if ($zone === null || !ZoneType::notifies($zone['type'])) {
+            return false;
+        }
+
+        return $this->apiClient->notifyZone($zone['name']);
+    }
+
+    /**
+     * @return array{name: string, type: string}|null Name with the trailing dot the PowerDNS API expects
+     */
+    private function findZoneNameAndType(int $domainId): ?array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT name, type FROM $domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!is_array($row) || (string)$row['name'] === '') {
+            return null;
+        }
+
+        $name = (string)$row['name'];
+
+        return ['name' => str_ends_with($name, '.') ? $name : $name . '.', 'type' => (string)$row['type']];
     }
 
     public function updateZoneAccount(int $domainId, string $account): bool
@@ -255,6 +303,16 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // Record operations
     // ---------------------------------------------------------------
 
+    public function replaceSoaContent(int $zoneId, string $content): bool
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        $stmt = $this->db->prepare("UPDATE $recordsTable SET content = ? WHERE domain_id = ? AND type = ?");
+        $stmt->execute([$content, $zoneId, 'SOA']);
+
+        return true;
+    }
+
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -271,7 +329,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return true;
     }
 
-    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int|string|null
+    public function addRecordGetId(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, ?array $comment = null): int
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
@@ -288,11 +346,11 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)$this->db->lastInsertId('records_id_seq');
     }
 
-    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): int|string|null
+    public function createRecordAtomic(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled = 0, ?array $comment = null): ?int
     {
         // If already inside a caller's transaction (e.g. RRSet replace, bulk ops),
         // just do the INSERT without managing the transaction ourselves.
-        $ownsTransaction = !$this->db->inTransaction();
+        $ownsTransaction = !$this->transaction->inTransaction();
 
         $maxRetries = $ownsTransaction ? 3 : 1;
         $retryDelay = 50000; // 50ms in microseconds
@@ -300,7 +358,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
             try {
                 if ($ownsTransaction) {
-                    $this->db->beginTransaction();
+                    $this->transaction->begin();
                 }
 
                 $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -321,12 +379,12 @@ class SqlDnsBackendProvider implements DnsBackendProvider
                 $id = (int)$this->db->lastInsertId('records_id_seq');
 
                 if ($ownsTransaction) {
-                    $this->db->commit();
+                    $this->transaction->commit();
                 }
                 return $id;
             } catch (\Exception $e) {
-                if ($ownsTransaction && $this->db->inTransaction()) {
-                    $this->db->rollBack();
+                if ($ownsTransaction && $this->transaction->inTransaction()) {
+                    $this->transaction->rollBack();
                 }
 
                 if ($ownsTransaction && $this->isDeadlockError($e) && $attempt < $maxRetries) {
@@ -361,16 +419,6 @@ class SqlDnsBackendProvider implements DnsBackendProvider
 
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
-
-        return true;
-    }
-
-    public function deleteRecordsByDomainId(int $domainId): bool
-    {
-        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
-        $stmt->execute([':id' => $domainId]);
 
         return true;
     }
@@ -452,11 +500,11 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     public function getZoneMasterById(int $domainId): ?string
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT master FROM $domainsTable WHERE type = 'SLAVE' AND id = :id");
+        $stmt = $this->db->prepare("SELECT master FROM $domainsTable WHERE id = :id");
         $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetchColumn();
-        return $result !== false ? $result : null;
+        return $result ?: null;
     }
 
     // ---------------------------------------------------------------
@@ -513,7 +561,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
-    public function getZoneSoaHealth(string $zoneName, string $kind): ?array
+    public function getZoneSoaHealth(string $zoneName, string $kind): array
     {
         if (strtoupper($kind) === 'SLAVE') {
             return ['is_disabled' => false, 'is_missing_soa' => false];
@@ -599,6 +647,38 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function findRecordsByName(string $name, ?string $type = null): array
+    {
+        return $this->findRecords('LOWER(name) = LOWER(:value)', rtrim($name, '.'), $type);
+    }
+
+    public function findRecordsByContent(string $content, ?string $type = null): array
+    {
+        return $this->findRecords('content = :value', $content, $type);
+    }
+
+    /**
+     * Cross-zone record lookup on one bound predicate, ENTs excluded.
+     */
+    private function findRecords(string $predicate, string $value, ?string $type): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
+                  FROM $recordsTable
+                  WHERE $predicate AND type IS NOT NULL AND type != ''";
+        $params = [':value' => $value];
+
+        if ($type !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $type;
+        }
+        $query .= " ORDER BY domain_id, type, content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getSOARecord(int $domainId): string
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -660,33 +740,42 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         return $zones;
     }
 
-    public function getZoneByName(string $zoneName): ?array
+    public function getZonesByIds(array $domainIds): array
     {
-        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
-        $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
-
-        $stmt = $this->db->prepare(
-            "SELECT d.id, d.name, d.type, d.master,
-                    EXISTS(SELECT 1 FROM $cryptokeysTable ck WHERE ck.domain_id = d.id) OR
-                    EXISTS(SELECT 1 FROM $domainmetadataTable dm WHERE dm.domain_id = d.id AND dm.kind = 'PRESIGNED')
-                    AS dnssec
-             FROM $domainsTable d WHERE d.name = :name"
-        );
-        $stmt->execute([':name' => $zoneName]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$row) {
-            return null;
+        $domainIds = array_values(array_unique(array_map('intval', $domainIds)));
+        if ($domainIds === []) {
+            return [];
         }
 
-        return [
-            'id' => (int)$row['id'],
-            'name' => $row['name'],
-            'type' => $row['type'],
-            'master' => $row['master'] ?? '',
-            'dnssec' => (bool)$row['dnssec'],
-        ];
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
+        $stmt = $this->db->prepare("SELECT id, name, type FROM $domainsTable WHERE id IN ($placeholders) ORDER BY name");
+        foreach ($domainIds as $i => $id) {
+            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $zones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[] = [
+                'id' => (int)$row['id'],
+                'name' => (string)$row['name'],
+                'type' => (string)$row['type'],
+            ];
+        }
+        return $zones;
+    }
+
+    public function countZones(): int
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        return (int)$this->db->query("SELECT COUNT(*) FROM $domainsTable")->fetchColumn();
+    }
+
+    public function countRecords(): int
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        return (int)$this->db->query("SELECT COUNT(*) FROM $recordsTable")->fetchColumn();
     }
 
     // ---------------------------------------------------------------
@@ -791,18 +880,6 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     }
 
     // ---------------------------------------------------------------
-    // SOA operations
-    // ---------------------------------------------------------------
-
-    public function updateSOASerial(int $domainId): bool
-    {
-        // In SQL mode, this is handled by SOARecordManager directly.
-        // This method exists for interface compliance; actual SOA serial
-        // updates are delegated by RecordManager to SOARecordManager.
-        return true;
-    }
-
-    // ---------------------------------------------------------------
     // Supermaster operations
     // ---------------------------------------------------------------
 
@@ -865,6 +942,56 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // ---------------------------------------------------------------
 
     public function isApiBackend(): bool
+    {
+        return false;
+    }
+
+    public function supportsLocalWriteTransaction(): bool
+    {
+        return true;
+    }
+
+    public function recordIdsAreNumeric(): bool
+    {
+        return true;
+    }
+
+    public function managesSoaRecord(): bool
+    {
+        return false;
+    }
+
+    public function allocatesZoneIdsLocally(): bool
+    {
+        return false;
+    }
+
+    public function providesSignedSerial(): bool
+    {
+        return false;
+    }
+
+    public function supportsRecordCountSort(): bool
+    {
+        return true;
+    }
+
+    public function supportsGroupSort(): bool
+    {
+        return true;
+    }
+
+    public function supportsZoneRetrieve(): bool
+    {
+        return $this->apiClient !== null;
+    }
+
+    public function supportsZoneNotify(): bool
+    {
+        return $this->apiClient !== null;
+    }
+
+    public function syncsZoneListFromServer(): bool
     {
         return false;
     }

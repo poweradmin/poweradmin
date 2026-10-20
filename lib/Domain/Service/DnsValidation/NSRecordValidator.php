@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * NS Record Validator
@@ -37,21 +37,16 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * They identify the authoritative DNS servers for a zone.
  * According to RFCs, NS record targets must be hostnames, not IP addresses,
  * and cannot point to a CNAME record.
- *
- * @package Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class NSRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(HostnameValidator $hostnameValidator)
     {
         $this->ttlValidator = new TTLValidator();
-        $this->hostnameValidator = new HostnameValidator($config);
+        $this->hostnameValidator = $hostnameValidator;
     }
 
     /**
@@ -62,6 +57,7 @@ class NSRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority value (should be 0 for NS records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -79,7 +75,7 @@ class NSRecordValidator implements DnsRecordValidatorInterface
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
         if (!$nameResult->isValid()) {
-            return $nameResult;
+            return $nameResult->withField(RecordField::NAME);
         }
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];

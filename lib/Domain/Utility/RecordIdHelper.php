@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Utility;
 
+/**
+ * Casts an all-digit record id to int while leaving the API backend's encoded string ids untouched.
+ */
 class RecordIdHelper
 {
     public static function normalizeId(int|string $id): int|string

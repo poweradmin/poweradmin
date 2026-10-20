@@ -25,15 +25,20 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PDOException;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Domain\Service\ZoneOverlapService;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOverlapService;
+use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration tests for ZoneOverlapService against a real MariaDB.
  *
  * These exercise the actual ancestor (IN) and descendant (LIKE ... ESCAPE)
- * SQL against the domains table - behavior the mocked unit tests cannot cover.
+ * SQL of the domain repositories against the domains table - behavior the mocked unit tests cannot cover.
  * Ownership is mocked so the focus stays on the queries.
  *
  * Requires a running devcontainer. Skipped automatically if unavailable.
@@ -91,13 +96,14 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             'database' => ['pdns_db_name' => null],
         ]);
 
-        $permission = $this->createMock(ApiPermissionService::class);
-        $permission->method('userHasPermission')->willReturn(false);
-        $permission->method('userOwnsZone')->willReturnCallback(
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getUserPermissions')->willReturn([]);
+        $repository->method('hasAdminPermission')->willReturn(false);
+        $repository->method('userOwnsZone')->willReturnCallback(
             fn(int $userId, int $zoneId): bool => in_array($zoneId, $ownedIds, true)
         );
 
-        return new ZoneOverlapService($this->db, $config, $permission);
+        return new ZoneOverlapService(new SqlDomainRepository($this->db, $config), $config, new PermissionService($repository));
     }
 
     public function testDetectsAncestorZone(): void
@@ -171,10 +177,12 @@ class ZoneOverlapServiceIntegrationTest extends TestCase
             $config = new FakeConfiguration([
                 'dns' => ['parent_zone_ownership_check' => true, 'backend' => 'api'],
             ]);
-            $permission = $this->createMock(ApiPermissionService::class);
-            $permission->method('userHasPermission')->willReturn(false);
-            $permission->method('userOwnsZone')->willReturn(false);
-            $service = new ZoneOverlapService($pwDb, $config, $permission);
+            $repository = $this->createMock(UserRepositoryInterface::class);
+            $repository->method('getUserPermissions')->willReturn([]);
+            $repository->method('hasAdminPermission')->willReturn(false);
+            $repository->method('userOwnsZone')->willReturn(false);
+            $zones = new ApiDomainRepository($pwDb, $config, $this->createMock(DnsBackendProviderInterface::class), new ArraySession());
+            $service = new ZoneOverlapService($zones, $config, new PermissionService($repository));
 
             $conflict = $service->findConflictingZone('child.' . $parent, self::USER_ID);
 

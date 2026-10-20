@@ -18,7 +18,7 @@ use Closure;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\BootstrapErrorResponder;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use RuntimeException;
 use Throwable;
 
@@ -82,7 +82,12 @@ class BootstrapErrorResponderTest extends TestCase
         ?ConfigurationInterface $config = null,
         ?Closure $notFoundRenderer = null
     ): string {
-        $responder = new BootstrapErrorResponder($config ?? $this->config(false), $notFoundRenderer);
+        $responder = new BootstrapErrorResponder(
+            $config ?? $this->config(false),
+            $notFoundRenderer ?? static function (): void {
+                throw new RuntimeException('the 404 renderer must not run in this case');
+            }
+        );
 
         ob_start();
         $responder->handle($e);

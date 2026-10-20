@@ -9,7 +9,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // One render check for the shared footer partial per role.
 async function expectFooterRenders(page) {
@@ -33,19 +33,17 @@ test.describe('Footer', () => {
     });
 
     test('should display theme switcher button', async ({ page }) => {
-      const themeSwitcher = page.locator('#theme-switcher, button[id*="theme"], [data-testid="theme-switcher"]').first();
-      if (await themeSwitcher.count() > 0) {
-        await expect(themeSwitcher).toBeVisible();
-      }
+      // The control is #style-switcher; it renders whenever the style is light or dark
+      await expect(page.locator('#style-switcher')).toBeVisible();
     });
 
     test('should have footer container structure', async ({ page }) => {
       const footer = page.locator('footer, .footer').first();
       await expect(footer).toBeVisible();
       const container = footer.locator('.container, .container-fluid');
-      if (await container.count() > 0) {
-        await expect(container.first()).toBeVisible();
-      }
+      expect(await container.count()).toBeGreaterThan(0);
+
+      await expect(container.first()).toBeVisible();
     });
   });
 
@@ -82,10 +80,7 @@ test.describe('Footer', () => {
   test.describe('Theme Switching', () => {
     test('should have clickable theme switcher if present', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const themeSwitcher = page.locator('#theme-switcher, button[id*="theme"]').first();
-      if (await themeSwitcher.count() > 0) {
-        await expect(themeSwitcher).toBeEnabled();
-      }
+      await expect(page.locator('#style-switcher')).toBeEnabled();
     });
 
     test('should store theme preference in localStorage', async ({ page }) => {

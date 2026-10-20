@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { deleteZoneById, findZoneIdByName, uniqueZoneName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
@@ -15,8 +16,17 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
 
   // Exact-serial assertion needs a zone no parallel worker writes to, so the
   // test creates its own instead of borrowing a shared fixture zone.
+  const createdZoneIds = [];
+
+  // Zones made by createIsolatedZone are removed even when the test failed
+  test.afterEach(async ({ page }) => {
+    while (createdZoneIds.length > 0) {
+      await deleteZoneById(page, createdZoneIds.pop());
+    }
+  });
+
   async function createIsolatedZone(page, soaEditApi = null) {
-    const zoneName = `soa-serial-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.example.com`;
+    const zoneName = uniqueZoneName('soa-serial');
     await page.goto('/zones/add/master');
     await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(zoneName);
     if (soaEditApi !== null) {
@@ -24,25 +34,20 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     }
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
     await page.waitForLoadState('networkidle');
-    // The letter filter keeps the zone off a later page of a long list
-    await page.goto('/zones/forward?letter=s');
-    const row = page.locator('tr', { hasText: zoneName }).first();
-    // Auto-retrying: on the API backend the new zone can take a moment to show
-    // up in the list, and a one-shot count() read races it under load.
-    await expect(row).toBeVisible({ timeout: 15000 });
-    const editLink = row.locator('a[href*="/edit"]').first();
-    if (await editLink.count() > 0) {
-      const href = await editLink.getAttribute('href');
-      const match = href.match(/\/zones\/(\d+)\/edit/);
-      return match ? match[1] : null;
+
+    // The zone list is paginated, so resolve the id by name (with the search
+    // fallback) instead of expecting the new zone on the first page.
+    const zoneId = await findZoneIdByName(page, zoneName);
+    if (zoneId) {
+      createdZoneIds.push(zoneId);
     }
-    return null;
+    return zoneId;
   }
 
   test('inline add record should increment SOA serial by exactly 1', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await createIsolatedZone(page);
-    expect(zoneId).not.toBeNull();
+    expect(zoneId, 'the isolated zone created above must be resolvable by name').toBeTruthy();
 
     // Navigate to zone edit page
     await page.goto(`/zones/${zoneId}/edit`);
@@ -63,8 +68,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Verify the record was added successfully
-    const bodyText = await page.locator('body').textContent();
-    expect(bodyText).toContain('successfully added');
+    await expect(page.locator('body')).toContainText('successfully added');
 
     // Get the SOA serial after adding the record
     const serialAfter = parseInt(await page.locator('input[name="serial"]').inputValue(), 10);
@@ -78,7 +82,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
   test('editing a record comment on the zone edit page should increment SOA serial by exactly 1', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await createIsolatedZone(page, 'DEFAULT');
-    expect(zoneId).not.toBeNull();
+    expect(zoneId, 'the isolated zone created above must be resolvable by name').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('domcontentloaded');
@@ -110,7 +114,7 @@ test.describe('SOA Serial Increment - Issue #1122', () => {
   test('inline add record with a comment should increment SOA serial by exactly 1', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
     const zoneId = await createIsolatedZone(page, 'DEFAULT');
-    expect(zoneId).not.toBeNull();
+    expect(zoneId, 'the isolated zone created above must be resolvable by name').toBeTruthy();
 
     await page.goto(`/zones/${zoneId}/edit`);
     await page.waitForLoadState('domcontentloaded');

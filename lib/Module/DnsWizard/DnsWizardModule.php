@@ -22,23 +22,16 @@
 
 namespace Poweradmin\Module\DnsWizard;
 
-use Poweradmin\Module\ModuleInterface;
+use Poweradmin\Domain\Module\ModuleInterface;
 
-class DnsWizardModule implements ModuleInterface
+/**
+ * Module registration for the DMARC, SPF, DKIM, CAA, TLSA and SRV record wizards under /zones/{id}/wizard.
+ */
+final class DnsWizardModule implements ModuleInterface
 {
     public function getName(): string
     {
         return 'dns_wizards';
-    }
-
-    public function getDisplayName(): string
-    {
-        return 'DNS Record Wizards';
-    }
-
-    public function getDescription(): string
-    {
-        return 'Guided wizards for creating DMARC, SPF, DKIM, CAA, TLSA, and SRV records';
     }
 
     public function getRoutes(): array
@@ -74,12 +67,12 @@ class DnsWizardModule implements ModuleInterface
 
     public function getCapabilities(): array
     {
-        return ['dns_wizard'];
+        return [self::CAP_DNS_WIZARD];
     }
 
     public function getCapabilityData(string $capability): array
     {
-        if ($capability === 'dns_wizard') {
+        if ($capability === self::CAP_DNS_WIZARD) {
             return [
                 [
                     'label' => _('Record Wizard'),
@@ -92,11 +85,6 @@ class DnsWizardModule implements ModuleInterface
     }
 
     public function getTemplatePath(): string
-    {
-        return '';
-    }
-
-    public function getLocalePath(): string
     {
         return '';
     }

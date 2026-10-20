@@ -26,9 +26,11 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Model\ZoneSummary;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Zone 5 was created here (domain_id = its own id) and migrated zone 12 carries domain_id 5,
@@ -44,20 +46,20 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     private const GROUP_MEMBER = 4;
 
     private PDO $db;
+    private ArraySession $session;
 
     protected function setUp(): void
     {
         // Hold the sync throttle closed so the stubbed provider never prunes local rows
-        $_SESSION['zone_sync_last'] = time();
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
 
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
             zone_type TEXT, zone_master TEXT, comment TEXT, owner INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
-        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
-        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
         // Key 1 is restricted to the zone id 5 opens, key 2 already holds an unmapped 0, key 3 is unrelated
@@ -74,27 +76,28 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (4, 7)");
     }
 
-    protected function tearDown(): void
-    {
-        unset($_SESSION['zone_sync_last']);
-    }
-
     private function repository(): ApiZoneRepository
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('deleteZone')->willReturn(true);
         $backend->method('getZoneById')->willReturn([]);
+        $backend->method('getZones')->willReturn([
+            ['id' => 5, 'name' => '5.168.192.in-addr.arpa.'],
+            ['id' => 5, 'name' => '12.168.192.in-addr.arpa.'],
+            ['id' => 30, 'name' => '30.168.192.in-addr.arpa.'],
+        ]);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
         $backend->method('getZoneStats')->willReturn([]);
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneSoaHealth')->willReturn(['is_disabled' => false, 'is_missing_soa' => false]);
 
-        return new ApiZoneRepository($this->db, $backend, 'sqlite', $this->createMock(ConfigurationManager::class));
+        return new ApiZoneRepository($this->db, $backend, 'sqlite', new FakeConfiguration(), $this->session);
     }
 
-    /** @param array<array-key, array<string, mixed>> $zones @return string[] */
+    /** @param ZoneSummary[] $zones @return string[] */
     private static function names(array $zones): array
     {
-        $names = array_map(static fn(array $zone): string => (string)$zone['name'], array_values($zones));
+        $names = array_map(static fn(ZoneSummary $zone): string => $zone->name, array_values($zones));
         sort($names);
 
         return $names;
@@ -109,7 +112,6 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->assertSame(['30.168.192.in-addr.arpa'], self::names($repository->getReverseZones('own', self::MIGRATED_OWNER, 'all', 0, 25, 'name', 'ASC')));
         $this->assertSame(['30.168.192.in-addr.arpa'], self::names($repository->getReverseZones('own', self::EXTRA_OWNER, 'all', 0, 25, 'name', 'ASC')));
         $this->assertSame([], self::names($repository->getReverseZones('own', self::GROUP_MEMBER, 'all', 0, 25, 'name', 'ASC')));
-        $this->assertSame(1, $repository->getReverseZones('own', self::EXTRA_OWNER, 'all', 0, 25, 'name', 'ASC', true));
 
         $this->assertSame(['30.168.192.in-addr.arpa'], self::names($repository->listZones(self::EXTRA_OWNER)));
         $this->assertSame(['5.168.192.in-addr.arpa'], self::names($repository->listZones(self::CREATED_OWNER)));
@@ -117,25 +119,15 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     }
 
     #[Test]
-    public function aSharedIdNamesOnlyTheResolvedZonesDirectOwner(): void
+    public function ownZoneCountsMatchTheList(): void
     {
         $repository = $this->repository();
 
-        $this->assertTrue($repository->isSharedZoneId(5));
-        $this->assertTrue($repository->isSharedZoneId(12), 'The migrated zone addressed by its row id is still on a shared id');
-        $this->assertFalse($repository->isSharedZoneId(30));
-        $this->assertSame(['creator'], array_column($repository->getZoneOwners(5), 'username'));
-        $this->assertSame(['extra', 'migrator'], self::sorted(array_column($repository->getZoneOwners(30), 'username')));
-        $this->assertTrue($repository->zoneExists(5, self::CREATED_OWNER));
-        $this->assertFalse($repository->zoneExists(5, self::EXTRA_OWNER));
-        $this->assertFalse($repository->zoneExists(5, self::GROUP_MEMBER));
-
-        $byName = [];
-        foreach ($repository->listZones(null, true) as $zone) {
-            $byName[$zone['name']] = $zone['owners'];
-        }
-        $this->assertSame(['creator'], $byName['5.168.192.in-addr.arpa']);
-        $this->assertArrayNotHasKey('12.168.192.in-addr.arpa', $byName, 'The zone a shared id does not open is not listed under it');
+        $this->assertSame(1, $repository->countZones('own', self::CREATED_OWNER, 'all', 'reverse'));
+        $this->assertSame(1, $repository->countZones('own', self::EXTRA_OWNER, 'all', 'reverse'));
+        $this->assertSame(0, $repository->countZones('own', self::GROUP_MEMBER, 'all', 'reverse'));
+        $this->assertSame(1, $repository->countZones('own', self::MIGRATED_OWNER, 'all', 'reverse'), 'Only the zone 30; the zone id 5 does not open is not counted');
+        $this->assertSame(2, $repository->countZones('all', null, 'all', 'reverse'));
     }
 
     #[Test]
@@ -153,10 +145,33 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     }
 
     #[Test]
-    public function noOwnerCanBeAddedOnASharedId(): void
+    public function aSharedIdNamesOnlyTheResolvedZonesDirectOwner(): void
     {
-        $this->assertFalse($this->repository()->addOwnerToZone(5, self::EXTRA_OWNER));
-        $this->assertSame(5, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+        $repository = $this->repository();
+
+        $this->assertTrue($repository->isSharedZoneId(5));
+        $this->assertTrue($repository->isSharedZoneId(12), 'The migrated zone addressed by its row id is still on a shared id');
+        $this->assertFalse($repository->isSharedZoneId(30));
+        $this->assertSame(['creator'], array_column($repository->getZoneOwners(5), 'username'));
+        $this->assertSame(['extra', 'migrator'], self::sorted(array_column($repository->getZoneOwners(30), 'username')));
+
+        $byName = [];
+        foreach ($repository->listZones(null, true) as $zone) {
+            $byName[$zone->name] = $zone->owners;
+        }
+        $this->assertSame(['creator'], $byName['5.168.192.in-addr.arpa']);
+        $this->assertArrayNotHasKey('12.168.192.in-addr.arpa', $byName, 'The zone a shared id does not open is not listed under it');
+    }
+
+    #[Test]
+    public function theZoneDetailAndRowControlsCountOnlyTheResolvedOwner(): void
+    {
+        $repository = $this->repository();
+
+        $this->assertSame(['creator'], $repository->getZone(5)?->owners);
+        $index = $repository->getOwnerIdsByZoneIds([5, 30]);
+        $this->assertSame([self::CREATED_OWNER], $index[5]);
+        $this->assertSame([self::MIGRATED_OWNER, self::EXTRA_OWNER], $index[30]);
     }
 
     #[Test]
@@ -210,6 +225,8 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     #[Test]
     public function deletingTheZoneAnIdOpensBeforeAnotherZonesRowIdLeavesItsApiKeysMatchingNoZone(): void
     {
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
         // Id 60 opens b60.example by domain_id; without it, id 60 opens c61.example by row id
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id) VALUES
             (60, 61, 'c61.example', 'MASTER', '', '', 2, 0), (70, 60, 'b60.example', 'MASTER', '', '', 2, 0),
@@ -228,6 +245,9 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
     #[Test]
     public function deletingAZoneOnAnUnsharedIdKeepsItsApiKeyScopes(): void
     {
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
+
         $this->assertTrue($this->repository()->deleteZone(30));
 
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30]], $this->keyScopes());

@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
@@ -16,6 +17,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Integration test to verify routing configuration is valid and complete.
  */
+#[BackupGlobals(true)]
 class RoutingConfigurationTest extends TestCase
 {
     private RouteCollection $routes;
@@ -244,13 +246,13 @@ class RoutingConfigurationTest extends TestCase
         // Test that routes map to expected controllers
         $homeRoute = $this->routes->get('home');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\IndexController::run',
+            'Poweradmin\Application\Controller\System\IndexController::run',
             $homeRoute->getDefault('_controller')
         );
 
         $loginRoute = $this->routes->get('login');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\LoginController::run',
+            'Poweradmin\Application\Controller\Auth\LoginController::run',
             $loginRoute->getDefault('_controller')
         );
 
@@ -325,10 +327,12 @@ class RoutingConfigurationTest extends TestCase
 
     public function testAllControllersExist(): void
     {
+        $checked = 0;
         foreach ($this->routes->all() as $name => $route) {
             $controller = $route->getDefault('_controller');
 
             if ($controller && str_contains($controller, '::')) {
+                $checked++;
                 [$className, $method] = explode('::', $controller);
 
                 $this->assertTrue(
@@ -337,6 +341,8 @@ class RoutingConfigurationTest extends TestCase
                 );
             }
         }
+
+        $this->assertGreaterThan(0, $checked, 'no route declares a Class::method controller, so nothing was checked');
     }
 
     /**
@@ -372,7 +378,7 @@ class RoutingConfigurationTest extends TestCase
 
             [$className] = explode('::', (string)$route->getDefault('_controller'));
             $this->assertFalse(
-                is_subclass_of($className, \Poweradmin\BaseController::class),
+                is_subclass_of($className, \Poweradmin\Application\Controller\BaseController::class),
                 sprintf('%s must not extend BaseController; it answers without a database', $className)
             );
         }

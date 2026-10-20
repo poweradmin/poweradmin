@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,21 +23,20 @@
 namespace Poweradmin\Module\EmailPreviews\Controller;
 
 use Exception;
-use Poweradmin\BaseController;
-use Poweradmin\Application\Service\EmailTemplateService;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Module\EmailPreviews\Service\EmailPreviewService;
 
+/**
+ * GET /tools/email-previews - renders the email templates in light and dark mode for ueberusers.
+ */
 class EmailPreviewsController extends BaseController
 {
-    private EmailTemplateService $emailTemplateService;
-    private EmailPreviewService $emailPreviewService;
+    private ?EmailPreviewService $emailPreviewService = null;
 
-    public function __construct(array $request)
+    private function emailPreviewService(): EmailPreviewService
     {
-        parent::__construct($request);
-
-        $this->emailTemplateService = new EmailTemplateService($this->config);
-        $this->emailPreviewService = new EmailPreviewService($this->emailTemplateService);
+        return $this->emailPreviewService ??= new EmailPreviewService($this->moduleServices()->emailTemplateService());
     }
 
     public function run(): void
@@ -51,7 +50,7 @@ class EmailPreviewsController extends BaseController
             return;
         }
 
-        $this->checkPermission('user_is_ueberuser', 'You do not have permission to access email template previews.');
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, 'You do not have permission to access email template previews.');
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('module_email_previews');
@@ -66,7 +65,7 @@ class EmailPreviewsController extends BaseController
             return;
         }
 
-        $previewData = $this->emailPreviewService->generateAllPreviews();
+        $previewData = $this->emailPreviewService()->generateAllPreviews();
 
         $this->render('email_previews.html', [
             'page_title' => 'Email Template Previews',
@@ -89,7 +88,7 @@ class EmailPreviewsController extends BaseController
         header('X-XSS-Protection: 1; mode=block');
 
         try {
-            $previewData = $this->emailPreviewService->generateAllPreviews();
+            $previewData = $this->emailPreviewService()->generateAllPreviews();
             $templates = $previewData['templates'];
 
             if (!isset($templates[$template])) {

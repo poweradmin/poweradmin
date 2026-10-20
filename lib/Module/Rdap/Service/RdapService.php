@@ -23,10 +23,13 @@
 namespace Poweradmin\Module\Rdap\Service;
 
 use Exception;
-use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Infrastructure\Network\ProxyContext;
+use Poweradmin\Domain\Port\ProxyContextInterface;
+use Poweradmin\Domain\Utility\DnsIdnService;
 
-class RdapService
+/**
+ * RDAP lookups: picks the server for a TLD from data/rdap_servers.php, queries it and formats the reply.
+ */
+final class RdapService
 {
     private array $rdapServers = [];
     private string $dataFile;
@@ -35,7 +38,7 @@ class RdapService
     /**
      * @param string $dataFile Path to the RDAP servers PHP data file
      */
-    public function __construct(string $dataFile = '')
+    public function __construct(private readonly ProxyContextInterface $proxy, string $dataFile = '')
     {
         $this->dataFile = $dataFile ?: __DIR__ . '/../data/rdap_servers.php';
         $this->loadRdapServers();
@@ -164,7 +167,7 @@ class RdapService
             ]
         ];
 
-        $context = stream_context_create(ProxyContext::applyTo($options, $url));
+        $context = stream_context_create($this->proxy->applyTo($options, $url));
         $response = @file_get_contents($url, false, $context);
 
         return $response !== false ? $response : null;

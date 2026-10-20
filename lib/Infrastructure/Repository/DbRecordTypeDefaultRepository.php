@@ -24,9 +24,13 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use PDOException;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
 
-class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterface
+/**
+ * SQL persistence for per-record-type default TTLs in the record_type_defaults table.
+ */
+final class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterface
 {
     public function __construct(private PDO $db)
     {
@@ -45,7 +49,7 @@ class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterf
             }
             return (int)$value;
         } catch (PDOException $e) {
-            if ($this->isMissingTable($e)) {
+            if (DbCompat::isMissingTable($e)) {
                 return null;
             }
             throw $e;
@@ -64,7 +68,7 @@ class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterf
             }
             return $defaults;
         } catch (PDOException $e) {
-            if ($this->isMissingTable($e)) {
+            if (DbCompat::isMissingTable($e)) {
                 return [];
             }
             throw $e;
@@ -91,7 +95,7 @@ class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterf
             $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
             $stmt->execute();
         } catch (PDOException $e) {
-            if ($this->isMissingTable($e)) {
+            if (DbCompat::isMissingTable($e)) {
                 return;
             }
             throw $e;
@@ -106,7 +110,7 @@ class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterf
             );
             $stmt->execute(['record_type' => strtoupper($recordType)]);
         } catch (PDOException $e) {
-            if ($this->isMissingTable($e)) {
+            if (DbCompat::isMissingTable($e)) {
                 return;
             }
             throw $e;
@@ -119,28 +123,10 @@ class DbRecordTypeDefaultRepository implements RecordTypeDefaultRepositoryInterf
             $this->db->query("SELECT 1 FROM record_type_defaults LIMIT 1");
             return true;
         } catch (PDOException $e) {
-            if ($this->isMissingTable($e)) {
+            if (DbCompat::isMissingTable($e)) {
                 return false;
             }
             throw $e;
         }
-    }
-
-    /**
-     * Lets read paths degrade gracefully on upgraded installations where the
-     * PHP code has been deployed but `sql/*update-to-4.5.0.sql` hasn't been
-     * applied yet. Covers MySQL 1146, PostgreSQL 42P01, SQLite "no such table".
-     */
-    private function isMissingTable(PDOException $e): bool
-    {
-        $code = (string)$e->getCode();
-        if ($code === '42S02' || $code === '42P01') {
-            return true;
-        }
-        $message = strtolower($e->getMessage());
-        return str_contains($message, 'no such table')
-            || str_contains($message, "doesn't exist")
-            || str_contains($message, 'does not exist')
-            || str_contains($message, 'undefined table');
     }
 }

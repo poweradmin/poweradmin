@@ -20,30 +20,35 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for group operations with wrapped responses
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use Poweradmin\Domain\Error\LastZoneOwnerException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\GroupService;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Application\Service\ZoneGroupService;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/groups: lists, creates, updates and deletes user groups.
+ */
 class GroupsController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups */
+    private const GROUP_SORT_FIELDS = ['id', 'name', 'member_count', 'zone_count', 'created_at'];
+
+    private const MAX_ZONES_INVALID = 'max_zones must be null or a whole number from 0 to ' . ZoneOwnershipLimit::MAX_LIMIT;
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -58,14 +63,13 @@ class GroupsController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $groupRepository = $this->createUserGroupRepository();
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $zoneGroupRepository = $this->createZoneGroupRepository();
+        $groupRepository = $this->services()->userGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
 
-        $this->groupService = new GroupService($groupRepository);
+        $this->groupService = new GroupService($groupRepository, $this->services()->zoneOwnershipGuard());
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->zoneGroupService = $this->services()->zoneGroupService();
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -80,11 +84,10 @@ class GroupsController extends PublicApiController
             'POST' => $this->createGroup(),
             'PUT' => $this->updateGroup(),
             'DELETE' => $this->deleteGroup(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'PUT', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -100,6 +103,34 @@ class GroupsController extends PublicApiController
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['groups']
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on the group name or description',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'dns')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: id, name, member_count, zone_count, created_at. Default: name in database order (sort=name uses natural, case-insensitive order)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'zone_count:desc,name')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Groups retrieved successfully',
@@ -107,6 +138,17 @@ class GroupsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Groups retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     properties: [
@@ -119,6 +161,7 @@ class GroupsController extends PublicApiController
                                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                     new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                                     new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                    new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                     new OA\Property(property: 'member_count', type: 'integer', example: 5),
                                     new OA\Property(property: 'zone_count', type: 'integer', example: 10),
                                     new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
@@ -133,35 +176,68 @@ class GroupsController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     private function listGroups(): JsonResponse
     {
         try {
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::GROUP_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
+            [$page, $perPage] = $this->pagingParameters();
+
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             $groups = $this->groupService->listGroups($userId, $isAdmin);
 
-            $enrichedGroups = [];
+            $rows = [];
             foreach ($groups as $group) {
-                $details = $this->groupService->getGroupDetails($group->getId());
-                $enrichedGroups[] = [
+                $rows[] = [
                     'id' => $group->getId(),
                     'name' => $group->getName(),
                     'description' => $group->getDescription(),
                     'perm_templ_id' => $group->getPermTemplId(),
-                    'member_count' => $details['memberCount'],
-                    'zone_count' => $details['zoneCount'],
+                    'max_zones' => $group->getMaxZones(),
+                    'member_count' => null,
+                    'zone_count' => null,
                     'created_at' => $group->getCreatedAt(),
                 ];
             }
+            $rows = ListPaging::filterContains($rows, (string)$this->request->query->get('q', ''), static fn(array $g): array => [$g['name'], $g['description']]);
 
-            return $this->returnApiResponse(['groups' => $enrichedGroups], true, 'Groups retrieved successfully');
+            // The counts cost a lookup per group, so only a sort on them loads them for every group
+            $sortsOnCounts = array_intersect(array_column($sort->fields(), 'field'), ['member_count', 'zone_count']) !== [];
+            if ($sortsOnCounts) {
+                $rows = array_map($this->withCounts(...), $rows);
+            }
+            [$rows, $extra] = ListPaging::paginate($sort->sortRows($rows), $page, $perPage);
+            if (!$sortsOnCounts) {
+                $rows = array_map($this->withCounts(...), $rows);
+            }
+
+            return $this->returnApiResponse(['groups' => $rows], true, 'Groups retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::listGroups', 'Failed to retrieve groups');
         }
+    }
+
+    /**
+     * Fill in the member and zone counts of a group list row
+     *
+     * @param array<string, mixed> $row
+     * @return array<string, mixed>
+     */
+    private function withCounts(array $row): array
+    {
+        $details = $this->groupService->getGroupDetails($row['id']);
+        $row['member_count'] = $details['memberCount'];
+        $row['zone_count'] = $details['zoneCount'];
+
+        return $row;
     }
 
     /**
@@ -204,6 +280,7 @@ class GroupsController extends PublicApiController
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                 new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                                 new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                 new OA\Property(property: 'member_count', type: 'integer', example: 5),
                                 new OA\Property(property: 'zone_count', type: 'integer', example: 10),
                                 new OA\Property(
@@ -244,7 +321,7 @@ class GroupsController extends PublicApiController
         try {
             $groupId = (int)$this->pathParameters['id'];
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
             try {
                 $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
@@ -272,6 +349,7 @@ class GroupsController extends PublicApiController
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
+                'max_zones' => $group->getMaxZones(),
                 'member_count' => $details['memberCount'],
                 'zone_count' => count($zones),
                 'members' => array_map(fn($m) => [
@@ -289,7 +367,7 @@ class GroupsController extends PublicApiController
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::getGroup', 'Failed to retrieve group');
         }
     }
 
@@ -312,6 +390,7 @@ class GroupsController extends PublicApiController
                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                     new OA\Property(property: 'description', type: 'string', example: 'DNS Administration Group'),
                     new OA\Property(property: 'perm_templ_id', description: 'ID of a group-type permission template (user-type templates are not accepted)', type: 'integer', example: 1),
+                    new OA\Property(property: 'max_zones', description: 'How many zones the group may own; null uses dns.default_max_zones_per_group', type: 'integer', example: 50, nullable: true),
                 ]
             )
         ),
@@ -333,6 +412,7 @@ class GroupsController extends PublicApiController
                             properties: [
                                 new OA\Property(property: 'id', type: 'integer', example: 1),
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                             ],
                             type: 'object'
                         )
@@ -350,16 +430,21 @@ class GroupsController extends PublicApiController
         }
 
         try {
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['name']) || empty($data['perm_templ_id'])) {
                 return $this->returnApiError('Missing required fields: name, perm_templ_id (must be a group-type permission template ID)', 400);
             }
 
             // Validate that the template is a group template
-            $permTemplateRepo = $this->createPermissionTemplateRepository();
+            $permTemplateRepo = $this->services()->permissionTemplateRepository();
             if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                 return $this->returnApiError('Invalid perm_templ_id: the specified permission template must be of type "group", not "user"', 400);
+            }
+
+            $zoneLimit = ZoneLimitInput::fromJson($data['max_zones'] ?? null);
+            if (!$zoneLimit['valid']) {
+                return $this->returnApiError(self::MAX_ZONES_INVALID, 400);
             }
 
             $group = $this->groupService->createGroup(
@@ -369,14 +454,23 @@ class GroupsController extends PublicApiController
                 $this->authenticatedUserId
             );
 
+            $maxZones = $zoneLimit['limit'];
+            if ($maxZones !== null) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $group->getId(), $maxZones);
+            }
+
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
+                'max_zones' => $maxZones,
             ]], true, 'Group created successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (empty or duplicate name) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupsController::createGroup', 'Failed to create group');
         }
     }
 
@@ -398,6 +492,7 @@ class GroupsController extends PublicApiController
                     new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                     new OA\Property(property: 'description', type: 'string', example: 'Updated description'),
                     new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'max_zones', description: 'How many zones the group may own; null uses dns.default_max_zones_per_group', type: 'integer', example: 50, nullable: true),
                 ]
             )
         ),
@@ -430,6 +525,7 @@ class GroupsController extends PublicApiController
                                 new OA\Property(property: 'name', type: 'string', example: 'DNS Admins'),
                                 new OA\Property(property: 'description', type: 'string', nullable: true, example: 'DNS Administration Group'),
                                 new OA\Property(property: 'perm_templ_id', type: 'integer', example: 1),
+                                new OA\Property(property: 'max_zones', type: 'integer', example: 50, nullable: true),
                                 new OA\Property(property: 'created_at', type: 'string', nullable: true),
                                 new OA\Property(property: 'updated_at', type: 'string', nullable: true),
                             ],
@@ -450,14 +546,20 @@ class GroupsController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             // Validate that the template is a group template (if provided)
             if (isset($data['perm_templ_id'])) {
-                $permTemplateRepo = $this->createPermissionTemplateRepository();
+                $permTemplateRepo = $this->services()->permissionTemplateRepository();
                 if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
                     return $this->returnApiError('Invalid permission template: must be a group template', 400);
                 }
+            }
+
+            $setsLimit = array_key_exists('max_zones', $data);
+            $zoneLimit = ZoneLimitInput::fromJson($data['max_zones'] ?? null);
+            if (!$zoneLimit['valid']) {
+                return $this->returnApiError(self::MAX_ZONES_INVALID, 400);
             }
 
             $group = $this->groupService->updateGroup(
@@ -467,18 +569,26 @@ class GroupsController extends PublicApiController
                 isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
 
+            if ($setsLimit) {
+                $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $groupId, $zoneLimit['limit']);
+            }
+
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
+                'max_zones' => $setsLimit ? $zoneLimit['limit'] : $group->getMaxZones(),
                 'created_at' => $group->getCreatedAt(),
                 'updated_at' => $group->getUpdatedAt(),
             ]], true, 'Group updated successfully');
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (empty or duplicate name) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupsController::updateGroup', 'Failed to update group');
         }
     }
 
@@ -524,7 +634,7 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
-    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied')]
+    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied, or is the last owner of a zone')]
     private function deleteGroup(): JsonResponse
     {
         if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
@@ -535,9 +645,8 @@ class GroupsController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $details = $this->groupService->getGroupDetails($groupId);
 
-            // Deleting a group cascades away its zone ownerships, leaving those zones
-            // without an owner. Memberships are not guarded: dropping them removes the
-            // association only, and the users themselves survive.
+            // Deleting a group drops its zone ownerships. A zone that would be left with
+            // no owner at all is refused below; confirm covers the zones that keep one.
             $confirmed = filter_var($this->request->query->get('confirm', 'false'), FILTER_VALIDATE_BOOLEAN);
             if (!$confirmed && $details['zoneCount'] > 0) {
                 return $this->returnApiError(sprintf(
@@ -553,10 +662,15 @@ class GroupsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Group deleted successfully');
+        } catch (LastZoneOwnerException $e) {
+            return $this->returnApiError(sprintf(
+                'Cannot delete this group: it is the last owner of %s. Add another owner to those zones first.',
+                $e->getZoneList()
+            ), 409);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupsController::deleteGroup', 'Failed to delete group');
         }
     }
 }

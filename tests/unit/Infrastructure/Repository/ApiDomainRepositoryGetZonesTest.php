@@ -3,18 +3,22 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiDomainRepository;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
+#[BackupGlobals(true)]
 #[CoversClass(ApiDomainRepository::class)]
 class ApiDomainRepositoryGetZonesTest extends TestCase
 {
     private PDO $db;
-    private ConfigurationManager $config;
+    private ArraySession $session;
+    private FakeConfiguration $config;
 
     protected function setUp(): void
     {
@@ -44,21 +48,19 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             (1, 100, 1, '', 0, 'signed.example.com', 'NATIVE'),
             (2, 101, 1, '', 0, 'unsigned.example.com', 'NATIVE')");
 
-        $this->config = ConfigurationManager::getInstance();
-        $this->config->initialize();
+        $this->config = new FakeConfiguration();
+
+        // A fresh sync would call the backend a second time; these tests count backend calls.
+        $this->session = new ArraySession(['zone_sync_last' => time()]);
     }
 
     /**
      * Config stub where one group/key pair reads true and everything else
      * falls back to the caller's default.
      */
-    private function configWith(?string $trueGroup = null, ?string $trueKey = null): ConfigurationManager
+    private function configWith(?string $trueGroup = null, ?string $trueKey = null): FakeConfiguration
     {
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, mixed $default = null) => ($group === $trueGroup && $key === $trueKey) ? true : $default
-        );
-        return $config;
+        return new FakeConfiguration($trueGroup === null ? [] : [$trueGroup => [$trueKey => true]]);
     }
 
     #[Test]
@@ -70,7 +72,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             (5, 104, 1, '', 0, 'nativezone.example.com', 'NATIVE'),
             (6, 105, 1, '', 0, 'fresh.example.com', 'MASTER')");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 102, 'name' => 'pending.example.com',    'type' => 'MASTER', 'master' => '', 'dnssec' => false],
             ['id' => 103, 'name' => 'sent.example.com',       'type' => 'MASTER', 'master' => '', 'dnssec' => false],
@@ -87,7 +89,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'fresh.example.com.'      => ['dnssec' => false, 'serial' => 0, 'edited_serial' => null, 'notified_serial' => 0],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
         // Primary with serial ahead of notified_serial -> pending
@@ -113,7 +115,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_templ_id, zone_name, zone_type) VALUES
             (7, 106, 1, '', 0, 'legacy.example.com', 'MASTER')");
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 106, 'name' => 'legacy.example.com', 'type' => 'MASTER', 'master' => '', 'dnssec' => false],
         ]);
@@ -124,7 +126,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'legacy.example.com.' => ['dnssec' => false, 'serial' => 5, 'edited_serial' => null, 'notified_serial' => null],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC', false, true);
 
         $this->assertArrayNotHasKey('notify_pending', $result['legacy.example.com']);
@@ -134,7 +136,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesMapsDnssecFlagToSecuredField(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com',   'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
             ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
@@ -143,7 +145,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertArrayHasKey('signed.example.com', $result);
@@ -155,7 +157,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesAcceptsSecuredKeyForBackwardCompatibility(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'secured' => true],
         ]);
@@ -163,7 +165,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
@@ -174,7 +176,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     {
         // API mode has no cache; getZones must call getZoneSoaHealth for each
         // visible zone after pagination.
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com',   'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
@@ -188,7 +190,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             default => ['is_disabled' => false, 'is_missing_soa' => false],
         });
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['is_disabled']);
@@ -202,7 +204,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     {
         $config = $this->configWith('interface', 'display_signed_serial_in_zone_list');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com',   'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
             ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
@@ -214,7 +216,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'unsigned.example.com.' => ['dnssec' => false, 'serial' => 2024010101, 'edited_serial' => 2024010101],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
@@ -227,7 +229,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesOmitsSignedSerialWhenSettingDisabled(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
         ]);
@@ -235,7 +237,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 100, 'name', 'ASC');
 
         $this->assertArrayNotHasKey('signed_serial', $result['signed.example.com']);
@@ -258,7 +260,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             $apiZones[] = ['id' => 200 + $i, 'name' => $name, 'type' => 'NATIVE', 'master' => '', 'dnssec' => false];
         }
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn($apiZones);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('getZoneStats')->willReturn([]);
@@ -272,7 +274,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
                 return $id;
             });
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertCount(25, $result);
@@ -284,7 +286,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     #[Test]
     public function getZonesSkipsRecordCountsWhenColumnHidden(): void
     {
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
         ]);
@@ -292,7 +294,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('getZoneStats')->willReturn([]);
         $backend->expects($this->never())->method('countZoneRecords');
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC', false, null, null, true, false);
 
         $this->assertSame(0, $result['signed.example.com']['count_records']);
@@ -303,7 +305,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     {
         // count_records is resolved per page, so it must not be accepted as a
         // sort key - ordering on it would only order the rows already on screen
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->method('getZones')->willReturn([
             ['id' => 101, 'name' => 'unsigned.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
@@ -312,7 +314,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('getZoneStats')->willReturn([]);
         $backend->method('countZoneRecords')->willReturnMap([[100, 9], [101, 1]]);
 
-        $repo = new ApiDomainRepository($this->db, $this->config, $backend);
+        $repo = new ApiDomainRepository($this->db, $this->config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'count_records', 'ASC');
 
         $this->assertSame(['signed.example.com', 'unsigned.example.com'], array_keys($result));
@@ -325,7 +327,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         // not be asked to compute DNSSEC state for every zone
         $config = $this->configWith();
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())->method('getZones')->with(false)->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => false],
         ]);
@@ -333,7 +335,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
     }
 
@@ -343,7 +345,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         // Getting this gate wrong silently blanks the DNSSEC column
         $config = $this->configWith('dnssec', 'enabled');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())->method('getZones')->with(true)->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
         ]);
@@ -351,7 +353,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
         $backend->method('countZoneRecords')->willReturn(0);
         $backend->method('getZoneStats')->willReturn([]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertTrue($result['signed.example.com']['secured']);
@@ -362,7 +364,7 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
     {
         $config = $this->configWith('interface', 'display_signed_serial_in_zone_list');
 
-        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
         $backend->expects($this->once())->method('getZones')->with(true)->willReturn([
             ['id' => 100, 'name' => 'signed.example.com', 'type' => 'NATIVE', 'master' => '', 'dnssec' => true],
         ]);
@@ -373,9 +375,25 @@ class ApiDomainRepositoryGetZonesTest extends TestCase
             'signed.example.com.' => ['dnssec' => true, 'serial' => 2024010101, 'edited_serial' => 2024010199],
         ]);
 
-        $repo = new ApiDomainRepository($this->db, $config, $backend);
+        $repo = new ApiDomainRepository($this->db, $config, $backend, $this->session);
         $result = $repo->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
 
         $this->assertSame('2024010199', $result['signed.example.com']['signed_serial']);
+    }
+
+    #[Test]
+    public function getZonesKeepsTheZoneSyncThrottleInTheInjectedSession(): void
+    {
+        $_SESSION = [];
+        $session = new ArraySession();
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('getZones')->willReturn([]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneStats')->willReturn([]);
+
+        (new ApiDomainRepository($this->db, $this->config, $backend, $session))->getZones('all', 0, 'all', 0, 25, 'name', 'ASC');
+
+        $this->assertIsInt($session->get('zone_sync_last'));
+        $this->assertSame([], $_SESSION);
     }
 }

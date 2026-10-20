@@ -27,7 +27,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Repository\SqlDomainRepository;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The unpaginated branch of SqlDomainRepository::getZones (letter filter "all", or a
@@ -79,19 +79,11 @@ class SqlDomainRepositoryUnpaginatedZoneListTest extends TestCase
 
     private function repository(bool $dnssec): SqlDomainRepository
     {
-        $values = [
+        return new SqlDomainRepository($this->db, new FakeConfiguration([
             'database' => ['type' => 'sqlite'],
             'dnssec' => ['enabled' => $dnssec],
             'interface' => ['show_zone_comments' => true],
-        ];
-
-        $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(
-            static fn(string $group, ?string $key = null, mixed $default = null): mixed
-                => $key === null ? ($values[$group] ?? $default) : ($values[$group][$key] ?? $default)
-        );
-
-        return new SqlDomainRepository($this->db, $config);
+        ]));
     }
 
     #[Test]
@@ -99,8 +91,8 @@ class SqlDomainRepositoryUnpaginatedZoneListTest extends TestCase
     {
         $zones = $this->repository(true)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', false, false, false);
 
-        $this->assertSame(3, $zones['multi.example']['count_records']);
-        $this->assertTrue((bool)$zones['multi.example']['secured']);
+        $this->assertSame(3, $zones['multi.example']->recordCount);
+        $this->assertTrue($zones['multi.example']->secured);
     }
 
     #[Test]
@@ -108,7 +100,7 @@ class SqlDomainRepositoryUnpaginatedZoneListTest extends TestCase
     {
         $zones = $this->repository(false)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', false, false, false);
 
-        $this->assertSame(3, $zones['multi.example']['count_records']);
+        $this->assertSame(3, $zones['multi.example']->recordCount);
     }
 
     #[Test]
@@ -119,7 +111,7 @@ class SqlDomainRepositoryUnpaginatedZoneListTest extends TestCase
         // multi.example has three records against plain.example's four, but its two
         // cryptokeys used to push it past them
         $this->assertSame(['multi.example', 'plain.example'], array_keys($zones));
-        $this->assertSame(4, $zones['plain.example']['count_records']);
+        $this->assertSame(4, $zones['plain.example']->recordCount);
     }
 
     #[Test]
@@ -127,7 +119,7 @@ class SqlDomainRepositoryUnpaginatedZoneListTest extends TestCase
     {
         $zones = $this->repository(true)->getZones('all', 0, 'all', 0, 9999, 'name', 'ASC', false, false, false);
 
-        $this->assertSame(['alice', 'bob'], $zones['multi.example']['owners']);
-        $this->assertSame('shared comment', $zones['multi.example']['comment']);
+        $this->assertSame(['alice', 'bob'], $zones['multi.example']->owners);
+        $this->assertSame('shared comment', $zones['multi.example']->comment);
     }
 }

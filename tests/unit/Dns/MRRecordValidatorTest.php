@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,17 +24,19 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\MRRecordValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\Validation\RecordField;
 
 class MRRecordValidatorTest extends TestCase
 {
     private MRRecordValidator $validator;
-    private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidator;
 
     protected function setUp(): void
     {
-        $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->validator = new MRRecordValidator($this->configMock);
+        $this->hostnameValidator = new HostnameValidator(new HostnamePolicy());
+        $this->validator = new MRRecordValidator($this->hostnameValidator);
     }
 
     /**
@@ -94,6 +96,16 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('domain name', $result->getFirstError());
+        $this->assertNull($result->getField());
+    }
+
+    public function testInvalidNameNamesTheNameField(): void
+    {
+        $result = $this->validator->validate('new-mailbox.example.com', 'invalid..domain', '', 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('MR record name', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
     }
 
     /**
@@ -111,6 +123,7 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('TTL', $result->getFirstError());
+        $this->assertSame(RecordField::TTL, $result->getField());
     }
 
     /**

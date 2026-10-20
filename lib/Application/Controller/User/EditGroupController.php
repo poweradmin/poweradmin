@@ -1,0 +1,288 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\User;
+
+use InvalidArgumentException;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\Zone\ZoneGroupService;
+use Poweradmin\Application\Service\Zone\ZoneLimitInput;
+use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Handles the edit-group form: updates the name, description and permission template of a group.
+ */
+class EditGroupController extends BaseController
+{
+    private ?GroupService $groupService = null;
+    private ?GroupMembershipService $membershipService = null;
+    private ?ZoneGroupService $zoneGroupService = null;
+    private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
+
+    private function groupService(): GroupService
+    {
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+    }
+
+    private function membershipService(): GroupMembershipService
+    {
+        return $this->membershipService ??= new GroupMembershipService(
+            $this->services()->userGroupMemberRepository(),
+            $this->services()->userGroupRepository()
+        );
+    }
+
+    private function zoneGroupService(): ZoneGroupService
+    {
+        return $this->zoneGroupService ??= $this->services()->zoneGroupService();
+    }
+
+    private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
+    {
+        return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
+    }
+
+    public function run(): void
+    {
+        if (!$this->config->get('permissions', 'show_group_access_templates', true)) {
+            $this->showError(_('Group management is not enabled.'));
+            return;
+        }
+
+        // Only admin (überuser) can edit groups; denials are audit-logged
+        $this->checkPermission(Permission::PERM_USER_IS_UEBERUSER, _('You do not have permission to edit groups.'));
+
+        $groupId = isset($this->requestData['id']) ? (int)$this->requestData['id'] : 0;
+        if ($groupId <= 0) {
+            $this->setMessage('list_groups', 'error', _('Invalid group ID.'));
+            $this->redirect('/groups');
+            return;
+        }
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('edit_group');
+        $this->setPageTitle(_('Edit group'));
+
+        if ($this->isPost()) {
+            $this->editGroup($groupId);
+        } else {
+            $this->renderEditGroupForm($groupId);
+        }
+    }
+
+    private function editGroup(int $groupId): void
+    {
+        if (!$this->validateInput()) {
+            $this->renderEditGroupForm($groupId);
+            return;
+        }
+
+        $name = $this->httpRequest->getPostParam('name');
+        $description = $this->httpRequest->getPostParam('description', '');
+        $permTemplId = (int)$this->httpRequest->getPostParam('perm_templ');
+
+        // Validate that the template is a group template
+        if (!$this->permissionTemplateRepository()->validateTemplateType($permTemplId, 'group')) {
+            $this->setMessage('edit_group', 'error', _('Invalid permission template: must be a group template'));
+            $this->renderEditGroupForm($groupId);
+            return;
+        }
+
+        $zoneLimit = ZoneLimitInput::fromForm($this->httpRequest->getPostParam('max_zones', ''));
+        if (!$zoneLimit['valid']) {
+            $this->setMessage('edit_group', 'error', _('Enter a zone limit of 0 or more, or leave it empty.'));
+            $this->renderEditGroupForm($groupId);
+            return;
+        }
+
+        try {
+            // Get current group details before update for change tracking
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = $this->services()->permissionService()->isAdmin($currentUserId);
+            $oldGroup = $this->groupService()->getGroupById($groupId, $currentUserId, $isAdmin);
+
+            // Track what changed
+            $changes = [];
+            if ($oldGroup->getName() !== $name) {
+                $changes[] = sprintf("name: '%s' → '%s'", $oldGroup->getName(), $name);
+            }
+            if (($oldGroup->getDescription() ?? '') !== $description) {
+                $oldDesc = $oldGroup->getDescription() ?? '(empty)';
+                $newDesc = $description ?: '(empty)';
+                $changes[] = sprintf("description: '%s' → '%s'", $oldDesc, $newDesc);
+            }
+            if ($oldGroup->getPermTemplId() !== $permTemplId) {
+                // Get permission template names for better logging (no filter - need to find any template type)
+                $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates();
+                $oldTemplName = 'Unknown';
+                $newTemplName = 'Unknown';
+                foreach ($permTemplates as $template) {
+                    if ($template['id'] == $oldGroup->getPermTemplId()) {
+                        $oldTemplName = $template['name'];
+                    }
+                    if ($template['id'] == $permTemplId) {
+                        $newTemplName = $template['name'];
+                    }
+                }
+                $changes[] = sprintf(
+                    "permission template: '%s' (ID: %d) → '%s' (ID: %d)",
+                    $oldTemplName,
+                    $oldGroup->getPermTemplId(),
+                    $newTemplName,
+                    $permTemplId
+                );
+            }
+
+            // Update the group
+            $this->groupService()->updateGroup($groupId, $name, $description, $permTemplId);
+
+            $limitWarning = null;
+            if ($zoneLimit['limit'] !== $oldGroup->getMaxZones()) {
+                $zoneLimits = $this->services()->zoneOwnershipLimit();
+                $zoneLimits->setGroupLimit((int)$currentUserId, $groupId, $zoneLimit['limit']);
+                $changes[] = sprintf("zone limit: '%s' → '%s'", $oldGroup->getMaxZones() ?? 'default', $zoneLimit['limit'] ?? 'default');
+                $limitWarning = ZoneLimitMessages::belowUsage((string)$name, $zoneLimits->groupZoneCount($groupId), $zoneLimits->groupLimit($groupId));
+            }
+
+            if (!empty($changes)) {
+                $this->services()->auditService()->logGroupEdit($groupId, (string)$name, $changes);
+            }
+
+            $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
+            if ($limitWarning !== null) {
+                $this->setMessage('list_groups', 'warning', $limitWarning);
+            }
+            $this->redirect('/groups');
+        } catch (InvalidArgumentException $e) {
+            $this->setMessage('edit_group', 'error', $e->getMessage());
+            $this->renderEditGroupForm($groupId);
+        }
+    }
+
+    private function renderEditGroupForm(int $groupId): void
+    {
+        try {
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = $this->services()->permissionService()->isAdmin($userId);
+
+            $group = $this->groupService()->getGroupById($groupId, $userId, $isAdmin);
+            if (!$group) {
+                $this->setMessage('list_groups', 'error', _('Group not found.'));
+                $this->redirect('/groups');
+                return;
+            }
+
+            $details = $this->groupService()->getGroupDetails($groupId);
+            $members = $this->membershipService()->listGroupMembers($groupId);
+            $zones = $this->zoneGroupService()->listGroupZones($groupId);
+
+            $permTemplates = $this->permissionTemplateRepository()->listPermissionTemplates('group');
+
+            // Get member usernames
+            $memberUsernames = [];
+            foreach ($members as $member) {
+                $memberUsernames[] = [
+                    'id' => $member->getUserId(),
+                    'username' => $member->getUsername(),
+                    'fullname' => $member->getFullname() ?? '',
+                ];
+            }
+
+            // Get zone details
+            $repositoryFactory = $this->services()->repositoryFactory();
+            $domainRepository = $repositoryFactory->createDomainRepository();
+
+            $zoneDetails = [];
+            foreach ($zones as $zoneGroup) {
+                $domainId = $zoneGroup->getDomainId();
+                $zoneName = $domainRepository->getDomainNameById($domainId);
+
+                if ($zoneName) {
+                    $zoneDetails[] = [
+                        'id' => $domainId,
+                        'name' => $zoneName,
+                    ];
+                }
+            }
+
+            $this->render('edit_group.html', [
+                'group' => $group,
+                'details' => $details,
+                'members' => $memberUsernames,
+                'zones' => $zoneDetails,
+                'perm_templates' => $permTemplates,
+                'name' => $this->httpRequest->getPostParam('name', $group->getName()),
+                'description' => $this->httpRequest->getPostParam('description', $group->getDescription() ?? ''),
+                'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$group->getPermTemplId()),
+                'zone_limit' => $this->zoneLimitView($groupId, $group->getMaxZones()),
+            ]);
+        } catch (InvalidArgumentException $e) {
+            $this->setMessage('list_groups', 'error', $e->getMessage());
+            $this->redirect('/groups');
+        }
+    }
+
+    /**
+     * @return array{value: ?int, owned: int, default: ?int}
+     */
+    private function zoneLimitView(int $groupId, ?int $value): array
+    {
+        $default = $this->config->get('dns', 'default_max_zones_per_group');
+
+        return [
+            'value' => $value,
+            'owned' => $this->services()->zoneOwnershipLimit()->groupZoneCount($groupId),
+            'default' => is_numeric($default) ? (int)$default : null,
+        ];
+    }
+
+    private function validateInput(): bool
+    {
+        $constraints = [
+            'name' => [
+                new Assert\NotBlank(),
+                new Assert\Length(min: 1, max: 255)
+            ],
+            'perm_templ' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+        $data = $this->httpRequest->getPostParams();
+
+        if (!$this->doValidateRequest($data)) {
+            $this->setMessage('edit_group', 'error', _('Please fill in all required fields correctly.'));
+            return false;
+        }
+
+        return true;
+    }
+}

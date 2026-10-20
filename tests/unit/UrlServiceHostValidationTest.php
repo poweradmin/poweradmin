@@ -22,10 +22,13 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\UrlService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Application\Service\Web\UrlService;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
+#[BackupGlobals(true)]
 class UrlServiceHostValidationTest extends TestCase
 {
     private function createMockConfig(array $values = []): ConfigurationInterface
@@ -51,7 +54,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         // Get password reset URL
         $resetUrl = $urlService->getAbsoluteUrl('/password/reset?token=abc123');
@@ -75,7 +78,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         // Get zone edit URL
         $zoneUrl = $urlService->getZoneEditUrl(123);
@@ -99,7 +102,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         // Get login URL
         $loginUrl = $urlService->getLoginUrl();
@@ -124,7 +127,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $url = $urlService->getAbsoluteUrl('/test');
 
@@ -148,7 +151,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $this->assertNull($urlService->getZoneEditUrl(42));
     }
@@ -165,7 +168,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $url = $urlService->getZoneEditUrl(42);
 
@@ -187,7 +190,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $url = $urlService->getAbsoluteUrl('/test');
 
@@ -209,7 +212,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         // Get URL - should NOT include 'bin' prefix from SCRIPT_NAME
         $url = $urlService->getAbsoluteUrl('/password/reset');
@@ -231,7 +234,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('https://', $url);
@@ -249,7 +252,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('http://', $url);
@@ -268,7 +271,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('https://', $url);
@@ -288,7 +291,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('https://', $url);
@@ -306,7 +309,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getEmailUrl('/password/reset?token=abc');
 
         $this->assertSame('https://dns.legitimate.example/password/reset?token=abc', $url);
@@ -324,7 +327,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $this->assertNull($urlService->getEmailUrl('/password/reset?token=abc'));
     }
@@ -342,7 +345,7 @@ class UrlServiceHostValidationTest extends TestCase
             'interface' => ['application_url' => '', 'base_url_prefix' => '']
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $this->assertNull($urlService->getEmailUrl('/login'));
     }
@@ -357,7 +360,7 @@ class UrlServiceHostValidationTest extends TestCase
             'interface' => ['application_url' => 'https://configured.example']
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $url = $urlService->getEmailUrl('/login');
         $this->assertSame('https://configured.example/login', $url);
@@ -372,7 +375,7 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
 
         $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('/x'));
         $this->assertSame('https://dns.legitimate.example/x', $urlService->getEmailUrl('x'));
@@ -390,10 +393,22 @@ class UrlServiceHostValidationTest extends TestCase
             ]
         ]);
 
-        $urlService = new UrlService($config);
+        $urlService = new UrlService($config, new ProtocolDetector());
         $url = $urlService->getAbsoluteUrl('/test');
 
         $this->assertStringStartsWith('http://', $url);
+    }
+
+    public function testSchemeComesFromTheInjectedDetector(): void
+    {
+        $_SERVER['HTTPS'] = 'on';
+        $config = $this->createMockConfig([
+            'interface' => ['application_url' => '', 'base_url_prefix' => '/pa']
+        ]);
+
+        $urlService = new UrlService($config, new ProtocolDetector(['HTTPS' => 'off']));
+
+        $this->assertSame('http://localhost/pa/login', $urlService->getLoginUrl());
     }
 
     protected function tearDown(): void

@@ -12,6 +12,9 @@
 #
 #   Alternatively, you can run the program with a current folder mounted:
 #   docker run -d --name poweradmin -p 80:80 -v $(pwd):/app poweradmin
+#   The image does not re-check PHP files once cached (opcache.validate_timestamps=0);
+#   for live editing mount an ini that turns it back on:
+#     -v $(pwd)/dev.ini:/usr/local/etc/php/conf.d/zz-dev.ini
 #
 # Docker Secrets Support:
 #   Use environment variables with __FILE suffix to read from files:
@@ -77,19 +80,31 @@ RUN apk upgrade --no-cache \
     && apk del .build-deps \
     && rm -rf /var/cache/apk/*
 
+# Run on the production ini; the overrides load first in conf.d, so any ini file
+# mounted there changes them
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && cat > "$PHP_INI_DIR/conf.d/00-poweradmin.ini" <<'INIEOF'
+expose_php = Off
+memory_limit = 256M
+upload_max_filesize = 16M
+post_max_size = 20M
+opcache.validate_timestamps = 0
+opcache.max_accelerated_files = 20000
+opcache.memory_consumption = 192
+opcache.interned_strings_buffer = 16
+INIEOF
+
 WORKDIR /app
 
-# Copy application files
-COPY . .
+# Copy application files with their final owner; a later chown -R would duplicate the layer
+COPY --chown=www-data:0 . .
 
-# Copy and set permissions for entrypoint script, create directories
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-# The base image ships no php.ini, so warnings were printed into pages; 00-poweradmin.ini
-# loads first in conf.d, so any ini file mounted there still overrides it.
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && mkdir -p /db /app/config \
-    && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php \
-    && printf 'display_errors = Off\nlog_errors = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
+# Entrypoint outside the app tree, data directory, pristine copy of the defaults
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+# /app itself predates the COPY (WORKDIR), so it and the runtime cache dir need owners of their own
+RUN mkdir -p /db /app/config /app/var \
+    && chown www-data:0 /app /app/var \
+    && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php
 
 # Create Caddyfile for FrankenPHP
 # Uses RUN with single-quoted heredoc to preserve Caddy's {$ENV} syntax literally
@@ -106,10 +121,11 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
 
     # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /vendor*
-    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+    @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
 
-    # Allow Bootstrap files (override general vendor blocking)
+    # Allow Bootstrap files (override general vendor blocking); versioned by the vendor path
     handle @bootstrap {
+        header Cache-Control "public, max-age=604800"
         file_server
     }
 
@@ -119,35 +135,36 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     }
 
     # Security: Deny access to hidden files and sensitive file types
-    @hidden path .* *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml
+    @hidden path /.* */.* *.sh *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml *.po *.pot *.dat *.example *.sqlite-wal *.sqlite-shm *.sqlite3-wal *.sqlite3-shm *.db-wal *.db-shm
     handle @hidden {
         respond "Forbidden" 403
     }
 
-    # Static assets with caching
-    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
-    handle @static {
+    # Scripts and styles carry a content fingerprint in their URL, fonts never change;
+    # icons and images are not versioned, so they get a day
+    @versioned path *.js *.css *.woff *.woff2 *.ttf *.eot
+    handle @versioned {
         header Cache-Control "public, max-age=31536000"
         file_server
     }
-
-    # Handle OPTIONS preflight requests for CORS
-    @options method OPTIONS
-    handle @options {
-        header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
-        header Access-Control-Max-Age "3600"
-        respond "" 204
+    @images path *.png *.jpg *.jpeg *.gif *.ico *.svg
+    handle @images {
+        header Cache-Control "public, max-age=86400"
+        file_server
     }
 
-    # API endpoints with CORS
+    # API endpoints with CORS; preflight is answered here only, never for the web UI
     @api path /api*
     handle @api {
-        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Origin "{$CORS_ALLOW_ORIGIN:*}"
         header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
+
+        @options method OPTIONS
+        handle @options {
+            respond "" 204
+        }
 
         # Forward all API requests to index.php with proper query handling
         rewrite * /index.php{uri}
@@ -175,8 +192,8 @@ ENV XDG_DATA_HOME=/var/caddy
 #   - K8s with fsGroup (overrides group at mount time)
 #   - OpenShift arbitrary UIDs (which always run as GID 0)
 # Root-mode entrypoint re-asserts www-data ownership via setup_permissions()
-RUN chown -R www-data:0 /app /db \
-    && chmod -R g+w /app/config /db \
+RUN chown www-data:0 /db \
+    && chmod -R g+w /app/config /app/var /db \
     && mkdir -p /var/caddy/caddy \
     && chown -R www-data:0 /var/caddy \
     && chmod -R g+w /var/caddy \
@@ -187,10 +204,10 @@ RUN chown -R www-data:0 /app /db \
 
 EXPOSE 80 8080
 
-# Healthcheck reads the port from file written by entrypoint (healthcheck runs
-# as a separate process and does not inherit entrypoint's exported env vars)
+# The healthcheck runs as a separate process without the entrypoint's environment, so the
+# entrypoint leaves the port and the path (/ping when the liveness endpoint is on) in /tmp
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD ["/bin/sh", "-c", "curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)/ -o /dev/null || exit 1"]
+    CMD ["/bin/sh", "-c", "curl -sf http://localhost:$(cat /tmp/.server_port 2>/dev/null || echo 80)$(cat /tmp/.health_path 2>/dev/null || echo /) -o /dev/null || exit 1"]
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,27 +20,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * RESTful API v2 controller for group member operations
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
-use Poweradmin\Application\Service\GroupMembershipService;
-use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
 
+/**
+ * /api/v2/groups/{id}/members: lists, adds and removes the users in a group.
+ */
 class GroupMembersController extends PublicApiController
 {
+    /** Fields accepted by the `sort` parameter of GET /groups/{id}/members */
+    private const MEMBER_SORT_FIELDS = ['user_id', 'username', 'fullname', 'email', 'joined_at'];
+
     protected function acceptsZoneRestrictedKey(): bool
     {
         return false;
@@ -53,10 +53,10 @@ class GroupMembersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $memberRepository = $this->createUserGroupMemberRepository();
-        $groupRepository = $this->createUserGroupRepository();
+        $memberRepository = $this->services()->userGroupMemberRepository();
+        $groupRepository = $this->services()->userGroupRepository();
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
-        $this->apiPermissionService = new ApiPermissionService($this->db);
+        $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
     /**
@@ -70,11 +70,10 @@ class GroupMembersController extends PublicApiController
             'GET' => $this->listMembers(),
             'POST' => $this->addMember(),
             'DELETE' => $this->removeMember(),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->methodNotAllowed(['GET', 'POST', 'DELETE']),
         };
 
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -99,6 +98,34 @@ class GroupMembersController extends PublicApiController
             )
         ]
     )]
+    #[OA\Parameter(
+        name: 'q',
+        description: 'Case-insensitive substring filter on username, full name or email',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'admin')
+    )]
+    #[OA\Parameter(
+        name: 'sort',
+        description: 'Sort order: comma-separated fields, each optionally suffixed with :asc or :desc. Allowed fields: user_id, username, fullname, email, joined_at. Default: newest member first',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'username')
+    )]
+    #[OA\Parameter(
+        name: 'page',
+        description: 'Page number, starting at 1 (only used together with per_page)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
+    )]
+    #[OA\Parameter(
+        name: 'per_page',
+        description: 'Items per page, capped at 10000. Omit or set to 0 to return all items without a pagination object',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
     #[OA\Response(
         response: 200,
         description: 'Members retrieved successfully',
@@ -106,6 +133,17 @@ class GroupMembersController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Members retrieved successfully'),
+                new OA\Property(
+                    property: 'pagination',
+                    description: 'Only present when per_page is given',
+                    properties: [
+                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
+                        new OA\Property(property: 'per_page', type: 'integer', example: 25),
+                        new OA\Property(property: 'total', type: 'integer', example: 40),
+                        new OA\Property(property: 'last_page', type: 'integer', example: 2),
+                    ],
+                    type: 'object'
+                ),
                 new OA\Property(
                     property: 'data',
                     type: 'object',
@@ -130,11 +168,13 @@ class GroupMembersController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid sort parameter')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
+    #[OA\Response(response: 404, description: 'Group not found')]
     private function listMembers(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can view group members', 403);
         }
 
@@ -142,6 +182,10 @@ class GroupMembersController extends PublicApiController
             $groupId = (int)$this->pathParameters['id'];
             $members = $this->membershipService->listGroupMembers($groupId);
 
+            $sort = ListSort::fromQuery($this->request->query->get('sort'), self::MEMBER_SORT_FIELDS);
+            if ($sort->error !== null) {
+                return $this->returnApiError($sort->error, 400);
+            }
             $membersData = array_map(fn($m) => [
                 'user_id' => $m->getUserId(),
                 'username' => $m->getUsername(),
@@ -149,12 +193,15 @@ class GroupMembersController extends PublicApiController
                 'email' => $m->getEmail(),
                 'joined_at' => $m->getCreatedAt(),
             ], $members);
+            [$membersData, $extra] = $this->filterSortAndPage($membersData, $sort, [
+                'q' => static fn(array $m): array => [$m['username'], $m['fullname'], $m['email']],
+            ]);
 
-            return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully');
+            return $this->returnApiResponse(['members' => $membersData], true, 'Members retrieved successfully', 200, $extra);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupMembersController::listMembers', 'Failed to retrieve members');
         }
     }
 
@@ -205,13 +252,13 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function addMember(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can add group members', 403);
         }
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = json_decode($this->request->getContent(), true);
+            $data = $this->getValidatedJsonBody() ?? [];
 
             if (empty($data['user_id'])) {
                 return $this->returnApiError('Missing required field: user_id', 400);
@@ -223,12 +270,16 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
             $this->membershipService->addUserToGroup($groupId, $userId);
+            $this->services()->permissionService()->forgetUser($userId);
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
+            // Domain validation refusal (already a member) - bad input, not a fault.
             return $this->returnApiError($e->getMessage(), 400);
+        } catch (Exception $e) {
+            return $this->handleException($e, 'GroupMembersController::addMember', 'Failed to add member');
         }
     }
 
@@ -277,7 +328,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 404, description: 'Member not found')]
     private function removeMember(): JsonResponse
     {
-        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
             return $this->returnApiError('Only administrators can remove group members', 403);
         }
 
@@ -294,12 +345,13 @@ class GroupMembersController extends PublicApiController
             if (!$success) {
                 return $this->returnApiError('Member not found in group', 404);
             }
+            $this->services()->permissionService()->forgetUser($userId);
 
             return $this->returnApiResponse(null, true, 'Member removed successfully');
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
         } catch (Exception $e) {
-            return $this->returnApiError($e->getMessage(), 500);
+            return $this->handleException($e, 'GroupMembersController::removeMember', 'Failed to remove member');
         }
     }
 }

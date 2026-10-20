@@ -20,45 +20,43 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-/**
- * Public API controller for external endpoints
- *
- * @package     Poweradmin
- * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2026 Poweradmin Development Team
- * @license     https://opensource.org/licenses/GPL-3.0 GPL
- */
-
 namespace Poweradmin\Application\Controller\Api;
 
-use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Application\Http\ListPaging;
+use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
+use Poweradmin\Application\Service\Auth\ApiKeyActor;
+use Poweradmin\Application\Service\Backend\PdnsVersionService;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Domain\Service\DatabaseCredentialMapper;
-use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Logger\DbApiLogger;
-use Poweradmin\Infrastructure\Logger\LegacyLogger;
-use Poweradmin\Infrastructure\Logger\Logger;
-use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
-use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Domain\Service\DnsFormatter;
-use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
-use Poweradmin\Infrastructure\Service\MessageService;
-use Psr\Log\LoggerInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Model\PdnsCapabilities;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
+/**
+ * Base for /api/v2 endpoints: API key or Basic auth, key scope enforcement, request logging and wrapped responses.
+ */
 abstract class PublicApiController extends AbstractApiController
 {
     protected const MAX_PAGE_SIZE = 10000;
 
+    /** Refusal for a direct write when the caller's changes to the zone go through review */
+    public const CHANGE_REQUEST_REQUIRED = 'Changes to this zone require approval; create a change request instead';
+
+    /** Every change request endpoint answers this while approval.enabled is off */
+    public const CHANGE_APPROVAL_DISABLED = 'Change approval is not enabled';
+
     protected array $pathParameters;
     protected int $authenticatedUserId = 0;
-    protected LoggerInterface $logger;
 
     /**
      * Permission scope of the API key used for this request. Null when the request
@@ -66,6 +64,9 @@ abstract class PublicApiController extends AbstractApiController
      * case {@see self::getApiKeyScope()} returns an unrestricted scope.
      */
     protected ?ApiKeyScope $apiKeyScope = null;
+
+    /** Request-scoped stand-in for the session version cache */
+    private SessionInterface $capabilityCache;
 
     /**
      * PublicApiController constructor
@@ -79,20 +80,18 @@ abstract class PublicApiController extends AbstractApiController
         // We will handle authentication ourselves in this controller
         parent::__construct($requestParams, false);
 
+        $this->capabilityCache = new ArraySession();
+
         // Store path parameters for use by child classes
         $this->pathParameters = $pathParameters;
-
-        // Initialize PSR-3 logger
-        $config = $this->getConfig();
-        $logHandler = LoggerHandlerFactory::create($config->getAll());
-        $logLevel = $config->get('logging', 'level', 'info');
-        $this->logger = new Logger($logHandler, $logLevel);
 
         // Authenticate the API request using API key or HTTP Basic auth
         $this->authenticateApiRequest();
 
         // Enforce the API key's read-only / operation scope before any handler runs
         $this->enforceApiKeyMethodScope();
+
+        $this->refuseArrayQueryParameters();
 
         // HEAD passes the read-only scope check above; route it to the GET handler so
         // each controller answers it instead of falling through to a 405. The
@@ -114,14 +113,7 @@ abstract class PublicApiController extends AbstractApiController
             return;
         }
 
-        // Create database connection with proper credentials
         $config = $this->getConfig();
-        $credentials = DatabaseCredentialMapper::mapCredentials($config);
-
-        // Create the database connection
-        $databaseConnection = new PDODatabaseConnection();
-        $databaseService = new DatabaseService($databaseConnection);
-        $db = $databaseService->connect($credentials);
 
         // Try authentication methods in order:
         // 1. API Key auth
@@ -129,7 +121,7 @@ abstract class PublicApiController extends AbstractApiController
         $authenticated = false;
 
         // Always try API key authentication when API is enabled
-        $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
+        $apiKeyMiddleware = $this->services()->apiKeyAuthenticationMiddleware();
         $authenticated = $apiKeyMiddleware->process($this->request);
 
         // Get authenticated user ID in a stateless way
@@ -142,14 +134,13 @@ abstract class PublicApiController extends AbstractApiController
             // back to an unrestricted scope and grant more than the key allows.
             if ($this->apiKeyScope === null) {
                 $response = $this->returnApiError('Unable to verify API key permissions', 403);
-                $response->send();
-                exit;
+                $this->sendAndHalt($response);
             }
         }
 
         // Try Basic auth if API key auth failed and it's enabled
         if (!$authenticated && $config->get('api', 'basic_auth_enabled', false)) {
-            $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
+            $basicAuthMiddleware = $this->services()->basicAuthenticationMiddleware();
             $this->authenticatedUserId = $basicAuthMiddleware->getAuthenticatedUserId($this->request);
             $authenticated = ($this->authenticatedUserId > 0);
         }
@@ -157,18 +148,28 @@ abstract class PublicApiController extends AbstractApiController
         // If all authentication methods failed, return 401 Unauthorized
         if (!$authenticated) {
             $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
-            $response->send();
-            exit;
+            if ($config->get('api', 'basic_auth_enabled', false)) {
+                $realm = addcslashes((string)$config->get('api', 'basic_auth_realm', 'Poweradmin API'), '\\"');
+                $response->headers->set('WWW-Authenticate', 'Basic realm="' . $realm . '"');
+            }
+            $this->sendAndHalt($response);
         }
 
-        // Make the authenticated identity visible to UserContextService so the
-        // change log records the actor (instead of falling back to "system")
-        // for record/zone mutations performed via the API.
+        // The request's services act as the key owner from here on, so the change
+        // log and audit lines name the API principal instead of "system".
         if ($this->authenticatedUserId > 0) {
-            UserContextService::setApiUserContext(
-                $this->authenticatedUserId,
-                $this->getAuthenticatedUsername()
-            );
+            $this->services()->bindActor(new ApiKeyActor($this->authenticatedUserId, $this->getAuthenticatedUsername()));
+        }
+    }
+
+    /**
+     * Answer 400 when a query parameter arrives as an array; see arrayQueryParameter().
+     */
+    protected function refuseArrayQueryParameters(): void
+    {
+        $key = $this->arrayQueryParameter();
+        if ($key !== null) {
+            $this->sendAndHalt($this->returnApiError(sprintf("Query parameter '%s' must be a single value", $key), 400));
         }
     }
 
@@ -190,28 +191,6 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
-     * Validate the API key
-     *
-     * @param string|null $apiKey The API key to validate
-     * @return bool True if the API key is valid, false otherwise
-     */
-    protected function validateApiKey(?string $apiKey): bool
-    {
-        if ($apiKey === null) {
-            return false;
-        }
-
-        // Create API key service to validate the key against the database
-        $config = $this->getConfig();
-        $apiKeyRepository = DbApiKeyRepository::withCanonicalZoneScopes($this->db, $config);
-        $messageService = new MessageService();
-        $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config, $messageService);
-
-        // Authenticate using the API key service
-        return $apiKeyService->authenticate($apiKey);
-    }
-
-    /**
      * Check if the current API endpoint requires authentication
      * Can be overridden in child classes for public endpoints
      *
@@ -220,47 +199,6 @@ abstract class PublicApiController extends AbstractApiController
     protected function requiresAuthentication(): bool
     {
         return true;
-    }
-
-    /**
-     * Return API response with standard format
-     *
-     * @param mixed $data The data to return
-     * @param bool $success Whether the request was successful
-     * @param string|null $message Optional message
-     * @param int $status HTTP status code
-     * @param array $additionalFields Additional response fields (pagination, meta, etc.)
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = []): JsonResponse
-    {
-        $response = [
-            'success' => $success,
-            'data' => $data
-        ];
-
-        if ($message !== null) {
-            $response['message'] = $message;
-        }
-
-        // Merge additional fields (pagination, meta, etc.) into response
-        $response = array_merge($response, $additionalFields);
-
-        return $this->returnJsonResponse($response, $status);
-    }
-
-    /**
-     * Return API error response
-     *
-     * @param string $message Error message
-     * @param int $status HTTP status code
-     * @param mixed $data Additional error data
-     * @param array $headers Additional headers
-     * @return JsonResponse The JSON response object
-     */
-    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
-    {
-        return $this->returnApiResponse($data, false, $message, $status, $headers);
     }
 
     /**
@@ -280,6 +218,19 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * The 403 a direct write gets when the caller's changes to the zone are
+     * routed through change requests, or null when the write may proceed.
+     */
+    protected function refuseWhenChangeRequestRequired(ApiPermissionService $permissions, int $userId, int $zoneId): ?JsonResponse
+    {
+        if ($permissions->getChangeApprovalMode($userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST) {
+            return null;
+        }
+
+        return $this->returnApiError(self::CHANGE_REQUEST_REQUIRED, 403);
+    }
+
+    /**
      * Get the authenticated user ID (stateless)
      *
      * @return int The authenticated user ID or 0 if not authenticated
@@ -291,9 +242,23 @@ abstract class PublicApiController extends AbstractApiController
 
     protected function getAuthenticatedUsername(): string
     {
-        $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
-        $stmt->execute([':id' => $this->authenticatedUserId]);
-        return $stmt->fetchColumn() ?: 'user_id:' . $this->authenticatedUserId;
+        $user = $this->services()->userRepository()->getUserById($this->authenticatedUserId);
+
+        return (string)($user['username'] ?? '') ?: 'user_id:' . $this->authenticatedUserId;
+    }
+
+    /**
+     * API requests carry no session, so the PowerDNS version is fetched on first
+     * use and kept for this request only. Callers ask lazily (a zone create with a
+     * catalog kind), so ordinary requests never pay for the lookup.
+     */
+    protected function getPdnsCapabilities(): PdnsCapabilities
+    {
+        if ($this->capabilityCache->all() === []) {
+            PdnsVersionService::refreshFromConfig($this->config, $this->logger, $this->capabilityCache);
+        }
+
+        return PdnsCapabilities::fromServerInfo(PdnsVersionService::getCachedInfo($this->capabilityCache));
     }
 
     /**
@@ -319,9 +284,7 @@ abstract class PublicApiController extends AbstractApiController
         $method = strtoupper($this->request->getMethod());
 
         if ($scope->hasZoneRestriction() && !$this->acceptsZoneRestrictedKey()) {
-            $response = $this->returnApiError('Forbidden: this API key is restricted to specific zones', 403);
-            $response->send();
-            exit;
+            $this->sendAndHalt($this->returnApiError('Forbidden: this API key is restricted to specific zones', 403));
         }
 
         // Read-only is always method-based and always correct: only GET/HEAD pass.
@@ -364,17 +327,14 @@ abstract class PublicApiController extends AbstractApiController
 
     /**
      * Send a 403 for an operation the API key may not perform, and stop.
-     *
-     * @return never
      */
-    protected function sendApiKeyOperationForbidden(): void
+    protected function sendApiKeyOperationForbidden(): never
     {
         $response = $this->returnApiError(
             'Forbidden: this API key is not permitted to perform this operation',
             403
         );
-        $response->send();
-        exit;
+        $this->sendAndHalt($response);
     }
 
     /**
@@ -413,6 +373,38 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * The opt-in paging parameters of a list request, see ListPaging.
+     *
+     * @return array{0: int, 1: int} [page, perPage]; perPage 0 means "return everything"
+     */
+    protected function pagingParameters(): array
+    {
+        return ListPaging::parameters(
+            $this->request->query->get('page', 1),
+            $this->request->query->get('per_page', 0),
+            self::MAX_PAGE_SIZE
+        );
+    }
+
+    /**
+     * Filter, sort and page a list that is already loaded. Each filter maps a query
+     * parameter to the values of a row it searches as a case-insensitive substring.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @param array<string, callable> $filters
+     * @return array{0: list<mixed>, 1: array<string, mixed>} [rows of the page, extra response fields]
+     */
+    protected function filterSortAndPage(array $rows, ListSort $sort, array $filters): array
+    {
+        foreach ($filters as $parameter => $values) {
+            $rows = ListPaging::filterContains($rows, (string)$this->request->query->get($parameter, ''), $values);
+        }
+        [$page, $perPage] = $this->pagingParameters();
+
+        return ListPaging::paginate($sort->sortRows($rows), $page, $perPage);
+    }
+
+    /**
      * Record an API request in the audit log (log_api table).
      *
      * Permission violations (401/403) are always logged when database audit
@@ -431,17 +423,16 @@ abstract class PublicApiController extends AbstractApiController
             }
 
             $operation = $isViolation ? 'api_violation' : 'api_request';
-            $clientIp = (new IpAddressRetriever($_SERVER))->getClientIp();
             // Resolve the API key id lazily - only now that a log row is actually
             // being written - so the default (logging off) path pays nothing.
             $keyId = '-';
             if ($this->authenticatedUserId > 0) {
-                $id = (new ApiKeyAuthenticationMiddleware($this->db, $config))->getAuthenticatedApiKeyId($this->request);
+                $id = $this->services()->apiKeyAuthenticationMiddleware()->getAuthenticatedApiKeyId($this->request);
                 if ($id !== null) {
                     $keyId = (string)$id;
                 }
             }
-            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '-';
+            $user = $this->authenticatedUserId > 0 ? $this->getAuthenticatedUsername() : '';
             // The constructor rewrites v2 HEAD to GET so handlers can serve it;
             // read the original method so the audit trail stays accurate.
             $method = $_SERVER['REQUEST_METHOD'] ?? $this->request->getMethod();
@@ -450,18 +441,7 @@ abstract class PublicApiController extends AbstractApiController
             // violation) rejected and silently dropped.
             $path = mb_substr($this->request->getPathInfo(), 0, 1500);
 
-            $event = sprintf(
-                'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
-                $operation,
-                $method,
-                $path,
-                $status,
-                $keyId,
-                $user !== '' ? $user : '-',
-                $clientIp !== '' ? $clientIp : '-'
-            );
-
-            (new LegacyLogger($this->db))->logApiInfo($event);
+            $this->services()->auditService()->logApiRequest($operation, $method, $path, $status, $keyId, $user);
             $this->pruneApiLog($config);
         } catch (\Throwable $e) {
             // Audit logging must never break the API response.
@@ -475,7 +455,7 @@ abstract class PublicApiController extends AbstractApiController
      * low probability (like PHP session GC) to keep the table bounded without a
      * DELETE on every request. Retention of 0 means keep forever.
      */
-    private function pruneApiLog(ConfigurationManager $config): void
+    private function pruneApiLog(ConfigurationInterface $config): void
     {
         $retentionDays = (int)$config->get('logging', 'api_log_retention_days', 0);
         if ($retentionDays <= 0) {
@@ -484,7 +464,7 @@ abstract class PublicApiController extends AbstractApiController
         if (random_int(1, 100) !== 1) {
             return;
         }
-        (new DbApiLogger($this->db))->pruneOlderThan($retentionDays);
+        $this->services()->apiLogger()->pruneOlderThan($retentionDays);
     }
 
     /**
@@ -497,6 +477,8 @@ abstract class PublicApiController extends AbstractApiController
     protected function formatV2RecordContent(string $type, string $content): string
     {
         $type = strtoupper($type);
+        // Stored content is punycode, as the web forms write it.
+        $content = DnsIdnService::convertContentToPunycode($type, $content);
         $content = (new DnsFormatter($this->getConfig()))->formatContent($type, $content);
         if ($type === 'TXT') {
             $content = trim($content);
@@ -505,6 +487,48 @@ abstract class PublicApiController extends AbstractApiController
             }
         }
         return $content;
+    }
+
+    /**
+     * The API wording for a refused record write: a duplicate and a backend fault
+     * keep the contract strings, every other refusal carries the manager's reason.
+     */
+    protected function recordWriteErrorMessage(RecordWriteResult $result, string $backendFailureText): string
+    {
+        return match (true) {
+            $result->refusal === Refusal::CONFLICT => 'A record with this hostname, type, and content already exists',
+            $result->refusal === Refusal::BACKEND_FAILURE => $backendFailureText,
+            default => (string)$result->message,
+        };
+    }
+
+    /**
+     * Whether a record fetched by id belongs to the zone addressed in the path.
+     * A zone moved from SQL to API backend mode can be addressed by its zones row
+     * id while its records carry the canonical id, so the zone's own canonical id
+     * (resolved by name, the way the record lookup resolves it) also matches.
+     *
+     * @param array<string, mixed> $record
+     */
+    protected function recordBelongsToZone(array $record, int $zoneId, ?string $zoneName): bool
+    {
+        $recordZoneId = (int)($record['domain_id'] ?? 0);
+        if ($recordZoneId === $zoneId) {
+            return true;
+        }
+        if ($recordZoneId <= 0 || $zoneName === null || $zoneName === '') {
+            return false;
+        }
+
+        return $recordZoneId === $this->services()->dnsBackendProvider()->getZoneIdByName($zoneName);
+    }
+
+    /**
+     * Record names are stored as punycode and always carry the zone suffix.
+     */
+    protected function normalizeV2RecordName(string $name, string $zoneName): string
+    {
+        return DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode(trim($name)), $zoneName);
     }
 
     /**
@@ -521,19 +545,7 @@ abstract class PublicApiController extends AbstractApiController
      */
     protected function stripTxtQuotes(string $content, string $type): string
     {
-        if ($type !== 'TXT') {
-            return $content;
-        }
-
-        $content = trim($content);
-        $isMultiString = str_contains($content, '" "');
-
-        // Only strip quotes for single-string TXT records
-        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
-            return substr($content, 1, -1);
-        }
-
-        return $content;
+        return RecordResource::stripTxtQuotes($content, $type);
     }
 
     /**
@@ -560,7 +572,8 @@ abstract class PublicApiController extends AbstractApiController
             'line' => $e->getLine(),
         ]);
 
-        // Return clean JSON error response to client
-        return $this->returnApiError($userMessage . ': ' . $e->getMessage(), $statusCode);
+        // The raw exception text is already logged above; the client only gets the
+        // contextual message so internal details (SQL, paths) cannot leak
+        return $this->returnApiError($userMessage, $statusCode);
     }
 }

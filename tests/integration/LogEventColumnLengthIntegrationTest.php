@@ -26,7 +26,7 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 
@@ -47,16 +47,6 @@ class LogEventColumnLengthIntegrationTest extends TestCase
     private static function mysqlDb(): string
     {
         return 'poweradmin_it_' . getmypid();
-    }
-
-    private mixed $savedConfigInstance = null;
-
-    protected function setUp(): void
-    {
-        // DbZoneLogger initializes the ConfigurationManager singleton; keep that out of other tests.
-        $property = new \ReflectionProperty(ConfigurationManager::class, 'instance');
-        $this->savedConfigInstance = $property->getValue();
-        $property->setValue(null, null);
     }
 
     /** @return array<string, array{string}> */
@@ -102,7 +92,6 @@ class LogEventColumnLengthIntegrationTest extends TestCase
 
     protected function tearDown(): void
     {
-        (new \ReflectionProperty(ConfigurationManager::class, 'instance'))->setValue(null, $this->savedConfigInstance);
         try {
             (new PDO('mysql:host=127.0.0.1;port=3306', 'root', 'uberuser'))->exec('DROP DATABASE IF EXISTS ' . self::mysqlDb());
         } catch (PDOException) {
@@ -133,7 +122,7 @@ class LogEventColumnLengthIntegrationTest extends TestCase
     {
         $db = $this->connect($engine);
 
-        (new DbZoneLogger($db))->doLog($this->longMessage(), 1, LOG_INFO);
+        (new DbZoneLogger($db, $this->createStub(ConfigurationInterface::class)))->doLog($this->longMessage(), 1, LOG_INFO);
 
         $stored = (string) $db->query('SELECT event FROM log_zones')->fetchColumn();
         $this->assertSame(2048, mb_strlen($stored));

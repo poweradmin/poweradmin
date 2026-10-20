@@ -26,16 +26,22 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Port\ApiStatusInterface;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\CanonicalZoneIdAllocator;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyZoneScopeMigration;
+use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Psr\Log\NullLogger;
 
 /**
- * The zone id handling of API backend mode (shared ids, the canonical id allocator and the
- * API key scope move) on every engine Poweradmin supports. Each
+ * The zone id handling of API backend mode (shared ids, the canonical id allocator, the API
+ * key scope move and the consistency checks) on every engine Poweradmin supports. Each
  * engine gets throwaway tables in its own scratch database or schema; MySQL and PostgreSQL
  * run when the devcontainer is up and are skipped otherwise.
  */
@@ -128,9 +134,7 @@ class ZoneIdCrossEngineIntegrationTest extends TestCase
     public function testSharedIdsAndOwnershipAgreeOnEveryEngine(string $engine): void
     {
         $db = $this->connect($engine);
-        $config = $this->createStub(ConfigurationManager::class);
-        $config->method('get')->willReturnMap([['dns', 'backend', null, 'api']]);
-        $users = new DbUserRepository($db, $config);
+        $users = new DbUserRepository($db, ConfigurationManager::getInstance(), true);
 
         $this->assertSame([5], SharedZoneIds::all($db));
         $this->assertTrue(SharedZoneIds::isShared($db, 5));
@@ -187,5 +191,15 @@ class ZoneIdCrossEngineIntegrationTest extends TestCase
 
         $rows = $db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM);
         $this->assertSame([[1, 12], [1, 30], [2, 5], [3, 0]], array_map(fn(array $r): array => array_map('intval', $r), $rows));
+    }
+
+    #[DataProvider('engines')]
+    public function testTheConsistencyQueriesRunOnEveryEngine(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $checks = new ApiConsistencyChecks($db, $this->createStub(DnsBackendProviderInterface::class), $this->createStub(ApiStatusInterface::class), new ZoneOwnerRepair($db), new DefaultSoaBuilder($this->createStub(ConfigurationInterface::class)));
+
+        $this->assertSame([['id' => 5, 'names' => 'created.example, migrated.example', 'ignored_owners' => 1, 'ignored_groups' => 1]], $checks->checkSharedZoneIds()['data']);
+        $this->assertSame([['id' => 14, 'group' => 'Editors', 'row_zone' => 'reverse.example']], $checks->checkGroupGrantsOnRowIds()['data']);
     }
 }

@@ -12,7 +12,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe.configure({ mode: 'serial' });
 
@@ -28,42 +28,28 @@ test.describe('Audit Events - Generate Events', () => {
   test('should generate perm_template_change by editing noperm user template', async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    // Find the noperm user's edit page
-    await page.goto('/users');
-    const nopermRow = page.locator('tr:has-text("noperm")').first();
-    const editLink = nopermRow.locator('a[href*="/edit"]');
+    // The list renders the username as an input value, so tr:has-text never matches it
+    const nopermRow = `tr:has(input[value="${users.noperm.username}"])`;
+    await page.goto(`/users?search=${users.noperm.username}`);
+    await expect(page.locator(nopermRow)).toHaveCount(1);
+    await page.locator(nopermRow).locator('a[href*="/edit"]').first().click();
 
-    if (await editLink.count() > 0) {
-      await editLink.click();
+    const templateSelect = page.locator('select[name="perm_templ"]');
+    await expect(templateSelect).toBeVisible();
+    const currentValue = await templateSelect.inputValue();
 
-      const templateSelect = page.locator('select[name="perm_templ"]');
-      if (await templateSelect.count() > 0) {
-        // Get current value
-        const currentValue = await templateSelect.inputValue();
+    // Change to a different template (toggle between 4 and 5)
+    const newValue = currentValue === '4' ? '5' : '4';
+    await templateSelect.selectOption(newValue);
+    await page.locator('button[type="submit"]').first().click();
+    await page.waitForURL(/.*users/);
 
-        // Change to a different template (toggle between 4 and 5)
-        const newValue = currentValue === '4' ? '5' : '4';
-        await templateSelect.selectOption(newValue);
-
-        // Submit the form
-        const submitBtn = page.locator('button[type="submit"]').first();
-        await submitBtn.click();
-
-        // Should redirect to users list on success
-        await page.waitForURL(/.*users/);
-
-        // Now change it back to original
-        await page.goto('/users');
-        const nopermRow2 = page.locator('tr:has-text("noperm")').first();
-        const editLink2 = nopermRow2.locator('a[href*="/edit"]');
-        await editLink2.click();
-
-        const templateSelect2 = page.locator('select[name="perm_templ"]');
-        await templateSelect2.selectOption(currentValue);
-        await page.locator('button[type="submit"]').first().click();
-        await page.waitForURL(/.*users/);
-      }
-    }
+    // Put the template back so the fixture user keeps the rights other specs expect
+    await page.goto(`/users?search=${users.noperm.username}`);
+    await page.locator(nopermRow).locator('a[href*="/edit"]').first().click();
+    await page.locator('select[name="perm_templ"]').selectOption(currentValue);
+    await page.locator('button[type="submit"]').first().click();
+    await page.waitForURL(/.*users/);
   });
 });
 
@@ -87,13 +73,11 @@ test.describe('Audit Events - Verify in User Logs', () => {
 
     await expect(page).toHaveURL(/event_type=access_denied/);
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      const bodyText = await page.locator('table').textContent();
-      expect(bodyText).toMatch(/access_denied/);
-      // Should include the permission that was denied
-      expect(bodyText).toMatch(/permission:/);
-    }
+    // The first describe denied the viewer, so a row is guaranteed here
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
+    await expect(page.locator('table')).toContainText(/access_denied/);
+    // Should include the permission that was denied
+    await expect(page.locator('table')).toContainText(/permission:/);
   });
 
   test('should show perm_template_change event in user logs', async ({ page }) => {
@@ -107,14 +91,12 @@ test.describe('Audit Events - Verify in User Logs', () => {
 
     await expect(page).toHaveURL(/event_type=perm_template_change/);
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      const bodyText = await page.locator('table').textContent();
-      expect(bodyText).toMatch(/perm_template_change/);
-      // Should include old and new template IDs
-      expect(bodyText).toMatch(/old_template:/);
-      expect(bodyText).toMatch(/new_template:/);
-    }
+    // The first describe changed the noperm user's template, so a row is guaranteed here
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
+    await expect(page.locator('table')).toContainText(/perm_template_change/);
+    // Should include old and new template IDs
+    await expect(page.locator('table')).toContainText(/old_template:/);
+    await expect(page.locator('table')).toContainText(/new_template:/);
   });
 
   test('should show session_expired event type in filter dropdown', async ({ page }) => {
@@ -133,28 +115,22 @@ test.describe('Audit Events - Verify in User Logs', () => {
     await eventSelect.selectOption('login_success');
     await page.locator('button[type="submit"]').first().click();
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      // Click details button on first row to see full event
-      const detailsBtn = page.locator('table button[data-bs-toggle="modal"]').first();
-      await detailsBtn.click();
+    // The seeded login attempts plus this suite's own logins guarantee login_success rows
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
 
-      const modal = page.locator('#userLogModal');
-      await expect(modal).toBeVisible();
+    await page.locator('table button[data-bs-toggle="modal"]').first().click();
 
-      const modalText = await modal.textContent();
-      expect(modalText).toMatch(/auth_method:/);
-    }
+    const modal = page.locator('#userLogModal');
+    await expect(modal).toBeVisible();
+    await expect(modal).toContainText(/auth_method:/);
   });
 
   test('should show client_ip in log entries', async ({ page }) => {
     await page.goto('/users/logs');
 
-    const rows = page.locator('table tbody tr');
-    if (await rows.count() > 0) {
-      // client_ip should now be visible in the table (not just in details)
-      const tableText = await page.locator('table').textContent();
-      expect(tableText).toMatch(/client_ip/);
-    }
+    await expect(page.locator('table tbody tr').first()).toBeVisible();
+
+    // client_ip is shown in the table itself, not only in the details modal
+    await expect(page.locator('table')).toContainText(/client_ip/);
   });
 });

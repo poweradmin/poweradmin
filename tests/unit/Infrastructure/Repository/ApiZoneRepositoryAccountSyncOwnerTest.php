@@ -26,10 +26,11 @@ use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsBackendProvider;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Infrastructure\Repository\ApiZoneRepository;
 use ReflectionMethod;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * The username pushed to the PowerDNS account field is the oldest owner of one zone.
@@ -62,13 +63,13 @@ class ApiZoneRepositoryAccountSyncOwnerTest extends TestCase
     {
         $repository = new ApiZoneRepository(
             $this->db,
-            $this->createMock(DnsBackendProvider::class),
+            $this->createMock(DnsBackendProviderInterface::class),
             'sqlite',
-            $this->createMock(ConfigurationManager::class)
+            new FakeConfiguration(),
+            new ArraySession()
         );
 
         $method = new ReflectionMethod($repository, 'getOldestOwnerUsername');
-        $method->setAccessible(true);
 
         return $method->invoke($repository, $canonicalRowId, $canonicalId);
     }

@@ -22,11 +22,14 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
-class CsvFormulaEscaper
+/**
+ * Prefixes CSV cell values that start with a formula trigger (=, +, -, @, tab, CR, LF) with a quote.
+ */
+final class CsvFormulaEscaper
 {
     private const FORMULA_TRIGGERS = ['=', '+', '-', '@', "\t", "\r", "\n"];
 
-    public static function escape(mixed $value): mixed
+    public function escape(mixed $value): mixed
     {
         if (!is_string($value) || $value === '') {
             return $value;
@@ -41,8 +44,8 @@ class CsvFormulaEscaper
         return "'" . $value;
     }
 
-    public static function escapeRow(array $row): array
+    public function escapeRow(array $row): array
     {
-        return array_map([self::class, 'escape'], $row);
+        return array_map($this->escape(...), $row);
     }
 }

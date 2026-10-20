@@ -1,141 +1,159 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { deleteZoneById, findZoneIdByName, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
- * Helper to create zones via UI if pagination is not already present.
- * Returns the list of zone names created (empty if none were needed).
+ * Producing a paginated zone list takes two things. The page size is a stored
+ * per-user preference that the query parameter writes, and the seeding sets it
+ * to 100, so it is shrunk here and restored afterwards for the specs that
+ * follow in this worker. And the list has to be filtered to one letter: the SQL
+ * backend returns every zone for letter=all, so that view never paginates.
+ *
+ * The page size and sort order are stored per user, so everything runs as a
+ * throwaway administrator-template user created for this file. The seeded admin
+ * account (shared with every other spec) is never touched.
  */
-async function ensurePaginationZones(page, prefix, count) {
-  await page.goto('/zones/forward');
-  const paginationExists = await page.locator('.pagination, [data-testid*="pagination"], nav[aria-label*="pagination"]').count() > 0;
+test.describe.configure({ mode: 'serial' });
 
-  if (paginationExists) {
-    return [];
+const PAGE_SIZE = 5;
+const LETTER = 'p';
+const FILLER_COUNT = 7;
+
+const pgUser = { username: uniqueName('pgn'), password: 'PagePass123!@#' };
+
+async function createPagingUser(page) {
+  await page.goto('/users/add');
+  await page.locator('input[name="username"]').fill(pgUser.username);
+  await page.locator('input[name="fullname"]').fill('Pagination Test User');
+  await page.locator('input[name="email"]').fill(`${pgUser.username}@example.com`);
+  await page.locator('input[name="password"]').fill(pgUser.password);
+  await page.locator('select[name="perm_templ"]').selectOption({ label: 'Administrator' });
+  await page.locator('button[name="commit"]').click();
+  await expect(page.locator('[data-testid="system-message"]')).toContainText(/success/i);
+}
+
+async function deletePagingUser(page) {
+  await page.goto(`/users?search=${pgUser.username}`);
+  const row = page.locator(`tr:has(input[value="${pgUser.username}"])`);
+  if (await row.count() > 0) {
+    await row.locator('a[href*="/delete"]').first().click();
+    await page.locator('button[type="submit"][name="commit"]').click();
+    await page.waitForLoadState('domcontentloaded');
   }
+}
 
-  const zones = [];
-  for (let i = 1; i <= count; i++) {
-    const zoneName = `${prefix}-${i}.com`;
+async function setZoneListPageSize(page, size) {
+  await page.goto(`/zones/forward?rows_per_page=${size}`);
+  await page.waitForLoadState('domcontentloaded');
+}
+
+async function openPaginatedList(page) {
+  await page.goto(`/zones/forward?letter=${LETTER}&start=1`);
+  await page.waitForLoadState('domcontentloaded');
+}
+
+/** Enough zones under one letter to fill more than one page of PAGE_SIZE. */
+async function createFillerZones(page, prefix, zones) {
+  for (let i = 1; i <= FILLER_COUNT; i++) {
+    const zoneName = `${prefix}-${i}.example.com`;
+    // Tracked before the create so a partial failure is still cleaned up
     zones.push(zoneName);
-
     await page.goto('/zones/add/master');
     await page.locator('[data-testid="zone-name-input"]').fill(zoneName);
     await page.locator('[data-testid="add-zone-button"]').click();
+    await page.waitForLoadState('domcontentloaded');
+    await expect(page.locator('.alert-danger')).toHaveCount(0);
   }
-  return zones;
 }
 
-/**
- * Helper to cleanup zones created during test.
- */
-async function cleanupZones(page, zones) {
+async function removeZones(page, zones) {
   for (const zone of zones) {
-    try {
-      await page.goto('/zones/forward');
-      const zoneRow = page.locator(`tr:has-text("${zone}")`);
-      if (await zoneRow.count() > 0) {
-        await zoneRow.locator('[data-testid^="delete-zone-"]').click();
-        await page.locator('[data-testid="confirm-delete-zone"]').click();
-      }
-    } catch (e) {
-      // Continue if zone not found
+    const zoneId = await findZoneIdByName(page, zone);
+    if (zoneId) {
+      await deleteZoneById(page, zoneId);
     }
   }
 }
 
 test.describe('Pagination Functionality', () => {
   test.beforeEach(async ({ page }) => {
+    await loginAndWaitForDashboard(page, pgUser.username, pgUser.password);
+  });
+
+  let fillerZones = [];
+
+  test.beforeAll(async ({ browser }) => {
+    test.setTimeout(180000);
+    const admin = await browser.newPage();
+    await loginAndWaitForDashboard(admin, users.admin.username, users.admin.password);
+    await createPagingUser(admin);
+    await admin.close();
+
+    const page = await browser.newPage();
+    await loginAndWaitForDashboard(page, pgUser.username, pgUser.password);
+    await setZoneListPageSize(page, PAGE_SIZE);
+    await createFillerZones(page, `${LETTER}${uniqueName('pg').slice(4)}`, fillerZones);
+    await page.close();
+  });
+
+  test.afterAll(async ({ browser }) => {
+    test.setTimeout(180000);
+    const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    try {
+      await removeZones(page, fillerZones);
+    } finally {
+      await deletePagingUser(page);
+      await page.close();
+    }
   });
 
   test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
-    const zones = await ensurePaginationZones(page, 'pagination-test', 25);
+    await openPaginatedList(page);
 
-    await page.goto('/zones/forward');
-
-    const paginationExists = await page.locator('.pagination, [data-testid*="pagination"], nav[aria-label*="pagination"]').count() > 0;
-
-    if (paginationExists) {
-      await expect(page.locator('.pagination, [data-testid*="pagination"]')).toBeVisible();
-    }
-
-    await cleanupZones(page, zones);
+    // The letter strip is a .pagination list too, so scope to the last match,
+    // which is the pager below the table
+    await expect(page.locator('.pagination').last()).toBeVisible();
   });
 
   test('should navigate to next page of zones', async ({ page }) => {
-    const zones = await ensurePaginationZones(page, 'page-test', 15);
-
-    await page.goto('/zones/forward');
+    await openPaginatedList(page);
 
     const nextButton = page.locator('a:has-text("Next"), button:has-text("Next"), a:has-text("›"), a:has-text("»")').first();
+    await expect(nextButton).toBeVisible();
 
-    if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
-      await nextButton.click();
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-      const currentUrl = page.url();
-      expect(currentUrl).toMatch(/page=2|offset=/i);
-    }
-
-    await cleanupZones(page, zones);
+    // The zone list paginates with ?start=<page number>
+    expect(page.url()).toMatch(/[?&]start=2\b/);
   });
 
   test('should navigate to previous page of zones', async ({ page }) => {
-    const zones = await ensurePaginationZones(page, 'prev-test', 15);
-
-    await page.goto('/zones/forward');
+    await openPaginatedList(page);
 
     const nextButton = page.locator('a:has-text("Next"), button:has-text("Next"), a:has-text("›")').first();
-    if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
-      await nextButton.click();
+    await expect(nextButton).toBeVisible();
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-      const prevButton = page.locator('a:has-text("Previous"), button:has-text("Previous"), a:has-text("‹"), a:has-text("«")').first();
-      if (await prevButton.count() > 0 && await prevButton.isEnabled()) {
-        await prevButton.click();
+    const prevButton = page.locator('a:has-text("Previous"), button:has-text("Previous"), a:has-text("‹"), a:has-text("«")').first();
+    await expect(prevButton).toBeVisible();
+    await prevButton.click();
+    await page.waitForLoadState('domcontentloaded');
 
-        const currentUrl = page.url();
-        const isPage1 = !currentUrl.includes('page=2') || currentUrl.includes('page=1');
-        expect(isPage1).toBeTruthy();
-      }
-    }
-
-    await cleanupZones(page, zones);
+    expect(page.url()).not.toMatch(/[?&]start=2\b/);
   });
 
   test('should display correct page numbers in pagination', async ({ page }) => {
-    const zones = await ensurePaginationZones(page, 'num-test', 20);
+    await openPaginatedList(page);
 
-    await page.goto('/zones/forward');
+    const pager = page.locator('.pagination').last();
+    const pageLinks = pager.locator('a, button').filter({ hasText: /^[0-9]+$/ });
 
-    const paginationContainer = page.locator('.pagination, [data-testid*="pagination"]').first();
-
-    if (await paginationContainer.count() > 0) {
-      const pageLinks = paginationContainer.locator('a, button').filter({ hasText: /^[0-9]+$/ });
-      const linkCount = await pageLinks.count();
-
-      if (linkCount > 0) {
-        await expect(pageLinks.first()).toBeVisible();
-      }
-    }
-
-    await cleanupZones(page, zones);
-  });
-
-  test('should maintain pagination when filtering zones', async ({ page }) => {
-    await page.goto('/zones/forward');
-
-    const filterInput = page.locator('input[name*="filter"], input[name*="search"], input[placeholder*="filter"]').first();
-
-    if (await filterInput.count() > 0) {
-      await filterInput.fill('example');
-
-      const filterButton = page.locator('button[type="submit"], button:has-text("Filter"), button:has-text("Search")').first();
-      if (await filterButton.count() > 0) {
-        await filterButton.click();
-      }
-
-      await expect(page.locator('body')).toBeVisible();
-    }
+    await expect(pageLinks.first()).toBeVisible();
+    expect(await pageLinks.count()).toBeGreaterThan(1);
   });
 
   test('should handle direct page navigation via URL', async ({ page }) => {
@@ -152,17 +170,13 @@ test.describe('Pagination Functionality', () => {
   test('should display items per page selector if available', async ({ page }) => {
     await page.goto('/zones/forward');
 
-    const perPageSelector = page.locator('select[name*="per_page"], select[name*="limit"], [data-testid*="per-page"]').first();
+    // The control is an id-only select with no name attribute
+    const perPageSelector = page.locator('#rows-per-page');
+    await expect(perPageSelector).toBeVisible();
 
-    if (await perPageSelector.count() > 0) {
-      await expect(perPageSelector).toBeVisible();
-
-      const options = await perPageSelector.locator('option').count();
-      if (options > 1) {
-        await perPageSelector.selectOption({ index: 1 });
-        await expect(page.locator('body')).toBeVisible();
-      }
-    }
+    const options = perPageSelector.locator('option');
+    await expect(options.first()).toBeAttached();
+    expect(await options.count()).toBeGreaterThan(1);
   });
 
   test('should show total count of items', async ({ page }) => {
@@ -171,20 +185,15 @@ test.describe('Pagination Functionality', () => {
     const bodyText = await page.locator('body').textContent();
     const hasTotalInfo = bodyText.match(/showing|total|of \d+|displaying/i);
 
-    expect(bodyText).toBeTruthy();
+    expect(hasTotalInfo).not.toBeNull();
   });
 
-  test('should handle pagination with records list', async ({ page }) => {
-    const zoneName = `records-page-test-${Date.now()}.com`;
+  test('should handle pagination with records list', async ({ page }, testInfo) => {
+    // Creating a zone and 15 records one full page load at a time needs more
+    // than the default per-test budget.
+    test.slow();
 
-    // First clean up any existing test zone
-    await page.goto('/zones/forward');
-    const existingZone = page.locator('tr:has-text("records-page-test")');
-    if (await existingZone.count() > 0) {
-      await existingZone.first().locator('[data-testid^="delete-zone-"]').click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
-      await page.waitForLoadState('networkidle');
-    }
+    const zoneName = uniqueZoneName('recpage', testInfo);
 
     // Create a zone and add many records
     await page.goto('/zones/add/master');
@@ -193,60 +202,61 @@ test.describe('Pagination Functionality', () => {
 
     await page.waitForLoadState('networkidle');
 
-    const errorAlert = page.locator('.alert-danger, .alert.alert-danger');
-    if (await errorAlert.count() > 0) {
-      return;
-    }
+    await expect(page.locator('.alert-danger')).toHaveCount(0);
 
-    await page.goto('/zones/forward');
-    await page.waitForLoadState('networkidle');
+    // The list is paginated, so resolve the zone by name rather than by row
+    const zoneId = await findZoneIdByName(page, zoneName);
+    expect(zoneId).not.toBeNull();
 
-    const zoneRow = page.locator(`tr:has-text("${zoneName}")`);
-    if (await zoneRow.count() === 0) {
-      return;
-    }
-
-    await zoneRow.locator('[data-testid^="edit-zone-"]').click();
-    await page.waitForLoadState('networkidle');
-
-    for (let i = 1; i <= 15; i++) {
-      await page.locator('select.record-type-select, select[name*="type"]').first().selectOption('A');
-      await page.locator('[data-testid="record-name-input"]').fill(`host${i}`);
-      await page.locator('[data-testid="record-content-input"]').fill(`192.168.1.${i}`);
-      await page.locator('[data-testid="add-record-button"]').click();
-      // Each add reloads the edit page; the next iteration must not race the reload.
+    try {
+      await page.goto(`/zones/${zoneId}/edit`);
       await page.waitForLoadState('networkidle');
-    }
 
-    const recordsPagination = page.locator('.pagination, [data-testid*="pagination"]');
-    const hasPagination = await recordsPagination.count() > 0;
+      for (let i = 1; i <= 15; i++) {
+        await page.locator('select.record-type-select, select[name*="type"]').first().selectOption('A');
+        await page.locator('[data-testid="record-name-input"]').fill(`host${i}`);
+        await page.locator('[data-testid="record-content-input"]').fill(`192.168.1.${i}`);
+        await page.locator('[data-testid="add-record-button"]').click();
+        // Each add reloads the edit page; the next iteration must not race the reload.
+        await page.waitForLoadState('networkidle');
+      }
 
-    expect(hasPagination !== undefined).toBeTruthy();
-
-    // Cleanup
-    await page.goto('/zones/forward');
-    const cleanupRow = page.locator(`tr:has-text("${zoneName}")`);
-    if (await cleanupRow.count() > 0) {
-      await cleanupRow.locator('[data-testid^="delete-zone-"]').click();
-      await page.locator('[data-testid="confirm-delete-zone"]').click();
+      // 15 A records + SOA + NS exceed the page size of 5
+      await expect(page.locator('.pagination, [data-testid*="pagination"]').first()).toBeVisible();
+    } finally {
+      await deleteZoneById(page, zoneId);
     }
   });
 
   test('should preserve sort order across pages', async ({ page }) => {
+    // The unfiltered view never paginates on the SQL backend, so the sort is chosen
+    // there and the comparison is made on the letter-filtered list that does
     await page.goto('/zones/forward');
+    const sortableHeader = page.locator('th a').first();
+    await expect(sortableHeader).toBeVisible();
+    await sortableHeader.click();
+    await page.waitForLoadState('domcontentloaded');
 
-    const sortableHeader = page.locator('th[data-sortable], th a, th.sortable').first();
+    await openPaginatedList(page);
 
-    if (await sortableHeader.count() > 0) {
-      await sortableHeader.click();
+    const firstColumn = () => page.locator('table tbody tr td:first-child')
+      .evaluateAll(cells => cells.map(c => c.innerText.trim().toLowerCase()));
 
-      const nextButton = page.locator('a:has-text("Next"), button:has-text("Next")').first();
-      if (await nextButton.count() > 0 && await nextButton.isEnabled()) {
-        await nextButton.click();
+    const firstPage = await firstColumn();
+    expect(firstPage.length).toBeGreaterThan(0);
 
-        const currentUrl = page.url();
-        expect(currentUrl).toMatch(/sort|order/i);
-      }
-    }
+    const nextButton = page.locator('a:has-text("Next"), button:has-text("Next")').first();
+    await expect(nextButton).toBeVisible();
+
+    await nextButton.click();
+    await page.waitForLoadState('domcontentloaded');
+
+    // The chosen sort lives in the session, not in the pagination link, so
+    // assert the data order rather than the query string.
+    const secondPage = await firstColumn();
+    const ascending = [...firstPage].sort().join('|') === firstPage.join('|');
+    const expected = ascending ? [...secondPage].sort() : [...secondPage].sort().reverse();
+
+    expect(secondPage.join('|')).toBe(expected.join('|'));
   });
 });

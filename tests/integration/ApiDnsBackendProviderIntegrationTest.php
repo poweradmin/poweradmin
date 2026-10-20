@@ -29,9 +29,11 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
+use Poweradmin\Infrastructure\Session\ApiStatusService;
+use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
  * Integration tests for the API DNS backend provider against a real PowerDNS instance.
@@ -51,17 +53,16 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private ?ApiDnsBackendProvider $provider = null;
     private array $createdZones = [];
     private array $createdAutoprimaries = [];
-
     private const PDNS_API_URL = 'http://localhost:8181';
     private const PDNS_API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
     private const DB_NAME = 'pdns';
     private const POWERADMIN_DB_NAME = 'poweradmin';
-    private const ROOT_USER = 'root';
-    private const ROOT_PASS = 'uberuser';
     private const DB_USER = 'pdns';
     private const DB_PASS = 'poweradmin';
+    private const ROOT_USER = 'root';
+    private const ROOT_PASS = 'uberuser';
 
     protected function setUp(): void
     {
@@ -104,7 +105,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         }
 
         $httpClient = new HttpClient(self::PDNS_API_URL, self::PDNS_API_KEY);
-        $this->client = new PowerdnsApiClient($httpClient, 'localhost');
+        $this->client = new PowerdnsApiClient($httpClient, 'localhost', new ApiStatusService(new ArraySession()));
 
         $config = new FakeConfiguration([
             'pdns_api' => [
@@ -118,22 +119,7 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
             ],
         ]);
 
-        $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new NullLogger());
-    }
-
-    /**
-     * Record identifiers are encoded RecordIdentifier strings on the API backend,
-     * not auto-increment integers, so assert the contract rather than the type.
-     */
-    private function assertRecordId(mixed $recordId, string $message = 'record id'): void
-    {
-        $this->assertNotNull($recordId, $message);
-        $this->assertTrue(
-            is_int($recordId) || (is_string($recordId) && $recordId !== ''),
-            // var_export() carries the API response into the message, which taint
-            // analysis follows to an HTML sink. The type is the point here anyway.
-            $message . ': expected a non-empty int|string identifier, got ' . get_debug_type($recordId)
-        );
+        $this->provider = new ApiDnsBackendProvider($this->client, $this->poweradminDb, $config, new ApiStatusService(new ArraySession()), new NullLogger());
     }
 
     private function createScratchPoweradminDatabase(): PDO
@@ -167,6 +153,21 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     private static function scratchDb(): string
     {
         return 'poweradmin_it_api_provider_' . getmypid();
+    }
+
+    /**
+     * Record identifiers are encoded RecordIdentifier strings on the API backend,
+     * not auto-increment integers, so assert the contract rather than the type.
+     */
+    private function assertRecordId(mixed $recordId, string $message = 'record id'): void
+    {
+        $this->assertNotNull($recordId, $message);
+        $this->assertTrue(
+            is_int($recordId) || (is_string($recordId) && $recordId !== ''),
+            // var_export() carries the API response into the message, which taint
+            // analysis follows to an HTML sink. The type is the point here anyway.
+            $message . ': expected a non-empty int|string identifier, got ' . get_debug_type($recordId)
+        );
     }
 
     protected function tearDown(): void
@@ -211,9 +212,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         }
 
         $this->db = null;
+        $this->poweradminDb = null;
         $this->client = null;
         $this->provider = null;
-        $this->poweradminDb = null;
     }
 
     private function uniqueZoneName(): string
@@ -791,22 +792,6 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
     }
 
     // ---------------------------------------------------------------
-    // SOA serial (no-op in API mode)
-    // ---------------------------------------------------------------
-
-    public function testUpdateSOASerialIsNoOp(): void
-    {
-        $zone = $this->uniqueZoneName();
-        $this->createdZones[] = $zone;
-
-        $domainId = $this->provider->createZone($zone, 'NATIVE');
-        $this->assertIsInt($domainId);
-
-        // Should always return true without doing anything
-        $this->assertTrue($this->provider->updateSOASerial($domainId));
-    }
-
-    // ---------------------------------------------------------------
     // Zone read operations
     // ---------------------------------------------------------------
 
@@ -842,14 +827,14 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertEquals('NATIVE', $found['type']);
     }
 
-    public function testGetZoneByName(): void
+    public function testGetZoneById(): void
     {
         $zone = $this->uniqueZoneName();
         $this->createdZones[] = $zone;
 
         $domainId = $this->provider->createZone($zone, 'NATIVE');
 
-        $result = $this->provider->getZoneByName($zone);
+        $result = $this->provider->getZoneById($domainId);
 
         $this->assertNotNull($result);
         $this->assertEquals($zone, $result['name']);
@@ -858,10 +843,9 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         $this->assertArrayHasKey('dnssec', $result);
     }
 
-    public function testGetZoneByNameNotFound(): void
+    public function testGetZoneByIdNotFound(): void
     {
-        $result = $this->provider->getZoneByName('nonexistent-zone-' . uniqid() . '.example.com');
-        $this->assertNull($result);
+        $this->assertNull($this->provider->getZoneById(2147483647));
     }
 
     // ---------------------------------------------------------------

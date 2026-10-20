@@ -1,0 +1,315 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Tests\Unit\Domain\Database;
+
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Database\DbCompat;
+
+class DbCompatTest extends TestCase
+{
+    /**
+     * Test boolFromDb with PostgreSQL 't'/'f' strings
+     */
+    public function testBoolFromDbPostgreSQLTrue(): void
+    {
+        $this->assertSame(1, DbCompat::boolFromDb('t'));
+        $this->assertSame(1, DbCompat::boolFromDb('true'));
+    }
+
+    public function testBoolFromDbPostgreSQLFalse(): void
+    {
+        $this->assertSame(0, DbCompat::boolFromDb('f'));
+        $this->assertSame(0, DbCompat::boolFromDb('false'));
+    }
+
+    /**
+     * Test boolFromDb with MySQL/SQLite integers
+     */
+    public function testBoolFromDbMySQLTrue(): void
+    {
+        $this->assertSame(1, DbCompat::boolFromDb(1));
+    }
+
+    public function testBoolFromDbMySQLFalse(): void
+    {
+        $this->assertSame(0, DbCompat::boolFromDb(0));
+    }
+
+    /**
+     * Test boolFromDb with string integers (MySQL TINYINT(1) returns these)
+     */
+    public function testBoolFromDbStringIntegerTrue(): void
+    {
+        $this->assertSame(1, DbCompat::boolFromDb('1'));
+    }
+
+    public function testBoolFromDbStringIntegerFalse(): void
+    {
+        // CRITICAL: PDO often returns MySQL TINYINT(1) as string '0'
+        // This must NOT be treated as truthy
+        $this->assertSame(0, DbCompat::boolFromDb('0'));
+    }
+
+    public function testBoolFromDbStringNumericPositive(): void
+    {
+        // String numeric values > 1 should be treated as true
+        $this->assertSame(1, DbCompat::boolFromDb('2'));
+        $this->assertSame(1, DbCompat::boolFromDb('10'));
+    }
+
+    public function testBoolFromDbStringNumericNegative(): void
+    {
+        // Negative string numerics should be treated as true (non-zero)
+        $this->assertSame(1, DbCompat::boolFromDb('-1'));
+    }
+
+    /**
+     * Test boolFromDb with PHP booleans
+     */
+    public function testBoolFromDbBooleanTrue(): void
+    {
+        $this->assertSame(1, DbCompat::boolFromDb(true));
+    }
+
+    public function testBoolFromDbBooleanFalse(): void
+    {
+        $this->assertSame(0, DbCompat::boolFromDb(false));
+    }
+
+    /**
+     * Test boolFromDb with null
+     */
+    public function testBoolFromDbNull(): void
+    {
+        $this->assertSame(0, DbCompat::boolFromDb(null));
+    }
+
+    /**
+     * Test boolFromDb with edge cases
+     */
+    public function testBoolFromDbEmptyString(): void
+    {
+        $this->assertSame(0, DbCompat::boolFromDb(''));
+    }
+
+    public function testBoolFromDbNegativeInteger(): void
+    {
+        // Any non-zero integer should be treated as true
+        $this->assertSame(1, DbCompat::boolFromDb(-1));
+    }
+
+    public function testBoolFromDbPositiveInteger(): void
+    {
+        // Any non-zero integer should be treated as true
+        $this->assertSame(1, DbCompat::boolFromDb(2));
+    }
+
+    /**
+     * Test boolValue method
+     */
+    public function testBoolValueTrue(): void
+    {
+        $this->assertSame(1, DbCompat::boolValue(true));
+    }
+
+    public function testBoolValueFalse(): void
+    {
+        $this->assertSame(0, DbCompat::boolValue(false));
+    }
+
+    /**
+     * Test substr method
+     */
+    public function testSubstrSQLite(): void
+    {
+        $this->assertSame('SUBSTR', DbCompat::substr('sqlite'));
+    }
+
+    public function testSubstrMySQL(): void
+    {
+        $this->assertSame('SUBSTRING', DbCompat::substr('mysql'));
+    }
+
+    public function testSubstrPostgreSQL(): void
+    {
+        $this->assertSame('SUBSTRING', DbCompat::substr('pgsql'));
+    }
+
+    /**
+     * Test regexp method
+     */
+    public function testRegexpMySQL(): void
+    {
+        $this->assertSame('REGEXP', DbCompat::regexp('mysql'));
+    }
+
+    public function testRegexpSQLite(): void
+    {
+        $this->assertSame('GLOB', DbCompat::regexp('sqlite'));
+    }
+
+    public function testRegexpPostgreSQL(): void
+    {
+        $this->assertSame('~', DbCompat::regexp('pgsql'));
+    }
+
+    /**
+     * Test boolTrue method
+     */
+    public function testBoolTrueSQLite(): void
+    {
+        $this->assertSame('1', DbCompat::boolTrue('sqlite'));
+    }
+
+    public function testBoolTrueMySQL(): void
+    {
+        $this->assertSame('TRUE', DbCompat::boolTrue('mysql'));
+    }
+
+    /**
+     * Test boolFalse method
+     */
+    public function testBoolFalseSQLite(): void
+    {
+        $this->assertSame('0', DbCompat::boolFalse('sqlite'));
+    }
+
+    public function testBoolFalseMySQL(): void
+    {
+        $this->assertSame('FALSE', DbCompat::boolFalse('mysql'));
+    }
+
+    /**
+     * Test concat method
+     */
+    public function testConcatSQLite(): void
+    {
+        $result = DbCompat::concat('sqlite', ["'hello'", "' '", "'world'"]);
+        $this->assertSame("'hello' || ' ' || 'world'", $result);
+    }
+
+    public function testConcatMySQL(): void
+    {
+        $result = DbCompat::concat('mysql', ["'hello'", "' '", "'world'"]);
+        $this->assertSame("CONCAT('hello', ' ', 'world')", $result);
+    }
+
+    public function testConcatPostgreSQL(): void
+    {
+        $result = DbCompat::concat('pgsql', ["'hello'", "' '", "'world'"]);
+        $this->assertSame("CONCAT('hello', ' ', 'world')", $result);
+    }
+
+    public function testEscapeLikeEscapesWildcardsAndEscapeChar(): void
+    {
+        // %, _ and the escape char (!) must all be escaped with !.
+        $this->assertSame('a!_b!%c!!d', DbCompat::escapeLike('a_b%c!d'));
+    }
+
+    public function testEscapeLikeLeavesPlainTextUnchanged(): void
+    {
+        $this->assertSame('host.example.com', DbCompat::escapeLike('host.example.com'));
+    }
+
+    public function testBinaryCollationMySQL(): void
+    {
+        $this->assertSame(' COLLATE utf8mb4_bin', DbCompat::binaryCollation('mysql'));
+        $this->assertSame(' COLLATE utf8mb4_bin', DbCompat::binaryCollation('mysqli'));
+    }
+
+    public function testBinaryCollationByteExactByDefault(): void
+    {
+        // PostgreSQL and SQLite compare strings byte-exact already, so no clause.
+        $this->assertSame('', DbCompat::binaryCollation('pgsql'));
+        $this->assertSame('', DbCompat::binaryCollation('sqlite'));
+        $this->assertSame('', DbCompat::binaryCollation(null));
+    }
+
+    public function testAccentSensitiveEqualsMySQLFoldsCaseAndForcesBinary(): void
+    {
+        $this->assertSame(
+            'LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(?)',
+            DbCompat::accentSensitiveEquals('mysql', 'email')
+        );
+        $this->assertSame(
+            'LOWER(CONVERT(username USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:username)',
+            DbCompat::accentSensitiveEquals('mysqli', 'username', ':username')
+        );
+    }
+
+    public function testAccentSensitiveEqualsLeavesByteExactBackendsUnchanged(): void
+    {
+        // PostgreSQL and SQLite are byte-exact already; keep their existing comparison.
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('pgsql', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals('sqlite', 'email'));
+        $this->assertSame('email = ?', DbCompat::accentSensitiveEquals(null, 'email'));
+    }
+
+    public function testCaseInsensitiveEqualsFoldsCaseOnEveryBackend(): void
+    {
+        $this->assertSame(
+            'LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email)',
+            DbCompat::caseInsensitiveEquals('mysql', 'email', ':email')
+        );
+        $this->assertSame('LOWER(email) = LOWER(:email)', DbCompat::caseInsensitiveEquals('pgsql', 'email', ':email'));
+        $this->assertSame('LOWER(email) = LOWER(?)', DbCompat::caseInsensitiveEquals('sqlite', 'email'));
+    }
+
+    public function testBinaryCompareForcesByteComparisonOnMySQLOnly(): void
+    {
+        $this->assertSame('BINARY secret_key', DbCompat::binaryCompare('mysql', 'secret_key'));
+        $this->assertSame('BINARY secret_key', DbCompat::binaryCompare('mysqli', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare('pgsql', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare('sqlite', 'secret_key'));
+        $this->assertSame('secret_key', DbCompat::binaryCompare(null, 'secret_key'));
+    }
+
+    public function testOnlyPostgresRefusesOrderByExpressionsUnderDistinct(): void
+    {
+        $this->assertFalse(DbCompat::distinctAllowsOrderByExpression('pgsql'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('mysql'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('mysqli'));
+        $this->assertTrue(DbCompat::distinctAllowsOrderByExpression('sqlite'));
+    }
+
+    public function testCastToStringUsesAsciiCharsetOnMySQL(): void
+    {
+        // ascii must match record_comment_links.record_id or MariaDB 11.6+ rejects the comparison
+        $this->assertSame('CAST(records.id AS CHAR CHARACTER SET ascii)', DbCompat::castToString('mysql', 'records.id'));
+        $this->assertSame('CAST(records.id AS CHAR CHARACTER SET ascii)', DbCompat::castToString('mysqli', 'records.id'));
+    }
+
+    public function testCastToStringOnOtherBackends(): void
+    {
+        $this->assertSame('CAST(records.id AS TEXT)', DbCompat::castToString('sqlite', 'records.id'));
+        $this->assertSame('CAST(records.id AS VARCHAR)', DbCompat::castToString('pgsql', 'records.id'));
+    }
+
+    public function testGroupConcatSeparatorSyntaxPerEngine(): void
+    {
+        $this->assertSame("GROUP_CONCAT(label SEPARATOR '-')", DbCompat::groupConcat('mysql', 'label', '-'));
+        $this->assertSame("GROUP_CONCAT(label SEPARATOR '-')", DbCompat::groupConcat('mysqli', 'label', '-'));
+        $this->assertSame("GROUP_CONCAT(label, '-')", DbCompat::groupConcat('sqlite', 'label', '-'));
+        $this->assertSame("STRING_AGG(label, '-')", DbCompat::groupConcat('pgsql', 'label', '-'));
+    }
+}

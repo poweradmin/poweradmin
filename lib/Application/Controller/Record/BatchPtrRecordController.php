@@ -1,0 +1,360 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2026 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller\Record;
+
+use Exception;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\Dns\BatchReverseRecordCreator;
+use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
+use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Model\Constants;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+
+/**
+ * Handles the batch PTR form: creates PTR records for an IPv4 or IPv6 network, optionally with forward records.
+ */
+class BatchPtrRecordController extends BaseController
+{
+    private ?DomainRepositoryInterface $domainRepository = null;
+    private ?BatchReverseRecordCreator $batchReverseRecordCreator = null;
+    private ?ReverseTtlResolver $reverseTtlResolver = null;
+    private ?PermissionService $permissionService = null;
+
+    private function domainRepository(): DomainRepositoryInterface
+    {
+        return $this->domainRepository ??= $this->services()->domainRepository();
+    }
+
+    private function batchReverseRecordCreator(): BatchReverseRecordCreator
+    {
+        return $this->batchReverseRecordCreator ??= $this->services()->batchReverseRecordCreator();
+    }
+
+    private function reverseTtlResolver(): ReverseTtlResolver
+    {
+        return $this->reverseTtlResolver ??= $this->services()->reverseTtlResolver();
+    }
+
+    private function permissionService(): PermissionService
+    {
+        return $this->permissionService ??= $this->services()->permissionService();
+    }
+
+    public function run(): void
+    {
+        // Check if batch PTR records are enabled
+        $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record', true);
+        $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
+
+        // Check if user has permission to use this feature
+        $perm_edit_own = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN);
+        $perm_edit_others = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
+        $perm_edit_as_client = $this->hasPermission(Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT);
+        $this->checkCondition(
+            !$perm_edit_own && !$perm_edit_others && !$perm_edit_as_client,
+            _("You do not have permission to edit DNS records.")
+        );
+
+        // Set the current page for navigation highlighting
+        $this->setCurrentPage('batch_ptr_record');
+        $this->setPageTitle(_('Batch PTR Records'));
+
+        // Check if we have a specific zone_id
+        $id = $this->httpRequest->getQueryParam('id');
+        $hasZoneId = !empty($id);
+
+        if ($hasZoneId) {
+            $this->checkId();
+            $zone_id = (int)$id;
+            $zone_type = $this->domainRepository()->getDomainType($zone_id);
+            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+            $userId = $this->getUserContextService()->getLoggedInUserId();
+
+            // Check if this is a reverse zone
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+            $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
+
+            $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
+
+            $this->checkCondition(
+                ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
+                _("You do not have permission to add records to this zone.")
+            );
+            $this->checkCondition(
+                $this->changeApprovalModeForZone($zone_id) === ChangeApprovalPolicy::MODE_REQUEST,
+                ChangeRequestMessages::requiresApproval()
+            );
+        } else {
+            // Without a zone the PTR targets are only known at save time, so a reviewed install refuses upfront
+            $this->checkCondition(
+                $this->changeApproval()->enabled() && (bool)$this->config->get('approval', 'require_review_for_all', false),
+                ChangeRequestMessages::requiresApproval()
+            );
+        }
+
+        // Preserve form data in case of errors
+        $formData = [];
+        if ($this->isPost()) {
+            $formData = $this->httpRequest->getPostParams();
+            try {
+                if ($this->addBatchPtrRecords()) {
+                    // Clear form data on success
+                    $formData = [];
+                }
+            } catch (Exception $e) {
+                $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
+                // Keep form data in case of error
+            }
+        }
+
+        $this->showForm($formData);
+    }
+
+    private function addBatchPtrRecords(): bool
+    {
+        $constraints = [
+            'network_type' => [
+                new Assert\NotBlank()
+            ],
+            'network_prefix' => [
+                new Assert\NotBlank()
+            ],
+            'domain' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        $postParams = $this->httpRequest->getPostParams();
+        if (!$this->doValidateRequest($postParams)) {
+            $this->showFirstValidationError($postParams);
+            return false;
+        }
+
+        $networkType = $this->httpRequest->getPostParam('network_type', '');
+        $networkPrefix = $this->httpRequest->getPostParam('network_prefix', '');
+        $hostPrefix = $this->httpRequest->getPostParam('host_prefix', '');
+        $domain = $this->httpRequest->getPostParam('domain', '');
+        $ttl = $this->reverseTtlResolver()->resolveTtlForType('PTR', true);
+        // Forward A/AAAA records get their own per-type default (or dns.ttl).
+        $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
+        $forwardTtl = $this->reverseTtlResolver()->resolveTtlForType($forwardType, false);
+        // Matching-records mode: override each A's TTL with the configured PTR
+        // default (per-type table or legacy dns.ttl_reverse); null preserves
+        // historical behavior of inheriting the matched A's TTL.
+        $matchingPtrTtl = $this->reverseTtlResolver()->getTypeDefaults()['PTR']
+            ?? $this->reverseTtlResolver()->getConfiguredReverseTtl();
+        $prio = 0;
+        $comment = $this->httpRequest->getPostParam('comment', '');
+        $id = $this->httpRequest->getQueryParam('id');
+        $zone_id = $id !== null ? (int)$id : 0; // Use 0 when no zone_id is provided
+        $ipv6_count_param = $this->httpRequest->getPostParam('ipv6_count');
+        $ipv6_count = $ipv6_count_param !== null ? (int)$ipv6_count_param : 256;
+        $createForwardRecords = $this->httpRequest->getPostParam('create_forward_records') === 'on';
+        $onlyMatchingRecords = $this->httpRequest->getPostParam('only_matching_records') === 'on';
+
+        try {
+            if ($networkType === 'ipv4') {
+                $result = $this->batchReverseRecordCreator()->createIPv4Network(
+                    $networkPrefix,
+                    $hostPrefix,
+                    $domain,
+                    (string)$zone_id,
+                    $ttl,
+                    $prio,
+                    $comment,
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $createForwardRecords,
+                    $onlyMatchingRecords,
+                    $forwardTtl,
+                    $matchingPtrTtl
+                );
+            } else { // IPv6
+                $result = $this->batchReverseRecordCreator()->createIPv6Network(
+                    $networkPrefix,
+                    $hostPrefix,
+                    $domain,
+                    (string)$zone_id,
+                    $ttl,
+                    $prio,
+                    $comment,
+                    $this->getUserContextService()->getLoggedInUsername(),
+                    $ipv6_count,
+                    $createForwardRecords,
+                    $forwardTtl,
+                    $onlyMatchingRecords,
+                    $matchingPtrTtl
+                );
+            }
+
+            if ($result['success']) {
+                $this->setMessage('batch_ptr_record', $result['type'] ?? 'success', $result['message']);
+                return true;
+            } else {
+                $this->setMessage('batch_ptr_record', 'error', $result['message']);
+                return false;
+            }
+        } catch (Exception $e) {
+            $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
+            return false;
+        }
+    }
+
+    private function showForm(array $formData = []): void
+    {
+        $id = $this->httpRequest->getQueryParam('id');
+        $hasZoneId = !empty($id);
+        $zone_id = "";
+        $zone_name = "";
+        $idn_zone_name = "";
+        $isReverseZone = false;
+        $preFillDomain = "";
+
+        if ($hasZoneId) {
+            $zone_id = (int)$id;
+            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+            $preFillDomain = $zone_name;
+
+            $idn_zone_name = DnsIdnService::toIdnAlias($zone_name);
+        }
+
+        // Get all reverse zones for the dropdown
+        $reverseZones = $this->getReverseZones();
+
+        $this->render('batch_ptr_record.html', [
+            'network_type' => $formData['network_type'] ?? 'ipv4',
+            'network_prefix' => $formData['network_prefix'] ?? '',
+            'host_prefix' => $formData['host_prefix'] ?? '',
+            'domain' => $formData['domain'] ?? $preFillDomain,
+            'ttl' => $this->reverseTtlResolver()->getDefaultTtl(true),
+            'ipv6_count' => $formData['ipv6_count'] ?? 256,
+            'comment' => $formData['comment'] ?? '',
+            'create_forward_records' => $formData['create_forward_records'] ?? '',
+            'only_matching_records' => $formData['only_matching_records'] ?? '',
+            'zone_id' => $zone_id,
+            'zone_name' => $zone_name,
+            'idn_zone_name' => $idn_zone_name,
+            'zone_display_name' => DnsIdnService::toDisplay($zone_name),
+            'is_reverse_zone' => $isReverseZone,
+            'has_zone_id' => $hasZoneId,
+            'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
+            'reverse_zones' => $reverseZones,
+        ]);
+    }
+
+    public function checkId(): void
+    {
+        $constraints = [
+            'id' => [
+                new Assert\NotBlank(),
+                new Assert\Type('numeric')
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($this->httpRequest->getQueryParams())) {
+            $this->showFirstValidationError($this->httpRequest->getQueryParams());
+        }
+    }
+
+    /**
+     * Get all reverse zones for the dropdown
+     *
+     * @return array Array of reverse zones
+     */
+    private function getReverseZones(): array
+    {
+        $zoneRepository = $this->services()->zoneRepository();
+
+        // Get permission type and user ID
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $perm_view = $this->permissionService()->getViewPermissionLevel((int)$userId);
+
+        // Get all reverse zones (using a high limit to get all zones for the dropdown).
+        // The dropdown renders neither badges nor record counts, so skip both
+        // per-zone probes.
+        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, false, false, false, false);
+
+        $reverseZones = [];
+        foreach ($reverseZonesResult as $zone) {
+            // For IPv4 reverse zones, convert to network notation
+            if (str_ends_with($zone->name, '.in-addr.arpa')) {
+                $parts = explode('.', str_replace('.in-addr.arpa', '', $zone->name));
+                $octets = array_reverse($parts);
+
+                // Determine CIDR based on number of octets
+                if (count($octets) == 1) {
+                    $network = $octets[0] . '.0.0.0/8';
+                } elseif (count($octets) == 2) {
+                    $network = $octets[0] . '.' . $octets[1] . '.0.0/16';
+                } elseif (count($octets) == 3) {
+                    $network = $octets[0] . '.' . $octets[1] . '.' . $octets[2] . '.0/24';
+                } else {
+                    // For more specific zones, just show the zone name
+                    $network = $zone->name;
+                }
+
+                $reverseZones[] = [
+                    'name' => $zone->name,
+                    'network' => $network,
+                    'type' => 'ipv4'
+                ];
+            } elseif (str_ends_with($zone->name, '.ip6.arpa')) {
+                // Convert ip6.arpa zone to /64 prefix (4 hextets)
+                // The form validation expects exactly 4 colon-separated groups
+                $shortened = IpHelper::shortenIPv6ReverseZone($zone->name);
+                if ($shortened !== null) {
+                    $binary = inet_pton($shortened);
+                    $expanded = implode(':', str_split(bin2hex($binary), 4));
+                    $hextets = explode(':', $expanded);
+                    // Take first 4 hextets and strip leading zeros for readability
+                    $prefix = array_slice($hextets, 0, 4);
+                    $network = implode(':', array_map(function ($h) {
+                        return ltrim($h, '0') ?: '0';
+                    }, $prefix));
+                } else {
+                    $network = $zone->name;
+                }
+
+                $reverseZones[] = [
+                    'name' => $zone->name,
+                    'network' => $network,
+                    'type' => 'ipv6'
+                ];
+            }
+        }
+
+        return $reverseZones;
+    }
+}

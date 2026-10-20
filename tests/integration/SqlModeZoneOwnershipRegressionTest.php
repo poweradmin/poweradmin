@@ -25,9 +25,10 @@ namespace Poweradmin\Tests\Integration;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Service\HybridPermissionService;
-use Poweradmin\Domain\Service\ApiPermissionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use TestHelpers\FakeConfiguration;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
@@ -57,7 +58,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     private PDO $db;
     private DbUserRepository $userRepository;
     private ApiPermissionService $apiPermissions;
-    private HybridPermissionService $hybridPermissions;
+    private PermissionService $permissions;
 
     protected function setUp(): void
     {
@@ -75,9 +76,10 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
 
         $this->seedSqlModeFixture();
 
-        $this->userRepository = new DbUserRepository($this->db, ConfigurationManager::getInstance());
-        $this->apiPermissions = new ApiPermissionService($this->db);
-        $this->hybridPermissions = new HybridPermissionService($this->db);
+        $config = new FakeConfiguration();
+        $this->userRepository = new DbUserRepository($this->db, $config, false);
+        $this->permissions = new PermissionService($this->userRepository);
+        $this->apiPermissions = new ApiPermissionService($this->userRepository, $this->permissions, $config);
     }
 
     /**
@@ -96,7 +98,7 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
             (2, 101, NULL, " . self::BOB . "),
             (100, 102, NULL, " . self::CAROL . ")");
 
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (41, 'zone_content_edit_own'), (42, 'zone_content_view_own')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (41, '" . Permission::PERM_ZONE_CONTENT_EDIT_OWN . "'), (42, '" . Permission::PERM_ZONE_CONTENT_VIEW_OWN . "')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::EDITOR_TEMPL . ", 'Editor')");
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES
             (" . self::EDITOR_TEMPL . ", 41),
@@ -152,11 +154,11 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
     }
 
     #[DataProvider('ownershipMatrix')]
-    public function testHybridPermissionsAgreeWithOwnership(int $userId, int $zoneId, bool $owns): void
+    public function testZoneEditLevelFollowsOwnership(int $userId, int $zoneId, bool $owns): void
     {
-        $permissions = $this->hybridPermissions->getUserPermissionsForZone($userId, $zoneId)['permissions'];
+        $level = $this->permissions->getEditPermissionLevelForZone($userId, $zoneId);
 
-        $this->assertSame($owns, in_array('zone_content_edit_own', $permissions, true));
+        $this->assertSame($owns ? 'own' : 'none', $level);
     }
 
     /**
@@ -181,17 +183,6 @@ class SqlModeZoneOwnershipRegressionTest extends TestCase
         $daveVisible = $this->apiPermissions->getUserVisibleZoneIds(self::DAVE);
         sort($daveVisible);
         $this->assertSame([101], $daveVisible, 'group-owned zones must still resolve');
-    }
-
-    public function testAccessibleZonesReportTheDomainsIds(): void
-    {
-        $alice = $this->hybridPermissions->getUserAccessibleZones(self::ALICE);
-        $this->assertSame([100], $alice['user_zones']);
-        $this->assertSame([], $alice['group_zones']);
-
-        $dave = $this->hybridPermissions->getUserAccessibleZones(self::DAVE);
-        $this->assertSame([], $dave['user_zones']);
-        $this->assertSame([101], $dave['group_zones']);
     }
 
     public function testNoZonesRowGainedAFabricatedDomainId(): void

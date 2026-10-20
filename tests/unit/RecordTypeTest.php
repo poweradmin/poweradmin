@@ -54,4 +54,15 @@ class RecordTypeTest extends TestCase
         $this->assertContains('SSHFP', RecordType::LESS_COMMON_RECORDS);
         $this->assertContains('HTTPS', RecordType::LESS_COMMON_RECORDS);
     }
+
+    public function testHasPriorityFollowsTheTypesWithPriorityList(): void
+    {
+        foreach (['MX', 'SRV', 'KX'] as $type) {
+            $this->assertTrue(RecordType::hasPriority($type), $type);
+        }
+        // NAPTR keeps order and preference inside the content, and lookups are case-sensitive
+        foreach (['A', 'CNAME', 'NAPTR', 'SOA', 'mx', ''] as $type) {
+            $this->assertFalse(RecordType::hasPriority($type), $type);
+        }
+    }
 }

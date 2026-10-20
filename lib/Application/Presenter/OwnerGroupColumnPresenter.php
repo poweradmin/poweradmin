@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Presenter;
 
+use Poweradmin\Domain\Model\UserGroup;
+
 /**
  * Prepares the zone-list owner and group cells: the first entries stay visible,
  * the rest collapse into a "+N more" tooltip label.
@@ -29,6 +31,23 @@ namespace Poweradmin\Application\Presenter;
 final class OwnerGroupColumnPresenter
 {
     private const VISIBLE_LIMIT = 2;
+
+    /**
+     * Group names keyed by id, so the group column can label the ids the
+     * ownership index carries.
+     *
+     * @param iterable<UserGroup> $groups
+     * @return array<int, string>
+     */
+    public static function namesById(iterable $groups): array
+    {
+        $names = [];
+        foreach ($groups as $group) {
+            $names[(int)$group->getId()] = $group->getName();
+        }
+
+        return $names;
+    }
 
     /**
      * @param array $owners usernames keyed as in the repository result

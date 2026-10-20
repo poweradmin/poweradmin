@@ -38,12 +38,10 @@ class ConfigurationManagerTest extends TestCase
     {
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
 
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue(ConfigurationManager::getInstance(), false);
     }
 
@@ -59,11 +57,9 @@ class ConfigurationManagerTest extends TestCase
 
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $settingsProperty->setValue($configManager, $settings);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
     }
 
@@ -315,7 +311,6 @@ class ConfigurationManagerTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $mergeMethod = $reflectionClass->getMethod('mergeConfig');
-        $mergeMethod->setAccessible(true);
 
         $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
 
@@ -368,7 +363,6 @@ class ConfigurationManagerTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $mergeMethod = $reflectionClass->getMethod('mergeConfig');
-        $mergeMethod->setAccessible(true);
 
         $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
 
@@ -429,7 +423,6 @@ class ConfigurationManagerTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $mergeMethod = $reflectionClass->getMethod('mergeConfig');
-        $mergeMethod->setAccessible(true);
 
         $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
 
@@ -535,15 +528,12 @@ class ConfigurationManagerTest extends TestCase
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
 
         $pathProperty = $reflectionClass->getProperty('defaultsFilePath');
-        $pathProperty->setAccessible(true);
         $pathProperty->setValue($configManager, '/tmp/settings.defaults.php');
 
         $loadedProperty = $reflectionClass->getProperty('defaultsFileLoaded');
-        $loadedProperty->setAccessible(true);
         $loadedProperty->setValue($configManager, true);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
 
         $this->assertTrue($configManager->isDefaultsFileLoaded());
@@ -561,15 +551,12 @@ class ConfigurationManagerTest extends TestCase
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
 
         $pathProperty = $reflectionClass->getProperty('defaultsFilePath');
-        $pathProperty->setAccessible(true);
         $pathProperty->setValue($configManager, '/nonexistent/settings.defaults.php');
 
         $loadedProperty = $reflectionClass->getProperty('defaultsFileLoaded');
-        $loadedProperty->setAccessible(true);
         $loadedProperty->setValue($configManager, false);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
 
         $this->assertFalse($configManager->isDefaultsFileLoaded());

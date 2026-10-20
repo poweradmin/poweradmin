@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,16 +22,13 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Domain\Model\PaginationLimits;
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
 /**
- * Class ConfigurationManager
- *
- * This class is responsible for loading and accessing configuration values.
- * It layers config/settings.php (or PA_CONFIG_PATH) over config/settings.defaults.php.
- * Legacy inc/config.inc.php support was removed in 4.1.0.
+ * Singleton that layers config/settings.php over config/settings.defaults.php and serves values by group and key.
  */
 class ConfigurationManager implements ConfigurationInterface
 {
@@ -152,15 +149,15 @@ class ConfigurationManager implements ConfigurationInterface
             return;
         }
 
-        $clamped = max(PaginationService::MIN_ROWS_PER_PAGE, min($configured, PaginationService::MAX_ROWS_PER_PAGE));
+        $clamped = max(PaginationLimits::MIN_ROWS_PER_PAGE, min($configured, PaginationLimits::MAX_ROWS_PER_PAGE));
         if ($clamped === $configured) {
             return;
         }
 
         $this->logger->warning('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
             'configured' => $configured,
-            'min' => PaginationService::MIN_ROWS_PER_PAGE,
-            'max' => PaginationService::MAX_ROWS_PER_PAGE,
+            'min' => PaginationLimits::MIN_ROWS_PER_PAGE,
+            'max' => PaginationLimits::MAX_ROWS_PER_PAGE,
             'clamped' => $clamped,
         ]);
         $this->settings['interface']['rows_per_page'] = $clamped;
@@ -313,6 +310,12 @@ class ConfigurationManager implements ConfigurationInterface
                     'error' => $error,
                 ]);
             }
+        }
+        foreach ($validator->getWarnings() as $key => $warning) {
+            $this->logger->warning('Configuration warning [{key}]: {warning}', [
+                'key' => $key,
+                'warning' => $warning,
+            ]);
         }
     }
 }

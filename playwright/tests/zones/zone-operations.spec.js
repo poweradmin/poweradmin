@@ -5,33 +5,19 @@
  * zone types, comments, and ownership.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { deleteZoneByName, getTestZoneId, openZoneListPageFor, uniqueZoneName, zoneExists } from '../../helpers/zones.js';
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
-
-// Helper to get a zone ID for testing
-async function getTestZoneId(page) {
-  await page.goto('/zones/forward?letter=all');
-  // Scoped to the table: an unscoped a[href*="/edit"] matches the nav dropdown first,
-  // which carries no zone id, so this helper used to return null for every test.
-  const editLink = page.locator('table a[href*="/zones/"][href*="/edit"]').first();
-  if (await editLink.count() > 0) {
-    const href = await editLink.getAttribute('href');
-    const match = href.match(/\/zones\/(\d+)\/edit/);
-    return match ? match[1] : null;
-  }
-  return null;
-}
 
 test.describe('Zone Operations', () => {
   test.describe('SOA Record Management', () => {
     test('should display SOA record in zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
       const soaRow = page.locator('tr:has-text("SOA")');
@@ -40,22 +26,27 @@ test.describe('Zone Operations', () => {
 
     test('should access SOA edit page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
+      // The zone page edits records inline and has no per-record edit link, so the
+      // record id comes from the row's input names and the page is opened directly
       await page.goto(`/zones/${zoneId}/edit`);
-      const soaEditLink = page.locator('a[href*="/records/"][href*="/edit"]:has-text("SOA"), tr:has-text("SOA") a[href*="/edit"]').first();
-      if (await soaEditLink.count() > 0) {
-        await soaEditLink.click();
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-      }
+      const soaId = await page.locator('[name^="record["][name$="[type]"]').evaluateAll(nodes => {
+        const soa = nodes.find(node => node.value === 'SOA');
+        return soa ? soa.getAttribute('name').match(/record\[([^\]]+)\]/)[1] : null;
+      });
+      expect(soaId).not.toBeNull();
+
+      await page.goto(`/zones/${zoneId}/records/${encodeURIComponent(soaId)}/edit`);
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('[name$="[type]"], select[name*="type"]').first()).toBeVisible();
     });
 
     test('should display SOA serial number', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getTestZoneId(page);
-      if (!zoneId) return;
+      const zoneId = await getTestZoneId(page, 'admin');
+      expect(zoneId, 'admin-zone.example.com must be seeded').toBeTruthy();
 
       await page.goto(`/zones/${zoneId}/edit`);
 
@@ -65,34 +56,18 @@ test.describe('Zone Operations', () => {
       await expect(soaContent).toHaveValue(/\d{8,10}/);
     });
 
-    test('should update SOA serial on record change', async ({ page }) => {
+    test('should open the edit page of a new zone with its SOA', async ({ page, tempZone }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const testDomain = `soa-test-${Date.now()}.example.com`;
 
-      // Create zone
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      // The list is paginated, so walk to the page that shows the new zone
+      expect(await openZoneListPageFor(page, tempZone.name)).toBe(true);
+      const row = page.locator(`tr:has-text("${tempZone.name}")`);
+      await expect(row).toHaveCount(1);
 
-      // Get initial SOA
-      await page.goto('/zones/forward?letter=all');
-      const row = page.locator(`tr:has-text("${testDomain}")`);
-      if (await row.count() > 0) {
-        const editLink = row.locator('a[href*="/edit"]').first();
-        await editLink.click();
-
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-
-        // Cleanup
-        await page.goto('/zones/forward?letter=all');
-        const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first();
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-          if (await yesBtn.count() > 0) await yesBtn.click();
-        }
-      }
+      await row.locator('a[href*="/edit"]').first().click();
+      await expect(page).toHaveURL(new RegExp(`/zones/${tempZone.id}/edit`));
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+      await expect(page.locator('tr:has(input[value="SOA"])')).toHaveCount(1);
     });
   });
 
@@ -106,36 +81,33 @@ test.describe('Zone Operations', () => {
 
     test('should create native zone', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const testDomain = `native-${Date.now()}.example.com`;
+      const testDomain = uniqueZoneName('native');
 
-      await page.goto('/zones/add/master');
-      await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
+      try {
+        await page.goto('/zones/add/master');
+        await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
 
-      const typeSelect = page.locator('select[name*="type"]');
-      if (await typeSelect.count() > 0) {
-        await typeSelect.selectOption('NATIVE');
-      }
+        await page.locator('[data-testid="zone-type-select"]').selectOption('NATIVE');
 
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.locator('button[type="submit"], input[type="submit"]').first().click();
+        await page.waitForLoadState('networkidle');
 
-      // Cleanup
-      await page.goto('/zones/forward?letter=all');
-      const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="/delete"]`).first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
+        expect(await zoneExists(page, testDomain), `zone ${testDomain} must be created`).toBe(true);
+      } finally {
+        await deleteZoneByName(page, testDomain);
       }
     });
 
     test('should display slave zone master IP', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
-      const slaveRow = page.locator('tr:has-text("SLAVE")').first();
-      if (await slaveRow.count() > 0) {
-        const bodyText = await slaveRow.textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+
+      // The master IP lives on the zone edit page, not in the list row
+      const editLink = page.locator('tr:has-text("slave-zone.example.com") a[href*="/edit"]').first();
+      await expect(editLink).toBeVisible();
+      await editLink.click();
+
+      await expect(page.locator('input[name="new_master"]')).toHaveValue('10.0.0.1');
     });
   });
 
@@ -144,34 +116,31 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
-        if (await commentField.count() > 0) {
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
+      if (await commentField.count() > 0) {
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
-    test('should update zone comment', async ({ page }) => {
+    test('should update zone comment', async ({ page, tempZone }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/zones/forward?letter=all');
-      const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const commentLink = page.locator('a[href*="comment"]').first();
-        if (await commentLink.count() > 0) {
-          await commentLink.click();
-          const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]').first();
-          if (await commentField.count() > 0) {
-            await commentField.fill(`Updated comment ${Date.now()}`);
-            await page.locator('button[type="submit"], input[type="submit"]').first().click();
-            // Auto-retrying assertion: the click navigation may still be in flight
-            await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-          }
-        }
-      }
+      await page.goto(`/zones/${tempZone.id}/edit`);
+
+      const commentLink = page.locator('a[href*="/comment/edit"]').first();
+      test.skip(await commentLink.count() === 0, 'zone comments are disabled on this instance (show_zone_comments)');
+      await commentLink.click();
+
+      const comment = `Updated comment ${tempZone.name}`;
+      await page.locator('textarea').first().fill(comment);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
+
+      await page.goto(`/zones/${tempZone.id}/comment/edit`);
+      await expect(page.locator('textarea').first()).toHaveValue(comment);
     });
   });
 
@@ -187,14 +156,14 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const ownerLink = page.locator('a[href*="owner"]').first();
-        if (await ownerLink.count() > 0) {
-          await ownerLink.click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      const ownerLink = page.locator('a[href*="owner"]').first();
+      if (await ownerLink.count() > 0) {
+        await ownerLink.click();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
 
@@ -202,15 +171,15 @@ test.describe('Zone Operations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
       const editLink = page.locator('table a[href*="/edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        await page.waitForLoadState('networkidle');
-        const addOwnerLink = page.locator('a[href*="/ownership"]').first();
-        if (await addOwnerLink.count() > 0) {
-          await addOwnerLink.click();
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
-        }
+      expect(await editLink.count()).toBeGreaterThan(0);
+
+      await editLink.click();
+      await page.waitForLoadState('networkidle');
+      const addOwnerLink = page.locator('a[href*="/ownership"]').first();
+      if (await addOwnerLink.count() > 0) {
+        await addOwnerLink.click();
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
       }
     });
   });
@@ -249,12 +218,10 @@ test.describe('Zone Operations', () => {
     test('should display record count for zones', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/zones/forward?letter=all');
+      // The seeded zones always fill the list, so the table and its counts are there
       const table = page.locator('table').first();
-      if (await table.count() > 0) {
-        const bodyText = await table.textContent();
-        // Table should contain numeric record counts
-        expect(bodyText).toMatch(/\d+/);
-      }
+      await expect(table).toBeVisible();
+      await expect(table).toContainText(/\d+/);
     });
   });
 });

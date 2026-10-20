@@ -91,7 +91,7 @@ done
 # Map existing API test variables to our expected variable names (for compatibility)
 BASE_URL="${BASE_URL:-${API_BASE_URL:-http://localhost/poweradmin}}"
 TEST_USERNAME="${TEST_USERNAME:-${DYNAMIC_DNS_USER:-${HTTP_AUTH_USER:-testuser}}}"
-TEST_PASSWORD="${TEST_PASSWORD:-${DYNAMIC_DNS_PASS:-${HTTP_AUTH_PASS:-testpass123}}}"
+TEST_PASSWORD="${TEST_PASSWORD:-${DYNAMIC_DNS_PASS:-${HTTP_AUTH_PASS:-Ddns_Passw0rd}}}"
 TEST_HOSTNAME="${TEST_HOSTNAME:-${DYNAMIC_DNS_HOSTNAME:-test.example.com}}"
 
 # Set derived URLs
@@ -255,7 +255,7 @@ You can also set environment variables directly or use command line:
 Supported Environment Variables (Dynamic DNS specific):
   BASE_URL           Poweradmin base URL (default: http://localhost/poweradmin)
   TEST_USERNAME      Test user username (default: testuser)
-  TEST_PASSWORD      Test user password (default: testpass123)
+  TEST_PASSWORD      Test user password (default: Ddns_Passw0rd)
   TEST_HOSTNAME      Test hostname to update (default: test.example.com)
   CURL_TIMEOUT       cURL timeout in seconds (default: 30)
   SKIP_SSL_VERIFY    Skip SSL verification (default: false)

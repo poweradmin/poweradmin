@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('User Logs', () => {
   test.describe('Admin User', () => {
@@ -37,13 +37,9 @@ test.describe('User Logs', () => {
     test('should display logs table or no logs message', async ({ page }) => {
       await page.goto('/users/logs');
       const table = page.locator('table').first();
-      const noLogsMsg = page.locator('body');
-      if (await table.count() > 0) {
-        await expect(table).toBeVisible();
-      } else {
-        const bodyText = await noLogsMsg.textContent();
-        expect(bodyText.toLowerCase()).toMatch(/no.*log|empty/i);
-      }
+      expect(await table.count()).toBeGreaterThan(0);
+
+      await expect(table).toBeVisible();
     });
 
     test('should allow selecting a user filter', async ({ page }) => {
@@ -67,18 +63,16 @@ test.describe('User Logs', () => {
 
     test('should display clear button', async ({ page }) => {
       await page.goto('/users/logs');
-      const clearBtn = page.locator('a:has-text("Clear"), button:has-text("Clear")').first();
-      if (await clearBtn.count() > 0) {
-        await expect(clearBtn).toBeVisible();
-      }
+      // The control is icon-only, so it is found by its title rather than its text
+      await expect(page.locator('a[title="Clear"]')).toBeVisible();
     });
 
-    test('should display log entries when available', async ({ page }) => {
-      await page.goto('/users/logs');
-      const rows = page.locator('table tbody tr');
-      if (await rows.count() > 0) {
-        await expect(rows.first()).toBeVisible();
-      }
+    test('should display log entries for the login this test just made', async ({ page }) => {
+      // beforeEach logged in as admin, so a login_success row is guaranteed
+      await page.goto('/users/logs?event_type=login_success');
+      await expect(page.locator('table tbody tr').first()).toBeVisible();
+      await expect(page.locator('table')).toContainText('login_success');
+      await expect(page.locator('table')).toContainText(`user:${users.admin.username}`);
     });
 
     test('should have user filter dropdown', async ({ page }) => {

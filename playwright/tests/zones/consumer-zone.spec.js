@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { findZoneIdByName, deleteZoneById, openZoneListPageFor } from '../../helpers/zones.js';
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Creation and the follow-up assertions run against the same zone.
 test.describe.configure({ mode: 'serial' });
@@ -64,11 +65,9 @@ test.describe('Catalog consumer zones', () => {
     await page.locator('[data-testid="add-zone-button"]').click();
     await page.waitForLoadState('networkidle');
 
-    const body = await page.locator('body').textContent();
-    expect(body).not.toMatch(/fatal|exception/i);
+    await expect(page.locator('body')).not.toContainText(/fatal|exception/i);
 
-    await page.goto('/zones/forward?letter=all&rows_per_page=100');
-    await page.waitForLoadState('networkidle');
+    await openZoneListPageFor(page, consumerZone);
 
     const zoneRow = page.locator(`tr:has-text("${consumerZone}")`);
     await expect(zoneRow).toHaveCount(1);
@@ -76,10 +75,9 @@ test.describe('Catalog consumer zones', () => {
   });
 
   test('shows the primary, stays read-only, and refuses a silent retype', async ({ page, request }) => {
-    await page.goto('/zones/forward?letter=all&rows_per_page=100');
-    await page.waitForLoadState('networkidle');
-
-    await page.locator(`tr:has-text("${consumerZone}") a[href*="/edit"]`).first().click();
+    const consumerZoneId = await findZoneIdByName(page, consumerZone);
+    expect(consumerZoneId).not.toBeNull();
+    await page.goto(`/zones/${consumerZoneId}/edit`);
     await page.waitForLoadState('networkidle');
     await expect(page).toHaveURL(/zones\/\d+\/edit/);
 
@@ -109,11 +107,9 @@ test.describe('Catalog consumer zones', () => {
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    await page.goto('/zones/forward?letter=all&rows_per_page=100');
-    const row = page.locator(`tr:has-text("${consumerZone}") a[href*="/delete"]`);
-    if (await row.count() > 0) {
-      await row.first().click();
-      await page.locator('button[type="submit"]').first().click().catch(() => {});
+    const zoneId = await findZoneIdByName(page, consumerZone);
+    if (zoneId) {
+      await deleteZoneById(page, zoneId);
     }
     await page.close();
   });

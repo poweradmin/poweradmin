@@ -14,6 +14,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
+            {% if edit_mode != 'request' %}
             {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm me-1" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
@@ -27,6 +28,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -65,11 +67,15 @@
                         <th>{% trans %}Comment{% endtrans %}</th>
                     {% endif %}
                     <th class="text-center">
+                        {% if edit_mode == 'request' %}
+                            {% trans %}Reason{% endtrans %}
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                             {% trans %}Add PTR{% endtrans %}
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                             {% trans %}Add A/AAAA{% endtrans %}
+                        {% endif %}
                         {% endif %}
                     </th>
                     <th></th>
@@ -136,6 +142,10 @@
                     <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
+                        {% if edit_mode == 'request' %}
+                        {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
+                        <input type="text" class="form-control form-control-sm" style="min-width: 12rem" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
@@ -146,10 +156,11 @@
                             <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
                         {% endif %}
+                        {% endif %}
                     </td>
                     <td class="col-sm-1">
                         <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
-                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Add record{% endtrans %}{% endif %}</button>
                     </td>
                 </tr>
             </table>
@@ -175,20 +186,23 @@
             {% endif %}
         </strong>
         <div>
-            {% if perm_edit != "none" and iface_edit_save_changes_top and not zone_is_read_only %}
-            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-                <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+            {% if zone_is_editable and iface_edit_save_changes_top %}
+            {% if edit_mode == 'request' %}
+            <input type="text" class="form-control form-control-sm d-inline-block align-middle" style="width: 22rem; max-width: 100%" form="edit-zone-form" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
+            {% endif %}
+            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
+                <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
             </button>
             <button class="btn btn-secondary btn-sm" type="reset" form="edit-zone-form" name="reset">
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
-            {% if not iface_show_add_record_form and zone_is_editable %}
+            {% if not iface_show_add_record_form and zone_is_editable and edit_mode != 'request' %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
             {% endif %}
-            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable %}
+            {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone and zone_is_editable and edit_mode != 'request' %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-{{ action.icon }} me-1 text-white"></i>{{ action.label|trans }}
@@ -234,6 +248,17 @@
     </div>
 
     <div class="card-body">
+        {# Outside the record table: a rejected save can leave the listing empty. #}
+        {% if stale_form_dropped %}
+        <div class="alert alert-warning py-2 small" role="alert">
+            {% trans %}Your changes to these records could not be restored, because they are no longer in this listing:{% endtrans %}
+            <ul class="mb-0">
+                {% for dropped in stale_form_dropped %}
+                <li>{{ dropped }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         {% if not records %}
             {% if search_term or record_type_filter or content_filter %}
                 <div class="d-flex align-items-center py-2 px-3 bg-light border rounded mb-3">
@@ -304,7 +329,7 @@
 
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                {{ pagination | raw }}
+                {% include '_partials/pagination.html' with {items: pagination_items} only %}
             </div>
             <div class="d-flex align-items-center">
                 <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
@@ -327,7 +352,11 @@
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             {{ macros.csrf_field() }}
             <input type="hidden" name="serial" value="{{ serial }}">
+            {# Set by the unchanged-row filter below. Kept near the top of the form so
+               max_input_vars truncation cannot drop it. #}
+            <input type="hidden" name="changed_rows_only" value="0" id="changed-rows-only">
 
+            {% set show_record_timestamps = pdns_caps and pdns_caps.supportsRecordTimestamps and records_have_timestamps %}
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm add-record-form">
                     <thead class="table-light">
@@ -396,7 +425,7 @@
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                             {% endif %}
                         </th>
-                        {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+                        {% if show_record_timestamps %}
                         <th>{% trans %}Last modified{% endtrans %}</th>
                         {% endif %}
                         {% if iface_show_record_edit_button or iface_show_record_delete_button %}
@@ -408,14 +437,20 @@
         {% for r in records %}
         {% set record_url_base = base_url_prefix ~ '/zones/' ~ zone_id ~ '/records/' ~ r['id'] %}
         {% if not r['record_locked'] %}
-        <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
+        {# data-restored keeps a row the operator has not managed to save yet out of the
+           unchanged-row filter below, which would otherwise drop it from the next POST. #}
+        <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}"{% if r['unsaved_edit'] %} data-restored="{{ r['id'] }}"{% endif %}>
         <input type="hidden" name="record[{{ r['id'] }}][zid]" value="{{ zone_id }}">
         {% endif %}
-        <tr style="font-size: 14px;">
+        <tr style="font-size: 14px;"{% if r['unsaved_edit'] %} class="table-warning"{% endif %}>
             <td class="text-center">
                 {% if not r['record_locked'] %}
                 <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ r['id'] }}"
                        {% if not iface_show_record_edit_button %}data-edit-url="{{ record_url_base }}/edit"{% endif %}>
+                {% endif %}
+                {% if r['stored_summary'] %}
+                <i class="bi bi-exclamation-triangle text-warning" data-bs-toggle="tooltip" data-bs-placement="top"
+                   title="{{ r['stored_summary'] }}"></i>
                 {% endif %}
             </td>
             {% if iface_edit_show_id %}
@@ -424,7 +459,7 @@
             {% if r['record_locked'] %}
             <td class="col-sm-2">{{ r['display_name'] }}</td>
             <td class="text-center"><span class="badge {{ record_type_class(r['type']) }}">{{ r['type'] }}</span></td>
-            <td>{{ r['content'] }}</td>
+            <td>{{ r['content'] }}{% if r['soa_fields'] %}<details class="mt-1"><summary class="text-muted small">{% trans %}Details{% endtrans %}</summary>{{ macros.soa_breakdown(r['soa_fields'], '', r['soa_durations'] ?? {}) }}</details>{% endif %}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
             {% if iface_record_comments %}
@@ -437,7 +472,7 @@
             </td>
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
-            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            {% if show_record_timestamps %}
             <td class="small text-muted text-nowrap">
                 {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
@@ -457,6 +492,7 @@
                 <div id="contentInputContainer{{ r['id'] }}">
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
+                {% if r['soa_fields'] %}<details class="mt-1"><summary class="text-muted small">{% trans %}Details{% endtrans %}</summary>{{ macros.soa_breakdown(r['soa_fields'], 'recordContent' ~ r['id'], r['soa_durations'] ?? {}) }}</details>{% endif %}
             </td>
             <td><input class="form-control form-control-sm record-priority-field" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
@@ -482,7 +518,7 @@
                 {# Row-complete marker; dropped first if max_input_vars truncates the POST. #}
                 <input type="hidden" name="record[{{ r['id'] }}][_complete]" value="1">
             </td>
-            {% if pdns_caps and pdns_caps.supportsRecordTimestamps %}
+            {% if show_record_timestamps %}
             <td class="small text-muted text-nowrap">
                 {% if r['modified_at'] is defined and r['modified_at'] %}
                     <span title="{{ r['modified_at']|date('Y-m-d H:i:s T') }}">{{ r['modified_at']|date('Y-m-d H:i') }}</span>
@@ -521,7 +557,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div>
-                    {{ pagination | raw }}
+                    {% include '_partials/pagination.html' with {items: pagination_items} only %}
                 </div>
                 <div class="d-flex gap-2">
                     {% if zone_is_editable %}
@@ -530,9 +566,11 @@
                             <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
                         </button>
                         {% endif %}
+                        {% if edit_mode != 'request' %}
                         <button type="submit" form="delete-records-form" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
                             <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
                         </button>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -542,11 +580,16 @@
                 <label class="form-label"><strong>{% trans %}Comments{% endtrans %}:</strong></label>
                 <div class="d-flex gap-2 align-items-start">
                     <textarea class="form-control form-control-sm" rows="5" name="zone_comment">{{ zone_comment }}</textarea>
-                    {% if perm_edit != "none" %}
+                    {% if can_edit_records and edit_mode != 'request' %}
                     <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
                         <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                     {% endif %}
                 </div>
+                {% if zone_comment_conflict %}
+                <div class="alert alert-warning py-2 small mt-2 mb-0" role="alert">
+                    {% trans %}Not saved yet. The zone comment currently holds:{% endtrans %} {{ stored_zone_comment ?: '-' }}
+                </div>
+                {% endif %}
             </div>
             {% endif %}
             {# Last field of the form; dropped if max_input_vars truncates the POST. #}
@@ -554,12 +597,15 @@
 
     {% endif %}
 
-{% if (perm_edit != "none" and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
+{% if (can_edit_records and not iface_edit_save_changes_top) or (dblog_use and can_view_zone_logs) %}
 <div class="card-footer py-3 d-flex justify-content-between align-items-center">
     <div>
-        {% if perm_edit != "none" and not iface_edit_save_changes_top and not zone_is_read_only %}
-        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}">
-            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+        {% if zone_is_editable and not iface_edit_save_changes_top %}
+        {% if edit_mode == 'request' %}
+        <input type="text" class="form-control form-control-sm d-inline-block align-middle" style="width: 22rem; max-width: 100%" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="request-comment-input"{% if require_change_comment %} required{% endif %}>
+        {% endif %}
+        <button class="btn btn-primary btn-sm" type="submit" name="commit" data-busy-text="{% trans %}Saving...{% endtrans %}" data-testid="save-changes-button">
+            <i class="bi bi-check-circle me-1 text-white"></i>{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Save changes{% endtrans %}{% endif %}
         </button>
         <button class="btn btn-secondary btn-sm" type="reset" name="reset">
             <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
@@ -567,7 +613,7 @@
         {% endif %}
     </div>
     <div class="d-flex gap-2">
-        {% if zone_is_editable %}
+        {% if zone_is_editable and edit_mode != 'request' %}
         <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
             <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
         </a>
@@ -588,7 +634,7 @@
             </ul>
         </div>
         {% endif %}
-        {% if not is_reverse_zone and perm_edit != "none" and can_batch_ptr %}
+        {% if not is_reverse_zone and can_edit_records and nav.batch_ptr %}
         <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-repeat me-1 text-secondary"></i>{% trans %}Generate PTR{% endtrans %}
         </a>
@@ -612,12 +658,52 @@
 </div>
 </div>
 
+{% if pending_change_requests %}
+<div class="card shadow-sm mb-4" data-testid="pending-change-requests-card">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-inbox me-2"></i>{% trans %}Pending change requests{% endtrans %}</strong>
+        <span class="badge bg-warning text-dark">{{ pending_change_requests|length }}</span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-sm table-hover align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>{% trans %}Request{% endtrans %}</th>
+                <th>{% trans %}Requester{% endtrans %}</th>
+                <th>{% trans %}Filed{% endtrans %}</th>
+                <th>{% trans %}Changes{% endtrans %}</th>
+                <th>{% trans %}Reason{% endtrans %}</th>
+                <th class="text-end"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for request in pending_change_requests %}
+            <tr>
+                <td class="small">#{{ request.id }}{% if request.kind == 'zone_delete' %} <span class="badge bg-danger">{% trans %}Delete zone{% endtrans %}</span>{% endif %}</td>
+                <td class="small">{{ request.requester_name }}</td>
+                <td class="small" title="{{ macros.log_timestamp(request.created_at) }}">{{ request.age }}</td>
+                <td class="small">{{ request.action_count }}</td>
+                <td class="small text-muted">{{ request.request_comment ?: '-' }}</td>
+                <td class="text-end">
+                    <a href="{{ base_url_prefix }}/zones/requests/{{ request.id }}" class="btn btn-outline-{{ can_review_change_requests ? 'primary' : 'secondary' }} btn-sm" data-testid="change-request-link-{{ request.id }}">
+                        <i class="bi bi-{{ can_review_change_requests ? 'check2-square' : 'eye' }} me-1"></i>{% if can_review_change_requests %}{% trans %}Review{% endtrans %}{% else %}{% trans %}View{% endtrans %}{% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
 {% if user_can_edit_zone %}
 {% if not zone_is_read_only and not iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
+            {% if edit_mode != 'request' %}
             {% if dns_wizard_actions is defined and dns_wizard_actions|length > 0 and not is_reverse_zone %}
             {% for action in dns_wizard_actions %}
             <a href="{{ base_url_prefix }}{{ action.url }}" class="btn btn-primary btn-sm me-1" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
@@ -631,6 +717,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
+            {% endif %}
         </div>
     </div>
     <div class="card-body">
@@ -670,11 +757,15 @@
                         <th>{% trans %}Comment{% endtrans %}</th>
                     {% endif %}
                     <th class="text-center">
+                        {% if edit_mode == 'request' %}
+                            {% trans %}Reason{% endtrans %}
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                             {% trans %}Add PTR{% endtrans %}
                         {% endif %}
                         {% if is_reverse_zone and iface_add_domain_record %}
                             {% trans %}Add A/AAAA{% endtrans %}
+                        {% endif %}
                         {% endif %}
                     </th>
                     <th></th>
@@ -741,6 +832,10 @@
                         <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
+                        {% if edit_mode == 'request' %}
+                        {# Companion PTR/A records are not filed with a request, so the box would be ignored #}
+                        <input type="text" class="form-control form-control-sm" style="min-width: 12rem" name="request_comment" maxlength="200" placeholder="{% trans %}Reason for this change{% endtrans %}" data-testid="add-request-comment-input"{% if require_change_comment %} required{% endif %}>
+                        {% else %}
                         {% if not is_reverse_zone and iface_add_reverse_record %}
                         <span class="align-middle">
                             <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
@@ -751,10 +846,11 @@
                             <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
                         </span>
                         {% endif %}
+                        {% endif %}
                     </td>
                     <td class="col-sm-1">
                         <button class="btn btn-primary btn-sm" type="submit" name="commit" value="1" data-testid="add-record-button"
-                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% trans %}Add record{% endtrans %}</button>
+                            data-busy-text="{% trans %}Saving...{% endtrans %}">{% if edit_mode == 'request' %}{% trans %}Submit for approval{% endtrans %}{% else %}{% trans %}Add record{% endtrans %}{% endif %}</button>
                     </td>
                 </tr>
             </table>
@@ -781,7 +877,7 @@
                 <div class="row">
                     {% if metadata_view %}
                     <!-- Zone Type -->
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
                         {% if meta_edit and zone_type_change_allowed %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -804,11 +900,19 @@
                         {% else %}
                         <p><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
                         {% endif %}
+                        {% if meta_edit and can_notify_zone %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mt-2">
+                            {{ macros.csrf_field() }}
+                            <button class="btn btn-outline-secondary btn-sm" type="submit" name="notify_zone" data-busy-text="{% trans %}Sending...{% endtrans %}">
+                                <i class="bi bi-megaphone text-secondary"></i> {% trans %}Send NOTIFY{% endtrans %}
+                            </button>
+                        </form>
+                        {% endif %}
                     </div>
 
                     <!-- Primary IP, for zone kinds that replicate from one -->
                     {% if zone_replicates_from_primary %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -823,13 +927,22 @@
                         {% else %}
                         <p><code>{{ slave_master }}</code></p>
                         {% endif %}
+                        {% if meta_edit and can_retrieve_zone %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mt-2">
+                            {{ macros.csrf_field() }}
+                            <button class="btn btn-outline-secondary btn-sm" type="submit" name="retrieve_zone" data-busy-text="{% trans %}Requesting...{% endtrans %}">
+                                <i class="bi bi-cloud-download text-secondary"></i> {% trans %}Retrieve from primary{% endtrans %}
+                            </button>
+                        </form>
+                        {% endif %}
                     </div>
                     {% endif %}
 
                     <!-- Template -->
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
-                        {% if meta_edit %}
+                        {# Applying a template writes records directly, so requesters only see the current one #}
+                        {% if meta_edit and edit_mode != 'request' %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
                             {{ macros.csrf_field() }}
                             <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
@@ -862,7 +975,7 @@
 
                     <!-- Catalog, for zone kinds PowerDNS publishes from one -->
                     {% if catalog_selector_view %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}Catalog{% endtrans %}</h6>
                         {% if meta_edit %}
                         <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
@@ -897,7 +1010,7 @@
 
                     <!-- DNSSEC -->
                     {% if pdnssec_use %}
-                    <div class="col-md-4">
+                    <div class="col-md-4 mb-3">
                         <h6 class="text-muted mb-3">{% trans %}DNSSEC{% endtrans %}</h6>
                         {% if is_secured %}
                         {% if can_manage_dnssec %}
@@ -950,7 +1063,7 @@
     }
 
     // Record types that support priority field
-    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    const RECORD_TYPES_WITH_PRIORITY = {{ record_types_with_priority|json_encode|raw }};
     
     // Function to check if a record type supports priority
     function supportsPriority(recordType) {
@@ -1009,12 +1122,11 @@
         }
     }
 
-    // TTL_DEFAULTS.byType[TYPE] wins when set (admin-managed record_type_defaults).
-    // ptr is the legacy dns.ttl_reverse fallback, only applied for PTR in reverse zones.
+    // Per-type starting TTLs resolved server-side (record_type_defaults, then the
+    // reverse-zone PTR fallback, then dns.ttl); plain covers any type not offered.
     const TTL_DEFAULTS = {
         plain: {{ default_ttl|json_encode|raw }},
-        ptr: {{ (is_reverse_zone ? ptr_default_ttl : null)|json_encode|raw }},
-        byType: {{ type_default_ttls|default({})|json_encode|raw }}
+        byType: {{ ttl_defaults_by_type|default({})|json_encode|raw }}
     };
 
     let suppressTtlSwap = false;
@@ -1024,12 +1136,9 @@
             return;
         }
         const type = typeSelect.value;
-        if (Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)) {
-            ttlInput.value = TTL_DEFAULTS.byType[type];
-            return;
-        }
-        const isPtr = type === 'PTR';
-        ttlInput.value = isPtr && TTL_DEFAULTS.ptr !== null ? TTL_DEFAULTS.ptr : TTL_DEFAULTS.plain;
+        ttlInput.value = Object.prototype.hasOwnProperty.call(TTL_DEFAULTS.byType, type)
+            ? TTL_DEFAULTS.byType[type]
+            : TTL_DEFAULTS.plain;
     }
 </script>
 
@@ -1227,10 +1336,22 @@
             (original[id] = original[id] || {})[field] = fieldValue(el);
         });
 
+        // Rows restored after a rejected save already differ from the zone, so they
+        // must go out again even though they match what was just rendered.
+        const restored = new Set();
+        form.querySelectorAll('[data-restored]').forEach((el) => restored.add(el.dataset.restored));
+
         form.addEventListener('submit', () => {
+            // Tells the server the rows it receives are the edited ones, so a rejected
+            // save can restore them without reverting rows nobody touched.
+            const marker = document.getElementById('changed-rows-only');
+            if (marker) {
+                marker.value = '1';
+            }
+
             Object.keys(original).forEach((id) => {
                 const fields = form.querySelectorAll('[name^="record[' + id + ']["]');
-                let changed = false;
+                let changed = restored.has(id);
                 fields.forEach((el) => {
                     const match = el.name.match(fieldPattern);
                     if (match && fieldValue(el) !== original[id][match[2]]) {

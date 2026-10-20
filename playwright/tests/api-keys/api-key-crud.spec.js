@@ -12,10 +12,32 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
+
+/** Creates a key the caller owns, so delete flows never race another spec's rows. */
+async function createApiKey(page, name) {
+  await page.goto('/settings/api-keys/add');
+  await page.locator('input[name="name"]').fill(name);
+  await page.locator('button[type="submit"]').click();
+  // The add form has its own "Important Information" panel and is re-rendered on
+  // failure, so only text unique to the created page proves the key exists
+  await expect(page.locator('body')).toContainText('IMPORTANT: Save your API key now!');
+}
+
+/** Opens the delete confirmation for a key this test owns, and returns its href so it can be removed. */
+async function openOwnKeyDeletePage(page, name) {
+  await createApiKey(page, name);
+  await page.goto('/settings/api-keys');
+  const href = await page
+    .locator('tr', { hasText: name })
+    .locator('a[href*="/delete"]')
+    .getAttribute('href');
+  await page.goto(href);
+  return href;
+}
 
 test.describe('API Keys List', () => {
   test.describe('Page Access', () => {
@@ -204,17 +226,17 @@ test.describe('Add API Key', () => {
 
       const submitBtn = page.locator('button[type="submit"]');
 
-      if (await submitBtn.count() > 0) {
-        await submitBtn.click();
+      expect(await submitBtn.count()).toBeGreaterThan(0);
 
-        const url = page.url();
-        const bodyText = await page.locator('body').textContent();
+      await submitBtn.click();
 
-        const hasValidationError = bodyText.toLowerCase().includes('required') ||
-                                    bodyText.toLowerCase().includes('provide') ||
-                                    url.includes('/add');
-        expect(hasValidationError).toBeTruthy();
-      }
+      const url = page.url();
+      const bodyText = await page.locator('body').textContent();
+
+      const hasValidationError = bodyText.toLowerCase().includes('required') ||
+                                  bodyText.toLowerCase().includes('provide') ||
+                                  url.includes('/add');
+      expect(hasValidationError).toBeTruthy();
     });
 
     test('should have name field with maxlength attribute', async ({ page }) => {
@@ -223,10 +245,10 @@ test.describe('Add API Key', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const maxLength = await nameInput.getAttribute('maxlength');
-        expect(maxLength === '255' || maxLength === null).toBeTruthy();
-      }
+      expect(await nameInput.count()).toBeGreaterThan(0);
+
+      const maxLength = await nameInput.getAttribute('maxlength');
+      expect(maxLength === '255' || maxLength === null).toBeTruthy();
     });
   });
 
@@ -253,17 +275,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying so the assertion waits for the post-submit render
-        // instead of racing it.
-        await expect(page.locator('body')).toContainText(/created|success|api key/i);
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying so the assertion waits for the post-submit render
+      // instead of racing it.
+      await expect(page.locator('body')).toContainText(/created|success|api key/i);
     });
 
     test('should display API key value one time', async ({ page }) => {
@@ -272,17 +294,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-view-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-view-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying assertion: the submit navigation may still be in flight
-        const keyInput = page.locator('input#api-key-value, input[readonly]');
-        await expect(keyInput.first()).toBeVisible();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying assertion: the submit navigation may still be in flight
+      const keyInput = page.locator('input#api-key-value, input[readonly]');
+      await expect(keyInput.first()).toBeVisible();
     });
 
     test('should have copy button for API key', async ({ page }) => {
@@ -291,17 +313,17 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-copy-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-copy-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Auto-retrying assertion: the submit navigation may still be in flight
-        const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
-        await expect(copyBtn.first()).toBeVisible();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Auto-retrying assertion: the submit navigation may still be in flight
+      const copyBtn = page.locator('#copy-button, button:has-text("Copy")');
+      await expect(copyBtn.first()).toBeVisible();
     });
 
     test('should have return to API keys link', async ({ page }) => {
@@ -310,18 +332,18 @@ test.describe('API Key Created', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-key-return-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-key-return-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        // Link might be in breadcrumb, card, or button
-        const returnLink = page.locator('a[href*="api-keys"], a[href*="settings"]');
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(returnLink.first()).toBeAttached();
-      }
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
+
+      // Link might be in breadcrumb, card, or button
+      const returnLink = page.locator('a[href*="api-keys"], a[href*="settings"]');
+      // Auto-retrying assertion: the click navigation may still be in flight
+      await expect(returnLink.first()).toBeAttached();
     });
   });
 });
@@ -334,23 +356,23 @@ test.describe('Delete API Key', () => {
 
       const nameInput = page.locator('input[name="name"]');
 
-      if (await nameInput.count() > 0) {
-        const uniqueName = `test-delete-${Date.now()}`;
-        await nameInput.fill(uniqueName);
+      expect(await nameInput.count()).toBeGreaterThan(0);
 
-        const submitBtn = page.locator('button[type="submit"]');
-        await submitBtn.click();
+      const uniqueName = `test-delete-${Date.now()}`;
+      await nameInput.fill(uniqueName);
 
-        await page.goto('/settings/api-keys');
+      const submitBtn = page.locator('button[type="submit"]');
+      await submitBtn.click();
 
-        const deleteLink = page.locator('a[href*="/delete"]').first();
+      await page.goto('/settings/api-keys');
 
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
+      const deleteLink = page.locator('a[href*="/delete"]').first();
 
-          // Auto-retrying assertion: the click navigation may still be in flight
-          await expect(page.locator('body')).toContainText(/delete|confirm|warning/i);
-        }
+      if (await deleteLink.count() > 0) {
+        await deleteLink.click();
+
+        // Auto-retrying assertion: the click navigation may still be in flight
+        await expect(page.locator('body')).toContainText(/delete|confirm|warning/i);
       }
     });
 
@@ -358,44 +380,38 @@ test.describe('Delete API Key', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-warning-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      await expect(page.locator('body')).toContainText(/warning|cannot be undone/i);
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/warning|cannot be undone/i);
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should have confirm delete button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-confirm-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
+      await expect(confirmBtn.first()).toBeVisible();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        const confirmBtn = page.locator('button[type="submit"]:has-text("Yes"), button:has-text("delete")');
-        await expect(confirmBtn.first()).toBeVisible();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
 
     test('should have cancel button', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-cancel-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
+      await expect(cancelBtn.first()).toBeVisible();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        const cancelBtn = page.locator('a:has-text("No"), a:has-text("keep")');
-        await expect(cancelBtn.first()).toBeVisible();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 
@@ -404,18 +420,12 @@ test.describe('Delete API Key', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/settings/api-keys');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
+      const href = await openOwnKeyDeletePage(page, `delete-options-${Date.now()}`);
 
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        await page.waitForLoadState('networkidle');
+      await expect(page.locator('body')).toContainText(/delete|confirm/i);
 
-        // Verify we're on delete confirmation page and have options
-        const bodyText = await page.locator('body').textContent();
-        const hasDeletePage = bodyText.toLowerCase().includes('delete') ||
-                              bodyText.toLowerCase().includes('confirm');
-        expect(hasDeletePage).toBeTruthy();
-      }
+      await page.goto(href);
+      await page.locator('button[type="submit"]').first().click();
     });
   });
 });
@@ -520,28 +530,39 @@ test.describe('API Keys Security', () => {
 
       const csrfToken = page.locator('input[name="_token"]');
 
-      if (await csrfToken.count() > 0) {
-        const tokenValue = await csrfToken.getAttribute('value');
-        expect(tokenValue).toBeTruthy();
-      }
+      expect(await csrfToken.count()).toBeGreaterThan(0);
+
+      const tokenValue = await csrfToken.getAttribute('value');
+      expect(tokenValue).toBeTruthy();
     });
 
     test('should include CSRF token in delete form', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
+      // Own key, own row: picking the first delete link races with the other
+      // api-key specs, which create and delete keys of their own
+      const keyName = `csrf-delete-${Date.now()}`;
+      await createApiKey(page, keyName);
+
       await page.goto('/settings/api-keys');
+      const deleteHref = await page
+        .locator('tr', { hasText: keyName })
+        .locator('a[href*="/delete"]')
+        .getAttribute('href');
 
-      const deleteLink = page.locator('a[href*="/delete"]').first();
-
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
+      try {
+        await page.goto(deleteHref);
 
         const csrfToken = page.locator('input[name="_token"]');
-
-        if (await csrfToken.count() > 0) {
-          const tokenValue = await csrfToken.getAttribute('value');
-          expect(tokenValue).toBeTruthy();
-        }
+        await expect(csrfToken).toHaveCount(1);
+        await expect(csrfToken).toHaveValue(/.+/);
+      } finally {
+        // Without this the key outlives a failed assertion and every later run
+        await page.goto(deleteHref);
+        await page.locator('button[type="submit"]').click();
       }
+
+      await expect(page.locator('table')).not.toContainText(keyName);
     });
   });
 
@@ -564,38 +585,44 @@ test.describe('API Keys Security', () => {
 
 // Cleanup created test API keys
 test.afterAll(async ({ browser }) => {
+  // The cleanup walks every leftover key, so it needs more than a test's budget
+  test.setTimeout(120000);
+
   const context = await browser.newContext();
   const page = await context.newPage();
 
   await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-  await page.goto('/settings/api-keys');
-
   const testKeyNames = ['test-key', 'test-delete', 'test-key-view', 'test-key-copy', 'test-key-return'];
 
-  for (const prefix of testKeyNames) {
-    let found = true;
-    while (found) {
-      await page.goto('/settings/api-keys');
+  // Collect the delete links once per pass instead of re-reading the list per key
+  for (let pass = 0; pass < 20; pass++) {
+    await page.goto('/settings/api-keys');
 
-      const row = page.locator(`tr:has-text("${prefix}")`).first();
-
-      if (await row.count() > 0) {
-        const deleteLink = row.locator('a[href*="/delete"]');
-
-        if (await deleteLink.count() > 0) {
-          await deleteLink.click();
-
-          const confirmBtn = page.locator('button[type="submit"]').first();
-
-          if (await confirmBtn.count() > 0) {
-            await confirmBtn.click();
+    const deleteHrefs = [];
+    for (const prefix of testKeyNames) {
+      const rows = await page.locator(`tr:has-text("${prefix}")`).all();
+      for (const row of rows) {
+        const link = row.locator('a[href*="/delete"]').first();
+        if (await link.count() > 0) {
+          const href = await link.getAttribute('href');
+          if (href && !deleteHrefs.includes(href)) {
+            deleteHrefs.push(href);
           }
-        } else {
-          found = false;
         }
-      } else {
-        found = false;
+      }
+    }
+
+    if (deleteHrefs.length === 0) {
+      break;
+    }
+
+    for (const href of deleteHrefs) {
+      await page.goto(href);
+      const confirmBtn = page.locator('button[type="submit"]').first();
+      if (await confirmBtn.count() > 0) {
+        await confirmBtn.click();
+        await page.waitForLoadState('domcontentloaded');
       }
     }
   }

@@ -60,12 +60,14 @@ if (PHP_SAPI !== 'cli') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Poweradmin\Application\Service\DatabaseService;
-use Poweradmin\Application\Service\MailService;
-use Poweradmin\Domain\Service\DatabaseCredentialMapper;
+use Poweradmin\Application\Service\Backend\DatabaseService;
+use Poweradmin\Application\Service\Mail\MailService;
+use Poweradmin\Infrastructure\Database\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Session\SessionActor;
+use Poweradmin\Infrastructure\Session\PhpSession;
 
 $options = getopt('', [
     'since::',
@@ -109,7 +111,8 @@ $config->initialize();
 $db = (new DatabaseService(new PDODatabaseConnection()))
     ->connect(DatabaseCredentialMapper::mapCredentials($config));
 
-$logger = new RecordChangeLogger($db);
+// The digest only reads the log, so nobody acts here
+$logger = new RecordChangeLogger($db, $config, new SessionActor(new PhpSession()));
 $filters = ['date_from' => $since, 'date_to' => $until];
 
 // Cap the body length so very busy windows don't produce multi-MB emails;

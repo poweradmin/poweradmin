@@ -4,10 +4,10 @@ namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecordValidationService;
-use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
@@ -17,6 +17,7 @@ use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\MINFORecordValidator;
@@ -28,41 +29,34 @@ use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use Poweradmin\Infrastructure\Service\SqlDnsBackendProvider;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
  */
-class BaseDnsTest extends TestCase
+class BaseDnsTest extends SqliteDnsBackendTestCase
 {
+
     protected DnsRecordValidationServiceInterface $validationService;
+    protected SqlDnsBackendProvider $backendProvider;
 
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDO::class);
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);
+        $configMock = new FakeConfiguration([
+            'dns' => ['strict_tld_check' => true, 'top_level_tld_check' => true],
+            'database' => ['pdns_db_name' => 'pdns'],
+        ]);
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
 
-        // Configure the mock to return expected values
-        $configMock->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                // For DNS tests
-                if ($group === 'dns' && $key === 'strict_tld_check') {
-                    return true;
-                }
-                if ($group === 'dns' && $key === 'top_level_tld_check') {
-                    return true;
-                }
-
-                // For database tests
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return 'pdns';  // Mock database name for tests
-                }
-
-                // Default return value
-                return null;
-            });
+        // Records the CNAME conflict checks see: two existing CNAMEs and one NS target
+        $this->backendProvider = $this->sqliteBackendProvider([
+            [123, 1, 'existing.cname.example.com', 'CNAME', 'target.example.com'],
+            [456, 1, 'alias.example.com', 'CNAME', 'target.example.com'],
+            [789, 1, 'example.com', 'NS', 'invalid.cname.target'],
+        ]);
 
         // Mock database queries for DNS record validation tests
         $dbMock->method('quote')
@@ -102,8 +96,8 @@ class BaseDnsTest extends TestCase
                 return $stmtMock;
             });
 
-        // Mock ZoneRepository to return domain names
-        $zoneRepositoryMock->method('getDomainNameById')
+        // Mock DomainRepository to return domain names
+        $domainRepositoryMock->method('getDomainNameById')
             ->willReturnCallback(function ($zoneId) {
                 if ($zoneId === 1) {
                     return 'example.com';
@@ -115,81 +109,66 @@ class BaseDnsTest extends TestCase
 
         // Create a mock for DnsValidatorRegistry
         $registryMock = $this->createMock(DnsValidatorRegistry::class);
+        $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($configMock));
 
         // Configure getValidator to return appropriate validator mocks
         $registryMock->method('getValidator')
-            ->willReturnCallback(function ($type) use ($configMock, $dbMock) {
+            ->willReturnCallback(function ($type) use ($configMock, $hostnameValidator) {
                 // Create validator mock for each record type
                 $validator = null;
 
                 switch ($type) {
                     case RecordType::A:
-                        $validator = new ARecordValidator($configMock);
+                        $validator = new ARecordValidator($hostnameValidator);
                         break;
                     case RecordType::AAAA:
-                        $validator = new AAAARecordValidator($configMock);
+                        $validator = new AAAARecordValidator($hostnameValidator);
                         break;
                     case RecordType::CNAME:
-                        $validator = $this->getMockBuilder(CNAMERecordValidator::class)
-                            ->setConstructorArgs([$configMock, $dbMock])
-                            ->onlyMethods(['isValidCnameExistence'])
-                            ->getMock();
-
-                        $validator->method('isValidCnameExistence')
-                            ->willReturnCallback(function ($hostname, $rid) {
-                                // Return false for known problematic hostnames
-                                if ($hostname === 'existing.cname.example.com') {
-                                    return false;
-                                }
-                                return true;
-                            });
-
+                        $validator = new CNAMERecordValidator($hostnameValidator, $this->backendProvider);
                         break;
                     case RecordType::MX:
-                        $validator = new MXRecordValidator($configMock);
+                        $validator = new MXRecordValidator($hostnameValidator);
                         break;
                     case RecordType::NS:
-                        $validator = new NSRecordValidator($configMock);
+                        $validator = new NSRecordValidator($hostnameValidator);
                         break;
                     case RecordType::PTR:
-                        $validator = new PTRRecordValidator($configMock);
+                        $validator = new PTRRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SOA:
-                        $validator = $this->getMockBuilder(SOARecordValidator::class)
-                            ->setConstructorArgs([$configMock, $dbMock])
-                            ->onlyMethods(['setSOAParams'])
-                            ->getMock();
+                        $validator = new SOARecordValidator($hostnameValidator, $configMock);
                         break;
                     case RecordType::TXT:
-                        $validator = new TXTRecordValidator($configMock);
+                        $validator = new TXTRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SRV:
-                        $validator = new SRVRecordValidator($configMock);
+                        $validator = new SRVRecordValidator($hostnameValidator);
                         break;
                     case RecordType::SPF:
-                        $validator = new SPFRecordValidator($configMock);
+                        $validator = new SPFRecordValidator($hostnameValidator);
                         break;
                     case RecordType::HINFO:
-                        $validator = new HINFORecordValidator($configMock);
+                        $validator = new HINFORecordValidator($hostnameValidator);
                         break;
                     case RecordType::LOC:
-                        $validator = new LOCRecordValidator($configMock);
+                        $validator = new LOCRecordValidator($hostnameValidator);
                         break;
                     case RecordType::MINFO:
-                        $validator = new MINFORecordValidator($configMock);
+                        $validator = new MINFORecordValidator($hostnameValidator);
                         break;
                     case RecordType::DS:
-                        $validator = new DSRecordValidator($configMock);
+                        $validator = new DSRecordValidator($hostnameValidator);
                         break;
                     case RecordType::CSYNC:
-                        $validator = new CSYNCRecordValidator($configMock);
+                        $validator = new CSYNCRecordValidator($hostnameValidator);
                         break;
                 }
 
                 return $validator;
             });
 
-        $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
+        $dnsCommonValidator = new DnsCommonValidator($this->backendProvider);
         $recordRepositoryMock = $this->createMock(RecordRepositoryInterface::class);
         $recordRepositoryMock->method('getRecordsByName')->willReturn([]);
         $dnsViolationValidator = new DNSViolationValidator($recordRepositoryMock);
@@ -198,7 +177,7 @@ class BaseDnsTest extends TestCase
         $this->validationService = new DnsRecordValidationService(
             $registryMock,
             $dnsCommonValidator,
-            $zoneRepositoryMock,
+            $domainRepositoryMock,
             $dnsViolationValidator
         );
     }

@@ -1,0 +1,16 @@
+{# Page-number list built from PaginationPresenter::items(). Pass `items`; set
+   `js_handler` to a JS function name to link pages as javascript:handler(page). #}
+{%- set js_handler = js_handler|default('') -%}
+{%- if items is not empty -%}
+<nav><ul class="pagination pagination-sm d-flex flex-wrap">
+{%- for item in items -%}
+    {%- if item.ellipsis -%}
+        <li class="page-item disabled"><span class="page-link">{{ item.label }}</span></li>
+    {%- else -%}
+        <li class="page-item{% if item.active %} active{% endif %}"><a class="page-link" href="
+            {%- if js_handler %}javascript:{{ js_handler }}({{ item.page }}){% else %}{{ item.url }}{% endif -%}
+        ">{{ item.label }}</a></li>
+    {%- endif -%}
+{%- endfor -%}
+</ul></nav>
+{%- endif -%}
