@@ -94,18 +94,20 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = (int)$id;
-            $zone_type = $this->domainRepository()->getDomainType($zone_id);
-            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
             $userId = $this->getUserContextService()->getLoggedInUserId();
 
-            // Check if this is a reverse zone
-            $isReverseZone = DnsHelper::isReverseZoneName($zone_name);
+            // Permission before the lookup, so a missing or foreign id answers the same way
+            $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
+            $this->checkCondition($perm_edit === 'none', _("You do not have permission to add records to this zone."));
+
+            $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
+            $this->checkCondition($zone_name === null, _('There is no zone with this ID.'));
+
+            $isReverseZone = DnsHelper::isReverseZoneName((string)$zone_name);
             $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
-            $perm_edit = $this->permissionService()->getEditPermissionLevelForZone($userId, $zone_id);
-
             $this->checkCondition(
-                ZoneType::isReadOnly($zone_type) || $perm_edit === 'none',
+                ZoneType::isReadOnly($this->domainRepository()->getDomainType($zone_id)),
                 _("You do not have permission to add records to this zone.")
             );
             $this->checkCondition(

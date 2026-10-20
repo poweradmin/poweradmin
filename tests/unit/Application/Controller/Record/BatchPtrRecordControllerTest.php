@@ -49,7 +49,7 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
 
     private string $zoneEditLevel = 'own_as_client';
     private string $zoneType = 'MASTER';
-    private string $zoneName = 'example.com';
+    private ?string $zoneName = 'example.com';
 
     protected function setUp(): void
     {
@@ -64,7 +64,7 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
 
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
-        $domains->method('getDomainNameById')->willReturnCallback(fn(): string => $this->zoneName);
+        $domains->method('getDomainNameById')->willReturnCallback(fn(): ?string => $this->zoneName);
 
         $zones = $this->createMock(ZoneRepositoryInterface::class);
         $zones->method('getReverseZones')->willReturn([]);
@@ -154,6 +154,35 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
         $halt = $this->haltOf($this->makeController());
 
         $this->assertSame('You do not have permission to add records to this zone.', $halt->target);
+    }
+
+    /** @return array<string, array{?string}> */
+    public static function zonesWithoutEditAccess(): array
+    {
+        return ['missing zone' => [null], 'reverse zone' => ['2.0.192.in-addr.arpa'], 'forward zone' => ['example.com']];
+    }
+
+    #[DataProvider('zonesWithoutEditAccess')]
+    public function testAZoneTheEditorCannotEditIsRefusedTheSameWayWhateverItIs(?string $zoneName): void
+    {
+        $this->granted = [Permission::PERM_ZONE_CONTENT_EDIT_OWN];
+        $this->zoneEditLevel = 'none';
+        $this->zoneName = $zoneName;
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame('You do not have permission to add records to this zone.', $halt->target);
+    }
+
+    public function testAMissingZoneIsReportedToAnEditorOfAllZones(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS];
+        $this->zoneEditLevel = 'all';
+        $this->zoneName = null;
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame('There is no zone with this ID.', $halt->target);
     }
 
     public function testTheSettingSwitchesThePageOffForEveryone(): void
