@@ -23,6 +23,8 @@
 namespace Poweradmin\Module\Rdap\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Module\Rdap\Service\RdapService;
@@ -83,14 +85,25 @@ class RdapController extends BaseController
                 }
             }
         } elseif (isset($this->getRequest()['id'])) {
-            $zone_id = (int)$this->getRequest()['id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->visibleZoneName((int)$this->getRequest()['id']);
         } elseif (isset($this->getRequest()['zone_id'])) {
-            $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
+            $domain = $this->visibleZoneName((int)$this->getRequest()['zone_id']);
         }
 
         return $domain;
+    }
+
+    /**
+     * The zone's name, or '' when the user may not view the zone, so the page never names a foreign zone.
+     */
+    private function visibleZoneName(int $zoneId): string
+    {
+        $perm_view = Permission::getViewPermission($this->db);
+        if ($perm_view !== 'all' && !($perm_view === 'own' && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId))) {
+            return '';
+        }
+
+        return $this->dnsRecord->getDomainNameById($zoneId) ?? '';
     }
 
     private function performRdapLookup(string $domain): array
