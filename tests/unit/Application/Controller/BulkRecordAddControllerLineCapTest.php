@@ -83,6 +83,16 @@ class BulkRecordAddControllerLineCapTest extends TestCase
         $this->assertSame('/zones/12/edit', $controller->redirectedTo);
     }
 
+    public function testEachAddedRecordIsLoggedOnlyByTheRecordService(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->exactly(2))->method('createRecord')->willReturn(true);
+        $this->auditLogger = $this->createMock(LegacyLogger::class);
+        $this->auditLogger->expects($this->never())->method('logInfo');
+
+        $this->submit(self::lines(2), $records);
+    }
+
     private static function lines(int $count): string
     {
         return implode("\n", array_map(static fn(int $i): string => "h$i,A,192.0.2." . ($i % 250 + 1) . ",0,3600", range(1, $count)));
