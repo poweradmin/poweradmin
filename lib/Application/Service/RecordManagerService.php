@@ -66,7 +66,8 @@ class RecordManagerService
         // API backend: carry the comment in the record PATCH; null rather than ''
         // so an empty form field does not clear an existing RRset comment
         $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $userlogin];
-        $recordId = ($disabled && $this->backendProvider !== null)
+        $atomic = $disabled && $this->backendProvider !== null;
+        $recordId = $atomic
             ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled, $rrsetComment)
             : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $rrsetComment);
         if ($recordId === null) {
@@ -74,7 +75,10 @@ class RecordManagerService
         }
 
         $this->logRecordCreation($clientIp, $userlogin, $type, $name, $zone_name, $content, $ttl, $prio, $zone_id);
-        $this->handleDnssec($zone_name);
+        // RecordManager::addRecordGetId() has rectified the zone already; the atomic backend write has not
+        if ($atomic) {
+            $this->handleDnssec($zone_name);
+        }
         $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $recordId);
 
         return true;
