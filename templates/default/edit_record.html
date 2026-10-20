@@ -26,6 +26,9 @@
 
         <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
             {{ macros.csrf_field() }}
+            {% for key, value in search_return %}
+            <input type="hidden" name="search_return[{{ key }}]" value="{{ value }}">
+            {% endfor %}
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm">
@@ -207,7 +210,7 @@
                 <button class="btn btn-secondary btn-sm" type="reset" name="reset">
                     <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
                 </button>
-                <a href="{{ base_url_prefix }}/zones/{{ zid }}/edit" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ base_url_prefix }}{% if search_return %}/search?{{ search_return|url_encode }}{% else %}/zones/{{ zid }}/edit{% endif %}" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
                 </a>
             </div>

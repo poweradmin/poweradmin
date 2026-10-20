@@ -204,4 +204,56 @@ class SearchCriteriaTest extends TestCase
             'displayed_query' => '  example   type:txt content:v=spf1 ',
         ], $parameters);
     }
+
+    public function testReturnArgsKeepOnlyTheSearchFormFieldsInTheirSubmittedShape(): void
+    {
+        $this->assertSame(
+            ['query' => 'www', 'zones' => 'true', 'comments' => 'true', 'type_filter' => 'TXT', 'content_filter' => 'spf', 'records_page' => '4'],
+            SearchCriteria::returnArgs([
+                'query' => 'www',
+                'zones' => 'on',
+                'records' => '',
+                'wildcard' => '0',
+                'comments' => true,
+                'type_filter' => 'TXT',
+                'content_filter' => 'spf',
+                'zones_page' => '1',
+                'records_page' => '4',
+                'url' => '//evil.example',
+            ])
+        );
+    }
+
+    public function testReturnArgsNeedAScalarQueryOfSaneLength(): void
+    {
+        $this->assertSame([], SearchCriteria::returnArgs(null));
+        $this->assertSame([], SearchCriteria::returnArgs('query=www'));
+        $this->assertSame([], SearchCriteria::returnArgs(['records' => 'true']));
+        $this->assertSame([], SearchCriteria::returnArgs(['query' => ['www']]));
+        $this->assertSame([], SearchCriteria::returnArgs(['query' => str_repeat('a', 256)]));
+        $this->assertSame(['query' => ''], SearchCriteria::returnArgs(['query' => '']));
+    }
+
+    public function testReturnArgsDropMalformedFiltersAndPages(): void
+    {
+        $this->assertSame(['query' => 'www'], SearchCriteria::returnArgs([
+            'query' => 'www',
+            'type_filter' => 'A"><script>',
+            'content_filter' => ['x'],
+            'zones_page' => '2abc',
+            'records_page' => '-3',
+            'zones_rows_per_page' => '0',
+            'records_rows_per_page' => '100000',
+        ]));
+    }
+
+    public function testToReturnArgsRepeatTheDisplayedQuerySoItsFiltersComeBack(): void
+    {
+        $criteria = SearchCriteria::fromRequest(['query' => '192.0.2.1 type:ptr']);
+
+        $this->assertSame(
+            ['query' => '192.0.2.1 type:ptr', 'records' => 'true', 'reverse' => 'true', 'type_filter' => 'PTR', 'zones_page' => '3', 'zones_rows_per_page' => '10', 'records_rows_per_page' => '25'],
+            $criteria->toReturnArgs(3, 1, 10, 25)
+        );
+    }
 }

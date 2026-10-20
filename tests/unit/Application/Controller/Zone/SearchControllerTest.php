@@ -148,6 +148,70 @@ class SearchControllerTest extends SeamControllerTestCase
         $this->assertSame(0, $params['total_records']);
         $this->assertSame(1, $params['zones_page']);
         $this->assertSame(1, $params['records_page']);
+        $this->assertSame([], $params['search_return']);
+    }
+
+    public function testAGetCarryingASearchRepeatsItOnTheSamePages(): void
+    {
+        // The redirect back from a record edited off the results (#1656)
+        $this->query(['query' => 'www type:a', 'records' => 'true', 'zones_page' => '2', 'records_page' => '3']);
+        $this->dnsData->expects($this->once())->method('searchZones')
+            ->with($this->callback(fn(array $p): bool => $p['query'] === 'www' && $p['type_filter'] === 'A' && $p['zones'] === false))
+            ->willReturn([]);
+        $this->dnsData->expects($this->once())->method('searchRecords')->willReturn([]);
+
+        $this->runController();
+        $params = $this->renderedParams();
+
+        $this->assertSame('www type:a', $params['query']);
+        $this->assertSame(2, $params['zones_page']);
+        $this->assertSame(3, $params['records_page']);
+    }
+
+    public function testTheReturnKeepsThePageSizesTheResultsWereShownWith(): void
+    {
+        $this->query(['query' => 'www', 'records' => 'true', 'records_page' => '2', 'records_rows_per_page' => '50']);
+
+        $this->runController();
+        $params = $this->renderedParams();
+
+        $this->assertSame(50, $params['record_rowamount'], 'otherwise page 2 is a different slice');
+        $this->assertSame(10, $params['zone_rowamount']);
+    }
+
+    public function testABareQueryInTheUrlWithoutAScopeKeepsTheDefaultForm(): void
+    {
+        $this->query(['query' => 'www']);
+        $this->dnsData->expects($this->never())->method('searchZones');
+
+        $this->runController();
+
+        $this->assertTrue($this->renderedParams()['search_by_zones'], 'the boxes stay ticked as on a first visit');
+    }
+
+    public function testAGetWithoutAQueryStillRendersTheEmptyForm(): void
+    {
+        $this->query(['records' => 'true', 'records_page' => '3']);
+        $this->dnsData->expects($this->never())->method('searchRecords');
+
+        $this->runController();
+
+        $this->assertSame([], $this->renderedParams()['search_return']);
+    }
+
+    public function testTheShownSearchIsHandedToTheEditLinksAsReturnArguments(): void
+    {
+        $this->post(['query' => 'www content:192.0.2.1', 'zones' => 'true', 'records' => 'true', 'records_page' => '2', 'records_rows_per_page' => '50', 'unknown' => 'x']);
+
+        $this->runController();
+
+        $this->assertSame(
+            [
+                'query' => 'www content:192.0.2.1', 'zones' => 'true', 'records' => 'true', 'content_filter' => '192.0.2.1', 'records_page' => '2',
+                'zones_rows_per_page' => '10', 'records_rows_per_page' => '50',
+            ],
+            $this->renderedParams()['search_return']
+        );
     }
 
     public function testAPostRunsBothSearchesEvenWhenOnlyOneBoxIsTicked(): void

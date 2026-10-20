@@ -352,6 +352,90 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame([['success', 'The record has been updated successfully.']], $this->messagesFor('edit'));
     }
 
+    // ------------------------------------------------- return to the search
+
+    public function testASaveFromTheSearchResultsReturnsToTheSameSearch(): void
+    {
+        $this->post([
+            'rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9',
+            'search_return' => ['query' => 'www type:a', 'records' => 'true', 'records_page' => '2'],
+        ]);
+
+        $halt = $this->haltOf($this->makeController());
+
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
+        $this->assertSame('/search?query=www+type%3Aa&records=true&records_page=2', $halt->target);
+        $this->assertSame([['success', 'The record has been updated successfully.']], $this->messagesFor('search'));
+        $this->assertSame([], $this->messagesFor('edit'));
+    }
+
+    /** @return array<string, array{0: mixed}> */
+    public static function hostileReturnProvider(): array
+    {
+        return [
+            'a URL as the query' => [['query' => 'https://evil.example/', 'next' => '//evil.example']],
+            'a header break in a filter' => [['query' => 'www', 'content_filter' => "x\r\nLocation: //evil.example"]],
+            'arrays for values' => [['query' => 'www', 'records' => ['x'], 'type_filter' => ['A'], 'records_page' => ['2']]],
+            'unknown keys only' => [['url' => '//evil.example', 'redirect' => 'https://evil.example/']],
+            'not an array' => ['//evil.example'],
+        ];
+    }
+
+    #[DataProvider('hostileReturnProvider')]
+    public function testAReturnTargetIsRebuiltFromWhitelistedArgumentsOnly(mixed $searchReturn): void
+    {
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'search_return' => $searchReturn]);
+
+        $target = $this->haltOf($this->makeController())->target;
+
+        // Whatever arrives, the path is fixed and every value sits urlencoded in the query
+        $this->assertMatchesRegularExpression('#^/(search\?query=[A-Za-z0-9%+._-]*(&(zones|records|wildcard|reverse|comments|type_filter|content_filter|zones_page|records_page)=[A-Za-z0-9%+._-]*)*|zones/12/edit)$#', $target);
+        $this->assertStringNotContainsString('evil.example/', $target);
+    }
+
+    public function testWithoutAQueryTheReturnTargetIsIgnored(): void
+    {
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'search_return' => ['records' => 'true']]);
+
+        $this->assertSame('/zones/12/edit', $this->haltOf($this->makeController())->target);
+    }
+
+    public function testTheFormCarriesTheSearchItWasOpenedFrom(): void
+    {
+        $this->query(['search_return' => ['query' => 'www', 'zones' => 'true', 'evil' => '//x']]);
+
+        $this->makeController()->run();
+
+        $this->assertSame(['query' => 'www', 'zones' => 'true'], $this->renderedParams()['search_return']);
+    }
+
+    public function testARefusedSaveKeepsTheSearchToReturnTo(): void
+    {
+        $this->editResult = RecordWriteResult::failure('Invalid IPv4 address.');
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => 'nope', 'search_return' => ['query' => 'www']]);
+
+        $this->makeController()->run();
+
+        $this->assertSame('edit_record.html', $this->renderedTemplate());
+        $this->assertSame(['query' => 'www'], $this->renderedParams()['search_return']);
+        $this->assertSame('192.0.2.1', $this->renderedParams()['record']['content'], 'the form shows the stored row');
+    }
+
+    public function testAChangeRequestFromTheSearchResultsReturnsToTheSearch(): void
+    {
+        $this->editLevel = 'none';
+        $this->changeRequestLevel = 'all';
+        $this->post([
+            'rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9',
+            'search_return' => ['query' => 'www'],
+        ]);
+
+        $halt = $this->haltOf($this->makeController(['approval' => ['enabled' => true]]));
+
+        $this->assertSame('/search?query=www', $halt->target);
+        $this->assertCount(1, $this->messagesFor('search'));
+    }
+
     public function testAPostedRowOtherThanTheRecordInTheUrlIsRefused(): void
     {
         $this->post(['rid' => (string)(self::RECORD_ID + 1), 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => '300']);

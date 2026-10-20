@@ -385,7 +385,7 @@
                             {% if user_can_edit_record %}
                             <div class="d-flex gap-2 justify-content-end">
                                 <a class="btn btn-sm btn-outline-primary"
-                                href="{{ base_url_prefix }}/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/edit">
+                                href="{{ base_url_prefix }}/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/edit{% if search_return %}?{{ {search_return: search_return}|url_encode }}{% endif %}">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"

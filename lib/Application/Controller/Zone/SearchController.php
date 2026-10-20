@@ -56,7 +56,11 @@ class SearchController extends BaseController
         $this->setCurrentPage('search');
         $this->setPageTitle(_('Search'));
 
-        $criteria = SearchCriteria::fromRequest($this->isPost() ? $this->httpRequest->getPostParams() : null);
+        // A GET carrying a search is the return from a record edited off the results;
+        // a bare ?query= with no scope ticked keeps rendering the default form
+        $searchFields = $this->isPost() ? $this->httpRequest->getPostParams() : SearchCriteria::returnArgs($this->httpRequest->getQueryParams());
+        $searching = $this->isPost() || isset($searchFields['zones']) || isset($searchFields['records']);
+        $criteria = SearchCriteria::fromRequest($searching ? $searchFields : null);
         $parameters = $criteria->toArray();
 
         $totalZones = 0;
@@ -98,17 +102,17 @@ class SearchController extends BaseController
         );
 
         $zone_rowamount = $record_rowamount = $this->resolveRowsPerPage();
-        if ($this->isPost()) {
+        if ($searching) {
             // rows_per_page is the legacy single control and still overrides both when posted.
-            $bothRows = PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('rows_per_page'));
-            $zone_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('zones_rows_per_page')) ?? $zone_rowamount;
-            $record_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($this->httpRequest->getPostParam('records_rows_per_page')) ?? $record_rowamount;
+            $bothRows = PaginationService::acceptedRowsPerPage($searchFields['rows_per_page'] ?? null);
+            $zone_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($searchFields['zones_rows_per_page'] ?? null) ?? $zone_rowamount;
+            $record_rowamount = $bothRows ?? PaginationService::acceptedRowsPerPage($searchFields['records_rows_per_page'] ?? null) ?? $record_rowamount;
         }
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
 
-        if ($this->isPost()) {
-            $zones_page = max(1, (int)$this->httpRequest->getPostParam('zones_page', 1));
+        if ($searching) {
+            $zones_page = max(1, (int)($searchFields['zones_page'] ?? 1));
 
             $permission_view = $permissionService->getViewPermissionLevel($userId);
 
@@ -126,7 +130,7 @@ class SearchController extends BaseController
 
             $totalZones = $dnsDataService->searchZonesTotalCount($parameters, $permission_view);
 
-            $records_page = max(1, (int)$this->httpRequest->getPostParam('records_page', 1));
+            $records_page = max(1, (int)($searchFields['records_page'] ?? 1));
 
             $iface_search_group_records = $this->config->get('interface', 'search_group_records', false);
             $searchResultRecords = $dnsDataService->searchRecords(
@@ -164,6 +168,7 @@ class SearchController extends BaseController
 
         $this->showSearchForm(
             $parameters,
+            $searching ? $criteria->toReturnArgs($zones_page, $records_page, $zone_rowamount, $record_rowamount) : [],
             $searchResultZones,
             $searchResultRecords,
             $zone_sort_by,
@@ -189,6 +194,7 @@ class SearchController extends BaseController
 
     private function showSearchForm(
         $parameters,
+        array $searchReturn,
         $searchResultZones,
         $searchResultRecords,
         $zone_sort_by,
@@ -258,6 +264,7 @@ class SearchController extends BaseController
             'whois_action_patterns' => $this->moduleCapabilityData(ModuleInterface::CAP_WHOIS_LOOKUP),
             'rdap_action_patterns' => $this->moduleCapabilityData(ModuleInterface::CAP_RDAP_LOOKUP),
             'record_types' => $recordTypes,
+            'search_return' => $searchReturn,
         ]);
     }
 

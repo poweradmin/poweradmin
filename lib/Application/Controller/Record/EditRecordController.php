@@ -27,6 +27,7 @@ use Poweradmin\Application\Presenter\SoaFieldsPresenter;
 use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordEditRequest;
+use Poweradmin\Application\Service\Web\SearchCriteria;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -53,6 +54,9 @@ class EditRecordController extends BaseController
     private ?RecordCommentService $recordCommentService = null;
     private ?RecordTypeService $recordTypeService = null;
     private ?PermissionService $permissionService = null;
+
+    /** @var array<string, string> The search to return to after a save, when the record was opened from its results */
+    private array $searchReturn = [];
 
     private function recordCommentService(): RecordCommentService
     {
@@ -130,6 +134,10 @@ class EditRecordController extends BaseController
             $this->showError(_("You do not have permission to edit this record."));
             return;
         }
+
+        $this->searchReturn = SearchCriteria::returnArgs($this->isPost()
+            ? $this->httpRequest->getPostParam('search_return')
+            : $this->httpRequest->getQueryParam('search_return'));
 
         $validationFailed = false;
         if ($this->isPost()) {
@@ -214,12 +222,35 @@ class EditRecordController extends BaseController
             'api_escape_warning' => $this->isApiBackend(),
             // Only this record's RRset is rewritten by the save
             'api_escape_rrsets' => array_values(array_intersect($this->apiEscapeRiskRrsets((int)$zid, $zone_name), [$record['name'] . ' ' . $record['type']])),
+            'search_return' => $this->searchReturn,
         ]);
     }
 
     /**
+     * The page a save returns to: the search results the record was opened
+     * from, rebuilt from whitelisted arguments, or else the zone.
+     */
+    private function returnAfterSave(int $zid): void
+    {
+        if ($this->searchReturn !== []) {
+            $this->redirect('/search', $this->searchReturn);
+            return;
+        }
+
+        $this->redirect('/zones/' . $zid . '/edit');
+    }
+
+    /**
+     * The page messages of the save are flashed to, matching returnAfterSave().
+     */
+    private function returnPage(): string
+    {
+        return $this->searchReturn !== [] ? 'search' : 'edit';
+    }
+
+    /**
      * Files the posted row as a change request instead of writing it. Returns
-     * true when it was filed (the request then redirects to the zone).
+     * true when it was filed (the request then redirects to the zone or the search results).
      */
     private function requestRecordEdit(int $zid): bool
     {
@@ -264,8 +295,8 @@ class EditRecordController extends BaseController
             return false;
         }
 
-        $this->setMessage('edit', 'success', ChangeRequestMessages::submitted());
-        $this->redirect('/zones/' . $zid . '/edit');
+        $this->setMessage($this->returnPage(), 'success', ChangeRequestMessages::submitted());
+        $this->returnAfterSave($zid);
 
         return true;
     }
@@ -322,11 +353,11 @@ class EditRecordController extends BaseController
         }
 
         if ($edited->ptrFailed()) {
-            $this->setMessage('edit', 'warning', _('The record was updated, but the PTR record could not be updated: ') . ($edited->ptrMessage ?? ''));
+            $this->setMessage($this->returnPage(), 'warning', _('The record was updated, but the PTR record could not be updated: ') . ($edited->ptrMessage ?? ''));
         }
 
-        $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
-        $this->redirect('/zones/' . $zid . '/edit');
+        $this->setMessage($this->returnPage(), 'success', _('The record has been updated successfully.'));
+        $this->returnAfterSave((int)$zid);
 
         return true;
     }

@@ -45,6 +45,8 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
  */
 final class SearchCriteria
 {
+    private const MAX_RETURN_VALUE_LENGTH = 255;
+
     /**
      * @param array $parameters The fully resolved search parameters
      */
@@ -56,7 +58,7 @@ final class SearchCriteria
      * Build the criteria from a submitted search form, or the defaults when the
      * page was requested without a submission.
      *
-     * @param array|null $postParams The POST parameters, or null when the request was not a POST
+     * @param array|null $postParams The submitted search fields (a POST, or the GET a return to the results makes), or null for the defaults
      */
     public static function fromRequest(?array $postParams): self
     {
@@ -140,6 +142,85 @@ final class SearchCriteria
     public function toArray(): array
     {
         return $this->parameters;
+    }
+
+    /**
+     * This search, plus the result pages and page sizes being shown, as the arguments that
+     * repeat it with a GET to /search (see returnArgs()).
+     *
+     * @return array<string, string>
+     */
+    public function toReturnArgs(int $zonesPage, int $recordsPage, int $zonesRows, int $recordsRows): array
+    {
+        return self::returnArgs([
+            'query' => $this->parameters['displayed_query'] ?? $this->parameters['query'],
+            'zones' => $this->parameters['zones'],
+            'records' => $this->parameters['records'],
+            'wildcard' => $this->parameters['wildcard'],
+            'reverse' => $this->parameters['reverse'],
+            'comments' => $this->parameters['comments'],
+            'type_filter' => $this->parameters['type_filter'],
+            'content_filter' => $this->parameters['content_filter'],
+            'zones_page' => $zonesPage,
+            'records_page' => $recordsPage,
+            'zones_rows_per_page' => $zonesRows,
+            'records_rows_per_page' => $recordsRows,
+        ]);
+    }
+
+    /**
+     * Whitelists the search arguments a page carries to return to the search
+     * results: known keys with scalar values only, shaped like a submitted
+     * search form (unticked boxes absent). Empty when there is no usable search.
+     *
+     * The result is only ever query-string arguments for the fixed /search
+     * path, never a URL, so it cannot redirect anywhere else.
+     *
+     * @return array<string, string>
+     */
+    public static function returnArgs(mixed $params): array
+    {
+        if (!is_array($params) || !isset($params['query']) || !is_scalar($params['query'])) {
+            return [];
+        }
+
+        $query = (string)$params['query'];
+        if (strlen($query) > self::MAX_RETURN_VALUE_LENGTH) {
+            return [];
+        }
+
+        $args = ['query' => $query];
+        foreach (['zones', 'records', 'wildcard', 'reverse', 'comments'] as $flag) {
+            if (is_scalar($params[$flag] ?? null) && $params[$flag]) {
+                $args[$flag] = 'true';
+            }
+        }
+
+        $type = $params['type_filter'] ?? '';
+        if (is_string($type) && preg_match('/^[A-Za-z0-9_]{1,20}$/', $type)) {
+            $args['type_filter'] = $type;
+        }
+
+        $content = $params['content_filter'] ?? '';
+        if (is_scalar($content) && (string)$content !== '' && strlen((string)$content) <= self::MAX_RETURN_VALUE_LENGTH) {
+            $args['content_filter'] = (string)$content;
+        }
+
+        foreach (['zones_page', 'records_page'] as $page) {
+            $number = filter_var($params[$page] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 2]]);
+            if ($number !== false) {
+                $args[$page] = (string)$number;
+            }
+        }
+
+        foreach (['zones_rows_per_page', 'records_rows_per_page'] as $size) {
+            $rows = PaginationService::acceptedRowsPerPage($params[$size] ?? null);
+            if ($rows !== null) {
+                $args[$size] = (string)$rows;
+            }
+        }
+
+        return $args;
     }
 
     /**
