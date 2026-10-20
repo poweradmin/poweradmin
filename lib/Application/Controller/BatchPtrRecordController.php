@@ -93,22 +93,25 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = (int)htmlspecialchars($_GET['id']);
-            $zone_type = $this->dnsRecord->getDomainType($zone_id);
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $userId = $this->userContextService->getLoggedInUserId();
-            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-            // Check if this is a reverse zone
-            $isReverseZone = DnsHelper::isReverseZone($zone_name);
-            $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
-
-            // Check zone-specific edit permission (includes group permissions)
+            // Permission before the lookup, so a missing or foreign id answers the same way
             $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own');
             $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own_as_client');
             $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+            $this->checkCondition(
+                !$canEditOthers && !$canEdit && !$canEditAsClient,
+                _("You do not have the permission to add records to this zone.")
+            );
+
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            $this->checkCondition($zone_name === null, _('There is no zone with this ID.'));
+
+            $isReverseZone = DnsHelper::isReverseZone((string)$zone_name);
+            $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
             $this->checkCondition(
-                $zone_type == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient),
+                $this->dnsRecord->getDomainType($zone_id) == "SLAVE",
                 _("You do not have the permission to add records to this zone.")
             );
         }
