@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -241,7 +242,9 @@ class DeleteRecordsController extends BaseController
                 $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
                 $domain_id = $dnsRecord->recidToDomid($record_id);
 
-                $zone_info = $dnsRecord->getZoneInfoFromId($zid);
+                // The lookup flashes a refusal for a user with no view permission, which would
+                // tell an existing record from a missing one, so such a user skips it
+                $zone_info = Permission::getViewPermission($this->db) !== 'none' ? $dnsRecord->getZoneInfoFromId($zid) : [];
 
                 // Check zone-specific edit permission (includes group permissions)
                 $userId = $this->userContextService->getLoggedInUserId();
@@ -249,7 +252,7 @@ class DeleteRecordsController extends BaseController
                 $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own_as_client');
                 $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
 
-                if ($zone_info['type'] == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
+                if (($zone_info['type'] ?? null) == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
                     continue;
                 }
 
