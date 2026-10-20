@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -275,12 +276,14 @@ class DeleteRecordsController extends BaseController
                 $zid = $recordRepository->getZoneIdFromRecordId($record_id);
                 $domain_id = $recordRepository->recidToDomid($record_id);
 
-                $zone_info = $domainRepository->getZoneInfoFromId($zid);
+                // The lookup flashes a refusal for a user with no view permission, which would
+                // tell an existing record from a missing one, so such a user skips it
+                $zone_info = Permission::getViewPermission($this->db) !== 'none' ? $domainRepository->getZoneInfoFromId($zid) : [];
 
                 $userId = $this->userContextService->getLoggedInUserId();
                 $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $domain_id);
 
-                if (ZoneType::isReadOnly($zone_info['type']) || $perm_edit === 'none') {
+                if (ZoneType::isReadOnly($zone_info['type'] ?? '') || $perm_edit === 'none') {
                     continue;
                 }
 
