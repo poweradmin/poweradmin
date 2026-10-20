@@ -69,6 +69,16 @@ class ZoneCatalogController extends BaseController
             return;
         }
 
+        // Access first, so the refusal does not tell whether the id exists or is a producer
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $metadataView = $this->permissionService()->getZoneMetadataViewPermissionLevel($userId);
+        $isOwner = $this->isZoneOwner($zoneId);
+
+        if ($metadataView !== 'all' && !($metadataView === 'own' && $isOwner)) {
+            $this->showError(_('You do not have permission to access this zone.'));
+            return;
+        }
+
         $zoneName = $this->domainRepository()->getDomainNameById($zoneId);
         if ($zoneName === null) {
             $this->showError(_('Zone not found.'));
@@ -77,15 +87,6 @@ class ZoneCatalogController extends BaseController
 
         if ($this->domainRepository()->getDomainType($zoneId) !== ZoneType::PRODUCER) {
             $this->showError(_('Only producer zones publish a catalog.'));
-            return;
-        }
-
-        $userId = $this->getUserContextService()->getLoggedInUserId();
-        $metadataView = $this->permissionService()->getZoneMetadataViewPermissionLevel($userId);
-        $isOwner = $this->isZoneOwner($zoneId);
-
-        if ($metadataView !== 'all' && !($metadataView === 'own' && $isOwner)) {
-            $this->showError(_('You do not have permission to access this zone.'));
             return;
         }
 
