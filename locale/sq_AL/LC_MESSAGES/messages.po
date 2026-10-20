@@ -16629,3 +16629,8 @@ msgstr "Përfshi komentet"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Komente regjistrimesh të anashkaluara: %d. Komentet e regjistrimeve janë çaktivizuar në konfigurim."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Më së shumti %d regjistrime për shtim në masë; ndajeni listën."

@@ -16479,3 +16479,8 @@ msgstr "Megjegyzések belefoglalása"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Kihagyott rekordmegjegyzések: %d. A rekordmegjegyzések ki vannak kapcsolva a konfigurációban."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Tömeges hozzáadásonként legfeljebb %d rekord; ossza fel a listát."

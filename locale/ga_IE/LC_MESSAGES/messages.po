@@ -16739,3 +16739,8 @@ msgstr "Cuir nótaí tráchta san áireamh"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Nótaí tráchta taifead a scipeáladh: %d. Tá nótaí tráchta taifead díchumasaithe sa chumraíocht."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "%d taifead ar a mhéad in aghaidh an chur leis mórchóir; roinn an liosta."

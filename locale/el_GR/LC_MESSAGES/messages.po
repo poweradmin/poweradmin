@@ -16842,3 +16842,8 @@ msgstr "Συμπερίληψη σχολίων"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Σχόλια εγγραφών που παραλείφθηκαν: %d. Τα σχόλια εγγραφών είναι απενεργοποιημένα στις ρυθμίσεις."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Το πολύ %d εγγραφές ανά μαζική προσθήκη· χωρίστε τη λίστα."

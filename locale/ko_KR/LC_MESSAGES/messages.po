@@ -16077,3 +16077,8 @@ msgstr "주석 포함"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "건너뛴 레코드 주석: %d. 설정에서 레코드 주석이 비활성화되어 있습니다."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "일괄 추가는 최대 %d개 레코드까지 가능합니다. 목록을 나누어 주세요."

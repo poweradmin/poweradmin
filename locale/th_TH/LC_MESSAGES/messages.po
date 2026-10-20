@@ -15577,3 +15577,8 @@ msgstr "รวมหมายเหตุ"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "หมายเหตุของบันทึกที่ข้าม: %d รายการ หมายเหตุของบันทึกถูกปิดใช้งานในการกำหนดค่า"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "เพิ่มได้สูงสุด %d เรกคอร์ดต่อการเพิ่มแบบกลุ่ม โปรดแบ่งรายการ"

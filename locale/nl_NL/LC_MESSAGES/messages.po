@@ -16497,3 +16497,8 @@ msgstr "Opmerkingen opnemen"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Overgeslagen recordopmerkingen: %d. Recordopmerkingen zijn uitgeschakeld in de configuratie."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Maximaal %d records per bulktoevoeging; splits de lijst."

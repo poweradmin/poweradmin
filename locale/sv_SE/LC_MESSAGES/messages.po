@@ -16294,3 +16294,8 @@ msgstr "Inkludera kommentarer"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Överhoppade postkommentarer: %d. Postkommentarer är inaktiverade i konfigurationen."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Högst %d poster per masstillägg; dela upp listan."

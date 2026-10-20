@@ -16028,3 +16028,8 @@ msgstr "टिप्पणियाँ शामिल करें"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "छोड़ी गई रिकॉर्ड टिप्पणियाँ: %d. कॉन्फ़िगरेशन में रिकॉर्ड टिप्पणियाँ अक्षम हैं।"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "एक बार में अधिकतम %d रिकॉर्ड जोड़े जा सकते हैं; सूची को विभाजित करें।"

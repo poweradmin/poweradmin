@@ -16446,3 +16446,8 @@ msgstr "Sertakan komentar"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Komentar rekaman yang dilewati: %d. Komentar rekaman dinonaktifkan dalam konfigurasi."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Paling banyak %d rekaman per penambahan massal; bagi daftarnya."

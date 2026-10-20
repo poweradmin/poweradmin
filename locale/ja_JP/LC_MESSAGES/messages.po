@@ -16287,3 +16287,8 @@ msgstr "コメントを含める"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "スキップされたレコードコメント: %d。設定でレコードコメントが無効になっています。"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "一括追加できるレコードは最大 %d 件です。リストを分割してください。"

@@ -16225,3 +16225,8 @@ msgstr "Zahrnúť komentáre"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Preskočené komentáre záznamov: %d. Komentáre záznamov sú v konfigurácii vypnuté."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Hromadne možno pridať najviac %d záznamov; rozdeľte zoznam."

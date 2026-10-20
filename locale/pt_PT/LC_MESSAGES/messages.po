@@ -16543,3 +16543,8 @@ msgstr "Incluir comentários"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Comentários de registos ignorados: %d. Os comentários de registos estão desativados na configuração."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "No máximo %d registos por adição em massa; divida a lista."

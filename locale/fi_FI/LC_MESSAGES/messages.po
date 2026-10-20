@@ -16103,3 +16103,8 @@ msgstr "Sisällytä kommentit"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Ohitetut tietueiden kommentit: %d. Tietueiden kommentit on poistettu käytöstä asetuksissa."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Enintään %d tietuetta yhdellä joukkolisäyksellä; jaa luettelo osiin."

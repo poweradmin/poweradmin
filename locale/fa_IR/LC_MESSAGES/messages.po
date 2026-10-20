@@ -16175,3 +16175,8 @@ msgstr "شامل کردن نظرات"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "نظرات رکوردهای ردشده: %d. نظرات رکوردها در پیکربندی غیرفعال است."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "حداکثر %d رکورد در هر افزودن گروهی؛ فهرست را تقسیم کنید."

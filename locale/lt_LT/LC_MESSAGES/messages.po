@@ -16359,3 +16359,8 @@ msgstr "Įtraukti komentarus"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Praleisti įrašų komentarai: %d. Įrašų komentarai išjungti konfigūracijoje."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Vienu masiniu pridėjimu galima pridėti ne daugiau kaip %d įrašų; padalykite sąrašą."

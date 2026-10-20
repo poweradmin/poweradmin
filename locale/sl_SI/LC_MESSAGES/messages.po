@@ -16357,3 +16357,8 @@ msgstr "Vključi opombe"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Preskočene opombe zapisov: %d. Opombe zapisov so v konfiguraciji onemogočene."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Največ %d zapisov na eno množično dodajanje; razdelite seznam."

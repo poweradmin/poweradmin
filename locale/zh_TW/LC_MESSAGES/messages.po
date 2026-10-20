@@ -15264,3 +15264,8 @@ msgstr "包含備註"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "已略過的記錄備註：%d。設定中已停用記錄備註。"
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "每次大量新增最多 %d 筆記錄；請分割清單。"

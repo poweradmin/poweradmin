@@ -16025,3 +16025,8 @@ msgstr "تضمين التعليقات"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "تم تخطي تعليقات السجلات: %d. تعليقات السجلات معطلة في الإعدادات."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "يمكن إضافة %d سجل كحد أقصى في الإضافة المجمعة؛ قسّم القائمة."

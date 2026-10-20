@@ -16219,3 +16219,8 @@ msgstr "Bao gồm ghi chú"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Ghi chú bản ghi đã bỏ qua: %d. Ghi chú bản ghi đã bị tắt trong cấu hình."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Tối đa %d bản ghi cho mỗi lần thêm hàng loạt; hãy chia nhỏ danh sách."

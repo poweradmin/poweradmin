@@ -15844,3 +15844,8 @@ msgstr "כלול הערות"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "הערות רשומות שדולגו: %d. הערות רשומות מושבתות בתצורה."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "לכל היותר %d רשומות בכל הוספה מרובה; פצלו את הרשימה."

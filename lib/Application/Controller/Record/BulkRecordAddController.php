@@ -41,6 +41,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class BulkRecordAddController extends BaseController
 {
+    /** Most non-empty lines one submission may carry; a longer list is refused before anything is added. */
+    public const MAX_LINES = 1000;
+
+    /** Seconds allowed for one submission, enough for MAX_LINES records against a slow backend. */
+    private const TIME_LIMIT_SECONDS = 300;
+
     private ?DomainRepositoryInterface $domainRepository = null;
     private ?RecordManagerService $recordManager = null;
     private ?RecordTypeService $recordTypeService = null;
@@ -118,7 +124,20 @@ class BulkRecordAddController extends BaseController
         }
 
         $records_text = $this->httpRequest->getPostParam('records');
+        $records_text = is_string($records_text) ? $records_text : '';
         $lines = explode("\n", trim($records_text));
+
+        $lineCount = count(array_filter($lines, static fn(string $line): bool => trim($line) !== ''));
+        if ($lineCount > self::MAX_LINES) {
+            $this->setMessage('bulk_record_add', 'error', sprintf(_('At most %d records per bulk add; split the list.'), self::MAX_LINES));
+            $this->showBulkRecordAdditionForm([], $records_text);
+            return;
+        }
+
+        // PHP's default 30 s limit is wall-clock time under ZTS builds such as FrankenPHP
+        if (function_exists('set_time_limit')) {
+            set_time_limit(self::TIME_LIMIT_SECONDS);
+        }
 
         $parser = new BulkRecordParser();
         $reverseTtlResolver = $this->services()->reverseTtlResolver();
@@ -221,7 +240,10 @@ class BulkRecordAddController extends BaseController
         }
     }
 
-    private function showBulkRecordAdditionForm(array $failed_records = []): void
+    /**
+     * @param string|null $records_text The submitted list, shown again in full when the whole submission was refused
+     */
+    private function showBulkRecordAdditionForm(array $failed_records = [], ?string $records_text = null): void
     {
         $zone_id = (int)$this->getSafeRequestValue('id');
         $zone_name = $this->domainRepository()->getDomainNameById($zone_id);
@@ -235,6 +257,7 @@ class BulkRecordAddController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_display_name' => DnsIdnService::toDisplay($zone_name),
             'failed_records' => $failed_records,
+            'records_text' => $records_text,
             'change_comment' => (string)($this->httpRequest->getPostParam('change_comment') ?? ''),
             'require_change_comment' => (bool)$this->config->get('logging', 'require_change_comment', false),
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),

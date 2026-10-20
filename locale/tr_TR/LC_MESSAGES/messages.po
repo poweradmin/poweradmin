@@ -16336,3 +16336,8 @@ msgstr "Yorumları dahil et"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Atlanan kayıt yorumları: %d. Kayıt yorumları yapılandırmada devre dışı."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Toplu eklemede en fazla %d kayıt eklenebilir; listeyi bölün."

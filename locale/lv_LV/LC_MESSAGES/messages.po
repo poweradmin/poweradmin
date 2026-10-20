@@ -16050,3 +16050,8 @@ msgstr "Iekļaut komentārus"
 #, php-format
 msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
 msgstr "Izlaisti ierakstu komentāri: %d. Ierakstu komentāri ir atspējoti konfigurācijā."
+
+#: lib/Application/Controller/Record/BulkRecordAddController.php:132
+#, php-format
+msgid "At most %d records per bulk add; split the list."
+msgstr "Vienā masveida pievienošanā ne vairāk kā %d ieraksti; sadaliet sarakstu."
