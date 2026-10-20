@@ -3466,6 +3466,10 @@ msgstr "تایید اعتبار شکست خورد: هیچ کد مجوز"
 msgid "Authentication failed: Invalid session"
 msgstr "احراز هویت ناموفق بود: جلسه نامعتبر"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "احراز هویت ناموفق بود: ورود از این مرورگر آغاز نشده یا بیش از حد طول کشیده است. لطفاً دوباره تلاش کنید."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "احراز هویت ناموفق بود: ایجاد یا به‌روزرسانی حساب کاربری امکان‌پذیر نیست"

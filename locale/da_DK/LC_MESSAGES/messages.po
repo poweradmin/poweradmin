@@ -3520,6 +3520,10 @@ msgstr "Godkendelse mislykkedes: Ingen godkendelseskode"
 msgid "Authentication failed: Invalid session"
 msgstr "Godkendelse mislykkedes: Ugyldig session"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Godkendelse mislykkedes: login blev ikke startet fra denne browser eller tog for lang tid. Prøv igen."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Godkendelse mislykkedes: Kan ikke oprette eller opdatere brugerkonto"

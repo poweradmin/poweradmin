@@ -3539,6 +3539,10 @@ msgstr "Authenticatie mislukt: Geen autorisatiecode"
 msgid "Authentication failed: Invalid session"
 msgstr "Authenticatie mislukt: Ongeldige sessie"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Authenticatie mislukt: de aanmelding is niet vanuit deze browser gestart of duurde te lang. Probeer het opnieuw."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

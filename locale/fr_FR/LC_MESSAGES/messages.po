@@ -3618,6 +3618,10 @@ msgstr "Échec de l'authentification : Aucun code d'autorisation"
 msgid "Authentication failed: Invalid session"
 msgstr "Échec de l'authentification : Session invalide"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Échec de l'authentification : la connexion n'a pas été lancée depuis ce navigateur ou a pris trop de temps. Veuillez réessayer."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

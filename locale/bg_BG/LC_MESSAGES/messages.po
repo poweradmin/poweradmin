@@ -3535,6 +3535,10 @@ msgstr "Грешка при удостоверяване: няма код за �
 msgid "Authentication failed: Invalid session"
 msgstr "Грешка при удостоверяване: невалидна сесия"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Грешка при удостоверяване: влизането не е започнато от този браузър или отне твърде дълго. Моля, опитайте отново."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

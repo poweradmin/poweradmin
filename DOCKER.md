@@ -744,6 +744,7 @@ docker run -d \
 | `PA_SAML_AZURE_SSO_URL` | Azure AD SSO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
 | `PA_SAML_AZURE_SLO_URL` | Azure AD SLO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
 | `PA_SAML_AZURE_X509_CERT` | Azure AD X.509 Certificate | Empty | Yes if Azure SAML enabled |
+| `PA_SAML_AZURE_ALLOW_IDP_INITIATED` | Accept Azure AD responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS). `false` refuses them, which needs HTTPS | `true` | No |
 | `PA_SAML_AZURE_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AZURE_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AZURE_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -762,6 +763,7 @@ docker run -d \
 | `PA_SAML_OKTA_SSO_URL` | Okta SSO URL | Empty | Yes if Okta SAML enabled |
 | `PA_SAML_OKTA_SLO_URL` | Okta SLO URL | Empty | No |
 | `PA_SAML_OKTA_X509_CERT` | Okta X.509 Certificate | Empty | Yes if Okta SAML enabled |
+| `PA_SAML_OKTA_ALLOW_IDP_INITIATED` | Accept Okta responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS). `false` refuses them, which needs HTTPS | `true` | No |
 | `PA_SAML_OKTA_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | No |
 | `PA_SAML_OKTA_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_OKTA_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -780,6 +782,7 @@ docker run -d \
 | `PA_SAML_AUTH0_SSO_URL` | Auth0 SSO URL | Empty | Yes if Auth0 SAML enabled |
 | `PA_SAML_AUTH0_SLO_URL` | Auth0 SLO URL | Empty | No |
 | `PA_SAML_AUTH0_X509_CERT` | Auth0 X.509 Certificate | Empty | Yes if Auth0 SAML enabled |
+| `PA_SAML_AUTH0_ALLOW_IDP_INITIATED` | Accept Auth0 responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS). `false` refuses them, which needs HTTPS | `true` | No |
 | `PA_SAML_AUTH0_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` | No |
 | `PA_SAML_AUTH0_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
 | `PA_SAML_AUTH0_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
@@ -798,6 +801,7 @@ docker run -d \
 | `PA_SAML_KEYCLOAK_SSO_URL` | Keycloak SSO URL | Empty | Yes if Keycloak SAML enabled |
 | `PA_SAML_KEYCLOAK_SLO_URL` | Keycloak SLO URL | Empty | No |
 | `PA_SAML_KEYCLOAK_X509_CERT` | Keycloak X.509 Certificate | Empty | Yes if Keycloak SAML enabled |
+| `PA_SAML_KEYCLOAK_ALLOW_IDP_INITIATED` | Accept Keycloak responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS). `false` refuses them, which needs HTTPS | `true` | No |
 | `PA_SAML_KEYCLOAK_USERNAME_ATTR` | Username attribute mapping | `username` | No |
 | `PA_SAML_KEYCLOAK_EMAIL_ATTR` | Email attribute mapping | `email` | No |
 | `PA_SAML_KEYCLOAK_FIRST_NAME_ATTR` | First name attribute mapping | `given_name` | No |
@@ -816,6 +820,7 @@ docker run -d \
 | `PA_SAML_GENERIC_SSO_URL` | Generic SAML SSO URL | Empty | Yes if Generic SAML enabled |
 | `PA_SAML_GENERIC_SLO_URL` | Generic SAML SLO URL | Empty | No |
 | `PA_SAML_GENERIC_X509_CERT` | Generic SAML X.509 Certificate | Empty | Yes if Generic SAML enabled |
+| `PA_SAML_GENERIC_ALLOW_IDP_INITIATED` | Accept Generic SAML responses not tied to a sign-in started in Poweradmin (IdP-initiated, or no HTTPS). `false` refuses them, which needs HTTPS | `true` | No |
 | `PA_SAML_GENERIC_USERNAME_ATTR` | Username attribute mapping | `uid` | No |
 | `PA_SAML_GENERIC_EMAIL_ATTR` | Email attribute mapping | `email` | No |
 | `PA_SAML_GENERIC_FIRST_NAME_ATTR` | First name attribute mapping | `firstName` | No |

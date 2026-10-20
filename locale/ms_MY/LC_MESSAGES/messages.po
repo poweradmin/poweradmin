@@ -3513,6 +3513,10 @@ msgstr "Pengesahan gagal: Tiada kod kebenaran"
 msgid "Authentication failed: Invalid session"
 msgstr "Pengesahan gagal: Sesi tidak sah"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Pengesahan gagal: log masuk tidak dimulakan daripada pelayar ini atau mengambil masa terlalu lama. Sila cuba lagi."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

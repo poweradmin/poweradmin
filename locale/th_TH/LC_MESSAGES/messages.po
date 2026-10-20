@@ -3365,6 +3365,10 @@ msgstr "การตรวจสอบสิทธิ์ล้มเหลว: �
 msgid "Authentication failed: Invalid session"
 msgstr "การตรวจสอบสิทธิ์ล้มเหลว: วาระงานไม่ถูกต้อง"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "การตรวจสอบสิทธิ์ล้มเหลว: การลงชื่อเข้าใช้ไม่ได้เริ่มจากเบราว์เซอร์นี้หรือใช้เวลานานเกินไป โปรดลองอีกครั้ง"
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "การตรวจสอบสิทธิ์ล้มเหลว: ไม่สามารถสร้างหรืออัปเดตบัญชีผู้ใช้ได้"

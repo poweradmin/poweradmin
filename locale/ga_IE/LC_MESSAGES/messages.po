@@ -3600,6 +3600,10 @@ msgstr "Theip ar an bhfíordheimhniú: Níl aon chód údaraithe ann"
 msgid "Authentication failed: Invalid session"
 msgstr "Theip ar fhíordheimhniú: Seisiún neamhbhailí"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Theip ar fhíordheimhniú: níor tosaíodh an síniú isteach ón mbrabhsálaí seo nó thóg sé rófhada. Bain triail eile as."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

@@ -3488,6 +3488,10 @@ msgstr "Authentication failed: No authorization code"
 msgid "Authentication failed: Invalid session"
 msgstr "Authentication failed: Invalid session"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Authentication failed: Unable to create or update user account"

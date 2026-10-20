@@ -3501,6 +3501,10 @@ msgstr "Overenie zlyhalo: Žiadny autorizačný kód"
 msgid "Authentication failed: Invalid session"
 msgstr "Overenie zlyhalo: Neplatná relácia"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Overenie zlyhalo: prihlásenie nebolo spustené z tohto prehliadača alebo trvalo príliš dlho. Skúste to znova."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Overenie zlyhalo: nepodarilo sa vytvoriť/aktualizovať účet"

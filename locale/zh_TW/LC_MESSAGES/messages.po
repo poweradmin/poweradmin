@@ -3346,6 +3346,10 @@ msgstr "身分驗證失敗：沒有授權碼"
 msgid "Authentication failed: Invalid session"
 msgstr "身分驗證失敗：無效的工作階段"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "身分驗證失敗：登入不是從此瀏覽器發起的，或耗時過長。請再試一次。"
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "身分驗證失敗：無法建立或更新使用者帳號"

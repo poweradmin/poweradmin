@@ -3414,6 +3414,10 @@ msgstr "האימות נכשל: אין קוד הרשאה"
 msgid "Authentication failed: Invalid session"
 msgstr "האימות נכשל: הפעלה לא חוקית"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "האימות נכשל: הכניסה לא התחילה מדפדפן זה או שנמשכה זמן רב מדי. נסה שוב."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "האימות נכשל: לא ניתן ליצור או לעדכן את חשבון המשתמש"

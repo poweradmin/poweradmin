@@ -3548,6 +3548,10 @@ msgstr "Identifikimi dështoi: Nuk ka kod autorizimi"
 msgid "Authentication failed: Invalid session"
 msgstr "Identifikimi dështoi: Seancë e pavlefshme"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Identifikimi dështoi: hyrja nuk u nis nga ky shfletues ose zgjati shumë. Ju lutemi provoni përsëri."
+
 #: lib/Application/Service/SamlService.php:388
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
