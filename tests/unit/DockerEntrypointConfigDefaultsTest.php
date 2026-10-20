@@ -135,6 +135,26 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
     }
 
     /**
+     * Without the port, a database on a non-default DB_PORT got its schema loaded
+     * but the admin user step connected to the default port and failed (#1653).
+     */
+    public function testAdminUserStepPassesTheDatabasePort(): void
+    {
+        $body = $this->validatorBody('create_admin_user');
+
+        $this->assertSame(2, substr_count($body, 'mysql_client -'), 'Expected the existence check and the insert through mysql_client');
+        $this->assertSame(2, substr_count($body, 'psql_client -'), 'Expected the existence check and the insert through psql_client');
+        $this->assertSame(0, preg_match_all('/(?:^|[\s(!])(?:PGPASSWORD=\S+\s+)?(?:mysql|psql)\s/m', $body), 'Database client called directly, bypassing the port');
+
+        $this->assertStringContainsString('[ -n "${DB_PORT:-}" ] && printf \'%s\n\' "-P${DB_PORT}"', $this->validatorBody('mysql_connection_args'));
+        $this->assertStringContainsString('mapfile -t args < <(mysql_connection_args)', $this->validatorBody('mysql_client'));
+
+        $psql = $this->validatorBody('psql_client');
+        $this->assertStringContainsString('port_opt=(-p "${DB_PORT}")', $psql);
+        $this->assertStringContainsString('psql -h "${DB_HOST}" "${port_opt[@]}"', $psql);
+    }
+
+    /**
      * The change approval switches ship off, and the entrypoint must both read
      * the PA_* variable with the same default and emit it into the matching
      * settings group.
