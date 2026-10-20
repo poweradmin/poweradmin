@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -93,18 +93,19 @@ class DnsWizardFormController extends BaseController
 
         $zone_id = (int)$zone_id;
 
-        // Check if zone exists
+        // Permission before the lookup, so a missing id answers like a zone the user cannot edit
+        $perm_edit = Permission::getEditPermission($this->db);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+        if ($perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+            $this->showError(_('You do not have permission to add records to this zone.'));
+        }
+
         $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
         if ($zone_name === null) {
             $this->showError(_('Zone not found.'));
         }
 
-        // Check permissions
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
-        $zone_type = $this->dnsRecord->getDomainType($zone_id);
-
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        if ($this->dnsRecord->getDomainType($zone_id) == "SLAVE") {
             $this->showError(_('You do not have permission to add records to this zone.'));
         }
 
