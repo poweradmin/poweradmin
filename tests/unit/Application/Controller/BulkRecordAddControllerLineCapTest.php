@@ -44,6 +44,7 @@ use ReflectionProperty;
 class BulkRecordAddControllerLineCapTest extends TestCase
 {
     private array $savedPost = [];
+    private ?LegacyLogger $auditLogger = null;
 
     protected function setUp(): void
     {
@@ -80,6 +81,16 @@ class BulkRecordAddControllerLineCapTest extends TestCase
 
         $this->assertSame([['edit', 'success', sprintf('%d record(s) have been added successfully.', BulkRecordAddController::MAX_LINES)]], $controller->flashes);
         $this->assertSame('/zones/12/edit', $controller->redirectedTo);
+    }
+
+    public function testEachAddedRecordIsLoggedOnlyByTheRecordService(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->exactly(2))->method('createRecord')->willReturn(true);
+        $this->auditLogger = $this->createMock(LegacyLogger::class);
+        $this->auditLogger->expects($this->never())->method('logInfo');
+
+        $this->submit(self::lines(2), $records);
     }
 
     private static function lines(int $count): string
@@ -145,7 +156,7 @@ class BulkRecordAddControllerLineCapTest extends TestCase
 
         $values = [
             'request' => new Request(),
-            'auditLogger' => $this->createMock(LegacyLogger::class),
+            'auditLogger' => $this->auditLogger ?? $this->createMock(LegacyLogger::class),
             'domainRepository' => $domains,
             'recordManager' => $records,
             'recordTypeService' => new RecordTypeService($config),

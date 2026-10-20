@@ -245,19 +245,8 @@ class BulkRecordAddController extends BaseController
                             $disabled
                         )
                     ) {
+                        // RecordManagerService::createRecord() writes the add_record log entry
                         $success_count++;
-
-                        // Log the record creation
-                        $this->auditLogger->logInfo(sprintf(
-                            'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
-                            $this->ipAddressRetriever->getClientIp(),
-                            $this->userContextService->getLoggedInUsername(),
-                            $name,
-                            $type,
-                            $content,
-                            $ttl,
-                            $prio
-                        ), $zone_id);
                     } else {
                         $failed_records[] = $line . " - " . _('Record could not be added.');
                     }
