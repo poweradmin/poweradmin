@@ -1441,6 +1441,7 @@ EOF
                 'sso_url' => '${PA_SAML_AZURE_SSO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
                 'slo_url' => '${PA_SAML_AZURE_SLO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
                 'x509cert' => '${PA_SAML_AZURE_X509_CERT:-}',
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_AZURE_ALLOW_IDP_INITIATED:-true}"),
                 'user_mapping' => [
                     'username' => '${PA_SAML_AZURE_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
                     'email' => '${PA_SAML_AZURE_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
@@ -1464,6 +1465,7 @@ EOF
                 'sso_url' => '${PA_SAML_OKTA_SSO_URL:-}',
                 'slo_url' => '${PA_SAML_OKTA_SLO_URL:-}',
                 'x509cert' => '${PA_SAML_OKTA_X509_CERT:-}',
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_OKTA_ALLOW_IDP_INITIATED:-true}"),
                 'user_mapping' => [
                     'username' => '${PA_SAML_OKTA_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}',
                     'email' => '${PA_SAML_OKTA_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
@@ -1487,6 +1489,7 @@ EOF
                 'sso_url' => '${PA_SAML_AUTH0_SSO_URL:-}',
                 'slo_url' => '${PA_SAML_AUTH0_SLO_URL:-}',
                 'x509cert' => '${PA_SAML_AUTH0_X509_CERT:-}',
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_AUTH0_ALLOW_IDP_INITIATED:-true}"),
                 'user_mapping' => [
                     'username' => '${PA_SAML_AUTH0_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier}',
                     'email' => '${PA_SAML_AUTH0_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
@@ -1510,6 +1513,7 @@ EOF
                 'sso_url' => '${PA_SAML_KEYCLOAK_SSO_URL:-}',
                 'slo_url' => '${PA_SAML_KEYCLOAK_SLO_URL:-}',
                 'x509cert' => '${PA_SAML_KEYCLOAK_X509_CERT:-}',
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_KEYCLOAK_ALLOW_IDP_INITIATED:-true}"),
                 'user_mapping' => [
                     'username' => '${PA_SAML_KEYCLOAK_USERNAME_ATTR:-username}',
                     'email' => '${PA_SAML_KEYCLOAK_EMAIL_ATTR:-email}',
@@ -1533,6 +1537,7 @@ EOF
                 'sso_url' => '${PA_SAML_GENERIC_SSO_URL:-}',
                 'slo_url' => '${PA_SAML_GENERIC_SLO_URL:-}',
                 'x509cert' => '${PA_SAML_GENERIC_X509_CERT:-}',
+                'allow_idp_initiated' => $(to_php_bool "${PA_SAML_GENERIC_ALLOW_IDP_INITIATED:-true}"),
                 'user_mapping' => [
                     'username' => '${PA_SAML_GENERIC_USERNAME_ATTR:-uid}',
                     'email' => '${PA_SAML_GENERIC_EMAIL_ATTR:-email}',

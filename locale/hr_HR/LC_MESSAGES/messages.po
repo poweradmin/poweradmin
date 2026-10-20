@@ -3252,6 +3252,10 @@ msgstr "Autentifikacija nije uspjela: Bez autorizacijskog koda"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentifikacija nije uspjela: Nevažeća sesija"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentifikacija nije uspjela: prijava nije pokrenuta iz ovog preglednika ili je trajala predugo. Pokušajte ponovno."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentifikacija nije uspjela: Nije moguće stvoriti ili ažurirati račun"

@@ -3195,6 +3195,10 @@ msgstr "Todennus epäonnistui: Ei valtuutuskoodia"
 msgid "Authentication failed: Invalid session"
 msgstr "Todennus epäonnistui: Virheellinen istunto"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Todennus epäonnistui: kirjautumista ei aloitettu tästä selaimesta tai se kesti liian kauan. Yritä uudelleen."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Todennus epäonnistui: Käyttäjätilin luonti tai päivitys epäonnistui"

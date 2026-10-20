@@ -3208,6 +3208,10 @@ msgstr "Autentimine ebaõnnestus: Volituse kood puudub"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentimine ebaõnnestus: Vigane sessioon"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentimine ebaõnnestus: sisselogimist ei alustatud sellest brauserist või see kestis liiga kaua. Proovige uuesti."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentimine ebaõnnestus: kasutajakontot ei saa luua ega uuendada"

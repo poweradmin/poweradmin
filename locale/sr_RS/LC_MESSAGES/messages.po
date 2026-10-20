@@ -3224,6 +3224,10 @@ msgstr "Аутентификација није успела: Нема ауто�
 msgid "Authentication failed: Invalid session"
 msgstr "Аутентификација није успела: Неважећа сесија"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Аутентификација није успела: пријава није покренута из овог прегледача или је трајала предуго. Покушајте поново."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Аутентификација није успела: Не може се креирати или ажурирати налог"

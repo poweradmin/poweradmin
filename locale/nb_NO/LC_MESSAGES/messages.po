@@ -3337,6 +3337,10 @@ msgstr "Autentisering mislyktes: Ingen autorisasjonskode"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentisering mislyktes: Ugyldig økt"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentisering mislyktes: påloggingen ble ikke startet fra denne nettleseren eller tok for lang tid. Prøv igjen."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentisering mislyktes: Kan ikke opprette eller oppdatere brukerkonto"

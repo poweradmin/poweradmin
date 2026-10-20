@@ -3430,6 +3430,10 @@ msgstr "Authentifizierung fehlgeschlagen: Kein Autorisierungscode"
 msgid "Authentication failed: Invalid session"
 msgstr "Authentifizierung fehlgeschlagen: Ungültige Sitzung"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Authentifizierung fehlgeschlagen: Die Anmeldung wurde nicht in diesem Browser gestartet oder hat zu lange gedauert. Bitte versuchen Sie es erneut."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""

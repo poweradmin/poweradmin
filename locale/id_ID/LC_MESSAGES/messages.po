@@ -3360,6 +3360,10 @@ msgstr "Autentikasi gagal: Tidak ada kode otorisasi"
 msgid "Authentication failed: Invalid session"
 msgstr "Autentikasi gagal: Sesi tidak valid"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Autentikasi gagal: proses masuk tidak dimulai dari browser ini atau memakan waktu terlalu lama. Silakan coba lagi."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr "Autentikasi gagal: Tidak dapat membuat atau memperbarui akun pengguna"

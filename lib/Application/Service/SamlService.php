@@ -31,6 +31,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
@@ -43,6 +44,12 @@ use ReflectionClass;
 
 class SamlService extends LoggingService
 {
+    // Carries the AuthnRequest ID across the IdP's cross-site POST to the ACS, which the
+    // SameSite=Lax session cookie does not survive; __Host- stops a sibling host planting one
+    private const FLOW_COOKIE_NAME = '__Host-saml_flow';
+    // Longer than OIDC's 300 s: an IdP sign-in with its own second factor often takes a while
+    private const FLOW_COOKIE_TTL = 600;
+
     private ConfigurationManager $configManager;
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
@@ -179,6 +186,7 @@ class SamlService extends LoggingService
 
             // Initiate SSO and get the redirect URL (stay=true prevents immediate redirect and returns URL)
             $redirectUrl = $auth->login($relayState, [], false, false, true);
+            $this->setFlowCookie((string) $auth->getLastRequestID(), $providerId);
 
             $this->logInfo('Generated SAML SSO URL: {url}', ['url' => $redirectUrl]);
 
@@ -196,6 +204,8 @@ class SamlService extends LoggingService
     {
         $this->logInfo('Processing SAML assertion');
 
+        // Single-use: a replayed POST finds no cookie and no request ID to match
+        $flow = $this->takeFlowCookie();
         $providerId = $this->getSessionValue('saml_provider', '');
 
         // If provider ID not in session, try to get it from RelayState
@@ -210,6 +220,13 @@ class SamlService extends LoggingService
                 $this->logWarning('Failed to decode RelayState: {error}', ['error' => $e->getMessage()]);
             }
         }
+
+        // Last resort only, so the provider is chosen exactly as before the flow cookie existed
+        if (empty($providerId) && $flow !== null) {
+            $providerId = $flow['provider'];
+        }
+        // The request ID binds only the provider whose sign-in set the cookie
+        $requestId = ($flow !== null && $flow['provider'] === $providerId) ? $flow['request_id'] : null;
 
         if (empty($providerId)) {
             $this->logWarning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
@@ -247,12 +264,24 @@ class SamlService extends LoggingService
                 throw new \RuntimeException("Provider {$providerId} not found");
             }
 
+            // With allow_idp_initiated off the response must answer the AuthnRequest this browser started;
+            // on (the 4.x stable default) responses are processed as before, bound or not
+            $allowIdpInitiated = $this->allowsIdpInitiated($providerId);
+            if ($requestId === null && !$allowIdpInitiated) {
+                $this->logWarning('SAML response for {provider} refused: no sign-in was started from this browser, or it expired', [
+                    'provider' => $providerId,
+                ]);
+                $sessionEntity = new SessionEntity(_('Authentication failed: the sign-in was not started from this browser or took too long. Please try again.'), 'danger');
+                $this->authenticationService->auth($sessionEntity);
+                return;
+            }
+
             // Debug SAML response
             $this->logInfo('Processing SAML response. POST data keys: {keys}', ['keys' => array_keys($_POST)]);
             $this->logInfo('SAML Response length: {length}', ['length' => strlen($_POST['SAMLResponse'] ?? '')]);
 
-            // Process the SAML response
-            $auth->processResponse();
+            // Process the SAML response; with a request ID php-saml rejects a missing or different InResponseTo
+            $auth->processResponse($allowIdpInitiated ? null : $requestId);
 
             $errors = $auth->getErrors();
             if (!empty($errors)) {
@@ -599,6 +628,85 @@ class SamlService extends LoggingService
         // For display purposes, only require basic URL configuration
         // Certificate validation will happen during actual authentication
         return !empty($config['entity_id']) && !empty($config['sso_url']);
+    }
+
+    private function setFlowCookie(string $requestId, string $providerId): void
+    {
+        $acsUrl = $this->getAcsUrl();
+        if (!$this->allowsIdpInitiated($providerId) && parse_url($acsUrl, PHP_URL_SCHEME) !== 'https' && !in_array(parse_url($acsUrl, PHP_URL_HOST), ['localhost', '127.0.0.1', '::1', '[::1]'], true)) {
+            $this->logWarning(
+                'SAML ACS URL {url} is not HTTPS, so the browser drops the sign-in cookie and the response will be refused; serve Poweradmin over HTTPS or turn allow_idp_initiated back on for provider {provider}',
+                ['url' => $acsUrl, 'provider' => $providerId]
+            );
+        }
+
+        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId], JSON_THROW_ON_ERROR);
+        $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
+    }
+
+    /**
+     * Reads and clears the flow cookie. Returns its provider and request ID, or null
+     * when there is none or it cannot be decrypted.
+     *
+     * @return array{provider: string, request_id: string}|null
+     */
+    private function takeFlowCookie(): ?array
+    {
+        $rawCookie = $_COOKIE[self::FLOW_COOKIE_NAME] ?? '';
+        if (!is_string($rawCookie) || $rawCookie === '') {
+            return null;
+        }
+
+        $this->writeFlowCookie('', time() - 3600);
+
+        try {
+            $payload = json_decode($this->flowEncryptionService()->decrypt($rawCookie), true);
+        } catch (\Throwable $e) {
+            $this->logWarning('Failed to decrypt SAML flow cookie: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+
+        $provider = is_array($payload) ? ($payload['provider'] ?? null) : null;
+        $requestId = is_array($payload) ? ($payload['request_id'] ?? null) : null;
+        if (!is_string($provider) || $provider === '' || !is_string($requestId) || $requestId === '') {
+            $this->logWarning('SAML flow cookie has an invalid payload');
+            return null;
+        }
+
+        return ['provider' => $provider, 'request_id' => $requestId];
+    }
+
+    private function writeFlowCookie(string $value, int $expires): void
+    {
+        setcookie(self::FLOW_COOKIE_NAME, $value, [
+            'expires' => $expires,
+            'path' => '/',
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'None',
+        ]);
+    }
+
+    private function allowsIdpInitiated(string $providerId): bool
+    {
+        // On by default in 4.x stable, so provider configs that predate the setting keep working
+        return (bool) ($this->samlConfigurationService->getProviderConfig($providerId)['allow_idp_initiated'] ?? true);
+    }
+
+    private function getAcsUrl(): string
+    {
+        try {
+            $acsUrl = $this->samlConfigurationService->getServiceProviderConfig()['assertion_consumer_service_url'] ?? '';
+        } catch (\RuntimeException) {
+            return '';
+        }
+
+        return is_string($acsUrl) ? $acsUrl : '';
+    }
+
+    private function flowEncryptionService(): PasswordEncryptionService
+    {
+        return new PasswordEncryptionService((string) $this->configManager->get('security', 'session_key', ''));
     }
 
     /**

@@ -667,6 +667,7 @@ return [
                 'sso_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
                 'slo_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
                 'x509cert' => '',             // IdP X.509 Certificate (required)
+                'allow_idp_initiated' => true, // Accept responses not tied to a sign-in started here (IdP-initiated, or no HTTPS); false refuses them (added in 4.4.3)
                 'x509cert_multi' => [         // Multiple certificates for rollover (optional)
                     'signing' => [],
                     'encryption' => []
@@ -691,6 +692,7 @@ return [
                 'sso_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/sso/saml',
                 'slo_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/slo/saml',
                 'x509cert' => '',             // Okta X.509 Certificate
+                'allow_idp_initiated' => true, // Accept responses not tied to a sign-in started here (IdP-initiated, or no HTTPS); false refuses them (added in 4.4.3)
                 'user_mapping' => [
                     'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
                     'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
@@ -711,6 +713,7 @@ return [
                 'sso_url' => 'https://{tenant}.auth0.com/samlp/{client-id}',
                 'slo_url' => 'https://{tenant}.auth0.com/samlp/{client-id}/logout',
                 'x509cert' => '',             // Auth0 X.509 Certificate
+                'allow_idp_initiated' => true, // Accept responses not tied to a sign-in started here (IdP-initiated, or no HTTPS); false refuses them (added in 4.4.3)
                 'user_mapping' => [
                     'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
                     'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
@@ -731,6 +734,7 @@ return [
                 'sso_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
                 'slo_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
                 'x509cert' => '',             // Keycloak X.509 Certificate
+                'allow_idp_initiated' => true, // Accept responses not tied to a sign-in started here (IdP-initiated, or no HTTPS); false refuses them (added in 4.4.3)
                 'user_mapping' => [
                     'username' => 'username',
                     'email' => 'email',
@@ -755,6 +759,7 @@ return [
                 'sso_url' => 'https://your-idp.example.com/sso',
                 'slo_url' => 'https://your-idp.example.com/slo',
                 'x509cert' => '',              // Required: IdP X.509 Certificate (without headers/footers)
+                'allow_idp_initiated' => true, // Accept responses not tied to a sign-in started here (IdP-initiated, or no HTTPS); false refuses them (added in 4.4.3)
 
                 // Attribute mapping - map SAML attributes to Poweradmin user fields
                 'user_mapping' => [

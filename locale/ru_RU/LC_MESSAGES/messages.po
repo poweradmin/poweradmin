@@ -3373,6 +3373,10 @@ msgstr "Ошибка аутентификации: Отсутствует код
 msgid "Authentication failed: Invalid session"
 msgstr "Ошибка аутентификации: Недопустимая сессия"
 
+#: lib/Application/Service/SamlService.php
+msgid "Authentication failed: the sign-in was not started from this browser or took too long. Please try again."
+msgstr "Ошибка аутентификации: вход не был начат в этом браузере или занял слишком много времени. Попробуйте ещё раз."
+
 #: lib/Application/Service/SamlService.php:381
 msgid "Authentication failed: Unable to create or update user account"
 msgstr ""
