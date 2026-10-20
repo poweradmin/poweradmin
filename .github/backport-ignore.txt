@@ -47,3 +47,20 @@ fix(docker): deny dotfiles, shell scripts and translation sources in the Caddy c
 fix(docker): run PHP on php.ini-production with tuned limits and opcache
 fix(docker): load the image's php overrides first so mounted ini files win
 fix(docker): keep SQLite WAL sidecar files out of the web root
+
+# The health endpoint arrived in 4.5.0, so 4.2.x-4.4.x have no cache file to guard.
+# 4.5.x took the fix folded into its health cache backport.
+release/4.5.x::fix(api): ignore a symlinked health cache file and document the token header for container healthchecks
+release/4.4.x::fix(api): ignore a symlinked health cache file and document the token header for container healthchecks
+release/4.3.x::fix(api): ignore a symlinked health cache file and document the token header for container healthchecks
+release/4.2.x::fix(api): ignore a symlinked health cache file and document the token header for container healthchecks
+
+# The database wait went to master and 4.4.x only; 4.2.x/4.3.x keep their entrypoints.
+release/4.3.x::fix(docker): wait for the database before schema init
+release/4.2.x::fix(docker): wait for the database before schema init
+
+# The bug exists on 4.2.x too, but 4.2.x is winding down (end of life 2027-01-31) and takes fixes on request only.
+release/4.2.x::fix(docker): pass DB_PORT to the admin user step of the entrypoint (closes #1653)
+
+# 4.4.x took the escape inside its 4.4.0 environment variables commit.
+release/4.4.x::fix(docker): escape the default zone template name when generating config
