@@ -72,8 +72,6 @@ This creates `admin`, `manager`, `client`, `viewer`, `noperm`, and `inactive` ac
 
 Open every pull request against `master` (the default branch), whether it is a bug fix, a feature or a translation.
 
-A temporary `develop` branch holds 4.6.0 work and will be removed after 4.5.0 is released. You don't need to target it - the maintainer moves changes between the two.
-
 Bug fixes are backported to the supported release branches (see [Version Support](README.md#version-support)) by the maintainer, so there is no need to open a separate PR per branch.
 
 ### Code Quality
