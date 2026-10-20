@@ -86,6 +86,7 @@ final class ZoneImportExportModule implements ModuleInterface
                     'label' => 'Zone File',
                     'url_pattern' => '/zones/{id}/export/zonefile',
                     'icon' => 'file-earmark-code',
+                    'supports_comments' => '1',
                 ],
             ];
         }

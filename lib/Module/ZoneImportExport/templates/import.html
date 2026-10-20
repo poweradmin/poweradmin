@@ -51,6 +51,9 @@
     <div class="card-header py-3">
         <strong><i class="bi bi-eye me-2"></i>{% trans %}Import Preview{% endtrans %}</strong>
         <span class="badge bg-primary ms-2">{{ record_count }} {% trans %}records{% endtrans %}</span>
+        {% if comment_count is defined and comment_count > 0 %}
+        <span class="badge bg-secondary ms-2">{% trans %}Comments{% endtrans %}: {{ comment_count }}</span>
+        {% endif %}
     </div>
     <div class="card-body">
         {% if warnings is defined and warnings|length > 0 %}
@@ -78,6 +81,9 @@
                         <th>{% trans %}Content{% endtrans %}</th>
                         <th>{% trans %}TTL{% endtrans %}</th>
                         <th>{% trans %}Priority{% endtrans %}</th>
+                        {% if comment_count is defined and comment_count > 0 %}
+                        <th>{% trans %}Comment{% endtrans %}</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -88,6 +94,9 @@
                         <td class="text-break" style="max-width: 400px">{{ record.content }}</td>
                         <td>{{ record.ttl }}</td>
                         <td>{{ record.priority }}</td>
+                        {% if comment_count is defined and comment_count > 0 %}
+                        <td class="text-break" style="white-space: pre-line; max-width: 300px">{{ record.comment }}</td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

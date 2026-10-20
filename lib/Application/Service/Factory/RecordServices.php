@@ -242,7 +242,7 @@ final class RecordServices
     }
 
     /**
-     * The zone as a BIND zone file, or null when it has no records.
+     * The zone as a BIND zone file, or null when it has no enabled records.
      */
     private function zoneFileSnapshot(int $zoneId, string $zoneName): ?string
     {
@@ -251,7 +251,8 @@ final class RecordServices
             return null;
         }
 
-        return (new BindZoneFileGenerator())->generate($zoneName, $records);
+        $zoneFile = (new BindZoneFileGenerator())->generate($zoneName, $records);
+        return $zoneFile === '' ? null : $zoneFile;
     }
 
     public function changeRequestNotificationService(): ChangeRequestNotificationService

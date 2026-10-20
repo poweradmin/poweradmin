@@ -16454,3 +16454,12 @@ msgstr "Адрес %s находится за пределами зоны %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Имя или IP-адрес"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Включить комментарии"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Пропущено комментариев к записям: %d. Комментарии к записям отключены в конфигурации."

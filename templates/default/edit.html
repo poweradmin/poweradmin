@@ -624,13 +624,22 @@
         {% endif %}
         {% if export_formats is defined and export_formats|length > 0 %}
         <div class="btn-group">
-            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown"{% if iface_record_comments and export_formats|filter(f => f.supports_comments is defined)|length > 0 %} data-bs-auto-close="outside"{% endif %}>
                 <i class="bi bi-download me-1 text-secondary"></i>{% trans %}Export{% endtrans %}
             </button>
             <ul class="dropdown-menu">
                 {% for format in export_formats %}
-                <li><a class="dropdown-item" href="{{ base_url_prefix }}{{ format.url }}"><i class="bi bi-{{ format.icon }} me-2"></i>{{ format.label }}</a></li>
+                <li><a class="dropdown-item" href="{{ base_url_prefix }}{{ format.url }}"{% if iface_record_comments and format.supports_comments is defined %} data-export-comments{% endif %}><i class="bi bi-{{ format.icon }} me-2"></i>{{ format.label }}</a></li>
                 {% endfor %}
+                {% if iface_record_comments and export_formats|filter(f => f.supports_comments is defined)|length > 0 %}
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <div class="dropdown-item-text form-check ms-2 mb-0">
+                        <input class="form-check-input" type="checkbox" id="export-include-comments">
+                        <label class="form-check-label" for="export-include-comments">{% trans %}Include comments{% endtrans %}</label>
+                    </div>
+                </li>
+                {% endif %}
             </ul>
         </div>
         {% endif %}
@@ -1050,6 +1059,29 @@
 {% endif %}
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
+
+<script>
+    // The zone file export adds record comments only when asked; browsers may restore the box on back navigation.
+    document.addEventListener('DOMContentLoaded', () => {
+        const box = document.getElementById('export-include-comments');
+        if (!box) {
+            return;
+        }
+        const apply = () => {
+            document.querySelectorAll('a[data-export-comments]').forEach((link) => {
+                const url = new URL(link.href, window.location.href);
+                if (box.checked) {
+                    url.searchParams.set('comments', '1');
+                } else {
+                    url.searchParams.delete('comments');
+                }
+                link.href = url.toString();
+            });
+        };
+        box.addEventListener('change', apply);
+        apply();
+    });
+</script>
 
 <script>
     // Function to toggle Add button state based on select value

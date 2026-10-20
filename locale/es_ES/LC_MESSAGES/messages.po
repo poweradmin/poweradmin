@@ -16608,3 +16608,12 @@ msgstr "La dirección %s está fuera de la zona %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Nombre o dirección IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Incluir comentarios"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Comentarios de registros omitidos: %d. Los comentarios de registros están desactivados en la configuración."

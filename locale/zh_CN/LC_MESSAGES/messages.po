@@ -15238,3 +15238,12 @@ msgstr "地址 %s 不在区域 %s 内。"
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "名称或 IP 地址"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "包含备注"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "已跳过的记录备注：%d。配置中已禁用记录备注。"

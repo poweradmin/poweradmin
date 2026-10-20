@@ -15983,3 +15983,12 @@ msgstr "Aadress %s jääb tsoonist %s välja."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Nimi või IP-aadress"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Kaasa kommentaarid"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Vahele jäetud kirjete kommentaarid: %d. Kirjete kommentaarid on seadistuses keelatud."

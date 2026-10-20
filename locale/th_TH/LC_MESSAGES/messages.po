@@ -15568,3 +15568,12 @@ msgstr "ที่อยู่ %s อยู่นอกโซน %s"
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "ชื่อหรือที่อยู่ IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "รวมหมายเหตุ"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "หมายเหตุของบันทึกที่ข้าม: %d รายการ หมายเหตุของบันทึกถูกปิดใช้งานในการกำหนดค่า"

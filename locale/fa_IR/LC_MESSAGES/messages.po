@@ -16166,3 +16166,12 @@ msgstr "نشانی %s خارج از ناحیه %s است."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "نام یا نشانی IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "شامل کردن نظرات"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "نظرات رکوردهای ردشده: %d. نظرات رکوردها در پیکربندی غیرفعال است."

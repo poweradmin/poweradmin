@@ -16019,3 +16019,12 @@ msgstr "पता %s ज़ोन %s के बाहर है।"
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "नाम या IP पता"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "टिप्पणियाँ शामिल करें"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "छोड़ी गई रिकॉर्ड टिप्पणियाँ: %d. कॉन्फ़िगरेशन में रिकॉर्ड टिप्पणियाँ अक्षम हैं।"

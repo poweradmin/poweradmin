@@ -38,14 +38,17 @@ class ParsedRecord
     public string $type;
     public string $content;
     public int $priority;
+    /** The Poweradmin comment the export wrote above this record, or '' */
+    public string $comment;
 
-    public function __construct(string $name, int $ttl, string $type, string $content, int $priority = 0)
+    public function __construct(string $name, int $ttl, string $type, string $content, int $priority = 0, string $comment = '')
     {
         $this->name = $name;
         $this->ttl = $ttl;
         $this->type = $type;
         $this->content = $content;
         $this->priority = $priority;
+        $this->comment = $comment;
     }
 
     public function isSignerGenerated(): bool

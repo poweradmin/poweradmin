@@ -16488,3 +16488,12 @@ msgstr "Het adres %s valt buiten de zone %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Naam of IP-adres"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Opmerkingen opnemen"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Overgeslagen recordopmerkingen: %d. Recordopmerkingen zijn uitgeschakeld in de configuratie."

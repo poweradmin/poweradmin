@@ -16216,3 +16216,12 @@ msgstr "Adresa %s leží mimo zóny %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Názov alebo IP adresa"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Zahrnúť komentáre"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Preskočené komentáre záznamov: %d. Komentáre záznamov sú v konfigurácii vypnuté."

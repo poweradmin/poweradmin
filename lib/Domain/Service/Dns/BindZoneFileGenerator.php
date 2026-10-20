@@ -30,18 +30,22 @@ use Poweradmin\Domain\Model\RecordRow;
  */
 class BindZoneFileGenerator
 {
-    /**
-     * Generate a BIND zone file from database records.
-     *
-     * @param string $zoneName The zone name
-     * @param array $records Array of record arrays with keys: name, type, content, ttl, prio
-     * @return string The zone file content
-     */
+    /** Prefix of the comment lines that carry a record's Poweradmin comment; the importer reads them back */
+    public const COMMENT_MARKER = '; poweradmin-comment:';
+
     /**
      * @param list<array<string, mixed>|RecordRow> $records The zone's records, as the listing returns them
+     * @param bool $includeComments Write each record's comment as marker lines directly above it
+     * @return string The zone file, or '' when no enabled record is left
      */
-    public function generate(string $zoneName, array $records): string
+    public function generate(string $zoneName, array $records, bool $includeComments = false): string
     {
+        // A zone file cannot mark a record disabled, so leave them out as PowerDNS's own export does
+        $records = array_values(array_filter($records, fn(array|RecordRow $record): bool => !$this->isDisabled($record)));
+        if ($records === []) {
+            return '';
+        }
+
         $output = [];
 
         // Header comment
@@ -86,6 +90,7 @@ class BindZoneFileGenerator
 
             $output[] = sprintf('; %s Records', $type);
             foreach ($grouped[$type] as $record) {
+                array_push($output, ...$this->commentLines($record, $includeComments));
                 $output[] = $this->formatRecord($record, $zoneName);
             }
             $output[] = '';
@@ -95,12 +100,40 @@ class BindZoneFileGenerator
         if (!empty($otherRecords)) {
             $output[] = '; Other Records';
             foreach ($otherRecords as $record) {
+                array_push($output, ...$this->commentLines($record, $includeComments));
                 $output[] = $this->formatRecord($record, $zoneName);
             }
             $output[] = '';
         }
 
         return implode("\n", $output) . "\n";
+    }
+
+    /**
+     * RecordRow carries a bool; a raw row may hold the database's 0/1 or PostgreSQL's t/f.
+     *
+     * @param array<string, mixed>|RecordRow $record
+     */
+    private function isDisabled(array|RecordRow $record): bool
+    {
+        return in_array($record['disabled'] ?? false, [true, 1, '1', 't', 'true'], true);
+    }
+
+    /**
+     * One marker line per line of the comment, so no comment text can start a zone file line of its own.
+     *
+     * @param array<string, mixed>|RecordRow $record
+     * @return list<string>
+     */
+    private function commentLines(array|RecordRow $record, bool $includeComments): array
+    {
+        $comment = $includeComments ? (string)($record['comment'] ?? '') : '';
+        if (trim($comment) === '') {
+            return [];
+        }
+
+        $lines = explode("\n", str_replace(["\r\n", "\r"], "\n", $comment));
+        return array_map(static fn(string $line): string => $line === '' ? self::COMMENT_MARKER : self::COMMENT_MARKER . ' ' . $line, $lines);
     }
 
     /**

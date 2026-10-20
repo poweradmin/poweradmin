@@ -16285,3 +16285,12 @@ msgstr "Adressen %s ligger utanför zonen %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Namn eller IP-adress"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Inkludera kommentarer"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Överhoppade postkommentarer: %d. Postkommentarer är inaktiverade i konfigurationen."

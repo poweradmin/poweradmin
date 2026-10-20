@@ -16730,3 +16730,12 @@ msgstr "Tá an seoladh %s lasmuigh den chrios %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Ainm nó seoladh IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Cuir nótaí tráchta san áireamh"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Nótaí tráchta taifead a scipeáladh: %d. Tá nótaí tráchta taifead díchumasaithe sa chumraíocht."

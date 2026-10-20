@@ -16210,3 +16210,12 @@ msgstr "Địa chỉ %s nằm ngoài vùng %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Tên hoặc địa chỉ IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Bao gồm ghi chú"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Ghi chú bản ghi đã bỏ qua: %d. Ghi chú bản ghi đã bị tắt trong cấu hình."

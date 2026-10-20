@@ -23,12 +23,14 @@
 namespace Poweradmin\Module\ZoneImportExport\Controller;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * GET /zones/{id}/export/zonefile - downloads the zone in BIND format, from the API or the records table.
+ * With ?comments=1 and record comments enabled, record comments are written above their records.
  */
 class ZoneFileExportController extends BaseController
 {
@@ -63,13 +65,7 @@ class ZoneFileExportController extends BaseController
             return;
         }
 
-        // Try PowerDNS API first, fall back to DB-based generation
-        $content = $this->tryApiExport($zone_name);
-
-        if ($content === null) {
-            $content = $this->generateFromDb($zone_id, $zone_name);
-        }
-
+        $content = $this->zoneFileContent($zone_id, $zone_name);
         if ($content === null) {
             $this->showError(_('This zone does not have any records to export.'));
             return;
@@ -85,6 +81,24 @@ class ZoneFileExportController extends BaseController
 
         echo $content;
         exit();
+    }
+
+    /**
+     * The PowerDNS export cannot carry Poweradmin comments, so a request for them always generates the file.
+     */
+    private function zoneFileContent(int $zone_id, string $zone_name): ?string
+    {
+        if ($this->includeComments()) {
+            return $this->generateFromDb($zone_id, $zone_name, true);
+        }
+
+        return $this->tryApiExport($zone_name) ?? $this->generateFromDb($zone_id, $zone_name, false);
+    }
+
+    private function includeComments(): bool
+    {
+        return $this->httpRequest->getQueryParam('comments') === '1'
+            && (bool)$this->getConfig()->get('interface', 'show_record_comments', false);
     }
 
     private function tryApiExport(string $zone_name): ?string
@@ -149,15 +163,23 @@ class ZoneFileExportController extends BaseController
         return null;
     }
 
-    private function generateFromDb(int $zone_id, string $zone_name): ?string
+    private function generateFromDb(int $zone_id, string $zone_name, bool $withComments): ?string
     {
-        $records = $this->moduleServices()->recordRepository()->getRecordsFromDomainId($zone_id);
+        $records = $this->moduleServices()->recordRepository()->getRecordsFromDomainId(
+            $zone_id,
+            0,
+            Constants::DEFAULT_MAX_ROWS,
+            'name',
+            'ASC',
+            $withComments
+        );
 
         if (empty($records)) {
             return null;
         }
 
         $generator = new BindZoneFileGenerator();
-        return $generator->generate($zone_name, $records);
+        $content = $generator->generate($zone_name, $records, $withComments);
+        return $content === '' ? null : $content;
     }
 }

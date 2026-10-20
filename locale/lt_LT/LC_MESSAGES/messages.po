@@ -16350,3 +16350,12 @@ msgstr "Adresas %s nepatenka į zoną %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Pavadinimas arba IP adresas"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Įtraukti komentarus"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Praleisti įrašų komentarai: %d. Įrašų komentarai išjungti konfigūracijoje."

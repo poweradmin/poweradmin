@@ -16437,3 +16437,12 @@ msgstr "Alamat %s berada di luar zona %s."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "Nama atau alamat IP"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "Sertakan komentar"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "Komentar rekaman yang dilewati: %d. Komentar rekaman dinonaktifkan dalam konfigurasi."

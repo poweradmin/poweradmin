@@ -197,6 +197,15 @@ class ZoneFileImportController extends BaseController
             $warnings[] = $this->dnssecSkippedMessage($dnssecSkipped);
         }
 
+        $commentCount = count(array_filter($filteredRecords, fn($r) => $r->comment !== ''));
+        if ($commentCount > 0 && !$this->recordCommentsEnabled()) {
+            $warnings[] = sprintf(_('Record comments skipped: %d. Record comments are disabled in the configuration.'), $commentCount);
+            foreach ($filteredRecords as $record) {
+                $record->comment = '';
+            }
+            $commentCount = 0;
+        }
+
         // Store parsed data in session for the execute step
         $this->getUserContextService()->setSessionData(ImportSessionKeys::ZONE_IMPORT_DATA, [
             'origin' => $origin,
@@ -206,6 +215,7 @@ class ZoneFileImportController extends BaseController
                 'content' => $r->content,
                 'ttl' => $r->ttl,
                 'priority' => $r->priority,
+                'comment' => $r->comment,
             ], $filteredRecords)),
             'warnings' => $parsed->getWarnings(),
             'filename' => $_FILES['zone_file']['name'],
@@ -222,6 +232,7 @@ class ZoneFileImportController extends BaseController
                 'content' => $record->content,
                 'ttl' => $record->ttl,
                 'priority' => $record->priority,
+                'comment' => $record->comment,
             ];
         }
 
@@ -229,6 +240,7 @@ class ZoneFileImportController extends BaseController
             'preview' => true,
             'records' => $previewRecords,
             'record_count' => count($filteredRecords),
+            'comment_count' => $commentCount,
             'warnings' => $warnings,
             'origin' => $origin,
             'filename' => $_FILES['zone_file']['name'],
@@ -400,6 +412,7 @@ class ZoneFileImportController extends BaseController
         $dnsRecordManager = $this->moduleServices()->recordManager();
         $recordManager = $this->moduleServices()->recordManagerService();
 
+        $commentsEnabled = $this->recordCommentsEnabled();
         $successCount = 0;
         $failCount = 0;
         $skipCount = 0;
@@ -433,7 +446,7 @@ class ZoneFileImportController extends BaseController
                 $record->content,
                 $record->ttl,
                 $record->priority,
-                '',
+                $commentsEnabled ? (string)($record->comment ?? '') : '',
                 $userLogin
             );
 
@@ -477,6 +490,11 @@ class ZoneFileImportController extends BaseController
             $this->logger->warning('Zone import could not read the PRESIGNED state of {zone}, skipping DNSSEC records: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             return false;
         }
+    }
+
+    private function recordCommentsEnabled(): bool
+    {
+        return (bool)$this->getConfig()->get('interface', 'show_record_comments', false);
     }
 
     private function dnssecSkippedMessage(int $count): string

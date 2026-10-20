@@ -16068,3 +16068,12 @@ msgstr "주소 %s은(는) 영역 %s 밖에 있습니다."
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "이름 또는 IP 주소"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "주석 포함"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "건너뛴 레코드 주석: %d. 설정에서 레코드 주석이 비활성화되어 있습니다."

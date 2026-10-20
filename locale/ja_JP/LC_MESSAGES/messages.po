@@ -16278,3 +16278,12 @@ msgstr "アドレス %s はゾーン %s の範囲外です。"
 #: templates/default/edit.html:87 templates/default/edit.html:777
 msgid "Name or IP address"
 msgstr "名前または IP アドレス"
+
+#: templates/default/edit.html:639
+msgid "Include comments"
+msgstr "コメントを含める"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:202
+#, php-format
+msgid "Record comments skipped: %d. Record comments are disabled in the configuration."
+msgstr "スキップされたレコードコメント: %d。設定でレコードコメントが無効になっています。"

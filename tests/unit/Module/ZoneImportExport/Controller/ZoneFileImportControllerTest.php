@@ -74,6 +74,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     private string $zoneName = 'example.com';
     private bool $domainExists = false;
     private string $zoneType = 'MASTER';
+    private bool $commentsEnabled = false;
 
     /** @var list<array<int, mixed>> */
     private array $writes = [];
@@ -144,6 +145,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
         return new ZoneFileImportController($request, true, $this->environment($this->configure([
             'modules' => ['zone_import_export.max_file_size' => 1048576, 'zone_import_export.auto_ttl_value' => 300],
+            'interface' => ['show_record_comments' => $this->commentsEnabled],
         ])));
     }
 
@@ -562,5 +564,64 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(_('You cannot import records into a read-only zone.'), $halt->target);
         $this->assertSame([], $this->writes);
         $this->assertTrue($this->session->has(self::SESSION_KEY));
+    }
+
+    private const COMMENTED_ZONE_FILE = "\$ORIGIN example.com.\n\$TTL 3600\n"
+        . "; poweradmin-comment: apex SOA\n"
+        . "@ IN SOA ns1.example.com. hostmaster.example.com. 1 7200 3600 1209600 3600\n"
+        . "; ordinary comment\n"
+        . "; poweradmin-comment: web server\n"
+        . "; poweradmin-comment: second line\n"
+        . "www IN A 192.0.2.1\n"
+        . "mail IN MX 10 mail.example.com.\n";
+
+    public function testPreviewCountsTheCommentsAndConfirmStoresThemWithTheirRecords(): void
+    {
+        $this->commentsEnabled = true;
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::COMMENTED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame(1, $params['comment_count']);
+        $this->assertSame(["web server\nsecond line", ''], array_column($params['records'], 'comment'));
+        $this->assertSame([], $params['warnings']);
+        $this->assertSame(["web server\nsecond line", ''], array_column(json_decode($this->session->get(self::SESSION_KEY)['records'], true), 'comment'));
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame(["web server\nsecond line", ''], array_column($this->writes, 6));
+    }
+
+    public function testDisabledRecordCommentsAreDroppedAndTheUserIsTold(): void
+    {
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::COMMENTED_ZONE_FILE);
+
+        $this->makeController()->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame(0, $params['comment_count']);
+        $this->assertSame([sprintf(_('Record comments skipped: %d. Record comments are disabled in the configuration.'), 1)], $params['warnings']);
+        $this->assertSame(['', ''], array_column($params['records'], 'comment'));
+        $this->assertSame(['', ''], array_column(json_decode($this->session->get(self::SESSION_KEY)['records'], true), 'comment'));
+    }
+
+    public function testConfirmIgnoresStashedCommentsOnceRecordCommentsAreDisabled(): void
+    {
+        $this->session->set(self::SESSION_KEY, [
+            'origin' => 'example.com',
+            'records' => json_encode([['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 0, 'comment' => 'web server']]),
+            'warnings' => [],
+            'filename' => 'example.com.zone',
+        ]);
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+
+        $this->makeController()->execute();
+
+        $this->assertSame([''], array_column($this->writes, 6));
     }
 }

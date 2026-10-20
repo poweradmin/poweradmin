@@ -2128,4 +2128,108 @@ ZONE;
             'A' => false,
         ], $flags);
     }
+
+    public function testPoweradminCommentAttachesToTheFollowingRecordOnly(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; ordinary comment\n"
+            . "; poweradmin-comment: web server\n"
+            . "www 3600 IN A 192.0.2.1 ; trailing note\n"
+            . "api 3600 IN A 192.0.2.2\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertCount(2, $records);
+        $this->assertSame('web server', $records[0]->comment);
+        $this->assertSame('', $records[1]->comment);
+        $this->assertSame([], $result->getWarnings());
+    }
+
+    public function testConsecutiveCommentLinesJoinWithNewlinesAndKeepInnerSpacing(): void
+    {
+        $content = "\$ORIGIN example.com.\r\n"
+            . "; poweradmin-comment: first\r\n"
+            . "; poweradmin-comment:\r\n"
+            . "; poweradmin-comment:   indented\r\n"
+            . "www 3600 IN A 192.0.2.1\r\n";
+
+        $records = $this->parser->parse($content)->getRecords();
+
+        $this->assertCount(1, $records);
+        $this->assertSame("first\n\n  indented", $records[0]->comment);
+    }
+
+    public function testInjectedRecordInsideACommentStaysAComment(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; poweradmin-comment: evil 300 IN A 198.51.100.66\n"
+            . "www 3600 IN A 192.0.2.1\n";
+
+        $records = $this->parser->parse($content)->getRecords();
+
+        $this->assertCount(1, $records);
+        $this->assertSame('www.example.com', $records[0]->name);
+        $this->assertSame('evil 300 IN A 198.51.100.66', $records[0]->comment);
+    }
+
+    public function testCommentWithoutAFollowingRecordIsDroppedWithAWarning(): void
+    {
+        $content = "; poweradmin-comment: orphan\n"
+            . "\$ORIGIN example.com.\n"
+            . "www 3600 IN A 192.0.2.1\n"
+            . "; poweradmin-comment: lost\n"
+            . "bad IN BOGUS x\n"
+            . "api 3600 IN A 192.0.2.2\n"
+            . "; poweradmin-comment: trailing\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertSame(['', ''], array_map(fn($r) => $r->comment, $records));
+        $this->assertSame([
+            'Line 2: Poweradmin comment not followed by a record, skipped',
+            'Line 5: Could not parse record, skipped',
+            'Line 8: Poweradmin comment not followed by a record, skipped',
+        ], $result->getWarnings());
+    }
+
+    public function testBlankOrOrdinaryCommentLineOrphansAPendingComment(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "; poweradmin-comment: for a deleted record\n"
+            . "\n"
+            . "www 3600 IN A 192.0.2.1\n"
+            . "; poweradmin-comment: also orphaned\n"
+            . "; MX Records\n"
+            . "mail 3600 IN MX 10 mail\n"
+            . ";   poweradmin-comment: not a marker\n"
+            . "api 3600 IN A 192.0.2.2\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertSame(['', '', ''], array_map(fn($r) => $r->comment, $result->getRecords()));
+        $this->assertSame([
+            'Line 3: Poweradmin comment not followed by a record, skipped',
+            'Line 6: Poweradmin comment not followed by a record, skipped',
+        ], $result->getWarnings());
+    }
+
+    public function testCommentThatIsNotUtf8IsDroppedWithAWarning(): void
+    {
+        $content = "\$ORIGIN example.com.\n; poweradmin-comment: caf\xe9\nwww 3600 IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertSame('', $result->getRecords()[0]->comment);
+        $this->assertSame(['Line 3: Poweradmin comment is not valid UTF-8, skipped'], $result->getWarnings());
+    }
+
+    public function testCommentAtTheEndOfAFileWithoutATrailingNewlineIsDroppedWithAWarning(): void
+    {
+        $result = $this->parser->parse("www.example.com. 3600 IN A 192.0.2.1\n; poweradmin-comment: last");
+
+        $this->assertSame('', $result->getRecords()[0]->comment);
+        $this->assertSame(['Poweradmin comment at the end of the file is not followed by a record, skipped'], $result->getWarnings());
+    }
 }

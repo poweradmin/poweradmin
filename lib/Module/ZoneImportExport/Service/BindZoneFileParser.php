@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Module\ZoneImportExport\Service;
 
+use Poweradmin\Domain\Service\Dns\BindZoneFileGenerator;
+
 /**
  * Parses BIND zone file text into records, handling $ORIGIN, $TTL and multi-line values.
  *
@@ -56,12 +58,24 @@ final class BindZoneFileParser
         $records = [];
         $warnings = [];
         $previousName = null;
+        $pendingComment = null;
 
         foreach ($lines as $lineNum => $line) {
+            $commentLine = $this->markerCommentLine($line);
+            if ($commentLine !== null) {
+                $pendingComment = $pendingComment === null ? $commentLine : $pendingComment . "\n" . $commentLine;
+                continue;
+            }
+
             $line = $this->stripComment($line);
             $trimmed = trim($line);
 
             if ($trimmed === '' || $trimmed[0] === ';') {
+                // The export writes markers directly above their record, so anything in between orphans them
+                if ($pendingComment !== null) {
+                    $warnings[] = sprintf('Line %d: Poweradmin comment not followed by a record, skipped', $lineNum + 1);
+                    $pendingComment = null;
+                }
                 continue;
             }
 
@@ -69,6 +83,11 @@ final class BindZoneFileParser
             if ($trimmed[0] === '$') {
                 $parts = preg_split('/\s+/', $trimmed);
                 $directive = strtoupper($parts[0]);
+
+                if ($pendingComment !== null) {
+                    $warnings[] = sprintf('Line %d: Poweradmin comment not followed by a record, skipped', $lineNum + 1);
+                    $pendingComment = null;
+                }
 
                 if ($directive === '$ORIGIN') {
                     $origin = isset($parts[1]) ? rtrim($parts[1], '.') : null;
@@ -89,8 +108,16 @@ final class BindZoneFileParser
             $parsed = $this->parseRecordLine($line, $origin, $defaultTtl, $previousName);
             if ($parsed === null) {
                 $warnings[] = sprintf('Line %d: Could not parse record, skipped', $lineNum + 1);
+                $pendingComment = null;
                 continue;
             }
+
+            if ($pendingComment !== null && preg_match('//u', $pendingComment) !== 1) {
+                $warnings[] = sprintf('Line %d: Poweradmin comment is not valid UTF-8, skipped', $lineNum + 1);
+            } elseif ($pendingComment !== null) {
+                $parsed->comment = $pendingComment;
+            }
+            $pendingComment = null;
 
             // Map Cloudflare TTL=1 (auto) to configured default
             if ($parsed->ttl === 1) {
@@ -99,6 +126,10 @@ final class BindZoneFileParser
 
             $previousName = $parsed->name;
             $records[] = $parsed;
+        }
+
+        if ($pendingComment !== null) {
+            $warnings[] = 'Poweradmin comment at the end of the file is not followed by a record, skipped';
         }
 
         // If no $ORIGIN directive was found, try to infer it from record names
@@ -209,6 +240,21 @@ final class BindZoneFileParser
         }
 
         return $result;
+    }
+
+    /**
+     * The text of a Poweradmin comment line written by the zone file export, or null for any other line.
+     * Exactly one space after the marker is part of the format, so leading spaces of the text survive.
+     */
+    private function markerCommentLine(string $line): ?string
+    {
+        $line = ltrim($line, " \t");
+        if (!str_starts_with($line, BindZoneFileGenerator::COMMENT_MARKER)) {
+            return null;
+        }
+
+        $text = rtrim(substr($line, strlen(BindZoneFileGenerator::COMMENT_MARKER)), "\r");
+        return str_starts_with($text, ' ') ? substr($text, 1) : $text;
     }
 
     /**
