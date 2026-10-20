@@ -208,21 +208,10 @@ class DeleteRecordsController extends BaseController
             $this->rectifyZoneAfterWrite((string)$domainRepository->getDomainNameById($zone_id));
         }
 
-        $redirectPage = 'search';
-        $messageKey = 'search';
-        $redirectParams = [];
-
-        // Check if this was submitted from a zone edit page
-        $post_zone_id = $this->request->getPostParam('zone_id');
-        if (is_numeric($post_zone_id)) {
-            $zone_id = (int) $post_zone_id;
-            // Validate zone exists
-            if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
-                $redirectPage = 'edit';
-                $messageKey = 'edit';
-                $redirectParams['id'] = $zone_id;
-            }
-        }
+        $zone_id = $this->returnZoneId();
+        $redirectPage = $zone_id === null ? 'search' : 'edit';
+        $messageKey = $redirectPage;
+        $redirectParams = $zone_id === null ? [] : ['id' => $zone_id];
 
         if ($deleted_count > 0) {
             if ($deleted_count == 1) {
@@ -236,6 +225,27 @@ class DeleteRecordsController extends BaseController
 
         $route = $this->buildModernRoute($redirectPage, $redirectParams);
         $this->redirect($route);
+    }
+
+    /**
+     * The zone the form was posted from, or null for the search page. Viewing is
+     * checked before existence, so the redirect never tells whether a foreign id exists.
+     */
+    private function returnZoneId(): ?int
+    {
+        $post_zone_id = $this->request->getPostParam('zone_id');
+        $userId = $this->userContextService->getLoggedInUserId();
+        if (!is_numeric($post_zone_id) || $userId === null) {
+            return null;
+        }
+
+        $zone_id = (int)$post_zone_id;
+        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        if ($perm_view !== 'all' && !($perm_view === 'own' && $this->isZoneOwner($zone_id))) {
+            return null;
+        }
+
+        return $this->createDomainRepository()->getZoneInfoFromId($zone_id) !== [] ? $zone_id : null;
     }
 
     /**
@@ -282,21 +292,10 @@ class DeleteRecordsController extends BaseController
         }
 
         if (empty($records)) {
-            $redirectPage = 'search';
-            $messageKey = 'search';
-            $redirectParams = [];
-
-            // Check if this was submitted from a zone edit page
-            $post_zone_id = $this->request->getPostParam('zone_id');
-            if (is_numeric($post_zone_id)) {
-                $zone_id = (int) $post_zone_id;
-                // Validate zone exists
-                if ($domainRepository->getZoneInfoFromId($zone_id) !== []) {
-                    $redirectPage = 'edit';
-                    $messageKey = 'edit';
-                    $redirectParams['id'] = $zone_id;
-                }
-            }
+            $zone_id = $this->returnZoneId();
+            $redirectPage = $zone_id === null ? 'search' : 'edit';
+            $messageKey = $redirectPage;
+            $redirectParams = $zone_id === null ? [] : ['id' => $zone_id];
 
             $this->setMessage($messageKey, 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
             $route = $this->buildModernRoute($redirectPage, $redirectParams);
