@@ -1147,18 +1147,36 @@ generate_config() {
     local custom_tlds
     custom_tlds=$(php_str_array "${PA_DNS_CUSTOM_TLDS:-}")
 
-    # Helper: convert key=value or key:value mapping to PHP associative array
+    # Helper: convert key-value mapping to PHP associative array
+    # Arguments:
+    #   $1: string to parse
+    #   [$2]: mapping delimiter, separates the key-value pairs, defaults to comma (',')
+    #   [$3]: key-value delimiter, separates the key from the value, defaults to equal sign ('=') and colon (':')
+    #   [$4]: value array delimiter, separates array items in the value, defaults to pipe ('|')
+    #
+    # When key-value delimiter is not specifically set, it's handled handled adaptively.
     # Supports both = and : as delimiters (= preferred, : for backward compatibility)
-    # Pipe (|) in a value produces a PHP array literal so a single external group
+    # The value-array delimiter in a value produces a PHP array literal so a single external group
     # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed
     parse_mapping() {
-        local IFS=',' item key val part items="" parts=""
+        # check some optional delimiter arguments
+        local mapsep="$([ "$#" -gt 1 ] && echo "$2" || echo ",")"
+        local arrsep="$([ "$#" -gt 3 ] && echo "$4" || echo "|")"
+        
+        local IFS="$mapsep" item key val part items="" parts=""
         for item in $1; do
             item="${item#"${item%%[![:space:]]*}"}"; item="${item%"${item##*[![:space:]]}"}"
             [ -n "${item}" ] || continue
+            # check if key-value delimiter was set specifically
+            if [[ "$#" -gt 2 ]]; then
+                if [[ "${item}" == *$3* ]]; then
+                    key="${item%%$3*}"; val="${item#*$3}"
+                else
+                    key="${item}"; val=""
+                fi
             # = is the delimiter; a bare group:Template pair splits on the last colon
-            if [[ "${item}" == *=* ]]; then
+            elif [[ "${item}" == *=* ]]; then
                 key="${item%%=*}"; val="${item#*=}"
             elif [[ "${item}" == *:* ]]; then
                 key="${item%:*}"; val="${item##*:}"
@@ -1166,9 +1184,9 @@ generate_config() {
                 key="${item}"; val=""
             fi
             key="${key%"${key##*[![:space:]]}"}"; val="${val#"${val%%[![:space:]]*}"}"
-            if [[ "${val}" == *\|* ]]; then
+            if [[ "${val}" == *$arrsep* ]]; then
                 parts=""
-                local IFS='|'
+                local IFS=$arrsep
                 for part in ${val}; do
                     part="${part#"${part%%[![:space:]]*}"}"; part="${part%"${part##*[![:space:]]}"}"
                     parts="${parts}$(php_sq "${part}"), "
