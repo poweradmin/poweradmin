@@ -1,4 +1,4 @@
-FROM php:8.2-apache@sha256:7e06895d44c29647db123c1b6410dbd7765ccbdd36054b941325ce59a486397b
+FROM php:8.2-apache@sha256:9c371129bfc78a90269f140b6dcebf826591dc35865a1076c218d765731de732
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
