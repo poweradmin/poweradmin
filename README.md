@@ -190,7 +190,7 @@ JetBrains provides IDE licenses used for development of this project.
 * yBaca s.r.o.
 * Stephan Gogler
 
-For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas). Donations are accepted through [GitHub Sponsors](https://github.com/sponsors/edmondas), [Open Collective](https://opencollective.com/poweradmin) and [PayPal](https://paypal.me/egirkantas). Companies can receive an invoice through Open Collective from anywhere, or directly for organizations within the EU.
+Commercial support, upgrades, security reviews and sponsored feature development are available, see [Support & Sponsorship](https://www.poweradmin.org/p/support-and-sponsorship) or contact [support@poweradmin.org](mailto:support@poweradmin.org). Donations are accepted through [GitHub Sponsors](https://github.com/sponsors/edmondas), [Open Collective](https://opencollective.com/poweradmin) and [PayPal](https://paypal.me/egirkantas). Companies can receive an invoice directly or through Open Collective.
 
 ## Community Projects
 
