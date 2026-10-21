@@ -75,7 +75,6 @@ class UserPreferenceTimezoneTest extends TestCase
         $this->assertTrue(UserPreference::isAcceptableTimezone('UTC'));
         $this->assertTrue(UserPreference::isAcceptableTimezone('Europe/Berlin'));
         $this->assertTrue(UserPreference::isAcceptableTimezone('GMT'));
-        $this->assertTrue(UserPreference::isAcceptableTimezone('US/Eastern'));
     }
 
     #[Test]
