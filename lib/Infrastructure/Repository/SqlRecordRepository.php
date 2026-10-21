@@ -114,7 +114,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
-        $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getNaturalSortOrder($records_table, $this->dbType, $sortDirection) : $sortby . " " . $sortDirection;
+        $sql_sortby = $sortby == "$records_table.name" ? $this->nameSortOrder($id, $records_table, $this->dbType, $sortDirection) : $sortby . " " . $sortDirection;
         // Pin SOA, NS, and apex records to the top regardless of column or direction so
         // zone-level metadata stays grouped above the body the user is sorting through.
         $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
@@ -146,6 +146,22 @@ final class SqlRecordRepository implements RecordRepositoryInterface
             static fn(array $row): RecordRow => RecordRow::fromRow(self::decodeFlags($row)),
             $stmt->fetchAll() ?: []
         );
+    }
+
+    /**
+     * Name order for a zone's record list: IP order in an in-addr.arpa zone, natural order elsewhere.
+     */
+    private function nameSortOrder(int $zoneId, string $recordsTable, string $dbType, string $direction): string
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT name FROM $domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $zoneName = (string)$stmt->fetchColumn();
+
+        return SortHelper::isIpv4ReverseZone($zoneName)
+            ? SortHelper::getReverseRecordNameSortOrder($recordsTable, $dbType, $direction, $zoneName)
+            : SortHelper::getNaturalSortOrder($recordsTable, $dbType, $direction);
     }
 
     /**
@@ -416,7 +432,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
 
         $driver = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
         $sort_by_qualified = $sort_by === 'name'
-            ? SortHelper::getNaturalSortOrder($records_table, $driver, $sort_direction)
+            ? $this->nameSortOrder($zone_id, $records_table, $driver, $sort_direction)
             : $records_table . '.' . $sort_by . ' ' . $sort_direction;
         // Pin SOA, NS, and apex records to the top regardless of column or direction,
         // matching the unfiltered listing so filtering does not scatter zone metadata.

@@ -84,7 +84,9 @@ final class ResultPaginator
         $apex = strtolower(rtrim($apexName, '.'));
         $dir = strtoupper($direction) === 'DESC' ? -1 : 1;
 
-        usort($data, function ($a, $b) use ($sortBy, $dir, $apex) {
+        $byIp = $sortBy === 'name' && SortHelper::sortsByAddress($apex);
+
+        usort($data, function ($a, $b) use ($sortBy, $dir, $apex, $byIp) {
             $rankA = self::recordTopRank($a, $apex);
             $rankB = self::recordTopRank($b, $apex);
             if ($rankA !== $rankB) {
@@ -98,6 +100,13 @@ final class ResultPaginator
             $va = $a[$sortBy] ?? '';
             $vb = $b[$sortBy] ?? '';
 
+            if ($byIp) {
+                $byAddress = SortHelper::compareReverseRecordNames((string)$va, (string)$vb, $apex);
+                if ($byAddress !== 0) {
+                    return $byAddress * $dir;
+                }
+            }
+
             if (is_numeric($va) && is_numeric($vb)) {
                 return ($va - $vb) * $dir;
             }
@@ -109,21 +118,21 @@ final class ResultPaginator
     }
 
     /**
-     * Rank a record for top-of-list pinning: SOA first, then NS, then apex, then the rest.
+     * Rank a record for top-of-list pinning: SOA, apex NS, other NS, other apex records, the rest.
+     * Apex NS leads other NS in both directions, as the SQL pin on the apex name does.
      */
     private static function recordTopRank(array $record, string $apex): int
     {
         $type = strtoupper((string)($record['type'] ?? ''));
+        $atApex = $apex !== '' && strtolower(rtrim((string)($record['name'] ?? ''), '.')) === $apex;
         if ($type === 'SOA') {
             return 0;
         }
         if ($type === 'NS') {
-            return 1;
+            return $atApex ? 1 : 2;
         }
-        if ($apex !== '' && strtolower(rtrim((string)($record['name'] ?? ''), '.')) === $apex) {
-            return 2;
-        }
-        return 3;
+
+        return $atApex ? 3 : 4;
     }
 
     /**

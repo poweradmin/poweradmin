@@ -115,6 +115,33 @@ class RecordRepositoryFilteredSortingTest extends SqliteIntegrationTestCase
         $this->assertStringContainsString($expression, $sql);
     }
 
+    #[Test]
+    #[DataProvider('driverReverseSortExpressions')]
+    public function aReverseZoneGetsTheIpOrderOnEveryDriver(string $driver, string $expression): void
+    {
+        $sql = $this->captureFilteredRecordsSql($driver, '0.192.in-addr.arpa');
+
+        $this->assertStringContainsString($expression, $sql);
+        $this->assertStringContainsString("= '.0.192.in-addr.arpa'", $sql);
+        $this->assertSame(2, substr_count($sql, 'ELSE 1000000 END ASC'));
+    }
+
+    #[Test]
+    public function aForwardZoneKeepsTheNaturalSortOnly(): void
+    {
+        $this->assertStringNotContainsString('1000000', $this->captureFilteredRecordsSql('mysql', 'example.com'));
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function driverReverseSortExpressions(): array
+    {
+        return [
+            'mysql' => ['mysql', 'SUBSTRING_INDEX('],
+            'pgsql' => ['pgsql', 'SPLIT_PART('],
+            'sqlite' => ['sqlite', 'RTRIM('],
+        ];
+    }
+
     /** @return array<string, array{string, string}> */
     public static function driverSortExpressions(): array
     {
@@ -128,12 +155,13 @@ class RecordRepositoryFilteredSortingTest extends SqliteIntegrationTestCase
      * The driver decides the natural-sort expression, so the two branches SQLite
      * cannot run are pinned by the SQL the repository prepares.
      */
-    private function captureFilteredRecordsSql(string $driver): string
+    private function captureFilteredRecordsSql(string $driver, string $zoneName = ''): string
     {
         $statement = $this->createMock(PDOStatement::class);
         $statement->method('execute')->willReturn(true);
         $statement->method('bindValue')->willReturn(true);
         $statement->method('fetch')->willReturn(false);
+        $statement->method('fetchColumn')->willReturn($zoneName);
 
         $captured = '';
         $db = $this->createMock(PDO::class);
@@ -141,7 +169,9 @@ class RecordRepositoryFilteredSortingTest extends SqliteIntegrationTestCase
             fn(int $attribute): ?string => $attribute === PDO::ATTR_DRIVER_NAME ? $driver : null
         );
         $db->method('prepare')->willReturnCallback(function (string $sql) use ($statement, &$captured): PDOStatement {
-            $captured = $sql;
+            if (str_contains($sql, 'ORDER BY')) {
+                $captured = $sql;
+            }
             return $statement;
         });
 
