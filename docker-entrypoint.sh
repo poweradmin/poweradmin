@@ -1215,12 +1215,12 @@ generate_config() {
     # Process LDAP permission template and group mappings
     local ldap_permission_template_mapping="[]"
     if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
-        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}")]"
+        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}" ";" ":")]"
     fi
 
     local ldap_group_mapping="[]"
     if [ -n "${PA_LDAP_GROUP_MAPPING:-}" ]; then
-        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}")]"
+        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}" ";" ":")]"
     fi
 
     # Process SAML permission template mapping
