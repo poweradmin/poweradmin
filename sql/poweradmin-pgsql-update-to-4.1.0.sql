@@ -1,3 +1,9 @@
+-- Bring the id sequences up to the stored rows first: databases installed before
+-- 4.0.5 never synchronized them, and the explicit ids below do not advance them.
+SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1));
+SELECT setval('perm_templ_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ), 1));
+SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
+
 -- Add API key management permission
 INSERT INTO perm_items (id, name, descr) VALUES
 (65, 'api_manage_keys', 'User is allowed to create and manage API keys.');
@@ -79,6 +85,7 @@ CREATE INDEX IF NOT EXISTS idx_urr_created ON username_recovery_requests(created
 INSERT INTO perm_items (id, name, descr) VALUES
     (67, 'zone_delete_own', 'User is allowed to delete zones they own.'),
     (68, 'zone_delete_others', 'User is allowed to delete zones owned by others.');
+SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1));
 
 -- Grant delete permissions to users with existing edit permissions
 -- This ensures backward compatibility - users who could edit can now delete
