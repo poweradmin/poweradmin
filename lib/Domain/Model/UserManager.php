@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\HybridPermissionService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -390,12 +391,20 @@ class UserManager
 
             return false;
         } else {
+            // A zone handed to the user being deleted would go with them; refuse before any zone is touched
+            foreach ($zones as $zone) {
+                if (is_array($zone) && ($zone['target'] ?? null) === 'new_owner' && (int)($zone['newowner'] ?? 0) === $uid) {
+                    $this->messageService->addSystemError(_('The selected user already owns the zone.'));
+                    return false;
+                }
+            }
+
             $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
                     $dnsRecord->deleteDomain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    DnsRecord::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
+                    DomainManager::handOverZone($this->db, (int)$zone ['zid'], $uid, (int)$zone ['newowner'], $this->config);
                 }
             }
 

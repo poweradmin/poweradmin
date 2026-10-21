@@ -33,12 +33,15 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 
 /**
  * Service class for managing domains/zones
@@ -561,6 +564,69 @@ class DomainManager implements DomainManagerInterface
         } else {
             return false;
         }
+    }
+
+    /**
+     * Give a zone of a user being deleted to a new owner. In API mode the user's named row
+     * carries zone_name, so it changes owner instead of going with the user; otherwise the
+     * new owner is added as before.
+     */
+    public static function handOverZone($db, int $zone_id, int $from_user_id, int $to_user_id, ?ConfigurationInterface $config = null): bool
+    {
+        $config ??= ConfigurationManager::getInstance();
+        // Handing a zone to its own owner keeps the "already owns" refusal of addOwnerToZone
+        if (
+            $to_user_id === $from_user_id
+            || !DnsBackendProviderFactory::isApiBackend($config)
+            || !(UserManager::verifyPermission($db, 'zone_meta_edit_others') || (UserManager::verifyPermission($db, 'zone_meta_edit_own') && UserManager::verifyUserIsOwnerZoneId($db, $zone_id)))
+            || !UserManager::isValidUser($db, $to_user_id)
+        ) {
+            return self::addOwnerToZone($db, $zone_id, $to_user_id);
+        }
+
+        $stmt = $db->prepare("SELECT id FROM zones WHERE owner = :owner AND zone_name IS NOT NULL AND " . CanonicalZoneSql::canonicalIdColumn() . " = :zone_id");
+        $stmt->bindValue(':owner', $from_user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
+        $namedRows = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+        $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = :owner AND zone_name IS NOT NULL AND " . CanonicalZoneSql::canonicalIdColumn() . " = :zone_id");
+        $stmt->bindValue(':owner', $to_user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
+        if ((int)$stmt->fetchColumn() > 0) {
+            // The new owner holds the zone's named row already, so the deleted user's rows just go
+            return true;
+        }
+        if ($namedRows === []) {
+            return self::addOwnerToZone($db, $zone_id, $to_user_id);
+        }
+
+        $ownsTransaction = !$db->inTransaction();
+        if ($ownsTransaction) {
+            $db->beginTransaction();
+        }
+        try {
+            // The new owner's unnamed row would duplicate the named row it now holds
+            $stmt = $db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id AND owner = :owner");
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->bindValue(':owner', $to_user_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt = $db->prepare("UPDATE zones SET owner = :owner WHERE id = :id");
+            foreach ($namedRows as $rowId) {
+                $stmt->bindValue(':owner', $to_user_id, PDO::PARAM_INT);
+                $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            if ($ownsTransaction) {
+                $db->commit();
+            }
+        } catch (Throwable $e) {
+            if ($ownsTransaction && $db->inTransaction()) {
+                $db->rollBack();
+            }
+            throw $e;
+        }
+        return true;
     }
 
     /**
