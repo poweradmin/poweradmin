@@ -10,7 +10,7 @@
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.2-cli-alpine@sha256:0814a91662f32e59ba3092a443ebb4b9915f3320b1b4688650dfc38939c6ff59
+FROM php:8.2-cli-alpine@sha256:135c5010d9cc9751cded3049c4319f0d1743115bad53bcb88851bb1f17bab6a9
 
 # Update base packages to fix known security vulnerabilities and install dependencies
 # hadolint ignore=DL3018
