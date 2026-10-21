@@ -92,6 +92,8 @@ interface UserPermissionReadInterface
 
     /**
      * Whether removing or demoting this user would leave no active uberuser.
+     * Inside an open transaction it locks the active uberuser rows first, so callers
+     * that check and then write in one transaction cannot race each other.
      */
     public function isLastUberuser(int $userId): bool;
 

@@ -887,9 +887,13 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function deleteUser(int $userId): bool
     {
+        $transaction = $this->transaction();
+        // An outer transaction owns its own commit; this one only joins it.
+        $owns = !$transaction->inTransaction();
         try {
-            // Start transaction to ensure atomicity
-            $this->transaction()->begin();
+            if ($owns) {
+                $transaction->begin();
+            }
 
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
@@ -933,10 +937,14 @@ class DbUserRepository implements UserRepositoryInterface
                 }
             }
 
-            $this->transaction()->commit();
+            if ($owns) {
+                $transaction->commit();
+            }
             return true;
         } catch (\Exception $e) {
-            $this->db->rollback();
+            if ($owns && $transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
             throw $e;
         }
     }
@@ -1145,7 +1153,37 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function isLastUberuser(int $userId): bool
     {
+        // Inside a transaction the decision rests on locked rows, so a competing one waits for it
+        if ($this->transaction()->inTransaction()) {
+            $ids = $this->lockActiveUberuserIds();
+            return in_array($userId, $ids, true) && count($ids) <= 1;
+        }
+
         return $this->isUberuser($userId) && $this->countUberusers() <= 1;
+    }
+
+    /**
+     * Locks the rows of the active uberusers in id order and returns their ids. The locking
+     * read sees committed rows even where a plain read keeps the transaction's snapshot.
+     *
+     * @return list<int>
+     */
+    private function lockActiveUberuserIds(): array
+    {
+        $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        $stmt = $this->db->query(
+            "SELECT users.id FROM users
+             WHERE users.active = 1
+               AND users.perm_templ IN (
+                   SELECT perm_templ_items.templ_id
+                   FROM perm_templ_items
+                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                   WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
+               )
+             ORDER BY users.id" . $lock
+        );
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function isUberuser(int $userId): bool

@@ -128,7 +128,8 @@ final class UserServices
             (bool)$this->config->get('remote_user', 'enabled', false),
             $this->services->zoneOwnershipLimit(),
             (bool)$this->config->get('security', 'protect_last_admin_on_edit', false),
-            $this->logger
+            $this->logger,
+            $this->services->transaction()
         );
     }
 

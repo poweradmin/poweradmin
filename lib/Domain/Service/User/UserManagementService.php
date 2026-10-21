@@ -23,8 +23,10 @@
 namespace Poweradmin\Domain\Service\User;
 
 use Exception;
+use Throwable;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Port\PasswordPolicyInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -93,7 +95,8 @@ class UserManagementService
         bool $remoteUserEnabled = false,
         ?ZoneOwnershipLimit $ownershipLimit = null,
         bool $protectLastAdminOnEdit = false,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        private readonly ?TransactionInterface $transaction = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -442,40 +445,47 @@ class UserManagementService
             return $this->templateNotFound();
         }
 
-        // Check if trying to disable the last remaining uberuser
-        if ($command->active === false && $this->userRepository->isLastUberuser($userId)) {
-            return [
-                'success' => false,
-                'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                'refusal' => Refusal::CONFLICT,
-                'code' => self::ERR_LAST_ADMIN,
-            ];
-        }
-
-        // Same guard as assignPermissionTemplate(): the edit form and API PUT must not
-        // move the last super admin to a template without the super admin permission.
-        // Opt-in through security.protect_last_admin_on_edit, so existing installs keep
-        // today's behaviour until they turn it on.
-        if (
-            $this->protectLastAdminOnEdit
-            && $command->permissionTemplateId !== null
-            && $this->userRepository->isLastUberuser($userId)
-            && !$this->userRepository->templateGrantsUberuser($command->permissionTemplateId)
-        ) {
-            return [
-                'success' => false,
-                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
-                'refusal' => Refusal::CONFLICT,
-                'code' => self::ERR_LAST_ADMIN_DEMOTE,
-            ];
-        }
-
         try {
             if ($passwordGiven) {
                 $command = $command->withPassword($this->authService->hashPassword((string)$command->password));
             }
 
-            $success = $this->userRepository->updateUser($userId, $command);
+            // The last-admin checks and the write share one transaction holding the super admin rows
+            $written = $this->underUberuserLock(function () use ($userId, $command) {
+                // Check if trying to disable the last remaining uberuser
+                if ($command->active === false && $this->userRepository->isLastUberuser($userId)) {
+                    return [
+                        'success' => false,
+                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
+                        'refusal' => Refusal::CONFLICT,
+                        'code' => self::ERR_LAST_ADMIN,
+                    ];
+                }
+
+                // Same guard as assignPermissionTemplate(): the edit form and API PUT must not
+                // move the last super admin to a template without the super admin permission.
+                // Opt-in through security.protect_last_admin_on_edit, so existing installs keep
+                // today's behaviour until they turn it on.
+                if (
+                    $this->protectLastAdminOnEdit
+                    && $command->permissionTemplateId !== null
+                    && $this->userRepository->isLastUberuser($userId)
+                    && !$this->userRepository->templateGrantsUberuser($command->permissionTemplateId)
+                ) {
+                    return [
+                        'success' => false,
+                        'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                        'refusal' => Refusal::CONFLICT,
+                        'code' => self::ERR_LAST_ADMIN_DEMOTE,
+                    ];
+                }
+
+                return $this->userRepository->updateUser($userId, $command);
+            });
+            if (is_array($written)) {
+                return $written;
+            }
+            $success = $written;
 
             if (!$success) {
                 return [
@@ -600,7 +610,11 @@ class UserManagementService
             }
 
             // Delete the user
-            if (!$this->userRepository->deleteUser($userId)) {
+            $deleted = $this->deleteUnlessLastAdmin($userId);
+            if (is_array($deleted)) {
+                return $deleted;
+            }
+            if (!$deleted) {
                 return [
                     'success' => false,
                     'message' => 'Failed to delete user',
@@ -723,7 +737,11 @@ class UserManagementService
         }
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
-        if (!$this->userRepository->deleteUser($userId)) {
+        $deleted = $this->deleteUnlessLastAdmin($userId);
+        if (is_array($deleted)) {
+            return $deleted;
+        }
+        if (!$deleted) {
             return ['success' => false, 'message' => 'Failed to delete user', 'refusal' => Refusal::BACKEND_FAILURE, 'code' => self::ERR_WRITE];
         }
 
@@ -741,7 +759,16 @@ class UserManagementService
             return ['success' => false, 'message' => 'User not found', 'refusal' => Refusal::NOT_FOUND, 'code' => self::ERR_NOT_FOUND];
         }
 
-        // The last super admin cannot go, or nobody could administer the system.
+        return $this->lastAdminDeleteRefusal($userId);
+    }
+
+    /**
+     * The last super admin cannot go, or nobody could administer the system.
+     *
+     * @return array{success: false, message: string, refusal: Refusal, code: string}|null
+     */
+    private function lastAdminDeleteRefusal(int $userId): ?array
+    {
         if ($this->userRepository->isLastUberuser($userId)) {
             return [
                 'success' => false,
@@ -752,6 +779,52 @@ class UserManagementService
         }
 
         return null;
+    }
+
+    /**
+     * Repeats the last-admin check in the transaction that deletes, so two deletes cannot both pass.
+     *
+     * @return array{success: false, message: string, refusal: Refusal, code: string}|bool
+     */
+    private function deleteUnlessLastAdmin(int $userId): array|bool
+    {
+        return $this->underUberuserLock(
+            fn(): array|bool => $this->lastAdminDeleteRefusal($userId) ?? $this->userRepository->deleteUser($userId)
+        );
+    }
+
+    /**
+     * Runs a last-admin check and the write it protects in one transaction. The work returns a
+     * refusal array, or the write result; only true commits. Without a transaction port it runs bare.
+     *
+     * @param callable(): (array|bool) $work
+     * @return array|bool
+     */
+    private function underUberuserLock(callable $work): array|bool
+    {
+        if ($this->transaction === null) {
+            return $work();
+        }
+
+        // An outer transaction owns its own commit; this one only joins it.
+        $owned = !$this->transaction->inTransaction();
+        if ($owned) {
+            $this->transaction->begin();
+        }
+
+        try {
+            $result = $work();
+            if ($owned) {
+                $result === true ? $this->transaction->commit() : $this->transaction->rollBack();
+            }
+
+            return $result;
+        } catch (Throwable $e) {
+            if ($owned && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -783,20 +856,26 @@ class UserManagementService
 
         // Guard against demoting the last active super admin: if this user is the
         // only remaining ueberuser and the new template drops that permission, the
-        // system would be left with zero super admins.
-        if (
-            $this->userRepository->isLastUberuser($userId)
-            && !$this->userRepository->templateGrantsUberuser($permTemplId)
-        ) {
-            return [
-                'success' => false,
-                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
-                'refusal' => Refusal::CONFLICT
-            ];
-        }
-
+        // system would be left with zero super admins. Check and write share a transaction.
         // A database exception propagates so the caller logs it instead of handing it to the client
-        if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
+        $assigned = $this->underUberuserLock(function () use ($userId, $permTemplId) {
+            if (
+                $this->userRepository->isLastUberuser($userId)
+                && !$this->userRepository->templateGrantsUberuser($permTemplId)
+            ) {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                    'refusal' => Refusal::CONFLICT
+                ];
+            }
+
+            return $this->userRepository->assignPermissionTemplate($userId, $permTemplId);
+        });
+        if (is_array($assigned)) {
+            return $assigned;
+        }
+        if (!$assigned) {
             return [
                 'success' => false,
                 'message' => 'Failed to assign permission template',
