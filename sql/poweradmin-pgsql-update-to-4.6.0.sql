@@ -167,3 +167,36 @@ BEGIN
         CREATE UNIQUE INDEX IF NOT EXISTS "idx_users_username" ON "public"."users" USING btree ("username");
     END IF;
 END $$;
+
+-- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
+-- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
+-- Same rows and values as the zones_without_names consistency fix:
+--  - a zone with zones rows but no named row gets its lowest-id row named after its domain;
+--  - a zone with grants or API key restrictions but no zones row gets an ownerless named row.
+-- A zone that has a named row is left alone, and so is one whose name another zones row holds.
+-- Type and master are left to the API sync. Safe to re-run. Skipped when no domains table is
+-- on the search_path (API backend, or PowerDNS tables in another database).
+DO $$
+BEGIN
+    IF to_regclass('domains') IS NULL THEN
+        RAISE NOTICE 'PowerDNS domains table not found, zone name backfill skipped';
+        RETURN;
+    END IF;
+
+    UPDATE zones
+    SET zone_name = d.name
+    FROM domains d
+    WHERE zones.domain_id = d.id
+      AND zones.zone_name IS NULL
+      AND zones.id = (SELECT MIN(z2.id) FROM zones z2 WHERE z2.domain_id = zones.domain_id)
+      AND NOT EXISTS (SELECT 1 FROM zones n WHERE n.domain_id = zones.domain_id AND n.zone_name IS NOT NULL)
+      AND NOT EXISTS (SELECT 1 FROM zones o WHERE o.zone_name = d.name);
+
+    INSERT INTO zones (domain_id, owner, zone_templ_id, zone_name)
+    SELECT d.id, NULL, 0, d.name
+    FROM domains d
+    WHERE NOT EXISTS (SELECT 1 FROM zones z WHERE z.domain_id = d.id)
+      AND NOT EXISTS (SELECT 1 FROM zones o WHERE o.zone_name = d.name)
+      AND (EXISTS (SELECT 1 FROM zones_groups g WHERE g.domain_id = d.id)
+           OR EXISTS (SELECT 1 FROM api_key_zones k WHERE k.zone_id = d.id));
+END $$;

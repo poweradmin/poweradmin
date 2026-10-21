@@ -133,3 +133,51 @@ SET @repair = IF(@has_users_username_index > 0,
 PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
+
+-- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
+-- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
+-- Same rows and values as the zones_without_names consistency fix:
+--  - a zone with zones rows but no named row gets its lowest-id row named after its domain;
+--  - a zone with grants or API key restrictions but no zones row gets an ownerless named row.
+-- A zone that has a named row is left alone, and so is one whose name another zones row holds.
+-- Type and master are left to the API sync. Safe to re-run. Skipped when the domains table is
+-- not in @pdns_db (API backend); edit here when pdns_db_name is set, e.g. SET @pdns_db = 'pdns';
+SET @pdns_db = DATABASE();
+
+SET @has_domains = (
+    SELECT COUNT(*) FROM information_schema.tables
+    WHERE table_schema = @pdns_db AND table_name = 'domains'
+);
+
+-- Names are compared in the zones column's charset and collation, so a domains table
+-- with another collation cannot raise "Illegal mix of collations" or miss a held name.
+SET @zn_charset = (SELECT character_set_name FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'zones' AND column_name = 'zone_name');
+SET @zn_collation = (SELECT collation_name FROM information_schema.columns
+    WHERE table_schema = DATABASE() AND table_name = 'zones' AND column_name = 'zone_name');
+SET @zn_name = CONCAT('CONVERT(d.name USING ', @zn_charset, ') COLLATE ', @zn_collation);
+
+SET @name_rows = IF(@has_domains > 0, CONCAT(
+    'UPDATE `zones` z ',
+    'INNER JOIN (SELECT domain_id, MIN(id) AS min_id, COUNT(zone_name) AS named FROM `zones` GROUP BY domain_id) m ',
+    '    ON m.domain_id = z.domain_id AND m.min_id = z.id AND m.named = 0 ',
+    'INNER JOIN `', @pdns_db, '`.`domains` d ON d.id = z.domain_id ',
+    'LEFT JOIN `zones` o ON o.zone_name = ', @zn_name, ' ',
+    'SET z.zone_name = ', @zn_name, ' ',
+    'WHERE z.zone_name IS NULL AND o.id IS NULL'),
+    'SELECT ''PowerDNS domains table not found, zone name backfill skipped'' AS notice');
+PREPARE name_rows FROM @name_rows;
+EXECUTE name_rows;
+DEALLOCATE PREPARE name_rows;
+
+SET @add_rows = IF(@has_domains > 0, CONCAT(
+    'INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`, `zone_name`) ',
+    'SELECT d.id, NULL, 0, d.name FROM `', @pdns_db, '`.`domains` d ',
+    'WHERE NOT EXISTS (SELECT 1 FROM `zones` z WHERE z.domain_id = d.id) ',
+    '  AND NOT EXISTS (SELECT 1 FROM `zones` o WHERE o.zone_name = ', @zn_name, ') ',
+    '  AND (EXISTS (SELECT 1 FROM `zones_groups` g WHERE g.domain_id = d.id) ',
+    '       OR EXISTS (SELECT 1 FROM `api_key_zones` k WHERE k.zone_id = d.id))'),
+    'SELECT ''PowerDNS domains table not found, ownerless zone rows skipped'' AS notice');
+PREPARE add_rows FROM @add_rows;
+EXECUTE add_rows;
+DEALLOCATE PREPARE add_rows;

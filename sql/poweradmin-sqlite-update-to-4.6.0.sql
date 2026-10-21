@@ -68,3 +68,7 @@ ALTER TABLE user_groups ADD COLUMN max_zones INTEGER DEFAULT NULL;
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;
 -- rename or remove the extra accounts and run this statement again.
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username);
+
+-- Zones left unnamed by older versions get zone_name from the PowerDNS domains table in
+-- poweradmin-sqlite-update-to-4.6.0-backfill.sql. Run it after this script when the database
+-- holds the PowerDNS tables (SQL backend); SQLite cannot skip a statement on a missing table.
