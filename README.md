@@ -113,9 +113,9 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 **Officially tested versions:**
 - **master (4.6.0)**: PHP 8.2-8.5, PowerDNS 5.1.5, MariaDB 10.11, PostgreSQL 16.11
 - **release/4.5.x**: PHP 8.2, PowerDNS 5.1.5, MariaDB 10.11, PostgreSQL 16.11
-- **release/4.4.x (LTS)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
-- **release/4.3.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
-- **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.12, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.4.x (LTS)**: PHP 8.2, PowerDNS 4.9.18, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.3.x (maintenance)**: PHP 8.2, PowerDNS 4.9.18, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.18, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **Other PowerDNS versions:** the development environment can also run PowerDNS 4.5, 4.6, 4.7, 4.8, 4.9 and 5.0 (`PDNS_VERSION` in `.devcontainer/.env`). Versions older than 4.5 are not tested. Many stable distributions still ship PowerDNS 4.x, so 4.x support stays.
