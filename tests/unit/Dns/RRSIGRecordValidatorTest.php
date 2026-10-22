@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\RRSIGRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -222,6 +223,50 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('inception', $result->getFirstError());
+    }
+
+    #[DataProvider('impossibleTimestampProvider')]
+    public function testRejectsImpossibleTimestamps(string $expiration, string $inception, string $field): void
+    {
+        $content = "A 8 2 86400 {$expiration} {$inception} 12345 example.com. AQPeAHjkasdjfhsdkjfhskjdhfksdjhfkASDJASDHoiwehjroiwejhroiwejhroiwejroijewr+OIAJDOIAJSdoiajds9oia3j==";
+
+        $result = $this->validator->validate($content, 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString($field, $result->getFirstError());
+    }
+
+    public static function impossibleTimestampProvider(): array
+    {
+        $ok = '20230415130000';
+        return [
+            'month 13' => ['20231315130000', $ok, 'expiration'],
+            'month 00' => ['20230015130000', $ok, 'expiration'],
+            'day 00' => ['20230400130000', $ok, 'expiration'],
+            'day 31 of April' => ['20230431130000', $ok, 'expiration'],
+            'Feb 29 in a common year' => ['20230229130000', $ok, 'expiration'],
+            'hour 24' => ['20230415240000', $ok, 'expiration'],
+            'minute 60' => ['20230415136000', $ok, 'expiration'],
+            'second 61' => ['20230415130061', $ok, 'expiration'],
+            'inception month 13' => [$ok, '20231315130000', 'inception'],
+            'inception hour 24' => [$ok, '20230415240000', 'inception'],
+        ];
+    }
+
+    #[DataProvider('edgeTimestampProvider')]
+    public function testAcceptsEdgeTimestamps(string $expiration, string $inception): void
+    {
+        $content = "A 8 2 86400 {$expiration} {$inception} 12345 example.com. AQPeAHjkasdjfhsdkjfhskjdhfksdjhfkASDJASDHoiwehjroiwejhroiwejhroiwejroijewr+OIAJDOIAJSdoiajds9oia3j==";
+
+        $this->assertTrue($this->validator->validate($content, 'example.com', 0, 3600, 86400)->isValid());
+    }
+
+    public static function edgeTimestampProvider(): array
+    {
+        return [
+            'leap day' => ['20240229235959', '20240101000000'],
+            'leap second' => ['20231231235960', '20230101000000'],
+        ];
     }
 
     public function testValidateWithInvalidKeyTag()

@@ -180,6 +180,10 @@ class SVCBRecordValidatorTest extends TestCase
             'tls-supported-groups not numeric' => ['1 svc.example.com tls-supported-groups=abc'],
             'tls-supported-groups empty' => ['1 svc.example.com tls-supported-groups='],
             'tls-supported-groups above 16 bits' => ['1 svc.example.com tls-supported-groups=29,70000'],
+            'alpn empty entry in the middle' => ['1 svc.example.com alpn=h2,,h3'],
+            'alpn leading comma' => ['1 svc.example.com alpn=,h2'],
+            'alpn trailing comma' => ['1 svc.example.com alpn=h2,'],
+            'alpn entry over 255 bytes' => ['1 svc.example.com alpn=' . str_repeat('a', 256)],
         ];
     }
 
@@ -197,6 +201,7 @@ class SVCBRecordValidatorTest extends TestCase
             'mandatory' => ['1 svc.example.com mandatory=alpn alpn=h2'],
             'bare no-default-alpn' => ['1 svc.example.com alpn=h2 no-default-alpn'],
             'bare ohttp' => ['1 svc.example.com ohttp'],
+            'alpn entry of 255 bytes' => ['1 svc.example.com alpn=' . str_repeat('a', 255)],
             'tls-supported-groups' => ['1 svc.example.com tls-supported-groups=29,23'],
             'ech base64' => ['1 svc.example.com ech=AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA='],
             'ech quoted' => ['1 svc.example.com ech="AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA="'],
