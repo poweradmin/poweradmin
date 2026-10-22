@@ -1,0 +1,80 @@
+name: PowerDNS pin check
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print the table without touching issues
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Devcontainer PowerDNS pins
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Compare pins with Docker Hub
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          title="Devcontainer PowerDNS pins behind upstream"
+          rows=""
+          failed=0
+          for b in master release/4.5.x release/4.4.x release/4.3.x release/4.2.x release/3.x; do
+            env_file=$(git show "origin/${b}:.devcontainer/.env" 2>/dev/null) || continue
+            series=$(sed -n 's/^PDNS_BRANCH=\([0-9]*\)[[:space:]]*$/\1/p' <<<"$env_file" | head -n1)
+            pinned=$(sed -n 's/^PDNS_VERSION=\([0-9.]*\)[[:space:]]*$/\1/p' <<<"$env_file" | head -n1)
+            [ -n "$series" ] && [ -n "$pinned" ] || { echo "No active pin on ${b}, skipping"; continue; }
+            url="https://hub.docker.com/v2/repositories/powerdns/pdns-auth-${series}/tags?page_size=100"
+            tags=""
+            for _ in 1 2 3; do
+              page=$(curl -fsS --retry 3 "$url") || { echo "::error::Docker Hub fetch failed for pdns-auth-${series} (${b})"; failed=1; continue 2; }
+              tags+=$(jq -r '.results[].name' <<<"$page")$'\n'
+              url=$(jq -r '.next // empty' <<<"$page")
+              [ -n "$url" ] || break
+            done
+            latest=$({ grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' <<<"$tags" || true; } | sort -V | tail -n1)
+            [ -n "$latest" ] || { echo "::error::No stable tags for pdns-auth-${series} (${b})"; failed=1; continue; }
+            behind=""
+            if [ "$pinned" != "$latest" ] && [ "$(printf '%s\n%s\n' "$pinned" "$latest" | sort -V | tail -n1)" = "$latest" ]; then
+              behind=1
+              rows+="| ${b} | ${pinned} | ${latest} |"$'\n'
+            fi
+            echo "${b}: pinned ${pinned}, latest ${latest}${behind:+ (behind)}"
+          done
+
+          if [ -z "$rows" ]; then
+            [ "$failed" = 0 ] && echo "All pins are current" || echo "No pin is behind among the series that could be checked"
+            exit "$failed"
+          fi
+
+          body="Newer PowerDNS releases are on Docker Hub than the devcontainer pins in \`.devcontainer/.env\`:"$'\n\n'
+          body+="| Branch | Pinned | Latest |"$'\n'"|---|---|---|"$'\n'"${rows}"
+          if [ "${DRY_RUN:-}" = "true" ]; then
+            printf '%s\n' "$body"
+            exit "$failed"
+          fi
+
+          # The list endpoint, not search: the search index lags and would let a quick rerun open a duplicate.
+          number=$(gh issue list --state open --limit 500 --json number,title \
+            --jq "[.[] | select(.title == \"${title}\")][0].number // empty")
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body "$body"
+          else
+            gh issue create --title "$title" --body "$body"
+          fi
+          exit "$failed"
