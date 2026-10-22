@@ -17,6 +17,13 @@ jobs:
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+    # Psalm 5.26.1 supports PHP up to 8.3; the ubuntu-latest runner now ships 8.5
+    - name: Setup PHP
+      uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # v2
+      with:
+        php-version: '8.3'
+        coverage: none
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict --check-lock
 
