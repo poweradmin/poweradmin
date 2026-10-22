@@ -13405,3 +13405,22 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "您只能分配其权限您已全部拥有的权限模板。"
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s 参数缺少值或 \"=\"。"
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech 值必须采用 base64 编码。"
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory 参数不能列出其自身。"
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups 值必须是以逗号分隔的 0 到 65535 之间的数字列表。"
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "请使用参数名称，而不是 \"%s\"。"

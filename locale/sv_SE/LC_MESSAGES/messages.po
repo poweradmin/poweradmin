@@ -13626,3 +13626,22 @@ msgid ""
 "hold."
 msgstr ""
 "Du kan bara tilldela en behörighetsmall vars behörigheter du redan har."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametern %s är skriven utan värde eller \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Värdet för ech måste vara base64-kodat."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametern mandatory kan inte lista sig själv."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Värdet för tls-supported-groups måste vara en kommaseparerad lista med tal mellan 0 och 65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Använd parameternamnet i stället för \"%s\"."

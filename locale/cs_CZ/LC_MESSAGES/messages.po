@@ -14355,3 +14355,22 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Můžete přiřadit pouze šablonu oprávnění, jejíž oprávnění již máte."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametr %s je zapsán bez hodnoty nebo \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Hodnota ech musí být kódována v base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametr mandatory nemůže uvádět sám sebe."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Hodnota tls-supported-groups musí být seznam čísel od 0 do 65535 oddělených čárkami."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Použijte název parametru místo \"%s\"."

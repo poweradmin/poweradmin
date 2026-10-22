@@ -14338,3 +14338,22 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Du kan bare tildele en tilgangsmal med tillatelser du allerede har."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parameteren %s er skrevet uten verdi eller \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Verdien for ech må være base64-kodet."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parameteren mandatory kan ikke liste seg selv."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Verdien for tls-supported-groups må være en kommaseparert liste med tall mellom 0 og 65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Bruk parameternavnet i stedet for \"%s\"."

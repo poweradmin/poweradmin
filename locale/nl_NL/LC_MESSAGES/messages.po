@@ -14559,3 +14559,22 @@ msgid ""
 "hold."
 msgstr ""
 "U kunt alleen een rechtensjabloon toewijzen waarvan u de rechten al hebt."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "De parameter %s is geschreven zonder waarde of \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "De waarde van ech moet base64-gecodeerd zijn."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "De parameter mandatory kan zichzelf niet vermelden."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "De waarde van tls-supported-groups moet een door komma's gescheiden lijst van getallen tussen 0 en 65535 zijn."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Gebruik de parameternaam in plaats van \"%s\"."

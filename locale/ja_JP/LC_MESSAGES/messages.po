@@ -14387,3 +14387,22 @@ msgid ""
 msgstr ""
 "割り当てられるのは、すでに保有している権限のみを含む権限テンプレートだけで"
 "す。"
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s パラメーターが値または \"=\" なしで記述されています。"
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech の値は base64 でエンコードされている必要があります。"
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory パラメーターに自身を含めることはできません。"
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups の値は、0 から 65535 までの数値をカンマで区切ったリストである必要があります。"
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "\"%s\" ではなくパラメーター名を使用してください。"

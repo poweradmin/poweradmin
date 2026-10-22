@@ -14887,3 +14887,22 @@ msgid ""
 msgstr ""
 "Vous ne pouvez attribuer qu'un modèle de permissions dont vous détenez déjà "
 "les permissions."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Le paramètre %s est écrit sans valeur ni \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "La valeur ech doit être encodée en base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Le paramètre mandatory ne peut pas se lister lui-même."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "La valeur tls-supported-groups doit être une liste de nombres compris entre 0 et 65535, séparés par des virgules."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Utilisez le nom du paramètre au lieu de \"%s\"."
