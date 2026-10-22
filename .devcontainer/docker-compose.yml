@@ -403,6 +403,7 @@ services:
 
   pdns-mysql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-mysql
     restart: unless-stopped
     networks:
@@ -420,6 +421,7 @@ services:
   # Serves the API-backend instance's own database, so it never writes to pdns
   pdns-mysql-api:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-mysql-api
     restart: unless-stopped
     networks:
@@ -436,6 +438,7 @@ services:
 
   pdns-pgsql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-pgsql
     restart: unless-stopped
     networks:
@@ -453,6 +456,7 @@ services:
   # Serves the API-backend instance's own database, so it never writes to pdns
   pdns-pgsql-api:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-pgsql-api
     restart: unless-stopped
     networks:
@@ -469,6 +473,7 @@ services:
 
   pdns-sqlite:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-sqlite
     restart: unless-stopped
     networks:
@@ -487,6 +492,7 @@ services:
   # Serves the API-backend instance's own file, so it never writes to pdns.db
   pdns-sqlite-api:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-sqlite-api
     restart: unless-stopped
     networks:
@@ -506,6 +512,7 @@ services:
   # mappings: docker compose --profile lmdb up pdns-lmdb
   pdns-lmdb:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-lmdb
     profiles:
       - lmdb
