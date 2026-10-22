@@ -42,7 +42,8 @@ use TestHelpers\FakeConfiguration;
 /**
  * create_ptr in the v2 bulk endpoint against the real services and the devcontainer
  * databases: the PTR lands in the reverse zone, that zone gets its own serial bump, and a
- * batch that fails afterwards takes the PTR back with it. Skipped when the engine is down.
+ * batch that fails afterwards takes the PTR back with it. A dry run leaves records, comments,
+ * serials and the log tables as they were. Skipped when the engine is down.
  */
 class ZonesRecordsBulkPtrIntegrationTest extends TestCase
 {
@@ -58,6 +59,7 @@ class ZonesRecordsBulkPtrIntegrationTest extends TestCase
     /** Per-process third octet, so sessions sharing the devcontainer database keep to their own reverse zone */
     private int $octet = 0;
     private bool $syncComments = false;
+    private bool $dbLogging = false;
 
     /** @return array<string, array{string}> */
     public static function engines(): array
@@ -205,6 +207,91 @@ class ZonesRecordsBulkPtrIntegrationTest extends TestCase
         $this->assertSame('kept in step', $this->commentOf($this->reverseId, $ptr, 'PTR'));
     }
 
+    #[DataProvider('engines')]
+    public function testADryRunLeavesEveryTableAsItWas(string $engine): void
+    {
+        $this->dbLogging = true;
+        $this->useEngine($engine);
+        $this->bulk(['comment' => 'setup', 'operations' => [
+            ['action' => 'create', 'name' => 'keep', 'type' => 'A', 'content' => "10.99.{$this->octet}.20", 'comment' => 'old'],
+            ['action' => 'create', 'name' => 'gone', 'type' => 'A', 'content' => "10.99.{$this->octet}.21"],
+        ]]);
+        $keep = $this->recordId($this->forwardId, 'keep.' . $this->forwardZone, 'A');
+        $gone = $this->recordId($this->forwardId, 'gone.' . $this->forwardZone, 'A');
+        $operations = [
+            ['action' => 'create', 'name' => 'www', 'type' => 'A', 'content' => "10.99.{$this->octet}.5", 'comment' => 'new', 'create_ptr' => true],
+            ['action' => 'update', 'id' => $keep, 'content' => "10.99.{$this->octet}.22", 'comment' => 'changed'],
+            ['action' => 'delete', 'id' => $gone],
+        ];
+        $before = $this->snapshot();
+        $this->assertGreaterThan(0, $before['log_record_changes'], 'the change log must be on for this test to mean anything');
+
+        $response = $this->bulk(['comment' => 'rehearsal', 'dry_run' => true, 'operations' => $operations]);
+        $body = json_decode((string)$response->getContent(), true);
+
+        $this->assertSame(200, $response->getStatusCode(), (string)$response->getContent());
+        $this->assertTrue($body['data']['dry_run']);
+        $this->assertSame([1, 1, 1, 0], [$body['data']['created'], $body['data']['updated'], $body['data']['deleted'], $body['data']['failed']]);
+        $this->assertSame([], $body['data']['warnings']);
+        $this->assertSame($before, $this->snapshot());
+
+        $real = json_decode((string)$this->bulk(['comment' => 'for real', 'operations' => $operations])->getContent(), true);
+        $this->assertSame([1, 1, 1], [$real['data']['created'], $real['data']['updated'], $real['data']['deleted']]);
+        $this->assertArrayNotHasKey('dry_run', $real['data']);
+        $this->assertNotSame($before, $this->snapshot(), 'the same operations written for real must change something');
+    }
+
+    #[DataProvider('engines')]
+    public function testADryRunReportsAnInvalidOperationAndWarnsAboutAMissingReverseZone(string $engine): void
+    {
+        $this->dbLogging = true;
+        $this->useEngine($engine);
+        $before = $this->snapshot();
+
+        $warned = json_decode((string)$this->bulk(['dry_run' => true, 'operations' => [
+            ['action' => 'create', 'name' => 'lonely', 'type' => 'A', 'content' => '10.250.250.250', 'create_ptr' => true],
+        ]])->getContent(), true);
+        $this->assertSame(1, $warned['data']['created']);
+        $this->assertCount(1, $warned['data']['warnings']);
+        $this->assertStringContainsString('PTR record creation failed', $warned['data']['warnings'][0]);
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [
+            ['action' => 'create', 'name' => 'ok', 'type' => 'A', 'content' => "10.99.{$this->octet}.8"],
+            ['action' => 'create', 'name' => 'bad', 'type' => 'A', 'content' => 'not-an-address'],
+        ]]);
+        $body = json_decode((string)$response->getContent(), true);
+
+        $this->assertSame(400, $response->getStatusCode(), (string)$response->getContent());
+        $this->assertSame(1, $body['data']['failed']);
+        $this->assertCount(1, $body['data']['errors']);
+        $this->assertStringStartsWith('Operation 1 (create): ', $body['data']['errors'][0]);
+        $this->assertTrue($body['data']['dry_run']);
+        $this->assertSame($before, $this->snapshot());
+    }
+
+    /**
+     * Everything a bulk call could touch in the two zones, comparable with assertSame.
+     *
+     * @return array<string, mixed>
+     */
+    private function snapshot(): array
+    {
+        $ids = $this->forwardId . ',' . $this->reverseId;
+        $rows = fn(string $sql): array => $this->db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+        $count = fn(string $table, string $column): int => (int)$this->db->query("SELECT COUNT(*) FROM $table WHERE $column IN ($ids)")->fetchColumn();
+
+        return [
+            'domains' => $rows("SELECT id, name, type FROM {$this->pdns}domains WHERE id IN ($ids) ORDER BY id"),
+            'records' => $rows("SELECT id, domain_id, name, type, content, ttl, prio, disabled FROM {$this->pdns}records WHERE domain_id IN ($ids) ORDER BY id"),
+            'comments' => $rows("SELECT id, domain_id, name, type, comment FROM {$this->pdns}comments WHERE domain_id IN ($ids) ORDER BY id"),
+            'links' => (int)$this->db->query("SELECT COUNT(*) FROM record_comment_links WHERE comment_id IN (SELECT id FROM {$this->pdns}comments WHERE domain_id IN ($ids))")->fetchColumn(),
+            'serials' => [$this->serialOf($this->forwardId), $this->serialOf($this->reverseId)],
+            'log_record_changes' => $count('log_record_changes', 'zone_id'),
+            'log_changesets' => $count('log_changesets', 'zone_id'),
+            'log_zones' => $count('log_zones', 'zone_id'),
+        ];
+    }
+
     private function useEngine(string $engine): void
     {
         $this->engine = $engine;
@@ -248,6 +335,9 @@ class ZonesRecordsBulkPtrIntegrationTest extends TestCase
 
     private function purgeZone(int $id): void
     {
+        foreach (['log_record_changes', 'log_changesets', 'log_zones'] as $logTable) {
+            $this->db->exec("DELETE FROM $logTable WHERE zone_id = $id");
+        }
         $this->db->exec("DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM {$this->pdns}comments WHERE domain_id = $id)");
         $this->db->exec("DELETE FROM {$this->pdns}comments WHERE domain_id = $id");
         $this->db->exec("DELETE FROM {$this->pdns}records WHERE domain_id = $id");
@@ -298,6 +388,7 @@ class ZonesRecordsBulkPtrIntegrationTest extends TestCase
         $config = new FakeConfiguration(array_replace_recursive($defaults, [
             'database' => ['type' => $this->engine, 'pdns_db_name' => $this->engine === 'mysql' ? 'pdns' : ''],
             'misc' => ['record_comments_sync' => $this->syncComments],
+            'logging' => ['database_enabled' => $this->dbLogging],
         ]));
         $session = new ArraySession(['userid' => self::ADMIN_USER_ID]);
         $factory = new ControllerServiceFactory($this->db, $config, new NullLogger(), new SessionActor($session), $session);

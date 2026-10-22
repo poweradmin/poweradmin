@@ -67,9 +67,11 @@ class ReverseRecordCreator
      * @param string $comment Record comment
      * @param string $account Acting user name
      * @param bool $finalizeZone False when a batch caller bumps the serial and rectifies the reverse zone itself
+     * @param bool $audit False for a dry run: nothing is written to the audit log
+     * @param bool $validateOnly True when the PTR must not be written at all, only checked
      * @return array<string, mixed> success, type and message, plus zone_id (the reverse zone written to) on success
      */
-    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = '', bool $finalizeZone = true): array
+    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = '', bool $finalizeZone = true, bool $audit = true, bool $validateOnly = false): array
     {
         if (!$name || !$this->reverseHandling) {
             return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
@@ -93,7 +95,7 @@ class ReverseRecordCreator
         $existingPtrRecords = $this->getExistingPtrRecords($zoneRevId, $contentRev);
         $hasExistingRecords = !empty($existingPtrRecords);
 
-        $written = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account, $finalizeZone);
+        $written = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account, $finalizeZone, $audit, $validateOnly);
 
         if ($written->success) {
             if ($hasExistingRecords) {
@@ -275,15 +277,15 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account, bool $finalizeZone = true): RecordWriteResult
+    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account, bool $finalizeZone = true, bool $audit = true, bool $validateOnly = false): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        $written = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio, 0, $finalizeZone);
-        if ($written->success) {
+        $written = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio, 0, $finalizeZone, null, $validateOnly);
+        if ($written->success && $audit && !$validateOnly) {
             $this->audit->logRecordAdd((int)$zone_rev_id, RecordType::PTR, $content_rev, $fqdn_name, $ttl, $prio);
         }
 

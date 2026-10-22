@@ -1615,7 +1615,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         return $content;
     }
 
-    private function stripTrailingDotFromContent(string $type, string $content): string
+    /** The form the API backend reads hostname content in, which is also what the duplicate check compares. */
+    public static function stripTrailingDotFromContent(string $type, string $content): string
     {
         $hostnameTypes = ['CNAME', 'NS', 'MX', 'KX', 'PTR', 'SRV', 'AFSDB', 'DNAME', 'ALIAS'];
         if (in_array($type, $hostnameTypes, true)) {

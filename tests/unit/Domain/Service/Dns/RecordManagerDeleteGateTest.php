@@ -86,6 +86,17 @@ class RecordManagerDeleteGateTest extends PermissionServiceTestCase
         return $manager;
     }
 
+    public function testADryRunPassesTheGatesAndStopsBeforeTheBackend(): void
+    {
+        // No backend is wired in: touching it would fail on the uninitialized property
+        $ok = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS], [])->deleteRecord(self::RECORD_ID, false, true);
+        $refused = $this->manager(self::CALLER_ID, [Permission::PERM_ZONE_CONTENT_EDIT_OWN], [99])->deleteRecord(self::RECORD_ID, false, true);
+
+        $this->assertTrue($ok->success);
+        $this->assertFalse($refused->success);
+        $this->assertSame(Refusal::FORBIDDEN, $refused->refusal);
+    }
+
     public function testRefusesWhenNoUserIsActing(): void
     {
         $result = $this->manager(null, [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS], [])->deleteRecord(self::RECORD_ID);

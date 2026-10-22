@@ -967,6 +967,31 @@ test_bulk_operations() {
         assert_json "Update reports no warnings" "$LAST_RESPONSE_BODY" '.data.warnings | length' "0"
         api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records/$bulk_ptr_id" "" 200 "Get the record after the bulk comment update"
         assert_json "Bulk update stored the new comment" "$LAST_RESPONSE_BODY" '.data.record.comment' "bulk web 2"
+
+        # Test 7c: dry_run validates and reports, and writes nothing
+        cleanup_stale_ptr_records "151.2.0.192.in-addr.arpa"
+        local bulk_dry="{\"dry_run\":true,\"operations\":[{\"action\":\"create\",\"name\":\"bulkdry\",\"type\":\"A\",\"content\":\"192.0.2.151\",\"ttl\":3600,\"comment\":\"dry\",\"create_ptr\":true},{\"action\":\"update\",\"id\":$bulk_ptr_json,\"content\":\"192.0.2.152\",\"comment\":\"dry update\"}]}"
+        api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_dry" 200 "Bulk dry run"
+        assert_json "Dry run is flagged" "$LAST_RESPONSE_BODY" '.data.dry_run' "true"
+        assert_json "Dry run reports the create" "$LAST_RESPONSE_BODY" '.data.created' "1"
+        assert_json "Dry run reports the update" "$LAST_RESPONSE_BODY" '.data.updated' "1"
+        assert_json "Dry run reports no failures" "$LAST_RESPONSE_BODY" '.data.failed' "0"
+        assert_json "Dry run has no warnings" "$LAST_RESPONSE_BODY" '.data.warnings | length' "0"
+
+        api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records?name=bulkdry" "" 200 "Get the dry-run record"
+        assert_json "Dry run created no record" "$LAST_RESPONSE_BODY" '.data.records | length' "0"
+        api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records/$bulk_ptr_id" "" 200 "Get the record after the dry-run update"
+        assert_json "Dry run left the content alone" "$LAST_RESPONSE_BODY" '.data.record.content' "192.0.2.150"
+        assert_json "Dry run left the comment alone" "$LAST_RESPONSE_BODY" '.data.record.comment' "bulk web 2"
+        api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List the reverse zone after the dry run"
+        assert_json "Dry run wrote no PTR" "$LAST_RESPONSE_BODY" '[.data.records[] | select(.type == "PTR" and (.name | startswith("151.2.0.192")))] | length' "0"
+
+        local bulk_dry_bad='{"dry_run":true,"operations":[{"action":"create","name":"bulkdrybad","type":"A","content":"not-an-address","ttl":3600}]}'
+        api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_dry_bad" 400 "Bulk dry run reports an invalid operation"
+        assert_json "Dry run failure is flagged" "$LAST_RESPONSE_BODY" '.data.dry_run' "true"
+        assert_json "Dry run failure counts the operation" "$LAST_RESPONSE_BODY" '.data.failed' "1"
+
+        api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" '{"dry_run":"maybe","operations":[{"action":"create","name":"x","type":"A","content":"192.0.2.9"}]}' 400 "Reject a non-boolean dry_run"
     else
         skip "Bulk create_ptr needs the reverse zone from the PTR tests"
     fi

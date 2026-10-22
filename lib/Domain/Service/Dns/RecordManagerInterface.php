@@ -54,10 +54,11 @@ interface RecordManagerInterface
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
      *                            backend writes it in the same PATCH as the record, SQL ignores it
+     * @param bool $dryRun Run every check and stop before anything is written
      *
      * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult;
 
     /**
      * Edit a record. An unchanged save is skipped entirely when
@@ -68,8 +69,9 @@ interface RecordManagerInterface
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string] to
      *                            store with the record where the backend keeps them together
+     * @param bool $dryRun Run every check and stop before anything is written
      */
-    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult;
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult;
 
     /**
      * What every single write ends with: bump the serial (unless told not to) and
@@ -85,8 +87,9 @@ interface RecordManagerInterface
      *
      * @param int|string $rid Record ID
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
+     * @param bool $dryRun Run every check and stop before anything is written
      */
-    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult;
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true, bool $dryRun = false): RecordWriteResult;
 
     /**
      * Edit the zone comment

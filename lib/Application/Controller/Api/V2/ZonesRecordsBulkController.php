@@ -28,9 +28,11 @@ use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
+use Poweradmin\Infrastructure\Service\ApiDnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -50,6 +52,15 @@ class ZonesRecordsBulkController extends PublicApiController
     private RecordRepositoryInterface $recordRepository;
     /** @var array<int, true> Reverse zones that received a PTR in this batch, finalized once at the end */
     private array $reverseZoneIds = [];
+    private bool $dryRunActive = false;
+    /** True for an API-backend dry run: the record manager only validates, nothing is written */
+    private bool $validateOnly = false;
+    /** @var array<string, true> Records an API-backend dry run has already accepted, to catch duplicates inside the batch */
+    private array $batchCreated = [];
+    /** @var array<string, true> Ids an API-backend dry run has deleted or re-keyed, which a real run no longer finds */
+    private array $batchGoneIds = [];
+    /** @var array<string, true> Name, type and content keys a dry run has freed by a delete or a re-key */
+    private array $batchFreedKeys = [];
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
     private BackendCapabilitiesInterface $backendProvider;
@@ -102,7 +113,14 @@ class ZonesRecordsBulkController extends PublicApiController
         description: 'Create, update, or delete multiple records in a single request. '
             . 'With a local database the request is one transaction, PTR records in reverse zones '
             . 'included, and rolls back on the first failure. With the API backend there is no '
-            . 'transaction: operations already applied, PTR records included, stay when a later one fails.',
+            . 'transaction: operations already applied, PTR records included, stay when a later one fails. '
+            . 'With dry_run the same checks run and nothing is kept: no records, comments, PTR records, serial '
+            . 'bump, change log or audit entry, and no change request. A local database runs the operations in '
+            . 'the transaction and rolls it back, so it sees effects between operations. The API backend only '
+            . 'validates each operation against the zone as it is now and tracks deletes, re-keying updates and '
+            . 'duplicate creates inside the batch. It does not see a create followed by an update of that record, '
+            . 'AAAA addresses spelled differently, a second create_ptr for the same address, or a CNAME added next '
+            . 'to other data in the batch, and PowerDNS\'s own checks (for example the LUA record gate) are not run.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -158,6 +176,14 @@ class ZonesRecordsBulkController extends PublicApiController
                     type: 'string',
                     example: 'ticket-4821: move the web tier',
                     description: 'Reason for this change, recorded in the change log.'
+                ),
+                new OA\Property(
+                    property: 'dry_run',
+                    type: 'boolean',
+                    example: false,
+                    description: 'Run every check and report what would happen, without writing anything. '
+                        . 'Defaults to false. Gates apply as for a real call, including the required reason, '
+                        . 'and a zone under change approval is still refused'
                 )
             ]
         )
@@ -177,6 +203,7 @@ class ZonesRecordsBulkController extends PublicApiController
                         new OA\Property(property: 'updated', type: 'integer', example: 3),
                         new OA\Property(property: 'deleted', type: 'integer', example: 2),
                         new OA\Property(property: 'failed', type: 'integer', example: 0),
+                        new OA\Property(property: 'dry_run', type: 'boolean', example: true, description: 'Present and true only for a dry run, whose counts are what would have happened'),
                         new OA\Property(
                             property: 'errors',
                             type: 'array',
@@ -239,6 +266,11 @@ class ZonesRecordsBulkController extends PublicApiController
                 return $this->returnApiError("At least one operation is required", 400);
             }
 
+            $dryRun = $this->inputBool($input, 'dry_run', false);
+            if ($dryRun === null) {
+                return $this->returnApiError("Field 'dry_run' must be a boolean", 400);
+            }
+
             // One request runs every operation in a single transaction, so an unbounded list ties up the database
             $maxOperations = (int)$this->getConfig()->get('api', 'bulk_max_operations', 1000);
             if ($maxOperations > 0 && count($input['operations']) > $maxOperations) {
@@ -288,11 +320,14 @@ class ZonesRecordsBulkController extends PublicApiController
                 'errors' => [],
                 'warnings' => []
             ];
+            if ($dryRun) {
+                $results['dry_run'] = true;
+            }
 
             // A full closure: an arrow function would copy $results and the outer catch
             // would report empty errors.
-            return $this->services()->recordChangeLog()->withChangeset($zoneId, $changeComment, function () use ($zoneId, $input, $zoneType, $zone, $useTransaction, &$results): JsonResponse {
-                return $this->applyOperations($zoneId, $input['operations'], $zoneType, $zone['name'] ?? null, $useTransaction, $results);
+            return $this->services()->recordChangeLog()->withChangeset($zoneId, $changeComment, function () use ($zoneId, $input, $zoneType, $zone, $useTransaction, $dryRun, &$results): JsonResponse {
+                return $this->applyOperations($zoneId, $input['operations'], $zoneType, $zone['name'] ?? null, $useTransaction, $results, $dryRun);
             });
         } catch (ApiErrorException $e) {
             // Client validation errors - return detailed error response with appropriate 4xx status code
@@ -316,8 +351,13 @@ class ZonesRecordsBulkController extends PublicApiController
      * @param array<int, array<string, mixed>> $operations
      * @param array<string, mixed> $results Counters and errors, read by the caller after a throw
      */
-    private function applyOperations(int $zoneId, array $operations, ?string $zoneType, ?string $zoneName, bool $useTransaction, array &$results): JsonResponse
+    private function applyOperations(int $zoneId, array $operations, ?string $zoneType, ?string $zoneName, bool $useTransaction, array &$results, bool $dryRun = false): JsonResponse
     {
+        $this->dryRunActive = $dryRun;
+        $this->validateOnly = $dryRun && !$useTransaction;
+        $this->batchCreated = [];
+        $this->batchGoneIds = [];
+        $this->batchFreedKeys = [];
         // Only non-SOA changes bump the serial, so a user-supplied SOA serial stays.
         $nonSOARecordModified = false;
         $this->reverseZoneIds = [];
@@ -350,13 +390,22 @@ class ZonesRecordsBulkController extends PublicApiController
 
             // The serial moves with the records, inside the transaction; the rectify
             // waits for the commit since PowerDNS reads committed rows.
-            if ($nonSOARecordModified) {
-                $this->services()->soaRecordManager()->updateSOASerial($zoneId);
-            }
-            // Reverse zones that got a PTR follow the same rule, once each.
             $reverseZoneIds = array_keys(array_diff_key($this->reverseZoneIds, [$zoneId => true]));
-            foreach ($reverseZoneIds as $reverseZoneId) {
-                $this->services()->soaRecordManager()->updateSOASerial($reverseZoneId);
+            if (!$this->validateOnly) {
+                if ($nonSOARecordModified) {
+                    $this->services()->soaRecordManager()->updateSOASerial($zoneId);
+                }
+                // Reverse zones that got a PTR follow the same rule, once each.
+                foreach ($reverseZoneIds as $reverseZoneId) {
+                    $this->services()->soaRecordManager()->updateSOASerial($reverseZoneId);
+                }
+            }
+            if ($dryRun) {
+                // Rolled back on purpose, so the counters stay: they report what would have happened
+                if ($useTransaction) {
+                    $this->services()->transaction()->rollBack();
+                }
+                return $this->returnApiResponse($results, true, 'Bulk operations validated (dry run, nothing was written)', 200);
             }
             if ($useTransaction) {
                 $this->services()->transaction()->commit();
@@ -452,11 +501,23 @@ class ZonesRecordsBulkController extends PublicApiController
         $comment = trim((string)$this->inputString($operation, 'comment', ''));
         $username = $this->getAuthenticatedUsername();
         $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $username];
-        $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false, $rrsetComment);
+        $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false, $rrsetComment, $this->validateOnly);
+        $batchKey = $this->batchKey($normalizedName, $type, $content);
+        // A real run reads the zone after the batch's own delete or re-key, so that conflict is gone
+        if ($this->validateOnly && !$created->success && $created->refusal === Refusal::CONFLICT && isset($this->batchFreedKeys[$batchKey])) {
+            unset($this->batchFreedKeys[$batchKey]);
+            $created = RecordWriteResult::ok();
+        }
         if (!$created->success) {
             throw new ApiErrorException($this->recordWriteErrorMessage($created, 'Failed to create record'), RefusalStatus::of($created->refusal));
         }
-        if ($comment !== '') {
+        if ($this->validateOnly) {
+            if (isset($this->batchCreated[$batchKey])) {
+                throw new ApiErrorException(_('A record with this hostname, type, and content already exists.'), RefusalStatus::of(Refusal::CONFLICT));
+            }
+            $this->batchCreated[$batchKey] = true;
+        }
+        if ($comment !== '' && !$this->validateOnly) {
             $this->services()->recordCommentService()->createCommentForRecord($zoneId, $normalizedName, $type, $comment, $created->recordId, $username);
         }
 
@@ -465,7 +526,7 @@ class ZonesRecordsBulkController extends PublicApiController
             $this->createCompanionPtr($zoneId, $normalizedName, $type, $content, $ttl, $priority, $comment, $label, $warnings);
         }
         // Whatever became of the PTR, the comment follows an existing counterpart, as on a single POST
-        if ($comment !== '') {
+        if ($comment !== '' && !$this->validateOnly) {
             $this->services()->recordManagerService()->syncCompanionComment($zoneId, $normalizedName, $type, $content, $comment, $username, $this->getAuthenticatedUserId());
         }
 
@@ -491,7 +552,9 @@ class ZonesRecordsBulkController extends PublicApiController
             $priority,
             $comment,
             $username,
-            false
+            false,
+            !$this->dryRunActive,
+            $this->validateOnly
         );
 
         if (empty($ptr['success'])) {
@@ -524,7 +587,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Get existing record
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
+        if (!$existingRecord || isset($this->batchGoneIds[(string)$recordId]) || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -583,7 +646,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         $username = $this->getAuthenticatedUsername();
         $rrsetComment = $comment === null ? null : ['content' => $comment, 'account' => $username];
-        $result = $this->recordManager->editRecord($recordData, false, $rrsetComment);
+        $result = $this->recordManager->editRecord($recordData, false, $rrsetComment, $this->validateOnly);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
@@ -591,11 +654,43 @@ class ZonesRecordsBulkController extends PublicApiController
             }
             throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
         }
-        if ($comment !== null) {
+        if ($this->validateOnly) {
+            $this->noteRekey($recordId, $existingRecord, $recordData);
+        }
+        if ($comment !== null && !$this->validateOnly) {
             $this->storeUpdatedComment($zoneId, $recordId, $recordData, $comment, $username);
         }
 
         return $result->changed ? $recordData['type'] : null;
+    }
+
+    /**
+     * The API backend derives a record's id from its name, type, content and priority, so an
+     * update that changes one retires the old id and frees the old name, type and content.
+     *
+     * @param array<string, mixed> $stored
+     * @param array<string, mixed> $submitted
+     */
+    private function noteRekey(int|string $recordId, array $stored, array $submitted): void
+    {
+        $oldKey = $this->batchKey((string)$stored['name'], (string)$stored['type'], (string)$stored['content']);
+        $newKey = $this->batchKey((string)$submitted['name'], (string)$submitted['type'], (string)$submitted['content']);
+        if ($oldKey === $newKey && (int)($stored['prio'] ?? 0) === (int)$submitted['prio']) {
+            return;
+        }
+        $this->batchGoneIds[(string)$recordId] = true;
+        if ($oldKey !== $newKey) {
+            $this->batchFreedKeys[$oldKey] = true;
+            $this->batchCreated[$newKey] = true;
+        }
+    }
+
+    /** Name, type and content as the duplicate check compares them. */
+    private function batchKey(string $name, string $type, string $content): string
+    {
+        $type = strtoupper($type);
+
+        return strtolower($name) . "\0" . $type . "\0" . ApiDnsBackendProvider::stripTrailingDotFromContent($type, $content);
     }
 
     /**
@@ -652,7 +747,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Verify record exists in this zone
         $existingRecord = $this->recordRepository->getRecordById($recordId);
-        if (!$existingRecord || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
+        if (!$existingRecord || isset($this->batchGoneIds[(string)$recordId]) || !$this->recordBelongsToZone($existingRecord, $zoneId, $zoneName)) {
             throw new ApiErrorException("Record not found in this zone", 404);
         }
 
@@ -664,13 +759,17 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('You do not have permission to delete this record type', 403);
         }
 
-        $result = $this->recordManager->deleteRecord($recordId, false);
+        $result = $this->recordManager->deleteRecord($recordId, false, $this->validateOnly);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
                 throw new Exception('Failed to delete record');
             }
             throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
+        }
+        if ($this->validateOnly) {
+            $this->batchGoneIds[(string)$recordId] = true;
+            $this->batchFreedKeys[$this->batchKey((string)$existingRecord['name'], (string)$recordType, (string)$existingRecord['content'])] = true;
         }
 
         return $recordType;

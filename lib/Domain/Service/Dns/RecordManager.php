@@ -246,10 +246,11 @@ class RecordManager implements RecordManagerInterface
      * @param bool $finalizeZone Bump the serial and rectify; a batch caller does that once itself
      * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
      *                            backend writes it in the same PATCH as the record, SQL ignores it
+     * @param bool $dryRun Run every check and stop before anything is written
      *
      * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult
     {
         $perm_edit = $this->editPermissionLevel();
 
@@ -299,6 +300,10 @@ class RecordManager implements RecordManagerInterface
         $recordRepository = $this->repositoryFactory->createRecordRepository();
         if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
+        }
+
+        if ($dryRun) {
+            return RecordWriteResult::ok();
         }
 
         // The row and the serial bump land together; a batch caller already holds its own.
@@ -416,7 +421,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @param array $record Record structure to update
      */
-    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null): RecordWriteResult
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = $this->editPermissionLevel();
@@ -502,6 +507,10 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::unchanged();
         }
 
+        if ($dryRun) {
+            return RecordWriteResult::ok();
+        }
+
         if (
             !$this->backendProvider->editRecord(
                 $record['rid'],
@@ -546,7 +555,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @param int|string $rid Record ID
      */
-    public function deleteRecord(int|string $rid, bool $finalizeZone = true): RecordWriteResult
+    public function deleteRecord(int|string $rid, bool $finalizeZone = true, bool $dryRun = false): RecordWriteResult
     {
         $perm_edit = $this->editPermissionLevel();
 
@@ -571,6 +580,10 @@ class RecordManager implements RecordManagerInterface
         $canEditSubzoneNs = $this->userHasPermission(Permission::PERM_EDIT_NS_SUBZONE);
         if (Permission::isRecordRestrictedForClient($record['type'], $perm_edit, $record['name'], $zone, $canEditSubzoneNs)) {
             return RecordWriteResult::forbidden(Permission::restrictedRecordTypeMessage($record['type'], 'delete'));
+        }
+
+        if ($dryRun) {
+            return RecordWriteResult::ok();
         }
 
         if (!$this->backendProvider->deleteRecord($rid)) {

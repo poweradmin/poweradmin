@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,6 +81,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     /** Canonical id the backend reports for the zone, as for a zone moved from SQL to API mode */
     private ?int $canonicalZoneId = null;
     private ?FakeConfiguration $config = null;
+    private ?PDO $txDb = null;
 
     protected function setUp(): void
     {
@@ -713,6 +715,368 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame('Bulk operations failed', $this->messageOf($response));
     }
 
+    private function transactionSpy(int $commits, int $rollbacks): void
+    {
+        $db = $this->createMock(PDO::class);
+        $db->method('beginTransaction')->willReturn(true);
+        $db->method('inTransaction')->willReturn(true);
+        $db->expects($this->exactly($commits))->method('commit')->willReturn(true);
+        $db->expects($this->exactly($rollbacks))->method('rollBack')->willReturn(true);
+        $this->txDb = $db;
+    }
+
+    public function testADryRunOnALocalDatabaseRollsBackAndWritesNothingAfterwards(): void
+    {
+        $this->transactionSpy(0, 1);
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+        $this->audit->expects($this->never())->method('logApiBulkRecords');
+        $this->reverseCreator->method('createReverseRecord')
+            ->willReturn(['success' => true, 'type' => 'success', 'message' => 'Reverse record added', 'zone_id' => 88]);
+
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->exactly(2))->method('updateSOASerial');
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [
+            $this->createOperation(['create_ptr' => true]),
+            ['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'],
+            ['action' => 'delete', 'id' => 3],
+        ]], $soa);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('Bulk operations validated (dry run, nothing was written)', $this->messageOf($response));
+        $this->assertTrue($body['data']['dry_run']);
+        $this->assertSame([1, 1, 1, 0], [$body['data']['created'], $body['data']['updated'], $body['data']['deleted'], $body['data']['failed']]);
+    }
+
+    public function testADryRunAuditsNoPtrAndAWriteRunStillDoes(): void
+    {
+        $this->transactionSpy(0, 1);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->reverseCreator->expects($this->once())->method('createReverseRecord')
+            ->with($this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), false, false, false)
+            ->willReturn(['success' => true, 'type' => 'success', 'message' => 'ok', 'zone_id' => 88]);
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [$this->createOperation(['create_ptr' => true])]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnOrdinaryRunCommitsAndHasNoDryRunFlag(): void
+    {
+        $this->transactionSpy(1, 0);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+
+        $response = $this->bulk(['dry_run' => false, 'operations' => [$this->createOperation()]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertArrayNotHasKey('dry_run', $body['data']);
+        $this->assertSame('Bulk operations completed successfully', $this->messageOf($response));
+    }
+
+    public function testAFailingOperationInADryRunFailsLikeARealRun(): void
+    {
+        $this->transactionSpy(0, 1);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [$this->createOperation(), ['action' => 'update']]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(0, $body['data']['created']);
+        $this->assertSame(1, $body['data']['failed']);
+        $this->assertTrue($body['data']['dry_run']);
+    }
+
+    public function testANonBooleanDryRunIs400(): void
+    {
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['dry_run' => 'maybe', 'operations' => [$this->createOperation()]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame("Field 'dry_run' must be a boolean", $this->messageOf($response));
+    }
+
+    public function testADryRunUnderChangeApprovalIsStillRefused(): void
+    {
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneContent')->willReturn(true);
+        $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [$this->createOperation()]]);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testADryRunStillNeedsTheReasonWhenTheInstallRequiresOne(): void
+    {
+        $this->config = new FakeConfiguration(['logging' => ['require_change_comment' => true]]);
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [$this->createOperation()]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    public function testAnApiBackendDryRunOnlyValidatesAndCallsNoWriteHelper(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->once())->method('addRecordGetId')->with(
+            self::ZONE_ID,
+            'www.example.com',
+            'A',
+            '192.0.2.1',
+            3600,
+            0,
+            0,
+            false,
+            $this->anything(),
+            true
+        )->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->anything(), false, $this->anything(), true)->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->once())->method('deleteRecord')
+            ->with(3, false, true)->willReturn(RecordWriteResult::ok());
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+        $this->audit->expects($this->never())->method('logApiBulkRecords');
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+        $this->recordManagerService->expects($this->never())->method('syncCompanionComment');
+        $this->reverseCreator->expects($this->once())->method('createReverseRecord')
+            ->with($this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), $this->anything(), false, false, true)
+            ->willReturn(['success' => true, 'type' => 'warning', 'message' => 'Reverse record added. Warning: a PTR already exists', 'zone_id' => 88]);
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $soa->expects($this->never())->method('updateSOASerial');
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [
+            $this->createOperation(['create_ptr' => true, 'comment' => 'web']),
+            ['action' => 'update', 'id' => 3, 'ttl' => 300, 'comment' => 'x'],
+            ['action' => 'delete', 'id' => 3],
+        ]], $soa);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([1, 1, 1], [$body['data']['created'], $body['data']['updated'], $body['data']['deleted']]);
+        $this->assertSame(['Operation 0 (create): Reverse record added. Warning: a PTR already exists'], $body['data']['warnings']);
+    }
+
+    public function testAnApiBackendDryRunReportsValidationErrorsAndPtrFailures(): void
+    {
+        $this->localTransactions = false;
+        $this->recordManager->method('addRecordGetId')->willReturnOnConsecutiveCalls(
+            RecordWriteResult::ok(),
+            RecordWriteResult::failure('Invalid IPv4 address.')
+        );
+        $this->reverseCreator->method('createReverseRecord')
+            ->willReturn(['success' => false, 'type' => 'error', 'message' => 'There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.']);
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [
+            $this->createOperation(['create_ptr' => true]),
+            $this->createOperation(['name' => 'bad', 'content' => 'nope']),
+        ]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(1, $body['data']['created']);
+        $this->assertSame(['Operation 1 (create): Invalid IPv4 address.'], $body['data']['errors']);
+        $this->assertSame(['Operation 0 (create): PTR record creation failed: There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.'], $body['data']['warnings']);
+        $this->assertTrue($body['data']['dry_run']);
+    }
+
+    public function testAnApiBackendDryRunCatchesADuplicateInsideTheBatch(): void
+    {
+        $this->localTransactions = false;
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok());
+
+        $response = $this->bulk(['dry_run' => true, 'operations' => [$this->createOperation(), $this->createOperation()]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(409, $response->getStatusCode());
+        $this->assertSame(['Operation 1 (create): A record with this hostname, type, and content already exists.'], $body['data']['errors']);
+    }
+
+    private function apiDryRunOfStoredRecord(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+    }
+
+    /**
+     * @param list<array<string, mixed>> $operations
+     * @return array{0: JsonResponse, 1: array<string, mixed>}
+     */
+    private function dryRun(array $operations): array
+    {
+        $response = $this->bulk(['dry_run' => true, 'operations' => $operations]);
+
+        return [$response, $this->decode($response)];
+    }
+
+    public function testAnApiDryRunRefusesADeleteAfterAnUpdateThatReKeysTheRecord(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'],
+            ['action' => 'delete', 'id' => 3],
+        ]);
+
+        $this->assertSame(404, $response->getStatusCode());
+        $this->assertSame(['Operation 1 (delete): Record not found in this zone'], $body['data']['errors']);
+    }
+
+    public function testAnApiDryRunRefusesASecondDeleteOfTheSameRecord(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+
+        [$response] = $this->dryRun([['action' => 'delete', 'id' => 3], ['action' => 'delete', 'id' => 3]]);
+
+        $this->assertSame(404, $response->getStatusCode());
+    }
+
+    public function testAnApiDryRunRefusesASecondUpdateAfterTheFirstReKeys(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+
+        [$response] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'],
+            ['action' => 'update', 'id' => 3, 'ttl' => 60],
+        ]);
+
+        $this->assertSame(404, $response->getStatusCode());
+    }
+
+    public function testAnApiDryRunAllowsASecondUpdateWhenTheFirstKeepsTheId(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'ttl' => 60],
+            ['action' => 'update', 'id' => 3, 'ttl' => 120],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(2, $body['data']['updated']);
+    }
+
+    public function testAnApiDryRunLetsACreateReuseARecordTheBatchDeleted(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+        $this->recordManager->method('addRecordGetId')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            $this->createOperation(['content' => '192.0.2.5']),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(1, $body['data']['created']);
+    }
+
+    public function testAnApiDryRunLetsACreateReuseTheNameOfARenamedRecord(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+        $this->recordManager->method('addRecordGetId')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'name' => 'www2'],
+            $this->createOperation(['content' => '192.0.2.5']),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnApiDryRunRefusesASecondCreateOfAFreedRecord(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+        $this->recordManager->method('addRecordGetId')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            $this->createOperation(['content' => '192.0.2.5']),
+            $this->createOperation(['content' => '192.0.2.5']),
+        ]);
+
+        $this->assertSame(409, $response->getStatusCode());
+        $this->assertSame(['Operation 2 (create): A record with this hostname, type, and content already exists'], $body['data']['errors']);
+    }
+
+    public function testAnApiDryRunRefusesACreateOfTheKeyAnEarlierRenameMovedTo(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok());
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'name' => 'www2'],
+            $this->createOperation(['name' => 'www2', 'content' => '192.0.2.5']),
+        ]);
+
+        $this->assertSame(409, $response->getStatusCode());
+        $this->assertSame(['Operation 1 (create): A record with this hostname, type, and content already exists.'], $body['data']['errors']);
+    }
+
+    public function testAnApiDryRunAllowsADifferentCreateAfterARename(): void
+    {
+        $this->apiDryRunOfStoredRecord();
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok());
+
+        [$response] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'name' => 'www2'],
+            $this->createOperation(['name' => 'www2', 'content' => '192.0.2.77']),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /** @return array<string, mixed> */
+    private function storedCname(): array
+    {
+        return ['id' => 3, 'domain_id' => self::ZONE_ID, 'name' => 'x.example.com', 'type' => 'CNAME', 'content' => 'foo.example.com', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0];
+    }
+
+    public function testAnApiDryRunIgnoresATrailingDotWhenAnEarlierDeleteFreedTheRecord(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedCname());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('addRecordGetId')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            $this->createOperation(['name' => 'x', 'type' => 'CNAME', 'content' => 'foo.example.com.']),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnApiDryRunDoesNotTreatAddingATrailingDotAsAReKey(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedCname());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'content' => 'foo.example.com.'],
+            ['action' => 'update', 'id' => 3, 'ttl' => 60],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(2, $body['data']['updated']);
+    }
+
     /**
      * @param array<string, mixed> $overrides
      * @return array<string, mixed>
@@ -753,7 +1117,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $factory->method('soaRecordManager')->willReturn($soaManager ?? $this->createMock(SOARecordManagerInterface::class));
         $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), $this->config ?? new FakeConfiguration(), StubActor::nobody()));
 
-        $factory->method('transaction')->willReturn(new PdoTransaction($this->stubDb()));
+        $factory->method('transaction')->willReturn(new PdoTransaction($this->txDb ?? $this->stubDb()));
         $canonical = $this->createMock(DnsBackendProviderInterface::class);
         $canonical->method('getZoneIdByName')->willReturnCallback(
             fn(string $name): ?int => $name === self::ZONE_NAME ? $this->canonicalZoneId : null

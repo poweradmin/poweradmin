@@ -102,6 +102,42 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $this->assertStringNotContainsString('unrelated.example.com', $result['message']);
     }
 
+    public function testAValidateOnlyPtrChecksWithoutWritingOrAuditing(): void
+    {
+        $backend = $this->createMock(RecordReadBackendInterface::class);
+        $backend->method('recordExists')->willReturn(false);
+        $backend->method('getRecordsByZoneId')->willReturn([]);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->once())
+            ->method('addRecordGetId')
+            ->with(42, '10.2.0.192.in-addr.arpa', 'PTR', 'host.example.com', 3600, 0, 0, false, null, true)
+            ->willReturn(RecordWriteResult::ok());
+        $audit = $this->createMock(AuditLoggerInterface::class);
+        $audit->expects($this->never())->method('logRecordAdd');
+
+        $service = new ReverseRecordCreator(true, $audit, $this->createDomainRepository(), $recordManager, $backend);
+
+        $result = $service->createReverseRecord('host', 'A', '192.0.2.10', 1, 3600, 0, '', '', false, false, true);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(42, $result['zone_id']);
+    }
+
+    public function testAnUnauditedPtrStillWritesButLogsNothing(): void
+    {
+        $backend = $this->createMock(RecordReadBackendInterface::class);
+        $backend->method('recordExists')->willReturn(false);
+        $backend->method('getRecordsByZoneId')->willReturn([]);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->once())->method('addRecordGetId')->willReturn(RecordWriteResult::ok(7));
+        $audit = $this->createMock(AuditLoggerInterface::class);
+        $audit->expects($this->never())->method('logRecordAdd');
+
+        $service = new ReverseRecordCreator(true, $audit, $this->createDomainRepository(), $recordManager, $backend);
+
+        $this->assertTrue($service->createReverseRecord('host', 'A', '192.0.2.10', 1, 3600, 0, '', '', false, false)['success']);
+    }
+
     public function testCreateReverseRecordSucceedsWithoutExistingPtrs(): void
     {
         $backend = $this->createMock(RecordReadBackendInterface::class);
