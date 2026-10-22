@@ -13499,3 +13499,22 @@ msgstr ""
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr ""
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr ""
+
+msgid "The ech value must be base64 encoded."
+msgstr ""
+
+msgid "The mandatory parameter cannot list itself."
+msgstr ""
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr ""
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr ""

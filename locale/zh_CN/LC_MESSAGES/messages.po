@@ -14021,3 +14021,22 @@ msgstr "一次最多可添加 %d 行。"
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "未添加任何记录，因为表单的字段数超过了服务器允许的上限。请每次添加更少的行。"
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s 参数缺少值或 \"=\"。"
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech 值必须采用 base64 编码。"
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory 参数不能列出其自身。"
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups 值必须是以逗号分隔的 0 到 65535 之间的数字列表。"
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "请使用参数名称，而不是 \"%s\"。"

@@ -13712,3 +13712,22 @@ msgstr "Se pot adăuga cel mult %d rânduri odată."
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nu a fost adăugată nicio înregistrare deoarece formularul avea mai multe câmpuri decât acceptă serverul. Adăugați mai puține rânduri odată."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametrul %s este scris fără valoare sau \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Valoarea ech trebuie să fie codificată în base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametrul mandatory nu se poate enumera pe sine."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Valoarea tls-supported-groups trebuie să fie o listă de numere între 0 și 65535, separate prin virgulă."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Folosiți numele parametrului în loc de \"%s\"."

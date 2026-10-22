@@ -13795,3 +13795,22 @@ msgstr "Kerralla voi lisätä enintään %d riviä."
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Tietueita ei lisätty, koska lomakkeessa oli enemmän kenttiä kuin palvelin hyväksyy. Lisää vähemmän rivejä kerralla."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametri %s on kirjoitettu ilman arvoa tai \"=\"-merkkiä."
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech-arvon on oltava base64-koodattu."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametri mandatory ei voi luetella itseään."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups-arvon on oltava pilkuilla eroteltu luettelo lukuja väliltä 0–65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Käytä parametrin nimeä merkkijonon \"%s\" sijaan."

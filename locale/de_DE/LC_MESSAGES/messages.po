@@ -15358,3 +15358,22 @@ msgstr "Es können höchstens %d Zeilen auf einmal hinzugefügt werden."
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Es wurden keine Einträge hinzugefügt, weil das Formular mehr Felder enthielt, als der Server annimmt. Fügen Sie weniger Zeilen auf einmal hinzu."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Der Parameter %s ist ohne Wert oder \"=\" angegeben."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Der Wert für ech muss Base64-kodiert sein."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Der Parameter mandatory kann sich nicht selbst aufführen."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Der Wert für tls-supported-groups muss eine kommagetrennte Liste von Zahlen zwischen 0 und 65535 sein."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Verwenden Sie den Parameternamen statt \"%s\"."

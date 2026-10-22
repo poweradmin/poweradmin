@@ -14942,3 +14942,22 @@ msgstr "Có thể thêm tối đa %d dòng mỗi lần."
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Không có bản ghi nào được thêm vì biểu mẫu có nhiều trường hơn mức máy chủ chấp nhận. Hãy thêm ít dòng hơn mỗi lần."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Tham số %s được viết mà không có giá trị hoặc \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Giá trị ech phải được mã hóa base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Tham số mandatory không thể liệt kê chính nó."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Giá trị tls-supported-groups phải là danh sách các số từ 0 đến 65535, phân tách bằng dấu phẩy."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Hãy dùng tên tham số thay cho \"%s\"."

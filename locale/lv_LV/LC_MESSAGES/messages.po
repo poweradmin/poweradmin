@@ -13840,3 +13840,22 @@ msgstr "Vienlaikus var pievienot ne vairāk kā %d rindas."
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Neviens ieraksts netika pievienots, jo veidlapā bija vairāk lauku, nekā serveris pieņem. Pievienojiet mazāk rindu vienlaikus."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametrs %s ir uzrakstīts bez vērtības vai \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech vērtībai jābūt kodētai base64 formātā."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametrs mandatory nevar uzskaitīt pats sevi."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups vērtībai jābūt ar komatiem atdalītam skaitļu sarakstam no 0 līdz 65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Izmantojiet parametra nosaukumu \"%s\" vietā."

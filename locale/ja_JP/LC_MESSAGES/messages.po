@@ -15032,3 +15032,22 @@ msgstr "一度に追加できる行は最大 %d 行です。"
 #: lib/Application/Controller/AddRecordController.php:476
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "フォームのフィールド数がサーバーの受け付ける上限を超えたため、レコードは追加されませんでした。一度に追加する行を減らしてください。"
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s パラメーターが値または \"=\" なしで記述されています。"
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech の値は base64 でエンコードされている必要があります。"
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory パラメーターに自身を含めることはできません。"
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups の値は、0 から 65535 までの数値をカンマで区切ったリストである必要があります。"
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "\"%s\" ではなくパラメーター名を使用してください。"
