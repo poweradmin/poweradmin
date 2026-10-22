@@ -233,7 +233,7 @@ class LdapAuthenticator extends LoggingService
                     $this->ldapUserEventLogger->logFailedDuplicateAuth();
                 }
             }
-            $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
             $this->logInfo('LDAP authentication process ended due to incorrect user count.');
             return;
@@ -249,7 +249,7 @@ class LdapAuthenticator extends LoggingService
                 $this->ldapUserEventLogger->logFailedIncorrectPass();
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
-            $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             $this->logInfo('LDAP authentication process ended due to incorrect password.');
             return;

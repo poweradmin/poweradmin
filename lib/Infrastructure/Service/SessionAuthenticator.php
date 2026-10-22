@@ -484,7 +484,14 @@ class SessionAuthenticator extends LoggingService
             $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($rowObj === false) {
-                $this->logWarning('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                $this->logInfo('User {username} not found in database', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+
+                // An unknown user can only be provisioned through LdapAuthenticator, so send them there
+                if ($this->configManager->get('ldap', 'enabled', false) && $this->configManager->get('ldap', 'auto_provision', false)) {
+                    $this->logInfo('User {username} not found, trying LDAP auto-provisioning', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                    return UserProvisioningService::AUTH_METHOD_LDAP;
+                }
+
                 return 'sql'; // Default to SQL if user not found
             }
 
