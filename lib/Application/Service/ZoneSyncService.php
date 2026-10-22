@@ -75,7 +75,7 @@ class ZoneSyncService
         }
 
         try {
-            return $this->sync();
+            return $this->reconcile(false);
         } catch (\Throwable $e) {
             $this->logger->warning('Zone sync failed: {error}', ['error' => $e->getMessage(), 'exception' => $e]);
             return null;
@@ -93,6 +93,16 @@ class ZoneSyncService
      * @return array{added: int, removed: int, updated: int}
      */
     public function sync(): array
+    {
+        return $this->reconcile(true);
+    }
+
+    /**
+     * @param bool $mayRemoveMost Whether the run may remove most local zones; only an
+     *                            admin's manual sync may, the automatic one changes nothing
+     * @return array{added: int, removed: int, updated: int}
+     */
+    private function reconcile(bool $mayRemoveMost): array
     {
         $this->logger->debug('Zone sync starting');
 
@@ -120,10 +130,23 @@ class ZoneSyncService
             'local' => count($localZones),
         ]);
 
+        // An empty or different PowerDNS behind pdns_api.url would drop every owner and grant,
+        // and importing its zones first would hide the gap from the next run, so change nothing
+        $missing = count(array_diff_key($localZones, array_column($apiZones, 'name', 'name')));
+        if (!$mayRemoveMost && $missing * 2 > count($localZones)) {
+            $this->logger->warning(
+                'Zone sync: PowerDNS no longer lists {count} of {local} zones, so the automatic sync changes nothing. '
+                . 'Check pdns_api.url, then use the manual sync on the zone list',
+                ['count' => $missing, 'local' => count($localZones)]
+            );
+            $_SESSION[self::LAST_SYNC_KEY] = time();
+            return ['added' => 0, 'removed' => 0, 'updated' => 0];
+        }
+
         // Reaching here means HTTP 200 with an empty list - reconcile so local zones
         // can shrink to zero when an operator deletes every zone in PowerDNS directly.
         if (empty($apiZones) && !empty($localZones)) {
-            $this->logger->info('Zone sync: PowerDNS reports zero zones, removing {count} stale local row(s)', [
+            $this->logger->info('Zone sync: PowerDNS reports zero zones, manual sync removing {count} stale local row(s)', [
                 'count' => count($localZones),
             ]);
         }
