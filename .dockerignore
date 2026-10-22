@@ -1,5 +1,7 @@
 # Poweradmin related files
 addons/
+# Server-side addon, run from cron inside the container
+!addons/send_record_changes_email.php
 install/
 
 # Version Control
