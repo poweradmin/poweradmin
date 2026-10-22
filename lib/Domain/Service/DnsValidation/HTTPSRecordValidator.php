@@ -228,7 +228,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             switch ($key) {
                 case 'alpn':
                     // ALPN values should be a comma-separated list of protocol identifiers
-                    if (!preg_match('/^[a-z0-9,_-]+$/i', $value)) {
+                    if (!preg_match('/^[a-z0-9,_-]+$/i', $value) || !self::alpnEntriesValid($value)) {
                         return ValidationResult::failure(_('ALPN value must be a comma-separated list of protocol identifiers.'));
                     }
                     break;
@@ -298,5 +298,18 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success(true);
+    }
+
+    /**
+     * PowerDNS refuses an empty alpn entry and one longer than 255 bytes.
+     */
+    private static function alpnEntriesValid(string $value): bool
+    {
+        foreach (explode(',', $value) as $entry) {
+            if ($entry === '' || strlen($entry) > 255) {
+                return false;
+            }
+        }
+        return true;
     }
 }
