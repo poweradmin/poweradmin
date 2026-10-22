@@ -213,7 +213,7 @@ final class LdapAuthenticator
                 }
             }
             $this->logger->info('LDAP authentication process ended due to incorrect user count.');
-            return AuthOutcome::failure(_('Failed to authenticate against LDAP.'), endSession: true);
+            return AuthOutcome::failure(_('Authentication failed!'), endSession: true);
         }
         $user_dn = $entries[0]["dn"];
 
@@ -228,7 +228,7 @@ final class LdapAuthenticator
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
             $this->logger->info('LDAP authentication process ended due to incorrect password.');
-            return AuthOutcome::failure(_('LDAP Authentication failed!'));
+            return AuthOutcome::failure(_('Authentication failed!'));
         }
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, true);

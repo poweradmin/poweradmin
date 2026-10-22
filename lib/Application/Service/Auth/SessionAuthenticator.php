@@ -589,12 +589,12 @@ final class SessionAuthenticator
             $rowObj = $this->services->userRepository()->findAuthMethodRow($this->session->get(SessionKeys::USERLOGIN));
 
             if ($rowObj === null) {
-                $this->logger->warning('User {username} not found in database', ['username' => $this->session->get(SessionKeys::USERLOGIN)]);
+                $this->logger->info('User {username} not found in database', ['username' => $this->session->get(SessionKeys::USERLOGIN)]);
 
                 // An unknown user can only be provisioned through LdapAuthenticator, so send them there
                 if ($this->configManager->get('ldap', 'enabled', false) && $this->configManager->get('ldap', 'auto_provision', false)) {
                     $this->logger->info('User {username} not found, trying LDAP auto-provisioning', ['username' => $this->session->get(SessionKeys::USERLOGIN)]);
-                    return 'ldap';
+                    return UserProvisioningService::AUTH_METHOD_LDAP;
                 }
 
                 return 'sql'; // Default to SQL if user not found
