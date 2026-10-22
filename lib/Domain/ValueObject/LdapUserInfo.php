@@ -59,8 +59,8 @@ final readonly class LdapUserInfo implements UserInfoInterface
     }
 
     /**
-     * Raw values of the groups attribute, typically memberOf DNs. Short-name
-     * matching against mapping keys happens in UserProvisioningService.
+     * Raw values of the groups attribute, typically memberOf DNs. Mapping keys
+     * must match them exactly (UserProvisioningService::groupMatches).
      */
     private static function groupValues(array $entry, string $attribute): array
     {
