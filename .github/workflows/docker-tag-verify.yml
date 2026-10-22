@@ -1,0 +1,92 @@
+name: Docker Tag Verify
+
+# Pulls the published release tags and checks the image really carries the released
+# version. Moving tags (latest, stable, lts, 3) are not checked: which release line owns
+# them differs per branch and is set in each branch's docker.yml.
+on:
+  workflow_run:
+    workflows: ['Docker Image Publish']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version to verify (e.g. 4.4.3)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  verify:
+    # head_branch is the tag name for tag-triggered runs
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       startsWith(github.event.workflow_run.head_branch, 'v'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GHCR_IMAGE: ghcr.io/poweradmin/poweradmin
+      DOCKERHUB_IMAGE: poweradmin/poweradmin
+      INPUT_VERSION: ${{ inputs.version }}
+      RUN_REF: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      # Logged-in pulls: a release batch fires several runs at once and anonymous Hub pulls hit the rate limit
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
+        with:
+          registry: docker.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Verify tags report the released version
+        shell: bash
+        run: |
+          set -u
+          raw="${INPUT_VERSION:-${RUN_REF:-}}"
+          version="${raw#v}"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Not a release version: '${raw}'"
+            exit 1
+          fi
+
+          # Pre-releases only get the exact tag; X.Y is published for final releases
+          tags=("$version")
+          if [[ "$version" != *-* ]]; then
+            tags+=("${version%.*}")
+          fi
+
+          failed=0
+          for image in "$DOCKERHUB_IMAGE" "$GHCR_IMAGE"; do
+            for tag in "${tags[@]}"; do
+              ref="${image}:${tag}"
+              if ! docker pull -q "$ref" >/dev/null; then
+                echo "::error::Cannot pull ${ref}"
+                failed=1
+                continue
+              fi
+              if ! found=$(docker run --rm --entrypoint php "$ref" -r \
+                  'require "/app/lib/Version.php"; echo Poweradmin\Version::VERSION;'); then
+                echo "::error::Cannot read Version::VERSION from ${ref}"
+                failed=1
+                continue
+              fi
+              php_line=$(docker run --rm --entrypoint php "$ref" -v | head -n1)
+              if [ "$found" != "$version" ]; then
+                echo "::error::${ref} reports version ${found}, expected ${version}"
+                failed=1
+              else
+                echo "OK ${ref}: ${found} (${php_line})"
+              fi
+            done
+          done
+          exit "$failed"
