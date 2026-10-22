@@ -42,7 +42,7 @@ if (PHP_SAPI !== 'cli') {
  * an HTML diff report. Designed to be invoked from cron.
  *
  * Usage:
- *   php scripts/send_record_changes_email.php --to=ops@example.com --subject="DNS hourly digest" \
+ *   php addons/send_record_changes_email.php --to=ops@example.com --subject="DNS hourly digest" \
  *       --since="2026-04-25 00:00:00"
  *
  * Options:
