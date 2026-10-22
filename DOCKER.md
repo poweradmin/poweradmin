@@ -507,9 +507,17 @@ With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
 | `PA_LDAP_ALLOW_SUPERUSER_PROVISIONING` | Let LDAP group mappings grant the superuser flag | `false` | No |
 | `PA_LDAP_DEFAULT_PERMISSION_TEMPLATE` | Template for auto-provisioned users when no mapping matches | `Guest` | No |
 | `PA_LDAP_GROUPS_ATTRIBUTE` | LDAP attribute holding group memberships | `memberOf` | No |
-| `PA_LDAP_PERMISSION_TEMPLATE_MAPPING` | LDAP group to permission template mapping (`group1:Template1,group2:Template2`) | Empty | No |
-| `PA_LDAP_GROUP_MAPPING` | LDAP group to Poweradmin group mapping (`group1:PAGroup1,group2:PAGroup2`) | Empty | No |
+| `PA_LDAP_PERMISSION_TEMPLATE_MAPPING` | LDAP group to permission template mapping (`group1:Template1,group2:Template2`, DN keys see below) | Empty | No |
+| `PA_LDAP_GROUP_MAPPING` | LDAP group to Poweradmin group mapping (`group1:PAGroup1,group2:PAGroup2`, DN keys see below) | Empty | No |
 | `PA_LDAP_SESSION_CACHE_TIMEOUT` | Session cache timeout in seconds (0 to disable) | `300` | No |
+
+To use a full LDAP DN as the key, separate the mappings with `;` and put the Poweradmin name after the last `:`. A DN contains commas and equal signs itself, so the comma form cannot carry it:
+
+```
+PA_LDAP_GROUP_MAPPING='cn=admins,ou=groups,dc=example,dc=com:Administrators;cn=ops,ou=groups,dc=example,dc=com:Editors|Viewers'
+```
+
+A value with `|` maps one LDAP group to several Poweradmin groups. The DN must match the `memberOf` value exactly, including case. Plain names keep working in the comma form, but use either `=` or `:` pairs in one variable, not both.
 
 ### Custom CA Certificate
 

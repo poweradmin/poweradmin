@@ -31,6 +31,11 @@ php_sq_escape() {
     printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e "s/'/\\\\'/g"
 }
 
+# Print $1 as a single-quoted PHP string literal
+php_sq() {
+    printf "'%s'" "$(php_sq_escape "$1")"
+}
+
 # Wait until the database answers; on a fresh compose stack the app usually starts first.
 # Returns 1 after DB_WAIT_TIMEOUT seconds so the caller can decide what to skip.
 wait_for_db() {
@@ -1039,45 +1044,43 @@ generate_config() {
     # Supports both = and : as delimiters (= preferred, : for backward compatibility)
     # Pipe (|) in a value produces a PHP array literal so a single external group
     # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
-    # Single quotes are escaped, whitespace around commas/delimiters is trimmed
+    # Single quotes are escaped, whitespace around commas/delimiters is trimmed.
+    # With "dn" as $2 the keys may be LDAP DNs: items split on ';' and the pair on the last ':'
     parse_mapping() {
-        local input="$1"
-        echo "$input" | sed "s/'/\\\\'/g" | sed 's/ *, */,/g' | sed 's/ *= */=/g' | sed 's/ *: */:/g' | sed 's/ *| */|/g' | \
-            awk -F',' '{
-                for (i=1; i<=NF; i++) {
-                    # Try = first, then :
-                    if (index($i, "=") > 0) {
-                        split($i, a, "=")
-                        key = a[1]
-                        val = a[2]
-                    } else {
-                        # Split on last : for backward compatibility with group:Template format
-                        idx = 0
-                        for (j=1; j<=length($i); j++) {
-                            if (substr($i, j, 1) == ":") idx = j
-                        }
-                        if (idx > 0) {
-                            key = substr($i, 1, idx-1)
-                            val = substr($i, idx+1)
-                        } else {
-                            key = $i
-                            val = ""
-                        }
-                    }
-                    if (i > 1) printf ","
-                    if (index(val, "|") > 0) {
-                        n = split(val, parts, "|")
-                        printf "'\''%s'\'' => [", key
-                        for (k=1; k<=n; k++) {
-                            if (k > 1) printf ", "
-                            printf "'\''%s'\''", parts[k]
-                        }
-                        printf "]"
-                    } else {
-                        printf "'\''%s'\'' => '\''%s'\''", key, val
-                    }
-                }
-            }'
+        local sep=',' dn_keys=0 item key val part items="" parts=""
+        # A DN key carries '=' and ',' itself, so 'cn=x,dc=y:Tmpl' is one ';'-separated item
+        if [[ "${2:-}" == dn && ( "$1" == *\;* || ( "$1" == *=* && "$1" == *:* ) ) ]]; then
+            sep=';'; dn_keys=1
+        fi
+        local IFS="${sep}"
+        for item in $1; do
+            item="${item#"${item%%[![:space:]]*}"}"; item="${item%"${item##*[![:space:]]}"}"
+            [ -n "${item}" ] || continue
+            # = is the delimiter; a bare group:Template pair splits on the last colon
+            if [[ "${dn_keys}" -eq 1 && "${item}" == *:* ]]; then
+                key="${item%:*}"; val="${item##*:}"
+            elif [[ "${item}" == *=* ]]; then
+                key="${item%%=*}"; val="${item#*=}"
+            elif [[ "${item}" == *:* ]]; then
+                key="${item%:*}"; val="${item##*:}"
+            else
+                key="${item}"; val=""
+            fi
+            key="${key%"${key##*[![:space:]]}"}"; val="${val#"${val%%[![:space:]]*}"}"
+            if [[ "${val}" == *\|* ]]; then
+                parts=""
+                local IFS='|'
+                for part in ${val}; do
+                    part="${part#"${part%%[![:space:]]*}"}"; part="${part%"${part##*[![:space:]]}"}"
+                    parts="${parts}$(php_sq "${part}"), "
+                done
+                IFS="${sep}"
+                items="${items}$(php_sq "${key}") => [${parts%, }], "
+            else
+                items="${items}$(php_sq "${key}") => $(php_sq "${val}"), "
+            fi
+        done
+        printf '%s' "${items%, }"
     }
 
     # Process OIDC permission template mapping
@@ -1095,12 +1098,12 @@ generate_config() {
     # Process LDAP permission template and group mappings
     local ldap_permission_template_mapping="[]"
     if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
-        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}")]"
+        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}" dn)]"
     fi
 
     local ldap_group_mapping="[]"
     if [ -n "${PA_LDAP_GROUP_MAPPING:-}" ]; then
-        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}")]"
+        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}" dn)]"
     fi
 
     # Process SAML permission template mapping
