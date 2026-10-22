@@ -14976,3 +14976,22 @@ msgstr "เพิ่มได้สูงสุด %d แถวต่อคร�
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "ไม่มีการเพิ่มเรกคอร์ด เนื่องจากแบบฟอร์มมีฟิลด์มากกว่าที่เซิร์ฟเวอร์ยอมรับ โปรดเพิ่มแถวให้น้อยลงในแต่ละครั้ง"
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "พารามิเตอร์ %s ถูกเขียนโดยไม่มีค่าหรือ \"=\""
+
+msgid "The ech value must be base64 encoded."
+msgstr "ค่า ech ต้องเข้ารหัสเป็น base64"
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "พารามิเตอร์ mandatory ไม่สามารถระบุตัวเองได้"
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "ค่า tls-supported-groups ต้องเป็นรายการตัวเลขระหว่าง 0 ถึง 65535 ที่คั่นด้วยเครื่องหมายจุลภาค"
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "ใช้ชื่อพารามิเตอร์แทน \"%s\""

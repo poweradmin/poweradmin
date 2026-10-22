@@ -15856,3 +15856,22 @@ msgstr "Egyszerre legfeljebb %d sor adható hozzá."
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Egyetlen rekord sem lett hozzáadva, mert az űrlapon több mező volt, mint amennyit a kiszolgáló elfogad. Adjon hozzá egyszerre kevesebb sort."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "A(z) %s paraméter érték vagy \"=\" nélkül van megadva."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Az ech értéknek base64 kódolásúnak kell lennie."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "A mandatory paraméter nem sorolhatja fel önmagát."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "A tls-supported-groups értéknek 0 és 65535 közötti számok vesszővel elválasztott listájának kell lennie."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Használja a paraméter nevét a(z) \"%s\" helyett."

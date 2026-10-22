@@ -16212,3 +16212,22 @@ msgstr "Μπορούν να προστεθούν το πολύ %d γραμμές
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Δεν προστέθηκαν εγγραφές επειδή η φόρμα είχε περισσότερα πεδία από όσα δέχεται ο διακομιστής. Προσθέστε λιγότερες γραμμές τη φορά."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Η παράμετρος %s είναι γραμμένη χωρίς τιμή ή \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Η τιμή ech πρέπει να είναι κωδικοποιημένη σε base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Η παράμετρος mandatory δεν μπορεί να περιλαμβάνει τον εαυτό της."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Η τιμή tls-supported-groups πρέπει να είναι λίστα αριθμών μεταξύ 0 και 65535, χωρισμένων με κόμμα."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Χρησιμοποιήστε το όνομα της παραμέτρου αντί για \"%s\"."

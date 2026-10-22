@@ -15796,3 +15796,22 @@ msgstr "Paling banyak %d baris boleh ditambah pada satu masa."
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Tiada rekod ditambah kerana borang mempunyai lebih banyak medan daripada yang diterima oleh pelayan. Tambah lebih sedikit baris pada satu masa."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parameter %s ditulis tanpa nilai atau \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Nilai ech mesti dikodkan dalam base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parameter mandatory tidak boleh menyenaraikan dirinya sendiri."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Nilai tls-supported-groups mesti senarai nombor antara 0 hingga 65535 yang dipisahkan dengan koma."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Gunakan nama parameter dan bukan \"%s\"."

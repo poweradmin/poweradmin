@@ -15556,3 +15556,22 @@ msgstr "حداکثر %d ردیف را می‌توان در هر بار اضاف�
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "هیچ رکوردی اضافه نشد زیرا فرم بیش از تعداد فیلدهایی که سرور می‌پذیرد فیلد داشت. هر بار ردیف‌های کمتری اضافه کنید."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "پارامتر %s بدون مقدار یا \"=\" نوشته شده است."
+
+msgid "The ech value must be base64 encoded."
+msgstr "مقدار ech باید با base64 کدگذاری شده باشد."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "پارامتر mandatory نمی‌تواند خودش را فهرست کند."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "مقدار tls-supported-groups باید فهرستی از اعداد بین 0 تا 65535 باشد که با کاما جدا شده‌اند."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "به جای \"%s\" از نام پارامتر استفاده کنید."

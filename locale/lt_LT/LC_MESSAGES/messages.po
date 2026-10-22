@@ -15735,3 +15735,22 @@ msgstr "Vienu metu galima pridėti ne daugiau kaip %d eilučių."
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nepridėtas nė vienas įrašas, nes formoje buvo daugiau laukų, nei priima serveris. Pridėkite mažiau eilučių vienu metu."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametras %s parašytas be reikšmės arba \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech reikšmė turi būti užkoduota base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametras mandatory negali nurodyti savęs."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups reikšmė turi būti kableliais atskirtas skaičių nuo 0 iki 65535 sąrašas."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Vietoj \"%s\" naudokite parametro pavadinimą."

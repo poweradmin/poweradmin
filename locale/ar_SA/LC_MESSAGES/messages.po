@@ -15389,3 +15389,22 @@ msgstr "يمكن إضافة %d صف كحد أقصى في المرة الواحد
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "لم تتم إضافة أي سجلات لأن النموذج احتوى على حقول أكثر مما يقبله الخادم. أضف صفوفًا أقل في كل مرة."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "المعامل %s مكتوب دون قيمة أو \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "يجب أن تكون قيمة ech مرمّزة بترميز base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "لا يمكن للمعامل mandatory أن يُدرج نفسه."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "يجب أن تكون قيمة tls-supported-groups قائمة أرقام مفصولة بفواصل بين 0 و65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "استخدم اسم المعامل بدلاً من \"%s\"."

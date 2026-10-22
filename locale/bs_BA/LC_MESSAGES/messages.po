@@ -15318,3 +15318,22 @@ msgstr "Najviše %d redova može se dodati odjednom."
 #: lib/Application/Controller/AddRecordController.php:488
 msgid "No records were added because the form had more fields than the server accepts. Add fewer rows at a time."
 msgstr "Nijedan zapis nije dodan jer je obrazac imao više polja nego što server prihvata. Dodajte manje redova odjednom."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Parametar %s je napisan bez vrijednosti ili \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Vrijednost ech mora biti kodirana u base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Parametar mandatory ne može navoditi samog sebe."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Vrijednost tls-supported-groups mora biti lista brojeva između 0 i 65535 odvojenih zarezima."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Koristite naziv parametra umjesto \"%s\"."
