@@ -13406,3 +13406,22 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "이미 보유한 권한만 포함된 권한 템플릿만 할당할 수 있습니다."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s 매개변수가 값이나 \"=\" 없이 작성되었습니다."
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech 값은 base64로 인코딩되어야 합니다."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory 매개변수는 자기 자신을 나열할 수 없습니다."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups 값은 0에서 65535 사이의 숫자를 쉼표로 구분한 목록이어야 합니다."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "\"%s\" 대신 매개변수 이름을 사용하세요."

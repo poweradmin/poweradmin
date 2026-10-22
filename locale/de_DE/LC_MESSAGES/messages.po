@@ -14564,3 +14564,22 @@ msgid ""
 msgstr ""
 "Sie können nur eine Berechtigungsvorlage zuweisen, deren Berechtigungen Sie "
 "bereits besitzen."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "Der Parameter %s ist ohne Wert oder \"=\" angegeben."
+
+msgid "The ech value must be base64 encoded."
+msgstr "Der Wert für ech muss Base64-kodiert sein."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "Der Parameter mandatory kann sich nicht selbst aufführen."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "Der Wert für tls-supported-groups muss eine kommagetrennte Liste von Zahlen zwischen 0 und 65535 sein."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Verwenden Sie den Parameternamen statt \"%s\"."

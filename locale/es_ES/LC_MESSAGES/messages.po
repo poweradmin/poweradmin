@@ -14519,3 +14519,22 @@ msgid ""
 "You can only assign a permission template whose permissions you already "
 "hold."
 msgstr "Solo puede asignar una plantilla de permisos cuyos permisos ya tenga."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "El parámetro %s está escrito sin valor ni \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "El valor de ech debe estar codificado en base64."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "El parámetro mandatory no puede incluirse a sí mismo."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "El valor de tls-supported-groups debe ser una lista de números entre 0 y 65535 separados por comas."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Use el nombre del parámetro en lugar de \"%s\"."

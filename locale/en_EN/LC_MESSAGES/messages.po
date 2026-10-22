@@ -14162,3 +14162,24 @@ msgid ""
 msgstr ""
 "You can only assign a permission template whose permissions you already "
 "hold."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "The %s parameter is written without a value or \"=\"."
+
+msgid "The ech value must be base64 encoded."
+msgstr "The ech value must be base64 encoded."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "The mandatory parameter cannot list itself."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "Use the parameter name instead of \"%s\"."

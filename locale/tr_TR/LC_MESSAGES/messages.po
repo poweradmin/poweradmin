@@ -14279,3 +14279,22 @@ msgid ""
 "hold."
 msgstr ""
 "Yalnızca izinlerine zaten sahip olduğunuz bir izin şablonu atayabilirsiniz."
+
+#, php-format
+msgid "The %s parameter is written without a value or \"=\"."
+msgstr "%s parametresi değer veya \"=\" olmadan yazılmış."
+
+msgid "The ech value must be base64 encoded."
+msgstr "ech değeri base64 ile kodlanmış olmalıdır."
+
+msgid "The mandatory parameter cannot list itself."
+msgstr "mandatory parametresi kendisini listeleyemez."
+
+msgid ""
+"The tls-supported-groups value must be a comma-separated list of numbers "
+"between 0 and 65535."
+msgstr "tls-supported-groups değeri, 0 ile 65535 arasındaki sayıların virgülle ayrılmış bir listesi olmalıdır."
+
+#, php-format
+msgid "Use the parameter name instead of \"%s\"."
+msgstr "\"%s\" yerine parametre adını kullanın."
