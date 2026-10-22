@@ -146,7 +146,7 @@ class PowerdnsApiClient
     public function flushZoneCache(string $zoneName): bool
     {
         // PowerDNS refuses a name without the trailing dot as not canonical
-        $domain = rawurlencode(rtrim($zoneName, '.') . '.');
+        $domain = rawurlencode(DnsHelper::zoneApexName($zoneName) . '.');
         // The caller logs a failure, so this stays quiet
         try {
             return $this->request('PUT', $this->buildEndpoint('/cache/flush?domain=' . $domain))['responseCode'] === 200;

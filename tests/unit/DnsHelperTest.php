@@ -344,6 +344,7 @@ class DnsHelperTest extends TestCase
             'hyphenated zone' => ['my-zone.example.com.', 'my-zone.example.com.'],
             'root zone' => ['.', '=2E'],
             'view variant' => ['example.com..internal', 'example.com..internal'],
+            'view variant with trailing dot' => ['example.com..internal.', 'example.com..internal'],
             'space and equals sign' => ['a b=c.example.', 'a=20b=3Dc.example.'],
         ];
     }
@@ -352,5 +353,34 @@ class DnsHelperTest extends TestCase
     public function testPowerdnsZoneIdMatchesThePowerdnsZoneIdForm(string $zoneName, string $expected): void
     {
         $this->assertSame($expected, DnsHelper::powerdnsZoneId($zoneName));
+    }
+
+    public function testIsViewVariantRecognisesTheZoneVariantForm(): void
+    {
+        $this->assertTrue(DnsHelper::isViewVariant('example.com..internal'));
+        $this->assertTrue(DnsHelper::isViewVariant('example.com..internal.'));
+        $this->assertFalse(DnsHelper::isViewVariant('example.com'));
+        $this->assertFalse(DnsHelper::isViewVariant('example.com.'));
+        $this->assertFalse(DnsHelper::isViewVariant('.'));
+    }
+
+    public function testZoneApexNameDropsTheVariant(): void
+    {
+        $this->assertSame('example.com', DnsHelper::zoneApexName('example.com..internal'));
+        $this->assertSame('example.com', DnsHelper::zoneApexName('example.com..internal.'));
+        $this->assertSame('example.com', DnsHelper::zoneApexName('example.com.'));
+        $this->assertSame('', DnsHelper::zoneApexName('.'));
+    }
+
+    public function testRecordNamesOfAViewVariantLiveUnderItsApex(): void
+    {
+        $this->assertSame('www', DnsHelper::stripZoneSuffix('www.example.com.', 'example.com..internal'));
+        $this->assertSame('@', DnsHelper::stripZoneSuffix('example.com.', 'example.com..internal'));
+        $this->assertSame('www.example.com', DnsHelper::restoreZoneSuffix('www', 'example.com..internal'));
+        $this->assertSame('example.com', DnsHelper::restoreZoneSuffix('@', 'example.com..internal'));
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com', 'example.com..internal'));
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com.', 'example.com..internal.'));
+        $this->assertFalse(DnsHelper::isWithinZone('www.example.org', 'example.com..internal'));
+        $this->assertTrue(DnsHelper::isZoneApex('example.com.', 'example.com..internal'));
     }
 }

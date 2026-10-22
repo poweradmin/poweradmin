@@ -257,6 +257,11 @@ class HostnameValidator
         $name = preg_replace('/\.$/', '', $name);
         $zone = preg_replace('/\.$/', '', $zone);
 
+        // A view variant ("example.com..internal") holds its records under its apex name
+        if (DnsHelper::isViewVariant($zone)) {
+            $zone = DnsHelper::zoneApexName($zone);
+        }
+
         // Root zone: names carry a single trailing dot and the apex is ".".
         if ($zone === "") {
             return $name === "" ? "." : $name . ".";
