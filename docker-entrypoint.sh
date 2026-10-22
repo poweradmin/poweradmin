@@ -1600,6 +1600,7 @@ EOF
 # Print configuration summary (with redacted secrets)
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
+    log "Poweradmin Version: $(sed -n "s/.*const VERSION = '\([^']*\)'.*/\1/p" /app/lib/Version.php 2>/dev/null || true)"
 
     if [ -n "${PA_CONFIG_PATH}" ]; then
         log "Configuration: Custom configuration file at ${CONFIG_FILE}"
