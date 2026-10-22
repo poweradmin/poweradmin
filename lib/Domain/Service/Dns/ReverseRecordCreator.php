@@ -57,7 +57,19 @@ class ReverseRecordCreator
         $this->recordBackend = $recordBackend;
     }
 
-    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
+    /**
+     * @param string $name Forward record name
+     * @param string $type Forward record type, A or AAAA
+     * @param string $content Forward record address
+     * @param int $zone_id Zone holding the forward record
+     * @param int $ttl TTL for the PTR record
+     * @param int $prio Priority for the PTR record
+     * @param string $comment Record comment
+     * @param string $account Acting user name
+     * @param bool $finalizeZone False when a batch caller bumps the serial and rectifies the reverse zone itself
+     * @return array<string, mixed> success, type and message, plus zone_id (the reverse zone written to) on success
+     */
+    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = '', bool $finalizeZone = true): array
     {
         if (!$name || !$this->reverseHandling) {
             return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
@@ -81,7 +93,7 @@ class ReverseRecordCreator
         $existingPtrRecords = $this->getExistingPtrRecords($zoneRevId, $contentRev);
         $hasExistingRecords = !empty($existingPtrRecords);
 
-        $written = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
+        $written = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account, $finalizeZone);
 
         if ($written->success) {
             if ($hasExistingRecords) {
@@ -92,9 +104,9 @@ class ReverseRecordCreator
                         $contentRev,
                         implode(', ', $existingPtrRecords)
                     )
-                );
+                ) + ['zone_id' => (int)$zoneRevId];
             }
-            return $this->createSuccessResponse('Reverse record added');
+            return $this->createSuccessResponse('Reverse record added') + ['zone_id' => (int)$zoneRevId];
         }
 
         return $this->createErrorResponse($written->message !== '' ? $written->message : 'Failed to create a reverse record due to an unknown error.');
@@ -263,14 +275,14 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): RecordWriteResult
+    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account, bool $finalizeZone = true): RecordWriteResult
     {
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
         $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        $written = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
+        $written = $this->recordManager->addRecordGetId($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio, 0, $finalizeZone);
         if ($written->success) {
             $this->audit->logRecordAdd((int)$zone_rev_id, RecordType::PTR, $content_rev, $fqdn_name, $ttl, $prio);
         }

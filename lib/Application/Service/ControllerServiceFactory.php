@@ -49,6 +49,7 @@ use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Application\Service\Record\RecordEditService;
 use Poweradmin\Application\Service\Record\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordCommentSyncService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Application\Service\Auth\RecaptchaService;
 use Poweradmin\Application\Service\Backend\RepositoryFactory;
@@ -662,6 +663,11 @@ class ControllerServiceFactory implements ModuleServices
     public function recordCommentService(): RecordCommentService
     {
         return $this->records->recordCommentService();
+    }
+
+    public function recordCommentSyncService(): RecordCommentSyncService
+    {
+        return $this->records->recordCommentSyncService();
     }
 
     public function zoneEditService(): ZoneEditService

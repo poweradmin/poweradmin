@@ -26,6 +26,9 @@ use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController;
+use Poweradmin\Application\Service\Record\RecordCommentService;
+use Poweradmin\Application\Service\Record\RecordCommentSyncService;
+use Poweradmin\Application\Service\Record\RecordManagerService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
@@ -39,6 +42,7 @@ use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,6 +67,10 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     private RecordRepositoryInterface&MockObject $records;
     private RecordManagerInterface&MockObject $recordManager;
     private AuditService&MockObject $audit;
+    private ReverseRecordCreator&MockObject $reverseCreator;
+    private RecordCommentService&MockObject $comments;
+    private RecordManagerService&MockObject $recordManagerService;
+    private RecordCommentSyncService&MockObject $commentSync;
 
     /** @var array<string, mixed>|null */
     private ?array $zoneRow = ['id' => self::ZONE_ID, 'name' => self::ZONE_NAME, 'type' => 'MASTER'];
@@ -82,6 +90,10 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
         $this->audit = $this->createMock(AuditService::class);
+        $this->reverseCreator = $this->createMock(ReverseRecordCreator::class);
+        $this->comments = $this->createMock(RecordCommentService::class);
+        $this->recordManagerService = $this->createMock(RecordManagerService::class);
+        $this->commentSync = $this->createMock(RecordCommentSyncService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         $this->permissions->method('canEditZoneContent')->willReturn(true);
@@ -311,7 +323,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('Bulk operations completed successfully', $body['message']);
         $this->assertSame(
-            ['total_operations' => 3, 'created' => 1, 'updated' => 1, 'deleted' => 1, 'failed' => 0, 'errors' => []],
+            ['total_operations' => 3, 'created' => 1, 'updated' => 1, 'deleted' => 1, 'failed' => 0, 'errors' => [], 'warnings' => []],
             $body['data']
         );
     }
@@ -427,6 +439,227 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testACreateCommentIsStoredWithTheRecordAndNeverTheChangeReason(): void
+    {
+        $this->recordManager->expects($this->once())->method('addRecordGetId')->with(
+            self::ZONE_ID,
+            'www.example.com',
+            'A',
+            '192.0.2.1',
+            3600,
+            0,
+            0,
+            false,
+            $this->callback(fn($c) => $c['content'] === 'web server')
+        )->willReturn(RecordWriteResult::ok(7));
+        $this->comments->expects($this->once())->method('createCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'web server', 7);
+
+        $response = $this->bulk(['comment' => 'ticket-1', 'operations' => [$this->createOperation(['comment' => '  web server  '])]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testACreateWithoutACommentStoresNone(): void
+    {
+        $this->recordManager->method('addRecordGetId')->with(
+            $this->anything(),
+            $this->anything(),
+            $this->anything(),
+            $this->anything(),
+            $this->anything(),
+            $this->anything(),
+            $this->anything(),
+            false,
+            null
+        )->willReturn(RecordWriteResult::ok(7));
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->assertSame(200, $this->bulk(['operations' => [$this->createOperation()]])->getStatusCode());
+    }
+
+    public function testAnUpdateCommentReplacesTheStoredOne(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->once())->method('editRecord')->with(
+            $this->anything(),
+            false,
+            $this->callback(fn($c) => $c['content'] === 'moved')
+        )->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'moved', 3);
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => 'moved']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnUpdateWithAnEmptyCommentClearsIt(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', '', 3);
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => '']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnEmptyUpdateCommentIsSyncedToTheCounterpartWhenSyncIsOn(): void
+    {
+        $this->config = new FakeConfiguration(['misc' => ['record_comments_sync' => true]]);
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->commentSync->expects($this->once())->method('updateRelatedRecordComments')
+            ->with($this->anything(), $this->callback(fn($r) => $r['type'] === 'A'), '', $this->anything(), self::USER_ID);
+
+        $this->assertSame(200, $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => '']]])->getStatusCode());
+    }
+
+    public function testAnUpdateCommentIsNotSyncedWhenSyncIsOff(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->commentSync->expects($this->never())->method('updateRelatedRecordComments');
+
+        $this->assertSame(200, $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => 'x']]])->getStatusCode());
+    }
+
+    public function testACreateWhosePtrFailsStillSyncsItsComment(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->reverseCreator->method('createReverseRecord')
+            ->willReturn(['success' => false, 'type' => 'error', 'message' => 'A PTR record already exists.']);
+        $this->recordManagerService->expects($this->once())->method('syncCompanionComment')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 'note', $this->anything(), self::USER_ID);
+
+        $response = $this->bulk(['operations' => [$this->createOperation(['comment' => 'note', 'create_ptr' => true])]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertCount(1, $this->decode($response)['data']['warnings']);
+    }
+
+    public function testAnUpdateWithoutACommentLeavesTheStoredOneAlone(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->once())->method('editRecord')->with($this->anything(), false, null)->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnUpdateWithANonStringCommentIs400(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->never())->method('editRecord');
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => 5]]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    public function testCreatePtrOnAnARecordCreatesTheReverseRecordAndFinalizesThatZoneOnce(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->reverseCreator->expects($this->exactly(2))->method('createReverseRecord')
+            ->with('www.example.com', 'A', '192.0.2.1', self::ZONE_ID, 1800, 0, '', $this->anything(), false)
+            ->willReturn(['success' => true, 'type' => 'success', 'message' => 'Reverse record added', 'zone_id' => 88]);
+        $finalized = [];
+        $this->recordManager->method('finalizeZone')->willReturnCallback(function (int $id, bool $bump) use (&$finalized): void {
+            $finalized[] = [$id, $bump];
+        });
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $bumped = [];
+        $soa->method('updateSOASerial')->willReturnCallback(function (int $id) use (&$bumped): bool {
+            $bumped[] = $id;
+            return true;
+        });
+
+        $response = $this->bulk(['operations' => [
+            $this->createOperation(['create_ptr' => true]),
+            $this->createOperation(['create_ptr' => true]),
+        ]], $soa);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([], $body['data']['warnings']);
+        $this->assertSame([self::ZONE_ID, 88], $bumped);
+        $this->assertSame([[self::ZONE_ID, false], [88, false]], $finalized);
+    }
+
+    public function testCreatePtrIsIgnoredForOtherTypes(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->reverseCreator->expects($this->never())->method('createReverseRecord');
+
+        $response = $this->bulk(['operations' => [
+            $this->createOperation(['type' => 'TXT', 'content' => 'hello', 'create_ptr' => true]),
+        ]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testCreatePtrIsNotReadOnAnUpdate(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->reverseCreator->expects($this->never())->method('createReverseRecord');
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9', 'create_ptr' => true]]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAFailedPtrIsAWarningAndTheRecordStillCounts(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $this->reverseCreator->method('createReverseRecord')
+            ->willReturn(['success' => false, 'type' => 'error', 'message' => 'There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.']);
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, false);
+
+        $response = $this->bulk(['operations' => [
+            $this->createOperation(),
+            $this->createOperation(['name' => 'www2', 'create_ptr' => true]),
+        ]]);
+        $body = $this->decode($response);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(2, $body['data']['created']);
+        $this->assertSame(0, $body['data']['failed']);
+        $this->assertSame(
+            ['Operation 1 (create): PTR record creation failed: There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.'],
+            $body['data']['warnings']
+        );
+    }
+
+    public function testAPerOperationCommentDoesNotSatisfyARequiredChangeReason(): void
+    {
+        $this->config = new FakeConfiguration(['logging' => ['require_change_comment' => true]]);
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['operations' => [$this->createOperation(['comment' => 'web server'])]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame("Field 'comment' is required: this installation requires a reason for every change", $this->messageOf($response));
+    }
+
+    public function testTheTopLevelReasonStillSatisfiesTheRequirement(): void
+    {
+        $this->config = new FakeConfiguration(['logging' => ['require_change_comment' => true]]);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+
+        $response = $this->bulk(['comment' => 'ticket-1', 'operations' => [$this->createOperation()]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -513,8 +746,12 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->audit);
+        $factory->method('reverseRecordCreator')->willReturn($this->reverseCreator);
+        $factory->method('recordCommentService')->willReturn($this->comments);
+        $factory->method('recordCommentSyncService')->willReturn($this->commentSync);
+        $factory->method('recordManagerService')->willReturn($this->recordManagerService);
         $factory->method('soaRecordManager')->willReturn($soaManager ?? $this->createMock(SOARecordManagerInterface::class));
-        $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), new FakeConfiguration(), StubActor::nobody()));
+        $factory->method('recordChangeLog')->willReturn(new RecordChangeLogger($this->createMock(PDO::class), $this->config ?? new FakeConfiguration(), StubActor::nobody()));
 
         $factory->method('transaction')->willReturn(new PdoTransaction($this->stubDb()));
         $canonical = $this->createMock(DnsBackendProviderInterface::class);
@@ -528,6 +765,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
         $ttlResolver->method('resolveTtlForType')->willReturn(3600);
+        $ttlResolver->method('resolvePtrTtl')->willReturn(1800);
 
         $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'zoneRepository', $this->zones);

@@ -936,6 +936,41 @@ test_bulk_operations() {
     local bulk_bad_action='{"operations":[{"action":"invalid","name":"test","type":"A","content":"192.0.2.1"}]}'
     api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_bad_action" 400 "Reject invalid action type"
 
+    # Test 7b: per-operation comment and create_ptr (the PTR lands in the reverse zone of the PTR tests)
+    if [[ -n "$TEST_REVERSE_ZONE_ID" ]]; then
+        cleanup_stale_ptr_records "150.2.0.192.in-addr.arpa"
+        local bulk_ptr='{
+            "comment": "ticket-1675",
+            "operations": [
+                {"action":"create","name":"bulkptr","type":"A","content":"192.0.2.150","ttl":3600,"comment":"bulk web","create_ptr":true},
+                {"action":"create","name":"bulknoptr","type":"A","content":"10.250.250.250","ttl":3600,"create_ptr":true}
+            ]
+        }'
+        api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_ptr" 200 "Bulk create with comment and create_ptr"
+        assert_json "Bulk created both records" "$LAST_RESPONSE_BODY" '.data.created' "2"
+        assert_json "Missing reverse zone is one warning" "$LAST_RESPONSE_BODY" '.data.warnings | length' "1"
+        assert_json "Warning names the operation" "$LAST_RESPONSE_BODY" '.data.warnings[0] | startswith("Operation 1 (create): PTR record creation failed")' "true"
+        assert_json "Errors stay empty" "$LAST_RESPONSE_BODY" '.data.errors | length' "0"
+
+        api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records?name=bulkptr" "" 200 "Get the bulk record with a comment"
+        assert_json "Per-operation comment is stored" "$LAST_RESPONSE_BODY" '[.data.records[] | select(.type == "A") | .comment] | join(",")' "bulk web"
+        local bulk_ptr_id
+        bulk_ptr_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '[.data.records[] | select(.type == "A")][0].id' 2>/dev/null)
+        # API backend ids are base64url strings, so the JSON body needs the id quoted as jq prints it
+        local bulk_ptr_json
+        bulk_ptr_json=$(echo "$LAST_RESPONSE_BODY" | jq -c '[.data.records[] | select(.type == "A")][0].id' 2>/dev/null)
+
+        api_request_v2 "GET" "/zones/$TEST_REVERSE_ZONE_ID/records" "" 200 "List the reverse zone after bulk create_ptr"
+        assert_json "Bulk create_ptr wrote one PTR" "$LAST_RESPONSE_BODY" '[.data.records[] | select(.type == "PTR" and (.name | startswith("150.2.0.192")) and (.content | startswith("bulkptr.bulk-test.example.com")))] | length' "1"
+
+        api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "{\"operations\":[{\"action\":\"update\",\"id\":$bulk_ptr_json,\"comment\":\"bulk web 2\"}]}" 200 "Bulk update replaces the comment"
+        assert_json "Update reports no warnings" "$LAST_RESPONSE_BODY" '.data.warnings | length' "0"
+        api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records/$bulk_ptr_id" "" 200 "Get the record after the bulk comment update"
+        assert_json "Bulk update stored the new comment" "$LAST_RESPONSE_BODY" '.data.record.comment' "bulk web 2"
+    else
+        skip "Bulk create_ptr needs the reverse zone from the PTR tests"
+    fi
+
     # Test 8: Bulk delete all test records
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records?type=A" "" 200 "Get all A records"
 

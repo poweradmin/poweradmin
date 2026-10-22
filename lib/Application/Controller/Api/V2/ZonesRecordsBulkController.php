@@ -33,7 +33,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
-use Poweradmin\Domain\Repository\RecordLookupInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -47,7 +47,9 @@ use Poweradmin\Domain\Service\Validation\Refusal;
 class ZonesRecordsBulkController extends PublicApiController
 {
     private ZoneReadRepositoryInterface $zoneRepository;
-    private RecordLookupInterface $recordRepository;
+    private RecordRepositoryInterface $recordRepository;
+    /** @var array<int, true> Reverse zones that received a PTR in this batch, finalized once at the end */
+    private array $reverseZoneIds = [];
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
     private BackendCapabilitiesInterface $backendProvider;
@@ -97,7 +99,10 @@ class ZonesRecordsBulkController extends PublicApiController
         path: '/v2/zones/{id}/records/bulk',
         operationId: 'v2BulkRecordOperations',
         summary: 'Perform bulk record operations',
-        description: 'Create, update, or delete multiple records in a single request.',
+        description: 'Create, update, or delete multiple records in a single request. '
+            . 'With a local database the request is one transaction, PTR records in reverse zones '
+            . 'included, and rolls back on the first failure. With the API backend there is no '
+            . 'transaction: operations already applied, PTR records included, stay when a later one fails.',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
     )]
@@ -125,7 +130,24 @@ class ZonesRecordsBulkController extends PublicApiController
                             new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content (required for create/update)'),
                             new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'TTL in seconds'),
                             new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority for MX/SRV'),
-                            new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
+                            new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag'),
+                            new OA\Property(
+                                property: 'comment',
+                                type: 'string',
+                                example: 'web server',
+                                description: 'Record comment (create/update). On update an empty string clears it and '
+                                    . 'omitting it leaves it unchanged. Not the change reason, which is the top-level '
+                                    . 'comment. With the API backend the comment belongs to the RRset, so when several '
+                                    . 'operations set one on the same name and type, the last one wins'
+                            ),
+                            new OA\Property(
+                                property: 'create_ptr',
+                                type: 'boolean',
+                                example: false,
+                                description: 'Create the PTR record (create only, A and AAAA only, ignored for other '
+                                    . 'types). Needs a matching reverse zone the caller may edit. A PTR that cannot '
+                                    . 'be created does not fail the operation; it is reported in data.warnings'
+                            )
                         ],
                         type: 'object'
                     ),
@@ -160,6 +182,13 @@ class ZonesRecordsBulkController extends PublicApiController
                             type: 'array',
                             items: new OA\Items(type: 'string'),
                             description: 'Array of error messages (if any)'
+                        ),
+                        new OA\Property(
+                            property: 'warnings',
+                            type: 'array',
+                            items: new OA\Items(type: 'string'),
+                            example: ['Operation 2 (create): PTR record creation failed: There is no matching reverse-zone for: 1.2.0.192.in-addr.arpa.'],
+                            description: 'Non-fatal problems, such as a create_ptr that could not be honoured; the record is still counted in created. Always present, empty when there are none'
                         )
                     ],
                     type: 'object'
@@ -256,7 +285,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 'updated' => 0,
                 'deleted' => 0,
                 'failed' => 0,
-                'errors' => []
+                'errors' => [],
+                'warnings' => []
             ];
 
             // A full closure: an arrow function would copy $results and the outer catch
@@ -290,6 +320,7 @@ class ZonesRecordsBulkController extends PublicApiController
     {
         // Only non-SOA changes bump the serial, so a user-supplied SOA serial stays.
         $nonSOARecordModified = false;
+        $this->reverseZoneIds = [];
         // An update matching the stored record writes nothing (bump_serial_on_unchanged_save off)
         $anyRecordWritten = false;
         try {
@@ -298,7 +329,7 @@ class ZonesRecordsBulkController extends PublicApiController
 
                 try {
                     $recordType = match ($action) {
-                        'create' => $this->performCreateOperation($zoneId, $operation, $zoneType, $zoneName),
+                        'create' => $this->performCreateOperation($zoneId, $operation, $zoneType, $zoneName, "Operation $index (create)", $results['warnings']),
                         'update' => $this->performUpdateOperation($zoneId, $operation, $zoneType, $zoneName),
                         'delete' => $this->performDeleteOperation($zoneId, $operation, $zoneType, $zoneName),
                         default => throw new ApiErrorException("Invalid action: $action. Must be 'create', 'update', or 'delete'", 400),
@@ -322,11 +353,19 @@ class ZonesRecordsBulkController extends PublicApiController
             if ($nonSOARecordModified) {
                 $this->services()->soaRecordManager()->updateSOASerial($zoneId);
             }
+            // Reverse zones that got a PTR follow the same rule, once each.
+            $reverseZoneIds = array_keys(array_diff_key($this->reverseZoneIds, [$zoneId => true]));
+            foreach ($reverseZoneIds as $reverseZoneId) {
+                $this->services()->soaRecordManager()->updateSOASerial($reverseZoneId);
+            }
             if ($useTransaction) {
                 $this->services()->transaction()->commit();
             }
             if ($anyRecordWritten) {
                 $this->recordManager->finalizeZone($zoneId, false);
+            }
+            foreach ($reverseZoneIds as $reverseZoneId) {
+                $this->recordManager->finalizeZone($reverseZoneId, false);
             }
 
             $this->services()->auditService()->logApiBulkRecords($zoneId, $results['total_operations']);
@@ -341,6 +380,7 @@ class ZonesRecordsBulkController extends PublicApiController
                 $results['created'] = 0;
                 $results['updated'] = 0;
                 $results['deleted'] = 0;
+                $results['warnings'] = [];
             }
 
             throw $e;
@@ -352,10 +392,12 @@ class ZonesRecordsBulkController extends PublicApiController
      *
      * @param int $zoneId Zone ID
      * @param array $operation Operation data
+     * @param string $label Prefix for warnings, e.g. "Operation 2 (create)"
+     * @param array<int, string> $warnings Collects non-fatal problems such as a failed PTR
      * @return string The record type that was created
      * @throws Exception If operation fails
      */
-    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): string
+    private function performCreateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null, string $label = 'Operation', array &$warnings = []): string
     {
         // Validate required fields
         $requiredFields = ['name', 'type', 'content'];
@@ -406,12 +448,62 @@ class ZonesRecordsBulkController extends PublicApiController
 
         // Validation, the duplicate check and the change log are the record manager's;
         // the batch bumps the serial and rectifies once at the end.
-        $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false);
+        // API backend: the comment rides in the RRset PATCH, as on a single POST.
+        $comment = trim((string)$this->inputString($operation, 'comment', ''));
+        $username = $this->getAuthenticatedUsername();
+        $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $username];
+        $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false, $rrsetComment);
         if (!$created->success) {
             throw new ApiErrorException($this->recordWriteErrorMessage($created, 'Failed to create record'), RefusalStatus::of($created->refusal));
         }
+        if ($comment !== '') {
+            $this->services()->recordCommentService()->createCommentForRecord($zoneId, $normalizedName, $type, $comment, $created->recordId, $username);
+        }
+
+        $isAddressType = $type === 'A' || $type === 'AAAA';
+        if ($isAddressType && $this->inputBool($operation, 'create_ptr', false)) {
+            $this->createCompanionPtr($zoneId, $normalizedName, $type, $content, $ttl, $priority, $comment, $label, $warnings);
+        }
+        // Whatever became of the PTR, the comment follows an existing counterpart, as on a single POST
+        if ($comment !== '') {
+            $this->services()->recordManagerService()->syncCompanionComment($zoneId, $normalizedName, $type, $content, $comment, $username, $this->getAuthenticatedUserId());
+        }
 
         return $type;
+    }
+
+    /**
+     * The PTR of a created A/AAAA record. It goes through the creator the single POST uses; the
+     * reverse zone's serial bump and rectify are left to the end of the batch. A failure is a
+     * warning, not a failed operation, as on the single endpoint.
+     *
+     * @param array<int, string> $warnings
+     */
+    private function createCompanionPtr(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, string $comment, string $label, array &$warnings): void
+    {
+        $username = $this->getAuthenticatedUsername();
+        $ptr = $this->services()->reverseRecordCreator()->createReverseRecord(
+            $name,
+            $type,
+            $content,
+            $zoneId,
+            $this->reverseTtlResolver->resolvePtrTtl($ttl),
+            $priority,
+            $comment,
+            $username,
+            false
+        );
+
+        if (empty($ptr['success'])) {
+            $warnings[] = "$label: PTR record creation failed: " . ($ptr['message'] ?? '');
+            return;
+        }
+        if (isset($ptr['zone_id'])) {
+            $this->reverseZoneIds[$ptr['zone_id']] = true;
+        }
+        if (($ptr['type'] ?? '') === 'warning') {
+            $warnings[] = "$label: " . ($ptr['message'] ?? '');
+        }
     }
 
     /**
@@ -457,7 +549,12 @@ class ZonesRecordsBulkController extends PublicApiController
         $ttl = $this->inputInt($operation, 'ttl', (int)$existingRecord['ttl']);
         $prio = $this->inputInt($operation, 'priority', (int)($existingRecord['prio'] ?? 0));
         $disabled = $this->inputIntFromBool($operation, 'disabled', !empty($existingRecord['disabled']) ? 1 : 0);
-        if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
+        // Like the single PUT: a comment replaces the stored one, '' clears it, absent leaves it alone
+        $comment = $this->inputString($operation, 'comment');
+        if (
+            $name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null
+            || ($comment === null && array_key_exists('comment', $operation))
+        ) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
         // A TTL of 0 is RFC-valid ("do not cache") and TTLValidator accepts it, so
@@ -484,7 +581,9 @@ class ZonesRecordsBulkController extends PublicApiController
             'disabled' => $disabled
         ];
 
-        $result = $this->recordManager->editRecord($recordData, false);
+        $username = $this->getAuthenticatedUsername();
+        $rrsetComment = $comment === null ? null : ['content' => $comment, 'account' => $username];
+        $result = $this->recordManager->editRecord($recordData, false, $rrsetComment);
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
@@ -492,8 +591,47 @@ class ZonesRecordsBulkController extends PublicApiController
             }
             throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
         }
+        if ($comment !== null) {
+            $this->storeUpdatedComment($zoneId, $recordId, $recordData, $comment, $username);
+        }
 
         return $result->changed ? $recordData['type'] : null;
+    }
+
+    /**
+     * Stores the comment against the saved record. The API backend re-keys a record when its
+     * name, type, content or priority change, so the id is looked up again.
+     *
+     * @param array<string, mixed> $recordData The submitted record fields
+     */
+    private function storeUpdatedComment(int $zoneId, int|string $recordId, array $recordData, string $comment, string $username): void
+    {
+        $stored = $this->recordRepository->getRecordFromId($recordId);
+        if ($stored !== null) {
+            $savedId = $stored['id'] ?? $recordId;
+        } else {
+            $savedId = $this->recordRepository->getNewRecordId($zoneId, (string)$recordData['name'], (string)$recordData['type'], (string)$recordData['content']) ?? $recordId;
+            $stored = $recordData;
+        }
+
+        $this->services()->recordCommentService()->updateCommentForRecord(
+            $zoneId,
+            (string)$stored['name'],
+            (string)$stored['type'],
+            $comment,
+            RecordIdHelper::normalizeId($savedId),
+            $username
+        );
+        // The same sync as a single PUT, so an empty comment clears the counterpart too
+        if ($this->getConfig()->get('misc', 'record_comments_sync')) {
+            $this->services()->recordCommentSyncService()->updateRelatedRecordComments(
+                $this->services()->domainRepository(),
+                $stored,
+                $comment,
+                $username,
+                $this->getAuthenticatedUserId()
+            );
+        }
     }
 
     /**

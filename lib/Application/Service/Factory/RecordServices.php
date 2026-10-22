@@ -171,6 +171,16 @@ final class RecordServices
         );
     }
 
+    public function recordCommentSyncService(): RecordCommentSyncService
+    {
+        return new RecordCommentSyncService(
+            $this->recordCommentService(),
+            $this->services->permissionService(),
+            $this->services->recordRepository(),
+            $this->services->dnsBackendProvider()
+        );
+    }
+
     public function zoneEditService(): ZoneEditService
     {
         $comments = $this->recordCommentService();
@@ -184,7 +194,7 @@ final class RecordServices
             $this->recordManager(),
             $this->services->soaRecordManager(),
             $comments,
-            new RecordCommentSyncService($comments, $this->services->permissionService(), $this->services->recordRepository(), $this->services->dnsBackendProvider()),
+            $this->recordCommentSyncService(),
             $this->services->auditService(),
             $this->recordCommentsEnabled(),
             $this->zoneCommentsEnabled()
@@ -315,7 +325,7 @@ final class RecordServices
             $this->services->soaRecordManager(),
             $this->reverseRecordCreator(),
             $comments,
-            new RecordCommentSyncService($comments, $this->services->permissionService(), $this->services->recordRepository(), $this->services->dnsBackendProvider()),
+            $this->recordCommentSyncService(),
             $this->services->auditService(),
             $this->config,
             $this->logger,
