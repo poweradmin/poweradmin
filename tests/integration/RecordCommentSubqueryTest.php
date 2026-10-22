@@ -194,6 +194,52 @@ class RecordCommentSubqueryTest extends TestCase
         $this->assertSame(self::expectedComments(), $this->filteredComments($db));
     }
 
+    /** @return array<string, ?string> */
+    private function apiListingComments(PDO $db): array
+    {
+        $map = [];
+        foreach ($this->repository($db)->getRecordsByDomainId(1, null, true) as $row) {
+            $map[$row['name'] . '/' . $row['type'] . '/' . $row['content']] = $row['comment'];
+        }
+        ksort($map);
+
+        return $map;
+    }
+
+    #[DataProvider('engines')]
+    public function testTheApiRecordListingResolvesCommentsInOneQueryWithTheNameAndTypeFallback(string $engine): void
+    {
+        $db = $this->open($engine);
+
+        $this->assertSame(self::expectedComments(), $this->apiListingComments($db));
+    }
+
+    #[DataProvider('engines')]
+    public function testTheApiRecordListingKeepsItsShapeWhenCommentsAreNotAsked(string $engine): void
+    {
+        $db = $this->open($engine);
+
+        $rows = $this->repository($db)->getRecordsByDomainId(1, 'A');
+
+        $this->assertCount(5, $rows);
+        $this->assertArrayNotHasKey('comment', $rows[0]);
+        $this->assertSame(['id', 'domain_id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled', 'ordername', 'auth'], array_keys($rows[0]));
+    }
+
+    #[DataProvider('engines')]
+    public function testASingleRecordCommentMatchesTheListing(string $engine): void
+    {
+        $db = $this->open($engine);
+        $repository = $this->repository($db);
+
+        $this->assertSame('Preferred linked comment', $repository->getCommentForRecord(2, 1, 'example.com', 'A'));
+        $this->assertSame('Legacy RRset comment', $repository->getCommentForRecord(3, 1, 'www.example.com', 'A'));
+        $this->assertSame('Linked per-record comment', $repository->getCommentForRecord(4, 1, 'mail.example.com', 'A'));
+        $this->assertNull($repository->getCommentForRecord(6, 1, 'mail.example.com', 'A'));
+        $this->assertNull($repository->getCommentForRecord(8, 1, 'www.example.com', 'TXT'));
+        $this->assertNull($repository->getCommentForRecord(999, 1, 'gone.example.com', 'A'));
+    }
+
     #[DataProvider('engines')]
     public function testSearchAttachesTheRightCommentToEachRecord(string $engine): void
     {

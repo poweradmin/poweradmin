@@ -174,9 +174,29 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         return $serials;
     }
 
-    public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
+    public function getRecordsByDomainId(int $domainId, ?string $recordType = null, bool $withComments = false): array
     {
-        return $this->backendProvider->getRecordsByZoneId($domainId, $recordType);
+        $records = $this->backendProvider->getRecordsByZoneId($domainId, $recordType);
+        if (!$withComments) {
+            return $records;
+        }
+
+        // The zone payload already carries each RRset's comments, so no second fetch
+        return array_map(static function (array $record): array {
+            $record['comment'] = ($record['api_comment'] ?? '') !== '' ? $record['api_comment'] : null;
+            return $record;
+        }, $records);
+    }
+
+    public function getCommentForRecord(int|string $recordId, int $domainId, string $name, string $type): ?string
+    {
+        foreach ($this->backendProvider->getRecordsByName($domainId, $name, $type) as $record) {
+            if (($record['api_comment'] ?? '') !== '') {
+                return (string)$record['api_comment'];
+            }
+        }
+
+        return null;
     }
 
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array

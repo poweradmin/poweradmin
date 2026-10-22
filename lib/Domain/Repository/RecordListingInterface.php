@@ -35,9 +35,23 @@ interface RecordListingInterface
      *
      * @param int $domainId Domain ID
      * @param string|null $recordType Optional record type filter
+     * @param bool $withComments Add a `comment` key (string or null) to every row, resolved in one lookup
      * @return array Array of records
      */
-    public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array;
+    public function getRecordsByDomainId(int $domainId, ?string $recordType = null, bool $withComments = false): array;
+
+    /**
+     * The comment shown for one record: the SQL backend gives the comment linked to the
+     * record, else the unlinked comment for its name and type; the API backend gives
+     * the RRset comment, shared by every record in the set.
+     *
+     * @param int|string $recordId Record ID (int for SQL mode, encoded string for API mode)
+     * @param int $domainId Domain ID
+     * @param string $name Fully qualified record name, no trailing dot
+     * @param string $type Record type
+     * @return string|null The comment, null when there is none
+     */
+    public function getCommentForRecord(int|string $recordId, int $domainId, string $name, string $type): ?string;
 
     /**
      * Get all records from a domain id.

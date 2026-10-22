@@ -53,6 +53,7 @@ class RecordResourceTest extends TestCase
             'priority' => 5,
             'disabled' => true,
             'auth' => false,
+            'comment' => null,
         ], RecordResource::item(self::ROW, 81, 'example.com', RecordIdHelper::normalizeId(...)));
     }
 
@@ -67,6 +68,7 @@ class RecordResourceTest extends TestCase
             'priority' => 5,
             'disabled' => true,
             'auth' => false,
+            'comment' => null,
         ], RecordResource::listItem(self::ROW, RecordIdHelper::normalizeId(...)));
     }
 
@@ -95,6 +97,16 @@ class RecordResourceTest extends TestCase
         );
 
         $this->assertNull($item['id']);
+    }
+
+    public function testTheCommentIsReportedAsAStringOrNull(): void
+    {
+        $withComment = RecordResource::listItem(self::ROW + ['comment' => 'web server'], RecordIdHelper::normalizeId(...));
+        $empty = RecordResource::listItem(['comment' => ''] + self::ROW, RecordIdHelper::normalizeId(...));
+
+        $this->assertSame('web server', $withComment['comment']);
+        $this->assertNull($empty['comment']);
+        $this->assertSame('web server', RecordResource::item(self::ROW + ['comment' => 'web server'], 81, 'example.com', RecordIdHelper::normalizeId(...))['comment']);
     }
 
     public function testTheIdFormatterDecidesTheIdType(): void

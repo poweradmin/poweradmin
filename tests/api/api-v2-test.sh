@@ -454,6 +454,25 @@ test_record_listing() {
     assert_json "RRSet pagination total" "$LAST_RESPONSE_BODY" '.pagination.total' "2"
     api_request_v2 "GET" "${base}/rrsets?sort=content" "" 400 "Reject unknown RRSet sort field"
 
+    # Record comment: returned on every record shape and filterable (added last, the counts above stay)
+    api_request_v2 "POST" "${base}/records" '{"name":"note","type":"TXT","content":"hello","ttl":300,"comment":"owned by the api test"}' 201 "Create a record with a comment"
+    assert_json "POST returns the comment" "$LAST_RESPONSE_BODY" '.data.record.comment' "owned by the api test"
+    local note_id
+    note_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record.id' 2>/dev/null)
+    api_request_v2 "GET" "${base}/records/${note_id}" "" 200 "Get the commented record"
+    assert_json "GET returns the comment" "$LAST_RESPONSE_BODY" '.data.record.comment' "owned by the api test"
+    api_request_v2 "GET" "${base}/records" "" 200 "List records with comments"
+    assert_json "Listing returns the comment" "$LAST_RESPONSE_BODY" '[.data.records[] | select(.type == "TXT" and (.name | startswith("note."))) | .comment] | join(",")' "owned by the api test"
+    assert_json "A record without a comment reports null" "$LAST_RESPONSE_BODY" '[.data.records[] | select(.type == "AAAA") | .comment | tostring] | join(",")' "null"
+    api_request_v2 "GET" "${base}/records?comment=BY%20THE%20API" "" 200 "Filter records by comment"
+    assert_json "Comment filter finds only the commented record" "$LAST_RESPONSE_BODY" '.data.records | map(.content) | join(",")' "hello"
+    api_request_v2 "GET" "${base}/records?comment=no-such-comment" "" 200 "Filter records by a comment nobody has"
+    assert_json "Unmatched comment filter is empty" "$LAST_RESPONSE_BODY" '.data.records | length' "0"
+    api_request_v2 "GET" "${base}/records?q=api%20test" "" 200 "q does not search comments"
+    assert_json "q ignores the comment" "$LAST_RESPONSE_BODY" '.data.records | length' "0"
+    api_request_v2 "PUT" "${base}/records/${note_id}" '{"comment":"changed by the api test"}' 200 "Change the record comment"
+    assert_json "PUT returns the new comment" "$LAST_RESPONSE_BODY" '.data.record.comment' "changed by the api test"
+
     api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Delete listing test zone" || true
 }
 

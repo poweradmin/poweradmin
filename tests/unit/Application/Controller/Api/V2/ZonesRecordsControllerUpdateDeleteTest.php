@@ -401,6 +401,18 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertFalse($record['ptr_updated']);
     }
 
+    public function testASuccessfulUpdateReturnsTheStoredComment(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord(['content' => '192.0.2.9']));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->records->expects($this->once())->method('getCommentForRecord')->willReturn('web server');
+
+        $record = $this->decode($this->update(['content' => '192.0.2.9']))['data']['record'];
+
+        $this->assertSame('web server', $record['comment']);
+    }
+
     /**
      * The edit flow writes the one api_edit_record line for an API caller, with
      * the row before the edit and the stored row after it (#1655).
@@ -452,6 +464,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
                     'priority' => 0,
                     'disabled' => true,
                     'auth' => true,
+                    'comment' => null,
                     'ptr_updated' => false,
                 ],
             ],
@@ -483,6 +496,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
                     'priority' => 5,
                     'disabled' => true,
                     'auth' => true,
+                    'comment' => null,
                     'ptr_updated' => false,
                 ],
             ],

@@ -128,6 +128,13 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'string', example: '192.0.2.')
     )]
     #[OA\Parameter(
+        name: 'comment',
+        in: 'query',
+        description: 'Case-insensitive substring filter on the record comment; records without a comment never match',
+        required: false,
+        schema: new OA\Schema(type: 'string', example: 'web server')
+    )]
+    #[OA\Parameter(
         name: 'q',
         in: 'query',
         description: 'Case-insensitive substring filter on the record name or content',
@@ -189,7 +196,8 @@ class ZonesRecordsController extends PublicApiController
                                     new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                                     new OA\Property(property: 'priority', type: 'integer', example: 10),
                                     new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
-                                    new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)')
+                                    new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)'),
+                                    new OA\Property(property: 'comment', type: 'string', nullable: true, description: 'Linked record comment, else the name and type comment (SQL); the shared RRset comment (API backend). Null when none')
                                 ],
                                 type: 'object'
                             )
@@ -227,7 +235,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($sort->error, 400);
             }
             // Get records for the zone
-            $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
+            $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType, true);
 
             // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
             // These records have NULL/empty type and are not user-manageable.
@@ -246,6 +254,7 @@ class ZonesRecordsController extends PublicApiController
             [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
                 'name' => static fn(array $r): array => [$r['name']],
                 'content' => static fn(array $r): array => [$r['content']],
+                'comment' => static fn(array $r): array => [$r['comment']],
                 'q' => static fn(array $r): array => [$r['name'], $r['content']],
             ]);
 
@@ -302,7 +311,8 @@ class ZonesRecordsController extends PublicApiController
                                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
-                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record). Automatically managed by PowerDNS.')
+                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record). Automatically managed by PowerDNS.'),
+                                new OA\Property(property: 'comment', type: 'string', nullable: true, description: 'Linked record comment, else the name and type comment (SQL); the shared RRset comment (API backend). Null when none')
                             ],
                             type: 'object'
                         )
@@ -346,6 +356,7 @@ class ZonesRecordsController extends PublicApiController
 
             $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
+            $record['comment'] = $this->recordRepository->getCommentForRecord($recordId, $zoneId, (string)$record['name'], (string)$record['type']);
             $formattedRecord = RecordResource::item($record, $zoneId, $zoneName, $this->formatRecordId(...));
 
             return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record retrieved successfully', 200);
@@ -412,6 +423,7 @@ class ZonesRecordsController extends PublicApiController
                                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
                                 new OA\Property(property: 'auth', type: 'boolean', example: true),
+                                new OA\Property(property: 'comment', type: 'string', nullable: true, description: 'Linked record comment, else the name and type comment (SQL); the shared RRset comment (API backend). Null when none'),
                                 new OA\Property(property: 'ptr_created', type: 'boolean', example: false, description: 'Whether a PTR record was created (create_ptr)')
                             ],
                             type: 'object'
@@ -596,6 +608,7 @@ class ZonesRecordsController extends PublicApiController
                 'prio' => $newRecord['prio'] ?? $priority,
                 'disabled' => $disabled,
                 'auth' => true,
+                'comment' => $this->recordRepository->getCommentForRecord($newRecord['id'] ?? $newRecordId ?? 0, $zoneId, $name, $type),
             ], $zoneId, $zoneName, $this->formatRecordId(...)) + ['ptr_created' => $ptrCreated];
 
             $message = 'Record created successfully' . $ptrMessage;
@@ -669,6 +682,7 @@ class ZonesRecordsController extends PublicApiController
                                 new OA\Property(property: 'priority', type: 'integer', example: 10),
                                 new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
                                 new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)'),
+                                new OA\Property(property: 'comment', type: 'string', nullable: true, description: 'Linked record comment, else the name and type comment (SQL); the shared RRset comment (API backend). Null when none'),
                                 new OA\Property(property: 'ptr_updated', type: 'boolean', example: false, description: 'Whether the matching PTR record was updated as well'),
                             ],
                             type: 'object'
@@ -813,8 +827,10 @@ class ZonesRecordsController extends PublicApiController
             // Get zone name for stripping suffix
             $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
 
+            $savedId = $edited->recordId ?? $recordId;
+            $storedComment = $this->recordRepository->getCommentForRecord($savedId, $zoneId, (string)($edited->record['name'] ?? $name), (string)($edited->record['type'] ?? $newType));
             $formattedRecord = RecordResource::item(
-                ['id' => $edited->recordId ?? $recordId] + $edited->record,
+                ['id' => $savedId, 'comment' => $storedComment] + $edited->record,
                 $zoneId,
                 $zoneName,
                 $this->formatRecordId(...)

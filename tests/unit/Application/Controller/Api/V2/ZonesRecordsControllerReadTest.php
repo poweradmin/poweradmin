@@ -175,8 +175,8 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
             'success' => true,
             'data' => [
                 'records' => [
-                    ['id' => 7, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 10, 'disabled' => true, 'auth' => true],
-                    ['id' => 8, 'name' => 'example.com', 'type' => 'TXT', 'content' => 'v=spf1 -all', 'ttl' => 60, 'priority' => 0, 'disabled' => false, 'auth' => true],
+                    ['id' => 7, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'priority' => 10, 'disabled' => true, 'auth' => true, 'comment' => null],
+                    ['id' => 8, 'name' => 'example.com', 'type' => 'TXT', 'content' => 'v=spf1 -all', 'ttl' => 60, 'priority' => 0, 'disabled' => false, 'auth' => true, 'comment' => null],
                 ],
             ],
             'message' => 'Records retrieved successfully',
@@ -210,10 +210,108 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
                     'priority' => 0,
                     'disabled' => false,
                     'auth' => false,
+                    'comment' => null,
                 ],
             ],
             'message' => 'Record retrieved successfully',
         ], $this->decode($this->invokeHandler('getRecord', ['record_id' => 7])));
+    }
+
+    public function testTheListingAsksTheRepositoryForCommentsInOneCall(): void
+    {
+        $this->records->expects($this->once())
+            ->method('getRecordsByDomainId')
+            ->with(self::ZONE_ID, null, true)
+            ->willReturn([]);
+        $this->records->expects($this->never())->method('getCommentForRecord');
+
+        $this->assertSame(200, $this->invokeHandler('listRecords')->getStatusCode());
+    }
+
+    public function testAListedRecordCarriesItsCommentAndNullWhenItHasNone(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'comment' => 'web server'],
+            ['id' => 2, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'comment' => null],
+            ['id' => 3, 'name' => 'ftp.example.com', 'type' => 'A', 'content' => '192.0.2.3', 'ttl' => 3600, 'comment' => ''],
+        ]);
+
+        $records = $this->decode($this->invokeHandler('listRecords'))['data']['records'];
+
+        $this->assertSame(['web server', null, null], array_column($records, 'comment'));
+        $this->assertArrayHasKey('comment', $records[1]);
+    }
+
+    public function testAnRRSetCommentIsSharedByEveryRecordInTheSet(): void
+    {
+        // The API backend repository stamps the one RRset comment on each of its records
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 'pdns:a', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'comment' => 'rrset note'],
+            ['id' => 'pdns:b', 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'comment' => 'rrset note'],
+            ['id' => 'pdns:c', 'name' => 'www.example.com', 'type' => 'TXT', 'content' => '"x"', 'ttl' => 3600, 'comment' => null],
+        ]);
+
+        $records = $this->decode($this->invokeHandler('listRecords'))['data']['records'];
+
+        $this->assertSame(['rrset note', 'rrset note', null], array_column($records, 'comment'));
+    }
+
+    public function testTheCommentFilterMatchesASubstringCaseInsensitively(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'comment' => 'Primary Web server'],
+            ['id' => 2, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'comment' => 'mail relay'],
+            ['id' => 3, 'name' => 'ftp.example.com', 'type' => 'A', 'content' => '192.0.2.3', 'ttl' => 3600, 'comment' => null],
+        ]);
+
+        $this->assertSame([1], array_column($this->decode($this->invokeHandler('listRecords', [], ['comment' => 'WEB SERVER']))['data']['records'], 'id'));
+        $this->assertSame([], $this->decode($this->invokeHandler('listRecords', [], ['comment' => 'nothing']))['data']['records']);
+    }
+
+    public function testTheCommentFilterNeverMatchesARecordWithoutAComment(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 3, 'name' => 'ftp.example.com', 'type' => 'A', 'content' => '192.0.2.3', 'ttl' => 3600, 'comment' => null],
+        ]);
+
+        $this->assertSame([], $this->decode($this->invokeHandler('listRecords', [], ['comment' => 'null']))['data']['records']);
+    }
+
+    public function testQDoesNotSearchTheComment(): void
+    {
+        $this->records->method('getRecordsByDomainId')->willReturn([
+            ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'comment' => 'findme'],
+        ]);
+
+        $this->assertSame([], $this->decode($this->invokeHandler('listRecords', [], ['q' => 'findme']))['data']['records']);
+    }
+
+    public function testTheSingleRecordCarriesTheCommentTheRepositoryResolves(): void
+    {
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 7, 'domain_id' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60,
+        ]);
+        $this->records->expects($this->once())
+            ->method('getCommentForRecord')
+            ->with(7, self::ZONE_ID, 'www.example.com', 'A')
+            ->willReturn('older name and type comment');
+
+        $record = $this->decode($this->invokeHandler('getRecord', ['record_id' => 7]))['data']['record'];
+
+        $this->assertSame('older name and type comment', $record['comment']);
+    }
+
+    public function testTheSingleRecordReportsNullWhenThereIsNoComment(): void
+    {
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 7, 'domain_id' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60,
+        ]);
+        $this->records->method('getCommentForRecord')->willReturn(null);
+
+        $body = $this->decode($this->invokeHandler('getRecord', ['record_id' => 7]));
+
+        $this->assertArrayHasKey('comment', $body['data']['record']);
+        $this->assertNull($body['data']['record']['comment']);
     }
 
     public function testTheRepositoryBoolsReachTheJsonAsBools(): void

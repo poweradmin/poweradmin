@@ -330,28 +330,53 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         return $serials;
     }
 
-    public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
+    public function getRecordsByDomainId(int $domainId, ?string $recordType = null, bool $withComments = false): array
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
-        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
+        $columns = "$records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, $records_table.content, "
+            . "$records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.ordername, $records_table.auth";
+        if ($withComments) {
+            $columns .= ", rc.comment AS comment";
+        }
+
+        $query = "SELECT $columns
                   FROM $records_table
-                  WHERE domain_id = :domain_id
-                  AND type IS NOT NULL AND type != ''";
+                  " . ($withComments ? $this->buildCommentJoin($this->dbType, $records_table, $comments_table) : "") . "
+                  WHERE $records_table.domain_id = :domain_id
+                  AND $records_table.type IS NOT NULL AND $records_table.type != ''";
 
         $params = [':domain_id' => $domainId];
 
         if ($recordType !== null) {
-            $query .= " AND type = :type";
+            $query .= " AND $records_table.type = :type";
             $params[':type'] = $recordType;
         }
 
-        $query .= " ORDER BY type, name";
+        $query .= " ORDER BY $records_table.type, $records_table.name";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
         return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    public function getCommentForRecord(int|string $recordId, int $domainId, string $name, string $type): ?string
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+
+        $stmt = $this->db->prepare(
+            "SELECT rc.comment AS comment
+             FROM $records_table
+             " . $this->buildCommentJoin($this->dbType, $records_table, $comments_table) . "
+             WHERE $records_table.id = :id"
+        );
+        $stmt->execute([':id' => $recordId]);
+        $comment = $stmt->fetchColumn();
+
+        return ($comment === false || $comment === null || $comment === '') ? null : (string)$comment;
     }
 
     public function getRecordsByName(int $domainId, string $name, ?string $type = null): array

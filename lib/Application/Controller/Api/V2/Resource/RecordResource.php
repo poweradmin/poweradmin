@@ -109,6 +109,7 @@ final class RecordResource
             'priority' => isset($row['prio']) ? (int)$row['prio'] : 0,
             'disabled' => self::disabled($row),
             'auth' => isset($row['auth']) ? (bool)$row['auth'] : true,
+            'comment' => isset($row['comment']) && $row['comment'] !== '' ? (string)$row['comment'] : null,
         ];
     }
 

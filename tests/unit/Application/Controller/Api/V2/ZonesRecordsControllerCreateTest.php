@@ -405,11 +405,28 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
                     'priority' => 5,
                     'disabled' => true,
                     'auth' => true,
+                    'comment' => null,
                     'ptr_created' => false,
                 ],
             ],
             'message' => 'Record created successfully',
         ], $this->decode($response));
+    }
+
+    public function testTheCreateResponseCarriesTheCommentTheRepositoryResolves(): void
+    {
+        $this->addService->method('add')->willReturn(new RecordAddResult(RecordWriteResult::ok(77)));
+        $this->records->method('getRecordById')->with(77)->willReturn([
+            'id' => 77, 'domain_id' => self::ZONE_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0,
+        ]);
+        $this->records->expects($this->once())
+            ->method('getCommentForRecord')
+            ->with(77, self::ZONE_ID, 'www.example.com', 'A')
+            ->willReturn('web server');
+
+        $record = $this->decode($this->create($this->validBody() + ['comment' => 'web server']))['data']['record'];
+
+        $this->assertSame('web server', $record['comment']);
     }
 
     public function testWhenTheStoredRecordCannotBeRereadTheBodyIsBuiltFromTheSubmittedValues(): void
@@ -432,6 +449,7 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
                     'priority' => 3,
                     'disabled' => false,
                     'auth' => true,
+                    'comment' => null,
                     'ptr_created' => false,
                 ],
             ],
