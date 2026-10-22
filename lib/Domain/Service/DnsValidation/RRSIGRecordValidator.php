@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -249,12 +249,12 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate expiration time (must be a timestamp in YYYYMMDDHHmmSS format)
-        if (!preg_match('/^\d{14}$/', $expiration)) {
+        if (!self::isValidTimestamp($expiration)) {
             return ValidationResult::failure(_('RRSIG expiration must be in YYYYMMDDHHmmSS format.'));
         }
 
         // Validate inception time (must be a timestamp in YYYYMMDDHHmmSS format)
-        if (!preg_match('/^\d{14}$/', $inception)) {
+        if (!self::isValidTimestamp($inception)) {
             return ValidationResult::failure(_('RRSIG inception must be in YYYYMMDDHHmmSS format.'));
         }
 
@@ -353,5 +353,17 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         ];
 
         return in_array(strtoupper($recordType), $validTypes);
+    }
+
+    /**
+     * YYYYMMDDHHmmSS with a real calendar date and time of day; PowerDNS refuses out-of-range fields and rolls over the rest.
+     */
+    private static function isValidTimestamp(string $value): bool
+    {
+        if (!preg_match('/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/', $value, $m)) {
+            return false;
+        }
+        return checkdate((int)$m[2], (int)$m[3], (int)$m[1])
+            && (int)$m[4] <= 23 && (int)$m[5] <= 59 && (int)$m[6] <= 60;
     }
 }
