@@ -1147,35 +1147,25 @@ generate_config() {
     local custom_tlds
     custom_tlds=$(php_str_array "${PA_DNS_CUSTOM_TLDS:-}")
 
-    # Helper: convert key-value mapping to PHP associative array
-    # Arguments:
-    #   $1: string to parse
-    #   [$2]: mapping delimiter, separates the key-value pairs, defaults to comma (',')
-    #   [$3]: key-value delimiter, separates the key from the value, defaults to equal sign ('=') and colon (':')
-    #   [$4]: value array delimiter, separates array items in the value, defaults to pipe ('|')
-    #
-    # When key-value delimiter is not specifically set, it's handled handled adaptively.
+    # Helper: convert key=value or key:value mapping to PHP associative array
     # Supports both = and : as delimiters (= preferred, : for backward compatibility)
-    # The value-array delimiter in a value produces a PHP array literal so a single external group
+    # Pipe (|) in a value produces a PHP array literal so a single external group
     # can map to multiple Poweradmin groups (e.g. 'team1=Editors|Viewers').
-    # Single quotes are escaped, whitespace around commas/delimiters is trimmed
+    # Single quotes are escaped, whitespace around commas/delimiters is trimmed.
+    # With "dn" as $2 the keys may be LDAP DNs: items split on ';' and the pair on the last ':'
     parse_mapping() {
-        # check some optional delimiter arguments
-        local mapsep="$([ "$#" -gt 1 ] && echo "$2" || echo ",")"
-        local arrsep="$([ "$#" -gt 3 ] && echo "$4" || echo "|")"
-        
-        local IFS="$mapsep" item key val part items="" parts=""
+        local sep=',' dn_keys=0 item key val part items="" parts=""
+        # A DN key carries '=' and ',' itself, so 'cn=x,dc=y:Tmpl' is one ';'-separated item
+        if [[ "${2:-}" == dn && ( "$1" == *\;* || ( "$1" == *=* && "$1" == *:* ) ) ]]; then
+            sep=';'; dn_keys=1
+        fi
+        local IFS="${sep}"
         for item in $1; do
             item="${item#"${item%%[![:space:]]*}"}"; item="${item%"${item##*[![:space:]]}"}"
             [ -n "${item}" ] || continue
-            # check if key-value delimiter was set specifically
-            if [[ "$#" -gt 2 ]]; then
-                if [[ "${item}" == *$3* ]]; then
-                    key="${item%%$3*}"; val="${item#*$3}"
-                else
-                    key="${item}"; val=""
-                fi
             # = is the delimiter; a bare group:Template pair splits on the last colon
+            if [[ "${dn_keys}" -eq 1 && "${item}" == *:* ]]; then
+                key="${item%:*}"; val="${item##*:}"
             elif [[ "${item}" == *=* ]]; then
                 key="${item%%=*}"; val="${item#*=}"
             elif [[ "${item}" == *:* ]]; then
@@ -1184,14 +1174,14 @@ generate_config() {
                 key="${item}"; val=""
             fi
             key="${key%"${key##*[![:space:]]}"}"; val="${val#"${val%%[![:space:]]*}"}"
-            if [[ "${val}" == *$arrsep* ]]; then
+            if [[ "${val}" == *\|* ]]; then
                 parts=""
-                local IFS=$arrsep
+                local IFS='|'
                 for part in ${val}; do
                     part="${part#"${part%%[![:space:]]*}"}"; part="${part%"${part##*[![:space:]]}"}"
                     parts="${parts}$(php_sq "${part}"), "
                 done
-                IFS=','
+                IFS="${sep}"
                 items="${items}$(php_sq "${key}") => [${parts%, }], "
             else
                 items="${items}$(php_sq "${key}") => $(php_sq "${val}"), "
@@ -1215,12 +1205,12 @@ generate_config() {
     # Process LDAP permission template and group mappings
     local ldap_permission_template_mapping="[]"
     if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
-        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}" ";" ":")]"
+        ldap_permission_template_mapping="[$(parse_mapping "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING}" dn)]"
     fi
 
     local ldap_group_mapping="[]"
     if [ -n "${PA_LDAP_GROUP_MAPPING:-}" ]; then
-        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}" ";" ":")]"
+        ldap_group_mapping="[$(parse_mapping "${PA_LDAP_GROUP_MAPPING}" dn)]"
     fi
 
     # Process SAML permission template mapping
