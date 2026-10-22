@@ -360,6 +360,7 @@ services:
 
   pdns-mysql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-mysql
     networks:
       - internal
@@ -375,6 +376,7 @@ services:
 
   pdns-pgsql:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-pgsql
     networks:
       - internal
@@ -390,6 +392,7 @@ services:
 
   pdns-sqlite:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-sqlite
     networks:
       - internal
@@ -407,6 +410,7 @@ services:
   # mappings: docker compose --profile lmdb up pdns-lmdb
   pdns-lmdb:
     image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    command: ["${PDNS_EXTRA_ARG:---disable-syslog}"]
     container_name: pdns-lmdb
     profiles:
       - lmdb
