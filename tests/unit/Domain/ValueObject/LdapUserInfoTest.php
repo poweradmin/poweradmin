@@ -88,7 +88,7 @@ class LdapUserInfoTest extends TestCase
         $this->assertSame([
             'cn=dns-admins,ou=groups,dc=example,dc=com',
             'cn=dns-operators,ou=groups,dc=example,dc=com',
-        ], $info->getGroups(), 'Raw DNs, without count markers; short-name matching happens at mapping time');
+        ], $info->getGroups(), 'Raw DNs, without count markers; mapping keys must match them exactly');
         $this->assertTrue($info->hasGroup('cn=dns-operators,ou=groups,dc=example,dc=com'));
     }
 
