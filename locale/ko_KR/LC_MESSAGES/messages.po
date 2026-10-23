@@ -3285,8 +3285,10 @@ msgid "Zone has not been updated successfully."
 msgstr "존이 성공적으로 업데이트되지 않았습니다."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "요청이 만료되었습니다. 다시 시도하십시오."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "이 존을 연 후에 다른 사용자가 변경했습니다. 레코드를 검토한 후 다시 저장하세요."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

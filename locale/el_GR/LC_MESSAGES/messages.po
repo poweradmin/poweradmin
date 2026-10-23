@@ -3421,8 +3421,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Η ζώνη δεν έχει ενημερωθεί με επιτυχία."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Η αίτηση έληξε, παρακαλώ προσπαθήστε ξανά."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "Κάποιος άλλος άλλαξε αυτήν τη ζώνη αφού την ανοίξατε. Ελέγξτε τις εγγραφές και αποθηκεύστε ξανά."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

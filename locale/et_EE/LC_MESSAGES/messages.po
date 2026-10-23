@@ -3298,8 +3298,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Tsooni ei uuendatud edukalt."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Päring aegus, palun proovige uuesti."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "Keegi teine muutis seda tsooni pärast seda, kui te selle avasite. Vaadake kirjed üle ja salvestage uuesti."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

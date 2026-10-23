@@ -3312,8 +3312,10 @@ msgid "Zone has not been updated successfully."
 msgstr "منطقه با موفقیت به روز نشده است."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "درخواست منقضی شده است، لطفا دوباره امتحان کنید."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "شخص دیگری پس از باز کردن این منطقه توسط شما، آن را تغییر داده است. رکوردها را بررسی کنید و دوباره ذخیره کنید."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

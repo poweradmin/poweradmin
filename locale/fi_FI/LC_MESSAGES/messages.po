@@ -3306,8 +3306,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Aluetta ei päivitetty onnistuneesti."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Pyyntö vanheni, yritä uudelleen."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "Joku toinen muutti tätä aluetta sen jälkeen, kun avasit sen. Tarkista tietueet ja tallenna uudelleen."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

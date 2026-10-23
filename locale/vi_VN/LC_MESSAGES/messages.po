@@ -3312,8 +3312,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Vùng chưa được cập nhật thành công."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Yêu cầu đã hết hạn, vui lòng thử lại."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "Có người khác đã thay đổi vùng này sau khi bạn mở nó. Hãy xem lại các bản ghi và lưu lại."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

@@ -3434,8 +3434,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Níor nuashonraíodh an crios go rathúil."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Tá iarratas imithe in éag, déan iarracht arís."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "D'athraigh duine éigin eile an crios seo tar éis duit é a oscailt. Athbhreithnigh na taifid agus sábháil arís."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

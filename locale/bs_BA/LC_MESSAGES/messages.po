@@ -3303,8 +3303,10 @@ msgid "Zone has not been updated successfully."
 msgstr "Zona nije uspješno ažurirana."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "Zahtjev je istekao, pokušajte ponovno."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "Neko drugi je promijenio ovu zonu nakon što ste je otvorili. Pregledajte zapise i ponovo spremite."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

@@ -3258,8 +3258,10 @@ msgid "Zone has not been updated successfully."
 msgstr "האזור לא עודכן בהצלחה."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:42
-msgid "Request has expired, please try again."
-msgstr "פג תוקף הבקשה, אנא נסה שוב."
+msgid ""
+"Someone else changed this zone after you opened it. Review the records and "
+"save again."
+msgstr "מישהו אחר שינה את האזור הזה לאחר שפתחת אותו. עיין ברשומות ושמור שוב."
 
 #: lib/Application/Service/Zone/ZoneSaveMessages.php:43
 msgid "Zone has been updated successfully."

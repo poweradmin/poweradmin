@@ -39,7 +39,7 @@ final class ZoneSaveMessages
             ZoneSaveOutcome::FORBIDDEN => ['error', _('You do not have permission to edit this zone.')],
             ZoneSaveOutcome::READ_ONLY => ['error', _('You cannot edit records in a read-only zone.')],
             ZoneSaveOutcome::WRITE_FAILED => ['error', _('Zone has not been updated successfully.')],
-            ZoneSaveOutcome::SERIAL_CONFLICT => ['warning', _('Request has expired, please try again.')],
+            ZoneSaveOutcome::SERIAL_CONFLICT => ['warning', _('Someone else changed this zone after you opened it. Review the records and save again.')],
             ZoneSaveOutcome::UPDATED => ['success', _('Zone has been updated successfully.')],
             ZoneSaveOutcome::NO_CHANGES => $result->serialBumped
                 ? ['info', _('Zone saved successfully. No record changes were made, but SOA serial was incremented.')]
