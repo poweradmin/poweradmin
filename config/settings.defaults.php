@@ -413,7 +413,7 @@ return [
         'display_stats' => false,                      // Display memory usage and execution time
         'timezone' => 'UTC',                           // Default timezone (e.g. 'Europe/Berlin', 'Asia/Shanghai')
         'record_comments_sync' => false,               // Enable bidirectional comment sync between A and PTR records (added in 3.9.0)
-        'edit_conflict_resolution' => 'last_writer_wins', // Options: 'last_writer_wins', 'only_latest_version'
+        'edit_conflict_resolution' => 'last_writer_wins', // Zone edit form saved after the SOA serial moved: 'last_writer_wins' saves it, 'only_latest_version' refuses it
         'display_errors' => false,                     // Display PHP errors (false for production) (added in 4.0.0)
         'show_generated_passwords' => true,            // Show generated passwords on user creation (added in 4.0.0)
         'template_cache' => false,                     // Cache compiled templates on disk for faster rendering (added in 4.5.0)
