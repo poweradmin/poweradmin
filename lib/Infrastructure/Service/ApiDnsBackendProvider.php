@@ -465,10 +465,15 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         if ($zoneName === null) {
             return false;
         }
-        $soaTtl = (int)$this->config->get('dns', 'ttl', 86400);
+        $apexName = DnsHelper::zoneApexName($zoneName);
+        // A serial bump rewrites the SOA, so it keeps the TTL the zone already has
+        $current = $this->getRRsetFromApi(self::ensureTrailingDot($zoneName), self::ensureTrailingDot($apexName), 'SOA');
+        $soaTtl = $current !== null && $current['records'] !== []
+            ? (int)$current['ttl']
+            : (int)$this->config->get('dns', 'ttl', 86400);
 
         // The zone id stays the variant; the SOA record sits at its apex name
-        return $this->addRecord($zoneId, DnsHelper::zoneApexName($zoneName), 'SOA', $content, $soaTtl, 0);
+        return $this->addRecord($zoneId, $apexName, 'SOA', $content, $soaTtl, 0);
     }
 
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
@@ -1520,7 +1525,10 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         $apiZoneName = self::ensureTrailingDot($zoneName);
         $zoneData = $this->client->getZone($apiZoneName, false);
 
-        return $zoneData !== null && !empty($zoneData['soa_edit_api']);
+        $mode = strtoupper(trim((string)($zoneData['soa_edit_api'] ?? '')));
+
+        // OFF is PowerDNS's spelling of "never edit the serial", the same as unset
+        return $zoneData !== null && $mode !== '' && $mode !== 'OFF';
     }
 
     public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool

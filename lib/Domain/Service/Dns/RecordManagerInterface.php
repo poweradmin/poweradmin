@@ -78,9 +78,11 @@ interface RecordManagerInterface
      * rectify. Batch callers pass finalizeZone=false to the writes and call this
      * once when they are done; one holding a transaction bumps the serial inside
      * it and calls this with bumpSerial=false after the commit, since PowerDNS
-     * rectifies from committed rows.
+     * rectifies from committed rows. $rrsetWritten is false when nothing was sent to
+     * the backend (no-op save, zone comment), so the API backend bumps the serial
+     * itself.
      */
-    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void;
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true, bool $rrsetWritten = true): void;
 
     /**
      * Delete a record and everything that pointed at it (template link, comments)

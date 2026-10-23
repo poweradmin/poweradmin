@@ -418,6 +418,7 @@ class ZoneChangeRequestService
 
         try {
             $recordsWritten = false;
+            $serialBefore = $transactional ? null : SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($zoneId));
             $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional, $recordsWritten);
             if ($failure !== null) {
                 if ($transactional) {
@@ -439,7 +440,9 @@ class ZoneChangeRequestService
                     $this->recordManager->finalizeZone($zoneId, false);
                 }
             } elseif ($bump) {
-                $this->recordManager->finalizeZone($zoneId);
+                // A serial that already moved was bumped by the backend for an RRset it was sent
+                $moved = SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($zoneId)) !== $serialBefore;
+                $this->recordManager->finalizeZone($zoneId, true, $moved);
             }
         } catch (Throwable $e) {
             if ($transactional) {

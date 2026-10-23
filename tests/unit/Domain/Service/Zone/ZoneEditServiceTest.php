@@ -53,6 +53,10 @@ class ZoneEditServiceTest extends TestCase
     private const ZONE_ID = 42;
     private const USER_ID = 7;
     private const SOA = 'ns1.example.com hostmaster.example.com 2024010101 10800 3600 604800 3600';
+    private const SOA_BUMPED = 'ns1.example.com hostmaster.example.com 2024010102 10800 3600 604800 3600';
+
+    /** What the zone's SOA reads as right now; a test moves it to stand in for a backend bump. */
+    private string $currentSoa = self::SOA;
 
     private PermissionService&MockObject $permissions;
     private ZoneRepositoryInterface&MockObject $zones;
@@ -75,7 +79,8 @@ class ZoneEditServiceTest extends TestCase
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
         $this->soa = $this->createMock(SOARecordManagerInterface::class);
-        $this->soa->method('getSOARecord')->willReturn(self::SOA);
+        $this->currentSoa = self::SOA;
+        $this->soa->method('getSOARecord')->willReturnCallback(fn(): string => $this->currentSoa);
         $this->comments = $this->createMock(RecordCommentService::class);
         $this->commentSync = $this->createMock(RecordCommentSyncService::class);
     }
@@ -119,7 +124,8 @@ class ZoneEditServiceTest extends TestCase
 
     public function testUnchangedSaveBumpsSerialByDefault(): void
     {
-        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID);
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, false)
+            ->willReturnCallback(fn() => $this->currentSoa = self::SOA_BUMPED);
 
         $result = $this->makeService()->save($this->submission());
 
@@ -142,7 +148,8 @@ class ZoneEditServiceTest extends TestCase
     public function testChangedZoneCommentCountsAsAChangeAndBumpsEvenWhenDisabled(): void
     {
         $this->zones->expects($this->once())->method('updateZoneComment')->with(self::ZONE_ID, 'new comment')->willReturn(true);
-        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID);
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, false)
+            ->willReturnCallback(fn() => $this->currentSoa = self::SOA_BUMPED);
 
         $result = $this->makeService(['dns' => ['bump_serial_on_unchanged_save' => false]])
             ->save($this->submission(zoneComment: 'new comment'));
@@ -559,12 +566,40 @@ class ZoneEditServiceTest extends TestCase
         $this->comments->method('findCommentByRecordId')->willReturn(null);
         $this->comments->method('findComment')->willReturn(null);
         $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
-        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID);
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, false)
+            ->willReturnCallback(fn() => $this->currentSoa = self::SOA_BUMPED);
 
         $result = $this->makeService(['interface' => ['show_record_comments' => true]])
             ->save($this->submission([$this->row('5', 'www', '192.0.2.1', comment: 'hello')]));
 
         $this->assertTrue($result->serialBumped);
+    }
+
+    public function testASerialTheBackendAlreadyMovedIsHandedOverAsWritten(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
+        $this->comments->method('findCommentByRecordId')->willReturn(null);
+        $this->comments->method('findComment')->willReturn(null);
+        $this->recordManager->method('editRecord')->willReturnCallback(function (): RecordWriteResult {
+            $this->currentSoa = self::SOA_BUMPED;
+
+            return RecordWriteResult::ok();
+        });
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, true);
+
+        $this->makeService(['interface' => ['show_record_comments' => true]])
+            ->save($this->submission([$this->row('5', 'www', '192.0.2.1', comment: 'hello')]));
+    }
+
+    public function testASaveWhoseBumpDidNotMoveTheSerialIsNotReportedAsBumped(): void
+    {
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, false);
+
+        $result = $this->makeService()->save($this->submission());
+
+        $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
+        $this->assertFalse($result->serialBumped);
+        $this->assertSame(['info', 'Zone saved successfully. No record changes were made.'], ZoneSaveMessages::forResult($result));
     }
 
     public function testAnEditedLowercaseRowIsWrittenAndCommentedUnderItsUppercaseType(): void

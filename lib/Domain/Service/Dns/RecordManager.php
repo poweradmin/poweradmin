@@ -646,10 +646,10 @@ class RecordManager implements RecordManagerInterface
         return RecordWriteResult::ok();
     }
 
-    public function finalizeZone(int $zoneId, bool $bumpSerial = true): void
+    public function finalizeZone(int $zoneId, bool $bumpSerial = true, bool $rrsetWritten = true): void
     {
         if ($bumpSerial) {
-            $this->soaRecordManager->updateSOASerial($zoneId);
+            $this->soaRecordManager->updateSOASerial($zoneId, $rrsetWritten);
         }
         $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if (is_string($zoneName)) {

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -80,10 +80,12 @@ interface SOARecordManagerInterface
      * Increments SOA serial to next possible number
      *
      * @param int $domain_id Domain ID
+     * @param bool $rrsetWritten Whether an RRset was written to the backend in this operation;
+     *                           PowerDNS bumps the serial for that itself under SOA-EDIT-API
      *
-     * @return boolean true if success
+     * @return boolean true if the serial moved or the backend moved it with the write
      */
-    public function updateSOASerial(int $domain_id): bool;
+    public function updateSOASerial(int $domain_id, bool $rrsetWritten = true): bool;
 
     /**
      * Get next serial number

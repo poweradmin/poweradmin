@@ -70,6 +70,7 @@ class ZoneSigningService
             return new ZoneSigningResult(ZoneSigningOutcome::INVALID_ZONE, $this->validator->getFormattedErrorMessage($validation));
         }
 
+        // The DNSSEC toggle counts as a write: PowerDNS bumps the serial for it under SOA-EDIT-API
         $this->soaRecordManager->updateSOASerial($zoneId);
 
         if (!$this->dnssec->secureZone($zoneName)) {

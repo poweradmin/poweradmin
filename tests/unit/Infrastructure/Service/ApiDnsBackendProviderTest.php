@@ -2650,9 +2650,23 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame([], $this->provider->getRecordsByName(1, 'www.example.com', 'A'));
     }
 
-    public function testReplaceSoaContentRewritesTheRrsetWithConfiguredTtl(): void
+    public function testReplaceSoaContentKeepsTheTtlTheSoaAlreadyHas(): void
     {
         $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+        $this->replaceSoaWithStored(['ttl' => 900, 'records' => [['content' => 'ns1.example.com. admin.example.com. 1 1 1 1 1', 'disabled' => false]]], 900, $content);
+    }
+
+    public function testReplaceSoaContentUsesTheConfiguredTtlWhenThereIsNoSoaYet(): void
+    {
+        $content = 'ns2.example.com. admin.example.com. 2024010101 7200 3600 1209600 300';
+        $this->replaceSoaWithStored(['records' => []], 600, $content);
+    }
+
+    /**
+     * @param array<string, mixed> $stored
+     */
+    private function replaceSoaWithStored(array $stored, int $expectedTtl, string $content): void
+    {
         $stmtZone = $this->createMock(PDOStatement::class);
         $stmtZone->method('fetch')->willReturn(['id' => 7, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
         $this->mockDb->method('prepare')->willReturn($stmtZone);
@@ -2660,18 +2674,14 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->mockClient->method('getZoneRrset')
             ->with('example.com.', 'example.com.', 'SOA')
-            ->willReturn(['rrsets' => [[
-                'name' => 'example.com.',
-                'type' => 'SOA',
-                'records' => [['content' => 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 'disabled' => false]],
-            ]]]);
+            ->willReturn(['rrsets' => [['name' => 'example.com.', 'type' => 'SOA'] + $stored]]);
         $this->mockClient->expects($this->once())
             ->method('patchZoneRRsets')
             ->with('example.com.', [
                 [
                     'name' => 'example.com.',
                     'type' => 'SOA',
-                    'ttl' => 600,
+                    'ttl' => $expectedTtl,
                     'changetype' => 'REPLACE',
                     'records' => [['content' => $content, 'disabled' => false]],
                 ],
@@ -2679,6 +2689,37 @@ class ApiDnsBackendProviderTest extends TestCase
             ->willReturn(true);
 
         $this->assertTrue($this->provider->replaceSoaContent(7, $content));
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>|null, 1: bool}>
+     */
+    public static function soaEditApiProvider(): array
+    {
+        return [
+            'unset' => [['kind' => 'Master'], false],
+            'empty' => [['soa_edit_api' => ''], false],
+            'OFF' => [['soa_edit_api' => 'OFF'], false],
+            'lowercase off' => [['soa_edit_api' => 'off'], false],
+            'DEFAULT' => [['soa_edit_api' => 'DEFAULT'], true],
+            'INCREASE' => [['soa_edit_api' => 'INCREASE'], true],
+            'EPOCH' => [['soa_edit_api' => 'EPOCH'], true],
+            'zone not found' => [null, false],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $zoneData
+     */
+    #[DataProvider('soaEditApiProvider')]
+    public function testHasSoaEditApiIsTrueOnlyWhenPowerDnsEditsTheSerial(?array $zoneData, bool $expected): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('fetch')->willReturn(['id' => 7, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+        $this->mockClient->method('getZone')->with('example.com.', false)->willReturn($zoneData);
+
+        $this->assertSame($expected, $this->provider->hasSoaEditApi(7));
     }
 
     public function testReplaceSoaContentFailsForUnknownZone(): void

@@ -262,16 +262,21 @@ class SOARecordManager implements SOARecordManagerInterface
     /**
      * Update SOA serial
      *
-     * Increments SOA serial to next possible number
+     * Increments SOA serial to next possible number. Under SOA-EDIT-API PowerDNS bumps
+     * the serial for every RRset it is sent, so that is left to it when the caller has
+     * just written one; otherwise (no-op save, zone comment, DNSSEC toggle) the SOA is
+     * sent unchanged to make PowerDNS bump it, and the new serial is read back.
      *
      * @param int $domain_id Domain ID
+     * @param bool $rrsetWritten Whether an RRset was written to the backend in this operation
      *
-     * @return boolean true if success
+     * @return boolean true if the serial moved or the backend moved it with the write
      */
-    public function updateSOASerial(int $domain_id): bool
+    public function updateSOASerial(int $domain_id, bool $rrsetWritten = true): bool
     {
-        // PowerDNS bumps the serial itself under SOA-EDIT-API; the SQL backend never reports it
-        if ($this->backendProvider->hasSoaEditApi($domain_id)) {
+        // The SQL backend never reports SOA-EDIT-API, nor does an API zone set to OFF
+        $backendEdits = $this->backendProvider->hasSoaEditApi($domain_id);
+        if ($backendEdits && $rrsetWritten) {
             return true;
         }
 
@@ -281,6 +286,15 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         $curr_serial = self::getSOASerial($soa_rec);
+
+        if ($backendEdits) {
+            if (!$this->updateSOARecord($domain_id, $soa_rec)) {
+                return false;
+            }
+
+            return self::getSOASerial($this->getSOARecord($domain_id)) !== $curr_serial;
+        }
+
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {

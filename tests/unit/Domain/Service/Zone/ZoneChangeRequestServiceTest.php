@@ -282,7 +282,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->calls[] = "zone_comment:$comment";
             return RecordWriteResult::ok();
         });
-        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID)->willReturnCallback(function (): void {
+        $this->recordManager->expects($this->once())->method('finalizeZone')->with(self::ZONE_ID, true, false)->willReturnCallback(function (): void {
             $this->calls[] = 'finalize';
         });
         $id = $this->fileThreeActions(zoneComment: 'approved comment');

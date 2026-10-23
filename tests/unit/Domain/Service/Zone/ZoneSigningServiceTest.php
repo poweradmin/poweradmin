@@ -65,7 +65,7 @@ class ZoneSigningServiceTest extends TestCase
         $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true);
         $this->dnssec->expects($this->once())->method('secureZone')->with(self::ZONE)->willReturn(true);
         $this->dnssec->expects($this->once())->method('rectifyZone')->with(self::ZONE)->willReturn(true);
-        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID, true)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecSignZone')->with(self::ZONE_ID, self::ZONE);
 
         $this->assertSame(ZoneSigningOutcome::SIGNED, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
@@ -110,7 +110,7 @@ class ZoneSigningServiceTest extends TestCase
     {
         $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, false);
         $this->dnssec->expects($this->once())->method('unsecureZone')->with(self::ZONE)->willReturn(true);
-        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID, true)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecUnsignZone')->with(self::ZONE_ID, self::ZONE);
 
         $this->assertSame(ZoneSigningOutcome::UNSIGNED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
@@ -151,7 +151,7 @@ class ZoneSigningServiceTest extends TestCase
     {
         $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, null);
         $this->dnssec->method('unsecureZone')->willReturn(true);
-        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID)->willReturn(true);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID, true)->willReturn(true);
         $this->audit->expects($this->once())->method('logDnssecUnsignZone')->with(self::ZONE_ID, self::ZONE);
 
         $this->assertSame(ZoneSigningOutcome::UNCONFIRMED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
@@ -196,7 +196,7 @@ class ZoneSigningServiceTest extends TestCase
     {
         $this->dnssec->method('fetchZoneSecured')->willReturn(false);
         $this->dnssec->method('secureZone')->willReturn(false);
-        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID);
+        $this->soa->expects($this->once())->method('updateSOASerial')->with(self::ZONE_ID, true);
         $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
         $flusher->expects($this->once())->method('flushZone')->with(self::ZONE);
 

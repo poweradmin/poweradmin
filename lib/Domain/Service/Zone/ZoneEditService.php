@@ -94,6 +94,7 @@ class ZoneEditService
         $changed = false;
         $recordsWritten = false;
 
+        $serialBefore = $this->currentSerial($submission->zoneId);
         $staleFormRejected = $this->isStale($submission);
         if ($staleFormRejected) {
             // Without the client filter every displayed row is posted, so a row that
@@ -129,7 +130,7 @@ class ZoneEditService
 
         return new ZoneSaveResult(
             $outcome,
-            serialBumped: $this->finalize($outcome, $submission->zoneId, $recordsWritten),
+            serialBumped: $this->finalize($outcome, $submission->zoneId, $recordsWritten, $serialBefore),
             truncated: $truncated,
             errors: $errors,
             rejectedRecords: $rejectedRecords,
@@ -187,7 +188,7 @@ class ZoneEditService
             return false;
         }
 
-        $currentSerial = SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($submission->zoneId));
+        $currentSerial = $this->currentSerial($submission->zoneId);
 
         return $submission->serial != $currentSerial
             && $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins') === 'only_latest_version';
@@ -263,7 +264,7 @@ class ZoneEditService
         }
 
         $posted = SOARecordManager::getSOASerial($row->content);
-        $current = SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($submission->zoneId));
+        $current = $this->currentSerial($submission->zoneId);
         if ($posted !== $submission->serial || $current === null || $current === $posted) {
             return $row;
         }
@@ -372,9 +373,15 @@ class ZoneEditService
      * record (nothing changed, or only record comments) bumps by default so operators
      * can force a NOTIFY (#762), unless dns.bump_serial_on_unchanged_save is off.
      *
+     * The API backend bumps the serial itself for every RRset it is sent (records,
+     * record comments), so a serial that already moved is not bumped again; a save
+     * that sent none (no-op, zone comment) is bumped here.
+     *
      * @param bool $recordsWritten Whether a record or the zone comment was written
+     * @param string|null $serialBefore The serial before this save wrote anything
+     * @return bool Whether the serial moved
      */
-    private function finalize(ZoneSaveOutcome $outcome, int $zoneId, bool $recordsWritten): bool
+    private function finalize(ZoneSaveOutcome $outcome, int $zoneId, bool $recordsWritten, ?string $serialBefore): bool
     {
         if (!$outcome->wasWritten()) {
             return false;
@@ -383,8 +390,13 @@ class ZoneEditService
             return false;
         }
 
-        $this->recordManager->finalizeZone($zoneId);
+        $this->recordManager->finalizeZone($zoneId, true, $this->currentSerial($zoneId) !== $serialBefore);
 
-        return true;
+        return $this->currentSerial($zoneId) !== $serialBefore;
+    }
+
+    private function currentSerial(int $zoneId): ?string
+    {
+        return SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($zoneId));
     }
 }
