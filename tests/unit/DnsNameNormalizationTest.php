@@ -84,4 +84,11 @@ class DnsNameNormalizationTest extends TestCase
         $expected = "www.sub.example.com";
         $this->assertEquals($expected, $this->validator->normalizeRecordName($name, $zone));
     }
+
+    public function testNormalizeRecordNameInAViewVariantUsesTheApexName(): void
+    {
+        $this->assertEquals('www.example.com', $this->validator->normalizeRecordName('www', 'example.com..internal'));
+        $this->assertEquals('www.example.com', $this->validator->normalizeRecordName('www.example.com', 'example.com..internal'));
+        $this->assertEquals('example.com', $this->validator->normalizeRecordName('', 'example.com..internal'));
+    }
 }

@@ -441,4 +441,16 @@ class PowerdnsApiClientTest extends TestCase
 
         $this->assertFalse($result);
     }
+
+    public function testGetZoneOfAViewVariantRequestsThePathWithoutATrailingDot(): void
+    {
+        // PowerDNS rejects "example.com..internal." as not canonical
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com..internal')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com..internal.', 'rrsets' => []]]);
+
+        $this->assertNotNull($this->apiClient->getZone('example.com..internal.'));
+    }
 }

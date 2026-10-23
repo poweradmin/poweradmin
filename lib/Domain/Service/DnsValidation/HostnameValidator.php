@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -270,6 +271,11 @@ class HostnameValidator
      */
     public function normalizeRecordName(string $name, string $zone): string
     {
+        // A view variant ("example.com..internal") holds its records under its apex name
+        if (DnsHelper::isViewVariant($zone)) {
+            $zone = DnsHelper::zoneApexName($zone);
+        }
+
         // Check if name already ends with the zone name
         if (!$this->endsWith(strtolower($zone), strtolower($name))) {
             // Append zone name if not already there

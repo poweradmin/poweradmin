@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
@@ -667,7 +668,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return '';
         }
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
+        $zoneData = $this->client->getZoneRrset($apiName, self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName)), 'SOA');
         if ($zoneData === null) {
             return '';
         }
@@ -814,7 +815,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
         // Only the apex SOA matters here, so ask for just that RRset.
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
+        $zoneData = $this->client->getZoneRrset($apiName, self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName)), 'SOA');
         if ($zoneData === null) {
             return null;
         }
