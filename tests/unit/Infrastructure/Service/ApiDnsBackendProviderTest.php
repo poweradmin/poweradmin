@@ -858,6 +858,37 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame('ns1.example.com hostmaster.example.com 1 10800 3600 604800 3600', $this->provider->getSOARecord(1));
     }
 
+    public function testGetZoneSoaHealthOfAViewVariantFindsTheApexSoa(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com..internal.', 'example.com.', 'SOA')
+            ->willReturn(['kind' => 'Native', 'rrsets' => [
+                $this->rrset('example.com.', 'SOA', [['content' => 'ns1.example.com. hostmaster.example.com. 1 10800 3600 604800 3600', 'disabled' => false]]),
+            ]]);
+
+        $this->assertSame(
+            ['is_disabled' => false, 'is_missing_soa' => false],
+            $this->provider->getZoneSoaHealth('example.com..internal', 'MASTER')
+        );
+    }
+
+    public function testReplaceSoaContentOfAViewVariantWritesTheApexRrsetToTheVariantZone(): void
+    {
+        $this->stubZoneNameLookup('example.com..internal');
+
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com..internal.', 'example.com.', 'SOA')
+            ->willReturn(['rrsets' => []]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com..internal.', $this->callback(fn(array $rrsets): bool => $rrsets[0]['name'] === 'example.com.' && $rrsets[0]['type'] === 'SOA'))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->replaceSoaContent(1, 'ns1.example.com hostmaster.example.com 2 10800 3600 604800 3600'));
+    }
+
     public function testAddRecordAppendsToExistingRRset(): void
     {
         $stmtZone = $this->createMock(PDOStatement::class);

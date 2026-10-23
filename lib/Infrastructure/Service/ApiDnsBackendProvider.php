@@ -467,7 +467,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         }
         $soaTtl = (int)$this->config->get('dns', 'ttl', 86400);
 
-        return $this->addRecord($zoneId, $zoneName, 'SOA', $content, $soaTtl, 0);
+        // The zone id stays the variant; the SOA record sits at its apex name
+        return $this->addRecord($zoneId, DnsHelper::zoneApexName($zoneName), 'SOA', $content, $soaTtl, 0);
     }
 
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
@@ -1190,7 +1191,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         // Only the apex SOA matters here, so ask for just that RRset - the
         // client serves this from a whole body it already holds for the zone.
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZoneRrset($apiName, self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName)), 'SOA');
+        $apexName = self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName));
+        $zoneData = $this->client->getZoneRrset($apiName, $apexName, 'SOA');
         if ($zoneData === null) {
             return null;
         }
@@ -1207,7 +1209,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             }
             // Only SOA at the zone apex makes the zone authoritative; an SOA
             // under a subname doesn't, and shouldn't drive the badge state.
-            if (($rrset['name'] ?? '') !== $apiName) {
+            if (($rrset['name'] ?? '') !== $apexName) {
                 continue;
             }
             // Aggregate across all SOA records: any disabled SOA disables the

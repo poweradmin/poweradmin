@@ -639,6 +639,18 @@ class PowerdnsApiClientTest extends TestCase
         $this->apiClient->getZoneRrset('example.com.', 'example.com.', 'SOA');
     }
 
+    public function testGetZoneRrsetOfAViewVariantRequestsThePathWithoutATrailingDot(): void
+    {
+        // PowerDNS rejects "example.com..internal." as not canonical
+        $this->mockHttpClient
+            ->expects($this->once())
+            ->method('makeRequest')
+            ->with('GET', '/api/v1/servers/localhost/zones/example.com..internal?rrset_name=example.com.&rrset_type=SOA')
+            ->willReturn(['responseCode' => 200, 'data' => ['name' => 'example.com..internal.', 'rrsets' => []]]);
+
+        $this->apiClient->getZoneRrset('example.com..internal.', 'example.com.', 'SOA');
+    }
+
     public function testGetZoneCombinesRrsetsFalseWithTheRrsetFilter(): void
     {
         $this->mockHttpClient

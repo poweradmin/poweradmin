@@ -194,9 +194,14 @@ readonly class DynamicDnsUpdateService
         foreach ($userZones as $zoneId => $zoneName) {
             $zone = strtolower($zoneName);
             $isMatch = DnsHelper::isWithinZone($fqdn, $zone);
-            if ($isMatch && strlen($zone) > $bestLength) {
+            $apexLength = strlen(DnsHelper::zoneApexName($zone));
+            // On an equal apex the base zone wins over its view variant (DDNS has no view context)
+            $beatsBest = $apexLength > $bestLength
+                || ($apexLength === $bestLength && $best !== null
+                    && DnsHelper::isViewVariant($best[1]) && !DnsHelper::isViewVariant($zoneName));
+            if ($isMatch && $beatsBest) {
                 $best = [$zoneId, $zoneName];
-                $bestLength = strlen($zone);
+                $bestLength = $apexLength;
             }
         }
 

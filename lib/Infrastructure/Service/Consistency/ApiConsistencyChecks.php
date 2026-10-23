@@ -30,6 +30,7 @@ use PDO;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
@@ -335,7 +336,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             return false;
         }
 
-        $recordId = $this->backend->addRecordGetId($zoneId, $zoneName, 'SOA', $this->defaultSoa->content(), $this->defaultSoa->ttl(), 0);
+        $recordId = $this->backend->addRecordGetId($zoneId, DnsHelper::zoneApexName($zoneName), 'SOA', $this->defaultSoa->content(), $this->defaultSoa->ttl(), 0);
 
         return $recordId !== null;
     }

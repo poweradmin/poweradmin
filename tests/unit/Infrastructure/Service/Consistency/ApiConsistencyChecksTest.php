@@ -521,6 +521,16 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertTrue($this->checker()->createDefaultSOA(1));
     }
 
+    public function testCreateDefaultSoaOfAViewVariantIsAddedAtTheApexName(): void
+    {
+        $this->provider->method('getZoneNameById')->willReturn('example.com..internal');
+        $this->provider->expects($this->once())->method('addRecordGetId')
+            ->with(1, 'example.com', 'SOA', $this->anything(), $this->anything(), 0)
+            ->willReturn('example.com./SOA');
+
+        $this->assertTrue($this->checker()->createDefaultSOA(1));
+    }
+
     public function testCreateDefaultSoaFailsWhenTheZoneIsUnknownOrTheAddFails(): void
     {
         $this->provider->method('getZoneNameById')->willReturnMap([[1, null], [2, 'example.com']]);
