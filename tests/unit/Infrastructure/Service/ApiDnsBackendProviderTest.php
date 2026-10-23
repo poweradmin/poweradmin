@@ -574,6 +574,36 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testViewVariantKeepsItsZoneIdAndAddsRecordsUnderItsApex(): void
+    {
+        $this->stubZoneNameLookup('example.com..internal');
+
+        // The variant id goes to the API as stored (the client drops a trailing dot);
+        // the record itself lives under the apex name, not under the variant id.
+        $this->mockClient->method('getZoneRrset')
+            ->with('example.com..internal.', 'www.example.com.', 'A')
+            ->willReturn(['rrsets' => []]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com..internal.', $this->callback(fn(array $rrsets): bool => $rrsets[0]['name'] === 'www.example.com.'))
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->addRecord(1, 'www.example.com', 'A', '192.168.1.1', 3600, 0));
+    }
+
+    public function testViewVariantSoaIsLookedUpAtTheApex(): void
+    {
+        $this->stubZoneNameLookup('example.com..internal');
+
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com..internal.', 'example.com.', 'SOA')
+            ->willReturn(['rrsets' => [$this->rrset('example.com.', 'SOA', [['content' => 'ns1.example.com. hostmaster.example.com. 1 10800 3600 604800 3600']])]]);
+
+        $this->assertSame('ns1.example.com hostmaster.example.com 1 10800 3600 604800 3600', $this->provider->getSOARecord(1));
+    }
+
     public function testAddRecordAppendsToExistingRRset(): void
     {
         $stmtZone = $this->createMock(PDOStatement::class);

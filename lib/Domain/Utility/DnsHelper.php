@@ -87,6 +87,11 @@ class DnsHelper
      */
     public static function isWithinZone(string $name, string $zoneName): bool
     {
+        // A view variant holds its records under its apex name; keep the caller's dot form
+        if (self::isViewVariant($zoneName)) {
+            $zoneName = self::zoneApexName($zoneName) . (str_ends_with($zoneName, '.') ? '.' : '');
+        }
+
         $name = strtolower($name);
         $zoneName = strtolower($zoneName);
 
@@ -104,7 +109,7 @@ class DnsHelper
      */
     public static function isZoneApex(string $recordName, string $zoneName): bool
     {
-        return strtolower(rtrim($recordName, '.')) === strtolower(rtrim($zoneName, '.'));
+        return strtolower(rtrim($recordName, '.')) === strtolower(self::zoneApexName($zoneName));
     }
 
     /**
@@ -117,11 +122,37 @@ class DnsHelper
             return '=2E';
         }
 
+        // A view variant's id has no trailing dot: PowerDNS rejects "example.com..internal."
+        if (self::isViewVariant($zoneName)) {
+            $zoneName = rtrim($zoneName, '.');
+        }
+
         return preg_replace_callback(
             '/[^A-Za-z0-9.-]/',
             static fn(array $m): string => sprintf('=%02X', ord($m[0])),
             $zoneName
         ) ?? $zoneName;
+    }
+
+    /**
+     * A PowerDNS 5 view variant ("example.com..internal"). Two dots in a row never occur
+     * in a DNS name, so the form is unambiguous.
+     */
+    public static function isViewVariant(string $zoneName): bool
+    {
+        return str_contains(rtrim($zoneName, '.'), '..');
+    }
+
+    /**
+     * The DNS name a zone serves, without the trailing dot. A view variant
+     * "example.com..internal" holds its records under "example.com".
+     */
+    public static function zoneApexName(string $zoneName): string
+    {
+        $name = rtrim($zoneName, '.');
+        $variantAt = strpos($name, '..');
+
+        return $variantAt === false ? $name : substr($name, 0, $variantAt);
     }
 
     /**
@@ -183,7 +214,7 @@ class DnsHelper
     {
         // Remove trailing dot if present (FQDN notation)
         $recordName = rtrim($recordName, '.');
-        $zoneName = rtrim($zoneName, '.');
+        $zoneName = self::zoneApexName($zoneName);
 
         // If record name equals zone name (case-insensitive), it's the zone apex
         if (strcasecmp($recordName, $zoneName) === 0) {
@@ -214,7 +245,7 @@ class DnsHelper
     {
         // Remove trailing dot if present (FQDN notation)
         $hostname = rtrim($hostname, '.');
-        $zoneName = rtrim($zoneName, '.');
+        $zoneName = self::zoneApexName($zoneName);
 
         // Handle zone apex
         if ($hostname === '@' || $hostname === '') {

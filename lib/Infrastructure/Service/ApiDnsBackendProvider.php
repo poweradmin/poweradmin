@@ -900,7 +900,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return '';
         }
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
+        $zoneData = $this->client->getZoneRrset($apiName, self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName)), 'SOA');
         if ($zoneData === null) {
             return '';
         }
@@ -1059,7 +1059,7 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         // Only the apex SOA matters here, so ask for just that RRset - the
         // client serves this from a whole body it already holds for the zone.
         $apiName = self::ensureTrailingDot($zoneName);
-        $zoneData = $this->client->getZoneRrset($apiName, $apiName, 'SOA');
+        $zoneData = $this->client->getZoneRrset($apiName, self::ensureTrailingDot(DnsHelper::zoneApexName($zoneName)), 'SOA');
         if ($zoneData === null) {
             return null;
         }
