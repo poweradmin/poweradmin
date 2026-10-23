@@ -101,8 +101,14 @@ class RRSetReplaceService
             }
 
             foreach ($existing as $record) {
-                if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
-                    return $this->rollBack($useTransaction, self::failure('Failed to delete existing record with ID ' . $record['id'], Refusal::BACKEND_FAILURE));
+                $deleted = $this->recordManager->deleteRecord($record['id'], false);
+                if (!$deleted->success) {
+                    // A verdict from the backend carries its reason; any other fault keeps the generic text
+                    $failure = $deleted->refusal === Refusal::BACKEND_REJECTED
+                        ? self::failure('Failed to delete record: ' . $deleted->reason, Refusal::BACKEND_REJECTED)
+                        : self::failure('Failed to delete existing record with ID ' . $record['id'], Refusal::BACKEND_FAILURE);
+
+                    return $this->rollBack($useTransaction, $failure);
                 }
             }
 

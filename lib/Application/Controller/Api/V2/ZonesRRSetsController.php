@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * /api/v2/zones/{id}/rrsets: lists, replaces and deletes records grouped by name and type.
@@ -699,6 +700,7 @@ class ZonesRRSetsController extends PublicApiController
         response: 404,
         description: 'RRSet not found'
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     private function deleteRRSet(): JsonResponse
     {
         try {
@@ -766,9 +768,13 @@ class ZonesRRSetsController extends PublicApiController
                 $totalRecords = count($records);
 
                 foreach ($records as $record) {
-                    if (!$this->recordManager->deleteRecord($record['id'], false)->success) {
+                    $deleted = $this->recordManager->deleteRecord($record['id'], false);
+                    if (!$deleted->success) {
                         if ($useTransaction) {
                             $this->services()->transaction()->rollBack();
+                        }
+                        if ($deleted->refusal === Refusal::BACKEND_REJECTED) {
+                            return $this->returnApiError($this->recordWriteErrorMessage($deleted, 'Failed to delete record'), RefusalStatus::of($deleted->refusal));
                         }
                         return $this->returnApiError(
                             'Failed to delete record with ID ' . $record['id'] . ' (name: ' . $record['name'] . ', type: ' . $type . ')',

@@ -275,6 +275,18 @@ class RRSetReplaceServiceTest extends TestCase
         $this->assertSame(['begin', 'validate:192.0.2.1', 'rollBack'], $this->calls);
     }
 
+    public function testADeletePowerDnsRefusesRollsBackWithTheReason(): void
+    {
+        $this->manager = $this->createMock(RecordManagerInterface::class);
+        $this->manager->method('deleteRecord')->willReturn(RecordWriteResult::backendRejected('Failed to delete record: Not authoritative', 'Not authoritative'));
+        $this->manager->expects($this->never())->method('addRecordGetId');
+
+        $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'A', 300, self::input(['192.0.2.1']));
+
+        $this->assertSame(['success' => false, 'message' => 'Failed to delete record: Not authoritative', 'refusal' => Refusal::BACKEND_REJECTED], $result);
+        $this->assertSame(['begin', 'validate:192.0.2.1', 'rollBack'], $this->calls);
+    }
+
     public function testAFailedInsertRollsBackAndHandsBackTheWriteResult(): void
     {
         $refused = RecordWriteResult::failure('Content too long', Refusal::INVALID_INPUT);

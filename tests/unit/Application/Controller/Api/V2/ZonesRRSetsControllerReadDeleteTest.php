@@ -363,6 +363,20 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertStringContainsString('Failed to delete record with ID 9', $this->messageOf($response));
     }
 
+    public function testARowPowerDnsRefusesToDeleteReports422WithTheReason(): void
+    {
+        $this->records->method('getRRSetRecords')->willReturn([
+            ['id' => 9, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60],
+        ]);
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::backendRejected('Failed to delete record: Not authoritative', 'Not authoritative'));
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+
+        $response = $this->invokeHandler('deleteRRSet', ['name' => 'www', 'type' => 'A']);
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('Failed to delete record: Not authoritative', $this->messageOf($response));
+    }
+
     /**
      * A PDO that answers the request logging but pins whether a transaction opens.
      */
