@@ -1243,6 +1243,7 @@ return array(
     'Poweradmin\\Application\\Http\\RefusalStatus' => $baseDir . '/lib/Application/Http/RefusalStatus.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
     'Poweradmin\\Application\\Http\\RequestContext' => $baseDir . '/lib/Application/Http/RequestContext.php',
+    'Poweradmin\\Application\\Http\\ResponseHeaders' => $baseDir . '/lib/Application/Http/ResponseHeaders.php',
     'Poweradmin\\Application\\Http\\ZoneEditIntent' => $baseDir . '/lib/Application/Http/ZoneEditIntent.php',
     'Poweradmin\\Application\\Module\\ModuleManifest' => $baseDir . '/lib/Application/Module/ModuleManifest.php',
     'Poweradmin\\Application\\Module\\ModuleRegistry' => $baseDir . '/lib/Application/Module/ModuleRegistry.php',

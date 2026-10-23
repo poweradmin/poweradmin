@@ -16,6 +16,11 @@ server {
         expires max;
         log_not_found off;
         access_log off;
+        # The app sends these on its own responses; set here for static files only
+        add_header X-Frame-Options "DENY" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "same-origin" always;
     }
 
     # API handling with CORS
@@ -99,6 +104,11 @@ server {
             expires max;
             log_not_found off;
             access_log off;
+            # The app sends these on its own responses; set here for static files only
+            add_header X-Frame-Options "DENY" always;
+            add_header Content-Security-Policy "frame-ancestors 'none'" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Referrer-Policy "same-origin" always;
         }
 
         # API handling with CORS

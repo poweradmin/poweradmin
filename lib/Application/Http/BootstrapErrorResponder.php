@@ -49,6 +49,8 @@ final readonly class BootstrapErrorResponder
     public function handle(Throwable $e): void
     {
         $this->log($e);
+        // Boot may have failed before Kernel sent them; after a successful boot this is a no-op
+        ResponseHeaders::sendDefaults();
 
         if (RequestContext::expectsJsonOnError()) {
             $this->respondJson($e);

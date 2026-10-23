@@ -158,6 +158,7 @@ return [
         'base_url_prefix' => '',              // Base URL prefix for deployments (default: '', subdirectory example: '/poweradmin') (added in 4.1.0)
         'application_url' => '',              // Full application URL for emails and absolute links - required for password reset, OIDC and SAML (example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
         'web_enabled' => true,                // Serve the web interface; false runs API-only (headless) (added in 4.5.0)
+        'frame_ancestors' => [],              // Origins allowed to embed Poweradmin in a frame, e.g. ['https://portal.example.com']; empty denies all framing (added in 4.6.0)
 
         // UI Element Settings
         'show_record_id' => false,             // Show record ID column in edit mode (added in 3.9.0)

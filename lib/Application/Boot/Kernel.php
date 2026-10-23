@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Bootstrap;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
+use Poweradmin\Application\Http\ResponseHeaders;
 use Poweradmin\Application\Module\ModuleRegistry;
 use Poweradmin\Application\Service\Auth\SessionAuthenticator;
 use Poweradmin\Application\Service\ControllerEnvironment;
@@ -80,6 +81,7 @@ final class Kernel
 
         $logger = Logger::fromConfig($config);
         $config->setLogger($logger);
+        ResponseHeaders::send($config, $logger);
 
         if ($options->guardsConfiguration()) {
             self::assertConfigurationUsable($config);

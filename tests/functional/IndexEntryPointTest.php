@@ -234,6 +234,92 @@ class IndexEntryPointTest extends TestCase
     }
 
     /**
+     * Pages, errors and both API families all pass Kernel::boot(), so each carries the
+     * framing, sniffing and referrer headers exactly once. The CLI SAPI records no
+     * headers, so this one runs the built-in web server.
+     */
+    public function testEveryResponseFamilyCarriesTheFramingHeaders(): void
+    {
+        $this->assertFramingHeaders('api-settings.php', ['/login', '/no-such-page', '/api/health', '/api/v2/zones', '/api/internal/zone']);
+    }
+
+    /** A boot failure ends in the error responder, which sends the default deny set. */
+    public function testABootFailureStillCarriesTheFramingHeaders(): void
+    {
+        $this->assertFramingHeaders('throwing-settings.php', ['/api/v2/zones', '/login']);
+    }
+
+    /** A rethrown error after boot (405 here) must not replace the configured framing allowance. */
+    public function testAnErrorAfterBootKeepsTheConfiguredFramingOrigins(): void
+    {
+        foreach (['GET', 'DELETE'] as $method) {
+            $headers = $this->fetchHeaders('framed-settings.php', '/login', $method);
+            $this->assertMatchesRegularExpression($method === 'GET' ? '/^HTTP\/1\.[01] 200/' : '/^HTTP\/1\.[01] 405/', $headers[0], $method);
+
+            $this->assertCount(1, preg_grep("/^Content-Security-Policy: frame-ancestors 'self' https:\\/\\/portal\\.example\\.com$/", $headers), $method);
+            $this->assertCount(0, preg_grep('/^X-Frame-Options:/i', $headers), $method);
+        }
+    }
+
+    /**
+     * @return list<string> Status line and headers of the response
+     */
+    private function fetchHeaders(string $fixture, string $uri, string $method): array
+    {
+        $result = [];
+        $this->withServer($fixture, function (int $port) use ($uri, $method, &$result): void {
+            $fp = fopen('http://127.0.0.1:' . $port . $uri, 'r', false, stream_context_create(['http' => ['ignore_errors' => true, 'method' => $method]]));
+            $this->assertIsResource($fp, $uri);
+            $result = stream_get_meta_data($fp)['wrapper_data'];
+            fclose($fp);
+        });
+
+        return $result;
+    }
+
+    /**
+     * @param list<string> $uris
+     */
+    private function assertFramingHeaders(string $fixture, array $uris): void
+    {
+        foreach ($uris as $uri) {
+            $headers = $this->fetchHeaders($fixture, $uri, 'GET');
+            foreach (['X-Frame-Options: DENY', "Content-Security-Policy: frame-ancestors 'none'", 'X-Content-Type-Options: nosniff', 'Referrer-Policy: same-origin'] as $line) {
+                $this->assertCount(1, preg_grep('/^' . preg_quote($line, '/') . '$/i', $headers), $uri . ' ' . $line);
+            }
+            $this->assertCount(1, preg_grep('/^X-Frame-Options:/i', $headers), $uri);
+        }
+    }
+
+    /** Runs the callback against the built-in server serving index.php with the given settings fixture. */
+    private function withServer(string $fixture, callable $callback): void
+    {
+        $probe = stream_socket_server('tcp://127.0.0.1:0');
+        $port = (int) substr((string) strrchr((string) stream_socket_get_name($probe, false), ':'), 1);
+        fclose($probe);
+
+        $root = dirname(__DIR__, 2);
+        $server = proc_open(
+            [PHP_BINARY, '-S', '127.0.0.1:' . $port, '-t', $root, $root . '/index.php'],
+            [1 => ['file', '/dev/null', 'w'], 2 => ['file', '/dev/null', 'w']],
+            $pipes,
+            $root,
+            ['PATH' => getenv('PATH'), 'PA_CONFIG_PATH' => __DIR__ . '/fixtures/' . $fixture]
+        );
+        $this->assertIsResource($server);
+
+        try {
+            for ($i = 0; $i < 50 && !@fsockopen('127.0.0.1', $port); $i++) {
+                usleep(100000);
+            }
+            $callback($port);
+        } finally {
+            proc_terminate($server);
+            proc_close($server);
+        }
+    }
+
+    /**
      * Drives index.php in a subprocess with the given settings fixture.
      *
      * @return array{0: int, 1: string, 2: string} Exit code, stdout, stderr

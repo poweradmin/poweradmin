@@ -19,6 +19,14 @@
 # ============================================================================
 # ROOT FOLDER DEPLOYMENT (Default)
 # ============================================================================
+(static_headers) {
+    # The app sends these on its own responses; set here for static files only
+    header X-Frame-Options "DENY"
+    header Content-Security-Policy "frame-ancestors 'none'"
+    header X-Content-Type-Options "nosniff"
+    header Referrer-Policy "same-origin"
+}
+
 :80 {
     # Set this path to your Poweradmin installation directory
     root * /srv/www
@@ -44,6 +52,7 @@
     # Allow Bootstrap files (override general vendor blocking); versioned by the vendor path
     handle @bootstrap {
         header Cache-Control "public, max-age=604800"
+        import static_headers
         file_server
     }
 
@@ -63,11 +72,13 @@
     @versioned path *.js *.css *.woff *.woff2 *.ttf *.eot
     handle @versioned {
         header Cache-Control "public, max-age=31536000"
+        import static_headers
         file_server
     }
     @images path *.png *.jpg *.jpeg *.gif *.ico *.svg
     handle @images {
         header Cache-Control "public, max-age=86400"
+        import static_headers
         file_server
     }
 
@@ -160,6 +171,7 @@
 #         @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
 #         handle @static {
 #             header Cache-Control "public, max-age=31536000"
+#             import static_headers
 #             file_server {
 #                 root /srv/www/poweradmin
 #             }

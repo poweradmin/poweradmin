@@ -82,7 +82,7 @@ class EmailPreviewsController extends BaseController
     private function renderEmailPreview(string $template, string $mode, bool $isCustom = false): void
     {
         header('Content-Type: text/html; charset=utf-8');
-        header("Content-Security-Policy: default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'");
         header('X-Content-Type-Options: nosniff');
         header('X-Frame-Options: DENY');
         header('X-XSS-Protection: 1; mode=block');

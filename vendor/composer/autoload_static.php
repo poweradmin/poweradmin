@@ -1658,6 +1658,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Http\\RefusalStatus' => __DIR__ . '/../..' . '/lib/Application/Http/RefusalStatus.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
         'Poweradmin\\Application\\Http\\RequestContext' => __DIR__ . '/../..' . '/lib/Application/Http/RequestContext.php',
+        'Poweradmin\\Application\\Http\\ResponseHeaders' => __DIR__ . '/../..' . '/lib/Application/Http/ResponseHeaders.php',
         'Poweradmin\\Application\\Http\\ZoneEditIntent' => __DIR__ . '/../..' . '/lib/Application/Http/ZoneEditIntent.php',
         'Poweradmin\\Application\\Module\\ModuleManifest' => __DIR__ . '/../..' . '/lib/Application/Module/ModuleManifest.php',
         'Poweradmin\\Application\\Module\\ModuleRegistry' => __DIR__ . '/../..' . '/lib/Application/Module/ModuleRegistry.php',
