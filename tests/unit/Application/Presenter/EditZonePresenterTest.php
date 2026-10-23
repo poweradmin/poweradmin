@@ -328,6 +328,7 @@ class EditZonePresenterTest extends TestCase
         $this->assertSame('stored', $vars['zone_comment']);
         $this->assertSame('stored', $vars['stored_zone_comment']);
         $this->assertFalse($vars['zone_comment_conflict']);
+        $this->assertFalse($vars['zone_comment_restored']);
     }
 
     public function testRejectedCommentIsRestoredAndFlaggedWhenTheStoredOneMoved(): void
@@ -337,6 +338,7 @@ class EditZonePresenterTest extends TestCase
         $this->assertSame('mine', $vars['zone_comment']);
         $this->assertSame('stored', $vars['stored_zone_comment']);
         $this->assertTrue($vars['zone_comment_conflict']);
+        $this->assertTrue($vars['zone_comment_restored']);
     }
 
     public function testRejectedCommentMatchingTheStoredOneIsNoConflict(): void
@@ -398,7 +400,7 @@ class EditZonePresenterTest extends TestCase
     {
         $expected = [
             'zone_id', 'zone_name', 'zone_name_to_display', 'idn_zone_name', 'zone_display_name', 'zone_comment',
-            'zone_comment_conflict', 'stored_zone_comment', 'domain_type', 'slave_master', 'zone_types',
+            'zone_comment_conflict', 'zone_comment_restored', 'stored_zone_comment', 'domain_type', 'slave_master', 'zone_types',
             'zone_replicates_from_primary', 'can_notify_zone', 'can_retrieve_zone', 'zone_type_change_allowed', 'catalog_members_view',
             'catalog_selector_view', 'catalog_producers', 'catalog_producer_id', 'catalog_name', 'zone_templates',
             'zone_template_id', 'zone_template_details', 'record_count', 'filtered_record_count', 'records',

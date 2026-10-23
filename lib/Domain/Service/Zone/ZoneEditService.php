@@ -276,7 +276,12 @@ class ZoneEditService
 
     private function saveZoneComment(ZoneEditSubmission $submission): bool
     {
-        $comment = $submission->zoneComment ?? '';
+        // The page leaves the comment out when the operator did not touch it, so an
+        // absent field keeps what the zone holds instead of writing an empty comment
+        if ($submission->zoneComment === null) {
+            return false;
+        }
+        $comment = $submission->zoneComment;
         if ($this->zones->getZoneComment($submission->zoneId) == $comment) {
             return false;
         }

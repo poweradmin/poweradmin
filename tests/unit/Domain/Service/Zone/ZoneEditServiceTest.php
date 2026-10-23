@@ -150,6 +150,28 @@ class ZoneEditServiceTest extends TestCase
         $this->assertTrue($result->serialBumped);
     }
 
+    public function testAnAbsentZoneCommentKeepsTheStoredOne(): void
+    {
+        $this->zones = $this->createMock(ZoneRepositoryInterface::class);
+        $this->zones->method('getZoneComment')->willReturn('from B');
+        $this->zones->expects($this->never())->method('updateZoneComment');
+
+        $result = $this->makeService()->save($this->submission());
+
+        $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
+    }
+
+    public function testADeliberatelyEmptiedZoneCommentIsStillWritten(): void
+    {
+        $this->zones = $this->createMock(ZoneRepositoryInterface::class);
+        $this->zones->method('getZoneComment')->willReturn('old');
+        $this->zones->expects($this->once())->method('updateZoneComment')->with(self::ZONE_ID, '')->willReturn(true);
+
+        $result = $this->makeService()->save($this->submission(zoneComment: ''));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+    }
+
     public function testStaleFormIsRefusedOnlyUnderTheStrictStrategy(): void
     {
         $this->recordManager->expects($this->never())->method('editRecord');
@@ -163,6 +185,15 @@ class ZoneEditServiceTest extends TestCase
         $this->assertSame($rows, $result->rejectedRecords);
         $this->assertSame('typed', $result->rejectedZoneComment);
         $this->assertSame('warning', ZoneSaveMessages::forResult($result)[0]);
+    }
+
+    public function testStaleFormWithoutAnEditedCommentCarriesNoCommentBack(): void
+    {
+        $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
+            ->save($this->submission([$this->row('5', 'www', '192.0.2.9')], serial: '2023010101', changedRowsOnly: true));
+
+        $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
+        $this->assertNull($result->rejectedZoneComment);
     }
 
     public function testStaleUnfilteredFormIsRefusedWithoutRestoringRows(): void

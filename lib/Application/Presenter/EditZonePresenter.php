@@ -187,6 +187,7 @@ final class EditZonePresenter
             'zone_display_name' => DnsIdnService::toDisplay($this->zoneName),
             'zone_comment' => $zoneComment,
             'zone_comment_conflict' => $zoneCommentConflict,
+            'zone_comment_restored' => $this->rejectedZoneComment !== null,
             'stored_zone_comment' => $this->storedZoneComment,
             'domain_type' => $this->domainType,
             'slave_master' => $this->slaveMaster,

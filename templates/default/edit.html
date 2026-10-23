@@ -579,7 +579,7 @@
             <div class="mt-3 mb-3">
                 <label class="form-label"><strong>{% trans %}Comments{% endtrans %}:</strong></label>
                 <div class="d-flex gap-2 align-items-start">
-                    <textarea class="form-control form-control-sm" rows="5" name="zone_comment">{{ zone_comment }}</textarea>
+                    <textarea class="form-control form-control-sm" rows="5" name="zone_comment" id="zone-comment"{% if zone_comment_restored %} data-restored="1"{% endif %}>{{ zone_comment }}</textarea>
                     {% if can_edit_records and edit_mode != 'request' %}
                     <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
                         <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
@@ -1371,9 +1371,18 @@
         // Rows restored after a rejected save already differ from the zone, so they
         // must go out again even though they match what was just rendered.
         const restored = new Set();
-        form.querySelectorAll('[data-restored]').forEach((el) => restored.add(el.dataset.restored));
+        form.querySelectorAll('input[name$="[rid]"][data-restored]').forEach((el) => restored.add(el.dataset.restored));
+
+        // The zone comment is sent only when edited (or restored after a refusal), so an
+        // untouched textarea cannot overwrite a comment another writer saved meanwhile.
+        const zoneComment = form.querySelector('textarea[name="zone_comment"]');
+        const zoneCommentOriginal = zoneComment ? zoneComment.value : '';
 
         form.addEventListener('submit', () => {
+            if (zoneComment && !zoneComment.dataset.restored && zoneComment.value === zoneCommentOriginal) {
+                zoneComment.disabled = true;
+            }
+
             // Tells the server the rows it receives are the edited ones, so a rejected
             // save can restore them without reverting rows nobody touched.
             const marker = document.getElementById('changed-rows-only');
