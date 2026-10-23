@@ -34,7 +34,7 @@ final readonly class ZoneSaveResult
      * @param bool $serialBumped Whether the SOA serial was incremented
      * @param bool $truncated The transport dropped part of the submission
      * @param list<string> $errors Reasons for the rows that failed to write
-     * @param list<ZoneEditRow> $rejectedRecords Rows to restore after a serial conflict
+     * @param list<ZoneEditRow> $rejectedRecords Rows to restore after a serial conflict, or refused because their record changed under them
      */
     public function __construct(
         public ZoneSaveOutcome $outcome,

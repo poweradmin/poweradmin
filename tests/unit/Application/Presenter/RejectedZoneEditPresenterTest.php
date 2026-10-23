@@ -17,6 +17,7 @@ namespace Poweradmin\Tests\Unit\Application\Presenter;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Presenter\RejectedZoneEditPresenter;
 use Poweradmin\Domain\Service\Zone\ZoneEditRow;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 
 /**
  * Tests for RejectedZoneEditPresenter::restore(), which puts the rows of a
@@ -159,6 +160,24 @@ class RejectedZoneEditPresenterTest extends TestCase
         $this->assertStringContainsString('mail', $dropped[0]);
         $this->assertStringContainsString('192.0.2.2', $dropped[0]);
         $this->assertStringContainsString('3600', $dropped[0]);
+    }
+
+    public function testAStaleApiRecordIdIsReportedDroppedAndNotRestoredIntoASiblingOfTheSameNameAndType(): void
+    {
+        $old = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.2', 0);
+        $siblingId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        $sibling = $this->storedRow(0, 'www.example.com', 'A', '192.0.2.1', 3600);
+        $sibling['id'] = $siblingId;
+        $records = [$sibling];
+
+        $dropped = $this->restore($records, [
+            new ZoneEditRow($old, 'www.example.com', 'A', '192.0.2.99', 7200, 0, false, ''),
+        ]);
+
+        $this->assertCount(1, $dropped);
+        $this->assertStringContainsString('192.0.2.99', $dropped[0]);
+        $this->assertFalse($records[0]['unsaved_edit']);
+        $this->assertSame('192.0.2.1', $records[0]['content']);
     }
 
     public function testTheSubmittedTypeIsRestoredAndTheStoredOneReported(): void

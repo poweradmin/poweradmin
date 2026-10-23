@@ -37,9 +37,11 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordLog;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Utility\RecordIdHelper;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 
 /**
  * Saves the zone editor's record table: the edit gate, the stale-form check,
@@ -102,7 +104,7 @@ class ZoneEditService
                 $rejectedZoneComment = $submission->zoneComment;
             }
         } else {
-            [$changed, $errors, $recordsWritten] = $this->saveRows($submission);
+            [$changed, $errors, $recordsWritten, $rejectedRecords] = $this->saveRows($submission);
         }
 
         // A rejected form is rejected whole: writing the comment would persist half of a
@@ -137,16 +139,26 @@ class ZoneEditService
     /**
      * Writes the rows that differ from the zone.
      *
-     * @return array{0: bool, 1: list<string>, 2: bool} Whether any row differed, the refusals,
-     *   and whether any record was written (a record comment-only change writes none)
+     * @return array{0: bool, 1: list<string>, 2: bool, 3: list<ZoneEditRow>} Whether any row differed,
+     *   the refusals, whether any record was written (a record comment-only change writes none), and
+     *   the rows refused because their record changed under them, handed back to the operator
      */
     private function saveRows(ZoneEditSubmission $submission): array
     {
         $changed = false;
         $errors = [];
         $recordsWritten = false;
+        $unresolved = [];
 
         foreach ($submission->rows as $row) {
+            $refused = $this->refuseVanishedRecord($row);
+            if ($refused !== null) {
+                $changed = true;
+                $errors[] = (string)$refused->message;
+                $unresolved[] = $row;
+                continue;
+            }
+
             $written = $this->saveRow($submission, $row);
             if ($written === null) {
                 continue;
@@ -159,7 +171,7 @@ class ZoneEditService
             }
         }
 
-        return [$changed, $errors, $recordsWritten];
+        return [$changed, $errors, $recordsWritten, $unresolved];
     }
 
     /**
@@ -186,12 +198,31 @@ class ZoneEditService
      */
     private function saveRow(ZoneEditSubmission $submission, ZoneEditRow $row): ?RecordWriteResult
     {
+        $row = $this->keepCurrentSoaSerial($submission, $row);
+
         $change = $this->diffRow($submission, $row);
         if ($change === null) {
             return null;
         }
 
         return $this->writeRow($submission, $change);
+    }
+
+    /**
+     * On the API backend a record id encodes the record's content, so a record another
+     * writer changed or deleted no longer resolves. Which record the operator meant cannot
+     * be told from its name and type, so the row is refused rather than pointed elsewhere.
+     */
+    private function refuseVanishedRecord(ZoneEditRow $row): ?RecordWriteResult
+    {
+        if (!RecordIdentifier::isEncoded($row->rid) || $this->records->getRecordById($row->rid) !== null) {
+            return null;
+        }
+
+        return RecordWriteResult::failure(
+            _('Someone else changed this zone after you opened it. Review the records and save again.'),
+            Refusal::CONFLICT
+        );
     }
 
     /**

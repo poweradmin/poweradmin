@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneEditRow;
 use Poweradmin\Domain\Service\Zone\ZoneEditService;
 use Poweradmin\Domain\Service\Zone\ZoneEditSubmission;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -194,6 +195,69 @@ class ZoneEditServiceTest extends TestCase
 
         $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
         $this->assertNull($result->rejectedZoneComment);
+    }
+
+    public function testAnApiRecordChangedByAnotherWriterIsRefusedAndTheOtherRowsAreStillWritten(): void
+    {
+        $staleId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        $mailId = RecordIdentifier::encode('example.com', 'mail.example.com', 'A', '192.0.2.5', 0);
+        $this->records->method('getRecordById')->willReturnCallback(fn($rid) => $rid === $mailId ? $this->stored($mailId, 'mail', '192.0.2.5') : null);
+        $this->records->method('getRecordFromId')->willReturn($this->stored($mailId, 'mail', '192.0.2.5'));
+        $written = [];
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written[] = $record['rid'];
+                return RecordWriteResult::ok();
+            });
+
+        $result = $this->makeService()->save($this->submission([
+            $this->row($staleId, 'www', '192.0.2.9'),
+            $this->row($mailId, 'mail', '192.0.2.6'),
+        ]));
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertSame([$mailId], $written);
+        $this->assertSame(['Someone else changed this zone after you opened it. Review the records and save again.'], $result->errors);
+        $this->assertCount(1, $result->rejectedRecords);
+        $this->assertSame($staleId, $result->rejectedRecords[0]->rid);
+        $this->assertSame('192.0.2.9', $result->rejectedRecords[0]->content);
+    }
+
+    public function testAStaleApiRecordIsNotWrittenOverASiblingOfItsRRset(): void
+    {
+        $id1 = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        $id2 = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.2', 0);
+        $this->records->method('getRecordById')->willReturnCallback(fn($rid) => $rid === $id1 ? $this->stored($id1, 'www', '192.0.2.1') : null);
+        $this->recordManager->expects($this->never())->method('editRecord');
+
+        $result = $this->makeService()->save($this->submission([$this->row($id2, 'www', '192.0.2.9')], changedRowsOnly: true));
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertCount(1, $result->rejectedRecords);
+        $this->assertSame($id2, $result->rejectedRecords[0]->rid);
+    }
+
+    public function testARecordWrittenEarlierInTheSaveIsNotOverwrittenByALaterStaleRow(): void
+    {
+        $id1 = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        $id2 = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.2', 0);
+        $this->records->method('getRecordById')->willReturnCallback(fn($rid) => $rid === $id1 ? $this->stored($id1, 'www', '192.0.2.1') : null);
+        $this->records->method('getRecordFromId')->willReturn($this->stored($id1, 'www', '192.0.2.1'));
+        $written = [];
+        $this->recordManager->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written[] = [$record['rid'], $record['content']];
+                return RecordWriteResult::ok();
+            });
+
+        $result = $this->makeService()->save($this->submission([
+            $this->row($id1, 'www', '192.0.2.8'),
+            $this->row($id2, 'www', '192.0.2.9'),
+        ]));
+
+        $this->assertSame([[$id1, '192.0.2.8']], $written);
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertSame($id2, $result->rejectedRecords[0]->rid);
     }
 
     public function testStaleUnfilteredFormIsRefusedWithoutRestoringRows(): void
