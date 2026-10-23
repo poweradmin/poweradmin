@@ -279,4 +279,25 @@ class DatabaseConsistencyServiceTest extends TestCase
         $this->assertArrayHasKey('zones_have_canonical_ids', $results);
         $this->assertArrayHasKey('zones_without_soa', $results);
     }
+
+    public function testCreateDefaultSoaOfAViewVariantUsesTheApexNameAndContent(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneNameById')->willReturn('example.com..internal');
+        $backend->expects($this->once())
+            ->method('addRecordGetId')
+            ->with(
+                1,
+                'example.com',
+                'SOA',
+                $this->stringStartsWith('ns1.example.com hostmaster.example.com '),
+                86400,
+                0
+            )
+            ->willReturn(5);
+
+        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+        $this->assertTrue($service->createDefaultSOA(1));
+    }
 }

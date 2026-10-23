@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
@@ -285,5 +286,22 @@ class SOARecordManagerTest extends TestCase
             '[NS1] hostmaster.example.com 2026052405 7200 1800 1209600 86400',
             $result
         );
+    }
+
+    public function testUpdateSoaRecordOfAViewVariantWritesTheSoaUnderTheApexName(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getZoneNameById')->willReturn('example.com..internal');
+        $this->configMock->method('get')->willReturn(86400);
+
+        $content = 'ns1.example.com. hostmaster.example.com. 2026102301 28800 7200 604800 86400';
+        $backend->expects($this->once())
+            ->method('addRecord')
+            ->with(1, 'example.com', 'SOA', $content, 86400, 0)
+            ->willReturn(true);
+
+        $manager = new SOARecordManager($this->dbMock, $this->configMock, $backend);
+        $this->assertTrue($manager->updateSOARecord(1, $content));
     }
 }

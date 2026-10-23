@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -241,7 +242,8 @@ class SOARecordManager implements SOARecordManagerInterface
                 return false;
             }
             $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
-            return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
+            // The zone id stays the variant; the SOA record sits at its apex name
+            return $this->backendProvider->addRecord($domain_id, DnsHelper::zoneApexName($zoneName), 'SOA', $content, $soa_ttl, 0);
         }
 
         $tableNameService = new TableNameService($this->config);

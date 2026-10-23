@@ -504,6 +504,42 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('good 192.168.1.1', $this->service->processUpdate($request));
     }
 
+    /**
+     * @return array<string, array{array<int, string>, int}>
+     */
+    public static function viewVariantZonePicks(): array
+    {
+        return [
+            'longest apex beats a longer variant id' => [[1 => 'example.com..internal', 2 => 'sub.example.com'], 2],
+            'base zone wins a tie when the variant is listed first' => [[1 => 'example.com..internal', 2 => 'example.com'], 2],
+            'base zone wins a tie when the variant is listed last' => [[1 => 'example.com', 2 => 'example.com..internal'], 1],
+        ];
+    }
+
+    /**
+     * @param array<int, string> $zones
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('viewVariantZonePicks')]
+    public function testProcessUpdateComparesZonesByApexLengthAndPrefersTheBaseZone(array $zones, int $expectedZoneId): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'host.sub.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('host.sub.example.com');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn($user);
+        $this->validationService->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn($zones);
+
+        $this->repository->expects($this->once())
+            ->method('getDnsRecords')->with($expectedZoneId, $hostname, 'A')->willReturn([]);
+        $this->repository->expects($this->once())
+            ->method('insertDnsRecord')->with($expectedZoneId, $hostname, 'A', '192.168.1.1');
+
+        $this->assertEquals('good 192.168.1.1', $this->service->processUpdate($request));
+    }
+
     public function testProcessUpdateReturnsValidationErrorWhenRequestInvalid(): void
     {
         $request = new DynamicDnsRequest(

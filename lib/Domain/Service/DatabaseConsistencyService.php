@@ -26,6 +26,7 @@ use Exception;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -763,8 +764,9 @@ class DatabaseConsistencyService
                 return false;
             }
 
-            $primaryNs = 'ns1.' . $zoneName;
-            $hostmaster = 'hostmaster.' . $zoneName;
+            $apex = DnsHelper::zoneApexName($zoneName);
+            $primaryNs = 'ns1.' . $apex;
+            $hostmaster = 'hostmaster.' . $apex;
             $serial = date('Ymd') . '01';
 
             $soaContent = sprintf(
@@ -774,7 +776,7 @@ class DatabaseConsistencyService
                 $serial
             );
 
-            $recordId = $this->backendProvider->addRecordGetId($zoneId, $zoneName, 'SOA', $soaContent, 86400, 0);
+            $recordId = $this->backendProvider->addRecordGetId($zoneId, $apex, 'SOA', $soaContent, 86400, 0);
             return $recordId !== null;
         }
 

@@ -604,6 +604,21 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame('ns1.example.com hostmaster.example.com 1 10800 3600 604800 3600', $this->provider->getSOARecord(1));
     }
 
+    public function testGetZoneSoaHealthOfAViewVariantFindsTheApexSoa(): void
+    {
+        $this->mockClient->expects($this->once())
+            ->method('getZoneRrset')
+            ->with('example.com..internal.', 'example.com.', 'SOA')
+            ->willReturn(['kind' => 'Native', 'rrsets' => [
+                $this->rrset('example.com.', 'SOA', [['content' => 'ns1.example.com. hostmaster.example.com. 1 10800 3600 604800 3600', 'disabled' => false]]),
+            ]]);
+
+        $this->assertSame(
+            ['is_disabled' => false, 'is_missing_soa' => false],
+            $this->provider->getZoneSoaHealth('example.com..internal', 'MASTER')
+        );
+    }
+
     public function testAddRecordAppendsToExistingRRset(): void
     {
         $stmtZone = $this->createMock(PDOStatement::class);
