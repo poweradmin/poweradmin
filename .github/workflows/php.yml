@@ -119,6 +119,11 @@ jobs:
     - name: Run integration suite
       run: composer tests:integration -- --exclude-group network
 
+    # Spawns php -S on 127.0.0.1 and the CLI entry points against SQLite; the
+    # tests that need config/settings.php skip themselves.
+    - name: Run functional suite
+      run: composer tests:functional
+
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
     runs-on: ubuntu-latest
