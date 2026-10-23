@@ -789,6 +789,8 @@ create_admin_user() {
             log "IMPORTANT: Admin credentials"
             log "Username: ${admin_username}"
             log "Password: ${admin_password}"
+            log "Change this password after the first login."
+            log "Set PA_ADMIN_PASSWORD or PA_ADMIN_PASSWORD__FILE to keep it out of the logs."
             log "=========================================="
         fi
     else

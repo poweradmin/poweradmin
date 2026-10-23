@@ -939,7 +939,7 @@ services:
 |----------|-------------|---------|----------|
 | `PA_CREATE_ADMIN` | Create initial admin user (true/false/1/yes) | `false` | No |
 | `PA_ADMIN_USERNAME` | Admin username | `admin` | No |
-| `PA_ADMIN_PASSWORD` | Admin password (auto-generated if not set) | Auto-generated | No |
+| `PA_ADMIN_PASSWORD` | Admin password (auto-generated and printed to the container log if not set) | Auto-generated | No |
 | `PA_ADMIN_EMAIL` | Admin email address | `admin@example.com` | No |
 | `PA_ADMIN_FULLNAME` | Admin full name | `Administrator` | No |
 
@@ -1703,7 +1703,7 @@ The container can automatically create an initial admin user during startup. Thi
 
 - **PA_CREATE_ADMIN**: Set to `1`, `true`, or `yes` to enable admin user creation
 - **PA_ADMIN_USERNAME**: Admin username (default: `admin`)
-- **PA_ADMIN_PASSWORD**: Admin password (default: `admin`)
+- **PA_ADMIN_PASSWORD**: Admin password (default: auto-generated and printed to the container log)
 - **PA_ADMIN_EMAIL**: Admin email (default: `admin@example.com`)
 - **PA_ADMIN_FULLNAME**: Admin full name (default: `Administrator`)
 
@@ -1765,7 +1765,7 @@ If you enabled admin user creation with `PA_CREATE_ADMIN=1`:
 - Username: Value of `PA_ADMIN_USERNAME` (default: `admin`)
 - Password: A secure password is auto-generated and displayed in the container logs (unless you set `PA_ADMIN_PASSWORD` explicitly)
 
-**Important**: Check the container logs for the generated password when using `PA_CREATE_ADMIN=1`.
+**Important**: Check the container logs for the generated password when using `PA_CREATE_ADMIN=1`. Change it after the first login. To keep the password out of the logs, set `PA_ADMIN_PASSWORD` or `PA_ADMIN_PASSWORD__FILE`.
 
 ### Manual Setup
 
