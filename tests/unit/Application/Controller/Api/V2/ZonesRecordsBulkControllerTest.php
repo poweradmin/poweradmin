@@ -497,6 +497,36 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testTheUpdateCommentIsTrimmedAsOnCreate(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->once())->method('editRecord')->with(
+            $this->anything(),
+            false,
+            $this->callback(fn($c) => $c['content'] === 'web')
+        )->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'web', 3);
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => '  web  ']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAWhitespaceOnlyUpdateCommentClearsIt(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', '', 3);
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'comment' => '   ']]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAnUpdateWithAnEmptyCommentClearsIt(): void
     {
         $this->records->method('getRecordById')->willReturn($this->storedARecord());

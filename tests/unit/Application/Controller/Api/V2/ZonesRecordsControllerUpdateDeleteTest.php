@@ -627,6 +627,30 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testTheUpdateCommentIsTrimmedAsOnCreate(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord());
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->anything(), true, ['content' => 'web', 'account' => 'apiuser'])
+            ->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', 'web', self::RECORD_ID, 'apiuser');
+
+        $this->assertSame(200, $this->update(['comment' => '  web  '])->getStatusCode());
+    }
+
+    public function testAWhitespaceOnlyUpdateCommentClearsIt(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordFromId')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->comments->expects($this->once())->method('updateCommentForRecord')
+            ->with(self::ZONE_ID, 'www.example.com', 'A', '', self::RECORD_ID, 'apiuser');
+
+        $this->assertSame(200, $this->update(['comment' => '   '])->getStatusCode());
+    }
+
     public function testASyncedCommentIsCheckedAgainstTheKeyOwner(): void
     {
         $this->commentsSync = true;

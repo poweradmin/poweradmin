@@ -769,6 +769,8 @@ class ZonesRecordsController extends PublicApiController
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            // Trimmed as on create; whitespace-only becomes '' and clears the comment
+            $comment = $comment === null ? null : trim($comment);
 
             // Block changing the record into one the user may not manage, e.g.
             // retyping to SOA/NS or renaming a subzone NS onto the zone apex
