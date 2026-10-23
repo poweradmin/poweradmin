@@ -320,6 +320,21 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->assertSame('Failed to create record', $this->messageOf($response));
     }
 
+    public function testABackendVerdictIsReportedAs422WithThePowerDnsReason(): void
+    {
+        $this->addService->method('add')->willReturn(
+            RecordAddResult::refused(RecordWriteResult::backendRejected(
+                'Failed to add record to DNS backend: RRset a. IN LUA: update of Lua records is not allowed',
+                'RRset a. IN LUA: update of Lua records is not allowed'
+            ))
+        );
+
+        $response = $this->create($this->validBody());
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('Failed to create record: RRset a. IN LUA: update of Lua records is not allowed', $this->messageOf($response));
+    }
+
     public function testAnyOtherRefusalCarriesTheManagersOwnReason(): void
     {
         $this->addService->method('add')->willReturn(

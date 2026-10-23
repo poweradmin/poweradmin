@@ -1161,6 +1161,24 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertNull($this->provider->lastWriteRejection());
     }
 
+    public function testWriteRejectionStatusIsClearedByASuccessfulWriteAndAnEarlyFailure(): void
+    {
+        $this->stubSingleRecordRRset();
+        $this->mockClient->method('patchZoneRRsets')->willReturnOnConsecutiveCalls(false, true);
+        $this->mockClient->method('getLastWriteRejection')->willReturn('Not in expected format');
+        $this->mockClient->method('getLastWriteRejectionStatus')->willReturn(422);
+        $id = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);
+
+        $this->assertFalse($this->provider->deleteRecord($id));
+        $this->assertSame(422, $this->provider->lastWriteRejectionStatus());
+
+        $this->assertTrue($this->provider->deleteRecord($id));
+        $this->assertNull($this->provider->lastWriteRejectionStatus());
+
+        $this->assertFalse($this->provider->deleteRecord('not-an-encoded-id!'));
+        $this->assertNull($this->provider->lastWriteRejectionStatus());
+    }
+
     public function testDeleteRecordReplacesRRsetWithRemainingRecords(): void
     {
         $encodedId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.168.1.1', 0);

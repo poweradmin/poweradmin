@@ -323,6 +323,7 @@ class ChangeRequestsController extends PublicApiController
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Change request not found or change approval is not enabled'),
             new OA\Response(response: 409, description: 'Already decided'),
+            new OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason'),
         ]
     )]
     private function approveChangeRequest(): JsonResponse

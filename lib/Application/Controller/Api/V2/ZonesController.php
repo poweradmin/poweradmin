@@ -413,6 +413,7 @@ class ZonesController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 201,
         description: 'Zone created successfully',

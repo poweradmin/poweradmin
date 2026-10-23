@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
@@ -468,6 +469,58 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows('SELECT id FROM zones_groups'));
         $this->assertSame([], $this->loggedZones);
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
+    }
+
+    public function testApiBackendTemplateRecordRefusedByPowerDnsCarriesTheReason(): void
+    {
+        $this->seedTemplateRecords([['www.[ZONE]', 'LUA', 'A ";return 1"', 300, 0]]);
+        $backend = $this->createMockForIntersectionOfInterfaces([DnsBackendProviderInterface::class, ReportsWriteRejection::class]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('supportsLocalWriteTransaction')->willReturn(false);
+        $backend->method('recordIdsAreNumeric')->willReturn(false);
+        $backend->method('managesSoaRecord')->willReturn(true);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
+        $backend->method('createZone')->willReturnCallback(function (): int {
+            $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES (" . self::DOMAIN_ID . ", " . self::DOMAIN_ID . ", NULL, 0)");
+            return self::DOMAIN_ID;
+        });
+        $backend->method('addRecordGetId')->willReturn(null);
+        $backend->method('lastWriteRejection')->willReturn('RRset www.new.example. IN LUA: update of Lua records is not allowed');
+        $backend->method('lastWriteRejectionStatus')->willReturn(422);
+        $this->assertInstanceOf(DnsBackendProviderInterface::class, $backend);
+        $this->backend = $backend;
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::BACKEND_REJECTED, $result->refusal);
+        $this->assertSame('Failed to create LUA record for zone: RRset www.new.example. IN LUA: update of Lua records is not allowed', $result->message);
+    }
+
+    public function testApiBackendTemplateRecordFailureWithoutAVerdictKeepsTheOutageWording(): void
+    {
+        $this->seedTemplateRecords([['www.[ZONE]', 'LUA', 'A ";return 1"', 300, 0]]);
+        $backend = $this->createMockForIntersectionOfInterfaces([DnsBackendProviderInterface::class, ReportsWriteRejection::class]);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('supportsLocalWriteTransaction')->willReturn(false);
+        $backend->method('recordIdsAreNumeric')->willReturn(false);
+        $backend->method('managesSoaRecord')->willReturn(true);
+        $backend->method('allocatesZoneIdsLocally')->willReturn(true);
+        $backend->method('createZone')->willReturnCallback(function (): int {
+            $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES (" . self::DOMAIN_ID . ", " . self::DOMAIN_ID . ", NULL, 0)");
+            return self::DOMAIN_ID;
+        });
+        $backend->method('addRecordGetId')->willReturn(null);
+        $backend->method('lastWriteRejection')->willReturn(null);
+        $backend->method('lastWriteRejectionStatus')->willReturn(null);
+        $this->assertInstanceOf(DnsBackendProviderInterface::class, $backend);
+        $this->backend = $backend;
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID, [4]);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
+        $this->assertSame('Failed to create LUA record for zone.', $result->message);
     }
 
     public function testApiBackendTemplateFailureEmptiesAllFourMetadataTables(): void

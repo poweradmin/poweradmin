@@ -63,6 +63,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     private ?array $localZoneIds = null;
 
     private ?string $lastWriteRejection = null;
+    private ?int $lastWriteRejectionStatus = null;
 
     public function __construct(PowerdnsApiClient $client, PDO $db, ConfigurationInterface $config, ApiStatusRecorderInterface $apiStatus, ?LoggerInterface $logger = null, ?TransactionInterface $transaction = null)
     {
@@ -490,6 +491,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     private function appendRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment): ?string
     {
         $this->lastWriteRejection = null;
+        $this->lastWriteRejectionStatus = null;
         $zoneName = $this->getZoneNameByLocalId($domainId);
         if ($zoneName === null) {
             $this->logger->error('Cannot create record: zone id {id} has no local zones row', ['id' => $domainId]);
@@ -530,6 +532,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
             $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            $this->lastWriteRejectionStatus = $this->client->getLastWriteRejectionStatus();
             return null;
         }
 
@@ -539,6 +542,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
     {
         $this->lastWriteRejection = null;
+        $this->lastWriteRejectionStatus = null;
         // Decode the encoded record ID to get the old record identity
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("editRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
@@ -661,6 +665,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         if (!$this->client->patchZoneRRsets($apiZoneName, $rrsets)) {
             $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            $this->lastWriteRejectionStatus = $this->client->getLastWriteRejectionStatus();
             return false;
         }
 
@@ -670,6 +675,11 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     public function lastWriteRejection(): ?string
     {
         return $this->lastWriteRejection;
+    }
+
+    public function lastWriteRejectionStatus(): ?int
+    {
+        return $this->lastWriteRejectionStatus;
     }
 
     /**
@@ -691,6 +701,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     public function deleteRecord(int|string $recordId): bool
     {
         $this->lastWriteRejection = null;
+        $this->lastWriteRejectionStatus = null;
         if (!RecordIdentifier::isEncoded($recordId)) {
             $this->logger->error("deleteRecord called with non-encoded ID in API mode: {id}", ['id' => $recordId]);
             return false;
@@ -747,6 +758,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         if (!$this->client->patchZoneRRsets($apiZoneName, [$rrset])) {
             $this->lastWriteRejection = $this->client->getLastWriteRejection();
+            $this->lastWriteRejectionStatus = $this->client->getLastWriteRejectionStatus();
             return false;
         }
 

@@ -715,6 +715,27 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame('Bulk operations failed', $this->messageOf($response));
     }
 
+    public function testAnUpdateBackendVerdictIsReportedAs422WithThePowerDnsReason(): void
+    {
+        $this->records->method('getRecordById')->willReturn([
+            'id' => 3,
+            'domain_id' => self::ZONE_ID,
+            'name' => 'www.example.com',
+            'type' => 'A',
+            'content' => '192.0.2.5',
+            'ttl' => 3600,
+            'prio' => 0,
+            'disabled' => 0,
+        ]);
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::backendRejected('Failed to update record in DNS backend: nope', 'nope'));
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => '192.0.2.6']]]);
+
+        $this->assertSame(422, $response->getStatusCode());
+        $body = json_decode((string)$response->getContent(), true);
+        $this->assertSame(['Operation 0 (update): Failed to update record: nope'], $body['data']['errors']);
+    }
+
     private function transactionSpy(int $commits, int $rollbacks): void
     {
         $db = $this->createMock(PDO::class);

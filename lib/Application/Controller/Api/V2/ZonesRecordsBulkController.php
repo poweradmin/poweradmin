@@ -188,6 +188,7 @@ class ZonesRecordsBulkController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 200,
         description: 'Bulk operations completed successfully',
@@ -652,7 +653,7 @@ class ZonesRecordsBulkController extends PublicApiController
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
                 throw new Exception('Failed to update record');
             }
-            throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
+            throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to update record') : (string)$result->message, RefusalStatus::of($result->refusal));
         }
         if ($this->validateOnly) {
             $this->noteRekey($recordId, $existingRecord, $recordData);
@@ -765,7 +766,7 @@ class ZonesRecordsBulkController extends PublicApiController
             if ($result->refusal === Refusal::BACKEND_FAILURE) {
                 throw new Exception('Failed to delete record');
             }
-            throw new ApiErrorException((string)$result->message, RefusalStatus::of($result->refusal));
+            throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to delete record') : (string)$result->message, RefusalStatus::of($result->refusal));
         }
         if ($this->validateOnly) {
             $this->batchGoneIds[(string)$recordId] = true;

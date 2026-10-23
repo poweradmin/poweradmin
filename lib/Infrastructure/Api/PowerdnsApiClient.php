@@ -78,6 +78,7 @@ class PowerdnsApiClient
 
     /** PowerDNS's own explanation for the last rejected RRset PATCH. */
     private ?string $lastWriteRejection = null;
+    private ?int $lastWriteRejectionStatus = null;
 
     private ApiStatusRecorderInterface $apiStatus;
 
@@ -1128,6 +1129,7 @@ class PowerdnsApiClient
     public function patchZoneRRsets(string $zoneName, array $rrsets): bool
     {
         $this->lastWriteRejection = null;
+        $this->lastWriteRejectionStatus = null;
         try {
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $data = ['rrsets' => $rrsets];
@@ -1139,6 +1141,7 @@ class PowerdnsApiClient
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to patch RRsets for zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             $this->lastWriteRejection = self::rejectionReason($e);
+            $this->lastWriteRejectionStatus = $this->lastWriteRejection === null ? null : $e->getDetail('http_code');
             return false;
         }
     }
@@ -1150,6 +1153,14 @@ class PowerdnsApiClient
     public function getLastWriteRejection(): ?string
     {
         return $this->lastWriteRejection;
+    }
+
+    /**
+     * The HTTP status of the answer behind getLastWriteRejection(), or null without one.
+     */
+    public function getLastWriteRejectionStatus(): ?int
+    {
+        return $this->lastWriteRejectionStatus;
     }
 
     /**

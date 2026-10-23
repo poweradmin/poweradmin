@@ -33,4 +33,10 @@ interface ReportsWriteRejection
      * the write succeeded or failed without a verdict from the service.
      */
     public function lastWriteRejection(): ?string;
+
+    /**
+     * The HTTP status of the service answer behind lastWriteRejection(), or null without one.
+     * 400 and 422 are validation verdicts; other 4xx answers are not.
+     */
+    public function lastWriteRejectionStatus(): ?int;
 }

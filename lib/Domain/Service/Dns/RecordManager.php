@@ -366,13 +366,42 @@ class RecordManager implements RecordManagerInterface
     private function writeBackendFailure(string $message): RecordWriteResult
     {
         $text = self::backendFailureMessage($message, $this->writeRejection());
+        if ($text === $message) {
+            return RecordWriteResult::backendFailure($text);
+        }
+        $reason = self::cleanBackendReason((string)$this->writeRejection());
+        if ($reason !== null && $this->writeRejectionIsValidation()) {
+            return RecordWriteResult::backendRejected($text, $reason, RecordField::CONTENT);
+        }
 
-        return RecordWriteResult::backendFailure($text, $text !== $message ? RecordField::CONTENT : null);
+        return RecordWriteResult::backendFailure($text, RecordField::CONTENT);
+    }
+
+    /**
+     * PowerDNS answered 400 or 422 to the last write: a verdict on the record, not an outage.
+     */
+    private function writeRejectionIsValidation(): bool
+    {
+        return $this->backendProvider instanceof ReportsWriteRejection
+            && in_array($this->backendProvider->lastWriteRejectionStatus(), [400, 422], true);
     }
 
     private function writeRejection(): ?string
     {
         return $this->backendProvider instanceof ReportsWriteRejection ? $this->backendProvider->lastWriteRejection() : null;
+    }
+
+    /**
+     * One line, control characters removed, capped; null when nothing is left.
+     */
+    public static function cleanBackendReason(string $reason): ?string
+    {
+        $reason = trim((string)preg_replace('/[\\x00-\\x1F\\x7F]+/u', ' ', $reason));
+        if ($reason === '') {
+            return null;
+        }
+
+        return mb_strlen($reason) > self::MAX_BACKEND_REASON_LENGTH ? mb_substr($reason, 0, self::MAX_BACKEND_REASON_LENGTH) . '...' : $reason;
     }
 
     /**
@@ -386,12 +415,9 @@ class RecordManager implements RecordManagerInterface
             return $message;
         }
 
-        $reason = trim((string)preg_replace('/[\\x00-\\x1F\\x7F]+/u', ' ', $reason));
-        if ($reason === '') {
+        $reason = self::cleanBackendReason($reason);
+        if ($reason === null) {
             return $message;
-        }
-        if (mb_strlen($reason) > self::MAX_BACKEND_REASON_LENGTH) {
-            $reason = mb_substr($reason, 0, self::MAX_BACKEND_REASON_LENGTH) . '...';
         }
 
         return (preg_replace('/[.\x{3002}\x{FF0E}\x{0964}]\s*$/u', '', $message) ?? $message) . ': ' . $reason;
@@ -587,7 +613,12 @@ class RecordManager implements RecordManagerInterface
         }
 
         if (!$this->backendProvider->deleteRecord($rid)) {
-            return RecordWriteResult::backendFailure(self::backendFailureMessage(_('Failed to delete record from DNS backend.'), $this->writeRejection()));
+            $text = self::backendFailureMessage(_('Failed to delete record from DNS backend.'), $this->writeRejection());
+            $reason = self::cleanBackendReason((string)$this->writeRejection());
+
+            return $reason !== null && $this->writeRejectionIsValidation()
+                ? RecordWriteResult::backendRejected($text, $reason)
+                : RecordWriteResult::backendFailure($text);
         }
 
         $this->captureChange(function () use ($record, $rid, $zone): void {

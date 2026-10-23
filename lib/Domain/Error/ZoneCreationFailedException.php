@@ -30,4 +30,9 @@ use RuntimeException;
  */
 final class ZoneCreationFailedException extends RuntimeException
 {
+    /** @param bool $rejected The backend answered and refused the record on its own validation */
+    public function __construct(string $message = '', public readonly bool $rejected = false)
+    {
+        parent::__construct($message);
+    }
 }

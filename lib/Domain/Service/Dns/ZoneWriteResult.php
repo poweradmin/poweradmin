@@ -68,4 +68,10 @@ final readonly class ZoneWriteResult
     {
         return new self(false, $message, Refusal::BACKEND_FAILURE, null);
     }
+
+    /** The backend answered and refused a write on its own validation; the message carries its reason. */
+    public static function backendRejected(string $message): self
+    {
+        return new self(false, $message, Refusal::BACKEND_REJECTED, null);
+    }
 }

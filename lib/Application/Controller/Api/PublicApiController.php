@@ -491,13 +491,14 @@ abstract class PublicApiController extends AbstractApiController
 
     /**
      * The API wording for a refused record write: a duplicate and a backend fault
-     * keep the contract strings, every other refusal carries the manager's reason.
+     * keep the contract strings, a backend verdict appends its reason to them, every other refusal carries the manager's reason.
      */
     protected function recordWriteErrorMessage(RecordWriteResult $result, string $backendFailureText): string
     {
         return match (true) {
             $result->refusal === Refusal::CONFLICT => 'A record with this hostname, type, and content already exists',
             $result->refusal === Refusal::BACKEND_FAILURE => $backendFailureText,
+            $result->refusal === Refusal::BACKEND_REJECTED => $backendFailureText . ': ' . $result->reason,
             default => (string)$result->message,
         };
     }

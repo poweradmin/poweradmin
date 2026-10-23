@@ -384,6 +384,17 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame('Failed to update record', $this->messageOf($response));
     }
 
+    public function testABackendVerdictOnEditIs422WithThePowerDnsReason(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::backendRejected('Failed to update record in DNS backend: nope', 'nope'));
+
+        $response = $this->update(['content' => '192.0.2.9']);
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('Failed to update record: nope', $this->messageOf($response));
+    }
+
     public function testASuccessfulUpdateReturnsTheRereadRow(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -745,6 +756,17 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
 
         $this->assertSame(500, $response->getStatusCode());
         $this->assertSame('Failed to delete record', $this->messageOf($response));
+    }
+
+    public function testABackendVerdictOnDeleteIs422WithThePowerDnsReason(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::backendRejected('Failed to delete record from DNS backend: nope', 'nope'));
+
+        $response = $this->delete();
+
+        $this->assertSame(422, $response->getStatusCode());
+        $this->assertSame('Failed to delete record: nope', $this->messageOf($response));
     }
 
     /**

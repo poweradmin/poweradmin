@@ -55,6 +55,18 @@ class PowerdnsApiClientWriteRejectionTest extends TestCase
     }
 
     #[Test]
+    public function testRejectionStatusIsExposedAndClearedWithoutAVerdict(): void
+    {
+        $client = $this->clientFailingWith($this->rejection(422, ['error' => 'nope']));
+        $client->patchZoneRRsets('example.com.', []);
+        $this->assertSame(422, $client->getLastWriteRejectionStatus());
+
+        $outage = $this->clientFailingWith($this->rejection(500, ['error' => 'boom']));
+        $outage->patchZoneRRsets('example.com.', []);
+        $this->assertNull($outage->getLastWriteRejectionStatus());
+    }
+
+    #[Test]
     public function testAuthFailureHasNoReason(): void
     {
         $client = $this->clientFailingWith($this->rejection(403, ['error' => 'Forbidden']));

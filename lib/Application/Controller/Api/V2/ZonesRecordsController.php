@@ -400,6 +400,7 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 201,
         description: 'Record created successfully',
@@ -660,6 +661,7 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 200,
         description: 'Record updated successfully',
@@ -868,6 +870,7 @@ class ZonesRecordsController extends PublicApiController
         required: true,
         schema: new OA\Schema(type: 'string')
     )]
+    #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 204,
         description: 'Record deleted successfully'
@@ -930,7 +933,9 @@ class ZonesRecordsController extends PublicApiController
             $result = $this->recordManager->deleteRecord($recordId);
             if (!$result->success) {
                 // Backend faults keep the generic contract string; refusals carry their reason
-                return $this->returnApiError($result->refusal === Refusal::BACKEND_FAILURE ? 'Failed to delete record' : (string)$result->message, RefusalStatus::of($result->refusal));
+                $backendRefusal = $result->refusal === Refusal::BACKEND_FAILURE || $result->refusal === Refusal::BACKEND_REJECTED;
+
+                return $this->returnApiError($backendRefusal ? $this->recordWriteErrorMessage($result, 'Failed to delete record') : (string)$result->message, RefusalStatus::of($result->refusal));
             }
 
             $this->services()->auditService()->logApiRecordDelete($zoneId, $existingRecord['name'] ?? '', $existingRecord['type'] ?? '', $existingRecord['content'] ?? '');

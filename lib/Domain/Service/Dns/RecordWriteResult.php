@@ -38,7 +38,8 @@ final readonly class RecordWriteResult
         public ?Refusal $refusal,
         public ?RecordField $field,
         public int|string|null $recordId,
-        public bool $changed = true
+        public bool $changed = true,
+        public ?string $reason = null
     ) {
     }
 
@@ -77,5 +78,14 @@ final readonly class RecordWriteResult
     public static function backendFailure(string $message, ?RecordField $field = null): self
     {
         return new self(false, $message, Refusal::BACKEND_FAILURE, $field, null);
+    }
+
+    /**
+     * The backend answered and refused the write; $reason is its own sanitised text and
+     * $message already carries it.
+     */
+    public static function backendRejected(string $message, string $reason, ?RecordField $field = null): self
+    {
+        return new self(false, $message, Refusal::BACKEND_REJECTED, $field, null, true, $reason);
     }
 }

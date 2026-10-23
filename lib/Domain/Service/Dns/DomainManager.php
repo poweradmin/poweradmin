@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Error\ZoneCreationFailedException;
+use Poweradmin\Domain\Port\ReportsWriteRejection;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Throwable;
@@ -293,7 +294,7 @@ final class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::ok((int)$domain_id);
         } catch (ZoneCreationFailedException $e) {
             $this->cleanupFailedCreation($domain_id, $domain);
-            return ZoneWriteResult::backendFailure($e->getMessage());
+            return $e->rejected ? ZoneWriteResult::backendRejected($e->getMessage()) : ZoneWriteResult::backendFailure($e->getMessage());
         } catch (\Exception $e) {
             $this->logger->error('Zone creation for {domain} failed: {error}', ['domain' => $domain, 'error' => $e->getMessage()]);
             $this->cleanupFailedCreation($domain_id, $domain);
@@ -381,8 +382,28 @@ final class DomainManager implements DomainManagerInterface
         $soa = new DefaultSoaBuilder($this->config);
 
         if (!$this->backendProvider->addRecord($domain_id, $domain, 'SOA', $soa->content(), $soa->ttl(), 0)) {
-            throw new ZoneCreationFailedException(_('Failed to create SOA record for zone.'));
+            throw $this->recordCreationFailed(_('Failed to create SOA record for zone.'));
         }
+    }
+
+    /**
+     * The failure for a record the backend would not take. When PowerDNS refused it with a
+     * validation answer, its reason is appended and the failure is flagged as a refusal.
+     */
+    private function recordCreationFailed(string $message): ZoneCreationFailedException
+    {
+        $provider = $this->backendProvider;
+        if (!$provider instanceof ReportsWriteRejection) {
+            return new ZoneCreationFailedException($message);
+        }
+        $clean = RecordManager::cleanBackendReason((string)$provider->lastWriteRejection());
+        if ($clean === null) {
+            return new ZoneCreationFailedException($message);
+        }
+
+        $validation = in_array($provider->lastWriteRejectionStatus(), [400, 422], true);
+
+        return new ZoneCreationFailedException(RecordManager::backendFailureMessage($message, $clean), $validation);
     }
 
     /**
@@ -414,7 +435,7 @@ final class DomainManager implements DomainManagerInterface
 
             $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
             if ($record_id === null) {
-                throw new ZoneCreationFailedException(sprintf(_('Failed to create %s record for zone.'), $recordType));
+                throw $this->recordCreationFailed(sprintf(_('Failed to create %s record for zone.'), $recordType));
             }
 
             // Linked so a later template edit can remove exactly these records.

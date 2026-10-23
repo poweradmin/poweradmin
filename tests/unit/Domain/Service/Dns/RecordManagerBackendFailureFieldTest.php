@@ -122,6 +122,42 @@ class RecordManagerBackendFailureFieldTest extends PermissionServiceTestCase
         $this->assertBackendFailure($result, 'Failed to update record in DNS backend.', null);
     }
 
+    #[Test]
+    public function testAddRefusedWith422IsABackendRejectionCarryingTheReason(): void
+    {
+        $result = $this->add($this->apiBackend('addRecordGetId', "Not in\nexpected format", 422));
+
+        $this->assertSame(Refusal::BACKEND_REJECTED, $result->refusal);
+        $this->assertSame('Not in expected format', $result->reason);
+        $this->assertSame('Failed to add record to DNS backend: Not in expected format', $result->message);
+        $this->assertSame(RecordField::CONTENT, $result->field);
+    }
+
+    #[Test]
+    public function testEditRefusedWith400IsABackendRejection(): void
+    {
+        $result = $this->edit($this->apiBackend('editRecord', 'bad', 400));
+
+        $this->assertSame(Refusal::BACKEND_REJECTED, $result->refusal);
+    }
+
+    #[Test]
+    public function testAddRefusedWith404StaysABackendFailureButKeepsTheReason(): void
+    {
+        $result = $this->add($this->apiBackend('addRecordGetId', 'Could not find domain', 404));
+
+        $this->assertBackendFailure($result, 'Failed to add record to DNS backend: Could not find domain', RecordField::CONTENT);
+        $this->assertNull($result->reason);
+    }
+
+    #[Test]
+    public function testAnOverlongReasonIsCapped(): void
+    {
+        $result = $this->add($this->apiBackend('addRecordGetId', str_repeat('x', 1000), 422));
+
+        $this->assertSame(303, mb_strlen((string)$result->reason));
+    }
+
     private function assertBackendFailure(RecordWriteResult $result, string $message, ?RecordField $field): void
     {
         $this->assertFalse($result->success);
@@ -159,7 +195,7 @@ class RecordManagerBackendFailureFieldTest extends PermissionServiceTestCase
         return $backend;
     }
 
-    private function apiBackend(string $failingWrite, ?string $reason): RecordWriteBackendInterface&BackendCapabilitiesInterface
+    private function apiBackend(string $failingWrite, ?string $reason, ?int $status = null): RecordWriteBackendInterface&BackendCapabilitiesInterface
     {
         $backend = $this->createMockForIntersectionOfInterfaces([
             RecordWriteBackendInterface::class,
@@ -168,6 +204,7 @@ class RecordManagerBackendFailureFieldTest extends PermissionServiceTestCase
         ]);
         $backend->method($failingWrite)->willReturn($failingWrite === 'editRecord' ? false : null);
         $backend->method('lastWriteRejection')->willReturn($reason);
+        $backend->method('lastWriteRejectionStatus')->willReturn($status);
         $this->assertInstanceOf(RecordWriteBackendInterface::class, $backend);
         $this->assertInstanceOf(BackendCapabilitiesInterface::class, $backend);
 
