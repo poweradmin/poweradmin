@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -192,7 +193,8 @@ class SOARecordManager implements SOARecordManagerInterface
                 return false;
             }
             $soa_ttl = (int)$this->config->get('dns', 'soa_rec_default_ttl', 86400);
-            return $this->backendProvider->addRecord($domain_id, $zoneName, 'SOA', $content, $soa_ttl, 0);
+            // The zone id stays the variant; the SOA record sits at its apex name
+            return $this->backendProvider->addRecord($domain_id, DnsHelper::zoneApexName($zoneName), 'SOA', $content, $soa_ttl, 0);
         }
 
         $tableNameService = new TableNameService($this->config);
