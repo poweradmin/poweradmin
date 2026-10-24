@@ -38,7 +38,7 @@
 #     -e PA_ADMIN_PASSWORD=your-secure-password \
 #     poweradmin
 
-FROM dunglas/frankenphp:1.11.3-php8.4-alpine
+FROM dunglas/frankenphp:1.13.2-php8.4-alpine@sha256:94328abb9f8bb5e9b996623c3851c4bdc572b232c3012f48a0b230d76bc0d6e8
 
 # Update base packages to fix known security vulnerabilities
 RUN apk upgrade --no-cache
