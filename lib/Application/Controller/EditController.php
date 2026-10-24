@@ -48,6 +48,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
@@ -601,6 +602,7 @@ class EditController extends BaseController
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
+        $serialBefore = SOARecordManager::getSOASerial($this->dnsRecord->getSOARecord($zone_id));
 
         // A truncated POST (max_input_vars) drops the form's trailing fields, so the
         // zone comment must not be processed either - it would be saved as empty.
@@ -705,7 +707,7 @@ class EditController extends BaseController
             return;
         }
 
-        $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
+        $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name, $serialBefore);
     }
 
 
@@ -791,16 +793,21 @@ class EditController extends BaseController
      * @param int $zone_id
      * @param bool $one_record_changed
      * @param string $zone_name
+     * @param string|null $serialBefore The serial before the save wrote anything; the API backend
+     *                                  bumps it for every RRset it is sent, so a serial that already
+     *                                  moved is not bumped again. Null when unknown.
      * @return void
      */
-    public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name): void
+    public function finalizeSave(bool $error, bool $serial_mismatch, DnsRecord $dnsRecord, int $zone_id, bool $one_record_changed, string $zone_name, ?string $serialBefore = null): void
     {
         if ($error === false) {
             $experimental_edit_conflict_resolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
             if ($serial_mismatch && $experimental_edit_conflict_resolution == 'only_latest_version') {
                 $this->setMessage('edit', 'warn', (_('Request has expired, please try again.')));
             } else {
-                $dnsRecord->updateSOASerial($zone_id);
+                $rrsetWritten = $serialBefore === null
+                    || SOARecordManager::getSOASerial($dnsRecord->getSOARecord($zone_id)) !== $serialBefore;
+                $dnsRecord->updateSOASerial($zone_id, $rrsetWritten);
 
                 if ($one_record_changed) {
                     $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));

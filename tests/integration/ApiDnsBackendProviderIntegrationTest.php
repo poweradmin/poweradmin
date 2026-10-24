@@ -25,7 +25,10 @@ namespace Poweradmin\Tests\Integration;
 use Exception;
 use PDO;
 use PDOException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -943,5 +946,68 @@ class ApiDnsBackendProviderIntegrationTest extends TestCase
         }
         $this->assertFalse($foundOld, 'Old autoprimary should be removed');
         $this->assertTrue($foundNew, 'New autoprimary should exist');
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public static function soaEditApiModes(): array
+    {
+        return ['OFF' => ['OFF'], 'DEFAULT' => ['DEFAULT'], 'INCREASE' => ['INCREASE'], 'EPOCH' => ['EPOCH']];
+    }
+
+    private function soaManager(): SOARecordManager
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
+
+        return new SOARecordManager($this->poweradminDb, $config, $this->provider);
+    }
+
+    /**
+     * A save that sent PowerDNS no RRset (no-op save, zone comment) has to move the
+     * serial itself, whatever SOA-EDIT-API says, and report only a real move.
+     */
+    #[DataProvider('soaEditApiModes')]
+    public function testUpdateSoaSerialMovesTheSerialWhenNoRrsetWasWritten(string $mode): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+        $zoneId = $this->provider->createZone($zone, 'NATIVE');
+        $this->assertIsInt($zoneId);
+        $this->assertTrue($this->client->updateZoneProperties($zone . '.', ['soa_edit_api' => $mode]));
+        $manager = $this->soaManager();
+        $before = (int)SOARecordManager::getSOASerial($this->provider->getSOARecord($zoneId));
+        // EPOCH stamps the clock, so the stored serial has to be behind it
+        sleep($mode === 'EPOCH' ? 2 : 0);
+
+        $moved = $manager->updateSOASerial($zoneId, false);
+
+        $after = (int)SOARecordManager::getSOASerial($this->provider->getSOARecord($zoneId));
+        $this->assertTrue($moved, "SOA-EDIT-API $mode: the serial must move");
+        $this->assertNotSame($before, $after);
+    }
+
+    #[DataProvider('soaEditApiModes')]
+    public function testUpdateSoaSerialAfterAnRrsetWriteMovesTheSerialExactlyOnce(string $mode): void
+    {
+        $zone = $this->uniqueZoneName();
+        $this->createdZones[] = $zone;
+        $zoneId = $this->provider->createZone($zone, 'NATIVE');
+        $this->assertIsInt($zoneId);
+        $this->assertTrue($this->client->updateZoneProperties($zone . '.', ['soa_edit_api' => $mode]));
+        $manager = $this->soaManager();
+        $before = (int)SOARecordManager::getSOASerial($this->provider->getSOARecord($zoneId));
+        sleep($mode === 'EPOCH' ? 2 : 0);
+
+        $this->assertTrue($this->provider->addRecord($zoneId, 'www.' . $zone, 'A', '192.0.2.1', 300, 0));
+        $this->assertTrue($manager->updateSOASerial($zoneId));
+
+        $after = (int)SOARecordManager::getSOASerial($this->provider->getSOARecord($zoneId));
+        // EPOCH rewrites a date-style serial to the clock, which is numerically lower
+        $this->assertNotSame($before, $after, "SOA-EDIT-API $mode: the serial must have moved");
+        if ($mode === 'INCREASE') {
+            $this->assertSame($before + 1, $after, 'PowerDNS bumped once for the write, Poweradmin added nothing');
+        }
     }
 }

@@ -205,12 +205,13 @@ class DnsRecord
      * Increments SOA serial to next possible number
      *
      * @param int $domain_id Domain ID
+     * @param bool $rrsetWritten Whether an RRset was written to the backend in this operation
      *
-     * @return boolean true if success
+     * @return boolean true if the serial moved or the backend moved it with the write
      */
-    public function updateSOASerial(int $domain_id): bool
+    public function updateSOASerial(int $domain_id, bool $rrsetWritten = true): bool
     {
-        return $this->soaRecordManager->updateSOASerial($domain_id);
+        return $this->soaRecordManager->updateSOASerial($domain_id, $rrsetWritten);
     }
 
     /** Get Zone comment
