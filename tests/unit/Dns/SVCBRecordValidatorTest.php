@@ -207,4 +207,12 @@ class SVCBRecordValidatorTest extends TestCase
             'ech quoted' => ['1 svc.example.com ech="AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA="'],
         ];
     }
+
+    public function testEchValueIsStoredQuoted(): void
+    {
+        $result = $this->validator->validate('1 svc.example.com ech=AAAA alpn=h2', 'svc.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('1 svc.example.com ech="AAAA" alpn=h2', $result->getData()['content']);
+    }
 }

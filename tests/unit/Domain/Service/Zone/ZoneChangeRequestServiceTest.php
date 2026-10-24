@@ -249,6 +249,18 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
     }
 
+    public function testFilingAnHttpsAddRefusesARowStoredWithAnUnquotedEch(): void
+    {
+        $this->records = $this->createMock(RecordRepositoryInterface::class);
+        $this->records->method('recordExists')->willReturnCallback(
+            fn(int $zoneId, string $name, string $type, string $content): bool => $content === '1 . alpn=h2 ech=AAAA'
+        );
+
+        $duplicate = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'HTTPS', 'content' => '1 . alpn=h2 ech=AAAA', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+
+        $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
+    }
+
     public function testFilingADeleteSnapshotsTheStoredRowAndRefusesOtherZones(): void
     {
         $result = $this->makeService()->fileRecordDelete(self::ZONE_ID, '6', self::REQUESTER, 'alice');

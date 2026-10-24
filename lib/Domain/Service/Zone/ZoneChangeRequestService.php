@@ -183,7 +183,11 @@ class ZoneChangeRequestService
         if ($error !== null) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
         }
-        if ($this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $row['content'])) {
+        $legacyContent = DnsFormatter::unquoteEch($row['type'], $row['content']);
+        if (
+            $this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $row['content'])
+            || ($legacyContent !== null && $this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $legacyContent))
+        ) {
             $error = 'A record with this hostname, type, and content already exists.';
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::CONFLICT, [$error]);
         }

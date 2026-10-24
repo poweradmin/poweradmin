@@ -135,6 +135,15 @@ class ZoneTemplatePlaceholdersParsingTest extends TestCase
     }
 
     /**
+     * Template rows stored before ech was quoted are quoted when the template is applied,
+     * since the PowerDNS API refuses the unquoted form.
+     */
+    public function testHttpsEchValueIsQuotedWhenApplied(): void
+    {
+        $this->assertSame('1 . ech="AAAA"', $this->zoneTemplate->parseTemplateValue('1 . ech=AAAA', 'example.com', 'HTTPS'));
+    }
+
+    /**
      * An SOA record with missing timers still gets them appended when the type
      * is passed explicitly.
      */

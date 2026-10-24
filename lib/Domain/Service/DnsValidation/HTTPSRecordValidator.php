@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Closure;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
@@ -94,7 +95,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success([
-            'content' => $content,
+            'content' => DnsFormatter::quoteEch('HTTPS', $content),
             'name' => $name,
             'prio' => 0, // Priority is included in the content for HTTPS records
             'ttl' => $validatedTtl

@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -693,7 +694,7 @@ class ZonesRecordsBulkController extends PublicApiController
     {
         $type = strtoupper($type);
 
-        return strtolower($name) . "\0" . $type . "\0" . ApiDnsBackendProvider::stripTrailingDotFromContent($type, $content);
+        return strtolower($name) . "\0" . $type . "\0" . ApiDnsBackendProvider::stripTrailingDotFromContent($type, DnsFormatter::quoteEch($type, $content));
     }
 
     /**
@@ -708,7 +709,8 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($stored !== null) {
             $savedId = $stored['id'] ?? $recordId;
         } else {
-            $savedId = $this->recordRepository->getNewRecordId($zoneId, (string)$recordData['name'], (string)$recordData['type'], (string)$recordData['content']) ?? $recordId;
+            $recordData['content'] = DnsFormatter::quoteEch((string)$recordData['type'], (string)$recordData['content']);
+            $savedId = $this->recordRepository->getNewRecordId($zoneId, (string)$recordData['name'], (string)$recordData['type'], $recordData['content']) ?? $recordId;
             $stored = $recordData;
         }
 

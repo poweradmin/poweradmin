@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\Template;
 use ArrayAccess;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\DomainParsingService;
 
 /**
@@ -159,7 +160,7 @@ class ZoneTemplatePlaceholders
             $val = self::quoteTxt($val);
         }
 
-        return $val;
+        return $recordType === null ? $val : DnsFormatter::quoteEch($recordType, $val);
     }
 
     /**

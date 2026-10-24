@@ -40,8 +40,33 @@ class DnsFormatter
     {
         return match ($type) {
             'TXT' => $this->formatTxtContent($content),
-            default => $content,
+            default => self::quoteEch($type, $content),
         };
+    }
+
+    /**
+     * Writes an SVCB or HTTPS ech value in quotes, the form PowerDNS stores and serves.
+     * Its API refuses an unquoted ech value ("Not in expected format"); SQL mode reads both.
+     */
+    public static function quoteEch(string $type, string $content): string
+    {
+        $type = strtoupper($type);
+        if ($type !== 'SVCB' && $type !== 'HTTPS') {
+            return $content;
+        }
+
+        return (string)preg_replace('/(^|\s)(ech)=([^"\s]+)(?=\s|$)/i', '$1$2="$3"', $content);
+    }
+
+    /**
+     * The form an SVCB or HTTPS row had when saved before ech was quoted, or null when
+     * the content carries no quoted ech value. Duplicate checks look for both forms.
+     */
+    public static function unquoteEch(string $type, string $content): ?string
+    {
+        $unquoted = (string)preg_replace('/(^|\s)(ech)="([^"\s]+)"(?=\s|$)/i', '$1$2=$3', $content);
+
+        return $unquoted !== $content && self::quoteEch($type, $unquoted) === $content ? $unquoted : null;
     }
 
     private function formatTxtContent(string $content): string

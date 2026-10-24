@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
+use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
@@ -104,6 +105,7 @@ class RecordEditService
         } else {
             // The API backend re-keys a record when name, type, content or prio change;
             // the row is then rebuilt from the submitted values under its new id
+            $content = DnsFormatter::quoteEch($request->type, $content);
             $recordId = $this->records->getNewRecordId($request->zoneId, $name, $request->type, $content) ?? $request->recordId;
             $stored = [
                 'type' => $request->type,

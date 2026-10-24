@@ -197,6 +197,17 @@ class RecordManager implements RecordManagerInterface
         return false;
     }
 
+    /**
+     * SQL mode may hold an SVCB or HTTPS row saved with its ech value unquoted, before
+     * Poweradmin started quoting it; that row is the same record.
+     */
+    private function unquotedEchExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
+    {
+        $unquoted = DnsFormatter::unquoteEch($type, $content);
+
+        return $unquoted !== null && $recordRepository->recordExists($zoneId, $name, $type, $unquoted);
+    }
+
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
@@ -298,7 +309,11 @@ class RecordManager implements RecordManagerInterface
 
         // Create RecordRepository to check if record exists
         $recordRepository = $this->repositoryFactory->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)) {
+        if (
+            $recordRepository->recordExists($zone_id, $name, $type, $content)
+            || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)
+            || $this->unquotedEchExists($recordRepository, $zone_id, $name, $type, $content)
+        ) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
