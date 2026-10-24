@@ -27,6 +27,12 @@ Please include:
 
 Reports from automated scanners are welcome only with a working reproduction.
 
+## One Vulnerability per Report
+
+Please file one report for each vulnerability. A vulnerability here means one flaw that can be fixed on its own. If the same mistake shows up in several places that each need their own fix, such as a web path and an API path with the same missing permission check, file a separate report for each and mention the related reports in each one.
+
+GitHub, which assigns CVEs for Poweradmin, issues one CVE per independently fixable vulnerability, so a combined report has to be split before a CVE can be requested, and that delays the advisory and your credit. If you're not sure whether two findings count as one, ask in the report and we'll sort it out before anything is published.
+
 ## What Happens Next
 
 - You'll get a reply within 7 days.
