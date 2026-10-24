@@ -1346,6 +1346,7 @@ return [
             'lockout_attempts' => $(php_num PA_LOCKOUT_ATTEMPTS "${PA_LOCKOUT_ATTEMPTS:-5}" 5),
             'lockout_duration' => $(php_num PA_LOCKOUT_DURATION "${PA_LOCKOUT_DURATION:-15}" 15),
             'track_ip_address' => ${lockout_track_ip},
+            'username_attempts' => $(php_num PA_LOCKOUT_USERNAME_ATTEMPTS "${PA_LOCKOUT_USERNAME_ATTEMPTS:-0}" 0),
             'clear_attempts_on_success' => ${lockout_clear_on_success},
             'whitelist_ip_addresses' => ${lockout_whitelist_ips},
             'blacklist_ip_addresses' => ${lockout_blacklist_ips},

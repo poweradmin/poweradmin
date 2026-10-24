@@ -241,4 +241,87 @@ class LoginAttemptServiceThrottleTest extends TestCase
 
         $this->assertFalse($service->isAccountLocked('alice', '10.0.0.1'));
     }
+
+    public function testIpv6AddressesInOneSlash64ShareTheBudget(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+        $service->recordAttempt('alice', '2001:db8:1:2::1', false);
+        $service->recordAttempt('alice', '2001:db8:1:2::2', false);
+        $service->recordAttempt('alice', '2001:db8:1:2:aaaa:bbbb:cccc:dddd', false);
+
+        $this->assertSame('2001:db8:1:2::/64', $this->attempts()[0]['ip_address']);
+        $this->assertTrue($service->isAccountLocked('alice', '2001:db8:1:2::ffff'));
+        $this->assertFalse($service->isAccountLocked('alice', '2001:db8:1:3::1'));
+    }
+
+    public function testIpv4MappedAddressCountsAsItsIpv4Address(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+        $service->recordAttempt('alice', '::ffff:10.0.0.1', false);
+        $service->recordAttempt('alice', '10.0.0.1', false);
+        $service->recordAttempt('alice', '::ffff:10.0.0.1', false);
+
+        $this->assertSame('10.0.0.1', $this->attempts()[0]['ip_address']);
+        $this->assertTrue($service->isAccountLocked('alice', '10.0.0.1'));
+    }
+
+    public function testSuccessClearsFailuresFromAnotherAddressInTheSameSlash64(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+        $service->recordAttempt('alice', '2001:db8::1', false);
+        $service->recordAttempt('alice', '2001:db8::2', false);
+        $service->recordAttempt('alice', '2001:db8::3', true);
+        $service->recordAttempt('alice', '2001:db8::4', false);
+
+        $this->assertFalse($service->isAccountLocked('alice', '2001:db8::5'));
+    }
+
+    public function testUsernameCeilingLocksTheAccountAcrossAddresses(): void
+    {
+        $service = $this->service($this->lockoutConfig(['username_attempts' => 4]));
+        foreach (['10.0.0.1', '10.0.0.2', '2001:db8:1::1', '2001:db8:2::1'] as $address) {
+            $service->recordAttempt('alice', $address, false);
+        }
+
+        $this->assertTrue($service->isAccountLocked('alice', '10.0.0.9'));
+        $this->assertFalse($service->isAccountLocked('bob', '10.0.0.9'));
+    }
+
+    public function testUsernameCeilingWaitsForItsCount(): void
+    {
+        $service = $this->service($this->lockoutConfig(['username_attempts' => 4]));
+        foreach (['10.0.0.1', '10.0.0.2', '10.0.0.3'] as $address) {
+            $service->recordAttempt('alice', $address, false);
+        }
+
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.9'));
+    }
+
+    public function testUsernameCeilingIsIgnoredWithoutIpTracking(): void
+    {
+        $service = $this->service($this->lockoutConfig(['track_ip_address' => false, 'username_attempts' => 1]));
+        $service->recordAttempt('alice', '10.0.0.1', false);
+
+        // Without IP tracking the per-user lockout_attempts of 3 is the only limit
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.2'));
+    }
+
+    public function testUsernameCeilingIsOffByDefault(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+        for ($i = 1; $i <= 10; $i++) {
+            $service->recordAttempt('alice', "10.0.0.$i", false);
+        }
+
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.99'));
+    }
+
+    public function testUsernameCeilingDoesNotApplyToTheMfaStage(): void
+    {
+        $service = $this->service($this->lockoutConfig(['username_attempts' => 1]));
+        $service->recordAttempt('alice', '10.0.0.1', false, LoginAttemptService::STAGE_MFA);
+
+        // One MFA failure is under its own limit of 2; the ceiling of 1 must not trip it
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.2', LoginAttemptService::STAGE_MFA));
+    }
 }

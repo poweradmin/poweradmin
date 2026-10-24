@@ -293,7 +293,8 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LOCKOUT_ENABLED` | Enable account lockout after failed login attempts | `false` | No |
 | `PA_LOCKOUT_ATTEMPTS` | Number of failed attempts before lockout | `5` | No |
 | `PA_LOCKOUT_DURATION` | Lockout duration in minutes | `15` | No |
-| `PA_LOCKOUT_TRACK_IP` | Lock accounts based on IP address | `true` | No |
+| `PA_LOCKOUT_TRACK_IP` | Lock accounts based on IP address; IPv6 clients are counted per /64 | `true` | No |
+| `PA_LOCKOUT_USERNAME_ATTEMPTS` | With IP tracking on, failed attempts per account across all addresses before lockout, API and DynDNS failures included (`0` = off) | `0` | No |
 | `PA_LOCKOUT_CLEAR_ON_SUCCESS` | Clear failed attempts after successful login | `true` | No |
 | `PA_LOCKOUT_WHITELIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are never locked out; wins over the blacklist | Empty | No |
 | `PA_LOCKOUT_BLACKLIST_IPS` | Comma-separated IPs, CIDRs or wildcards that are always blocked | Empty | No |

@@ -81,7 +81,7 @@ class LoginAttemptService implements LoginThrottleInterface
         // until the SQL update runs.
         $this->attempts->record(
             $userId,
-            $ipAddress,
+            self::throttleKey($ipAddress),
             time(),
             $successful,
             $hasAttemptType ? $attemptType : null
@@ -139,14 +139,43 @@ class LoginAttemptService implements LoginThrottleInterface
         $trackIpAddress = !self::isSecondFactorStage($attemptType)
             && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
+        $storedType = $this->attempts->hasAttemptTypeColumn() ? $attemptType : null;
         $attempts = $this->attempts->countFailedAttempts(
             $userId,
             $cutoffTime,
-            $this->attempts->hasAttemptTypeColumn() ? $attemptType : null,
-            $trackIpAddress ? $ipAddress : null
+            $storedType,
+            $trackIpAddress ? self::throttleKey($ipAddress) : null
         );
+        if ($attempts >= $maxAttempts) {
+            return true;
+        }
 
-        return $attempts >= $maxAttempts;
+        // Per-address counting gives every source its own budget, so the optional
+        // username ceiling caps the account across all of them.
+        $usernameCeiling = (int)$this->configManager->get('security', 'account_lockout.username_attempts', 0);
+        if (!$trackIpAddress || $usernameCeiling <= 0) {
+            return false;
+        }
+
+        return $this->attempts->countFailedAttempts($userId, $cutoffTime, $storedType, null) >= $usernameCeiling;
+    }
+
+    /**
+     * The address an attempt is stored and counted under: an IPv6 client by its
+     * /64 network, an IPv4-mapped IPv6 client by its IPv4 address, anything else as given.
+     */
+    private static function throttleKey(string $ipAddress): string
+    {
+        $binary = @inet_pton($ipAddress);
+        if ($binary === false || strlen($binary) !== 16) {
+            return $ipAddress;
+        }
+
+        if (str_starts_with($binary, str_repeat("\0", 10) . "\xff\xff")) {
+            return (string)inet_ntop(substr($binary, 12));
+        }
+
+        return (string)inet_ntop(substr($binary, 0, 8) . str_repeat("\0", 8)) . '/64';
     }
 
     /**
@@ -280,7 +309,7 @@ class LoginAttemptService implements LoginThrottleInterface
         $this->attempts->clearFailedAttempts(
             $userId,
             $hasAttemptType ? $attemptType : null,
-            $clearPerIp ? $ipAddress : null
+            $clearPerIp ? self::throttleKey($ipAddress) : null
         );
     }
 

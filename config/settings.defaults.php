@@ -80,7 +80,8 @@ return [
             'enable_lockout' => false,           // Enable account lockout after failed login attempts
             'lockout_attempts' => 5,             // Number of attempts before lockout
             'lockout_duration' => 15,            // Duration in minutes
-            'track_ip_address' => true,          // Lock accounts based on IP address
+            'track_ip_address' => true,          // Lock accounts based on IP address (IPv6 counted per /64)
+            'username_attempts' => 0,            // With track_ip_address: failures per account across all addresses before lockout, API and DynDNS included; 0 = off (added in 4.6.0)
             'clear_attempts_on_success' => true, // Clear failed attempts after successful login
             'whitelist_ip_addresses' => [],      // IP addresses to never lock out (supports IPs, CIDRs, wildcards) - takes priority over blacklist
             'blacklist_ip_addresses' => [],      // IP addresses to always block (supports IPs, CIDRs, wildcards)
