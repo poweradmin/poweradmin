@@ -241,9 +241,14 @@ class SOARecordManager implements SOARecordManagerInterface
             if ($zoneName === null) {
                 return false;
             }
-            $soa_ttl = (int)$this->config->get('dns', 'ttl', 86400);
+            $apexName = DnsHelper::zoneApexName($zoneName);
+            // A serial bump rewrites the SOA, so it keeps the TTL the zone already has
+            $existing = $this->backendProvider->getRecordsByName($domain_id, $apexName, 'SOA');
+            $soa_ttl = isset($existing[0]['ttl'])
+                ? (int)$existing[0]['ttl']
+                : (int)$this->config->get('dns', 'ttl', 86400);
             // The zone id stays the variant; the SOA record sits at its apex name
-            return $this->backendProvider->addRecord($domain_id, DnsHelper::zoneApexName($zoneName), 'SOA', $content, $soa_ttl, 0);
+            return $this->backendProvider->addRecord($domain_id, $apexName, 'SOA', $content, $soa_ttl, 0);
         }
 
         $tableNameService = new TableNameService($this->config);
@@ -300,19 +305,22 @@ class SOARecordManager implements SOARecordManagerInterface
     /**
      * Update SOA serial
      *
-     * Increments SOA serial to next possible number
+     * Increments SOA serial to next possible number. Under SOA-EDIT-API PowerDNS bumps
+     * the serial for every RRset it is sent, so that is left to it when the caller has
+     * just written one; otherwise (no-op save, zone comment) the SOA is sent unchanged
+     * to make PowerDNS bump it, and the new serial is read back.
      *
      * @param int $domain_id Domain ID
+     * @param bool $rrsetWritten Whether an RRset was written to the backend in this operation
      *
-     * @return boolean true if success
+     * @return boolean true if the serial moved or the backend moved it with the write
      */
-    public function updateSOASerial(int $domain_id): bool
+    public function updateSOASerial(int $domain_id, bool $rrsetWritten = true): bool
     {
-        if ($this->isApiBackend()) {
-            if ($this->backendProvider->hasSoaEditApi($domain_id)) {
-                return true;
-            }
-            // PowerDNS soa_edit_api is not configured, update SOA serial via API PATCH
+        // The SQL backend never reports SOA-EDIT-API, nor does an API zone set to OFF
+        $backendEdits = $this->isApiBackend() && $this->backendProvider->hasSoaEditApi($domain_id);
+        if ($backendEdits && $rrsetWritten) {
+            return true;
         }
 
         $soa_rec = $this->getSOARecord($domain_id);
@@ -321,6 +329,15 @@ class SOARecordManager implements SOARecordManagerInterface
         }
 
         $curr_serial = self::getSOASerial($soa_rec);
+
+        if ($backendEdits) {
+            if (!$this->updateSOARecord($domain_id, $soa_rec)) {
+                return false;
+            }
+
+            return self::getSOASerial($this->getSOARecord($domain_id)) !== $curr_serial;
+        }
+
         $new_serial = $this->getNextSerial($curr_serial);
 
         if ($curr_serial != $new_serial) {

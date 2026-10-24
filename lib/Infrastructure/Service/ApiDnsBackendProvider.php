@@ -1336,7 +1336,10 @@ class ApiDnsBackendProvider implements DnsBackendProvider
         $apiZoneName = self::ensureTrailingDot($zoneName);
         $zoneData = $this->client->getZone($apiZoneName, false);
 
-        return $zoneData !== null && !empty($zoneData['soa_edit_api']);
+        $mode = strtoupper(trim((string)($zoneData['soa_edit_api'] ?? '')));
+
+        // OFF is PowerDNS's spelling of "never edit the serial", the same as unset
+        return $zoneData !== null && $mode !== '' && $mode !== 'OFF';
     }
 
     public function setZoneSerialPolicy(int $domainId, string $zoneName, array $properties): bool

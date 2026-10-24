@@ -1518,6 +1518,37 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @return array<string, array{0: array<string, mixed>|null, 1: bool}>
+     */
+    public static function soaEditApiProvider(): array
+    {
+        return [
+            'unset' => [['kind' => 'Master'], false],
+            'empty' => [['soa_edit_api' => ''], false],
+            'OFF' => [['soa_edit_api' => 'OFF'], false],
+            'lowercase off' => [['soa_edit_api' => 'off'], false],
+            'DEFAULT' => [['soa_edit_api' => 'DEFAULT'], true],
+            'INCREASE' => [['soa_edit_api' => 'INCREASE'], true],
+            'EPOCH' => [['soa_edit_api' => 'EPOCH'], true],
+            'zone not found' => [null, false],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed>|null $zoneData
+     */
+    #[DataProvider('soaEditApiProvider')]
+    public function testHasSoaEditApiIsTrueOnlyWhenPowerDnsEditsTheSerial(?array $zoneData, bool $expected): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('fetch')->willReturn(['id' => 7, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+        $this->mockClient->method('getZone')->with('example.com.', false)->willReturn($zoneData);
+
+        $this->assertSame($expected, $this->provider->hasSoaEditApi(7));
+    }
+
     // ---------------------------------------------------------------
     // Supermaster operations
     // ---------------------------------------------------------------

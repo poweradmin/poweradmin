@@ -773,6 +773,7 @@ class EditController extends BaseController
         $one_record_changed = false;
         $stale_form_rejected = false;
         $conflictResolution = $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins');
+        $serialBefore = SOARecordManager::getSOASerial($this->soaRecordManager->getSOARecord($zone_id));
 
         $records = $this->request->getPostParam('record');
         $form_submitted = $this->request->getPostParam('form_complete') !== null;
@@ -894,7 +895,7 @@ class EditController extends BaseController
             default => ZoneSaveOutcome::NO_CHANGES,
         };
 
-        $this->finalizeSave($outcome, $zone_id, $zone_name);
+        $this->finalizeSave($outcome, $zone_id, $zone_name, $serialBefore);
     }
 
 
@@ -973,8 +974,14 @@ class EditController extends BaseController
 
     /**
      * Report the result of a zone-edit save, bumping the serial when one happened.
+     *
+     * The API backend bumps the serial itself for every RRset it is sent, so a serial
+     * that already moved since $serialBefore is not bumped again; a save that sent none
+     * (no-op, zone comment) is bumped here.
+     *
+     * @param string|null $serialBefore The serial before the save wrote anything; null if unknown
      */
-    public function finalizeSave(ZoneSaveOutcome $outcome, int $zone_id, string $zone_name): void
+    public function finalizeSave(ZoneSaveOutcome $outcome, int $zone_id, string $zone_name, ?string $serialBefore = null): void
     {
         if (!$outcome->wasWritten()) {
             match ($outcome) {
@@ -985,7 +992,9 @@ class EditController extends BaseController
             return;
         }
 
-        $this->soaRecordManager->updateSOASerial($zone_id);
+        $rrsetWritten = $serialBefore === null
+            || SOARecordManager::getSOASerial($this->soaRecordManager->getSOARecord($zone_id)) !== $serialBefore;
+        $this->soaRecordManager->updateSOASerial($zone_id, $rrsetWritten);
 
         match ($outcome) {
             ZoneSaveOutcome::UPDATED => $this->setMessage('edit', 'success', _('Zone has been updated successfully.')),
