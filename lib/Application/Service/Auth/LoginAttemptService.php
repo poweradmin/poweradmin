@@ -171,7 +171,7 @@ class LoginAttemptService implements LoginThrottleInterface
             return $ipAddress;
         }
 
-        if (str_starts_with($binary, str_repeat("\0", 10) . "\xff\xff")) {
+        if (self::isIpv4Mapped($binary)) {
             return (string)inet_ntop(substr($binary, 12));
         }
 
@@ -197,6 +197,12 @@ class LoginAttemptService implements LoginThrottleInterface
         $binaryIp = @inet_pton($ipAddress);
         if ($binaryIp === false) {
             return false; // Invalid IP address
+        }
+
+        // A dual-stack listener reports IPv4 clients as ::ffff:a.b.c.d, which
+        // must match IPv4 entries as well as any written in the mapped form.
+        if (self::isIpv4Mapped($binaryIp) && $this->isIpInList((string)inet_ntop(substr($binaryIp, 12)), $ipList)) {
+            return true;
         }
 
         foreach ($ipList as $listItem) {
@@ -266,6 +272,11 @@ class LoginAttemptService implements LoginThrottleInterface
     {
         $regex = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $pattern) . '$/';
         return (bool)preg_match($regex, $ipAddress);
+    }
+
+    private static function isIpv4Mapped(string $binaryIp): bool
+    {
+        return strlen($binaryIp) === 16 && str_starts_with($binaryIp, str_repeat("\0", 10) . "\xff\xff");
     }
 
     /**
