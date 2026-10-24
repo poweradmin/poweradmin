@@ -260,6 +260,156 @@ class ZoneEditServiceTest extends TestCase
         $this->assertSame($id2, $result->rejectedRecords[0]->rid);
     }
 
+    public function testAStaleSoaRowKeepsTheCurrentSerialInsteadOfWritingTheOldOneBack(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->storedSoa('6', 'ns1.example.com hostmaster.example.com 2024010101 10800 3600 604800 3600'));
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written = $record;
+                return RecordWriteResult::ok();
+            });
+        $row = new ZoneEditRow('6', 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2023010101 7200 3600 604800 3600', 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$row], serial: '2023010101'));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertSame('ns1.example.com hostmaster.example.com 2024010101 7200 3600 604800 3600', $written['content']);
+    }
+
+    public function testARefusedStaleFormHandsBackItsSoaRowWithTheCurrentSerial(): void
+    {
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $row = new ZoneEditRow('6', 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2023010101 7200 3600 604800 3600', 3600, 0, false, null);
+
+        $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
+            ->save($this->submission([$row], serial: '2023010101', changedRowsOnly: true));
+
+        $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
+        $this->assertSame('ns1.example.com hostmaster.example.com 2024010101 7200 3600 604800 3600', $result->rejectedRecords[0]->content);
+    }
+
+    public function testAnUntouchedApiSoaRowWhoseIdTheBumpOutdatedIsNotRefused(): void
+    {
+        [$oldId, $liveId] = $this->moveApiSoa();
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $row = new ZoneEditRow($oldId, 'example.com', 'SOA', self::SOA, 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$row], serial: '2024010101'));
+
+        $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
+        $this->assertSame([], $result->errors);
+        $this->assertSame([], $result->rejectedRecords);
+    }
+
+    public function testAnUntouchedApiSoaRowDoesNotStopAnotherRowFromBeingWritten(): void
+    {
+        $wwwId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        [$oldId] = $this->moveApiSoa([$wwwId => $this->stored($wwwId, 'www', '192.0.2.1')]);
+        $this->recordManager->expects($this->once())->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $soaRow = new ZoneEditRow($oldId, 'example.com', 'SOA', self::SOA, 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$soaRow, $this->row($wwwId, 'www', '192.0.2.9')], serial: '2024010101'));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertSame([], $result->errors);
+    }
+
+    public function testAnEditedApiSoaRowWhoseIdTheBumpOutdatedIsWrittenToTheLiveRecordWithTheCurrentSerial(): void
+    {
+        [$oldId, $liveId] = $this->moveApiSoa();
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written = $record;
+                return RecordWriteResult::ok();
+            });
+        $row = new ZoneEditRow($oldId, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 7200 3600 604800 3600', 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$row], serial: '2024010101'));
+
+        $this->assertSame(ZoneSaveOutcome::UPDATED, $result->outcome);
+        $this->assertSame([], $result->errors);
+        $this->assertSame($liveId, $written['rid']);
+        $this->assertSame('ns1.example.com hostmaster.example.com 2024010102 7200 3600 604800 3600', $written['content']);
+    }
+
+    public function testARefusedStaleApiFormHandsBackItsSoaRowWithTheLiveIdAndCurrentSerial(): void
+    {
+        [$oldId, $liveId] = $this->moveApiSoa();
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $row = new ZoneEditRow($oldId, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 7200 3600 604800 3600', 3600, 0, false, null);
+
+        $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
+            ->save($this->submission([$row], serial: '2024010101', changedRowsOnly: true));
+
+        $this->assertSame(ZoneSaveOutcome::SERIAL_CONFLICT, $result->outcome);
+        $this->assertSame($liveId, $result->rejectedRecords[0]->rid);
+        $this->assertSame('ns1.example.com hostmaster.example.com 2024010102 7200 3600 604800 3600', $result->rejectedRecords[0]->content);
+    }
+
+    public function testAnApiSoaRowThatCannotBeResolvedIsStillRefused(): void
+    {
+        $oldId = RecordIdentifier::encode('example.com', 'example.com', 'SOA', self::SOA, 0);
+        $this->records->method('getRecordById')->willReturn(null);
+        $this->records->method('getRecordsByName')->willReturn([]);
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $row = new ZoneEditRow($oldId, 'example.com', 'SOA', self::SOA, 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$row], serial: '2024010101'));
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertSame($oldId, $result->rejectedRecords[0]->rid);
+    }
+
+    /**
+     * Another write moved the API zone's serial: the form's SOA id (built from the old SOA)
+     * no longer resolves, while the zone's apex SOA RRset holds the bumped record.
+     *
+     * @param array<string, array<string, mixed>> $others Other stored records by id, which still resolve
+     * @return array{0: string, 1: string} The form's old SOA id and the live one
+     */
+    private function moveApiSoa(array $others = []): array
+    {
+        $oldId = RecordIdentifier::encode('example.com', 'example.com', 'SOA', self::SOA, 0);
+        $liveId = RecordIdentifier::encode('example.com', 'example.com', 'SOA', self::SOA_BUMPED, 0);
+        $this->currentSoa = self::SOA_BUMPED;
+        $live = $this->storedSoa($liveId, self::SOA_BUMPED);
+        $this->records->method('getRecordById')->willReturnCallback(fn($rid) => ($others + [$liveId => $live])[$rid] ?? null);
+        $this->records->method('getRecordFromId')->willReturnCallback(fn($rid) => ($others + [$liveId => $live])[$rid] ?? null);
+        $this->records->expects($this->atLeastOnce())->method('getRecordsByName')->with(self::ZONE_ID, 'example.com', 'SOA')->willReturn([$live]);
+
+        return [$oldId, $liveId];
+    }
+
+    public function testAStaleSoaRowDifferingOnlyInTheSerialWritesNothing(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->storedSoa('6', self::SOA));
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $row = new ZoneEditRow('6', 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2023010101 10800 3600 604800 3600', 3600, 0, false, null);
+
+        $result = $this->makeService()->save($this->submission([$row], serial: '2023010101'));
+
+        $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
+        $this->assertSame([], $result->errors);
+    }
+
+    public function testASerialTheOperatorTypedIntoTheSoaRowIsKept(): void
+    {
+        $this->records->method('getRecordFromId')->willReturn($this->storedSoa('6', self::SOA));
+        $written = null;
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->willReturnCallback(function (array $record) use (&$written): RecordWriteResult {
+                $written = $record;
+                return RecordWriteResult::ok();
+            });
+        $row = new ZoneEditRow('6', 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2025010101 10800 3600 604800 3600', 3600, 0, false, null);
+
+        $this->makeService()->save($this->submission([$row], serial: '2023010101'));
+
+        $this->assertSame('ns1.example.com hostmaster.example.com 2025010101 10800 3600 604800 3600', $written['content']);
+    }
+
     public function testStaleUnfilteredFormIsRefusedWithoutRestoringRows(): void
     {
         $result = $this->makeService(['misc' => ['edit_conflict_resolution' => 'only_latest_version']])
@@ -481,6 +631,12 @@ class ZoneEditServiceTest extends TestCase
     private function row(string $rid, string $name, string $content, bool $disabled = false, ?string $comment = null): ZoneEditRow
     {
         return new ZoneEditRow($rid, $name, 'A', $content, 3600, 0, $disabled, $comment);
+    }
+
+    /** @return array<string, mixed> The stored SOA row RecordLog compares against */
+    private function storedSoa(string $id, string $content): array
+    {
+        return ['id' => $id, 'domain_id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SOA', 'content' => $content, 'ttl' => 3600, 'prio' => 0, 'disabled' => 0];
     }
 
     /** @return array<string, mixed> The stored row RecordLog compares against */

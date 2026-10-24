@@ -100,7 +100,8 @@ class ZoneEditService
             // differs from the zone need not be one the operator touched. Restoring
             // those would revert the other writer, so only a filtered post is kept.
             if ($submission->changedRowsOnly) {
-                $rejectedRecords = $submission->rows;
+                // The restored SOA row is shown beside the form's current serial, so it must carry it
+                $rejectedRecords = array_map(fn(ZoneEditRow $row): ZoneEditRow => $this->keepCurrentSoaSerial($submission, $this->repointVanishedSoa($submission, $row)), $submission->rows);
                 $rejectedZoneComment = $submission->zoneComment;
             }
         } else {
@@ -151,6 +152,7 @@ class ZoneEditService
         $unresolved = [];
 
         foreach ($submission->rows as $row) {
+            $row = $this->repointVanishedSoa($submission, $row);
             $refused = $this->refuseVanishedRecord($row);
             if ($refused !== null) {
                 $changed = true;
@@ -223,6 +225,50 @@ class ZoneEditService
             _('Someone else changed this zone after you opened it. Review the records and save again.'),
             Refusal::CONFLICT
         );
+    }
+
+    /**
+     * On the API backend the SOA row id encodes the serial, so any other write leaves a posted
+     * SOA row unresolvable. A zone holds one SOA at its apex, so the row is pointed at the live
+     * one; when it cannot be found the row is left for refuseVanishedRecord().
+     */
+    private function repointVanishedSoa(ZoneEditSubmission $submission, ZoneEditRow $row): ZoneEditRow
+    {
+        if (
+            strtoupper(trim($row->type)) !== 'SOA'
+            || !RecordIdentifier::isEncoded($row->rid)
+            || $this->records->getRecordById($row->rid) !== null
+        ) {
+            return $row;
+        }
+
+        $live = $this->records->getRecordsByName($submission->zoneId, DnsHelper::zoneApexName($submission->zoneName), 'SOA');
+        if (count($live) !== 1 || !isset($live[0]['id'])) {
+            return $row;
+        }
+
+        return new ZoneEditRow($live[0]['id'], $row->name, $row->type, $row->content, $row->ttl, $row->prio, $row->disabled, $row->comment);
+    }
+
+    /**
+     * A form opened before another save carries the SOA serial it was rendered with.
+     * Writing that back would lower the serial and the bump after it could land on a
+     * value secondaries have already seen, so an unedited serial becomes the current one.
+     * A serial the operator typed (one that differs from the rendered one) is kept.
+     */
+    private function keepCurrentSoaSerial(ZoneEditSubmission $submission, ZoneEditRow $row): ZoneEditRow
+    {
+        if ($submission->serial === null || strtoupper(trim($row->type)) !== 'SOA') {
+            return $row;
+        }
+
+        $posted = SOARecordManager::getSOASerial($row->content);
+        $current = SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($submission->zoneId));
+        if ($posted !== $submission->serial || $current === null || $current === $posted) {
+            return $row;
+        }
+
+        return new ZoneEditRow($row->rid, $row->name, $row->type, SOARecordManager::setSOASerial($row->content, $current), $row->ttl, $row->prio, $row->disabled, $row->comment);
     }
 
     /**
