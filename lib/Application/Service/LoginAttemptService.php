@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -139,6 +139,12 @@ class LoginAttemptService
             return false; // Invalid IP address
         }
 
+        // A dual-stack listener reports IPv4 clients as ::ffff:a.b.c.d, which
+        // must match IPv4 entries as well as any written in the mapped form.
+        if (self::isIpv4Mapped($binaryIp) && $this->isIpInList((string)inet_ntop(substr($binaryIp, 12)), $ipList)) {
+            return true;
+        }
+
         foreach ($ipList as $listItem) {
             // Exact match - compare packed forms so equivalent IPv6 spellings still
             // match (e.g. 2001:db8::1 vs 2001:0db8:0000:0000:0000:0000:0000:0001).
@@ -206,6 +212,11 @@ class LoginAttemptService
     {
         $regex = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $pattern) . '$/';
         return (bool)preg_match($regex, $ipAddress);
+    }
+
+    private static function isIpv4Mapped(string $binaryIp): bool
+    {
+        return strlen($binaryIp) === 16 && str_starts_with($binaryIp, str_repeat("\0", 10) . "\xff\xff");
     }
 
     private function getUserId(string $username): ?int

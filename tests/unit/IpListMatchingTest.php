@@ -199,4 +199,13 @@ class IpListMatchingTest extends TestCase
         );
         $this->assertFalse($result);
     }
+
+    public function testIpv4MappedClientMatchesIpv4Entries()
+    {
+        foreach ([['10.0.0.1'], ['10.0.0.0/24'], ['10.0.0.*']] as $list) {
+            $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.0.1', $list));
+        }
+        $this->assertFalse($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.1.1', ['10.0.0.0/24']));
+        $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.0.1', ['::ffff:10.0.0.0/120']));
+    }
 }
