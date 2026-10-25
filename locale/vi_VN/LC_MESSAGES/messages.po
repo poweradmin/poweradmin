@@ -15566,6 +15566,10 @@ msgstr "Dữ liệu bản ghi chung phải có dạng \"\\# <length> <hex>\" v�
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Không thể gỡ quyền quản trị viên cấp cao khỏi người dùng quản trị viên cấp cao cuối cùng còn lại."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Không thể xóa người dùng super admin cuối cùng còn lại."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

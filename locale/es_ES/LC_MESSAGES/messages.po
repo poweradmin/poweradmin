@@ -15950,6 +15950,10 @@ msgstr "Los datos genéricos del registro deben ser \"\\# <length> <hex>\", con 
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "No se puede quitar el rol de superadministrador al último superadministrador que queda."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "No se puede eliminar el último superadministrador que queda."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

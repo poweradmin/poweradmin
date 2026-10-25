@@ -15869,6 +15869,10 @@ msgstr "Общите данни на записа трябва да са във 
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Не може да се премахне супер администраторът от последния останал потребител супер администратор."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Последният останал супер администратор не може да бъде изтрит."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

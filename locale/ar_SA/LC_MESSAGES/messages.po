@@ -15349,6 +15349,10 @@ msgstr "يجب أن تكون بيانات السجل العامة بالصيغة
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "لا يمكن إزالة صلاحية المسؤول الأعلى من آخر مستخدم متبقٍ يملكها."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "لا يمكن حذف آخر مستخدم مدير عام متبقٍ."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

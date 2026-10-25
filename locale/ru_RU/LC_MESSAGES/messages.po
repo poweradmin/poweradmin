@@ -15798,6 +15798,10 @@ msgstr "Общие данные записи должны иметь вид \"\\
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Нельзя снять права суперадминистратора с последнего оставшегося суперадминистратора."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Нельзя удалить последнего оставшегося суперадминистратора."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

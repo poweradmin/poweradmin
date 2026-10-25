@@ -15431,6 +15431,10 @@ msgstr "Генерички подаци записа морају бити \"\\#
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Није могуће уклонити супер администратора са последњег преосталог корисника супер администратора."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Није могуће обрисати последњег преосталог супер администратора."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

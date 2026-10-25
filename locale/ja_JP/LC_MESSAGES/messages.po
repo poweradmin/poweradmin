@@ -15634,6 +15634,10 @@ msgstr "汎用レコードデータは \"\\# <length> <hex>\" の形式で、長
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "最後に残ったスーパー管理者ユーザーからスーパー管理者権限を削除することはできません。"
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "残り最後のスーパー管理者ユーザーは削除できません。"
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

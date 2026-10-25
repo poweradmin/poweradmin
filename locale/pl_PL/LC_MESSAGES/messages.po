@@ -15794,6 +15794,10 @@ msgstr "Ogólne dane rekordu muszą mieć postać \"\\# <length> <hex>\", a dłu
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nie można odebrać uprawnień superadministratora ostatniemu pozostałemu superadministratorowi."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Nie można usunąć ostatniego pozostałego super administratora."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

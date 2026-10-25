@@ -14614,6 +14614,10 @@ msgstr "通用記錄資料必須為 \"\\# <length> <hex>\"，且長度須與十�
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "無法移除最後一位超級管理員使用者的超級管理員權限。"
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "無法刪除最後一個超級管理員使用者。"
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

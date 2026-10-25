@@ -237,6 +237,14 @@ class UserManager
 
             return false;
         } else {
+            // Same rule as the API: deleting the last active super admin would lock everyone out of administration
+            $this->userRepository ??= new DbUserRepository($this->db, $this->config);
+            if ($this->userRepository->isUberuser($uid) && $this->userRepository->countUberusers() <= 1) {
+                $this->messageService->addSystemError(_('Cannot delete the last remaining super admin user.'));
+
+                return false;
+            }
+
             // A zone handed to the user being deleted would go with them; refuse before any zone is touched
             foreach ($zones as $zone) {
                 if (is_array($zone) && ($zone['target'] ?? null) === 'new_owner' && (int)($zone['newowner'] ?? 0) === $uid) {

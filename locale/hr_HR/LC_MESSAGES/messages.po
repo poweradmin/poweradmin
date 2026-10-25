@@ -15543,6 +15543,10 @@ msgstr "Generički podaci zapisa moraju biti \"\\# <length> <hex>\", pri čemu d
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nije moguće ukloniti super administratora s posljednjeg preostalog korisnika super administratora."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Nije moguće obrisati posljednjeg super admin korisnika."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

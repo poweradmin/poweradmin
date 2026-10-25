@@ -14936,6 +14936,10 @@ msgstr "ข้อมูลเรคคอร์ดทั่วไปต้อง
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "ไม่สามารถนำสิทธิ์ผู้ดูแลระบบสูงสุดออกจากผู้ใช้ผู้ดูแลระบบสูงสุดคนสุดท้ายที่เหลืออยู่ได้"
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "ไม่สามารถลบผู้ใช้ผู้ดูแลระบบสูงสุดคนสุดท้ายได้"
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

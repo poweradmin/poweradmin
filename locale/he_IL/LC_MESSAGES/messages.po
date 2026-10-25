@@ -15196,6 +15196,10 @@ msgstr "נתוני רשומה כלליים חייבים להיות בתבנית 
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "לא ניתן להסיר הרשאת מנהל-על מהמשתמש האחרון שנותר עם הרשאת מנהל-על."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "לא ניתן למחוק את מנהל העל האחרון שנותר."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

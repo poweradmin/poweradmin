@@ -15560,6 +15560,10 @@ msgstr "Všeobecné údaje záznamu musia mať tvar \"\\# <length> <hex>\" a dĺ
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Nie je možné odobrať oprávnenie super administrátora poslednému zostávajúcemu super administrátorovi."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Posledného zostávajúceho super administrátora nie je možné odstrániť."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."

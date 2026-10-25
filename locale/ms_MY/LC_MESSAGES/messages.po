@@ -15756,6 +15756,10 @@ msgstr "Data rekod generik mesti dalam bentuk \"\\# <length> <hex>\" dengan panj
 #: lib/Domain/Model/UserManager.php
 msgid "Cannot remove super admin from the last remaining super admin user."
 msgstr "Tidak dapat membuang super admin daripada pengguna super admin terakhir yang tinggal."
+#: lib/Domain/Model/UserManager.php
+msgid "Cannot delete the last remaining super admin user."
+msgstr "Tidak boleh memadam pengguna super admin terakhir yang tinggal."
+
 
 #: lib/Application/Controller/ZoneOwnershipController.php
 msgid "Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them."
