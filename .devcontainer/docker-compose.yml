@@ -180,6 +180,23 @@ services:
       mysql:
         condition: service_healthy
 
+  # PHP-FPM for MySQL + SQL backend with OIDC and SAML sign-in against the mock IdPs
+  app-mysql-sso:
+    <<: *app
+    container_name: pwa-mysql-sql-sso
+    image: poweradmin-devcontainer-fpm:${PHP_VERSION_MYSQL}
+    volumes:
+      - *vol-app
+      - *vol-xdebug
+      - *vol-error-reporting
+      - *vol-fpm-pool
+      - ./conf/settings-mysql-sql-sso.php:/etc/poweradmin/settings.php:ro
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mock-oidc:
+        condition: service_started
+
   # =============================================================================
   # Web Servers
   # =============================================================================
@@ -304,6 +321,20 @@ services:
       - ../.:/app
     depends_on:
       - app-mysql-de
+
+  # Nginx webserver (MySQL + SQL) with OIDC and SAML sign-in - Port 8089
+  web-mysql-sso:
+    <<: *web
+    container_name: pwa-web-mysql-sql-sso
+    ports:
+      - "8089:80"
+    environment:
+      - FPM_UPSTREAM=app-mysql-sso:9000
+    volumes:
+      - ./conf/nginx-sso.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ../.:/app
+    depends_on:
+      - app-mysql-sso
 
   # Nginx webserver (MySQL + SQL) behind basic auth, web server authentication - Port 8088
   web-mysql-remote-user:
@@ -570,6 +601,38 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  # =============================================================================
+  # Mock identity providers (for OIDC and SAML sign-in testing on port 8089)
+  # =============================================================================
+
+  # OIDC: the browser authorizes on localhost:9080, the app container fetches tokens from mock-oidc:9080
+  mock-oidc:
+    image: ghcr.io/navikt/mock-oauth2-server:2.1.10
+    container_name: mock-oidc
+    networks:
+      - internal
+    ports:
+      - "127.0.0.1:9080:9080"
+    environment:
+      - SERVER_PORT=9080
+      - 'JSON_CONFIG={"interactiveLogin": true}'
+
+  # SAML: only the browser talks to it; its metadata and certificate live in the app settings
+  mock-saml:
+    image: kristophjunge/test-saml-idp:1.15
+    platform: linux/amd64
+    container_name: mock-saml
+    networks:
+      - internal
+    ports:
+      - "127.0.0.1:9081:8080"
+    environment:
+      - SIMPLESAMLPHP_SP_ENTITY_ID=http://localhost:8089/saml/metadata
+      - SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE=http://localhost:8089/saml/acs
+      - SIMPLESAMLPHP_SP_SINGLE_LOGOUT_SERVICE=http://localhost:8089/saml/sls
+    volumes:
+      - ./conf/saml-idp-authsources.php:/var/www/simplesamlphp/config/authsources.php:ro
 
   ldapadmin:
     image: phpldapadmin/phpldapadmin:2.3.11@sha256:e4855767ffb1513ed6cbfa126ce0913ef229e9badf3c205a010a2421a2b5e47c
