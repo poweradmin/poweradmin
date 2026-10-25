@@ -36,6 +36,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -486,6 +487,7 @@ class ZonesRecordsController extends PublicApiController
                 $this->db->beginTransaction();
             }
 
+            $content = DnsFormatter::quoteEch($type, $content);
             $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
 
             if ($newRecordId === null) {

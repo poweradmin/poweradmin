@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -247,7 +248,7 @@ class DomainManager implements DomainManagerInterface
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                         $recordType = $r["type"];
-                                        $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                        $content = DnsFormatter::quoteEch($recordType, $zoneTemplate->parseTemplateValue($r["content"], $domain));
                                         $ttl = $r["ttl"];
                                         $prio = intval($r["prio"]);
 
@@ -790,7 +791,7 @@ class DomainManager implements DomainManagerInterface
                                     $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                                 }
                             } else {
-                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
+                                $content = DnsFormatter::quoteEch($r["type"], $zoneTemplate->parseTemplateValue($r["content"], $domain));
                             }
 
                             $ttl = $r["ttl"];

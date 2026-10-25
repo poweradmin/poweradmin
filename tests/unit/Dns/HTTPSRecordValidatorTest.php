@@ -429,7 +429,11 @@ class HTTPSRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals($content, $data['content']);
+        // Quoted, since the PowerDNS API refuses the unquoted form
+        $this->assertSame(
+            '1 example.org ech="AEn+DQBFJDLlQYAkwUAwASGQFnYg9FHAQCGe4An1Eyf9eCmdwE7TJ1sV3esqVyguLK0zjFfdZ7ReL5hvzLxyyQ=="',
+            $data['content']
+        );
     }
 
     /**

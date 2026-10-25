@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Application\Service\RepositoryFactory;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -68,7 +69,7 @@ class RecordManagerService
         $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $userlogin];
         $atomic = $disabled && $this->backendProvider !== null;
         $recordId = $atomic
-            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, $content, $ttl, $prio, $disabled, $rrsetComment)
+            ? $this->backendProvider->createRecordAtomic($zone_id, $name, $type, DnsFormatter::quoteEch($type, $content), $ttl, $prio, $disabled, $rrsetComment)
             : $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $rrsetComment);
         if ($recordId === null) {
             return false;

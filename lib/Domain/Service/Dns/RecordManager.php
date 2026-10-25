@@ -29,6 +29,7 @@ use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
@@ -163,7 +164,7 @@ class RecordManager implements RecordManagerInterface
 
         // Create RecordRepository to check if record exists
         $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
+        if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->unquotedEchExists($recordRepository, $zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return false;
         }
@@ -269,7 +270,7 @@ class RecordManager implements RecordManagerInterface
 
         // Create RecordRepository to check if record exists
         $recordRepository = (new \Poweradmin\Application\Service\RepositoryFactory($this->db, $this->config, $this->backendProvider))->createRecordRepository();
-        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
+        if ($recordRepository->recordExists($zone_id, $name, $type, $content) || $this->unquotedEchExists($recordRepository, $zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return null;
         }
@@ -523,5 +524,16 @@ class RecordManager implements RecordManagerInterface
             $stmt->execute();
         }
         return true;
+    }
+
+    /**
+     * SQL mode may hold an SVCB or HTTPS row saved with its ech value unquoted, before
+     * Poweradmin started quoting it; that row is the same record.
+     */
+    private function unquotedEchExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
+    {
+        $unquoted = DnsFormatter::unquoteEch($type, $content);
+
+        return $unquoted !== null && $recordRepository->recordExists($zoneId, $name, $type, $unquoted);
     }
 }
