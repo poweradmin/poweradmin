@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -97,7 +98,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
 
         return ValidationResult::success([
-            'content' => $content,
+            'content' => DnsFormatter::quoteEch('SVCB', $content),
             'name' => $name,
             'prio' => $priority,
             'ttl' => $validatedTtl

@@ -1506,7 +1506,7 @@ class ZoneTemplate
             $val = self::quoteTxt($val);
         }
 
-        return $val;
+        return $recordType === null ? $val : DnsFormatter::quoteEch($recordType, $val);
     }
 
     /**
