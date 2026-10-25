@@ -113,6 +113,7 @@ class RequestContextTest extends TestCase
             '/api/docs',
             '/api/docs/json',
             '/api/health',
+            '/api/metrics',
             '/poweradmin/api/v2/zones', // base_url_prefix deployment
         ];
 
@@ -545,6 +546,9 @@ class RequestContextTest extends TestCase
         $this->setServerEnvironment(['REQUEST_URI' => '/api/health?verbose=1']);
         $this->assertTrue(RequestContext::isHealthProbeRequest());
 
+        $this->setServerEnvironment(['REQUEST_URI' => '/api/metrics']);
+        $this->assertTrue(RequestContext::isHealthProbeRequest());
+
         $this->setServerEnvironment(['REQUEST_URI' => '/poweradmin/api/health']);
         $this->assertTrue(RequestContext::isHealthProbeRequest('/poweradmin'));
 
@@ -561,7 +565,7 @@ class RequestContextTest extends TestCase
      */
     public function testIsHealthProbeRequestIgnoresLookalikePaths(): void
     {
-        foreach (['/zones/ping', '/pinger', '/api/healthcheck', '/ping/', '/api/health/x'] as $path) {
+        foreach (['/zones/ping', '/pinger', '/api/healthcheck', '/ping/', '/api/health/x', '/metrics', '/api/metrics/x'] as $path) {
             $this->setServerEnvironment(['REQUEST_URI' => $path]);
             $this->assertFalse(
                 RequestContext::isHealthProbeRequest(),
