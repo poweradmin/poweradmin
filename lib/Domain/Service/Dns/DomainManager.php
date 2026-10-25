@@ -1045,8 +1045,15 @@ class DomainManager implements DomainManagerInterface
             return true;
         }
 
-        $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = self::currentUserOwnsZone($this->db, $zone_id);
+        // Template records (SOA and NS included) are written straight to the backend,
+        // so applying one needs the same standing as editing those records by hand.
+        if ($zone_template_id != 0) {
+            $perm_edit = Permission::getEditPermission($this->db);
+            if (!($perm_edit == "all" || ($perm_edit == "own" && self::currentUserOwnsZone($this->db, $zone_id)))) {
+                $this->messageService->addSystemError(_('You do not have permission to edit this zone.'));
+                return false;
+            }
+        }
 
         $zone_master_add = $this->userHasPermission('zone_master_add');
         $zone_slave_add = $this->userHasPermission('zone_slave_add');
@@ -1058,61 +1065,52 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        // Set when the previous template's records could not be removed, so the caller
-        // does not report success over a zone left holding records from both templates.
-        $templateRecordsRefused = false;
-
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
-                if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                    if ($isApiBackend) {
-                        // API mode: encoded RecordIdentifier IDs are kept in the
-                        // string-keyed records_zone_templ_api table so we can
-                        // remove only the records this template applied here.
-                        $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
-                    } else {
-                        // Snapshot template-linked records before the bulk delete
-                        // so the audit log captures every removal.
-                        $selectStmt = $this->db->prepare(
-                            "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
-                             FROM $records_table r
-                             INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
-                             WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
-                        );
-                        $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-                        $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
-
-                        // Delete the template-applied records. Only MySQL can drop the
-                        // record and its mapping in one statement; the other backends
-                        // delete records here and the mapping is cleared uniformly below.
-                        if ($db_type == 'pgsql') {
-                            $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                        } elseif ($db_type == 'sqlite') {
-                            $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
-                        } else {
-                            $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
-                        }
-                        $stmt = $this->db->prepare($query);
-                        $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
-
-                        // Clear the template->record mapping for every backend. Otherwise
-                        // pgsql/sqlite leave orphaned rows behind, and on SQLite a reused
-                        // rowid could later resolve a stale mapping to an unrelated record.
-                        $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
-                        $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-
-                        if ($templateRecordsRemoved !== []) {
-                            $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
-                                foreach ($templateRecordsRemoved as $removed) {
-                                    $this->changeLogger->logRecordDelete($removed, $zone_id);
-                                }
-                            });
-                        }
-                    }
+                if ($isApiBackend) {
+                    // API mode: encoded RecordIdentifier IDs are kept in the
+                    // string-keyed records_zone_templ_api table so we can
+                    // remove only the records this template applied here.
+                    $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                 } else {
-                    $templateRecordsRefused = true;
-                    $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+                    // Snapshot template-linked records before the bulk delete
+                    // so the audit log captures every removal.
+                    $selectStmt = $this->db->prepare(
+                        "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
+                         FROM $records_table r
+                         INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
+                         WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
+                    );
+                    $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+                    $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+                    // Delete the template-applied records. Only MySQL can drop the
+                    // record and its mapping in one statement; the other backends
+                    // delete records here and the mapping is cleared uniformly below.
+                    if ($db_type == 'pgsql') {
+                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                    } elseif ($db_type == 'sqlite') {
+                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                    } else {
+                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    }
+                    $stmt = $this->db->prepare($query);
+                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+
+                    // Clear the template->record mapping for every backend. Otherwise
+                    // pgsql/sqlite leave orphaned rows behind, and on SQLite a reused
+                    // rowid could later resolve a stale mapping to an unrelated record.
+                    $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
+                    $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
+
+                    if ($templateRecordsRemoved !== []) {
+                        $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
+                            foreach ($templateRecordsRemoved as $removed) {
+                                $this->changeLogger->logRecordDelete($removed, $zone_id);
+                            }
+                        });
+                    }
                 }
 
                 // Use the permissions we already checked earlier
@@ -1293,7 +1291,7 @@ class DomainManager implements DomainManagerInterface
                 $this->db->commit();
             }
 
-            return !$templateRecordsRefused;
+            return true;
         } catch (\Exception $e) {
             if ($this->db->inTransaction()) {
                 $this->db->rollBack();
