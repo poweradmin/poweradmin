@@ -81,6 +81,7 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
             'zones_without_owners' => [$this->fixZoneWithoutOwner($id, $currentUserId), _('Zone owner assigned successfully'), _('Failed to assign zone owner')],
             'zones_without_canonical_ids' => [$this->fixZoneCanonicalId($id), _('Zone canonical ID repaired'), _('Failed to repair zone canonical ID')],
             'zones_without_names' => [$this->fixZoneName($id), _('Zone name stored'), _('Failed to store the zone name')],
+            'api_key_scopes_on_missing_zones' => [$this->fixApiKeyScopesOnMissingZone($id), _('API key restriction no longer names the deleted zone'), _('Failed to repair the API key restriction')],
             'records_with_uppercase_names' => [$this->fixRecordNameCase($id), _('Record name lowercased'), _('Failed to lowercase the record name')],
             'slave_zones_without_masters' => [$this->deleteSlaveZone($id), _('Slave zone deleted successfully'), _('Failed to delete slave zone')],
             'orphaned_records' => [$this->deleteOrphanedRecord($id), _('Orphaned record deleted successfully'), _('Failed to delete orphaned record')],
@@ -115,6 +116,13 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
                 _('No zones without a stored name to fix'),
                 _('Stored the name of %d zones'),
                 _('Stored %d zone names; %d failed')
+            ),
+            'api_key_scopes_on_missing_zones' => ConsistencyReport::tally(
+                $this->fixAllApiKeyScopesOnMissingZones(),
+                'fixed',
+                _('No API key restrictions on deleted zones to repair'),
+                _('Repaired the API key restrictions on %d deleted zones'),
+                _('Repaired %d deleted zones; %d failed')
             ),
             'records_with_uppercase_names' => ConsistencyReport::tally(
                 $this->fixAllRecordNamesCase(),

@@ -15637,3 +15637,50 @@ msgstr "แปลงชื่อของ %d เรกคอร์ดเป็�
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "แปลงชื่อเรกคอร์ด %d รายการแล้ว ล้มเหลว %d รายการ"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "ข้อจำกัดของคีย์ API บนโซนที่ถูกลบ"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "ข้อจำกัดโซนของคีย์ API ทั้งหมดระบุโซนที่มีอยู่"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "โซนที่ถูกลบ %d โซนยังถูกระบุโดยข้อจำกัดของคีย์ API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "คีย์ API เหล่านี้ถูกจำกัดไว้กับโซนที่ถูกลบไปแล้ว โซนที่สร้างขึ้นภายหลังด้วย ID เดียวกันจะตกอยู่ภายใต้ข้อจำกัดเหล่านี้ การซ่อมแซมจะคงคีย์ไว้ในสถานะถูกจำกัด แต่ไม่ผูกกับโซนใดเลย"
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "ซ่อมแซมข้อจำกัดของคีย์ API บนโซนทั้งหมดในรายการหรือไม่?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "ซ่อมแซมข้อจำกัดของคีย์ API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "ข้อจำกัดของคีย์ API ไม่ได้ระบุโซนที่ถูกลบอีกต่อไป"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "ซ่อมแซมข้อจำกัดของคีย์ API ไม่สำเร็จ"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "ไม่มีข้อจำกัดของคีย์ API บนโซนที่ถูกลบให้ซ่อมแซม"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "ซ่อมแซมข้อจำกัดของคีย์ API บน %d โซนที่ถูกลบแล้ว"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "ซ่อมแซมโซนที่ถูกลบแล้ว %d โซน; ล้มเหลว %d"

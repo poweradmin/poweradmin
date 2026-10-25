@@ -15904,3 +15904,50 @@ msgstr "שמות של %d רשומות הומרו לאותיות קטנות"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "הומרו %d שמות רשומות; %d נכשלו"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "הגבלות מפתחות API על אזורים שנמחקו"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "כל הגבלות האזור של מפתחות ה-API מציינות אזור קיים"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d אזורים שנמחקו עדיין מצוינים בהגבלות של מפתחות API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "מפתחות ה-API האלה מוגבלים לאזור שנמחק. אזור שייווצר בהמשך עם אותו מזהה ייפול תחתיהם. התיקון משאיר את המפתחות מוגבלים, אך ללא אף אזור."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "לתקן את הגבלות מפתחות ה-API בכל האזורים ברשימה?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "תיקון הגבלת מפתח API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "הגבלת מפתח ה-API כבר אינה מציינת את האזור שנמחק"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "תיקון הגבלת מפתח ה-API נכשל"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "אין הגבלות של מפתחות API על אזורים שנמחקו לתיקון"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "הגבלות מפתחות ה-API על %d אזורים שנמחקו תוקנו"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "תוקנו %d אזורים שנמחקו; %d נכשלו"

@@ -16593,3 +16593,50 @@ msgstr "Имената на %d записа са преобразувани в �
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Преобразувани са %d имена на записи; %d неуспешни"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Ограничения на API ключове за изтрити зони"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Всички ограничения по зона на API ключове сочат съществуваща зона"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d изтрити зони все още са посочени в ограничения на API ключове"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Тези API ключове са ограничени до зона, която е изтрита. Зона, създадена по-късно със същото ID, би попаднала под тях. Поправката запазва ключовете ограничени, но без никаква зона."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Да се поправят ли ограниченията на API ключове за всички изброени зони?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Поправяне на ограничението на API ключа"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Ограничението на API ключа вече не сочи изтритата зона"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Поправянето на ограничението на API ключа не бе успешно"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Няма ограничения на API ключове за изтрити зони за поправяне"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Поправени са ограниченията на API ключове за %d изтрити зони"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Поправени %d изтрити зони; %d неуспешни"

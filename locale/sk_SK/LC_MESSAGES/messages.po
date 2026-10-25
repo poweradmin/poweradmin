@@ -16285,3 +16285,50 @@ msgstr "Názvy %d záznamov boli prevedené na malé písmená"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Prevedených %d názvov záznamov; %d zlyhalo"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Obmedzenia API kľúčov na odstránených zónach"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Všetky obmedzenia API kľúčov na zónu uvádzajú existujúcu zónu"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d odstránených zón je stále uvedených v obmedzeniach API kľúčov"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Tieto API kľúče sú obmedzené na zónu, ktorá bola odstránená. Zóna vytvorená neskôr s rovnakým ID by pod ne spadala. Oprava ponechá kľúče obmedzené, ale na žiadnu zónu."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Opraviť obmedzenia API kľúčov pri všetkých uvedených zónach?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Opraviť obmedzenie API kľúča"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Obmedzenie API kľúča už neuvádza odstránenú zónu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Opravu obmedzenia API kľúča sa nepodarilo vykonať"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Žiadne obmedzenia API kľúčov na odstránených zónach na opravu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Opravené obmedzenia API kľúčov pri %d odstránených zónach"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Opravených %d odstránených zón; %d zlyhalo"

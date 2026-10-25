@@ -16396,3 +16396,50 @@ msgstr "%d kaydın adı küçük harfe çevrildi"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d kayıt adı çevrildi; %d başarısız oldu"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Silinmiş Zonlardaki API Anahtarı Kısıtlamaları"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Tüm API anahtarı zon kısıtlamaları mevcut bir zonu belirtiyor"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d silinmiş zon hâlâ API anahtarı kısıtlamalarında belirtiliyor"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Bu API anahtarları silinmiş bir zona kısıtlanmıştır. Daha sonra aynı ID ile oluşturulan bir zon bunların kapsamına girer. Onarım anahtarları kısıtlı tutar, ancak hiçbir zona bağlamaz."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Listelenen tüm zonlardaki API anahtarı kısıtlamaları onarılsın mı?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "API anahtarı kısıtlamasını onar"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API anahtarı kısıtlaması artık silinen zonu belirtmiyor"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "API anahtarı kısıtlaması onarılamadı"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Onarılacak, silinmiş zonlardaki API anahtarı kısıtlaması yok"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "%d silinmiş zondaki API anahtarı kısıtlamaları onarıldı"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d silinmiş zon onarıldı; %d başarısız"

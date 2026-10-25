@@ -16052,3 +16052,50 @@ msgstr "%d kirje nimed teisendati väiketähtedeks"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d kirje nime teisendati; %d ebaõnnestus"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API võtmete piirangud kustutatud tsoonidel"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Kõik API võtmete tsoonipiirangud nimetavad olemasolevat tsooni"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d kustutatud tsooni on API võtmete piirangutes endiselt nimetatud"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Need API võtmed on piiratud tsooniga, mis on kustutatud. Hiljem sama ID-ga loodud tsoon langeks nende alla. Parandus jätab võtmed piiratuks, kuid mitte ühegi tsooniga."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Kas parandada API võtmete piirangud kõigil loetletud tsoonidel?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Paranda API võtme piirang"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API võtme piirang ei nimeta enam kustutatud tsooni"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "API võtme piirangu parandamine ebaõnnestus"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Kustutatud tsoonidel pole parandamist vajavaid API võtmete piiranguid"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Parandati API võtmete piirangud %d kustutatud tsoonil"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Parandati %d kustutatud tsooni; %d ebaõnnestus"

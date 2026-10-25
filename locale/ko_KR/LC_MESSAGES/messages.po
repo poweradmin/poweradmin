@@ -16137,3 +16137,50 @@ msgstr "레코드 %d개의 이름을 소문자로 바꾸었습니다"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "레코드 이름 %d개를 소문자로 바꾸었습니다. %d개 실패"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "삭제된 존의 API 키 제한"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "모든 API 키 존 제한이 존재하는 존을 가리킵니다"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "삭제된 존 %d개가 아직 API 키 제한에 지정되어 있습니다"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "이 API 키들은 삭제된 존으로 제한되어 있습니다. 나중에 같은 ID로 생성된 존은 이 제한의 대상이 됩니다. 복구하면 키는 계속 제한되지만 어떤 존에도 해당하지 않게 됩니다."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "나열된 모든 존의 API 키 제한을 복구하시겠습니까?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "API 키 제한 복구"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API 키 제한이 더 이상 삭제된 존을 가리키지 않습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "API 키 제한을 복구하지 못했습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "복구할 삭제된 존의 API 키 제한이 없습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "삭제된 존 %d개의 API 키 제한을 복구했습니다"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "삭제된 존 %d개 복구됨; %d개 실패"

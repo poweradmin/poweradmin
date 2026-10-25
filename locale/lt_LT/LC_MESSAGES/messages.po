@@ -16419,3 +16419,50 @@ msgstr "%d įrašų pavadinimai pakeisti mažosiomis raidėmis"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Pakeista %d įrašų pavadinimų; %d nepavyko"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API raktų apribojimai ištrintose zonose"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Visi API raktų zonų apribojimai nurodo esamą zoną"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d ištrintų zonų vis dar nurodoma API raktų apribojimuose"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Šie API raktai apriboti zona, kuri buvo ištrinta. Vėliau sukurta zona su tuo pačiu ID patektų po jais. Pataisymas palieka raktus apribotus, bet jokiai zonai."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Pataisyti API raktų apribojimus visose išvardytose zonose?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Pataisyti API rakto apribojimą"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API rakto apribojimas nebenurodo ištrintos zonos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Nepavyko pataisyti API rakto apribojimo"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Nėra taisytinų API raktų apribojimų ištrintose zonose"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Pataisyti API raktų apribojimai %d ištrintų zonų"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Pataisyta %d ištrintų zonų; %d nepavyko"

@@ -16324,3 +16324,50 @@ msgstr "Názvy %d záznamů byly převedeny na malá písmena"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Převedeno %d názvů záznamů; %d se nezdařilo"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Omezení API klíčů na smazaných zónách"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Všechna omezení API klíčů na zónu uvádějí existující zónu"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d smazaných zón je stále uvedeno v omezeních API klíčů"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Tyto API klíče jsou omezeny na zónu, která byla smazána. Zóna vytvořená později se stejným ID by pod ně spadala. Oprava ponechá klíče omezené, ale na žádnou zónu."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Opravit omezení API klíčů u všech uvedených zón?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Opravit omezení API klíče"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Omezení API klíče již neuvádí smazanou zónu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Opravu omezení API klíče se nepodařilo provést"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Žádná omezení API klíčů na smazaných zónách k opravě"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Opravena omezení API klíčů u %d smazaných zón"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Opraveno %d smazaných zón; %d se nezdařilo"

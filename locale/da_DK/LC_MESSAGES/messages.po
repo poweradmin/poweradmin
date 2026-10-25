@@ -16382,3 +16382,50 @@ msgstr "Navnene på %d records er ændret til små bogstaver"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Ændrede %d record-navne; %d mislykkedes"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API-nøglebegrænsninger på slettede zoner"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Alle API-nøglers zonebegrænsninger peger på en eksisterende zone"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d slettede zoner er stadig angivet i API-nøglebegrænsninger"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Disse API-nøgler er begrænset til en zone, der er slettet. En zone, der oprettes senere med samme ID, ville falde ind under dem. Rettelsen holder nøglerne begrænsede, men til ingen zone."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Ret API-nøglebegrænsningerne på alle viste zoner?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Ret API-nøglebegrænsning"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API-nøglens begrænsning peger ikke længere på den slettede zone"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Kunne ikke rette API-nøglens begrænsning"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Ingen API-nøglebegrænsninger på slettede zoner at rette"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Begrænsningerne for API-nøgler på %d slettede zoner blev rettet"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d slettede zoner rettet; %d mislykkedes"

@@ -16539,3 +16539,50 @@ msgstr "%d rekord neve kisbetűssé alakítva"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d rekordnév átalakítva; %d sikertelen"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API-kulcskorlátozások törölt zónákon"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Minden API-kulcs zónakorlátozása létező zónát nevez meg"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d törölt zónát még mindig megnevez API-kulcskorlátozás"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Ezek az API-kulcsok egy törölt zónára vannak korlátozva. Egy később ugyanezzel az azonosítóval létrehozott zóna ezek alá esne. A javítás korlátozva tartja a kulcsokat, de egyetlen zónára sem."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Javítja az API-kulcsok korlátozásait az összes felsorolt zónán?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "API-kulcs korlátozásának javítása"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Az API-kulcs korlátozása már nem nevezi meg a törölt zónát"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Az API-kulcs korlátozásának javítása sikertelen"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Nincs javítandó API-kulcskorlátozás törölt zónákon"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Az API-kulcsok korlátozásai %d törölt zónán javítva"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d törölt zóna javítva; %d sikertelen"

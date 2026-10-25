@@ -16300,3 +16300,50 @@ msgstr "Navnene på %d poster er endret til små bokstaver"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Endret %d postnavn; %d mislyktes"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API-nøkkelbegrensninger på slettede soner"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Alle API-nøklers sonebegrensninger nevner en eksisterende sone"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d slettede soner er fortsatt nevnt av API-nøkkelbegrensninger"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Disse API-nøklene er begrenset til en sone som er slettet. En sone som opprettes senere med samme ID, ville falle inn under dem. Reparasjonen holder nøklene begrenset, men til ingen sone."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Reparere API-nøkkelbegrensningene på alle oppførte soner?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Reparer API-nøkkelbegrensning"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API-nøkkelens begrensning nevner ikke lenger den slettede sonen"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Kunne ikke reparere API-nøkkelens begrensning"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Ingen API-nøkkelbegrensninger på slettede soner å reparere"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Begrensningene for API-nøkler på %d slettede soner ble reparert"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d slettede soner reparert; %d mislyktes"

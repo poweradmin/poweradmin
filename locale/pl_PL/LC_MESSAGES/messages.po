@@ -16520,3 +16520,50 @@ msgstr "Zmieniono na małe litery nazwy %d rekordów"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Zmieniono %d nazw rekordów; %d nie powiodło się"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Ograniczenia kluczy API na usuniętych strefach"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Wszystkie ograniczenia stref kluczy API wskazują istniejącą strefę"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d usuniętych stref jest nadal wskazywanych przez ograniczenia kluczy API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Te klucze API są ograniczone do strefy, która została usunięta. Strefa utworzona później z tym samym ID podlegałaby tym ograniczeniom. Naprawa zachowuje ograniczenie kluczy, ale do żadnej strefy."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Naprawić ograniczenia kluczy API na wszystkich wymienionych strefach?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Napraw ograniczenie klucza API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Ograniczenie klucza API nie wskazuje już usuniętej strefy"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Nie udało się naprawić ograniczenia klucza API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Brak ograniczeń kluczy API na usuniętych strefach do naprawienia"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Naprawiono ograniczenia kluczy API dla %d usuniętych stref"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Naprawiono %d usuniętych stref; %d nie powiodło się"

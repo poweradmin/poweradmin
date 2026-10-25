@@ -16902,3 +16902,50 @@ msgstr "Τα ονόματα %d εγγραφών μετατράπηκαν σε π
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Μετατράπηκαν %d ονόματα εγγραφών· %d απέτυχαν"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Περιορισμοί κλειδιών API σε διαγραμμένες ζώνες"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Όλοι οι περιορισμοί ζώνης των κλειδιών API αναφέρουν υπάρχουσα ζώνη"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d διαγραμμένες ζώνες αναφέρονται ακόμη σε περιορισμούς κλειδιών API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Αυτά τα κλειδιά API περιορίζονται σε ζώνη που έχει διαγραφεί. Μια ζώνη που θα δημιουργηθεί αργότερα με το ίδιο ID θα υπαγόταν σε αυτά. Η επιδιόρθωση διατηρεί τα κλειδιά περιορισμένα, αλλά σε καμία ζώνη."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Να επιδιορθωθούν οι περιορισμοί κλειδιών API σε όλες τις ζώνες της λίστας;"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Επιδιόρθωση περιορισμού κλειδιού API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Ο περιορισμός του κλειδιού API δεν αναφέρει πλέον τη διαγραμμένη ζώνη"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Αποτυχία επιδιόρθωσης του περιορισμού του κλειδιού API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Δεν υπάρχουν περιορισμοί κλειδιών API σε διαγραμμένες ζώνες για επιδιόρθωση"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Επιδιορθώθηκαν οι περιορισμοί κλειδιών API σε %d διαγραμμένες ζώνες"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Επιδιορθώθηκαν %d διαγραμμένες ζώνες; %d απέτυχαν"

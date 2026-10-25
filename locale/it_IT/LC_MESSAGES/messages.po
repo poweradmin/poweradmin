@@ -16666,3 +16666,50 @@ msgstr "Convertiti in minuscolo i nomi di %d record"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Convertiti %d nomi di record; %d non riusciti"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Restrizioni delle chiavi API su zone eliminate"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Tutte le restrizioni di zona delle chiavi API indicano una zona esistente"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d zone eliminate sono ancora indicate da restrizioni di chiavi API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Queste chiavi API sono limitate a una zona che è stata eliminata. Una zona creata in seguito con lo stesso ID ricadrebbe sotto di esse. La riparazione mantiene le chiavi limitate, ma a nessuna zona."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Riparare le restrizioni delle chiavi API su tutte le zone elencate?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Ripara restrizione della chiave API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "La restrizione della chiave API non indica più la zona eliminata"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Impossibile riparare la restrizione della chiave API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Nessuna restrizione di chiavi API su zone eliminate da riparare"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Riparate le restrizioni delle chiavi API su %d zone eliminate"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d zone eliminate riparate; %d non riuscite"

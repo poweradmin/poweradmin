@@ -15324,3 +15324,50 @@ msgstr "已將 %d 筆記錄的名稱轉換為小寫"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "已轉換 %d 個記錄名稱；%d 個失敗"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "已刪除區域上的 API 金鑰限制"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "所有 API 金鑰的區域限制都指向現有區域"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "仍有 %d 個已刪除區域被 API 金鑰限制引用"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "這些 API 金鑰被限制在一個已刪除的區域。之後以相同 ID 建立的區域會落入這些限制之下。修復會讓金鑰保持受限，但不再對應任何區域。"
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "修復所有列出區域上的 API 金鑰限制？"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "修復 API 金鑰限制"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API 金鑰的限制不再指向已刪除的區域"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "修復 API 金鑰限制失敗"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "沒有需要修復的、針對已刪除區域的 API 金鑰限制"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "已修復 %d 個已刪除區域上的 API 金鑰限制"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "已修復 %d 個已刪除區域；%d 個失敗"

@@ -221,6 +221,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
+            'api_key_scopes_name_zones' => $this->checkApiKeyScopesNameZones(),
             'zone_names_differing_in_case' => $this->caseReport($zones),
             'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->masterReport($zones),
@@ -260,6 +261,22 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
     public function fixZoneName(int $zoneId): bool
     {
         return false;
+    }
+
+    /** New zones never take an id an API key restriction names (CanonicalZoneIdAllocator), so API mode has nothing to report. */
+    public function checkApiKeyScopesNameZones(): array
+    {
+        return ConsistencyReport::allClear(_('All API key zone restrictions name an existing zone'));
+    }
+
+    public function fixApiKeyScopesOnMissingZone(int $zoneId): bool
+    {
+        return false;
+    }
+
+    public function fixAllApiKeyScopesOnMissingZones(): array
+    {
+        return ['fixed' => 0, 'failed' => 0];
     }
 
     public function fixAllZonesWithoutName(): array

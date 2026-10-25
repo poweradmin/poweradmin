@@ -16279,3 +16279,50 @@ msgstr "Đã chuyển tên của %d bản ghi thành chữ thường"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Đã chuyển %d tên bản ghi; %d thất bại"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Giới hạn khóa API trên vùng đã xóa"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Mọi giới hạn vùng của khóa API đều nêu một vùng còn tồn tại"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d vùng đã xóa vẫn được nêu trong giới hạn khóa API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Các khóa API này bị giới hạn trong một vùng đã bị xóa. Một vùng được tạo sau đó với cùng ID sẽ nằm trong giới hạn này. Việc sửa giữ các khóa ở trạng thái bị giới hạn, nhưng không thuộc vùng nào."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Sửa giới hạn khóa API trên tất cả các vùng được liệt kê?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Sửa giới hạn khóa API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Giới hạn của khóa API không còn nêu vùng đã xóa"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Không thể sửa giới hạn của khóa API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Không có giới hạn khóa API trên vùng đã xóa cần sửa"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Đã sửa giới hạn khóa API trên %d vùng đã xóa"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Đã sửa %d vùng đã xóa; %d thất bại"

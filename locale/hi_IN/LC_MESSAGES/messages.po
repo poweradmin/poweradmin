@@ -16088,3 +16088,50 @@ msgstr "%d रिकॉर्ड के नाम छोटे अक्षर�
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d रिकॉर्ड नाम बदले गए; %d विफल रहे"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "हटाए गए ज़ोन पर API कुंजी प्रतिबंध"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "सभी API कुंजी ज़ोन प्रतिबंध किसी मौजूदा ज़ोन का नाम लेते हैं"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d हटाए गए ज़ोन का नाम अब भी API कुंजी प्रतिबंधों में है"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "ये API कुंजियाँ एक ऐसे ज़ोन तक सीमित हैं जिसे हटा दिया गया है। बाद में उसी ID से बना ज़ोन इनके अंतर्गत आ जाएगा। मरम्मत कुंजियों को सीमित रखती है, लेकिन किसी भी ज़ोन तक नहीं।"
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "क्या सूचीबद्ध सभी ज़ोन पर API कुंजी प्रतिबंधों की मरम्मत करें?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "API कुंजी प्रतिबंध की मरम्मत करें"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API कुंजी का प्रतिबंध अब हटाए गए ज़ोन का नाम नहीं लेता"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "API कुंजी के प्रतिबंध की मरम्मत विफल रही"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "मरम्मत के लिए हटाए गए ज़ोन पर कोई API कुंजी प्रतिबंध नहीं"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "%d हटाए गए ज़ोन पर API कुंजी प्रतिबंधों की मरम्मत हुई"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d हटाए गए ज़ोन की मरम्मत हुई; %d विफल"

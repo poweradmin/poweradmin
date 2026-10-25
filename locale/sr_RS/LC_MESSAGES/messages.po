@@ -16157,3 +16157,50 @@ msgstr "Имена %d записа претворена су у мала сло�
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Претворено %d имена записа; %d није успело"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Ограничења API кључева на обрисаним зонама"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Сва ограничења зона API кључева наводе постојећу зону"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d обрисаних зона и даље се наводи у ограничењима API кључева"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Ови API кључеви су ограничени на зону која је обрисана. Зона створена касније са истим ID-ом потпала би под њих. Поправка задржава ограничење кључева, али без иједне зоне."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Поправити ограничења API кључева за све наведене зоне?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Поправи ограничење API кључа"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Ограничење API кључа више не наводи обрисану зону"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Поправка ограничења API кључа није успела"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Нема ограничења API кључева на обрисаним зонама за поправку"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Поправљена ограничења API кључева за %d обрисаних зона"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Поправљено %d обрисаних зона; %d неуспешно"

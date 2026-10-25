@@ -16557,3 +16557,50 @@ msgstr "Namen van %d records omgezet naar kleine letters"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d recordnamen omgezet; %d mislukt"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API-sleutelbeperkingen op verwijderde zones"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Alle zonebeperkingen van API-sleutels noemen een bestaande zone"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d verwijderde zones worden nog genoemd door API-sleutelbeperkingen"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Deze API-sleutels zijn beperkt tot een zone die is verwijderd. Een later met dezelfde ID aangemaakte zone zou eronder vallen. Het herstel houdt de sleutels beperkt, maar tot geen enkele zone."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "De API-sleutelbeperkingen op alle vermelde zones herstellen?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "API-sleutelbeperking herstellen"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "De beperking van de API-sleutel noemt de verwijderde zone niet meer"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "De beperking van de API-sleutel kon niet worden hersteld"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Geen API-sleutelbeperkingen op verwijderde zones om te herstellen"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Beperkingen van API-sleutels op %d verwijderde zones hersteld"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d verwijderde zones hersteld; %d mislukt"

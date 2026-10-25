@@ -16163,3 +16163,50 @@ msgstr "%d tietueen nimet muutettiin pieniksi kirjaimiksi"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Muutettiin %d tietueen nimeä; %d epäonnistui"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "API-avainten rajoitukset poistetuilla alueilla"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Kaikki API-avainten aluerajoitukset nimeävät olemassa olevan alueen"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d poistettua aluetta on yhä nimetty API-avainten rajoituksissa"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Nämä API-avaimet on rajattu alueeseen, joka on poistettu. Myöhemmin samalla tunnuksella luotu alue kuuluisi niiden piiriin. Korjaus pitää avaimet rajattuina, mutta ei mihinkään alueeseen."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Korjataanko API-avainten rajoitukset kaikilla luetelluilla alueilla?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Korjaa API-avaimen rajoitus"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "API-avaimen rajoitus ei enää nimeä poistettua aluetta"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "API-avaimen rajoituksen korjaus epäonnistui"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Ei korjattavia API-avainten rajoituksia poistetuilla alueilla"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Korjattiin API-avainten rajoitukset %d poistetulla alueella"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Korjattiin %d poistettua aluetta; %d epäonnistui"

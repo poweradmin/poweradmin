@@ -16085,3 +16085,50 @@ msgstr "تم تحويل اسم %d سجل إلى أحرف صغيرة"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "تم تحويل %d اسم سجل إلى أحرف صغيرة؛ فشل %d"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "قيود مفاتيح API على المناطق المحذوفة"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "جميع قيود المناطق لمفاتيح API تشير إلى منطقة موجودة"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "لا تزال قيود مفاتيح API تشير إلى %d منطقة محذوفة"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "هذه مفاتيح API مقيّدة بمنطقة تم حذفها. أي منطقة تُنشأ لاحقًا بالمعرّف نفسه ستندرج تحتها. يُبقي الإصلاح المفاتيح مقيّدة، ولكن دون أي منطقة."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "هل تريد إصلاح قيود مفاتيح API على جميع المناطق المدرجة؟"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "إصلاح قيد مفتاح API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "قيد مفتاح API لم يعد يشير إلى المنطقة المحذوفة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "تعذّر إصلاح قيد مفتاح API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "لا توجد قيود لمفاتيح API على مناطق محذوفة تحتاج إلى إصلاح"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "تم إصلاح قيود مفاتيح API على %d منطقة محذوفة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "تم إصلاح %d منطقة محذوفة؛ فشل %d"

@@ -16799,3 +16799,50 @@ msgstr "Athraíodh ainm %d taifead go litreacha beaga"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "Athraíodh %d ainm taifid; theip ar %d"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Srianta Eochrach API ar Chriosanna Scriosta"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Ainmníonn gach srian crios d'eochracha API crios atá ann"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "Tá %d crios scriosta ainmnithe fós ag srianta eochrach API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Tá na heochracha API seo srianta do chrios a scriosadh. Thitfeadh crios a chruthófaí níos déanaí leis an ID céanna faoina gcuimsiú. Coinníonn an deisiú na heochracha srianta, ach gan crios ar bith."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "An bhfuil fonn ort srianta eochrach API ar na criosanna liostaithe uile a dheisiú?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Deisigh srian eochrach API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Ní ainmníonn srian na heochrach API an crios scriosta a thuilleadh"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Theip ar dheisiú shrian na heochrach API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Níl aon srianta eochrach API ar chriosanna scriosta le deisiú"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Deisíodh srianta eochrach API ar %d crios scriosta"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "Deisíodh %d crios scriosta; theip ar %d"

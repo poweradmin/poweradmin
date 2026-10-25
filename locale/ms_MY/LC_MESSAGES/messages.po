@@ -16475,3 +16475,50 @@ msgstr "Nama %d rekod ditukar kepada huruf kecil"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d nama rekod ditukar; %d gagal"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "Sekatan Kunci API pada Zon yang Dipadam"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "Semua sekatan zon kunci API menamakan zon yang wujud"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d zon yang dipadam masih dinamakan oleh sekatan kunci API"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "Kunci API ini dihadkan kepada zon yang telah dipadam. Zon yang dicipta kemudian dengan ID yang sama akan terjatuh di bawahnya. Pembaikan mengekalkan sekatan pada kunci, tetapi tanpa sebarang zon."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "Baiki sekatan kunci API pada semua zon yang disenaraikan?"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "Baiki sekatan kunci API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "Sekatan kunci API tidak lagi menamakan zon yang dipadam"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "Gagal membaiki sekatan kunci API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "Tiada sekatan kunci API pada zon yang dipadam untuk dibaiki"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "Sekatan kunci API pada %d zon yang dipadam telah dibaiki"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d zon yang dipadam dibaiki; %d gagal"

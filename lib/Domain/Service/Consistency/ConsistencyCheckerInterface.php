@@ -60,6 +60,14 @@ interface ConsistencyCheckerInterface
     public function checkGroupGrantsOnRowIds(): array;
 
     /**
+     * API key zone restrictions naming a zone id no zone has, which a zone later given that
+     * id would fall under. Only the SQL backend hands out an id again.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkApiKeyScopesNameZones(): array;
+
+    /**
      * Zone names that exist more than once in different letter case, such as Example.com and
      * example.com, which PowerDNS treats as the same name. Report only.
      *
@@ -112,6 +120,12 @@ interface ConsistencyCheckerInterface
 
     /** @return array{fixed: int, failed: int} */
     public function fixAllZonesWithoutName(): array;
+
+    /** Point the API key restrictions on $zoneId, which no zone has, at no zone. */
+    public function fixApiKeyScopesOnMissingZone(int $zoneId): bool;
+
+    /** @return array{fixed: int, failed: int} */
+    public function fixAllApiKeyScopesOnMissingZones(): array;
 
     /** Lowercase the record's name, and the name of the comments on its RRset. */
     public function fixRecordNameCase(int $recordId): bool;

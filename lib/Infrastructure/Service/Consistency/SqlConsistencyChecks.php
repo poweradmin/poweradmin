@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Domain\Port\TransactionInterface;
 use Exception;
@@ -133,6 +134,30 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     public function checkGroupGrantsOnRowIds(): array
     {
         return ConsistencyReport::allClear(_('All group assignments use canonical zone IDs'));
+    }
+
+    public function checkApiKeyScopesNameZones(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT k.zone_id, a.name FROM api_key_zones k JOIN api_keys a ON a.id = k.api_key_id
+             WHERE k.zone_id <> 0 AND NOT EXISTS (SELECT 1 FROM $this->domainsTable d WHERE d.id = k.zone_id)
+             ORDER BY k.zone_id, a.name"
+        );
+        $keysByZone = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $keysByZone[(int)$row['zone_id']][] = (string)$row['name'];
+        }
+        $findings = [];
+        foreach ($keysByZone as $zoneId => $keys) {
+            $findings[] = ['id' => $zoneId, 'keys' => implode(', ', $keys)];
+        }
+
+        return ConsistencyReport::build(
+            $findings,
+            _('All API key zone restrictions name an existing zone'),
+            'warning',
+            _('%d deleted zones are still named by API key restrictions')
+        );
     }
 
     public function checkZoneNamesDifferingInCase(): array
@@ -284,6 +309,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             'zones_have_names' => $this->checkZonesHaveNames(),
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
+            'api_key_scopes_name_zones' => $this->checkApiKeyScopesNameZones(),
             'zone_names_differing_in_case' => $this->checkZoneNamesDifferingInCase(),
             'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
@@ -301,6 +327,31 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     public function fixAllZonesWithCanonicalIdIssue(): array
     {
         return ['fixed' => 0, 'failed' => 0];
+    }
+
+    public function fixApiKeyScopesOnMissingZone(int $zoneId): bool
+    {
+        if ($zoneId <= 0) {
+            return false;
+        }
+        // Re-read so a zone created with this id since the check keeps the keys restricted to it
+        $stmt = $this->db->prepare("SELECT 1 FROM $this->domainsTable WHERE id = :id");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->fetchColumn() !== false) {
+            return false;
+        }
+
+        return SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId) !== [];
+    }
+
+    public function fixAllApiKeyScopesOnMissingZones(): array
+    {
+        return ConsistencyReport::repairEach(
+            ConsistencyReport::findingIds($this->checkApiKeyScopesNameZones()),
+            fn(int $zoneId): bool => $this->fixApiKeyScopesOnMissingZone($zoneId),
+            'fixed'
+        );
     }
 
     public function fixZoneName(int $zoneId): bool

@@ -379,6 +379,7 @@ class ApiConsistencyChecksTest extends TestCase
             'zones_have_names',
             'shared_zone_ids',
             'group_grants_on_row_ids',
+            'api_key_scopes_name_zones',
             'zone_names_differing_in_case',
             'record_names_in_lowercase',
             'slave_zones_have_masters',

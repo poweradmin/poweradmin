@@ -16235,3 +16235,50 @@ msgstr "نام %d رکورد به حروف کوچک تبدیل شد"
 #, php-format
 msgid "Lowercased %d record names; %d failed"
 msgstr "%d نام رکورد تبدیل شد؛ %d ناموفق بود"
+
+#: templates/default/database_consistency.html:377
+msgid "API Key Restrictions On Deleted Zones"
+msgstr "محدودیت‌های کلیدهای API روی مناطق حذف‌شده"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:157
+msgid "All API key zone restrictions name an existing zone"
+msgstr "همه محدودیت‌های منطقه در کلیدهای API به منطقه‌ای موجود اشاره می‌کنند"
+
+#: lib/Infrastructure/Service/Consistency/SqlConsistencyChecks.php:159
+#, php-format
+msgid "%d deleted zones are still named by API key restrictions"
+msgstr "%d منطقه حذف‌شده هنوز در محدودیت‌های کلیدهای API ذکر شده‌اند"
+
+#: templates/default/database_consistency.html:384
+msgid "These API keys are restricted to a zone that was deleted. A zone created later with the same ID would fall under them. The repair keeps the keys restricted, but to no zone."
+msgstr "این کلیدهای API به منطقه‌ای محدود شده‌اند که حذف شده است. منطقه‌ای که بعداً با همان شناسه ایجاد شود زیر این محدودیت‌ها قرار می‌گیرد. ترمیم، کلیدها را محدود نگه می‌دارد، اما به هیچ منطقه‌ای."
+
+#: templates/default/database_consistency.html:387
+msgid "Repair the API key restrictions on all listed zones?"
+msgstr "محدودیت‌های کلیدهای API روی همه مناطق فهرست‌شده ترمیم شود؟"
+
+#: templates/default/database_consistency.html:416
+msgid "Repair API key restriction"
+msgstr "ترمیم محدودیت کلید API"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "API key restriction no longer names the deleted zone"
+msgstr "محدودیت کلید API دیگر به منطقه حذف‌شده اشاره نمی‌کند"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:84
+msgid "Failed to repair the API key restriction"
+msgstr "ترمیم محدودیت کلید API ناموفق بود"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:123
+msgid "No API key restrictions on deleted zones to repair"
+msgstr "هیچ محدودیت کلید API روی مناطق حذف‌شده برای ترمیم وجود ندارد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:124
+#, php-format
+msgid "Repaired the API key restrictions on %d deleted zones"
+msgstr "محدودیت‌های کلیدهای API روی %d منطقه حذف‌شده ترمیم شد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:125
+#, php-format
+msgid "Repaired %d deleted zones; %d failed"
+msgstr "%d منطقه حذف‌شده ترمیم شد؛ %d ناموفق"
