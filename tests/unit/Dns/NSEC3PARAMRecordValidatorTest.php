@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 10 AB12CD', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
         $this->assertEquals('example.com', $data['name']);
 
         // Check for extracted field values
@@ -136,7 +136,7 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 5 -', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -318,7 +318,7 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 5 -', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
