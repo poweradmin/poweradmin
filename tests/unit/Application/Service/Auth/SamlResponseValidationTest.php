@@ -178,6 +178,51 @@ class SamlResponseValidationTest extends TestCase
         $this->assertSame(['SERVER_PORT' => '80'], $_SERVER);
     }
 
+    public function testCurrentUrlIsTheAdvertisedAcsUrlBehindAPortMapping(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockSamlConfig->method('getServiceProviderConfig')
+            ->willReturn(['assertion_consumer_service_url' => 'http://localhost:8089/saml/acs']);
+        // nginx inside the container listens on 80; the host publishes it as 8089
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'localhost:8089', 'REQUEST_URI' => '/saml/acs', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = $method->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'http://localhost:8089/saml/acs');
+
+        $this->assertSame('http://localhost:8089/saml/acs', $seen);
+        // The pin is static state, so it must not outlive the call
+        $this->assertSame('80', \OneLogin\Saml2\Utils::getSelfPort());
+    }
+
+    public function testCurrentUrlFollowsAnHttpsAcsUrlWithoutAPort(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockSamlConfig->method('getServiceProviderConfig')
+            ->willReturn(['assertion_consumer_service_url' => 'https://dns.example.com/saml/acs']);
+        $_SERVER = ['SERVER_PORT' => '8080', 'HTTP_HOST' => 'internal:8080', 'REQUEST_URI' => '/saml/acs', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = $method->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'https://dns.example.com/saml/acs');
+
+        $this->assertSame('https://dns.example.com/saml/acs', $seen);
+    }
+
+    public function testSingleLogoutIsCheckedAgainstTheSlsUrlEvenOnAnotherHost(): void
+    {
+        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockSamlConfig->method('getServiceProviderConfig')->willReturn([
+            'assertion_consumer_service_url' => 'https://dns.example.com/saml/acs',
+            'single_logout_service_url' => 'https://sso.example.com/saml/sls',
+        ]);
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/sls', 'SCRIPT_NAME' => '/index.php'];
+
+        $sloUrl = $this->getPrivateMethod('getSloUrl')->invoke($this->service);
+        $seen = $this->getPrivateMethod('withProxyServerVars')
+            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), $sloUrl);
+
+        $this->assertSame('https://sso.example.com/saml/sls', $seen);
+    }
+
     private function getPrivateMethod(string $methodName): ReflectionMethod
     {
         $reflection = new ReflectionClass($this->service);

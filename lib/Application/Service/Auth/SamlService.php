@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service\Auth;
 
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
+use OneLogin\Saml2\Utils;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
@@ -235,7 +236,7 @@ final class SamlService
         }
 
         try {
-            return $this->withProxyServerVars(fn() => $this->processAssertion($providerId, $flow['request_id'] ?? null));
+            return $this->withProxyServerVars(fn() => $this->processAssertion($providerId, $flow['request_id'] ?? null), $this->getAcsUrl());
         } catch (\Exception $e) {
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
             $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
@@ -422,10 +423,11 @@ final class SamlService
     }
 
     /**
-     * Runs $fn with HTTPS and SERVER_PORT forced to what OneLogin expects behind a
-     * reverse proxy, and restores both however $fn ends.
+     * Runs $fn with OneLogin's idea of the current URL set to $endpointUrl, the endpoint we
+     * advertised for this message (or, without one, HTTPS and SERVER_PORT forced as behind a
+     * reverse proxy), and restores both when $fn returns or throws.
      */
-    private function withProxyServerVars(callable $fn): mixed
+    private function withProxyServerVars(callable $fn, string $endpointUrl = ''): mixed
     {
         $originalHttps = $_SERVER['HTTPS'] ?? null;
         $originalPort = $_SERVER['SERVER_PORT'] ?? null;
@@ -434,10 +436,15 @@ final class SamlService
             $_SERVER['HTTPS'] = 'on';
             $_SERVER['SERVER_PORT'] = '443';
         }
+        $pinned = $this->pinSelfUrl($endpointUrl);
 
         try {
             return $fn();
         } finally {
+            if ($pinned) {
+                // Static state; php-saml's own redirect exits before this runs
+                Utils::setBaseURL('');
+            }
             if ($originalHttps !== null) {
                 $_SERVER['HTTPS'] = $originalHttps;
             } else {
@@ -493,7 +500,7 @@ final class SamlService
         try {
             $auth = $this->createAuth($providerId);
             if ($auth) {
-                $auth->processSLO();
+                $this->withProxyServerVars(fn() => $auth->processSLO(), $this->getSloUrl());
 
                 $errors = $auth->getErrors();
                 if (!empty($errors)) {
@@ -677,6 +684,37 @@ final class SamlService
             'httponly' => true,
             'samesite' => 'None',
         ]);
+    }
+
+    /**
+     * OneLogin rebuilds the URL a message was sent to from SERVER_PORT and the Host header,
+     * which a port mapping in front of PHP changes; the IdP sends to the endpoint we
+     * advertised (ACS or SLS, which an operator may host apart), so check against that.
+     */
+    private function pinSelfUrl(string $endpointUrl): bool
+    {
+        $parts = parse_url($endpointUrl);
+        if (!is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {
+            return false;
+        }
+
+        $scheme = strtolower($parts['scheme']);
+        Utils::setSelfProtocol($scheme);
+        Utils::setSelfHost($parts['host']);
+        Utils::setSelfPort((string)($parts['port'] ?? ($scheme === 'https' ? 443 : 80)));
+
+        return true;
+    }
+
+    private function getSloUrl(): string
+    {
+        try {
+            $sloUrl = $this->samlConfigurationService->getServiceProviderConfig()['single_logout_service_url'] ?? '';
+        } catch (\RuntimeException) {
+            return '';
+        }
+
+        return is_string($sloUrl) ? $sloUrl : '';
     }
 
     private function getAcsUrl(): string

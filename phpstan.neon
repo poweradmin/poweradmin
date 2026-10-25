@@ -22,12 +22,6 @@ parameters:
       path: tests/*
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_?config.#'
-    # php-saml annotates processSLO() as never-returning when $stay is false, but
-    # its SAMLResponse branch falls through and returns - which is exactly the path
-    # that records the logout errors read on the next line.
-    -
-      identifier: deadCode.unreachable
-      path: lib/Application/Service/Auth/SamlService.php
     # PHPStan treats a repeated identical call as pure and reuses the first
     # result's narrowing, so every "did the mutation take effect?" check below
     # looks dead. The state genuinely changed in between and removing any of
