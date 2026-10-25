@@ -37,6 +37,9 @@ enum AuthMethod: string
     case OIDC = 'oidc';
     case SAML = 'saml';
 
+    // Stored in users.password for LDAP accounts; never a valid hash.
+    public const LDAP_PASSWORD_PLACEHOLDER = 'LDAP_USER';
+
     /**
      * Read a stored or session value, falling back to SQL for anything
      * unrecognised (including null, which pre-dates the column).

@@ -33,6 +33,8 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -100,7 +102,13 @@ class UsersController extends PublicApiController
             $this->userRepository,
             $permissionService,
             $this->groupRepository,
-            (bool)$this->config->get('security', 'protect_last_admin_on_edit', false)
+            (bool)$this->config->get('security', 'protect_last_admin_on_edit', false),
+            new UserAuthenticationService(
+                $this->config->get('security', 'password_encryption', 'bcrypt'),
+                $this->config->get('security', 'password_cost', 12)
+            ),
+            new PasswordPolicyService($this->config),
+            (bool)$this->config->get('ldap', 'enabled', false)
         );
         $this->membershipService = new GroupMembershipService(
             $this->createUserGroupMemberRepository(),
@@ -468,7 +476,7 @@ class UsersController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'password',
-                    description: 'User password (will be hashed)',
+                    description: 'User password (hashed with the configured algorithm, must satisfy the password policy). Ignored when use_ldap is true.',
                     type: 'string',
                     example: 'secure_password123'
                 ),
@@ -504,7 +512,7 @@ class UsersController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'use_ldap',
-                    description: 'Whether the user should use LDAP authentication',
+                    description: 'Whether the user should use LDAP authentication. Requires LDAP to be enabled; no local password is stored.',
                     type: 'boolean',
                     example: false
                 ),
@@ -810,7 +818,7 @@ class UsersController extends PublicApiController
             // Setting another user's password requires user_passwd_edit_others,
             // matching the web flow; without it the password field is not writable.
             if (
-                !empty($input['password'])
+                UserManagementService::passwordGiven($input)
                 && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
             ) {
                 return $this->returnApiError('You do not have permission to change this user\'s password', 403);
