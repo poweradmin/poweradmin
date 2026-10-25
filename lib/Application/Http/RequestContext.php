@@ -32,12 +32,14 @@ namespace Poweradmin\Application\Http;
 final class RequestContext
 {
     /**
-     * Paths of the unauthenticated monitoring probes, as declared in routes.yaml.
+     * Paths of the monitoring endpoints, as declared in routes.yaml. None of them
+     * needs a session: health and ping are unauthenticated, and metrics takes an
+     * API key on every scrape.
      *
      * Shared so the session skip below and HeadlessRouteFilter cannot drift apart
      * from each other or from the routes themselves.
      */
-    public const HEALTH_PROBE_PATHS = ['/api/health', '/ping'];
+    public const HEALTH_PROBE_PATHS = ['/api/health', '/api/metrics', '/ping'];
 
     private function __construct()
     {
@@ -104,7 +106,7 @@ final class RequestContext
      */
     public static function isApiPath(): bool
     {
-        return preg_match('#/api/(internal|v\d+|docs|health)(/|$)#', self::path()) === 1;
+        return preg_match('#/api/(internal|v\d+|docs|health|metrics)(/|$)#', self::path()) === 1;
     }
 
     /**

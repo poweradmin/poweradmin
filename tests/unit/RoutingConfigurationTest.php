@@ -354,7 +354,7 @@ class RoutingConfigurationTest extends TestCase
     {
         $routes = Yaml::parseFile(__DIR__ . '/../../lib/Application/Config/routes.yaml');
 
-        foreach (['api_health', 'ping'] as $name) {
+        foreach (['api_health', 'api_metrics', 'ping'] as $name) {
             $this->assertArrayHasKey($name, $routes, "Route $name is missing from routes.yaml");
 
             $_SERVER['REQUEST_URI'] = $routes[$name]['path'];
