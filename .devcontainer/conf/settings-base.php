@@ -151,6 +151,13 @@ return [
     ],
 
     /**
+     * Metrics endpoint (require_auth stays on, so the API tests can check the refusals)
+     */
+    'metrics' => [
+        'enabled' => true,
+    ],
+
+    /**
      * Change approval workflow (require_review_for_all stays off)
      */
     'approval' => [

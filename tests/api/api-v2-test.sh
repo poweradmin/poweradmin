@@ -2699,6 +2699,110 @@ test_zone_dnssec_keys() {
     api_request_v2 "DELETE" "/zones/${zone_id}" "" 204 "Delete DNSSEC key test zone" || true
 }
 
+# A user without server_status_view and a zone-restricted admin key are both refused
+test_metrics_access() {
+    local mgr_id owner_id
+    if ! mgr_id=$(db_exec "SELECT id FROM users WHERE username='manager' LIMIT 1;" 2>/dev/null); then
+        skip "Metrics access tests: database client or credentials not available to this runner"
+        return 0
+    fi
+    mgr_id=$(echo "$mgr_id" | tr -d '[:space:]')
+    owner_id=$(db_exec "SELECT id FROM users WHERE username='admin' LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+    if [[ -z "$mgr_id" || -z "$owner_id" ]]; then
+        print_fail "Seeded users 'manager' and 'admin' not found - metrics access tests cannot run"
+        return 1
+    fi
+
+    local mgr_secret="metricstest-manager-key-aaaaaaaaaaa"
+    local zone_secret="metricstest-zone-key-bbbbbbbbbbbbb"
+    db_exec "DELETE FROM api_keys WHERE name IN ('metricstest-mgr','metricstest-zone');" >/dev/null 2>&1 || true
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('metricstest-mgr', '$(hash_api_key "$mgr_secret")', ${mgr_id});" >/dev/null 2>&1
+    db_exec "INSERT INTO api_keys (name, secret_key, created_by) VALUES ('metricstest-zone', '$(hash_api_key "$zone_secret")', ${owner_id});" >/dev/null 2>&1
+    local zone_key_id
+    zone_key_id=$(db_exec "SELECT id FROM api_keys WHERE name='metricstest-zone' LIMIT 1;" 2>/dev/null | tr -d '[:space:]')
+    if [[ -z "$zone_key_id" ]]; then
+        print_fail "Could not create the metrics test keys - metrics access tests cannot run"
+        return 1
+    fi
+    # Zone 0 matches no zone, which is enough to make the key zone-restricted
+    db_exec "INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (${zone_key_id}, 0);" >/dev/null 2>&1
+
+    local code
+    increment_test
+    code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $mgr_secret" --max-time 30 "${API_BASE_URL}/api/metrics")
+    if [[ "$code" == "403" ]]; then
+        print_pass "User without server_status_view gets 403 on metrics"
+    else
+        print_fail "User without server_status_view should get 403 on metrics, got $code"
+    fi
+
+    increment_test
+    code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $zone_secret" --max-time 30 "${API_BASE_URL}/api/metrics")
+    if [[ "$code" == "403" ]]; then
+        print_pass "Zone-restricted admin key gets 403 on metrics"
+    else
+        print_fail "Zone-restricted admin key should get 403 on metrics, got $code"
+    fi
+
+    db_exec "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE name IN ('metricstest-mgr','metricstest-zone'));" >/dev/null 2>&1 || true
+    db_exec "DELETE FROM api_keys WHERE name IN ('metricstest-mgr','metricstest-zone');" >/dev/null 2>&1 || true
+}
+
+test_metrics() {
+    print_section "Metrics Endpoint Tests"
+
+    local code
+    code=$(curl -s -o /dev/null -w "%{http_code}" -H "X-API-Key: $API_KEY" --max-time 30 "${API_BASE_URL}/api/metrics")
+    if [[ "$code" == "404" ]]; then
+        print_info "Metrics endpoint disabled (metrics.enabled = false) - skipping"
+        return 0
+    fi
+
+    local body headers
+    headers=$(mktemp)
+    body=$(curl -s -D "$headers" -H "X-API-Key: $API_KEY" --max-time 30 "${API_BASE_URL}/api/metrics")
+
+    increment_test
+    if grep -qi '^content-type: text/plain; version=0.0.4' "$headers"; then
+        print_pass "Metrics use the Prometheus text content type"
+    else
+        print_fail "Unexpected content type: $(grep -i '^content-type' "$headers")"
+    fi
+
+    # /api/metrics is one of the probe paths that never start a session
+    increment_test
+    if grep -qi '^set-cookie:' "$headers"; then
+        print_fail "Metrics response sets a cookie: $(grep -i '^set-cookie' "$headers")"
+    else
+        print_pass "Metrics response opens no session"
+    fi
+    rm -f "$headers"
+
+    increment_test
+    if echo "$body" | grep -q '^# TYPE poweradmin_info gauge' && echo "$body" | grep -q '^poweradmin_info{version="'; then
+        print_pass "Metrics contain poweradmin_info"
+    else
+        print_fail "poweradmin_info missing"
+    fi
+
+    increment_test
+    if echo "$body" | grep -qE '^poweradmin_users\{active="true"\} [0-9]+$'; then
+        print_pass "Metrics contain the user gauge"
+    else
+        print_fail "poweradmin_users missing"
+    fi
+
+    increment_test
+    code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 "${API_BASE_URL}/api/metrics")
+    if [[ "$code" == "401" ]]; then
+        print_pass "Unauthenticated metrics request answers 401"
+    else
+        print_fail "Unauthenticated metrics request should answer 401 with require_auth on, got $code"
+    fi
+
+    test_metrics_access
+}
+
 test_users_crud() {
     print_section "Users CRUD API Tests"
 
@@ -4141,6 +4245,7 @@ main() {
     test_zone_metadata || true
     test_zone_dnssec || true
     test_server_status || true
+    test_metrics || true
     test_zone_dnssec_keys || true
     test_users_crud || true
     test_zone_templates || true
