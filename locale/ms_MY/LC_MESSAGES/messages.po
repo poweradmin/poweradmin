@@ -16362,8 +16362,8 @@ msgstr "Padanan komen dihadkan kepada 50 zon; perhalusi carian anda untuk meliha
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Sekatan zon kunci ini tidak dapat dibawa oleh naik taraf ID zon, jadi ia tidak sepadan dengan mana-mana zon. Pilih zon itu semula."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Sekatan zon kunci ini tidak sepadan dengan mana-mana zon, kerana zon telah dipadam atau naik taraf ID zon tidak dapat membawanya. Pilih zon itu semula."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

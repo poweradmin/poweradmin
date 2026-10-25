@@ -15524,8 +15524,8 @@ msgstr "ผลการค้นหาที่ตรงกันในหมา
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "การอัปเกรดรหัสโซนไม่สามารถย้ายข้อจำกัดโซนของคีย์นี้ได้ จึงไม่ตรงกับโซนใดเลย โปรดเลือกโซนอีกครั้ง"
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "ข้อจำกัดโซนของคีย์นี้ไม่ตรงกับโซนใดเลย เพราะโซนถูกลบ หรือการอัปเกรดรหัสโซนไม่สามารถย้ายข้อจำกัดนี้ได้ โปรดเลือกโซนอีกครั้ง"
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

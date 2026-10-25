@@ -16480,8 +16480,8 @@ msgstr "Съвпаденията в коментарите бяха ограни
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Ограничението по зона на този ключ не можа да бъде пренесено при надграждането на ID на зоните, затова не съвпада с никоя зона. Изберете зоната отново."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Ограничението по зона на този ключ не съвпада с никоя зона, защото зоната е изтрита или надграждането на ID на зоните не можа да го пренесе. Изберете зоната отново."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

@@ -15939,8 +15939,8 @@ msgstr "Kommentaaride vasted piirati 50 tsooniga; täpsustage otsingut, et näha
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Selle võtme tsoonipiirangut ei õnnestunud tsooni ID-de uuendusel üle kanda, seega ei vasta see ühelegi tsoonile. Valige tsoon uuesti."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Selle võtme tsoonipiirang ei vasta ühelegi tsoonile, sest tsoon kustutati või tsooni ID-de uuendus ei suutnud seda üle kanda. Valige tsoon uuesti."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

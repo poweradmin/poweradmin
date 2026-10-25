@@ -14605,7 +14605,7 @@ msgstr ""
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
 msgstr ""
 
 #: lib/Application/Service/User/UserFormMessages.php:71

@@ -15975,8 +15975,8 @@ msgstr "टिप्पणियों में मिले परिणाम
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "ज़ोन आईडी अपग्रेड इस कुंजी का ज़ोन प्रतिबंध आगे नहीं ले जा सका, इसलिए यह किसी भी ज़ोन से मेल नहीं खाता। ज़ोन फिर से चुनें।"
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "इस कुंजी का ज़ोन प्रतिबंध किसी भी ज़ोन से मेल नहीं खाता, क्योंकि ज़ोन हटा दिया गया था या ज़ोन आईडी अपग्रेड उसे आगे नहीं ले जा सका। ज़ोन फिर से चुनें।"
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

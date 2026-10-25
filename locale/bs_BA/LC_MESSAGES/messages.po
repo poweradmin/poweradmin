@@ -15894,8 +15894,8 @@ msgstr "Podudaranja u komentarima ograničena su na 50 zona; precizirajte pretra
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Ograničenje zone za ovaj ključ nije moglo biti preneseno nadogradnjom ID-ova zona, pa ne odgovara nijednoj zoni. Ponovo odaberite zonu."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Ograničenje zone ovog ključa ne odgovara nijednoj zoni jer je zona izbrisana ili ga nadogradnja ID-ova zona nije mogla prenijeti. Ponovo odaberite zonu."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

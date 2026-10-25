@@ -16172,8 +16172,8 @@ msgstr "Zhody v komentároch boli obmedzené na 50 zón; spresnite vyhľadávani
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Obmedzenie tohto kľúča na zónu sa pri aktualizácii ID zón nepodarilo preniesť, takže nezodpovedá žiadnej zóne. Vyberte zónu znova."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Obmedzenie tohto kľúča na zónu nezodpovedá žiadnej zóne, pretože zóna bola odstránená alebo ho aktualizácia ID zón nepodarilo preniesť. Vyberte zónu znova."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

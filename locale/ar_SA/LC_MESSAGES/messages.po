@@ -15972,8 +15972,8 @@ msgstr "اقتصرت نتائج التعليقات على 50 منطقة؛ دقّ
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "تعذّر نقل قيد المنطقة لهذا المفتاح أثناء ترقية معرّفات المناطق، لذا فهو لا يطابق أي منطقة. اختر المنطقة مرة أخرى."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "قيد المنطقة لهذا المفتاح لا يطابق أي منطقة، لأن المنطقة حُذفت أو لأن ترقية معرّفات المناطق لم تتمكن من نقله. اختر المنطقة مرة أخرى."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

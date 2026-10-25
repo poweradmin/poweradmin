@@ -15997,8 +15997,8 @@ msgstr "Komentāru atbilstības tika ierobežotas līdz 50 zonām; precizējiet 
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Šīs atslēgas zonas ierobežojumu zonu ID jauninājums nevarēja pārnest, tāpēc tas neatbilst nevienai zonai. Atlasiet zonu vēlreiz."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Šīs atslēgas zonas ierobežojums neatbilst nevienai zonai, jo zona ir izdzēsta vai zonu ID jauninājums to nevarēja pārnest. Atlasiet zonu vēlreiz."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

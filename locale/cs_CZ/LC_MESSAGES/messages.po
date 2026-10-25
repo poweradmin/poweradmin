@@ -16211,8 +16211,8 @@ msgstr "Shody v komentářích byly omezeny na 50 zón; upřesněte hledání, a
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Omezení tohoto klíče na zónu nebylo možné při upgradu ID zón převést, takže neodpovídá žádné zóně. Vyberte zónu znovu."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Omezení tohoto klíče na zónu neodpovídá žádné zóně, protože zóna byla smazána nebo ji upgrade ID zón nemohl převést. Vyberte zónu znovu."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

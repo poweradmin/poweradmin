@@ -16612,8 +16612,8 @@ msgstr "Treffer in Kommentaren wurden auf 50 Zonen begrenzt; verfeinern Sie Ihre
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Die Zonenbeschränkung dieses Schlüssels konnte beim Upgrade der Zonen-IDs nicht übernommen werden und passt daher auf keine Zone. Wählen Sie die Zone erneut aus."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Die Zonenbeschränkung dieses Schlüssels passt auf keine Zone, weil die Zone gelöscht wurde oder das Upgrade der Zonen-IDs sie nicht übernehmen konnte. Wählen Sie die Zone erneut aus."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

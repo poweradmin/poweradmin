@@ -16393,8 +16393,8 @@ msgstr "Kecocokan komentar dibatasi pada 50 zona; perhalus pencarian Anda untuk 
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Batasan zona kunci ini tidak dapat dibawa oleh pembaruan ID zona, sehingga tidak cocok dengan zona mana pun. Pilih zona lagi."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Batasan zona kunci ini tidak cocok dengan zona mana pun, karena zona telah dihapus atau pembaruan ID zona tidak dapat membawanya. Pilih zona lagi."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

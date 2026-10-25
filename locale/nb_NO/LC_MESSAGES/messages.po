@@ -16187,8 +16187,8 @@ msgstr "Kommentartreff ble begrenset til 50 soner; avgrens søket for å se fler
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Sonebegrensningen for denne nøkkelen kunne ikke overføres av oppgraderingen av sone-ID-er, så den samsvarer ikke med noen sone. Velg sonen på nytt."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Sonebegrensningen for denne nøkkelen samsvarer ikke med noen sone, fordi sonen er slettet eller fordi oppgraderingen av sone-ID-er ikke kunne overføre den. Velg sonen på nytt."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."

@@ -16742,8 +16742,8 @@ msgstr "Potrivirile din comentarii au fost limitate la 50 de zone; rafinați că
 
 #: templates/default/api_key_edit.html
 #: templates/modern/api_key_edit.html
-msgid "This key's zone restriction could not be carried over by the zone ID upgrade, so it matches no zone. Select the zone again."
-msgstr "Restricția de zonă a acestei chei nu a putut fi preluată de actualizarea ID-urilor de zonă, așa că nu corespunde niciunei zone. Selectați din nou zona."
+msgid "This key's zone restriction matches no zone, because the zone was deleted or the zone ID upgrade could not carry it over. Select a zone again."
+msgstr "Restricția de zonă a acestei chei nu corespunde niciunei zone, deoarece zona a fost ștearsă sau actualizarea ID-urilor de zonă nu a putut-o prelua. Selectați din nou zona."
 
 #: lib/Application/Service/User/UserFormMessages.php:71
 msgid "The selected user already owns the zone."
