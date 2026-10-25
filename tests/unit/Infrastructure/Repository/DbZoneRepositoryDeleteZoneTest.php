@@ -30,7 +30,8 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
  * Deleting a zone removes every dependent row, including the record comments
- * and their Poweradmin-side links that no foreign key cascades to.
+ * and their Poweradmin-side links that no foreign key cascades to, and leaves
+ * no API key scoped to the id a later zone may be given.
  */
 #[CoversClass(DbZoneRepository::class)]
 class DbZoneRepositoryDeleteZoneTest extends TestCase
@@ -55,6 +56,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)",
                 "CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)",
                 "CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, content TEXT)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))",
                 "INSERT INTO domains VALUES (1, 'example.com', 'MASTER'), (2, 'other.com', 'MASTER')",
                 "INSERT INTO records VALUES (10, 1, 'www.example.com', 'A', '192.0.2.1'), (20, 2, 'www.other.com', 'A', '192.0.2.2')",
                 "INSERT INTO comments VALUES (100, 1, 'www.example.com', 'A', 'web'), (200, 2, 'www.other.com', 'A', 'other web')",
@@ -93,6 +95,34 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
         $this->assertSame(1, $this->rows('comments WHERE domain_id = 2'));
         $this->assertSame(1, $this->rows('record_comment_links WHERE comment_id = 200'));
         $this->assertSame(1, $this->rows('records WHERE domain_id = 2'));
+    }
+
+    public function testDeleteZoneKeepsKeysScopedToItRestrictedToNoZone(): void
+    {
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 1), (2, 1), (2, 2), (3, 0), (3, 1)");
+
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame([0], $this->scopes(1));
+        $this->assertSame([0, 2], $this->scopes(2));
+        $this->assertSame([0], $this->scopes(3));
+    }
+
+    public function testRecreatedZoneOnTheReusedIdIsNotInTheDeletedZonesKeyScope(): void
+    {
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 2)");
+
+        $this->repository->deleteZone(2);
+        $this->db->exec("INSERT INTO domains (name, type) VALUES ('new.com', 'MASTER')");
+
+        $this->assertSame(2, (int)$this->db->query("SELECT id FROM domains WHERE name = 'new.com'")->fetchColumn());
+        $this->assertSame([0], $this->scopes(1));
+    }
+
+    /** @return int[] */
+    private function scopes(int $keyId): array
+    {
+        return array_map('intval', $this->db->query("SELECT zone_id FROM api_key_zones WHERE api_key_id = $keyId ORDER BY zone_id")->fetchAll(PDO::FETCH_COLUMN));
     }
 
     private function rows(string $fromWhere): int

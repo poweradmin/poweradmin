@@ -38,6 +38,7 @@ use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\ZoneHealthSql;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\SqlZoneNames;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
@@ -1042,6 +1043,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         try {
             // First, so the lock order matches the owner writers' and they cannot deadlock with this delete
             $this->queueOwnershipWriters($zoneId);
+            // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
+            SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
             foreach (
                 [
                     // Comment links are Poweradmin-native, so no cascade reaches them.
