@@ -2707,16 +2707,16 @@
         },
         {
             "name": "composer/semver",
-            "version": "3.5.1",
+            "version": "3.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/semver.git",
-                "reference": "528948210cc46f967a4b98e83b19e76f2b504993"
+                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/semver/zipball/528948210cc46f967a4b98e83b19e76f2b504993",
-                "reference": "528948210cc46f967a4b98e83b19e76f2b504993",
+                "url": "https://api.github.com/repos/composer/semver/zipball/9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",
+                "reference": "9dfce66f1e97360ea5e6d3e38ab14277e4cc591e",
                 "shasum": ""
             },
             "require": {
@@ -2768,7 +2768,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/semver/issues",
-                "source": "https://github.com/composer/semver/tree/3.5.1"
+                "source": "https://github.com/composer/semver/tree/3.5.2"
             },
             "funding": [
                 {
@@ -2780,7 +2780,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-10-05T13:12:12+00:00"
+            "time": "2026-10-22T15:37:26+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -3525,16 +3525,16 @@
         },
         {
             "name": "phan/phan",
-            "version": "6.0.10",
+            "version": "6.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phan/phan.git",
-                "reference": "133ef9fb89e6d93ba97a3509683a21a4bb060187"
+                "reference": "9019e90b3ebded49d2709c5119dc7c139d999da0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phan/phan/zipball/133ef9fb89e6d93ba97a3509683a21a4bb060187",
-                "reference": "133ef9fb89e6d93ba97a3509683a21a4bb060187",
+                "url": "https://api.github.com/repos/phan/phan/zipball/9019e90b3ebded49d2709c5119dc7c139d999da0",
+                "reference": "9019e90b3ebded49d2709c5119dc7c139d999da0",
                 "shasum": ""
             },
             "require": {
@@ -3605,9 +3605,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phan/phan/issues",
-                "source": "https://github.com/phan/phan/tree/6.0.10"
+                "source": "https://github.com/phan/phan/tree/6.0.11"
             },
-            "time": "2026-10-12T12:48:08+00:00"
+            "time": "2026-10-15T00:30:02+00:00"
         },
         {
             "name": "phan/tolerant-php-parser",
