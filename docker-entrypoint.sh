@@ -826,6 +826,12 @@ generate_config() {
     health_enabled=$(to_php_bool "${PA_HEALTH_ENABLED:-false}")
     local health_ping_enabled
     health_ping_enabled=$(to_php_bool "${PA_HEALTH_PING_ENABLED:-false}")
+    local metrics_enabled
+    metrics_enabled=$(to_php_bool "${PA_METRICS_ENABLED:-false}")
+    local metrics_require_auth
+    metrics_require_auth=$(to_php_bool "${PA_METRICS_REQUIRE_AUTH:-true}")
+    local metrics_count_records
+    metrics_count_records=$(to_php_bool "${PA_METRICS_COUNT_RECORDS:-false}")
     local ldap_enabled
     ldap_enabled=$(to_php_bool "${PA_LDAP_ENABLED:-false}")
 
@@ -1473,6 +1479,11 @@ return [
         'pdns_timeout' => $(php_num PA_HEALTH_PDNS_TIMEOUT "${PA_HEALTH_PDNS_TIMEOUT:-2}" 2),
         'token' => $(php_sq "${PA_HEALTH_TOKEN:-}"),
         'cache_seconds' => $(php_num PA_HEALTH_CACHE_SECONDS "${PA_HEALTH_CACHE_SECONDS:-0}" 0),
+    ],
+    'metrics' => [
+        'enabled' => ${metrics_enabled},
+        'require_auth' => ${metrics_require_auth},
+        'count_records' => ${metrics_count_records},
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},
