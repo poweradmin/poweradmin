@@ -14,6 +14,7 @@
 
 namespace Poweradmin\Tests\Integration;
 
+use PDO;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
@@ -179,6 +180,34 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 
         $this->assertFalse(
             $domainManager->addDomain($this->db, 'new.example.com', null, 'MASTER', '', 'none')
+        );
+    }
+
+    #[RunInSeparateProcess]
+    public function testAddDomainLeavesNoKeyScopedToTheNewZoneId(): void
+    {
+        // A zone deleted outside Poweradmin can leave scopes on an id PowerDNS hands out again
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 777), (2, 777), (2, " . self::ZONE_DOMAIN_ID . ")");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (203, 'zone_master_add')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (103, 'ZoneAdder')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (103, 203)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (103, 'adder', 103)");
+        $_SESSION['userid'] = 103;
+
+        $backend = $this->dnsBackendStub(false);
+        $backend->method('createZone')->willReturn(777);
+        $backend->method('addRecord')->willReturn(true);
+
+        $this->assertTrue(
+            $this->makeDomainManager($backend)->addDomain($this->db, 'new.example.com', 103, 'MASTER', '', 'none')
+        );
+        $this->assertSame(
+            [[1, 0], [2, 0], [2, self::ZONE_DOMAIN_ID]],
+            array_map(
+                static fn(array $r): array => [(int)$r[0], (int)$r[1]],
+                $this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM)
+            )
         );
     }
 

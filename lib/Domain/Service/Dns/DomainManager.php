@@ -246,6 +246,8 @@ class DomainManager implements DomainManagerInterface
 
                         $zone_id = $domain_id;
                     } else {
+                        // PowerDNS may hand out the id of a zone deleted outside Poweradmin, whose key scopes must not carry over
+                        SharedZoneIds::pointApiKeyScopesAtNoZone($db, (int)$domain_id);
                         $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                         $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                         $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
