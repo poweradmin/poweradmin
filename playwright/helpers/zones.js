@@ -307,15 +307,16 @@ export async function errorMessages(page) {
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string} domainName - Domain name for the zone
  * @param {string} type - Zone type ('master' or 'slave')
+ * @param {{master?: string}} [opts] - master: the slave zone's master address
  * @returns {Promise<string>} - Zone ID
  */
-export async function createZone(page, domainName, type = 'master') {
+export async function createZone(page, domainName, type = 'master', { master = '192.168.1.1' } = {}) {
   const isSlave = type === 'slave';
   await page.goto(isSlave ? '/zones/add/slave' : '/zones/add/master');
 
   await page.locator('#domain').fill(domainName);
   if (isSlave) {
-    await page.locator('#slave_master').fill('192.168.1.1');
+    await page.locator('#slave_master').fill(master);
   }
 
   await page.locator('button[name="submit"]').click();
