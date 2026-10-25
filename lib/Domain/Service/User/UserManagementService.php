@@ -471,6 +471,7 @@ class UserManagementService
                     && $command->permissionTemplateId !== null
                     && $this->userRepository->isLastUberuser($userId)
                     && !$this->userRepository->templateGrantsUberuser($command->permissionTemplateId)
+                    && !$this->userRepository->holdsUberuserThroughGroup($userId)
                 ) {
                     return [
                         'success' => false,
@@ -862,6 +863,7 @@ class UserManagementService
             if (
                 $this->userRepository->isLastUberuser($userId)
                 && !$this->userRepository->templateGrantsUberuser($permTemplId)
+                && !$this->userRepository->holdsUberuserThroughGroup($userId)
             ) {
                 return [
                     'success' => false,

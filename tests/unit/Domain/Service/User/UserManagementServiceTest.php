@@ -1416,6 +1416,35 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testAssignPermissionTemplateAllowsDemotingLastUberuserWhoStaysOneThroughAGroup(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('permissionTemplateExists')->with(5, 'user')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+        $this->userRepository->method('holdsUberuserThroughGroup')->with(1)->willReturn(true);
+        $this->userRepository->expects($this->once())->method('assignPermissionTemplate')->with(1, 5)->willReturn(true);
+
+        $result = $this->service->assignPermissionTemplate(1, 5);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserAllowsDemotingLastUberuserWhoStaysOneThroughAGroup(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 1, 'auth_method' => 'sql']);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('isLastUberuser')->with(1)->willReturn(true);
+        $this->userRepository->method('templateGrantsUberuser')->with(5)->willReturn(false);
+        $this->userRepository->method('holdsUberuserThroughGroup')->with(1)->willReturn(true);
+        $this->userRepository->expects($this->once())->method('updateUser');
+
+        $this->updateUser(1, ['perm_templ' => 5], $this->serviceProtectingLastAdminOnEdit());
+    }
+
+    #[Test]
     public function testAssignPermissionTemplateLetsADatabaseErrorPropagate(): void
     {
         $this->userRepository->method('getUserById')->willReturn(['id' => 1]);

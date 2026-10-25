@@ -1133,16 +1133,43 @@ class DbUserRepository implements UserRepositoryInterface
      */
     public function countUberusers(): int
     {
-        $query = "SELECT COUNT(DISTINCT users.id)
-                  FROM users
-                  JOIN perm_templ ON users.perm_templ = perm_templ.id
-                  JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
-                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
-                  AND users.active = 1";
-
-        $stmt = $this->db->query($query);
+        $stmt = $this->db->query('SELECT COUNT(*) FROM users WHERE ' . self::activeUberuserCondition());
         return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * SQL condition on `users` for an active super admin: the permission comes from the
+     * user's own template or from the template of a group the user belongs to.
+     */
+    private static function activeUberuserCondition(): string
+    {
+        $templates = "SELECT perm_templ_items.templ_id
+                      FROM perm_templ_items
+                      JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                      WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'";
+
+        return "users.active = 1
+                AND (users.perm_templ IN ($templates)
+                     OR users.id IN (SELECT ugm.user_id
+                                     FROM user_group_members ugm
+                                     JOIN user_groups ug ON ugm.group_id = ug.id
+                                     WHERE ug.perm_templ IN ($templates)))";
+    }
+
+    public function holdsUberuserThroughGroup(int $userId): bool
+    {
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(*)
+             FROM user_group_members ugm
+             JOIN user_groups ug ON ugm.group_id = ug.id
+             JOIN perm_templ_items ON perm_templ_items.templ_id = ug.perm_templ
+             JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+             WHERE ugm.user_id = :userId
+               AND perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'"
+        );
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        return (bool)$stmt->fetchColumn();
     }
 
     /**
@@ -1172,15 +1199,7 @@ class DbUserRepository implements UserRepositoryInterface
     {
         $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
         $stmt = $this->db->query(
-            "SELECT users.id FROM users
-             WHERE users.active = 1
-               AND users.perm_templ IN (
-                   SELECT perm_templ_items.templ_id
-                   FROM perm_templ_items
-                   JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                   WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
-               )
-             ORDER BY users.id" . $lock
+            'SELECT users.id FROM users WHERE ' . self::activeUberuserCondition() . ' ORDER BY users.id' . $lock
         );
 
         return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
@@ -1188,17 +1207,9 @@ class DbUserRepository implements UserRepositoryInterface
 
     public function isUberuser(int $userId): bool
     {
-        $query = "SELECT COUNT(*)
-                  FROM users
-                  JOIN perm_templ ON users.perm_templ = perm_templ.id
-                  JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
-                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                  WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'
-                  AND users.id = :userId
-                  AND users.active = 1";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([':userId' => $userId]);
+        $stmt = $this->db->prepare('SELECT COUNT(*) FROM users WHERE users.id = :userId AND ' . self::activeUberuserCondition());
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
         return (bool)$stmt->fetchColumn();
     }
 

@@ -98,6 +98,12 @@ interface UserPermissionReadInterface
     public function isLastUberuser(int $userId): bool;
 
     /**
+     * Whether a group the user belongs to grants the super admin permission, so changing
+     * the user's own template cannot take it away.
+     */
+    public function holdsUberuserThroughGroup(int $userId): bool;
+
+    /**
      * Ids of every user holding the ueberuser permission directly or through a group.
      *
      * @return list<int>
