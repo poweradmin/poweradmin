@@ -548,6 +548,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     {
         $this->transaction()->begin();
         try {
+            SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 

@@ -412,6 +412,23 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('zones'));
     }
 
+    public function testDeleteSlaveZoneKeepsKeysScopedToItRestrictedToNoZone(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $this->domain(2, 'keep.example.com');
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 1), (2, 1), (2, 2)");
+
+        $this->assertTrue($this->checker()->deleteSlaveZone(1));
+
+        $this->assertSame(
+            [[1, 0], [2, 0], [2, 2]],
+            array_map(
+                static fn(array $r): array => [(int)$r[0], (int)$r[1]],
+                $this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM)
+            )
+        );
+    }
+
     public function testDeleteSlaveZoneRollsBackWhenAStatementFails(): void
     {
         $this->domain(1, 'slave.example.com', 'SLAVE', '');

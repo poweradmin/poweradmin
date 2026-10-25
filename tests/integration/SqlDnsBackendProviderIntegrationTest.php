@@ -41,6 +41,7 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
     private ?SqlDnsBackendProvider $provider = null;
     private array $createdDomainIds = [];
     private array $createdSupermasters = [];
+    private bool $createdApiKeyZones = false;
 
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
@@ -61,6 +62,12 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
             $this->markTestSkipped('MariaDB not available: ' . $e->getMessage());
         }
 
+        // deleteZone() resets API key scopes; the pdns database holds only the PowerDNS schema
+        $this->createdApiKeyZones = $this->db->query("SHOW TABLES LIKE 'api_key_zones'")->fetchColumn() === false;
+        if ($this->createdApiKeyZones) {
+            $this->db->exec("CREATE TABLE api_key_zones (id INT AUTO_INCREMENT PRIMARY KEY, api_key_id INT NOT NULL, zone_id INT NOT NULL, UNIQUE KEY (api_key_id, zone_id))");
+        }
+
         $config = new FakeConfiguration([
             'database' => [
                 'pdns_db_name' => '',
@@ -72,6 +79,10 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if ($this->createdApiKeyZones) {
+            $this->db->exec("DROP TABLE IF EXISTS api_key_zones");
+        }
+
         // Clean up created domains and their records
         foreach ($this->createdDomainIds as $id) {
             try {
