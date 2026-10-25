@@ -21,6 +21,12 @@ Three client implementations are provided in different programming languages:
 
 All clients provide the same core functionality but cater to different environments and user preferences.
 
+### Grafana Dashboard
+
+- **`grafana/poweradmin-dashboard.json`** - Grafana dashboard for the Prometheus metrics at `/api/metrics`
+  - Import it in Grafana and pick the Prometheus data source that scrapes Poweradmin
+  - The endpoint and the scrape config are described in `DOCKER.md`
+
 ## Client Features
 
 ### Common Functionality

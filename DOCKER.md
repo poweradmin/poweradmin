@@ -520,7 +520,7 @@ scrape_configs:
 ```
 
 A Grafana dashboard for these metrics ships in
-[docs/grafana/poweradmin-dashboard.json](docs/grafana/poweradmin-dashboard.json).
+[addons/grafana/poweradmin-dashboard.json](addons/grafana/poweradmin-dashboard.json).
 
 With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
 `test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
