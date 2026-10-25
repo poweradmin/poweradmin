@@ -30,8 +30,9 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
 /**
  * The native zones row of a zone in SQL mode: created after the backend has
- * allocated the domain id, deleted by domain id, and given a comment even when
- * the zone was created outside Poweradmin and has no row yet.
+ * allocated the domain id, without inheriting API key scopes left on that id,
+ * deleted by domain id, and given a comment even when the zone was created
+ * outside Poweradmin and has no row yet.
  */
 #[CoversClass(DbZoneRepository::class)]
 class DbZoneRepositoryZoneShellTest extends TestCase
@@ -44,6 +45,7 @@ class DbZoneRepositoryZoneShellTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)");
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
@@ -70,6 +72,18 @@ class DbZoneRepositoryZoneShellTest extends TestCase
         $this->repository->createZoneShell(77, null, 0);
 
         $this->assertSame([['owner' => null, 'zone_templ_id' => 0]], $this->rows('SELECT owner, zone_templ_id FROM zones'));
+    }
+
+    public function testCreateZoneShellLeavesNoKeyScopedToTheNewZone(): void
+    {
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 77), (2, 77), (2, 78)");
+
+        $this->repository->createZoneShell(77, 7, 0);
+
+        $this->assertSame(
+            [['api_key_id' => 1, 'zone_id' => 0], ['api_key_id' => 2, 'zone_id' => 0], ['api_key_id' => 2, 'zone_id' => 78]],
+            $this->rows('SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id')
+        );
     }
 
     public function testDeleteZoneShellRemovesOnlyThatZone(): void
