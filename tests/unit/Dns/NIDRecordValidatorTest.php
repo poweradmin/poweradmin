@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ class NIDRecordValidatorTest extends TestCase
         // The content should be converted to RFC 6742 presentation format with colons
         $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(20, $data['priority']);
+        $this->assertEquals(20, $data['prio']);
         $this->assertTrue($result->hasWarnings());
         // Should have warning about plain format vs. RFC presentation format
         $foundWarning = false;
@@ -88,7 +88,7 @@ class NIDRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(20, $data['priority']);
+        $this->assertEquals(20, $data['prio']);
 
         // No warning about presentation format since it's already in the correct format
         $foundWarning = false;
@@ -186,7 +186,7 @@ class NIDRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(10, $data['priority']); // Default preference
+        $this->assertEquals(10, $data['prio']); // Default preference
     }
 
     /**
@@ -223,7 +223,7 @@ class NIDRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(20, $data['priority']);
+        $this->assertEquals(20, $data['prio']);
     }
 
     /**

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ class NSEC3RecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 10 AB12CD 01234ABCDEF A NS SOA MX TXT AAAA', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
         $this->assertEquals('hash.example.com', $data['name']);
 
         // Check that warnings are present in the result
@@ -130,7 +130,7 @@ class NSEC3RecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 5 - AB12CD34EF56GH', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -287,7 +287,7 @@ class NSEC3RecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 5 - AB12CD34EF56GH 1 2 6 15 16 28', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -350,7 +350,7 @@ class NSEC3RecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('1 0 5 - AB12CD34EF56GH A NS SOA', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
