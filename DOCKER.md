@@ -493,6 +493,35 @@ services:
       retries: 3
 ```
 
+### Metrics Endpoint
+
+Prometheus metrics about Poweradmin itself (zones by type, DNSSEC-signed zones, users,
+optionally records) at `/api/metrics`. Needs `PA_API_ENABLED=true`. By default a scrape
+must authenticate with an API key, or HTTP Basic Auth, of a user with the
+`server_status_view` permission; keys restricted to specific zones are refused.
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_METRICS_ENABLED` | Enable the metrics endpoint at /api/metrics (4.6.0+) | `false` | No |
+| `PA_METRICS_REQUIRE_AUTH` | Require an API key or Basic Auth with `server_status_view`; `false` makes the endpoint public (4.6.0+) | `true` | No |
+| `PA_METRICS_COUNT_RECORDS` | Also count records; SQL backend only, can be slow on large installations (4.6.0+) | `false` | No |
+
+A matching Prometheus scrape job:
+
+```yaml
+scrape_configs:
+  - job_name: poweradmin
+    metrics_path: /api/metrics
+    authorization:
+      type: Bearer
+      credentials_file: /etc/prometheus/poweradmin-api-key
+    static_configs:
+      - targets: ["poweradmin.example.com"]
+```
+
+A Grafana dashboard for these metrics ships in
+[docs/grafana/poweradmin-dashboard.json](docs/grafana/poweradmin-dashboard.json).
+
 With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
 `test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
 
