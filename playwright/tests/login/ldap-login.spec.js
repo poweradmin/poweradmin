@@ -14,10 +14,29 @@ test.describe('LDAP Login', () => {
     await expect(page).not.toHaveURL(/.*\/login/);
   });
 
-  // The refusal names LDAP in every language, which tells it apart from a local password check
-  test('should refuse a wrong LDAP password through the LDAP check', async ({ page }) => {
-    await login(page, users.ldapUser.username, 'wrong-password');
-    await expect(page).toHaveURL(/.*\/login/);
-    await expect(page.locator('.alert-danger').first()).toContainText(/LDAP/);
+  // The page shows one generic failure for every method, so the audit entry tells the
+  // LDAP refusal apart from a local password check
+  test('should refuse a wrong LDAP password through the LDAP check', async ({ adminPage, browser, baseURL }) => {
+    // Export rows carry no id, so count the LDAP wrong-password entries before and after;
+    // testuser2 because other specs fail testuser and would race the count
+    const ldapRefusals = async () => {
+      const response = await adminPage.request.get(`/users/logs?name=${users.ldapUser2.username}&event_type=login_failed&export=json`);
+      expect(response.ok()).toBeTruthy();
+      return (await response.json()).filter(entry => entry.auth_method === 'ldap' && entry.reason === 'wrong_password').length;
+    };
+    const before = await ldapRefusals();
+
+    // adminPage is the default page, so the attempt needs a browser of its own
+    const context = await browser.newContext({ baseURL });
+    try {
+      const page = await context.newPage();
+      await login(page, users.ldapUser2.username, 'wrong-password');
+      await expect(page).toHaveURL(/.*\/login/);
+      await expect(page.locator('[data-testid="session-error"].alert-danger')).toContainText('Authentication failed!');
+    } finally {
+      await context.close();
+    }
+
+    expect(await ldapRefusals()).toBe(before + 1);
   });
 });
