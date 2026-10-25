@@ -1189,6 +1189,71 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testDeleteUserRefusesATransferTheActorMayNotMetaEdit(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('own');
+        $this->permissionService->method('userOwnsZone')->with(7, 12)->willReturn(false);
+        $this->userRepository->expects($this->never())->method('transferUserZones');
+        $this->userRepository->expects($this->never())->method('deleteUser');
+
+        $result = $this->service->deleteUser(1, 2, 7);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(403, $result['status']);
+    }
+
+    #[Test]
+    public function testDeleteUserRefusesATransferWhenTheActorHasNoMetaEditRight(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('none');
+        $this->permissionService->method('userOwnsZone')->willReturn(true);
+        $this->userRepository->expects($this->never())->method('transferUserZones');
+
+        $result = $this->service->deleteUser(1, 2, 7);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(403, $result['status']);
+    }
+
+    #[Test]
+    public function testDeleteUserTransfersWhenTheActorMayMetaEditEveryZone(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('own');
+        $this->permissionService->method('userOwnsZone')->with(7, 12)->willReturn(true);
+        $this->userRepository->method('transferUserZones')->with(1, 2)->willReturn(true);
+        $this->userRepository->method('deleteUser')->with(1)->willReturn(true);
+
+        $this->assertTrue($this->service->deleteUser(1, 2, 7)['success']);
+    }
+
+    #[Test]
+    public function testDeleteUserSkipsThePerZoneCheckForAnAllLevelActor(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturnMap([[1, ['id' => 1]], [2, ['id' => 2]]]);
+        $this->userRepository->method('isUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->with(1)->willReturn([['id' => 5, 'domain_id' => 12]]);
+        $this->permissionService->method('getZoneMetaEditPermissionLevel')->with(7)->willReturn('all');
+        $this->permissionService->expects($this->never())->method('userOwnsZone');
+        $this->userRepository->method('transferUserZones')->with(1, 2)->willReturn(true);
+        $this->userRepository->method('deleteUser')->with(1)->willReturn(true);
+
+        $this->assertTrue($this->service->deleteUser(1, 2, 7)['success']);
+    }
+
+    #[Test]
     public function testDeleteUserWithoutZonesSucceeds(): void
     {
         $this->userRepository->method('getUserById')

@@ -37,6 +37,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 class UserManagementService
 {
     private UserRepository $userRepository;
+    private PermissionService $permissionService;
     private UserProfileAssembler $profileAssembler;
     private bool $protectLastAdminOnEdit;
 
@@ -47,6 +48,7 @@ class UserManagementService
         bool $protectLastAdminOnEdit = false
     ) {
         $this->userRepository = $userRepository;
+        $this->permissionService = $permissionService;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
         $this->profileAssembler = new UserProfileAssembler($permissionService, $groupRepository);
     }
@@ -433,9 +435,10 @@ class UserManagementService
      *
      * @param int $userId User ID to delete
      * @param int|null $transferToUserId User ID to transfer zones to (required if user has zones)
+     * @param int|null $actingUserId When given, the transfer needs meta-edit rights on every zone, as the web form requires
      * @return array Result with success status and message
      */
-    public function deleteUser(int $userId, ?int $transferToUserId = null): array
+    public function deleteUser(int $userId, ?int $transferToUserId = null, ?int $actingUserId = null): array
     {
         // Check if user exists
         if (!$this->userExists($userId)) {
@@ -491,6 +494,22 @@ class UserManagementService
                         'message' => 'Transfer target user not found',
                         'status' => 404
                     ];
+                }
+
+                // Giving away a zone is a meta edit; a user manager without that right must not gain zones this way.
+                if ($actingUserId !== null) {
+                    $metaEditLevel = $this->permissionService->getZoneMetaEditPermissionLevel($actingUserId);
+                    foreach ($userZones as $zone) {
+                        $mayReassign = $metaEditLevel === 'all'
+                            || ($metaEditLevel === 'own' && $this->permissionService->userOwnsZone($actingUserId, (int)$zone['domain_id']));
+                        if (!$mayReassign) {
+                            return [
+                                'success' => false,
+                                'message' => 'You do not have permission to reassign zone ' . (int)$zone['domain_id'],
+                                'status' => 403
+                            ];
+                        }
+                    }
                 }
 
                 // Transfer zones to the specified user
