@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
+use OneLogin\Saml2\Utils;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Enum\AuthMethod;
@@ -286,7 +287,7 @@ class SamlService extends LoggingService
             $this->logInfo('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
             // Process the SAML response; with a request ID php-saml rejects a missing or different InResponseTo
-            $auth->processResponse($allowIdpInitiated ? null : $requestId);
+            $this->withSelfUrl(fn() => $auth->processResponse($allowIdpInitiated ? null : $requestId), $this->getAcsUrl());
 
             $errors = $auth->getErrors();
             if (!empty($errors)) {
@@ -505,7 +506,7 @@ class SamlService extends LoggingService
         try {
             $auth = $this->createAuth($providerId);
             if ($auth) {
-                $auth->processSLO();
+                $this->withSelfUrl(fn() => $auth->processSLO(), $this->getSloUrl());
 
                 $errors = $auth->getErrors();
                 if (!empty($errors)) {
@@ -691,6 +692,55 @@ class SamlService extends LoggingService
     {
         // On by default in 4.x stable, so provider configs that predate the setting keep working
         return (bool) ($this->samlConfigurationService->getProviderConfig($providerId)['allow_idp_initiated'] ?? true);
+    }
+
+    /**
+     * Runs $fn with OneLogin's idea of the current URL set to $endpointUrl, the endpoint we
+     * advertised for this message, and clears it again when $fn returns or throws.
+     */
+    private function withSelfUrl(callable $fn, string $endpointUrl): mixed
+    {
+        $pinned = $this->pinSelfUrl($endpointUrl);
+
+        try {
+            return $fn();
+        } finally {
+            if ($pinned) {
+                // Static state; php-saml's own redirect exits before this runs
+                Utils::setBaseURL('');
+            }
+        }
+    }
+
+    /**
+     * OneLogin rebuilds the URL a message was sent to from SERVER_PORT and the Host header,
+     * which a port mapping in front of PHP changes; the IdP sends to the endpoint we
+     * advertised (ACS or SLS, which an operator may host apart), so check against that.
+     */
+    private function pinSelfUrl(string $endpointUrl): bool
+    {
+        $parts = parse_url($endpointUrl);
+        if (!is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {
+            return false;
+        }
+
+        $scheme = strtolower($parts['scheme']);
+        Utils::setSelfProtocol($scheme);
+        Utils::setSelfHost($parts['host']);
+        Utils::setSelfPort((string)($parts['port'] ?? ($scheme === 'https' ? 443 : 80)));
+
+        return true;
+    }
+
+    private function getSloUrl(): string
+    {
+        try {
+            $sloUrl = $this->samlConfigurationService->getServiceProviderConfig()['single_logout_service_url'] ?? '';
+        } catch (\RuntimeException) {
+            return '';
+        }
+
+        return is_string($sloUrl) ? $sloUrl : '';
     }
 
     private function getAcsUrl(): string

@@ -120,6 +120,34 @@ class SamlResponseValidationTest extends TestCase
         $this->assertTrue($method->invoke($this->service), 'Should still detect reverse proxy presence even when HTTPS matches');
     }
 
+    public function testCurrentUrlIsTheAdvertisedEndpointBehindAPortMapping(): void
+    {
+        // nginx inside the container listens on 80; the host publishes it as 8089
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'localhost:8089', 'REQUEST_URI' => '/saml/acs', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = $this->getPrivateMethod('withSelfUrl')
+            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'http://localhost:8089/saml/acs');
+
+        $this->assertSame('http://localhost:8089/saml/acs', $seen);
+        // The pin is static state, so it must not outlive the call
+        $this->assertSame('80', \OneLogin\Saml2\Utils::getSelfPort());
+    }
+
+    public function testSingleLogoutIsCheckedAgainstTheSlsUrlEvenOnAnotherHost(): void
+    {
+        $this->mockSamlConfig->method('getServiceProviderConfig')->willReturn([
+            'assertion_consumer_service_url' => 'https://dns.example.com/saml/acs',
+            'single_logout_service_url' => 'https://sso.example.com/saml/sls',
+        ]);
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/sls', 'SCRIPT_NAME' => '/index.php'];
+
+        $sloUrl = $this->getPrivateMethod('getSloUrl')->invoke($this->service);
+        $seen = $this->getPrivateMethod('withSelfUrl')
+            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), $sloUrl);
+
+        $this->assertSame('https://sso.example.com/saml/sls', $seen);
+    }
+
     /**
      * Helper method to get private method via reflection
      */
