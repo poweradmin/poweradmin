@@ -518,6 +518,24 @@ class ZonesRecordsControllerCreateTest extends V2ControllerTestCase
         $this->assertTrue($this->decode($response)['data']['record']['ptr_created']);
     }
 
+    public function testAZoneScopedKeyLimitsTheCompanionPtrToItsScope(): void
+    {
+        $this->scope = new ApiKeyScope([self::ZONE_ID], null, false);
+        $gate = null;
+        $this->addService->method('add')->willReturnCallback(
+            function (mixed ...$args) use (&$gate): RecordAddResult {
+                $gate = $args[13] ?? null;
+                return new RecordAddResult(RecordWriteResult::ok(8), RecordAddResult::COMPANION_PTR, false, false, 'no permission');
+            }
+        );
+
+        $this->create(array_merge($this->validBody(), ['create_ptr' => true]));
+
+        $this->assertInstanceOf(\Closure::class, $gate);
+        $this->assertTrue($gate(self::ZONE_ID));
+        $this->assertFalse($gate(self::ZONE_ID + 100));
+    }
+
     public function testCreatePtrIsIgnoredForANonAddressType(): void
     {
         // The companion is only requested for A/AAAA; a CNAME silently drops it.

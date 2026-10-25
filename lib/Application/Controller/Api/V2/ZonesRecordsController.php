@@ -574,7 +574,8 @@ class ZonesRecordsController extends PublicApiController
                 $this->getAuthenticatedUsername(),
                 $companion,
                 $disabled,
-                AuditLoggerInterface::ORIGIN_API
+                AuditLoggerInterface::ORIGIN_API,
+                $this->apiKeyZoneGate()
             );
             if (!$added->isOk()) {
                 return $this->returnApiError($this->recordWriteErrorMessage($added->record, 'Failed to create record'), RefusalStatus::of($added->record->refusal));
@@ -815,7 +816,8 @@ class ZonesRecordsController extends PublicApiController
                 false,
                 $this->getAuthenticatedUserId(),
                 $this->getAuthenticatedUsername(),
-                AuditLoggerInterface::ORIGIN_API
+                AuditLoggerInterface::ORIGIN_API,
+                $this->apiKeyZoneGate()
             ));
             if (!$edited->isOk()) {
                 return $this->returnApiError($this->recordWriteErrorMessage($edited->write, 'Failed to update record'), RefusalStatus::of($edited->write->refusal));

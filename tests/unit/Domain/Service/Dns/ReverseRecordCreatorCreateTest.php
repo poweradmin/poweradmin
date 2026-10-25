@@ -179,4 +179,19 @@ class ReverseRecordCreatorCreateTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertSame('You do not have the permission to add a record to this zone.', $result['message']);
     }
+
+    public function testAPtrIsNotWrittenIntoAReverseZoneTheCallerMayNotWriteTo(): void
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->willReturn('example.com');
+        $domains->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecordGetId');
+
+        $service = new ReverseRecordCreator(true, $this->createMock(AuditLoggerInterface::class), $domains, $recordManager, $this->createMock(RecordReadBackendInterface::class));
+        $result = $service->createReverseRecord('host', 'A', '192.0.2.10', 1, 3600, 0, zoneAllowed: fn(int $zoneId): bool => $zoneId !== 42);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('You do not have the permission to add a record to this zone.', $result['message']);
+    }
 }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Closure;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 
 /**
@@ -42,6 +43,7 @@ final readonly class RecordEditRequest
      *                            they sent and pass false
      * @param int $userId The acting user; a synced comment reaches only zones this user may edit
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_edit_record
+     * @param (Closure(int): bool)|null $ptrZoneAllowed Whether the caller may write the synced PTR into its reverse zone (an API key's zone scope)
      */
     public function __construct(
         public int $zoneId,
@@ -59,7 +61,8 @@ final readonly class RecordEditRequest
         public bool $bumpSoaSerial,
         public int $userId,
         public string $username,
-        public string $origin = AuditLoggerInterface::ORIGIN_WEB
+        public string $origin = AuditLoggerInterface::ORIGIN_WEB,
+        public ?Closure $ptrZoneAllowed = null
     ) {
     }
 }

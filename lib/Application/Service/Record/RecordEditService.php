@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Closure;
 use Exception;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
@@ -35,6 +37,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -60,6 +63,7 @@ class RecordEditService
         private readonly AuditLoggerInterface $audit,
         private readonly ConfigurationInterface $config,
         private readonly LoggerInterface $logger,
+        private readonly ChangeApprovalContext $approval,
         private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
     ) {
     }
@@ -166,7 +170,8 @@ class RecordEditService
                 (string)$stored['name'],
                 $request->zoneId,
                 (int)$stored['ttl'],
-                (int)($stored['prio'] ?? 0)
+                (int)($stored['prio'] ?? 0),
+                zoneAllowed: $this->ptrZoneGate($request)
             );
         } catch (Exception $e) {
             $this->logger->error('PTR record update failed: {error}', ['error' => $e->getMessage()]);
@@ -177,6 +182,17 @@ class RecordEditService
         $message = isset($result['message']) ? (string)$result['message'] : null;
 
         return [!empty($result['success']), $message];
+    }
+
+    /**
+     * The PTR lives in another zone, so it must not skip that zone's review or the caller's own limit.
+     *
+     * @return Closure(int): bool
+     */
+    private function ptrZoneGate(RecordEditRequest $request): Closure
+    {
+        return fn(int $zoneId): bool => $this->approval->modeForZone($request->userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST
+            && ($request->ptrZoneAllowed === null || ($request->ptrZoneAllowed)($zoneId));
     }
 
     /**

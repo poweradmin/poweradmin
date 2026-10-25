@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Application\Controller\Record\EditRecordController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordCommentService;
@@ -192,7 +193,8 @@ class EditRecordControllerTest extends SeamControllerTestCase
             $this->commentSync,
             $this->audit,
             $this->config,
-            new NullLogger()
+            new NullLogger(),
+            $this->createStub(ChangeApprovalContext::class)
         ));
     }
 

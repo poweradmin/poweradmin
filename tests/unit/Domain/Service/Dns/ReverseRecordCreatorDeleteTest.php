@@ -263,4 +263,18 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $ptrName = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
         $this->assertTrue($service->deleteForwardRecord($ptrName, 'host6.example.com'));
     }
+
+    public function testAPtrInAZoneTheCallerMayNotWriteToIsLeftInPlace(): void
+    {
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('deleteRecord');
+        $backend = $this->createMock(RecordReadBackendInterface::class);
+        $backend->method('findRecordsByName')->willReturn([
+            ['id' => 7, 'domain_id' => 42, 'name' => '10.2.0.192.in-addr.arpa', 'content' => 'host.example.com'],
+        ]);
+
+        $service = $this->createService(null, $recordManager, $backend);
+
+        $this->assertFalse($service->deleteReverseRecord('A', '192.0.2.10', 'host.example.com', fn(int $zoneId): bool => $zoneId !== 42));
+    }
 }

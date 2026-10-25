@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use Closure;
 use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
@@ -355,6 +356,19 @@ abstract class PublicApiController extends AbstractApiController
             'Forbidden: this API key does not have access to the requested zone',
             403
         );
+    }
+
+    /**
+     * The key's zone scope as a check for a write that lands outside the requested
+     * zone, such as the PTR of an A record; null for a key with no zone restriction.
+     *
+     * @return (Closure(int): bool)|null
+     */
+    protected function apiKeyZoneGate(): ?Closure
+    {
+        $scope = $this->getApiKeyScope();
+
+        return $scope->hasZoneRestriction() ? fn(int $zoneId): bool => $scope->isZoneAllowed($zoneId) : null;
     }
 
     /**

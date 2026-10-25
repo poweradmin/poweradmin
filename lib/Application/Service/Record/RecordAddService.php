@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Closure;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -91,6 +92,7 @@ class RecordAddService
      * @param string $companion One of the RecordAddResult::COMPANION_* constants, or '' for none
      * @param int $disabled 1 to create the record disabled (API callers); the forms always pass 0
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_add_record
+     * @param (Closure(int): bool)|null $companionZoneAllowed Whether the caller may write the PTR into its reverse zone (an API key's zone scope)
      */
     public function add(
         int $zoneId,
@@ -105,7 +107,8 @@ class RecordAddService
         string $username,
         string $companion = '',
         int $disabled = 0,
-        string $origin = AuditLoggerInterface::ORIGIN_WEB
+        string $origin = AuditLoggerInterface::ORIGIN_WEB,
+        ?Closure $companionZoneAllowed = null
     ): RecordAddResult {
         $ttl ??= $this->ttlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName));
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($name), $zoneName);
@@ -126,7 +129,17 @@ class RecordAddService
 
         if ($companion === RecordAddResult::COMPANION_PTR) {
             // A configured dns.ttl_reverse always wins for the PTR; otherwise it inherits the forward TTL
-            $ptr = $this->reverseRecords->createReverseRecord($name, $type, $content, $zoneId, $this->ttlResolver->resolvePtrTtl($ttl), $prio, $comment, $username);
+            $ptr = $this->reverseRecords->createReverseRecord(
+                $name,
+                $type,
+                $content,
+                $zoneId,
+                $this->ttlResolver->resolvePtrTtl($ttl),
+                $prio,
+                $comment,
+                $username,
+                zoneAllowed: $this->companionZoneGate($userId, $companionZoneAllowed)
+            );
             if (!empty($ptr['success'])) {
                 $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username, $userId);
             }
@@ -156,6 +169,18 @@ class RecordAddService
         }
 
         return new RecordAddResult($written);
+    }
+
+    /**
+     * The companion lands in another zone, so it must not skip that zone's review or the caller's own limit.
+     *
+     * @param (Closure(int): bool)|null $callerAllows
+     * @return Closure(int): bool
+     */
+    private function companionZoneGate(int $userId, ?Closure $callerAllows): Closure
+    {
+        return fn(int $zoneId): bool => $this->approval->modeForZone($userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST
+            && ($callerAllows === null || $callerAllows($zoneId));
     }
 
     /**

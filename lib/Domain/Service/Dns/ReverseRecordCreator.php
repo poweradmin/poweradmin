@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordReadBackendInterface;
@@ -69,9 +70,10 @@ class ReverseRecordCreator
      * @param bool $finalizeZone False when a batch caller bumps the serial and rectifies the reverse zone itself
      * @param bool $audit False for a dry run: nothing is written to the audit log
      * @param bool $validateOnly True when the PTR must not be written at all, only checked
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the caller may write to the reverse zone, beyond the edit rights the record manager checks
      * @return array<string, mixed> success, type and message, plus zone_id (the reverse zone written to) on success
      */
-    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = '', bool $finalizeZone = true, bool $audit = true, bool $validateOnly = false): array
+    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = '', bool $finalizeZone = true, bool $audit = true, bool $validateOnly = false, ?Closure $zoneAllowed = null): array
     {
         if (!$name || !$this->reverseHandling) {
             return $this->createErrorResponse('The name is missing or reverse record creation is not allowed.');
@@ -82,6 +84,9 @@ class ReverseRecordCreator
 
         if ($zoneRevId === -1) {
             return $this->createErrorResponse(sprintf(_('There is no matching reverse-zone for: %s.'), $contentRev));
+        }
+        if ($zoneAllowed !== null && !$zoneAllowed((int)$zoneRevId)) {
+            return $this->createErrorResponse(_('You do not have the permission to add a record to this zone.'));
         }
 
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
@@ -114,6 +119,16 @@ class ReverseRecordCreator
         return $this->createErrorResponse($written->message !== '' ? $written->message : 'Failed to create a reverse record due to an unknown error.');
     }
 
+    /**
+     * @param Closure(int): bool $zoneAllowed
+     */
+    private function reverseZoneAllowed(string $type, string $content, Closure $zoneAllowed): bool
+    {
+        $zoneId = $this->domainRepository->getBestMatchingZoneIdFromName((string)$this->getContentRev($type, $content));
+
+        return $zoneId === -1 || $zoneAllowed((int)$zoneId);
+    }
+
     public function getContentRev($type, $content): ?string
     {
         if ($type === RecordType::A) {
@@ -131,9 +146,10 @@ class ReverseRecordCreator
      * @param string $type Record type (A or AAAA)
      * @param string $content IP address from A/AAAA record
      * @param string $name Hostname from A/AAAA record
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the caller may write to the zone holding the PTR
      * @return bool True if a matching PTR record was found and deleted
      */
-    public function deleteReverseRecord($type, $content, $name): bool
+    public function deleteReverseRecord($type, $content, $name, ?Closure $zoneAllowed = null): bool
     {
         if ($type !== RecordType::A && $type !== RecordType::AAAA) {
             return false;
@@ -147,6 +163,9 @@ class ReverseRecordCreator
         // PTR content may carry a trailing dot depending on the backend
         $records = $this->recordBackend->findRecordsByName($contentRev, 'PTR');
         foreach ($records as $r) {
+            if ($zoneAllowed !== null && !$zoneAllowed((int)($r['domain_id'] ?? 0))) {
+                continue;
+            }
             if ($r['content'] === $name || str_starts_with($r['content'], "$name.")) {
                 $recordId = $r['id'] ?? 0;
                 if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
@@ -163,6 +182,9 @@ class ReverseRecordCreator
      * Removes the stale PTR (best-effort; user may not have created one
      * originally) and creates a new PTR for the updated IP and hostname.
      * Returns success when no PTR-relevant fields changed.
+     *
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the caller may write to a reverse zone; when the old
+     *        or the new one is refused, neither PTR is touched
      */
     public function updateReverseRecord(
         string $oldType,
@@ -175,7 +197,8 @@ class ReverseRecordCreator
         int $ttl,
         int $prio,
         string $comment = '',
-        string $account = ''
+        string $account = '',
+        ?Closure $zoneAllowed = null
     ): array {
         $oldIsAddress = $oldType === RecordType::A || $oldType === RecordType::AAAA;
         $newIsAddress = $newType === RecordType::A || $newType === RecordType::AAAA;
@@ -184,14 +207,22 @@ class ReverseRecordCreator
             return $this->createSuccessResponse(_('PTR update skipped: record type is not A or AAAA.'));
         }
 
+        if ($zoneAllowed !== null) {
+            $oldRefused = $oldIsAddress && !$this->reverseZoneAllowed($oldType, $oldContent, $zoneAllowed);
+            if ($oldRefused || ($newIsAddress && !$this->reverseZoneAllowed($newType, $newContent, $zoneAllowed))) {
+                return $this->createErrorResponse(_('You do not have the permission to add a record to this zone.'));
+            }
+        }
+
         // Always delete-then-recreate when sync is requested; this also propagates TTL/priority
         // changes to the PTR even when the address and hostname are unchanged.
+
         if ($oldIsAddress) {
-            $this->deleteReverseRecord($oldType, $oldContent, $oldName);
+            $this->deleteReverseRecord($oldType, $oldContent, $oldName, $zoneAllowed);
         }
 
         if ($newIsAddress) {
-            return $this->createReverseRecord($newName, $newType, $newContent, $zone_id, $ttl, $prio, $comment, $account);
+            return $this->createReverseRecord($newName, $newType, $newContent, $zone_id, $ttl, $prio, $comment, $account, true, true, false, $zoneAllowed);
         }
 
         return $this->createSuccessResponse(_('Stale PTR record removed.'));

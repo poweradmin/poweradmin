@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\Record\RecordCommentSyncService;
 use Poweradmin\Application\Service\Record\RecordEditRequest;
 use Poweradmin\Application\Service\Record\RecordEditResult;
 use Poweradmin\Application\Service\Record\RecordEditService;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
@@ -39,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Psr\Log\NullLogger;
 use RuntimeException;
 
@@ -90,6 +92,9 @@ class RecordEditServiceTest extends TestCase
     /** @var AuditLoggerInterface&MockObject */
     private AuditLoggerInterface $audit;
 
+    /** @var ChangeApprovalContext&MockObject */
+    private ChangeApprovalContext $approval;
+
     protected function setUp(): void
     {
         $this->writeResult = RecordWriteResult::ok();
@@ -103,6 +108,7 @@ class RecordEditServiceTest extends TestCase
         $this->comments = $this->createMock(RecordCommentService::class);
         $this->commentSync = $this->createMock(RecordCommentSyncService::class);
         $this->audit = $this->createMock(AuditLoggerInterface::class);
+        $this->approval = $this->createMock(ChangeApprovalContext::class);
     }
 
     private function service(): RecordEditService
@@ -122,7 +128,8 @@ class RecordEditServiceTest extends TestCase
             $this->commentSync,
             $this->audit,
             $config,
-            new NullLogger()
+            new NullLogger(),
+            $this->approval
         );
     }
 
@@ -281,6 +288,27 @@ class RecordEditServiceTest extends TestCase
         $this->assertTrue($result->ptrUpdated);
         $this->assertFalse($result->ptrFailed());
         $this->assertSame('PTR record updated', $result->ptrMessage);
+    }
+
+    public function testThePtrSyncMayNotWriteToAReverseZoneUnderReviewOrOutsideTheCallersLimit(): void
+    {
+        $this->approval->method('modeForZone')->willReturnCallback(
+            fn(?int $userId, int $zoneId): string => $zoneId === 30 ? ChangeApprovalPolicy::MODE_REQUEST : ChangeApprovalPolicy::MODE_DIRECT
+        );
+        $gate = null;
+        $this->reverse->method('updateReverseRecord')->willReturnCallback(
+            function (mixed ...$args) use (&$gate): array {
+                $gate = $args['zoneAllowed'] ?? $args[11] ?? null;
+                return ['success' => true];
+            }
+        );
+
+        $this->service()->edit($this->request(['syncPtr' => true, 'ptrZoneAllowed' => fn(int $zoneId): bool => $zoneId !== 40]));
+
+        $this->assertNotNull($gate);
+        $this->assertTrue($gate(20));
+        $this->assertFalse($gate(30), 'the user must file a change request there');
+        $this->assertFalse($gate(40), 'outside the caller limit, such as an API key zone scope');
     }
 
     public function testAFailedPtrSyncIsReportedButDoesNotFailTheEdit(): void

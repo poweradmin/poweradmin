@@ -98,6 +98,44 @@ class RecordAddServiceTest extends TestCase
         $this->assertSame(['warning', 'Record successfully added. A PTR record already points elsewhere.'], RecordAddMessages::forAdded($result));
     }
 
+    public function testThePtrCompanionMayNotWriteToAReverseZoneUnderReviewOrOutsideTheCallersLimit(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->method('createRecord')->willReturn(RecordWriteResult::ok(1));
+        $approval = $this->createMock(ChangeApprovalContext::class);
+        $approval->method('modeForZone')->willReturnCallback(
+            fn(?int $userId, int $zoneId): string => $zoneId === 30 ? ChangeApprovalPolicy::MODE_REQUEST : ChangeApprovalPolicy::MODE_DIRECT
+        );
+        $gate = null;
+        $reverse = $this->createMock(ReverseRecordCreator::class);
+        $reverse->method('createReverseRecord')->willReturnCallback(
+            function (mixed ...$args) use (&$gate): array {
+                $gate = $args['zoneAllowed'] ?? $args[11] ?? null;
+                return ['success' => true, 'type' => 'success', 'message' => 'Reverse record added'];
+            }
+        );
+
+        $this->makeService($records, $reverse, approval: $approval)->add(
+            5,
+            'example.com',
+            'www',
+            'A',
+            '192.0.2.1',
+            60,
+            0,
+            '',
+            7,
+            'alice',
+            RecordAddResult::COMPANION_PTR,
+            companionZoneAllowed: fn(int $zoneId): bool => $zoneId !== 40
+        );
+
+        $this->assertNotNull($gate);
+        $this->assertTrue($gate(20));
+        $this->assertFalse($gate(30), 'the user must file a change request there');
+        $this->assertFalse($gate(40), 'outside the caller limit, such as an API key zone scope');
+    }
+
     public function testFailedPtrCompanionKeepsTheRecordAndWordsTheFailure(): void
     {
         $records = $this->createMock(RecordManagerService::class);

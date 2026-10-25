@@ -329,6 +329,7 @@ final class RecordServices
             $this->services->auditService(),
             $this->config,
             $this->logger,
+            $this->changeApprovalContext(),
             $this->services->zoneCacheFlusher()
         );
     }

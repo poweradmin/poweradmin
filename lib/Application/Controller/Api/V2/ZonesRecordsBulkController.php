@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Closure;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -43,6 +44,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 
 /**
  * POST /api/v2/zones/{id}/records/bulk: applies a list of create, update and delete record operations.
@@ -556,7 +558,8 @@ class ZonesRecordsBulkController extends PublicApiController
             $username,
             false,
             !$this->dryRunActive,
-            $this->validateOnly
+            $this->validateOnly,
+            $this->reverseZoneGate()
         );
 
         if (empty($ptr['success'])) {
@@ -569,6 +572,21 @@ class ZonesRecordsBulkController extends PublicApiController
         if (($ptr['type'] ?? '') === 'warning') {
             $warnings[] = "$label: " . ($ptr['message'] ?? '');
         }
+    }
+
+    /**
+     * The reverse zone of a companion PTR was never checked against the key's zone scope
+     * or the user's review rule, which the batch applied to the requested zone only.
+     *
+     * @return Closure(int): bool
+     */
+    private function reverseZoneGate(): Closure
+    {
+        $userId = $this->getAuthenticatedUserId();
+        $scope = $this->apiKeyZoneGate();
+
+        return fn(int $zoneId): bool => $this->apiPermissionService->getChangeApprovalMode($userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST
+            && ($scope === null || $scope($zoneId));
     }
 
     /**

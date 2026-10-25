@@ -626,6 +626,25 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame([[self::ZONE_ID, false], [88, false]], $finalized);
     }
 
+    public function testAZoneScopedKeyLimitsTheCompanionPtrToItsScope(): void
+    {
+        $this->scope = new ApiKeyScope([self::ZONE_ID], null, false);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $gate = null;
+        $this->reverseCreator->method('createReverseRecord')->willReturnCallback(
+            function (mixed ...$args) use (&$gate): array {
+                $gate = $args[11] ?? null;
+                return ['success' => false, 'type' => 'error', 'message' => 'no permission'];
+            }
+        );
+
+        $this->bulk(['operations' => [$this->createOperation(['create_ptr' => true])]]);
+
+        $this->assertInstanceOf(\Closure::class, $gate);
+        $this->assertTrue($gate(self::ZONE_ID));
+        $this->assertFalse($gate(self::ZONE_ID + 100));
+    }
+
     public function testCreatePtrIsIgnoredForOtherTypes(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));

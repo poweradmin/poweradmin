@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -531,6 +532,26 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertTrue($body['data']['record']['ptr_updated']);
     }
 
+    public function testAZoneScopedKeyCannotMoveThePtrIntoAReverseZoneOutsideItsScope(): void
+    {
+        $this->scope = new ApiKeyScope([self::ZONE_ID], null, false);
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $gate = null;
+        $this->reverseCreator->method('updateReverseRecord')->willReturnCallback(
+            function (mixed ...$args) use (&$gate): array {
+                $gate = $args['zoneAllowed'] ?? $args[11] ?? null;
+                return ['success' => true, 'message' => 'PTR record updated'];
+            }
+        );
+
+        $this->update(['content' => '192.0.2.9', 'update_ptr' => true]);
+
+        $this->assertNotNull($gate);
+        $this->assertTrue($gate(self::ZONE_ID));
+        $this->assertFalse($gate(self::ZONE_ID + 100));
+    }
+
     public function testAFailedPtrSyncKeepsTheUpdateAndReportsTheFailureInTheMessage(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -880,7 +901,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
             $this->commentSync,
             $this->audit,
             $this->editConfig(),
-            new NullLogger()
+            new NullLogger(),
+            $this->createStub(ChangeApprovalContext::class)
         ));
 
         $ttlResolver = $this->createMock(ReverseTtlResolver::class);
