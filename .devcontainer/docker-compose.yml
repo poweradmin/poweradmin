@@ -331,7 +331,7 @@ services:
     environment:
       - FPM_UPSTREAM=app-mysql-sso:9000
     volumes:
-      - ./conf/nginx-sso.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - *vol-nginx-template
       - ../.:/app
     depends_on:
       - app-mysql-sso
