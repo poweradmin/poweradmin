@@ -43,6 +43,8 @@ test.describe('MFA enabled during a session', () => {
   const username = `mfa-session-${Date.now()}`;
   const password = 'TestP@ssw0rd123';
   let userPage = null;
+  let secret = '';
+  let recoveryCodes = [];
 
   test.beforeAll(async ({ browser }) => {
     const admin = await browser.newPage();
@@ -79,12 +81,14 @@ test.describe('MFA enabled during a session', () => {
   test('should enable MFA with the code from the setup secret', async () => {
     await userPage.goto('/mfa/setup');
     await userPage.locator('button[name="setup_app"]').click();
-    const secret = await userPage.locator('#secret-key').inputValue();
+    secret = await userPage.locator('#secret-key').inputValue();
 
     await userPage.locator('#verification_code').fill(totp(secret));
     await userPage.locator('button[name="verify_app"]').click();
 
     await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/MFA has been enabled/i);
+    recoveryCodes = (await userPage.locator('code').allTextContents()).map(code => code.trim());
+    expect(recoveryCodes.length).toBeGreaterThan(0);
   });
 
   test('should not ask for the code again on the next page', async () => {
@@ -107,5 +111,50 @@ test.describe('MFA enabled during a session', () => {
     await expect(pending).not.toHaveURL(/mfa\/setup/);
     await expect(pending.locator('button[name="setup_app"]')).toHaveCount(0);
     await pending.close();
+  });
+
+  test('should refuse to regenerate codes without a verification code', async () => {
+    await userPage.goto('/mfa/setup');
+    // The browser blocks an empty required field, so drop the attribute to reach the server check
+    await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').evaluate(el => el.removeAttribute('required'));
+    await userPage.locator('button[name="regenerate_codes"]').click();
+
+    await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Verification code is required/i);
+    await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+  });
+
+  test('should refuse to disable MFA with a wrong code', async () => {
+    await userPage.goto('/mfa/setup');
+    await userPage.locator('[data-testid="disable-mfa-code"]').fill('000000');
+    await userPage.locator('button[name="disable_mfa"]').click();
+
+    await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Invalid verification code/i);
+    await expect(userPage.locator('body')).toContainText(/MFA is currently enabled/i);
+  });
+
+  test('should regenerate codes with a current authenticator code', async () => {
+    await userPage.goto('/mfa/setup');
+    await userPage.locator('[data-testid="regenerate-codes-mfa-code"]').fill(totp(secret));
+    await userPage.locator('button[name="regenerate_codes"]').click();
+
+    await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/Recovery codes have been regenerated/i);
+    const regenerated = (await userPage.locator('code').allTextContents()).map(code => code.trim());
+    expect(regenerated.length).toBe(recoveryCodes.length);
+    expect(regenerated).not.toEqual(recoveryCodes);
+    recoveryCodes = regenerated;
+
+    // Only reachable with a valid code, so the code view's actions are checked here
+    await expect(userPage.locator('button[onclick="printRecoveryCodes()"]')).toBeVisible();
+    await expect(userPage.locator('button[onclick="copyAllCodes()"]')).toBeVisible();
+    await expect(userPage.locator('button#download-btn')).toBeVisible();
+  });
+
+  test('should disable MFA with a recovery code', async () => {
+    await userPage.goto('/mfa/setup');
+    await userPage.locator('[data-testid="disable-mfa-code"]').fill(recoveryCodes[0]);
+    await userPage.locator('button[name="disable_mfa"]').click();
+
+    await expect(userPage.locator('[data-testid="system-message"]')).toContainText(/MFA has been disabled/i);
+    await expect(userPage.locator('body')).toContainText(/MFA is currently disabled/i);
   });
 });

@@ -32,6 +32,7 @@ class LoginAttemptService
     /** Kept as string constants for callers; {@see LoginAttemptStage} owns the vocabulary. */
     public const STAGE_PASSWORD = 'password';
     public const STAGE_MFA = 'mfa';
+    public const STAGE_MFA_STEP_UP = 'mfa_step_up';
 
     private ConfigurationManager $configManager;
     private PDO $connection;
@@ -70,7 +71,7 @@ class LoginAttemptService
 
         // A clean second factor always clears its own counter; the opt-in
         // clear_attempts_on_success only governs the password stage.
-        $clearOnSuccess = $attemptType === self::STAGE_MFA
+        $clearOnSuccess = self::isSecondFactorStage($attemptType)
             || $this->configManager->get('security', 'account_lockout.clear_attempts_on_success');
 
         if ($successful && $clearOnSuccess) {
@@ -124,7 +125,7 @@ class LoginAttemptService
         // cannot lock staff out, and it takes priority over the blacklist. It is
         // skipped for the second factor, where the counter is the only barrier
         // left once the password is known.
-        if ($attemptType !== self::STAGE_MFA) {
+        if (!self::isSecondFactorStage($attemptType)) {
             $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
             if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
                 return false; // This IP is whitelisted, never lock it
@@ -141,7 +142,7 @@ class LoginAttemptService
             // An unattributable attempt cannot be counted. The password stage
             // stays open so unknown usernames still reach the authenticator,
             // but the second factor refuses rather than dropping its only limit.
-            return $attemptType === self::STAGE_MFA;
+            return self::isSecondFactorStage($attemptType);
         }
 
         $cutoffTime = time() - $limits['duration'];
@@ -149,7 +150,7 @@ class LoginAttemptService
 
         // MFA failures count per user across every source address: an attacker
         // rotating IPs would otherwise reset the counter on each request.
-        $trackIpAddress = $attemptType !== self::STAGE_MFA
+        $trackIpAddress = !self::isSecondFactorStage($attemptType)
             && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $db_type = $this->configManager->get('database', 'type');
@@ -277,6 +278,14 @@ class LoginAttemptService
         return (bool)preg_match($regex, $ipAddress);
     }
 
+    /**
+     * Second-factor stages count per user across addresses and ignore the whitelist.
+     */
+    private static function isSecondFactorStage(string $attemptType): bool
+    {
+        return $attemptType === self::STAGE_MFA || $attemptType === self::STAGE_MFA_STEP_UP;
+    }
+
     private static function isIpv4Mapped(string $binaryIp): bool
     {
         return strlen($binaryIp) === 16 && str_starts_with($binaryIp, str_repeat("\0", 10) . "\xff\xff");
@@ -339,7 +348,7 @@ class LoginAttemptService
         // Clearing must match how the stage counts. MFA counts every address, so
         // filtering the clear by IP would strand failures from an earlier address
         // and lock a roaming user who just verified correctly.
-        $clearPerIp = $attemptType !== self::STAGE_MFA
+        $clearPerIp = !self::isSecondFactorStage($attemptType)
             && $this->configManager->get('security', 'account_lockout.track_ip_address');
 
         if ($clearPerIp) {
@@ -367,7 +376,7 @@ class LoginAttemptService
         // default this method has always fallen through to.
         $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
 
-        if ($stage === LoginAttemptStage::MFA) {
+        if ($stage === LoginAttemptStage::MFA || $stage === LoginAttemptStage::MFA_STEP_UP) {
             // Floors, not "off" switches. A misconfigured 0 must not read as
             // "unlimited guesses" on the one control standing between a known
             // password and the account.

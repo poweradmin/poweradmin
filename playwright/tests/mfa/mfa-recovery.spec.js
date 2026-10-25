@@ -95,61 +95,6 @@ test.describe('MFA Recovery Codes Page', () => {
     });
   });
 
-  test.describe('Recovery Codes Actions', () => {
-    test('should have print button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await expect(regenerateBtn).toBeVisible();
-
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasPrintOption = newBodyText.toLowerCase().includes('print') ||
-                                newBodyText.toLowerCase().includes('recovery');
-        expect(hasPrintOption).toBeTruthy();
-      }
-    });
-
-    test('should have copy all button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasCopyOption = newBodyText.toLowerCase().includes('copy') ||
-                               newBodyText.toLowerCase().includes('recovery');
-        expect(hasCopyOption).toBeTruthy();
-      }
-    });
-
-    test('should have download button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/mfa/setup');
-
-      const bodyText = await page.locator('body').textContent();
-
-      if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
-
-        const newBodyText = await page.locator('body').textContent();
-        const hasDownloadOption = newBodyText.toLowerCase().includes('download') ||
-                                   newBodyText.toLowerCase().includes('recovery');
-        expect(hasDownloadOption).toBeTruthy();
-      }
-    });
-  });
-
   test.describe('Recovery Codes Navigation', () => {
     test('should have back to MFA settings link', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
@@ -202,11 +147,12 @@ test.describe('MFA Recovery Codes Page', () => {
       const bodyText = await page.locator('body').textContent();
 
       if (bodyText.toLowerCase().includes('mfa is currently enabled')) {
-        const regenerateBtn = page.locator('button[name="regenerate_codes"]');
-        await regenerateBtn.click();
+        // The admin's current code is unknown here, so only the refusal is reachable;
+        // mfa-enable-session.spec.js regenerates with a real code on a throwaway user
+        await page.locator('[data-testid="regenerate-codes-mfa-code"]').evaluate(el => el.removeAttribute('required'));
+        await page.locator('button[name="regenerate_codes"]').click();
 
-        // Auto-retrying assertion: the click navigation may still be in flight
-        await expect(page.locator('body')).toContainText(/recovery|code|save|store/i);
+        await expect(page.locator('[data-testid="system-message"]')).toContainText(/Verification code is required/i);
       }
     });
   });

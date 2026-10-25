@@ -34,16 +34,22 @@
               <p class="mb-2 small text-muted"><i class="bi bi-lock-fill me-1"></i>{% trans %}MFA is required by your organization's security policy and cannot be disabled.{% endtrans %}</p>
               {% endif %}
 
-              <div class="d-flex gap-2">
-                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
+              <div class="d-flex flex-column gap-2">
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="d-flex gap-2">
                   {{ macros.csrf_field() }}
-                  <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary me-2">
+                  <input type="text" class="form-control form-control-sm w-auto" name="mfa_code" autocomplete="one-time-code" maxlength="64"
+                         placeholder="{{ 'Enter verification code'|trans }}" aria-label="{{ 'Enter verification code'|trans }}"
+                         data-testid="regenerate-codes-mfa-code"{% if mfa_type == 'app' %} required{% endif %}>
+                  <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary">
                     <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
                   </button>
                 </form>
                 {% if not mfa_enforced %}
-                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="d-flex gap-2">
                   {{ macros.csrf_field() }}
+                  <input type="text" class="form-control form-control-sm w-auto" name="mfa_code" autocomplete="one-time-code" maxlength="64"
+                         placeholder="{{ 'Enter verification code'|trans }}" aria-label="{{ 'Enter verification code'|trans }}"
+                         data-testid="disable-mfa-code"{% if mfa_type == 'app' %} required{% endif %}>
                   <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
                     {% trans %}Disable MFA{% endtrans %}
                   </button>

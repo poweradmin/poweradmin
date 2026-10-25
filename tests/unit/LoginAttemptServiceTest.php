@@ -112,6 +112,41 @@ class LoginAttemptServiceTest extends TestCase
         $this->assertTrue($result, 'A whitelisted address must not exempt the second factor from throttling');
     }
 
+    public function testMfaStepUpStageCountsOnItsOwnLikeTheSecondFactor()
+    {
+        $this->configManagerMock->method('get')
+            ->willReturnMap([
+                ['security', 'account_lockout.enable_lockout', false, false],
+                ['security', 'account_lockout.whitelist_ip_addresses', [], ['192.168.1.1']],
+                ['security', 'account_lockout.blacklist_ip_addresses', [], []],
+                ['security', 'account_lockout.track_ip_address', true, true],
+                ['security', 'mfa.max_verify_attempts', 5, 5],
+                ['security', 'mfa.verify_lockout_duration', 15, 15],
+                ['database', 'type', null, 'mysql'],
+            ]);
+
+        $executed = [];
+        $pdoStatementMock = $this->createMock(PDOStatement::class);
+        $pdoStatementMock->method('execute')->willReturnCallback(function (array $params) use (&$executed) {
+            $executed[] = $params;
+            return true;
+        });
+        $pdoStatementMock->method('fetch')->willReturn(['attempts' => 5]);
+        $this->pdoLayerMock->method('prepare')->willReturn($pdoStatementMock);
+
+        $result = $this->loginAttemptService->isAccountLocked(
+            'testuser',
+            '192.168.1.1',
+            LoginAttemptService::STAGE_MFA_STEP_UP,
+            1
+        );
+
+        $this->assertTrue($result, 'Step-up must throttle like the second factor, whitelist or not');
+        // Its own type, so step-up failures never lock the login step, and no address filter
+        $this->assertSame(LoginAttemptService::STAGE_MFA_STEP_UP, $executed[0]['attempt_type']);
+        $this->assertArrayNotHasKey('ip_address', $executed[0]);
+    }
+
     public function testWhitelistedIpIsNeverLocked()
     {
         // Configure ConfigurationManager to return necessary values

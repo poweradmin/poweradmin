@@ -37,6 +37,7 @@ class LoginAttemptStageTest extends TestCase
     {
         $this->assertSame(LoginAttemptService::STAGE_PASSWORD, LoginAttemptStage::PASSWORD->value);
         $this->assertSame(LoginAttemptService::STAGE_MFA, LoginAttemptStage::MFA->value);
+        $this->assertSame(LoginAttemptService::STAGE_MFA_STEP_UP, LoginAttemptStage::MFA_STEP_UP->value);
     }
 
     public function testValidation(): void
