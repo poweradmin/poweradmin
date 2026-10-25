@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Closure;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -72,10 +73,11 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
-        // Validate hostname/name
-        if (!StringValidator::validatePrintable($name)->isValid()) {
-            return ValidationResult::failure(_('Invalid characters in name field.'));
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult->withField(RecordField::NAME);
         }
+        $name = $hostnameResult->getData()['hostname'];
 
         // Validate content
         if (!StringValidator::validatePrintable($content)->isValid()) {

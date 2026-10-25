@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -52,10 +53,12 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 class NIDRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
+    private HostnameValidator $hostnameValidator;
 
-    public function __construct()
+    public function __construct(?HostnameValidator $hostnameValidator = null)
     {
         $this->ttlValidator = new TTLValidator();
+        $this->hostnameValidator = $hostnameValidator ?? new HostnameValidator(new HostnamePolicy());
     }
 
     /**
@@ -76,6 +79,12 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
 
         // Add warning about ILNP being experimental
         $warnings[] = _('Note: NID records are used for the ILNP protocol, which is experimental (RFC 6740, 6742).');
+
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult->withField(RecordField::NAME);
+        }
+        $name = $hostnameResult->getData()['hostname'];
 
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {

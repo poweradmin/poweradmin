@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -30,13 +31,15 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 class DefaultRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
+    private HostnameValidator $hostnameValidator;
 
     /**
      * @param string $recordType The type being validated; a TYPE<number> type only takes generic data
      */
-    public function __construct(private readonly string $recordType = '')
+    public function __construct(private readonly string $recordType = '', ?HostnameValidator $hostnameValidator = null)
     {
         $this->ttlValidator = new TTLValidator();
+        $this->hostnameValidator = $hostnameValidator ?? new HostnameValidator(new HostnamePolicy());
     }
 
     /**
@@ -53,6 +56,12 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult->withField(RecordField::NAME);
+        }
+        $name = $hostnameResult->getData()['hostname'];
+
         // Validate content - just ensure it's not empty
         if (empty(trim($content))) {
             return ValidationResult::failure(_('Content field cannot be empty.'));

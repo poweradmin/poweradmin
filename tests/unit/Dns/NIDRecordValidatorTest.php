@@ -318,4 +318,11 @@ class NIDRecordValidatorTest extends TestCase
         }
         $this->assertTrue($foundWarning, 'Warning about local bit not found');
     }
+
+    public function testRejectsEscapedDotInName(): void
+    {
+        $result = $this->validator->validate('1000:0000:0000:0001', 'x\\.web1.example.com', 10, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
 }

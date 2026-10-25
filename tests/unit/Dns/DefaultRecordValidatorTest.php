@@ -201,4 +201,11 @@ class DefaultRecordValidatorTest extends TestCase
         // Another unlisted type name keeps the old leniency for its own syntax
         $this->assertTrue((new DefaultRecordValidator('CUSTOM'))->validate('abcd', 'record.example.com', '', 3600, 86400)->isValid());
     }
+
+    public function testRejectsEscapedDotInName(): void
+    {
+        $validator = new DefaultRecordValidator('TYPE65280');
+
+        $this->assertFalse($validator->validate('\\# 2 abcd', 'x\\.web1.example.com', '', 3600, 86400)->isValid());
+    }
 }

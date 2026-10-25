@@ -95,7 +95,7 @@ class DnsValidatorRegistry
             RecordType::MR => new MRRecordValidator($this->hostnameValidator),
             RecordType::MX => new MXRecordValidator($this->hostnameValidator),
             RecordType::NAPTR => new NAPTRRecordValidator($this->hostnameValidator),
-            RecordType::NID => new NIDRecordValidator(),
+            RecordType::NID => new NIDRecordValidator($this->hostnameValidator),
             RecordType::NS => new NSRecordValidator($this->hostnameValidator),
             RecordType::NSEC => new NSECRecordValidator($this->hostnameValidator),
             RecordType::NSEC3 => new NSEC3RecordValidator($this->hostnameValidator),
@@ -133,7 +133,7 @@ class DnsValidatorRegistry
      */
     public function getValidator(string $recordType): DnsRecordValidatorInterface
     {
-        return $this->validators[$recordType] ?? new DefaultRecordValidator($recordType);
+        return $this->validators[$recordType] ?? new DefaultRecordValidator($recordType, $this->hostnameValidator);
     }
 
     /**
