@@ -31,6 +31,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -93,6 +94,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $this->db->beginTransaction();
 
         try {
+            // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
+            SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $domainId);
             foreach (
                 [
                     "DELETE FROM $recordsTable WHERE domain_id = :id",

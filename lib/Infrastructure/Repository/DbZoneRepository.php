@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\ZoneHealthSql;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 use Poweradmin\Domain\Enum\ReverseZoneFilter;
 use Poweradmin\Domain\Enum\ZoneKind;
@@ -1059,6 +1060,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->db->beginTransaction();
 
         try {
+            // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
+            SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
             foreach (
                 [
                     "DELETE FROM $records_table WHERE domain_id = :domain_id",

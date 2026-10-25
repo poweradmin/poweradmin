@@ -179,8 +179,25 @@ final class SharedZoneIds
         return array_diff(array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN)), $rowIds) !== [];
     }
 
-    /** Point the API key scopes on $zoneId at zone 0, which matches no zone. */
     private static function unscopeApiKeys(PDO $db, int $zoneId, LoggerInterface $logger): void
+    {
+        $scoped = self::pointApiKeyScopesAtNoZone($db, $zoneId);
+        if ($scoped === []) {
+            return;
+        }
+        $logger->warning('API keys {keys}: zone scope {zone} named a removed zone whose id another zone shares and now matches no zone; re-select the zone on the key', [
+            'keys' => implode(', ', $scoped),
+            'zone' => $zoneId,
+        ]);
+    }
+
+    /**
+     * Point the API key scopes on $zoneId at zone 0, which matches no zone, and return the
+     * keys that had one. Deleting the rows instead would leave a key with none, which means unrestricted.
+     *
+     * @return int[]
+     */
+    public static function pointApiKeyScopesAtNoZone(PDO $db, int $zoneId): array
     {
         $stmt = $db->prepare("SELECT api_key_id, zone_id FROM api_key_zones WHERE zone_id IN (0, :zone_id)");
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
@@ -195,7 +212,7 @@ final class SharedZoneIds
             }
         }
         if ($scoped === []) {
-            return;
+            return [];
         }
         sort($scoped);
 
@@ -208,10 +225,8 @@ final class SharedZoneIds
             $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
-        $logger->warning('API keys {keys}: zone scope {zone} named a removed zone whose id another zone shares and now matches no zone; re-select the zone on the key', [
-            'keys' => implode(', ', $scoped),
-            'zone' => $zoneId,
-        ]);
+
+        return $scoped;
     }
 
     /**

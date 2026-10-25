@@ -22,7 +22,8 @@ use Psr\Log\NullLogger;
 
 /**
  * deleteZone() must delete the dependent PowerDNS rows atomically: a mid-sequence
- * failure has to roll back rather than leave a half-deleted zone (audit M23).
+ * failure has to roll back rather than leave a half-deleted zone (audit M23). It
+ * also leaves no API key scoped to the id a later zone may be given.
  */
 class SqlDnsBackendProviderDeleteZoneTest extends TestCase
 {
@@ -35,6 +36,7 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER)");
         $this->db->exec("CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER)");
         $this->db->exec("CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER)");
+        $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
 
         $this->db->exec("INSERT INTO domains (id, name) VALUES (1, 'example.com')");
         $this->db->exec("INSERT INTO records (domain_id) VALUES (1), (1)");
@@ -62,6 +64,34 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
         $this->assertSame(0, $this->rowCount('records'));
         $this->assertSame(0, $this->rowCount('domainmetadata'));
         $this->assertSame(0, $this->rowCount('cryptokeys'));
+    }
+
+    public function testDeleteZoneKeepsKeysScopedToItRestrictedToNoZone(): void
+    {
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 1), (2, 1), (2, 5)");
+
+        $this->assertTrue($this->provider()->deleteZone(1, 'example.com'));
+
+        $this->assertSame([[1, 0], [2, 0], [2, 5]], $this->scopes());
+    }
+
+    public function testFailedDeleteKeepsTheKeyScope(): void
+    {
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 1)");
+        $this->db->exec("DROP TABLE cryptokeys");
+
+        $this->assertFalse($this->provider()->deleteZone(1, 'example.com'));
+
+        $this->assertSame([[1, 1]], $this->scopes());
+    }
+
+    /** @return list<array{int, int}> */
+    private function scopes(): array
+    {
+        return array_map(
+            static fn(array $r): array => [(int)$r[0], (int)$r[1]],
+            $this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM)
+        );
     }
 
     public function testFailureMidSequenceRollsBackEverything(): void

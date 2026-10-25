@@ -655,6 +655,8 @@ class DatabaseConsistencyService
 
         $this->db->beginTransaction();
         try {
+            SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+
             // Delete records
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);

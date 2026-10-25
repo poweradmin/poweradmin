@@ -140,7 +140,8 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteZoneDeletesAllRelatedTables(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->exactly(4))->method('execute');
+        // The API key scope lookup, then the four deletes
+        $stmt->expects($this->exactly(5))->method('execute');
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
