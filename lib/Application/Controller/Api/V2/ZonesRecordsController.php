@@ -593,7 +593,8 @@ class ZonesRecordsController extends PublicApiController
                         $validatedContent,
                         $zoneId,
                         $validatedTtl,
-                        $validatedPriority
+                        $validatedPriority,
+                        zoneAllowed: $this->apiKeyZoneGate()
                     );
 
                     if ($ptrResult['success']) {
@@ -883,7 +884,8 @@ class ZonesRecordsController extends PublicApiController
                         $newName,
                         $zoneId,
                         (int)($updatedRecord['ttl'] ?? $recordData['ttl']),
-                        (int)($updatedRecord['prio'] ?? $recordData['prio'])
+                        (int)($updatedRecord['prio'] ?? $recordData['prio']),
+                        zoneAllowed: $this->apiKeyZoneGate()
                     );
 
                     if ($ptrResult['success']) {

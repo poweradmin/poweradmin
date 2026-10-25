@@ -151,4 +151,71 @@ class ReverseRecordCreatorUpdateTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertStringContainsString('removed', strtolower($result['message']));
     }
+
+    public function testACreatedPtrIsNotWrittenIntoAReverseZoneTheCallerMayNotWriteTo(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $domainRepository->method('getDomainNameById')->willReturn('example.com');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecord');
+
+        $result = $this->createService($domainRepository, $recordManager)
+            ->createReverseRecord('host', 'A', '192.0.2.10', 1, 3600, 0, zoneAllowed: fn(int $zoneId): bool => $zoneId !== 42);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('You do not have the permission to add a record to this zone.', $result['message']);
+    }
+
+    public function testARefusedNewReverseZoneKeepsTheOldPtr(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturnCallback(
+            fn(string $name): int => str_ends_with($name, '100.51.198.in-addr.arpa') ? 42 : 43
+        );
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('deleteRecord');
+        $recordManager->expects($this->never())->method('addRecord');
+
+        $result = $this->createService($domainRepository, $recordManager)->updateReverseRecord(
+            'A',
+            '192.0.2.10',
+            'host.example.com',
+            'A',
+            '198.51.100.10',
+            'host.example.com',
+            1,
+            3600,
+            0,
+            zoneAllowed: fn(int $zoneId): bool => $zoneId !== 42
+        );
+
+        $this->assertFalse($result['success']);
+    }
+
+    public function testARefusedOldReverseZoneKeepsTheOldPtrAndWritesNoNewOne(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturnCallback(
+            fn(string $name): int => str_ends_with($name, '2.0.192.in-addr.arpa') ? 42 : 43
+        );
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('deleteRecord');
+        $recordManager->expects($this->never())->method('addRecord');
+
+        $result = $this->createService($domainRepository, $recordManager)->updateReverseRecord(
+            'A',
+            '192.0.2.10',
+            'host.example.com',
+            'A',
+            '198.51.100.10',
+            'host.example.com',
+            1,
+            3600,
+            0,
+            zoneAllowed: fn(int $zoneId): bool => $zoneId !== 42
+        );
+
+        $this->assertFalse($result['success']);
+    }
 }
