@@ -145,7 +145,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
         return ValidationResult::success(['content' => $content,
             'name' => $name,
             'ttl' => $validatedTtl,
-            'priority' => $priority,
+            'prio' => $priority,
             'algorithm' => $contentData['algorithm'],
             'flags' => $contentData['flags'],
             'iterations' => $contentData['iterations'],

@@ -131,7 +131,7 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
         return ValidationResult::success([
             'content' => $formattedNodeId,
             'ttl' => $validatedTtl,
-            'priority' => $priority,
+            'prio' => $priority,
             'name' => $name,
             'raw_node_id' => $nodeIdData['raw_hex']
         ], $warnings);
