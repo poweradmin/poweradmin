@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -52,5 +53,24 @@ class StartupHelpersTest extends TestCase
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
 
         date_default_timezone_set($originalTz);
+    }
+
+    #[RunInSeparateProcess]
+    public function testInitializeSessionRefusesSessionIdsTheServerNeverIssued(): void
+    {
+        ini_set('session.use_strict_mode', '0');
+        ini_set('session.save_path', sys_get_temp_dir());
+
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')->willReturnCallback(fn (string $group, string $key, mixed $default = null): mixed => $default);
+
+        $_COOKIE[session_name()] = 'planted0session0id0never0issued';
+
+        initializeSession($configMock);
+        $issuedId = session_id();
+        session_destroy();
+
+        $this->assertSame('1', ini_get('session.use_strict_mode'));
+        $this->assertNotSame('planted0session0id0never0issued', $issuedId);
     }
 }
