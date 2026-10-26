@@ -133,6 +133,14 @@ class HttpClient
                 $response = false;
             }
 
+            if ($method !== 'GET' && $this->wasRewrittenToGet($responseHeaders)) {
+                // No URL in the message, so it is safe to show without display_errors
+                $errorMessage = 'The PowerDNS API URL redirects, which turned this change into a read. Set the API URL to the address it redirects to.';
+                $errorDetails = ['url' => $url, 'method' => $method, 'error' => 'Redirect rewrote the request to GET'];
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+            }
+
             if ($response === false) {
                 $error = error_get_last();
                 $errorDetails = [
@@ -241,6 +249,24 @@ class HttpClient
     private function logApiError(string $message, array $details = []): void
     {
         $this->logger->error('API Error: {message}', ['message' => $message, 'details' => $details]);
+    }
+
+    /**
+     * True when a redirect made the stream wrapper re-send the request as a body-less GET.
+     * The wrapper keeps the method and body only when the last redirect was a 307 or 308.
+     */
+    private function wasRewrittenToGet(array $headers): bool
+    {
+        $codes = [];
+        foreach ($headers as $header) {
+            if (is_string($header) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $match)) {
+                $codes[] = (int)$match[1];
+            }
+        }
+        array_pop($codes);
+        $lastRedirect = end($codes);
+
+        return $lastRedirect !== false && !in_array($lastRedirect, [307, 308], true);
     }
 
     private function getResponseCode(array $headers): ?int
