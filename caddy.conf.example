@@ -31,6 +31,11 @@
     # Set this path to your Poweradmin installation directory
     root * /srv/www
 
+    # Caddy sets no body limit by default; keep in line with PHP's post_max_size
+    request_body {
+        max_size 20MiB
+    }
+
     # Enable access logs
     log {
         output file /var/log/caddy/poweradmin.log {
@@ -131,6 +136,11 @@
 
 # :80 {
 #     root * /srv/www
+#
+#     # Caddy sets no body limit by default; keep in line with PHP's post_max_size
+#     request_body {
+#         max_size 20MiB
+#     }
 #
 #     # Enable access logs
 #     log {

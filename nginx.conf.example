@@ -11,6 +11,9 @@ server {
     root /path/to/poweradmin;
     index index.php index.html;
 
+    # Keep in line with PHP's post_max_size; zone file imports need more than the 1m default
+    client_max_body_size 20m;
+
     # Static assets (caching)
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
         expires max;
@@ -93,6 +96,9 @@ server {
     server_name your-domain.com;
     root /var/www/html;
     index index.php index.html;
+
+    # Keep in line with PHP's post_max_size; zone file imports need more than the 1m default
+    client_max_body_size 20m;
 
     # Poweradmin subfolder location
     location /poweradmin {
