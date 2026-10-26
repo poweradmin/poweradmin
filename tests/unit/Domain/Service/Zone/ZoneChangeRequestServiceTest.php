@@ -251,18 +251,33 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(['name' => 'new.example.com', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0, 'disabled' => 0, 'comment' => 'why'], $action['after']);
 
         $this->records = $this->createMock(RecordRepositoryInterface::class);
-        $this->records->method('recordExists')->willReturn(true);
+        $this->records->method('getRecordsByName')->with(self::ZONE_ID, 'new.example.com', 'A')->willReturn([['id' => '9', 'content' => '192.0.2.5']]);
         $duplicate = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
         $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $duplicate->code);
         $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
     }
 
+    public function testFilingAnAddComparesContentLikeTheRecordEditor(): void
+    {
+        $this->records = $this->createMock(RecordRepositoryInterface::class);
+        $this->records->method('getRecordsByName')->willReturnCallback(fn(int $zoneId, string $name, string $type): array => match ($type) {
+            'TXT' => [['id' => '9', 'content' => '"Hello"']],
+            'CNAME' => [['id' => '10', 'content' => 'Target.Example.NET']],
+            'AAAA' => [['id' => '11', 'content' => '2001:db8::1']],
+            default => [],
+        });
+        $service = $this->makeService();
+        $file = fn(string $type, string $content): ZoneChangeRequestResult => $service->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => $type, 'content' => $content, 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+
+        $this->assertTrue($file('TXT', '"hello"')->success, 'TXT text differing in case is not a copy');
+        $this->assertSame(Refusal::CONFLICT, $file('CNAME', 'target.example.net')->refusal);
+        $this->assertSame(Refusal::CONFLICT, $file('AAAA', '2001:0db8:0:0::1')->refusal);
+    }
+
     public function testFilingAnHttpsAddRefusesARowStoredWithAnUnquotedEch(): void
     {
         $this->records = $this->createMock(RecordRepositoryInterface::class);
-        $this->records->method('recordExists')->willReturnCallback(
-            fn(int $zoneId, string $name, string $type, string $content): bool => $content === '1 . alpn=h2 ech=AAAA'
-        );
+        $this->records->method('getRecordsByName')->willReturn([['id' => '9', 'content' => '1 . alpn=h2 ech=AAAA']]);
 
         $duplicate = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'HTTPS', 'content' => '1 . alpn=h2 ech=AAAA', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
 
@@ -843,8 +858,7 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->stored['5']['content'] = '192.0.2.99';
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $rid): ?array => $this->stored[(string)$rid] ?? null);
-        $this->records->method('getRecordsByName')->willReturn([]);
-        $this->records->method('recordExists')->willReturnCallback(fn(int $zone, string $name, string $type, string $content): bool => $name === 'www.example.com');
+        $this->records->method('getRecordsByName')->willReturnCallback(fn(int $zone, string $name): array => $name === 'www.example.com' ? [['id' => '5', 'content' => '192.0.2.1']] : []);
         $service = $this->makeService();
         $request = $this->repository->find($id);
 

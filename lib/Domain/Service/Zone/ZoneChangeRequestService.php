@@ -183,11 +183,7 @@ class ZoneChangeRequestService
         if ($error !== null) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
         }
-        $legacyContent = DnsFormatter::unquoteEch($row['type'], $row['content']);
-        if (
-            $this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $row['content'])
-            || ($legacyContent !== null && $this->records->recordExists($zoneId, strtolower($row['name']), $row['type'], $legacyContent))
-        ) {
+        if ($this->zoneHolds($zoneId, $row['name'], $row['type'], $row['content'])) {
             $error = 'A record with this hostname, type, and content already exists.';
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::CONFLICT, [$error]);
         }
@@ -318,7 +314,7 @@ class ZoneChangeRequestService
             $op = $action['op'] ?? null;
             if ($op === ZoneChangeRequest::OP_ADD) {
                 $after = is_array($action['after'] ?? null) ? $action['after'] : [];
-                if ($this->records->recordExists($request->zoneId, strtolower((string)($after['name'] ?? '')), (string)($after['type'] ?? ''), (string)($after['content'] ?? ''))) {
+                if ($this->zoneHolds($request->zoneId, (string)($after['name'] ?? ''), (string)($after['type'] ?? ''), (string)($after['content'] ?? ''))) {
                     $stale[] = $index;
                 }
                 continue;
@@ -334,6 +330,21 @@ class ZoneChangeRequestService
         }
 
         return $stale;
+    }
+
+    /**
+     * Whether the zone already holds this record, compared the way RecordManager's duplicate
+     * checks compare it (in PHP, so a MySQL _ci collation does not decide).
+     */
+    private function zoneHolds(int $zoneId, string $name, string $type, string $content): bool
+    {
+        foreach ($this->records->getRecordsByName($zoneId, $name, $type) as $stored) {
+            if (RecordManager::sameContent($type, $content, (string)($stored['content'] ?? ''))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

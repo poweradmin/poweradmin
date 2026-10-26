@@ -206,7 +206,7 @@ class RecordManager implements RecordManagerInterface
      * Content equality as the duplicate checks see it: exact, domain names compared without
      * case as DNS does, the unquoted ech form, or the same AAAA address written another way.
      */
-    private static function sameContent(string $type, string $content, string $stored): bool
+    public static function sameContent(string $type, string $content, string $stored): bool
     {
         if ($stored === $content) {
             return true;
