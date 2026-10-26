@@ -34,7 +34,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * The NID record contains a 16-bit preference value followed by a 64-bit Node Identifier value
  * in the EUI-64 format.
  *
- * Format:
+ * Format: <preference> <node-id>, the form PowerDNS reads. A bare node id takes
+ * its preference from the prio field.
  * - Preference: 16-bit unsigned integer (0-65535)
  * - NodeID: 64-bit value in EUI-64 format, represented as 4 groups of 4 hex digits
  *   separated by colons (xxxx:xxxx:xxxx:xxxx)
@@ -94,8 +95,15 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
             return $printableResult;
         }
 
+        // PowerDNS reads the preference from the content, never from the prio column
+        $nodeId = trim($content);
+        $contentPreference = null;
+        if (preg_match('/^(\S+)\s+(\S+)$/', $nodeId, $parts)) {
+            [, $contentPreference, $nodeId] = $parts;
+        }
+
         // Validate the content format (according to RFC 6742)
-        $nodeIdResult = $this->validateNodeIdentifier($content);
+        $nodeIdResult = $this->validateNodeIdentifier($nodeId);
         if (!$nodeIdResult->isValid()) {
             return $nodeIdResult;
         }
@@ -119,16 +127,17 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Validate priority (preference)
-        $priorityResult = $this->validatePreference($prio);
+        $priorityResult = $this->validatePreference($contentPreference ?? $prio);
         if (!$priorityResult->isValid()) {
             return $priorityResult;
         }
         $priority = $priorityResult->getData();
 
         return ValidationResult::success([
-            'content' => $formattedNodeId,
+            'content' => $priority . ' ' . $formattedNodeId,
             'ttl' => $validatedTtl,
-            'prio' => $priority,
+            // PowerDNS ignores the prio column for NID; API mode reads it back as 0
+            'prio' => 0,
             'name' => $name,
             'raw_node_id' => $nodeIdData['raw_hex']
         ], $warnings);

@@ -53,9 +53,9 @@ class NIDRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         // The content should be converted to RFC 6742 presentation format with colons
-        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
+        $this->assertEquals('20 1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(20, $data['prio']);
+        $this->assertEquals(0, $data['prio']);
         $this->assertTrue($result->hasWarnings());
         // Should have warning about plain format vs. RFC presentation format
         $foundWarning = false;
@@ -86,9 +86,9 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
+        $this->assertEquals('20 1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(20, $data['prio']);
+        $this->assertEquals(0, $data['prio']);
 
         // No warning about presentation format since it's already in the correct format
         $foundWarning = false;
@@ -184,9 +184,9 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
+        $this->assertEquals('10 1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(10, $data['prio']); // Default preference
+        $this->assertEquals(0, $data['prio']); // The default preference goes into the content
     }
 
     /**
@@ -221,9 +221,9 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
+        $this->assertEquals('20 1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(20, $data['prio']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -261,7 +261,7 @@ class NIDRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         // Should be formatted with proper zero-padding
-        $this->assertEquals('0001:0002:0003:0004', $data['content']);
+        $this->assertEquals('20 0001:0002:0003:0004', $data['content']);
     }
 
     /**
@@ -320,5 +320,20 @@ class NIDRecordValidatorTest extends TestCase
             }
         }
         $this->assertTrue($foundWarning, 'Warning about local bit not found');
+    }
+
+    public function testPreferenceInContentWinsOverPrio(): void
+    {
+        $result = $this->validator->validate('30 1000:0:0:1', 'nid.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('30 1000:0000:0000:0001', $result->getData()['content']);
+        $this->assertSame(0, $result->getData()['prio']);
+    }
+
+    public function testRejectsOutOfRangePreferenceInContent(): void
+    {
+        $this->assertFalse($this->validator->validate('70000 1000:0000:0000:0001', 'nid.example.com', 0, 3600, 86400)->isValid());
+        $this->assertFalse($this->validator->validate('x 1000:0000:0000:0001', 'nid.example.com', 0, 3600, 86400)->isValid());
     }
 }
