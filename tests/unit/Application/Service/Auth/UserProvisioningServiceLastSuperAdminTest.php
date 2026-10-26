@@ -261,6 +261,72 @@ class UserProvisioningServiceLastSuperAdminTest extends TestCase
         (new ReflectionMethod($service, 'applyGroupMembership'))->invoke($service, self::USER_ID, $externalGroups, 'oidc');
     }
 
+    public function testAMoveFromTheTemplateToAnAdminGroupCompletesInOneSignIn(): void
+    {
+        $this->memberOf = [];
+        $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
+        $this->members->method('findByUserId')->willReturnCallback(
+            fn(int $userId): array => array_map(static fn(int $groupId) => UserGroupMember::create($groupId, $userId), $this->memberOf)
+        );
+        $this->members->method('add')->willReturnCallback(function (int $groupId, int $userId): UserGroupMember {
+            $this->memberOf[] = $groupId;
+            return UserGroupMember::create($groupId, $userId);
+        });
+        $this->users->method('getProvisioningProfile')->willReturn(['perm_templ' => 1, 'perm_templ_source' => 'oidc', 'auth_method' => 'oidc']);
+        $this->users->method('findPermissionTemplateIdByName')->with('Guest')->willReturn(7);
+        $this->users->method('templateGrantsUberuser')->with(7)->willReturn(false);
+        $this->users->method('isLastUberuser')->willReturn(true);
+        $this->users->method('holdsUberuserThroughGroup')->willReturnCallback(fn(): bool => in_array(self::ADMIN_GROUP_ID, $this->memberOf, true));
+        $this->users->expects($this->once())->method('updateProvisionedUser')
+            ->with(self::USER_ID, $this->callback(static fn(array $updates): bool => ($updates['perm_templ'] ?? null) === 7));
+        $groups = $this->createMock(UserGroupLookupInterface::class);
+        $groups->method('findIdByExactName')->willReturnMap([['Admins', self::ADMIN_GROUP_ID]]);
+
+        $service = new UserProvisioningService(
+            new FakeConfiguration(['oidc' => [
+                'allow_superuser_provisioning' => true,
+                'default_permission_template' => 'Guest',
+                'group_mapping' => ['idp-admins' => 'Admins'],
+            ]]),
+            $this->createMock(Logger::class),
+            $this->users,
+            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $groups,
+            $this->members
+        );
+
+        (new ReflectionMethod($service, 'updateExistingUser'))
+            ->invoke($service, self::USER_ID, new OidcUserInfo('admin', '', groups: ['idp-admins']), 'oidc');
+
+        $this->assertSame([self::ADMIN_GROUP_ID], $this->memberOf);
+    }
+
+    public function testAFailedMembershipReadStillUpdatesTheTemplate(): void
+    {
+        $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
+        $this->members->method('findByUserId')->willThrowException(new \RuntimeException('lock wait timeout'));
+        $this->members->expects($this->never())->method('add');
+        $this->users->method('getProvisioningProfile')->willReturn(['perm_templ' => 1, 'perm_templ_source' => 'oidc', 'auth_method' => 'oidc']);
+        $this->users->method('findPermissionTemplateIdByName')->with('Guest')->willReturn(7);
+        $this->users->method('isLastUberuser')->willReturn(false);
+        $this->users->expects($this->once())->method('updateProvisionedUser')
+            ->with(self::USER_ID, $this->callback(static fn(array $updates): bool => ($updates['perm_templ'] ?? null) === 7));
+        $groups = $this->createMock(UserGroupLookupInterface::class);
+        $groups->method('findIdByExactName')->willReturnMap([['Admins', self::ADMIN_GROUP_ID]]);
+
+        $service = new UserProvisioningService(
+            new FakeConfiguration(['oidc' => ['default_permission_template' => 'Guest', 'group_mapping' => ['idp-admins' => 'Admins']]]),
+            $this->createMock(Logger::class),
+            $this->users,
+            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $groups,
+            $this->members
+        );
+
+        (new ReflectionMethod($service, 'updateExistingUser'))
+            ->invoke($service, self::USER_ID, new OidcUserInfo('admin', '', groups: []), 'oidc');
+    }
+
     /**
      * @return list<array{0: string, 1: string}>
      */

@@ -488,6 +488,19 @@ class UserProvisioningService
                 }
             }
 
+            // Grants land before revokes, so super admin moving between the template and a
+            // group in one sign-in is not held back by the last-super-admin checks
+            try {
+                $groupPlan = $this->planGroupMembership($userId, $userInfo->getGroups(), $authMethod);
+            } catch (\Exception $e) {
+                // The profile and template still sync; groups are retried on the next sign-in
+                $this->logger->error('Error reading group membership of user {userId}: {error}', ['userId' => $userId, 'error' => $e->getMessage()]);
+                $groupPlan = null;
+            }
+            if ($groupPlan !== null) {
+                $this->addMappedGroups($userId, $groupPlan);
+            }
+
             // Check and write share the super admin row lock, so two concurrent sign-ins cannot both demote
             $this->superAdminGuard->underLock(function () use ($userId, $updates): bool {
                 // A provider mapping must not demote the last super admin; it is retried on the next sign-in
@@ -512,8 +525,9 @@ class UserProvisioningService
                 return true;
             });
 
-            // Apply/sync group membership based on external groups
-            $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
+            if ($groupPlan !== null) {
+                $this->removeMappedGroups($userId, $groupPlan);
+            }
         } catch (\Exception $e) {
             $this->logger->error('Error updating existing user: {error}', ['error' => $e->getMessage()]);
         }
@@ -938,13 +952,27 @@ class UserProvisioningService
      */
     private function applyGroupMembership(int $userId, array $externalGroups, string $authMethod): void
     {
+        $plan = $this->planGroupMembership($userId, $externalGroups, $authMethod);
+        if ($plan !== null) {
+            $this->addMappedGroups($userId, $plan);
+            $this->removeMappedGroups($userId, $plan);
+        }
+    }
+
+    /**
+     * Works out which mapped groups the user joins and leaves, without writing.
+     *
+     * @return array{add: list<int>, remove: list<int>, names: array<int, string>}|null Null when no mapping is configured
+     */
+    private function planGroupMembership(int $userId, array $externalGroups, string $authMethod): ?array
+    {
         $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
 
         if (empty($groupMapping)) {
             $this->logger->debug('No group mapping configured for {method}, skipping group membership sync', [
                 'method' => strtoupper($authMethod)
             ]);
-            return;
+            return null;
         }
 
         $this->logger->debug('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
@@ -1014,10 +1042,22 @@ class UserProvisioningService
             }
         }
 
+        return [
+            'add' => array_values(array_diff($targetGroupIds, $currentGroupIds)),
+            'remove' => array_values(array_diff($currentGroupIds, $targetGroupIds)),
+            'names' => $idToName,
+        ];
+    }
+
+    /**
+     * @param array{add: list<int>, remove: list<int>, names: array<int, string>} $plan
+     */
+    private function addMappedGroups(int $userId, array $plan): void
+    {
         $addedGroups = [];
-        foreach (array_diff($targetGroupIds, $currentGroupIds) as $groupId) {
+        foreach ($plan['add'] as $groupId) {
             if ($this->addUserToGroup($userId, $groupId)) {
-                $addedGroups[] = $idToName[$groupId] ?? $groupId;
+                $addedGroups[] = $plan['names'][$groupId] ?? $groupId;
             }
         }
 
@@ -1027,14 +1067,21 @@ class UserProvisioningService
                 'groups' => implode(', ', $addedGroups)
             ]);
         }
+    }
 
-        // Adds go first, so the last-super-admin check on a removal already
-        // counts a group the provider moved the user to in this sign-in
-        foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
+    /**
+     * Run after the adds and the template change, so the last-super-admin check on a
+     * removal already counts what the provider granted in this sign-in.
+     *
+     * @param array{add: list<int>, remove: list<int>, names: array<int, string>} $plan
+     */
+    private function removeMappedGroups(int $userId, array $plan): void
+    {
+        foreach ($plan['remove'] as $groupId) {
             if ($this->removeUserFromGroup($userId, $groupId)) {
                 $this->logger->info('Removed user {userId} from group: {group} (no longer in external group)', [
                     'userId' => $userId,
-                    'group' => $idToName[$groupId] ?? $groupId
+                    'group' => $plan['names'][$groupId] ?? $groupId
                 ]);
             }
         }
