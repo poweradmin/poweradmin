@@ -16099,3 +16099,9 @@ msgstr "Parandati API võtmete piirangud %d kustutatud tsoonil"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Parandati %d kustutatud tsooni; %d ebaõnnestus"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Ühtegi kirjet ei salvestatud: mõned read võtavad üksteise koha, seega salvestatakse need kõik koos või mitte ühtegi."

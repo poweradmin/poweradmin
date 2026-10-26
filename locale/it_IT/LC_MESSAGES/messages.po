@@ -16713,3 +16713,9 @@ msgstr "Riparate le restrizioni delle chiavi API su %d zone eliminate"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d zone eliminate riparate; %d non riuscite"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Nessun record è stato salvato: alcune righe prendono l'una il posto dell'altra, quindi vengono salvate tutte insieme o nessuna."

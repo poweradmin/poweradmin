@@ -16210,3 +16210,9 @@ msgstr "Korjattiin API-avainten rajoitukset %d poistetulla alueella"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Korjattiin %d poistettua aluetta; %d epäonnistui"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Yhtään tietuetta ei tallennettu: jotkin rivit vaihtavat paikkaa keskenään, joten ne tallennetaan kaikki yhdessä tai ei yhtään."

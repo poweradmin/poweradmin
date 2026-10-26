@@ -16326,3 +16326,9 @@ msgstr "Đã sửa giới hạn khóa API trên %d vùng đã xóa"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Đã sửa %d vùng đã xóa; %d thất bại"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Không có bản ghi nào được lưu: một số hàng thay thế vị trí của nhau, vì vậy chúng được lưu cùng lúc hoặc không lưu hàng nào."

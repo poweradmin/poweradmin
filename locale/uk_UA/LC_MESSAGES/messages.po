@@ -16510,3 +16510,9 @@ msgstr "Виправлено обмеження API-ключів для %d ви�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Виправлено %d видалених зон; %d з помилкою"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Жоден запис не збережено: деякі рядки займають місця один одного, тому вони зберігаються всі разом або жоден."

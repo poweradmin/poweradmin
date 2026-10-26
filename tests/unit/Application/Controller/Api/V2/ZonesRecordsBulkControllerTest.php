@@ -82,6 +82,8 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
     private ?int $canonicalZoneId = null;
     private ?FakeConfiguration $config = null;
     private ?PDO $txDb = null;
+    /** @var array<int, RecordWriteResult> Preview verdicts by record id that differ from "moves when the content changes" */
+    private array $previews = [];
 
     protected function setUp(): void
     {
@@ -91,6 +93,7 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->zones = $this->createMock(ZoneReadRepositoryInterface::class);
         $this->records = $this->createMock(RecordRepositoryInterface::class);
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
+        $this->recordManager->method('previewEdit')->willReturnCallback(fn(array $record): RecordWriteResult => $this->preview($record));
         $this->audit = $this->createMock(AuditService::class);
         $this->reverseCreator = $this->createMock(ReverseRecordCreator::class);
         $this->comments = $this->createMock(RecordCommentService::class);
@@ -970,6 +973,105 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $this->assertSame(409, $response->getStatusCode());
         $this->assertSame(['Operation 1 (create): A record with this hostname, type, and content already exists.'], $body['data']['errors']);
+    }
+
+    public function testASwapTellsEachUpdateThatBothRecordsMoveAway(): void
+    {
+        $vacated = $this->vacatedSeenByEachUpdate(
+            [3 => '192.0.2.5', 4 => '192.0.2.9'],
+            [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'], ['action' => 'update', 'id' => 4, 'content' => '192.0.2.5']]
+        );
+
+        $this->assertSame([[3 => '192.0.2.5', 4 => '192.0.2.9'], [3 => '192.0.2.5', 4 => '192.0.2.9']], $vacated);
+    }
+
+    public function testAnUpdateThatOnlyChangesTheTtlDoesNotMoveAway(): void
+    {
+        $vacated = $this->vacatedSeenByEachUpdate(
+            [3 => '192.0.2.5', 4 => '192.0.2.9'],
+            [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'], ['action' => 'update', 'id' => 4, 'ttl' => 7200]]
+        );
+
+        $this->assertSame([[3 => '192.0.2.5'], [3 => '192.0.2.5']], $vacated);
+    }
+
+    public function testARotationTellsEachUpdateThatEveryRecordMovesAway(): void
+    {
+        $all = [3 => '192.0.2.5', 4 => '192.0.2.9', 5 => '192.0.2.7'];
+        $vacated = $this->vacatedSeenByEachUpdate($all, [
+            ['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'],
+            ['action' => 'update', 'id' => 4, 'content' => '192.0.2.7'],
+            ['action' => 'update', 'id' => 5, 'content' => '192.0.2.5'],
+        ]);
+
+        $this->assertSame([$all, $all, $all], $vacated);
+    }
+
+    /**
+     * Runs the updates over www A records holding $stored and returns the vacated set each one got.
+     *
+     * @param array<int, string> $stored Content by record id
+     * @param list<array<string, mixed>> $operations
+     * @return list<array<int|string, string>>
+     */
+    private function vacatedSeenByEachUpdate(array $stored, array $operations): array
+    {
+        $this->records->method('getRecordById')->willReturnCallback(
+            fn(int|string $id): ?array => isset($stored[(int)$id]) ? ['id' => (int)$id, 'content' => $stored[(int)$id]] + $this->storedARecord() : null
+        );
+        $seen = [];
+        $this->recordManager->method('editRecord')->willReturnCallback(
+            function (array $record, bool $finalize, ?array $comment, bool $dryRun, array $vacated) use (&$seen): RecordWriteResult {
+                $seen[] = $vacated;
+                return RecordWriteResult::ok();
+            }
+        );
+
+        $response = $this->bulk(['operations' => $operations]);
+
+        $this->assertSame(200, $response->getStatusCode());
+
+        return $seen;
+    }
+
+    public function testAnUpdateWhoseValidatedContentStaysDoesNotMoveAway(): void
+    {
+        // As a hostname with a trailing dot added, which validation strips again
+        $this->previews[4] = RecordWriteResult::previewed(null, ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.9']);
+        $vacated = $this->vacatedSeenByEachUpdate(
+            [3 => '192.0.2.5', 4 => '192.0.2.9'],
+            [['action' => 'update', 'id' => 3, 'content' => '192.0.2.9'], ['action' => 'update', 'id' => 4, 'content' => '192.0.2.9.']]
+        );
+
+        $this->assertSame([[3 => '192.0.2.5'], [3 => '192.0.2.5']], $vacated);
+    }
+
+    public function testAnUpdateThatFailsItsPreviewDoesNotMoveAway(): void
+    {
+        $this->previews[3] = RecordWriteResult::failure('Invalid IP address.');
+        $vacated = $this->vacatedSeenByEachUpdate(
+            [3 => '192.0.2.5', 4 => '192.0.2.9'],
+            [['action' => 'update', 'id' => 3, 'content' => '999.0.0.1'], ['action' => 'update', 'id' => 4, 'content' => '192.0.2.5']]
+        );
+
+        $this->assertSame([[4 => '192.0.2.9'], [4 => '192.0.2.9']], $vacated);
+    }
+
+    /**
+     * The record manager's preview: the record moves away when its content changes.
+     *
+     * @param array<string, mixed> $record
+     */
+    private function preview(array $record): RecordWriteResult
+    {
+        if (isset($this->previews[(int)$record['rid']])) {
+            return $this->previews[(int)$record['rid']];
+        }
+        $stored = $this->records->getRecordById($record['rid']);
+        $key = ['name' => (string)$record['name'], 'type' => (string)$record['type'], 'content' => (string)$record['content']];
+        $moves = is_array($stored) && (string)$stored['content'] !== $key['content'];
+
+        return RecordWriteResult::previewed($moves ? ['name' => (string)$stored['name'], 'type' => (string)$stored['type'], 'content' => (string)$stored['content']] : null, $key);
     }
 
     private function apiDryRunOfStoredRecord(): void

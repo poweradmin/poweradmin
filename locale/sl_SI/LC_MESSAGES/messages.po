@@ -16464,3 +16464,9 @@ msgstr "Popravljene omejitve API ključev na %d izbrisanih conah"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Popravljenih %d izbrisanih con; %d neuspešnih"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Noben zapis ni bil shranjen: nekatere vrstice zasedajo mesto druga druge, zato se shranijo vse skupaj ali nobena."

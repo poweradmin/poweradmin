@@ -16157,3 +16157,9 @@ msgstr "Laboti API atslēgu ierobežojumi %d izdzēstām zonām"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Labotas %d izdzēstas zonas; %d neizdevās"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Neviens ieraksts netika saglabāts: dažas rindas ieņem cita citas vietu, tāpēc tās tiek saglabātas visas kopā vai neviena."

@@ -16522,3 +16522,9 @@ msgstr "Sekatan kunci API pada %d zon yang dipadam telah dibaiki"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d zon yang dipadam dibaiki; %d gagal"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Tiada rekod disimpan: sesetengah baris mengambil tempat antara satu sama lain, jadi semuanya disimpan bersama atau tiada langsung."

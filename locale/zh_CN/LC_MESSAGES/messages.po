@@ -15354,3 +15354,9 @@ msgstr "已修复 %d 个已删除区域上的 API 密钥限制"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "已修复 %d 个已删除区域；%d 个失败"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "未保存任何记录：部分行互换了位置，因此要么全部一起保存，要么都不保存。"

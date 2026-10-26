@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordCommentEditorInterface;
 use Poweradmin\Domain\Port\RecordCommentSyncInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -53,6 +54,8 @@ class ZoneEditService
     /**
      * @param bool $recordCommentsEnabled Whether record comments are edited and stored with a save
      * @param bool $zoneCommentsEnabled Whether the zone comment is stored with a save
+     * @param TransactionInterface|null $transaction The local write transaction, when the backend has one;
+     *                                               without it a save never moves records into each other's place
      */
     public function __construct(
         private readonly ConfigurationInterface $config,
@@ -66,7 +69,8 @@ class ZoneEditService
         private readonly RecordCommentSyncInterface $commentSync,
         private readonly AuditLoggerInterface $audit,
         private readonly bool $recordCommentsEnabled,
-        private readonly bool $zoneCommentsEnabled
+        private readonly bool $zoneCommentsEnabled,
+        private readonly ?TransactionInterface $transaction = null
     ) {
     }
 
@@ -151,30 +155,128 @@ class ZoneEditService
         $errors = [];
         $recordsWritten = false;
         $unresolved = [];
+        $plans = $this->planRows($submission);
+        $changes = array_values(array_filter(array_column($plans, 2)));
+        $vacated = $this->canSaveTogether() ? $this->vacatedRecords($changes) : [];
+        // A row refused after another skipped it as vacated would leave a copy, so a swap is all or nothing
+        $transaction = $vacated !== [] ? $this->transaction : null;
+        $transaction?->begin();
 
-        foreach ($submission->rows as $row) {
-            $row = $this->repointVanishedSoa($submission, $row);
-            $refused = $this->refuseVanishedRecord($row);
-            if ($refused !== null) {
+        try {
+            foreach ($submission->rows as $key => $posted) {
+                // An API write can bump the serial and re-key the SOA or a sibling,
+                // so those rows are planned when written
+                [$row, $refused, $change] = $plans[$key] ?? $this->planRow($submission, $posted);
+                if ($refused !== null) {
+                    $changed = true;
+                    $errors[] = (string)$refused->message;
+                    $unresolved[] = $row;
+                    continue;
+                }
+                if ($change === null) {
+                    continue;
+                }
+
+                $written = $this->writeRow($submission, $change, $vacated);
                 $changed = true;
-                $errors[] = (string)$refused->message;
-                $unresolved[] = $row;
-                continue;
+                if (!$written->success) {
+                    $errors[] = (string)$written->message;
+                } elseif ($written->changed) {
+                    $recordsWritten = true;
+                }
             }
+        } catch (\Throwable $e) {
+            if ($transaction?->inTransaction()) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        }
 
-            $written = $this->saveRow($submission, $row);
-            if ($written === null) {
-                continue;
-            }
-            $changed = true;
-            if (!$written->success) {
-                $errors[] = (string)$written->message;
-            } elseif ($written->changed) {
-                $recordsWritten = true;
-            }
+        if ($transaction !== null && $errors !== []) {
+            $transaction->rollBack();
+            $recordsWritten = false;
+            $errors[] = _('No record was saved: some rows take each other\'s place, so they are saved together or not at all.');
+        } else {
+            $transaction?->commit();
         }
 
         return [$changed, $errors, $recordsWritten, $unresolved];
+    }
+
+    private function canSaveTogether(): bool
+    {
+        return $this->transaction !== null && !$this->transaction->inTransaction();
+    }
+
+    /**
+     * Each posted row with its refusal or its change against the zone, worked out once
+     * before anything is written. API backend rows are left to the write loop.
+     *
+     * @return array<int, array{0: ZoneEditRow, 1: RecordWriteResult|null, 2: ZoneEditRowChange|null}> Keyed as
+     *   the submission's rows
+     */
+    private function planRows(ZoneEditSubmission $submission): array
+    {
+        $plans = [];
+        foreach ($submission->rows as $key => $row) {
+            if (!RecordIdentifier::isEncoded($row->rid)) {
+                $plans[$key] = $this->planRow($submission, $row);
+            }
+        }
+
+        return $plans;
+    }
+
+    /**
+     * @return array{0: ZoneEditRow, 1: RecordWriteResult|null, 2: ZoneEditRowChange|null} The row, the refusal
+     *   when its record vanished, and the change (null when the row matches the zone)
+     */
+    private function planRow(ZoneEditSubmission $submission, ZoneEditRow $row): array
+    {
+        $row = $this->repointVanishedSoa($submission, $row);
+        $refused = $this->refuseVanishedRecord($row);
+        $change = $refused === null ? $this->diffRow($submission, $this->keepCurrentSoaSerial($submission, $row)) : null;
+
+        return [$row, $refused, $change];
+    }
+
+    /**
+     * Previews each change and collects the stored content of the records that pass
+     * validation and really move away from an RRset another change in the same save writes
+     * to. The writes run one by one, so a swap would otherwise be refused as a copy. The
+     * caller writes them in one transaction and rolls back on any refusal; a save with
+     * no such overlap gets an empty set and keeps saving row by row.
+     *
+     * @param list<ZoneEditRowChange> $changes
+     * @return array<int|string, string> Stored content by record id
+     */
+    public function vacatedRecords(array $changes): array
+    {
+        $moving = [];
+        $targets = [];
+        foreach ($changes as $change) {
+            $record = $change->record;
+            $record['type'] = strtoupper(trim((string)$record['type']));
+            $preview = $this->recordManager->previewEdit($record);
+            if (!$preview->success || $preview->key === null) {
+                continue;
+            }
+            $id = (string)$record['rid'];
+            $targets[$id] = $preview->key['name'] . "\0" . $preview->key['type'];
+            if ($preview->vacates !== null) {
+                $moving[$id] = $preview->vacates;
+            }
+        }
+
+        $vacated = [];
+        foreach ($moving as $id => $stored) {
+            $rrset = $stored['name'] . "\0" . $stored['type'];
+            if (in_array($rrset, array_diff_key($targets, [$id => true]), true)) {
+                $vacated[$id] = $stored['content'];
+            }
+        }
+
+        return $vacated;
     }
 
     /**
@@ -192,23 +294,6 @@ class ZoneEditService
 
         return $submission->serial != $currentSerial
             && $this->config->get('misc', 'edit_conflict_resolution', 'last_writer_wins') === 'only_latest_version';
-    }
-
-    /**
-     * Writes one edited row.
-     *
-     * @return RecordWriteResult|null The write, or null when the row matched the zone
-     */
-    private function saveRow(ZoneEditSubmission $submission, ZoneEditRow $row): ?RecordWriteResult
-    {
-        $row = $this->keepCurrentSoaSerial($submission, $row);
-
-        $change = $this->diffRow($submission, $row);
-        if ($change === null) {
-            return null;
-        }
-
-        return $this->writeRow($submission, $change);
     }
 
     /**
@@ -315,8 +400,10 @@ class ZoneEditService
     /**
      * Writes one changed row without bumping the serial: the record, its audit
      * line, and the record comment with its PTR/A sync when comments are shown.
+     *
+     * @param array<int|string, string> $vacated Stored content by id of the records the same save moves away
      */
-    public function writeRow(ZoneEditSubmission $submission, ZoneEditRowChange $change): RecordWriteResult
+    public function writeRow(ZoneEditSubmission $submission, ZoneEditRowChange $change, array $vacated = []): RecordWriteResult
     {
         $record = $change->record;
         // Uppercased only here, after the change check, so an untouched lowercase row is not rewritten
@@ -327,7 +414,7 @@ class ZoneEditService
         $edited = $this->recordManager->editRecord($record, false, $this->recordCommentsEnabled ? [
             'content' => $newComment,
             'account' => $submission->username,
-        ] : null);
+        ] : null, false, $vacated);
         if (!$edited->success) {
             return $edited;
         }

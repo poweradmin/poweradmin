@@ -16371,3 +16371,9 @@ msgstr "Opravena omezení API klíčů u %d smazaných zón"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Opraveno %d smazaných zón; %d se nezdařilo"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Žádný záznam nebyl uložen: některé řádky si navzájem zabírají místo, proto se ukládají všechny společně, nebo žádný."

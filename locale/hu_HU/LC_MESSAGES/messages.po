@@ -16586,3 +16586,9 @@ msgstr "Az API-kulcsok korlátozásai %d törölt zónán javítva"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d törölt zóna javítva; %d sikertelen"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Egyetlen rekord sem lett mentve: néhány sor egymás helyét veszi át, ezért vagy mind együtt mentődik, vagy egyik sem."

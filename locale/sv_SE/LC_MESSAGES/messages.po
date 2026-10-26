@@ -16401,3 +16401,9 @@ msgstr "Begränsningarna för API-nycklar på %d borttagna zoner reparerades"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d borttagna zoner reparerade; %d misslyckades"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Ingen post sparades: några rader byter plats med varandra, så de sparas alla tillsammans eller inte alls."

@@ -70,8 +70,25 @@ interface RecordManagerInterface
      * @param array|null $comment RRset comment ['content' => string, 'account' => string] to
      *                            store with the record where the backend keeps them together
      * @param bool $dryRun Run every check and stop before anything is written
+     * @param array<int|string, string> $vacated Stored content by record id of the records the same
+     *                                           save moves to another name, type or content, as
+     *                                           previewEdit() reports it. A sibling still holding that
+     *                                           content is not counted as a copy, so a swap or rotation
+     *                                           passes; the API backend ignores it. The caller must run
+     *                                           the writes in one transaction and roll back on any refusal.
      */
-    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult;
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult;
+
+    /**
+     * Runs an edit's permission checks and validation, but not the duplicate check, and
+     * writes nothing. A save that moves several records first previews each one: only a
+     * record that passes and really moves goes into the vacated set of the real writes.
+     *
+     * @param array $record Record structure to update
+     * @return RecordWriteResult On success, vacates holds the stored name, type and content the
+     *                           record leaves (null when it stays) and key its validated ones
+     */
+    public function previewEdit(array $record): RecordWriteResult;
 
     /**
      * What every single write ends with: bump the serial (unless told not to) and

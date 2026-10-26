@@ -423,7 +423,9 @@ class ZoneChangeRequestService
         try {
             $recordsWritten = false;
             $serialBefore = $transactional ? null : SOARecordManager::getSOASerial($this->soaRecords->getSOARecord($zoneId));
-            $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional, $recordsWritten);
+            // Only a transaction undoes the writes when one refused row was skipped as vacated
+            $vacated = $transactional ? $this->vacatedByEdits($request, $reviewerId, $reviewerName) : [];
+            $failure = $this->replayActions($request, $reviewerId, $reviewerName, $transactional, $recordsWritten, $vacated);
             if ($failure !== null) {
                 if ($transactional) {
                     $this->transaction->rollBack();
@@ -462,13 +464,14 @@ class ZoneChangeRequestService
      * Runs every action and the zone comment write, stopping at the first refusal.
      *
      * @param bool $recordsWritten Set when an action wrote a record or the zone comment was written; a record comment-only edit writes none
+     * @param array<int|string, string> $vacated Stored content by id of the records the edits move away
      * @return array{0: string, 1: Refusal}|null The failure text and refusal, or null when all landed
      */
-    private function replayActions(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, bool $rolledBackOnFailure, bool &$recordsWritten): ?array
+    private function replayActions(ZoneChangeRequest $request, int $reviewerId, string $reviewerName, bool $rolledBackOnFailure, bool &$recordsWritten, array $vacated = []): ?array
     {
         $applied = [];
         foreach ($request->actions as $index => $action) {
-            $result = $this->applyAction($request, $action, $reviewerId, $reviewerName);
+            $result = $this->applyAction($request, $action, $reviewerId, $reviewerName, $vacated);
             if (!$result->success) {
                 return [$this->describeFailure($index, $action, (string)$result->message, $applied, $rolledBackOnFailure), $result->refusal ?? Refusal::BACKEND_FAILURE];
             }
@@ -498,8 +501,36 @@ class ZoneChangeRequestService
         }
     }
 
-    /** @param array<string, mixed> $action */
-    private function applyAction(ZoneChangeRequest $request, array $action, int $reviewerId, string $reviewerName): RecordWriteResult
+    /**
+     * The stored content of the records the request's edits really move away, so a swap
+     * inside one request replays.
+     *
+     * @return array<int|string, string> Stored content by record id
+     */
+    private function vacatedByEdits(ZoneChangeRequest $request, int $reviewerId, string $reviewerName): array
+    {
+        $submission = new ZoneEditSubmission($request->zoneId, $request->zoneName, $reviewerId, $reviewerName, [], false, null, false, null);
+        $changes = [];
+        foreach ($request->actions as $action) {
+            $recordId = ($action['op'] ?? null) === ZoneChangeRequest::OP_EDIT ? $this->resolveRecordId($request->zoneId, $action) : null;
+            if ($recordId === null) {
+                continue;
+            }
+            $after = is_array($action['after'] ?? null) ? $action['after'] : [];
+            $change = $this->zoneEdit->diffRow($submission, ZoneChangeRequestRowCodec::rowFromAfter($recordId, $after));
+            if ($change !== null) {
+                $changes[] = $change;
+            }
+        }
+
+        return $this->zoneEdit->vacatedRecords($changes);
+    }
+
+    /**
+     * @param array<string, mixed> $action
+     * @param array<int|string, string> $vacated
+     */
+    private function applyAction(ZoneChangeRequest $request, array $action, int $reviewerId, string $reviewerName, array $vacated = []): RecordWriteResult
     {
         $zoneId = $request->zoneId;
         $after = is_array($action['after'] ?? null) ? $action['after'] : [];
@@ -525,7 +556,7 @@ class ZoneChangeRequestService
                 $change = $this->zoneEdit->diffRow($submission, ZoneChangeRequestRowCodec::rowFromAfter($recordId, $after));
 
                 // The zone already holds this state, so there is nothing left to write
-                return $change === null ? RecordWriteResult::ok() : $this->zoneEdit->writeRow($submission, $change);
+                return $change === null ? RecordWriteResult::ok() : $this->zoneEdit->writeRow($submission, $change, $vacated);
 
             case ZoneChangeRequest::OP_DELETE:
                 $recordId = $this->resolveRecordId($zoneId, $action);

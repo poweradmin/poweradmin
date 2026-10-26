@@ -15684,3 +15684,9 @@ msgstr "ซ่อมแซมข้อจำกัดของคีย์ API �
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "ซ่อมแซมโซนที่ถูกลบแล้ว %d โซน; ล้มเหลว %d"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "ไม่มีระเบียนใดถูกบันทึก: บางแถวสลับที่กันเอง จึงต้องบันทึกทั้งหมดพร้อมกันหรือไม่บันทึกเลย"

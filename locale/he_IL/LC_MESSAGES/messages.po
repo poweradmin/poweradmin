@@ -15951,3 +15951,9 @@ msgstr "הגבלות מפתחות ה-API על %d אזורים שנמחקו תו�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "תוקנו %d אזורים שנמחקו; %d נכשלו"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "לא נשמרה אף רשומה: חלק מהשורות תופסות זו את מקומה של זו, ולכן הן נשמרות כולן יחד או אף אחת מהן."

@@ -16949,3 +16949,9 @@ msgstr "Επιδιορθώθηκαν οι περιορισμοί κλειδιώ�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Επιδιορθώθηκαν %d διαγραμμένες ζώνες; %d απέτυχαν"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Δεν αποθηκεύτηκε καμία εγγραφή: ορισμένες γραμμές παίρνουν η μία τη θέση της άλλης, οπότε αποθηκεύονται όλες μαζί ή καμία."

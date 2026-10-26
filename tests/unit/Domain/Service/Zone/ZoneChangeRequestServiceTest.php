@@ -106,6 +106,14 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);
         $this->zones->method('getZoneComment')->willReturn('old comment');
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
+        // A record moves away when its content changes, as the real preview reports
+        $this->recordManager->method('previewEdit')->willReturnCallback(function (array $record): RecordWriteResult {
+            $stored = $this->stored[(string)$record['rid']] ?? null;
+            $key = ['name' => strtolower((string)$record['name']), 'type' => (string)$record['type'], 'content' => (string)$record['content']];
+            $moves = $stored !== null && $stored['content'] !== $record['content'];
+
+            return RecordWriteResult::previewed($moves ? ['name' => $stored['name'], 'type' => $stored['type'], 'content' => $stored['content']] : null, $key);
+        });
         $this->soa = $this->createMock(SOARecordManagerInterface::class);
         $this->soa->method('getSOARecord')->willReturn(self::SOA);
         $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
@@ -347,6 +355,45 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertTrue($result->success, $result->message);
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
         $this->assertSame(ZoneChangeRequest::STATUS_APPROVED, $this->repository->find($id)->status);
+    }
+
+    public function testAnApprovedSwapReplaysOnATransactionalBackend(): void
+    {
+        $this->backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->stored['7'] = $this->stored('7', 'www', '192.0.2.2');
+        // The record manager's duplicate check: another row holding the content is a copy unless it moves away
+        $this->recordManager->method('editRecord')->willReturnCallback(function (array $record, bool $finalize, ?array $comment, bool $dryRun, array $vacated): RecordWriteResult {
+            foreach ($this->stored as $id => $row) {
+                if ((string)$id !== (string)$record['rid'] && $row['name'] === $record['name'] && $row['content'] === $record['content'] && ($vacated[$id] ?? null) !== $row['content']) {
+                    return RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT);
+                }
+            }
+            $this->stored[(string)$record['rid']]['content'] = $record['content'];
+
+            return RecordWriteResult::ok();
+        });
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', 'swap', '2024010101', [
+            $this->swapEdit('5', '192.0.2.1', '192.0.2.2'),
+            $this->swapEdit('7', '192.0.2.2', '192.0.2.1'),
+        ], null);
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertTrue($result->success, (string)$result->message);
+        $this->assertSame('192.0.2.2', $this->stored['5']['content']);
+        $this->assertSame('192.0.2.1', $this->stored['7']['content']);
+    }
+
+    /** @return array<string, mixed> */
+    private function swapEdit(string $recordId, string $before, string $after): array
+    {
+        return [
+            'op' => 'edit',
+            'record_id' => $recordId,
+            'before' => ['name' => 'www.example.com', 'type' => 'A', 'content' => $before],
+            'after' => ['name' => 'www.example.com', 'type' => 'A', 'content' => $after, 'ttl' => 3600, 'prio' => 0, 'disabled' => 0, 'comment' => ''],
+        ];
     }
 
     public function testARefusedWriteMarksTheRequestFailedAndStops(): void

@@ -16135,3 +16135,9 @@ msgstr "%d हटाए गए ज़ोन पर API कुंजी प्र
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d हटाए गए ज़ोन की मरम्मत हुई; %d विफल"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "कोई रिकॉर्ड सहेजा नहीं गया: कुछ पंक्तियाँ एक-दूसरे की जगह लेती हैं, इसलिए वे सभी एक साथ सहेजी जाती हैं या एक भी नहीं।"

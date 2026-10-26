@@ -16184,3 +16184,9 @@ msgstr "삭제된 존 %d개의 API 키 제한을 복구했습니다"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "삭제된 존 %d개 복구됨; %d개 실패"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "레코드가 저장되지 않았습니다. 일부 행이 서로의 자리를 바꾸므로 모두 함께 저장되거나 하나도 저장되지 않습니다."

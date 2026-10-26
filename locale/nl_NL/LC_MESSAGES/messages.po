@@ -16604,3 +16604,9 @@ msgstr "Beperkingen van API-sleutels op %d verwijderde zones hersteld"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d verwijderde zones hersteld; %d mislukt"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Er is geen record opgeslagen: sommige rijen nemen elkaars plaats in, dus worden ze allemaal samen opgeslagen of geen enkele."

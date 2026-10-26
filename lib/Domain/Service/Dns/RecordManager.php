@@ -212,14 +212,22 @@ class RecordManager implements RecordManagerInterface
      * Whether a record other than $recordId already holds this name, type and content,
      * with the same equivalences the add check applies. Ids are compared as strings:
      * PDO returns them that way, and the API backend encodes them.
+     *
+     * @param array<int|string, string> $vacated Stored content by id of siblings the same save moves away
      */
-    private function copiesAnotherRecord(RecordRepositoryInterface $recordRepository, int $zoneId, int|string $recordId, string $name, string $type, string $content): bool
+    private function copiesAnotherRecord(RecordRepositoryInterface $recordRepository, int $zoneId, int|string $recordId, string $name, string $type, string $content, array $vacated = []): bool
     {
         foreach ($recordRepository->getRRSetRecords($zoneId, $name, $type) as $sibling) {
-            if ((string)($sibling['id'] ?? '') === (string)$recordId) {
+            $siblingId = (string)($sibling['id'] ?? '');
+            $stored = (string)($sibling['content'] ?? '');
+            if ($siblingId === (string)$recordId) {
                 continue;
             }
-            if (self::sameContent($type, $content, (string)($sibling['content'] ?? ''))) {
+            // A sibling already written by the same save holds other content and counts again
+            if (isset($vacated[$siblingId]) && $vacated[$siblingId] === $stored) {
+                continue;
+            }
+            if (self::sameContent($type, $content, $stored)) {
                 return true;
             }
         }
@@ -498,8 +506,24 @@ class RecordManager implements RecordManagerInterface
      * This function validates it if correct it inserts it into the database.
      *
      * @param array $record Record structure to update
+     * @param array<int|string, string> $vacated Stored content by record id of the records the same
+     *                                           save moves to another name, type or content
      */
-    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult
+    public function editRecord(array $record, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult
+    {
+        return $this->runEdit($record, $finalizeZone, $comment, $dryRun, $vacated, false);
+    }
+
+    public function previewEdit(array $record): RecordWriteResult
+    {
+        return $this->runEdit($record, false, null, true, [], true);
+    }
+
+    /**
+     * @param array<int|string, string> $vacated
+     * @param bool $previewOnly Stop before the duplicate check and report where the record moves
+     */
+    private function runEdit(array $record, bool $finalizeZone, ?array $comment, bool $dryRun, array $vacated, bool $previewOnly): RecordWriteResult
     {
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = $this->editPermissionLevel();
@@ -572,7 +596,20 @@ class RecordManager implements RecordManagerInterface
         $keyChanged = $name !== strtolower((string)($recordDetails['name'] ?? ''))
             || strtoupper((string)$record['type']) !== strtoupper((string)($recordDetails['type'] ?? ''))
             || !self::sameContent($record['type'], $content, (string)($recordDetails['content'] ?? ''));
-        if ($keyChanged && $this->copiesAnotherRecord($recordRepository, $record['zid'], $record['rid'], $name, $record['type'], $content)) {
+        if ($previewOnly) {
+            $key = ['name' => $name, 'type' => $record['type'], 'content' => $content];
+
+            $stored = [
+                'name' => strtolower((string)($recordDetails['name'] ?? '')),
+                'type' => strtoupper((string)($recordDetails['type'] ?? '')),
+                'content' => (string)($recordDetails['content'] ?? ''),
+            ];
+
+            return RecordWriteResult::previewed($keyChanged ? $stored : null, $key);
+        }
+        // Each API write sends the whole RRset, so PowerDNS would hold the passing copy
+        $vacated = $this->backendProvider->isApiBackend() ? [] : $vacated;
+        if ($keyChanged && $this->copiesAnotherRecord($recordRepository, $record['zid'], $record['rid'], $name, $record['type'], $content, $vacated)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 

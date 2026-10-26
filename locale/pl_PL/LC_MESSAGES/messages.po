@@ -16567,3 +16567,9 @@ msgstr "Naprawiono ograniczenia kluczy API dla %d usuniętych stref"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Naprawiono %d usuniętych stref; %d nie powiodło się"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Nie zapisano żadnego rekordu: niektóre wiersze zajmują nawzajem swoje miejsca, więc są zapisywane wszystkie razem albo żaden."

@@ -16132,3 +16132,9 @@ msgstr "تم إصلاح قيود مفاتيح API على %d منطقة محذو�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "تم إصلاح %d منطقة محذوفة؛ فشل %d"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "لم يُحفظ أي سجل: بعض الصفوف تحل محل بعضها البعض، لذا تُحفظ كلها معًا أو لا يُحفظ أي منها."

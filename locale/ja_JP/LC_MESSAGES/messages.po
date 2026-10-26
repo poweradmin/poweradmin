@@ -16394,3 +16394,9 @@ msgstr "削除済みの %d 件のゾーンに対するAPIキーの制限を修�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "削除済みの %d 件のゾーンを修復、%d 件失敗"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "レコードは保存されませんでした。一部の行が互いの位置を入れ替えるため、すべてまとめて保存されるか、まったく保存されないかのどちらかです。"

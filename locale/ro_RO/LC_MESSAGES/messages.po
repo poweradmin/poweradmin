@@ -16902,3 +16902,9 @@ msgstr "Au fost reparate restricțiile cheilor API pe %d zone șterse"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Reparate %d zone șterse; %d au eșuat"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Nu a fost salvată nicio înregistrare: unele rânduri își iau locul unul altuia, așa că sunt salvate toate împreună sau niciunul."

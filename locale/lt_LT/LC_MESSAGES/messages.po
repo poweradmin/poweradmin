@@ -16466,3 +16466,9 @@ msgstr "Pataisyti API raktų apribojimai %d ištrintų zonų"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Pataisyta %d ištrintų zonų; %d nepavyko"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Neišsaugotas nė vienas įrašas: kai kurios eilutės užima viena kitos vietą, todėl jos išsaugomos visos kartu arba nė viena."

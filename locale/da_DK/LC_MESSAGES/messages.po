@@ -16429,3 +16429,9 @@ msgstr "Begrænsningerne for API-nøgler på %d slettede zoner blev rettet"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d slettede zoner rettet; %d mislykkedes"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Ingen post blev gemt: nogle rækker bytter plads med hinanden, så de gemmes samlet eller slet ikke."

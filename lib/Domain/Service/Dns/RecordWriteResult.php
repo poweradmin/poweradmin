@@ -39,8 +39,22 @@ final readonly class RecordWriteResult
         public ?RecordField $field,
         public int|string|null $recordId,
         public bool $changed = true,
-        public ?string $reason = null
+        public ?string $reason = null,
+        public ?array $vacates = null,
+        public ?array $key = null
     ) {
+    }
+
+    /**
+     * An edit that passed validation and the permission checks in a preview, nothing written.
+     *
+     * @param array{name: string, type: string, content: string}|null $vacates The stored name, type and content
+     *                                                                       the record leaves, or null when they stay
+     * @param array{name: string, type: string, content: string} $key The validated name, type and content
+     */
+    public static function previewed(?array $vacates, array $key): self
+    {
+        return new self(true, null, null, null, null, true, null, $vacates, $key);
     }
 
     /** @param int|string|null $recordId The new id on create; edits and deletes carry none */

@@ -64,6 +64,8 @@ class ZonesRecordsBulkController extends PublicApiController
     private array $batchGoneIds = [];
     /** @var array<string, true> Name, type and content keys a dry run has freed by a delete or a re-key */
     private array $batchFreedKeys = [];
+    /** @var array<int|string, string> Stored content by id of the records the batch's updates move away */
+    private array $batchVacated = [];
     private RecordManagerInterface $recordManager;
     private ApiPermissionService $apiPermissionService;
     private BackendCapabilitiesInterface $backendProvider;
@@ -362,6 +364,8 @@ class ZonesRecordsBulkController extends PublicApiController
         $this->batchCreated = [];
         $this->batchGoneIds = [];
         $this->batchFreedKeys = [];
+        // Only the transaction undoes the writes when one refused update was skipped as vacated
+        $this->batchVacated = $useTransaction && !$this->validateOnly ? $this->vacatedRecords($zoneId, $operations, $zoneType, $zoneName) : [];
         // Only non-SOA changes bump the serial, so a user-supplied SOA serial stays.
         $nonSOARecordModified = false;
         $this->reverseZoneIds = [];
@@ -599,6 +603,44 @@ class ZonesRecordsBulkController extends PublicApiController
      */
     private function performUpdateOperation(int $zoneId, array $operation, ?string $zoneType = null, ?string $zoneName = null): ?string
     {
+        [$recordId, $existingRecord, $recordData, $comment] = $this->updateRequest($zoneId, $operation, $zoneType, $zoneName);
+
+        $username = $this->getAuthenticatedUsername();
+        $rrsetComment = $comment === null ? null : ['content' => $comment, 'account' => $username];
+        $result = $this->recordManager->editRecord($recordData, false, $rrsetComment, $this->validateOnly, $this->batchVacated);
+        $newKey = $this->batchKey((string)$recordData['name'], (string)$recordData['type'], (string)$recordData['content']);
+        // As on create: a real run applies the batch's earlier delete or re-key first
+        if ($this->validateOnly && !$result->success && $result->refusal === Refusal::CONFLICT && isset($this->batchFreedKeys[$newKey])) {
+            unset($this->batchFreedKeys[$newKey]);
+            $result = RecordWriteResult::ok();
+        }
+        if (!$result->success) {
+            // Backend faults keep the generic contract string; refusals carry their reason
+            if ($result->refusal === Refusal::BACKEND_FAILURE) {
+                throw new Exception('Failed to update record');
+            }
+            throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to update record') : (string)$result->message, RefusalStatus::of($result->refusal));
+        }
+        if ($this->validateOnly) {
+            $this->noteRekey($recordId, $existingRecord, $recordData);
+        }
+        if ($comment !== null && !$this->validateOnly) {
+            $this->storeUpdatedComment($zoneId, $recordId, $recordData, $comment, $username);
+        }
+
+        return $result->changed ? $recordData['type'] : null;
+    }
+
+    /**
+     * The checks and the record an update operation asks for, before anything is written.
+     *
+     * @param array<string, mixed> $operation
+     * @return array{0: int|string, 1: array<string, mixed>, 2: array<string, mixed>, 3: string|null} The record id,
+     *   the stored record, the record to write and the comment (null to leave the stored one)
+     * @throws ApiErrorException When the operation is refused
+     */
+    private function updateRequest(int $zoneId, array $operation, ?string $zoneType, ?string $zoneName): array
+    {
         if (!isset($operation['id'])) {
             throw new ApiErrorException("Field 'id' is required for update operation", 400);
         }
@@ -666,30 +708,7 @@ class ZonesRecordsBulkController extends PublicApiController
             'disabled' => $disabled
         ];
 
-        $username = $this->getAuthenticatedUsername();
-        $rrsetComment = $comment === null ? null : ['content' => $comment, 'account' => $username];
-        $result = $this->recordManager->editRecord($recordData, false, $rrsetComment, $this->validateOnly);
-        $newKey = $this->batchKey((string)$recordData['name'], (string)$recordData['type'], (string)$recordData['content']);
-        // As on create: a real run applies the batch's earlier delete or re-key first
-        if ($this->validateOnly && !$result->success && $result->refusal === Refusal::CONFLICT && isset($this->batchFreedKeys[$newKey])) {
-            unset($this->batchFreedKeys[$newKey]);
-            $result = RecordWriteResult::ok();
-        }
-        if (!$result->success) {
-            // Backend faults keep the generic contract string; refusals carry their reason
-            if ($result->refusal === Refusal::BACKEND_FAILURE) {
-                throw new Exception('Failed to update record');
-            }
-            throw new ApiErrorException($result->refusal === Refusal::BACKEND_REJECTED ? $this->recordWriteErrorMessage($result, 'Failed to update record') : (string)$result->message, RefusalStatus::of($result->refusal));
-        }
-        if ($this->validateOnly) {
-            $this->noteRekey($recordId, $existingRecord, $recordData);
-        }
-        if ($comment !== null && !$this->validateOnly) {
-            $this->storeUpdatedComment($zoneId, $recordId, $recordData, $comment, $username);
-        }
-
-        return $result->changed ? $recordData['type'] : null;
+        return [$recordId, $existingRecord, $recordData, $comment];
     }
 
     /**
@@ -711,6 +730,36 @@ class ZonesRecordsBulkController extends PublicApiController
             $this->batchFreedKeys[$oldKey] = true;
             $this->batchCreated[$newKey] = true;
         }
+    }
+
+    /**
+     * Previews each update and collects the stored content of the records that pass
+     * validation and really move to another name, type or content. The updates run one
+     * by one, and a swap would otherwise be refused as a copy; the batch's transaction
+     * rolls back if any operation is then refused.
+     *
+     * @param array<int, array<string, mixed>> $operations
+     * @return array<int|string, string> Stored content by record id
+     */
+    private function vacatedRecords(int $zoneId, array $operations, ?string $zoneType, ?string $zoneName): array
+    {
+        $vacated = [];
+        foreach ($operations as $operation) {
+            if (strtolower((string)($operation['action'] ?? '')) !== 'update') {
+                continue;
+            }
+            try {
+                [$recordId, , $recordData] = $this->updateRequest($zoneId, $operation, $zoneType, $zoneName);
+            } catch (ApiErrorException) {
+                continue;
+            }
+            $preview = $this->recordManager->previewEdit($recordData);
+            if ($preview->success && $preview->vacates !== null) {
+                $vacated[(string)$recordId] = (string)$preview->vacates['content'];
+            }
+        }
+
+        return $vacated;
     }
 
     /** Name, type and content as the duplicate check compares them. */

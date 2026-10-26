@@ -389,6 +389,51 @@ class ZoneEditServiceTest extends TestCase
         return [$oldId, $liveId];
     }
 
+    public function testAnApiRowReKeyedByAnEarlierWriteInTheSaveIsResolvedWhenWritten(): void
+    {
+        $nsId = RecordIdentifier::encode('example.com', 'example.com', 'NS', 'ns1.example.com', 0);
+        $oldSoaId = RecordIdentifier::encode('example.com', 'example.com', 'SOA', self::SOA, 0);
+        $liveSoaId = RecordIdentifier::encode('example.com', 'example.com', 'SOA', self::SOA_BUMPED, 0);
+        $wwwId = RecordIdentifier::encode('example.com', 'www.example.com', 'A', '192.0.2.1', 0);
+        $before = [
+            $nsId => ['type' => 'NS', 'name' => 'example.com', 'content' => 'ns1.example.com'] + $this->stored($nsId, 'www', ''),
+            $oldSoaId => $this->storedSoa($oldSoaId, self::SOA),
+            $wwwId => $this->stored($wwwId, 'www', '192.0.2.1'),
+        ];
+        // The first write bumps the serial through SOA-EDIT-API and another writer re-keys www meanwhile
+        $after = [$liveSoaId => $this->storedSoa($liveSoaId, self::SOA_BUMPED)];
+        $lookup = function ($rid) use ($before, $after): ?array {
+            return ($this->currentSoa === self::SOA_BUMPED ? $after : $before)[$rid] ?? null;
+        };
+        $this->records->method('getRecordById')->willReturnCallback($lookup);
+        $this->records->method('getRecordFromId')->willReturnCallback($lookup);
+        $this->records->method('getRecordsByName')->willReturnCallback(function () use ($lookup, $liveSoaId, $oldSoaId): array {
+            return [$lookup($this->currentSoa === self::SOA_BUMPED ? $liveSoaId : $oldSoaId)];
+        });
+        $editedIds = [];
+        $writtenContent = [];
+        $this->recordManager->method('editRecord')->willReturnCallback(function (array $record) use (&$editedIds, &$writtenContent, $lookup): RecordWriteResult {
+            if ($lookup($record['rid']) === null) {
+                return RecordWriteResult::notFound('Record not found.');
+            }
+            $editedIds[] = $record['rid'];
+            $writtenContent[$record['rid']] = $record['content'];
+            $this->currentSoa = self::SOA_BUMPED;
+            return RecordWriteResult::ok();
+        });
+        $nsRow = new ZoneEditRow($nsId, 'example.com', 'NS', 'ns2.example.com', 3600, 0, false, null);
+        $soaRow = new ZoneEditRow($oldSoaId, 'example.com', 'SOA', 'ns1.example.com hostmaster.example.com 2024010101 7200 3600 604800 3600', 3600, 0, false, null);
+        $wwwRow = $this->row($wwwId, 'www', '192.0.2.9');
+
+        $result = $this->makeService()->save($this->submission([$nsRow, $soaRow, $wwwRow], serial: '2024010101'));
+
+        $this->assertSame([$nsId, $liveSoaId], $editedIds);
+        // The SOA edit lands on the live record and keeps the serial the earlier write bumped
+        $this->assertSame('ns1.example.com hostmaster.example.com 2024010102 7200 3600 604800 3600', $writtenContent[$liveSoaId]);
+        $this->assertSame(['Someone else changed this zone after you opened it. Review the records and save again.'], $result->errors);
+        $this->assertSame([$wwwRow], $result->rejectedRecords);
+    }
+
     public function testAStaleSoaRowDifferingOnlyInTheSerialWritesNothing(): void
     {
         $this->records->method('getRecordFromId')->willReturn($this->storedSoa('6', self::SOA));

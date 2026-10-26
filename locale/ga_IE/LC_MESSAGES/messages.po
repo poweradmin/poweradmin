@@ -16846,3 +16846,9 @@ msgstr "Deisíodh srianta eochrach API ar %d crios scriosta"
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "Deisíodh %d crios scriosta; theip ar %d"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "Níor sábháladh aon taifead: glacann roinnt rónna áit a chéile, mar sin sábháiltear iad go léir le chéile nó ní shábháiltear ceann ar bith acu."

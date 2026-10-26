@@ -198,7 +198,8 @@ final class RecordServices
             $this->recordCommentSyncService(),
             $this->services->auditService(),
             $this->recordCommentsEnabled(),
-            $this->zoneCommentsEnabled()
+            $this->zoneCommentsEnabled(),
+            $this->services->dnsBackendProvider()->supportsLocalWriteTransaction() ? $this->services->transaction() : null
         );
     }
 

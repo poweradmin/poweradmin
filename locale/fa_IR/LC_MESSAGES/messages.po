@@ -16282,3 +16282,9 @@ msgstr "محدودیت‌های کلیدهای API روی %d منطقه حذف�
 #, php-format
 msgid "Repaired %d deleted zones; %d failed"
 msgstr "%d منطقه حذف‌شده ترمیم شد؛ %d ناموفق"
+
+#: lib/Domain/Service/Zone/ZoneEditService.php:195
+msgid ""
+"No record was saved: some rows take each other's place, so they are saved "
+"together or not at all."
+msgstr "هیچ رکوردی ذخیره نشد: برخی ردیف‌ها جای یکدیگر را می‌گیرند، بنابراین همه با هم ذخیره می‌شوند یا هیچ‌کدام."
