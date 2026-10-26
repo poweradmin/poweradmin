@@ -107,6 +107,13 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         $this->assertFalse($this->validate('[ZONE]', 'SOA', 'this is not an soa record'));
     }
 
+    public function testRejectsNidWithoutPreference(): void
+    {
+        // A template record is applied as stored, so the bare node id would reach PowerDNS
+        $this->assertFalse($this->validate('nid.[ZONE]', 'NID', '1000:0000:0000:0001', 3600, 10));
+        $this->assertTrue($this->validate('nid.[ZONE]', 'NID', '10 1000:0000:0000:0001'));
+    }
+
     public function testAcceptsValidARecord(): void
     {
         $this->assertTrue($this->validate('www.[ZONE]', 'A', '192.0.2.1'));

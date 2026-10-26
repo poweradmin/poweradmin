@@ -122,6 +122,11 @@ final class ZoneTemplateRecordValidationService
             return ValidationResult::success(true);
         }
 
+        // Template content is applied as stored, and PowerDNS reads the NID preference from it
+        if ($type === RecordType::NID && preg_match('/^\S+\s+\S+$/', trim($resolvedContent)) !== 1) {
+            return ValidationResult::failure(_('NID record must contain preference and node identifier separated by space.'));
+        }
+
         $result = $this->runValidator($type, $resolvedName, $resolvedContent, $ttl, $prio, $defaultTtl);
 
         return $result->isValid() ? ValidationResult::success(true) : $result;
