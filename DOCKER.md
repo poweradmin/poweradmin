@@ -493,6 +493,9 @@ services:
       retries: 3
 ```
 
+With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
+`test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
+
 ### Metrics Endpoint
 
 Prometheus metrics about Poweradmin itself (zones by type, DNSSEC-signed zones, users,
@@ -521,9 +524,7 @@ scrape_configs:
 
 A Grafana dashboard for these metrics ships in
 [addons/grafana/poweradmin-dashboard.json](addons/grafana/poweradmin-dashboard.json).
-
-With `PA_HEALTH_TOKEN` set, send the header from a shell-form check:
-`test: ["CMD-SHELL", "curl -fsS -H \"X-Health-Token: $$PA_HEALTH_TOKEN\" http://localhost/api/health"]`.
+See [Prometheus Metrics](https://docs.poweradmin.org/operations/metrics/) for the metric list and alerting.
 
 ### PowerDNS API Integration
 
