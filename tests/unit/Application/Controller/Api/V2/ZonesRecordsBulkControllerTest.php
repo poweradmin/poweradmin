@@ -1253,6 +1253,48 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testAnApiDryRunLetsACreateReuseAnAaaaAddressADeleteFreedInAnotherForm(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn($this->storedAaaa('2001:0db8::1'));
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('addRecordGetId')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            $this->createOperation(['type' => 'AAAA', 'content' => '2001:db8::1']),
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnApiDryRunLetsAnUpdateMoveOntoAnAaaaAddressADeleteFreedInAnotherForm(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturnCallback(
+            fn(int|string $id): array => (int)$id === 3 ? $this->storedAaaa('2001:0db8::1') : ['id' => 4] + $this->storedAaaa('2001:db8::9')
+        );
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('editRecord')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            ['action' => 'update', 'id' => 4, 'content' => '2001:db8::1'],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function storedAaaa(string $content): array
+    {
+        return ['type' => 'AAAA', 'content' => $content] + $this->storedARecord();
+    }
+
     public function testAnApiDryRunDoesNotTreatAddingATrailingDotAsAReKey(): void
     {
         $this->localTransactions = false;

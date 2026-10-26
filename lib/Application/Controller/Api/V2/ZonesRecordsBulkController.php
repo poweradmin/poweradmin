@@ -766,6 +766,11 @@ class ZonesRecordsBulkController extends PublicApiController
     private function batchKey(string $name, string $type, string $content): string
     {
         $type = strtoupper($type);
+        // The duplicate check compares AAAA by address, so one written another way is the same key
+        $packed = $type === 'AAAA' ? @inet_pton(trim($content)) : false;
+        if ($packed !== false) {
+            $content = (string)inet_ntop($packed);
+        }
 
         return strtolower($name) . "\0" . $type . "\0" . ApiDnsBackendProvider::stripTrailingDotFromContent($type, DnsFormatter::quoteEch($type, $content));
     }
