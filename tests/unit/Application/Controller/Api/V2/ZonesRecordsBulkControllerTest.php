@@ -629,6 +629,32 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame([[self::ZONE_ID, false], [88, false]], $finalized);
     }
 
+    public function testSerialsAreBumpedInZoneIdOrder(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+        $reverseZones = [99, 3];
+        $this->reverseCreator->method('createReverseRecord')->willReturnCallback(
+            function () use (&$reverseZones): array {
+                return ['success' => true, 'type' => 'success', 'message' => 'Reverse record added', 'zone_id' => array_shift($reverseZones)];
+            }
+        );
+        $soa = $this->createMock(SOARecordManagerInterface::class);
+        $bumped = [];
+        $soa->method('updateSOASerial')->willReturnCallback(function (int $id) use (&$bumped): bool {
+            $bumped[] = $id;
+            return true;
+        });
+
+        $this->bulk(['operations' => [
+            $this->createOperation(['create_ptr' => true]),
+            $this->createOperation(['create_ptr' => true]),
+        ]], $soa);
+
+        $expected = [3, 99, self::ZONE_ID];
+        sort($expected);
+        $this->assertSame($expected, $bumped);
+    }
+
     public function testAZoneScopedKeyLimitsTheCompanionPtrToItsScope(): void
     {
         $this->scope = new ApiKeyScope([self::ZONE_ID], null, false);

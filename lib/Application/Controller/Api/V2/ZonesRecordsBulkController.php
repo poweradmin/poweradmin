@@ -400,12 +400,12 @@ class ZonesRecordsBulkController extends PublicApiController
             // waits for the commit since PowerDNS reads committed rows.
             $reverseZoneIds = array_keys(array_diff_key($this->reverseZoneIds, [$zoneId => true]));
             if (!$this->validateOnly) {
-                if ($nonSOARecordModified) {
-                    $this->services()->soaRecordManager()->updateSOASerial($zoneId);
-                }
-                // Reverse zones that got a PTR follow the same rule, once each.
-                foreach ($reverseZoneIds as $reverseZoneId) {
-                    $this->services()->soaRecordManager()->updateSOASerial($reverseZoneId);
+                // Reverse zones that got a PTR follow the same rule, once each. Bumped by id, so
+                // two batches lock the same SOA rows in the same order and cannot deadlock.
+                $bumpIds = $nonSOARecordModified ? [$zoneId, ...$reverseZoneIds] : $reverseZoneIds;
+                sort($bumpIds);
+                foreach ($bumpIds as $bumpId) {
+                    $this->services()->soaRecordManager()->updateSOASerial($bumpId);
                 }
             }
             if ($dryRun) {
