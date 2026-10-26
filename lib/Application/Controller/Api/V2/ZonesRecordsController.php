@@ -914,24 +914,30 @@ class ZonesRecordsController extends PublicApiController
                     'ptr_updated' => $ptrUpdated
                 ];
             } else {
-                // The old id is dead once name/type/content/prio change, so look up
-                // the one the record now has. Returning the old one would hand the
-                // caller an identifier that 404s on its next request.
-                $newRecordId = $this->recordRepository->getNewRecordId(
-                    $zoneId,
-                    $recordData['name'],
-                    $recordData['type'],
-                    $recordData['content']
-                ) ?? $recordId;
+                // The old id is dead once name/type/content/prio change. The stored form is the validated
+                // one for some types (NID) and the submitted one for others (SOA keeps its dots), so try both.
+                $validated = $editValidation->getData();
+                $echoContent = (string)$recordData['content'];
+                $echoPrio = $recordData['prio'];
+                // MX and SRV siblings can share content and differ only in prio, which the lookup ignores
+                $newRecordId = in_array($recordData['type'], ['MX', 'SRV'], true)
+                    ? null
+                    : $this->recordRepository->getNewRecordId($zoneId, $recordData['name'], $recordData['type'], (string)$validated['content']);
+                if ($newRecordId !== null) {
+                    $echoContent = (string)$validated['content'];
+                    $echoPrio = (int)$validated['prio'];
+                } else {
+                    $newRecordId = $this->recordRepository->getNewRecordId($zoneId, $recordData['name'], $recordData['type'], $echoContent) ?? $recordId;
+                }
 
                 $formattedRecord = [
                     'id' => $this->formatRecordId($newRecordId),
                     'zone_id' => $zoneId,
                     'name' => DnsHelper::stripZoneSuffix($recordData['name'], $zoneName),
                     'type' => $recordData['type'],
-                    'content' => $this->stripTxtQuotes($recordData['content'], $recordData['type']),
+                    'content' => $this->stripTxtQuotes($echoContent, $recordData['type']),
                     'ttl' => $recordData['ttl'],
-                    'priority' => $recordData['prio'],
+                    'priority' => $echoPrio,
                     'disabled' => (bool)$recordData['disabled'],
                     'auth' => true,
                     'ptr_updated' => $ptrUpdated
