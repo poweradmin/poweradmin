@@ -2,6 +2,11 @@
     # Set the root directory
     root * /app
 
+    # Same body cap as the image (Dockerfile Caddyfile)
+    request_body {
+        max_size 20MiB
+    }
+
     # Enable access logs
     log {
         output stdout

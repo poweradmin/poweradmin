@@ -1665,6 +1665,7 @@ The `fsGroup: 82` setting ensures volumes are group-writable for the `www-data` 
 |----------|-------------|---------|
 | `SERVER_PORT` | Port for the web server to listen on | `80` (root) / `8080` (non-root, auto-detected) |
 | `TRUSTED_PROXIES` | Trusted proxy CIDRs for real client IP resolution | Empty |
+| `REQUEST_BODY_MAX_SIZE` | Largest request body the web server accepts; raise it together with `post_max_size` (use `MiB`) | `20MiB` |
 
 ## Performance Benefits
 
