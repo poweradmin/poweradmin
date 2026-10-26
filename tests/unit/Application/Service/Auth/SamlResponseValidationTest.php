@@ -207,6 +207,30 @@ class SamlResponseValidationTest extends TestCase
         $this->assertSame('https://dns.example.com/saml/acs', $seen);
     }
 
+    public function testCurrentUrlKeepsThePathPrefixAProxyStripped(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $this->mockConfig->method('get')->willReturn([]);
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/acs?x=1', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = $method->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'https://dns.example.com/poweradmin/saml/acs');
+
+        $this->assertSame('https://dns.example.com/poweradmin/saml/acs', $seen);
+        // The base path is static state too
+        $this->assertSame('http://internal/saml/acs', \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery());
+    }
+
+    public function testCurrentUrlIsUnchangedWhenThePrefixReachesPhp(): void
+    {
+        $method = $this->getPrivateMethod('withProxyServerVars');
+        $this->mockConfig->method('get')->willReturn([]);
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/poweradmin/saml/acs', 'SCRIPT_NAME' => '/poweradmin/index.php'];
+
+        $seen = $method->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'https://dns.example.com/poweradmin/saml/acs');
+
+        $this->assertSame('https://dns.example.com/poweradmin/saml/acs', $seen);
+    }
+
     public function testSingleLogoutIsCheckedAgainstTheSlsUrlEvenOnAnotherHost(): void
     {
         $this->mockConfig->method('get')->willReturn([]);

@@ -702,8 +702,28 @@ final class SamlService
         Utils::setSelfProtocol($scheme);
         Utils::setSelfHost($parts['host']);
         Utils::setSelfPort((string)($parts['port'] ?? ($scheme === 'https' ? 443 : 80)));
+        // A proxy serving Poweradmin under a path prefix strips it before PHP sees the request
+        $prefix = self::strippedPathPrefix((string)($parts['path'] ?? ''), (string)parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH));
+        if ($prefix !== '') {
+            Utils::setBaseURLPath($prefix);
+        }
 
         return true;
+    }
+
+    /**
+     * The leading part of $endpointPath that $requestPath lacks, or '' when the request
+     * path is the whole endpoint path or not its tail.
+     */
+    private static function strippedPathPrefix(string $endpointPath, string $requestPath): string
+    {
+        $endpointPath = rtrim($endpointPath, '/');
+        $requestPath = rtrim($requestPath, '/');
+        if (!str_starts_with($requestPath, '/') || $requestPath === $endpointPath || !str_ends_with($endpointPath, $requestPath)) {
+            return '';
+        }
+
+        return substr($endpointPath, 0, -strlen($requestPath));
     }
 
     private function getSloUrl(): string
