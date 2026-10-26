@@ -38,7 +38,8 @@ class RemoveUserGroupController extends BaseController
     {
         return $this->membershipService ??= new GroupMembershipService(
             $this->services()->userGroupMemberRepository(),
-            $this->services()->userGroupRepository()
+            $this->services()->userGroupRepository(),
+            $this->services()->lastSuperAdminGuard()
         );
     }
 
@@ -81,7 +82,9 @@ class RemoveUserGroupController extends BaseController
 
             $success = $this->membershipService()->removeUserFromGroup($groupId, $targetUserId);
 
-            if ($success) {
+            if (is_array($success)) {
+                $this->setMessage('edit_user', 'error', _('Cannot remove super admin from the last remaining super admin user.'));
+            } elseif ($success) {
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
 
                 $this->services()->auditService()->logGroupMembersRemove($groupId, $groupName, [(string)$targetUsername]);

@@ -45,14 +45,15 @@ class EditGroupController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard(), $this->services()->lastSuperAdminGuard());
     }
 
     private function membershipService(): GroupMembershipService
     {
         return $this->membershipService ??= new GroupMembershipService(
             $this->services()->userGroupMemberRepository(),
-            $this->services()->userGroupRepository()
+            $this->services()->userGroupRepository(),
+            $this->services()->lastSuperAdminGuard()
         );
     }
 
@@ -159,7 +160,11 @@ class EditGroupController extends BaseController
             }
 
             // Update the group
-            $this->groupService()->updateGroup($groupId, $name, $description, $permTemplId);
+            if (is_array($this->groupService()->updateGroup($groupId, $name, $description, $permTemplId))) {
+                $this->setMessage('edit_group', 'error', _('Cannot remove super admin from the last remaining super admin user.'));
+                $this->renderEditGroupForm($groupId, true);
+                return;
+            }
 
             $limitWarning = null;
             if ($zoneLimit['limit'] !== $oldGroup->getMaxZones()) {
@@ -184,7 +189,10 @@ class EditGroupController extends BaseController
         }
     }
 
-    private function renderEditGroupForm(int $groupId): void
+    /**
+     * @param bool $fromStored Show the stored values instead of the submitted ones, after a refusal
+     */
+    private function renderEditGroupForm(int $groupId, bool $fromStored = false): void
     {
         try {
             $userContext = $this->getUserContextService();
@@ -237,9 +245,9 @@ class EditGroupController extends BaseController
                 'members' => $memberUsernames,
                 'zones' => $zoneDetails,
                 'perm_templates' => $permTemplates,
-                'name' => $this->httpRequest->getPostParam('name', $group->getName()),
-                'description' => $this->httpRequest->getPostParam('description', $group->getDescription() ?? ''),
-                'perm_templ' => $this->httpRequest->getPostParam('perm_templ', (string)$group->getPermTemplId()),
+                'name' => $fromStored ? $group->getName() : $this->httpRequest->getPostParam('name', $group->getName()),
+                'description' => $fromStored ? ($group->getDescription() ?? '') : $this->httpRequest->getPostParam('description', $group->getDescription() ?? ''),
+                'perm_templ' => $fromStored ? (string)$group->getPermTemplId() : $this->httpRequest->getPostParam('perm_templ', (string)$group->getPermTemplId()),
                 'zone_limit' => $this->zoneLimitView($groupId, $group->getMaxZones()),
             ]);
         } catch (InvalidArgumentException $e) {

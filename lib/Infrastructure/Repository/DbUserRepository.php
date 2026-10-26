@@ -29,6 +29,7 @@ use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -1143,17 +1144,76 @@ class DbUserRepository implements UserRepositoryInterface
      */
     private static function activeUberuserCondition(): string
     {
-        $templates = "SELECT perm_templ_items.templ_id
-                      FROM perm_templ_items
-                      JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
-                      WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'";
+        return self::uberuserConditionAfter(UberuserChange::none())[0];
+    }
 
-        return "users.active = 1
-                AND (users.perm_templ IN ($templates)
+    /**
+     * The active super admin condition as it would read once $change is written, with the
+     * integer parameters it binds. Each placeholder occurs once, as native prepares require.
+     *
+     * @return array{0: string, 1: array<string, int>}
+     */
+    private static function uberuserConditionAfter(UberuserChange $change): array
+    {
+        $params = [];
+        $templates = static function (string $suffix) use ($change, &$params): string {
+            $sql = "SELECT perm_templ_items.templ_id
+                    FROM perm_templ_items
+                    JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                    WHERE perm_items.name = '" . Permission::PERM_USER_IS_UEBERUSER . "'";
+            if ($change->droppedTemplateId !== null) {
+                $sql .= " AND perm_templ_items.templ_id <> :dropped_templ_$suffix";
+                $params[":dropped_templ_$suffix"] = $change->droppedTemplateId;
+            }
+            return $sql;
+        };
+
+        $groupTemplate = 'ug.perm_templ';
+        if ($change->retemplatedGroupId !== null && $change->newGroupTemplateId !== null) {
+            $groupTemplate = 'CASE WHEN ug.id = :retemplated_group THEN :new_group_templ ELSE ug.perm_templ END';
+            $params[':retemplated_group'] = $change->retemplatedGroupId;
+            $params[':new_group_templ'] = $change->newGroupTemplateId;
+        }
+
+        $groupFilter = '';
+        if ($change->deletedGroupId !== null) {
+            $groupFilter .= ' AND ug.id <> :deleted_group';
+            $params[':deleted_group'] = $change->deletedGroupId;
+        }
+        if ($change->memberGroupId !== null && $change->memberUserId !== null) {
+            $groupFilter .= ' AND NOT (ugm.group_id = :member_group AND ugm.user_id = :member_user)';
+            $params[':member_group'] = $change->memberGroupId;
+            $params[':member_user'] = $change->memberUserId;
+        }
+
+        $condition = "users.active = 1
+                AND (users.perm_templ IN (" . $templates('own') . ")
                      OR users.id IN (SELECT ugm.user_id
                                      FROM user_group_members ugm
                                      JOIN user_groups ug ON ugm.group_id = ug.id
-                                     WHERE ug.perm_templ IN ($templates)))";
+                                     WHERE $groupTemplate IN (" . $templates('group') . ")$groupFilter))";
+
+        return [$condition, $params];
+    }
+
+    public function countUberusersAfter(UberuserChange $change): int
+    {
+        $lock = '';
+        if ($this->transaction()->inTransaction()) {
+            // Lock the current set first, so a competing change waits even when it drops other rows
+            $this->lockActiveUberuserIds();
+            $lock = DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME));
+        }
+
+        // A locking read here too: on MySQL a plain one could answer from the transaction's snapshot
+        [$condition, $params] = self::uberuserConditionAfter($change);
+        $stmt = $this->db->prepare('SELECT users.id FROM users WHERE ' . $condition . ' ORDER BY users.id' . $lock);
+        foreach ($params as $name => $value) {
+            $stmt->bindValue($name, $value, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        return count($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function holdsUberuserThroughGroup(int $userId): bool

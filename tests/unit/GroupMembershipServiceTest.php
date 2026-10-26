@@ -9,7 +9,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -19,13 +23,15 @@ class GroupMembershipServiceTest extends TestCase
 {
     private MockObject&UserGroupMemberRepositoryInterface $memberRepo;
     private MockObject&UserGroupRepositoryInterface $groupRepo;
+    private MockObject&UserPermissionReadInterface $users;
     private GroupMembershipService $service;
 
     protected function setUp(): void
     {
         $this->memberRepo = $this->createMock(UserGroupMemberRepositoryInterface::class);
         $this->groupRepo = $this->createMock(UserGroupRepositoryInterface::class);
-        $this->service = new GroupMembershipService($this->memberRepo, $this->groupRepo);
+        $this->users = $this->createMock(UserPermissionReadInterface::class);
+        $this->service = new GroupMembershipService($this->memberRepo, $this->groupRepo, new LastSuperAdminGuard($this->users));
     }
 
     // --- addUserToGroup ---
@@ -76,6 +82,54 @@ class GroupMembershipServiceTest extends TestCase
         $this->memberRepo->expects($this->once())->method('remove')->with(1, 5)->willReturn(true);
 
         $this->assertTrue($this->service->removeUserFromGroup(1, 5));
+    }
+
+    /**
+     * One super admin now, user 5 through group 1; removing that membership leaves none.
+     */
+    private function givenUserFiveIsTheLastSuperAdminThroughGroupOne(): void
+    {
+        $this->users->method('countUberusersAfter')->willReturnCallback(
+            static fn(UberuserChange $change): int => $change->memberGroupId === 1 && $change->memberUserId === 5 ? 0 : 1
+        );
+    }
+
+    #[Test]
+    public function removeUserFromGroupRefusesTheLastSuperAdmin(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Admins', null, 1));
+        $this->givenUserFiveIsTheLastSuperAdminThroughGroupOne();
+        $this->memberRepo->expects($this->never())->method('remove');
+
+        $result = $this->service->removeUserFromGroup(1, 5);
+
+        $this->assertIsArray($result);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(LastSuperAdminGuard::ERR_LAST_ADMIN_DEMOTE, $result['code']);
+    }
+
+    #[Test]
+    public function removeUserFromGroupGoesAheadWhenNoSuperAdminIsLeftToProtect(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Test', null, 1));
+        $this->users->method('countUberusersAfter')->willReturn(0);
+        $this->memberRepo->expects($this->once())->method('remove')->with(1, 5)->willReturn(true);
+
+        $this->assertTrue($this->service->removeUserFromGroup(1, 5));
+    }
+
+    #[Test]
+    public function bulkRemoveUsersKeepsTheLastSuperAdmin(): void
+    {
+        $this->groupRepo->method('findById')->with(1)->willReturn(new UserGroup(1, 'Admins', null, 1));
+        $this->givenUserFiveIsTheLastSuperAdminThroughGroupOne();
+        $this->memberRepo->expects($this->once())->method('remove')->with(1, 6)->willReturn(true);
+
+        $results = $this->service->bulkRemoveUsers(1, [5, 6]);
+
+        $this->assertSame([6], $results['success']);
+        $this->assertSame([5], $results['refused']);
+        $this->assertArrayNotHasKey(5, $results['failed']);
     }
 
     #[Test]

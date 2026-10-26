@@ -38,14 +38,15 @@ class ManageGroupMembersController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard(), $this->services()->lastSuperAdminGuard());
     }
 
     private function membershipService(): GroupMembershipService
     {
         return $this->membershipService ??= new GroupMembershipService(
             $this->services()->userGroupMemberRepository(),
-            $this->services()->userGroupRepository()
+            $this->services()->userGroupRepository(),
+            $this->services()->lastSuperAdminGuard()
         );
     }
 
@@ -238,6 +239,9 @@ class ManageGroupMembersController extends BaseController
                     $failedCount
                 );
                 $this->setMessage('manage_group_members', 'warning', $message);
+            }
+            if (!empty($results['refused'])) {
+                $this->setMessage('manage_group_members', 'error', _('Cannot remove super admin from the last remaining super admin user.'));
             }
 
             $this->showManageMembers($groupId);

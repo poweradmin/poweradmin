@@ -40,7 +40,7 @@ class DeleteGroupController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard(), $this->services()->lastSuperAdminGuard());
     }
 
     private function zoneGroupService(): ZoneGroupService
@@ -99,7 +99,11 @@ class DeleteGroupController extends BaseController
             $memberCount = $details['memberCount'];
             $zoneCount = $details['zoneCount'];
 
-            $this->groupService()->deleteGroup($groupId);
+            if (is_array($this->groupService()->deleteGroup($groupId))) {
+                $this->setMessage('delete_group', 'error', _('Cannot remove super admin from the last remaining super admin user.'));
+                $this->showDeleteConfirmation($groupId);
+                return;
+            }
 
             $this->services()->auditService()->logGroupDelete($groupId, $groupName, $memberCount, $zoneCount);
 

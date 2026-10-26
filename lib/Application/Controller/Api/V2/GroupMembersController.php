@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
@@ -55,7 +56,7 @@ class GroupMembersController extends PublicApiController
 
         $memberRepository = $this->services()->userGroupMemberRepository();
         $groupRepository = $this->services()->userGroupRepository();
-        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository, $this->services()->lastSuperAdminGuard());
         $this->apiPermissionService = $this->services()->apiPermissionService();
     }
 
@@ -326,6 +327,7 @@ class GroupMembersController extends PublicApiController
     )]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Member not found')]
+    #[OA\Response(response: 409, description: 'Removing the member would leave no active super admin')]
     private function removeMember(): JsonResponse
     {
         if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, Permission::PERM_USER_IS_UEBERUSER)) {
@@ -342,6 +344,9 @@ class GroupMembersController extends PublicApiController
 
             $success = $this->membershipService->removeUserFromGroup($groupId, $userId);
 
+            if (is_array($success)) {
+                return $this->returnApiError($success['message'], RefusalStatus::ofResult($success));
+            }
             if (!$success) {
                 return $this->returnApiError('Member not found in group', 404);
             }

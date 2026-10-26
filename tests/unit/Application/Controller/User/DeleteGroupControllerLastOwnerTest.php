@@ -37,6 +37,9 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneOwnershipRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Model\UberuserChange;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -63,6 +66,9 @@ class DeleteGroupControllerLastOwnerTest extends SeamControllerTestCase
 
     /** @var AuditService&MockObject */
     private AuditService $audit;
+
+    /** @var UserPermissionReadInterface&MockObject */
+    private UserPermissionReadInterface $users;
 
     protected function setUp(): void
     {
@@ -96,6 +102,8 @@ class DeleteGroupControllerLastOwnerTest extends SeamControllerTestCase
         $this->factory->method('zoneGroupService')->willReturn(new ZoneGroupService($this->zoneGroups, $this->groups, $guard));
         $this->factory->method('repositoryFactory')->willReturn($repositories);
         $this->factory->method('auditService')->willReturn($this->audit);
+        $this->users = $this->createMock(UserPermissionReadInterface::class);
+        $this->factory->method('lastSuperAdminGuard')->willReturn(new LastSuperAdminGuard($this->users));
     }
 
     public function testTheGroupIsDeletedAuditedAndConfirmedWhenItsZoneKeepsAUserOwner(): void
@@ -123,6 +131,24 @@ class DeleteGroupControllerLastOwnerTest extends SeamControllerTestCase
         $this->assertSame('delete_group.html', $this->renderedTemplate());
         $this->assertSame(
             [['error', 'Cannot delete this group: it is the last owner of orphan.example.com. Add another owner to those zones first.']],
+            $this->messagesFor('delete_group')
+        );
+    }
+
+    public function testTheGroupStaysWhenItIsAllThatKeepsASuperAdmin(): void
+    {
+        $this->givenSoleGroupOfAZoneOwnedBy([5]);
+        $this->users->method('countUberusersAfter')->willReturnCallback(
+            static fn(UberuserChange $change): int => $change->deletedGroupId === self::GROUP_ID ? 0 : 1
+        );
+        $this->groups->expects($this->never())->method('delete');
+        $this->audit->expects($this->never())->method('logGroupDelete');
+
+        $this->assertNull($this->runDeletion());
+
+        $this->assertSame('delete_group.html', $this->renderedTemplate());
+        $this->assertSame(
+            [['error', 'Cannot remove super admin from the last remaining super admin user.']],
             $this->messagesFor('delete_group')
         );
     }

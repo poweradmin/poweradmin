@@ -580,7 +580,7 @@ class EditUserController extends BaseController
 
         $groupRepository = $this->services()->userGroupRepository();
         $memberRepository = $this->services()->userGroupMemberRepository();
-        $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        $membershipService = new GroupMembershipService($memberRepository, $groupRepository, $this->services()->lastSuperAdminGuard());
 
         // Get target user details for logging
         $targetUser = $this->getUserDetails($userId);

@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Application\Service\User\PasswordGenerationService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -164,6 +165,14 @@ final class UserServices
     }
 
     /**
+     * The last-super-admin rule for template, group and membership writes, on the request's transaction
+     */
+    public function lastSuperAdminGuard(): LastSuperAdminGuard
+    {
+        return new LastSuperAdminGuard($this->userRepository(), $this->services->transaction());
+    }
+
+    /**
      * Shared instance so its per-request preference cache survives across
      * consumers (pagination, timezone, and direct preference reads).
      */
@@ -194,7 +203,8 @@ final class UserServices
             $this->userRepository(),
             new DbExternalIdentityRepository($this->db),
             $this->userGroupRepository(),
-            $this->userGroupMemberRepository()
+            $this->userGroupMemberRepository(),
+            $this->lastSuperAdminGuard()
         );
     }
 

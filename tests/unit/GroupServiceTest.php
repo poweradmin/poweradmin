@@ -9,7 +9,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 
@@ -18,6 +22,7 @@ class GroupServiceTest extends TestCase
 {
     private MockObject&UserGroupRepositoryInterface $groupRepo;
     private MockObject&ZoneOwnershipGuard $ownershipGuard;
+    private MockObject&UserPermissionReadInterface $users;
     private GroupService $service;
 
     protected function setUp(): void
@@ -28,7 +33,8 @@ class GroupServiceTest extends TestCase
         // for that by running the callback, so the service is what is tested.
         $this->ownershipGuard->method('deleteGroup')
             ->willReturnCallback(static fn(int $groupId, callable $delete): array|bool => $delete());
-        $this->service = new GroupService($this->groupRepo, $this->ownershipGuard);
+        $this->users = $this->createMock(UserPermissionReadInterface::class);
+        $this->service = new GroupService($this->groupRepo, $this->ownershipGuard, new LastSuperAdminGuard($this->users));
     }
 
     // --- listGroups ---
@@ -156,6 +162,7 @@ class GroupServiceTest extends TestCase
 
         $result = $this->service->updateGroup(5, 'New', 'New desc', 3);
 
+        $this->assertInstanceOf(UserGroup::class, $result);
         $this->assertSame('New', $result->getName());
         $this->assertSame('New desc', $result->getDescription());
         $this->assertSame(3, $result->getPermTemplId());
@@ -208,6 +215,55 @@ class GroupServiceTest extends TestCase
         $this->groupRepo->expects($this->once())->method('delete')->with(5)->willReturn(true);
 
         $this->assertTrue($this->service->deleteGroup(5));
+    }
+
+    /**
+     * One super admin now; none once $change is written when $leavesNone says so.
+     */
+    private function givenOneSuperAdminThat(callable $leavesNone): void
+    {
+        $this->users->method('countUberusersAfter')->willReturnCallback(
+            static fn(UberuserChange $change): int => $leavesNone($change) ? 0 : 1
+        );
+    }
+
+    #[Test]
+    public function deleteGroupRefusesWhenItIsAllThatKeepsASuperAdmin(): void
+    {
+        $this->groupRepo->method('findById')->with(5)->willReturn(new UserGroup(5, 'Admins', null, 1));
+        $this->givenOneSuperAdminThat(static fn(UberuserChange $change): bool => $change->deletedGroupId === 5);
+        $this->groupRepo->expects($this->never())->method('delete');
+
+        $result = $this->service->deleteGroup(5);
+
+        $this->assertIsArray($result);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame(LastSuperAdminGuard::ERR_LAST_ADMIN_DEMOTE, $result['code']);
+    }
+
+    #[Test]
+    public function updateGroupRefusesATemplateThatLeavesNoSuperAdmin(): void
+    {
+        $this->groupRepo->method('findById')->with(5)->willReturn(new UserGroup(5, 'Admins', null, 1));
+        $this->givenOneSuperAdminThat(
+            static fn(UberuserChange $change): bool => $change->retemplatedGroupId === 5 && $change->newGroupTemplateId === 4
+        );
+        $this->groupRepo->expects($this->never())->method('save');
+
+        $result = $this->service->updateGroup(5, 'Admins', null, 4);
+
+        $this->assertIsArray($result);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+    }
+
+    #[Test]
+    public function updateGroupKeepingItsTemplateSkipsTheSuperAdminCheck(): void
+    {
+        $this->groupRepo->method('findById')->with(5)->willReturn(new UserGroup(5, 'Admins', null, 1));
+        $this->users->expects($this->never())->method('countUberusersAfter');
+        $this->groupRepo->expects($this->once())->method('save')->willReturnCallback(fn(UserGroup $g) => $g);
+
+        $this->assertInstanceOf(UserGroup::class, $this->service->updateGroup(5, 'Renamed', null, 1));
     }
 
     #[Test]

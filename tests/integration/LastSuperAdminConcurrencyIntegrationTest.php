@@ -28,15 +28,20 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Infrastructure\Database\PdoTransaction;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\FakeConfiguration;
 
@@ -266,5 +271,59 @@ class LastSuperAdminConcurrencyIntegrationTest extends TestCase
     public function testTwoSuperAdminsDemotingEachOtherLeaveOne(string $engine): void
     {
         $this->assertOneAdminSurvives($engine, fn(UserManagementService $service, int $other): array => $service->assignPermissionTemplate($other, self::GUEST_TEMPL));
+    }
+
+    /** Both admins hold super admin only through one group; their own template is Guest. */
+    private function seedGroupAdmins(PDO $db): void
+    {
+        $db->exec('DELETE FROM user_group_members');
+        $db->exec('DELETE FROM user_groups');
+        $this->seedAdmins($db);
+        $db->exec('UPDATE users SET perm_templ = ' . self::GUEST_TEMPL);
+        $db->exec("INSERT INTO user_groups (id, name, description, perm_templ) VALUES (1, 'Administrators', '', " . self::ADMIN_TEMPL . ')');
+        $db->exec('INSERT INTO user_group_members (id, group_id, user_id) VALUES (1, 1, 1), (2, 1, 2)');
+    }
+
+    /** Membership removal over a repository that stays a moment after its count, to open the race window. */
+    private function membershipService(string $engine): GroupMembershipService
+    {
+        $config = new FakeConfiguration(['database' => ['type' => $engine, 'pdns_db_name' => '']]);
+        $db = self::connect($engine);
+        $repository = new class ($db, $config, false) extends DbUserRepository {
+            public function countUberusersAfter(UberuserChange $change): int
+            {
+                $count = parent::countUberusersAfter($change);
+                usleep(150000);
+
+                return $count;
+            }
+        };
+
+        return new GroupMembershipService(
+            new DbUserGroupMemberRepository($db),
+            new DbUserGroupRepository($db),
+            new LastSuperAdminGuard($repository, new PdoTransaction($db))
+        );
+    }
+
+    #[DataProvider('engines')]
+    public function testTwoGroupGrantedSuperAdminsRemovingEachOtherLeaveOne(string $engine): void
+    {
+        $this->createScratch($engine);
+        for ($round = 0; $round < self::ROUNDS; $round++) {
+            $this->seedGroupAdmins(self::connect($engine));
+            $replies = $this->inTwoProcesses(function (int $index) use ($engine): array {
+                $result = $this->membershipService($engine)->removeUserFromGroup(1, $index === 0 ? 2 : 1);
+
+                return ['success' => $result === true, 'refusal' => is_array($result) ? $result['refusal']->name : ''];
+            });
+
+            $this->assertSame([], array_values(array_filter(array_column($replies, 'error'))), 'A writer failed');
+            $outcomes = array_map(static fn(array $reply): bool => $reply['value']['success'], $replies);
+            sort($outcomes);
+            $this->assertSame([false, true], $outcomes, 'Exactly one of the two may succeed: ' . json_encode($replies));
+            $left = self::connect($engine)->query('SELECT COUNT(*) FROM user_group_members WHERE group_id = 1')->fetchColumn();
+            $this->assertSame(1, (int)$left, 'One group-granted super admin must remain');
+        }
     }
 }

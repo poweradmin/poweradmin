@@ -75,7 +75,8 @@ class UsersController extends PublicApiController
         $this->userManagementService = $this->services()->userManagementService();
         $this->membershipService = new GroupMembershipService(
             $this->services()->userGroupMemberRepository(),
-            $this->groupRepository
+            $this->groupRepository,
+            $this->services()->lastSuperAdminGuard()
         );
         $this->apiPermissionService = $this->services()->apiPermissionService();
     }

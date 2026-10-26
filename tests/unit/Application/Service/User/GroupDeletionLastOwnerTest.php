@@ -26,6 +26,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Error\LastZoneOwnerException;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
@@ -159,6 +161,6 @@ class GroupDeletionLastOwnerTest extends TestCase
             $this->createMock(TransactionInterface::class)
         );
 
-        return new GroupService($this->groups, $guard);
+        return new GroupService($this->groups, $guard, new LastSuperAdminGuard($this->createMock(UserPermissionReadInterface::class)));
     }
 }

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Model\UberuserChange;
+
 /**
  * Read access to what a user may do: permissions, uberuser status, template grants and zone ownership.
  */
@@ -102,6 +104,12 @@ interface UserPermissionReadInterface
      * the user's own template cannot take it away.
      */
     public function holdsUberuserThroughGroup(int $userId): bool;
+
+    /**
+     * How many active super admins would remain once $change is written. Inside an open
+     * transaction it locks the active super admin rows first, as isLastUberuser() does.
+     */
+    public function countUberusersAfter(UberuserChange $change): int;
 
     /**
      * Ids of every user holding the ueberuser permission directly or through a group.

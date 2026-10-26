@@ -25,8 +25,11 @@ namespace Poweradmin\Application\Service\User;
 use InvalidArgumentException;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Error\LastZoneOwnerException;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
 
 /**
@@ -38,11 +41,16 @@ class GroupService
 {
     private UserGroupRepositoryInterface $groupRepository;
     private ZoneOwnershipGuard $ownershipGuard;
+    private LastSuperAdminGuard $superAdminGuard;
 
-    public function __construct(UserGroupRepositoryInterface $groupRepository, ZoneOwnershipGuard $ownershipGuard)
-    {
+    public function __construct(
+        UserGroupRepositoryInterface $groupRepository,
+        ZoneOwnershipGuard $ownershipGuard,
+        LastSuperAdminGuard $superAdminGuard
+    ) {
         $this->groupRepository = $groupRepository;
         $this->ownershipGuard = $ownershipGuard;
+        $this->superAdminGuard = $superAdminGuard;
     }
 
     /**
@@ -151,7 +159,8 @@ class GroupService
      * @param string|null $name New name (if provided)
      * @param string|null $description New description (if provided)
      * @param int|null $permTemplId New permission template ID (if provided)
-     * @return UserGroup
+     * @return UserGroup|array{success: false, message: string, refusal: Refusal, code: string} The
+     *         saved group, or the refusal when the new template would leave no active super admin
      * @throws InvalidArgumentException If group not found or name already exists
      */
     public function updateGroup(
@@ -159,7 +168,7 @@ class GroupService
         ?string $name = null,
         ?string $description = null,
         ?int $permTemplId = null
-    ): UserGroup {
+    ): UserGroup|array {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
             throw new GroupNotFoundException('Group not found');
@@ -180,7 +189,14 @@ class GroupService
         }
 
         $updatedGroup = $group->update($name, $description, $permTemplId);
-        return $this->groupRepository->save($updatedGroup);
+        if ($permTemplId === null || $permTemplId === $group->getPermTemplId()) {
+            return $this->groupRepository->save($updatedGroup);
+        }
+
+        return $this->superAdminGuard->guard(
+            UberuserChange::groupTemplateChanged($groupId, $permTemplId),
+            fn(): UserGroup => $this->groupRepository->save($updatedGroup)
+        );
     }
 
     /**
@@ -189,29 +205,33 @@ class GroupService
      * Cascade deletes will remove all memberships and zone associations
      *
      * @param int $groupId Group ID
-     * @return bool
+     * @return bool|array{success: false, message: string, refusal: Refusal, code: string} Whether the
+     *         group went, or the refusal when it is all that keeps an active super admin
      * @throws GroupNotFoundException If group not found
      * @throws LastZoneOwnerException If the group is the last owner of a zone
      */
-    public function deleteGroup(int $groupId): bool
+    public function deleteGroup(int $groupId): bool|array
     {
         $group = $this->groupRepository->findById($groupId);
         if (!$group) {
             throw new GroupNotFoundException('Group not found');
         }
 
-        // The guard decides and deletes under one lock: checking here and
-        // deleting afterwards let a concurrent owner removal orphan the zone.
-        $result = $this->ownershipGuard->deleteGroup(
-            $groupId,
-            fn(): bool => $this->groupRepository->delete($groupId)
-        );
+        // Super admin rows lock before the zone owners, the order every other path takes
+        return $this->superAdminGuard->guard(UberuserChange::groupDeleted($groupId), function () use ($groupId): bool {
+            // The guard decides and deletes under one lock: checking here and
+            // deleting afterwards let a concurrent owner removal orphan the zone.
+            $result = $this->ownershipGuard->deleteGroup(
+                $groupId,
+                fn(): bool => $this->groupRepository->delete($groupId)
+            );
 
-        if (is_array($result)) {
-            throw new LastZoneOwnerException($result, 'Cannot delete the last owner of a zone');
-        }
+            if (is_array($result)) {
+                throw new LastZoneOwnerException($result, 'Cannot delete the last owner of a zone');
+            }
 
-        return $result;
+            return $result;
+        });
     }
 
     /**

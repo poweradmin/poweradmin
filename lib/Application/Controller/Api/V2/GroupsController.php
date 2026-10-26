@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use Poweradmin\Domain\Error\LastZoneOwnerException;
 use InvalidArgumentException;
@@ -66,8 +67,8 @@ class GroupsController extends PublicApiController
         $groupRepository = $this->services()->userGroupRepository();
         $memberRepository = $this->services()->userGroupMemberRepository();
 
-        $this->groupService = new GroupService($groupRepository, $this->services()->zoneOwnershipGuard());
-        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        $this->groupService = new GroupService($groupRepository, $this->services()->zoneOwnershipGuard(), $this->services()->lastSuperAdminGuard());
+        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository, $this->services()->lastSuperAdminGuard());
         $this->zoneGroupService = $this->services()->zoneGroupService();
         $this->apiPermissionService = $this->services()->apiPermissionService();
     }
@@ -538,6 +539,7 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
+    #[OA\Response(response: 409, description: 'The new template would leave no active super admin')]
     private function updateGroup(): JsonResponse
     {
         if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
@@ -568,6 +570,9 @@ class GroupsController extends PublicApiController
                 $data['description'] ?? null,
                 isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
+            if (is_array($group)) {
+                return $this->returnApiError($group['message'], RefusalStatus::ofResult($group));
+            }
 
             if ($setsLimit) {
                 $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $groupId, $zoneLimit['limit']);
@@ -634,7 +639,7 @@ class GroupsController extends PublicApiController
         )
     )]
     #[OA\Response(response: 404, description: 'Group not found')]
-    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied, or is the last owner of a zone')]
+    #[OA\Response(response: 409, description: 'Group still owns zones and confirm was not supplied, is the last owner of a zone, or is all that keeps an active super admin')]
     private function deleteGroup(): JsonResponse
     {
         if (!$this->apiPermissionService->canManageGroups($this->authenticatedUserId)) {
@@ -657,6 +662,9 @@ class GroupsController extends PublicApiController
 
             $success = $this->groupService->deleteGroup($groupId);
 
+            if (is_array($success)) {
+                return $this->returnApiError($success['message'], RefusalStatus::ofResult($success));
+            }
             if (!$success) {
                 return $this->returnApiError('Group not found or deletion failed', 404);
             }

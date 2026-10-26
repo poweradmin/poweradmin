@@ -40,7 +40,7 @@ class AddGroupController extends BaseController
 
     private function groupService(): GroupService
     {
-        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard());
+        return $this->groupService ??= new GroupService($this->services()->userGroupRepository(), $this->services()->zoneOwnershipGuard(), $this->services()->lastSuperAdminGuard());
     }
 
     private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface

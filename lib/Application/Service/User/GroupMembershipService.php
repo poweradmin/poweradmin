@@ -24,9 +24,12 @@ namespace Poweradmin\Application\Service\User;
 
 use InvalidArgumentException;
 use Poweradmin\Domain\Error\GroupNotFoundException;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupLookupInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * Adds and removes users from groups and lists a group's members.
@@ -37,13 +40,16 @@ class GroupMembershipService
 {
     private UserGroupMemberRepositoryInterface $memberRepository;
     private UserGroupLookupInterface $groupRepository;
+    private LastSuperAdminGuard $superAdminGuard;
 
     public function __construct(
         UserGroupMemberRepositoryInterface $memberRepository,
-        UserGroupLookupInterface $groupRepository
+        UserGroupLookupInterface $groupRepository,
+        LastSuperAdminGuard $superAdminGuard
     ) {
         $this->memberRepository = $memberRepository;
         $this->groupRepository = $groupRepository;
+        $this->superAdminGuard = $superAdminGuard;
     }
 
     /**
@@ -77,10 +83,11 @@ class GroupMembershipService
      *
      * @param int $groupId Group ID
      * @param int $userId User ID
-     * @return bool
+     * @return bool|array{success: false, message: string, refusal: Refusal, code: string} Whether a
+     *         membership went, or the refusal when it would leave no active super admin
      * @throws InvalidArgumentException If group not found
      */
-    public function removeUserFromGroup(int $groupId, int $userId): bool
+    public function removeUserFromGroup(int $groupId, int $userId): bool|array
     {
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
@@ -88,7 +95,18 @@ class GroupMembershipService
             throw new GroupNotFoundException('Group not found');
         }
 
-        return $this->memberRepository->remove($groupId, $userId);
+        return $this->removeGuarded($groupId, $userId);
+    }
+
+    /**
+     * @return bool|array{success: false, message: string, refusal: Refusal, code: string}
+     */
+    private function removeGuarded(int $groupId, int $userId): bool|array
+    {
+        return $this->superAdminGuard->guard(
+            UberuserChange::memberRemoved($groupId, $userId),
+            fn(): bool => $this->memberRepository->remove($groupId, $userId)
+        );
     }
 
     /**
@@ -161,7 +179,8 @@ class GroupMembershipService
      *
      * @param int $groupId Group ID
      * @param int[] $userIds Array of user IDs
-     * @return array{success: int[], failed: array<int, string>} Results of bulk operation
+     * @return array{success: int[], failed: array<int, string>, refused: int[]} Results of bulk
+     *         operation; refused lists the users kept because they hold the last super admin
      */
     public function bulkRemoveUsers(int $groupId, array $userIds): array
     {
@@ -173,12 +192,17 @@ class GroupMembershipService
 
         $results = [
             'success' => [],
-            'failed' => []
+            'failed' => [],
+            'refused' => []
         ];
 
         foreach ($userIds as $userId) {
             try {
-                if ($this->memberRepository->remove($groupId, $userId)) {
+                $removed = $this->removeGuarded($groupId, $userId);
+                if (is_array($removed)) {
+                    // Reported once, as refused: the page shows its own message for it
+                    $results['refused'][] = $userId;
+                } elseif ($removed) {
                     $results['success'][] = $userId;
                 } else {
                     $results['failed'][$userId] = 'Not a member';

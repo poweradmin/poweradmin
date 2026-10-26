@@ -31,6 +31,8 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Model\UberuserChange;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 
 /**
  * Creates or updates the local user for an LDAP, OIDC or SAML login and maps their groups to a permission template.
@@ -54,6 +56,7 @@ class UserProvisioningService
     private ExternalIdentityRepositoryInterface $identities;
     private UserGroupLookupInterface $groups;
     private UserGroupMemberRepositoryInterface $groupMembers;
+    private LastSuperAdminGuard $superAdminGuard;
 
     public function __construct(
         ConfigurationInterface $configManager,
@@ -61,7 +64,8 @@ class UserProvisioningService
         UserRepositoryInterface $userRepository,
         ExternalIdentityRepositoryInterface $identities,
         UserGroupLookupInterface $groups,
-        UserGroupMemberRepositoryInterface $groupMembers
+        UserGroupMemberRepositoryInterface $groupMembers,
+        ?LastSuperAdminGuard $superAdminGuard = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -70,6 +74,7 @@ class UserProvisioningService
         $this->identities = $identities;
         $this->groups = $groups;
         $this->groupMembers = $groupMembers;
+        $this->superAdminGuard = $superAdminGuard ?? new LastSuperAdminGuard($userRepository);
     }
 
     /**
@@ -483,11 +488,29 @@ class UserProvisioningService
                 }
             }
 
-            if (!empty($updates)) {
-                $this->userRepository->updateProvisionedUser($userId, $updates);
+            // Check and write share the super admin row lock, so two concurrent sign-ins cannot both demote
+            $this->superAdminGuard->underLock(function () use ($userId, $updates): bool {
+                // A provider mapping must not demote the last super admin; it is retried on the next sign-in
+                if (
+                    isset($updates['perm_templ'])
+                    && $this->userRepository->isLastUberuser($userId)
+                    && !$this->userRepository->templateGrantsUberuser((int)$updates['perm_templ'])
+                    && !$this->userRepository->holdsUberuserThroughGroup($userId)
+                ) {
+                    unset($updates['perm_templ'], $updates['perm_templ_source']);
+                    $this->logger->warning('Kept the template of user {userId}: changing it would remove the last super admin', [
+                        'userId' => $userId
+                    ]);
+                }
 
-                $this->logger->info('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
-            }
+                if (!empty($updates)) {
+                    $this->userRepository->updateProvisionedUser($userId, $updates);
+
+                    $this->logger->info('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
+                }
+
+                return true;
+            });
 
             // Apply/sync group membership based on external groups
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
@@ -1113,7 +1136,20 @@ class UserProvisioningService
     private function removeUserFromGroup(int $userId, int $groupId): bool
     {
         try {
-            return $this->groupMembers->remove($groupId, $userId);
+            $removed = $this->superAdminGuard->guard(
+                UberuserChange::memberRemoved($groupId, $userId),
+                fn(): bool => $this->groupMembers->remove($groupId, $userId)
+            );
+            if (is_array($removed)) {
+                // The sign-in goes on; the membership stays until another super admin exists
+                $this->logger->warning('Kept user {userId} in group {groupId}: removing them would leave no active super admin', [
+                    'userId' => $userId,
+                    'groupId' => $groupId
+                ]);
+                return false;
+            }
+
+            return $removed;
         } catch (\Exception $e) {
             $this->logger->error('Error removing user {userId} from group {groupId}: {error}', [
                 'userId' => $userId,

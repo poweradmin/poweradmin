@@ -25,6 +25,9 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Api\V2\GroupsController;
 use Poweradmin\Application\Service\User\GroupService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Repository\UserPermissionReadInterface;
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -56,6 +59,9 @@ class GroupsControllerDeleteLastOwnerTest extends V2ControllerTestCase
     /** @var ZoneOwnershipRepositoryInterface&MockObject */
     private ZoneOwnershipRepositoryInterface $zones;
 
+    /** @var UserPermissionReadInterface&MockObject */
+    private UserPermissionReadInterface $users;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -67,6 +73,21 @@ class GroupsControllerDeleteLastOwnerTest extends V2ControllerTestCase
         $this->groups->method('countZones')->willReturn(1);
         $this->zoneGroups = $this->createMock(ZoneGroupRepositoryInterface::class);
         $this->zones = $this->createMock(ZoneOwnershipRepositoryInterface::class);
+        $this->users = $this->createMock(UserPermissionReadInterface::class);
+    }
+
+    public function testTheGroupHoldingTheLastSuperAdminIsRefusedWithConflict(): void
+    {
+        $this->givenSoleGroupOfAZoneOwnedBy([5]);
+        $this->users->method('countUberusersAfter')->willReturnCallback(
+            static fn(UberuserChange $change): int => $change->deletedGroupId === self::GROUP_ID ? 0 : 1
+        );
+        $this->groups->expects($this->never())->method('delete');
+
+        $response = $this->delete(['confirm' => 'true']);
+
+        $this->assertSame(409, $response->getStatusCode());
+        $this->assertSame(LastSuperAdminGuard::MESSAGE, $this->messageOf($response));
     }
 
     public function testTheLastOwningGroupIsRefusedWithTheZoneNamed(): void
@@ -144,7 +165,7 @@ class GroupsControllerDeleteLastOwnerTest extends V2ControllerTestCase
             new ZoneOwnershipModeService(new FakeConfiguration()),
             $this->createMock(TransactionInterface::class)
         );
-        $this->inject($controller, 'groupService', new GroupService($this->groups, $guard));
+        $this->inject($controller, 'groupService', new GroupService($this->groups, $guard, new LastSuperAdminGuard($this->users)));
         $this->inject($controller, 'pathParameters', ['id' => self::GROUP_ID]);
         $this->inject($controller, 'authenticatedUserId', 1);
 

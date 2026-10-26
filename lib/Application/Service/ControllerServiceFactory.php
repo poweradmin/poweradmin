@@ -45,6 +45,7 @@ use Poweradmin\Application\Service\Web\PaginationService;
 use Poweradmin\Application\Service\User\PasswordGenerationService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Application\Service\Record\RecordAddService;
 use Poweradmin\Application\Service\Record\RecordEditService;
@@ -338,6 +339,11 @@ class ControllerServiceFactory implements ModuleServices
     public function permissionTemplateWriteService(): PermissionTemplateWriteService
     {
         return $this->users->permissionTemplateWriteService();
+    }
+
+    public function lastSuperAdminGuard(): LastSuperAdminGuard
+    {
+        return $this->users->lastSuperAdminGuard();
     }
 
     public function userPreferenceService(): UserPreferenceService

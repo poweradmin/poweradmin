@@ -177,6 +177,12 @@ class LdapUserProvisioningIntegrationTest extends TestCase
         $userId = $svc->provisionUser($this->userInfo(self::PROVISION_UID), 'ldap');
         $this->assertSame('1', (string)$this->userRow(self::PROVISION_UID)['perm_templ']);
 
+        // Another super admin, so revoking this user's group grant leaves one
+        $this->db->exec(
+            "INSERT INTO users (username, password, fullname, email, description, perm_templ, perm_templ_source, active, use_ldap, auth_method)
+             VALUES ('localadmin', 'hash', 'Local Admin', 'admin@x', '', 1, 'admin', 1, 0, 'sql')"
+        );
+
         // Drop the group; the next sync must revoke the mapped template + memberships.
         self::deleteDn(self::groupDn(self::GROUP_CN));
         $svc->syncExistingUser((int)$userId, $this->userInfo(self::PROVISION_UID));
@@ -184,6 +190,24 @@ class LdapUserProvisioningIntegrationTest extends TestCase
         $row = $this->userRow(self::PROVISION_UID);
         $this->assertSame('5', (string)$row['perm_templ'], 'Falls back to the Guest default template');
         $this->assertSame([], $this->groupNames((int)$userId), 'Mapped memberships removed');
+    }
+
+    public function testTheLastSuperAdminKeepsTheGroupGrantWhenLeavingTheMappedGroup(): void
+    {
+        if (!self::$memberOfAvailable) {
+            $this->markTestSkipped('memberof overlay not enabled; cannot exercise group mapping');
+        }
+        $this->addUser(self::PROVISION_UID, 'Provisioned Admin', 'prov@example.org', 'prov-pass');
+        $this->addGroup(self::GROUP_CN, [self::userDn(self::PROVISION_UID)]);
+
+        $svc = $this->service();
+        $userId = (int)$svc->provisionUser($this->userInfo(self::PROVISION_UID), 'ldap');
+
+        self::deleteDn(self::groupDn(self::GROUP_CN));
+        $svc->syncExistingUser($userId, $this->userInfo(self::PROVISION_UID));
+
+        // The Administrators membership is all that keeps a super admin, so the sync leaves it
+        $this->assertSame(['Administrators'], $this->groupNames($userId));
     }
 
     public function testAutoProvisionRefusedWhenUsernameIsLocalAccount(): void

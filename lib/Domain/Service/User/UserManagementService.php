@@ -23,7 +23,6 @@
 namespace Poweradmin\Domain\Service\User;
 
 use Exception;
-use Throwable;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
@@ -796,36 +795,14 @@ class UserManagementService
 
     /**
      * Runs a last-admin check and the write it protects in one transaction. The work returns a
-     * refusal array, or the write result; only true commits. Without a transaction port it runs bare.
+     * refusal array, or the write result; only true commits.
      *
      * @param callable(): (array|bool) $work
      * @return array|bool
      */
     private function underUberuserLock(callable $work): array|bool
     {
-        if ($this->transaction === null) {
-            return $work();
-        }
-
-        // An outer transaction owns its own commit; this one only joins it.
-        $owned = !$this->transaction->inTransaction();
-        if ($owned) {
-            $this->transaction->begin();
-        }
-
-        try {
-            $result = $work();
-            if ($owned) {
-                $result === true ? $this->transaction->commit() : $this->transaction->rollBack();
-            }
-
-            return $result;
-        } catch (Throwable $e) {
-            if ($owned && $this->transaction->inTransaction()) {
-                $this->transaction->rollBack();
-            }
-            throw $e;
-        }
+        return (new LastSuperAdminGuard($this->userRepository, $this->transaction))->underLock($work);
     }
 
     /**

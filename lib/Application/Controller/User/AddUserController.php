@@ -323,7 +323,7 @@ class AddUserController extends BaseController
         // Convert to integers
         $groupIds = array_map('intval', $groupIds);
 
-        $membershipService = new GroupMembershipService($this->memberRepository(), $this->groupRepository());
+        $membershipService = new GroupMembershipService($this->memberRepository(), $this->groupRepository(), $this->services()->lastSuperAdminGuard());
 
         $successfulGroups = [];
 
