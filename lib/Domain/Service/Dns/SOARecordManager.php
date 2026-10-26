@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -76,7 +77,7 @@ class SOARecordManager implements SOARecordManagerInterface
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ?");
+        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ? ORDER BY id");
         $stmt->execute(['SOA', $zone_id]);
         return $stmt->fetchColumn() ?: '';
     }
@@ -251,13 +252,120 @@ class SOARecordManager implements SOARecordManagerInterface
             return $this->backendProvider->addRecord($domain_id, $apexName, 'SOA', $content, $soa_ttl, 0);
         }
 
-        $tableNameService = new TableNameService($this->config);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE domain_id = ? AND type = ?");
-        $stmt->execute([$content, $domain_id, 'SOA']);
+        $this->writeSoaContent($domain_id, $this->soaRecordIds($domain_id), $content);
 
         return true;
+    }
+
+    /**
+     * Bumps the serial of a SQL zone as one locked step, in the caller's transaction or its
+     * own, so concurrent writers to the zone cannot both bump from the same serial.
+     */
+    private function bumpSqlSerial(int $domain_id): bool
+    {
+        $ids = $this->soaRecordIds($domain_id);
+        if ($ids === []) {
+            return false;
+        }
+
+        $ownsTransaction = !$this->db->inTransaction();
+        // SQLite waits for another writer only when the write lock is taken up front; PDO does not track that BEGIN
+        $sqlite = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite';
+        if ($ownsTransaction) {
+            $sqlite ? $this->db->exec('BEGIN IMMEDIATE') : $this->db->beginTransaction();
+        }
+        try {
+            $rows = $this->lockSoaRows($domain_id, $ids);
+            if ($rows === []) {
+                // Replaced between the lookup and the lock, as a template apply does
+                $ids = $this->soaRecordIds($domain_id);
+                $rows = $ids === [] ? [] : $this->lockSoaRows($domain_id, $ids);
+            }
+            $soa_rec = $rows[0]['content'] ?? null;
+            $curr_serial = is_string($soa_rec) ? self::getSOASerial($soa_rec) : null;
+            if ($curr_serial !== null) {
+                $new_serial = $this->getNextSerial($curr_serial);
+                if ($curr_serial != $new_serial) {
+                    $this->writeSoaContent($domain_id, array_map('intval', array_column($rows, 'id')), self::setSOASerial($soa_rec, (string)$new_serial));
+                }
+            }
+            if ($ownsTransaction) {
+                $sqlite ? $this->db->exec('COMMIT') : $this->db->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $sqlite) {
+                try {
+                    $this->db->exec('ROLLBACK');
+                } catch (\PDOException) {
+                    // A failed COMMIT may already have ended it
+                }
+            } elseif ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+
+        return is_string($soa_rec);
+    }
+
+    /**
+     * Locking and writing the SOA by primary key holds those rows only; a statement through
+     * domain_id also locks the rows a concurrent write just added, and the two deadlock.
+     *
+     * @return list<int>
+     */
+    private function soaRecordIds(int $domain_id): array
+    {
+        $records_table = (new TableNameService($this->config))->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare("SELECT id FROM $records_table WHERE domain_id = ? AND type = 'SOA' ORDER BY id");
+        $stmt->bindValue(1, $domain_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * A locking read sees the latest committed serial, not this transaction's snapshot.
+     *
+     * The zone and type are checked too: SQLite reuses a deleted row's id.
+     *
+     * @param list<int> $ids
+     * @return list<array{id: int|string, content: string}>
+     */
+    private function lockSoaRows(int $domain_id, array $ids): array
+    {
+        $records_table = (new TableNameService($this->config))->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("SELECT id, content FROM $records_table WHERE id IN ($placeholders) AND domain_id = ? AND type = 'SOA' ORDER BY id"
+            . DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME)));
+        foreach ($ids as $position => $id) {
+            $stmt->bindValue($position + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(count($ids) + 1, $domain_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Every SOA row gets the content, so a reader sees the same serial whichever it picks.
+     *
+     * @param list<int> $ids
+     */
+    private function writeSoaContent(int $domain_id, array $ids, string $content): void
+    {
+        if ($ids === []) {
+            return;
+        }
+        $records_table = (new TableNameService($this->config))->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE id IN ($placeholders) AND domain_id = ? AND type = 'SOA'");
+        $stmt->bindValue(1, $content, PDO::PARAM_STR);
+        foreach ($ids as $position => $id) {
+            $stmt->bindValue($position + 2, $id, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(count($ids) + 2, $domain_id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -321,6 +429,9 @@ class SOARecordManager implements SOARecordManagerInterface
         $backendEdits = $this->isApiBackend() && $this->backendProvider->hasSoaEditApi($domain_id);
         if ($backendEdits && $rrsetWritten) {
             return true;
+        }
+        if (!$this->isApiBackend()) {
+            return $this->bumpSqlSerial($domain_id);
         }
 
         $soa_rec = $this->getSOARecord($domain_id);
