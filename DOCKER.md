@@ -1132,6 +1132,8 @@ PHP runs on `php.ini-production` with these overrides in `/usr/local/etc/php/con
 
 To change any of them, mount your own ini file into `/usr/local/etc/php/conf.d/`. The overrides file loads first, so any other name wins (for example `custom.ini`).
 
+Caddy also caps request bodies at `20MiB`. When you raise `post_max_size`, raise the cap with the `REQUEST_BODY_MAX_SIZE` environment variable too (for example `-e REQUEST_BODY_MAX_SIZE=50MiB`), or larger uploads are cut off and rejected as invalid.
+
 ### Supported PHP Extensions
 
 - `gettext` - Internationalization support

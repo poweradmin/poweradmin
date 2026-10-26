@@ -119,6 +119,11 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     root * /app
     encode gzip
 
+    # post_max_size does not bound JSON or PUT bodies, so cap them here; raise both together
+    request_body {
+        max_size {$REQUEST_BODY_MAX_SIZE:20MiB}
+    }
+
     # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /vendor*
     @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
