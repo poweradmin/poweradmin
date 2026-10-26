@@ -32,6 +32,7 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
@@ -308,12 +309,105 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
     public function replaceSoaContent(int $zoneId, string $content): bool
     {
-        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-        $stmt = $this->db->prepare("UPDATE $recordsTable SET content = ? WHERE domain_id = ? AND type = ?");
-        $stmt->execute([$content, $zoneId, 'SOA']);
+        $this->writeSoaContent($zoneId, $this->soaRecordIds($zoneId), $content);
 
         return true;
+    }
+
+    public function rewriteSoaContent(int $zoneId, callable $change): bool
+    {
+        $ids = $this->soaRecordIds($zoneId);
+        if ($ids === []) {
+            return false;
+        }
+
+        $ownsTransaction = !$this->transaction->inTransaction();
+        if ($ownsTransaction) {
+            $this->transaction->begin();
+        }
+        try {
+            $rows = $this->lockSoaRows($zoneId, $ids);
+            if ($rows === []) {
+                // Replaced between the lookup and the lock, as a template apply does
+                $ids = $this->soaRecordIds($zoneId);
+                $rows = $ids === [] ? [] : $this->lockSoaRows($zoneId, $ids);
+            }
+            $current = $rows[0]['content'] ?? null;
+            $content = is_string($current) ? $change($current) : null;
+            if ($content !== null && $content !== $current) {
+                $this->writeSoaContent($zoneId, array_map('intval', array_column($rows, 'id')), $content);
+            }
+            if ($ownsTransaction) {
+                $this->transaction->commit();
+            }
+        } catch (\Throwable $e) {
+            if ($ownsTransaction && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
+
+        return is_string($current);
+    }
+
+    /**
+     * Locking and writing the SOA by primary key holds those rows only; a statement through
+     * domain_id also locks the rows a concurrent write just added, and the two deadlock.
+     *
+     * @return list<int>
+     */
+    private function soaRecordIds(int $zoneId): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $stmt = $this->db->prepare("SELECT id FROM $recordsTable WHERE domain_id = :did AND type = 'SOA' ORDER BY id");
+        $stmt->bindValue(':did', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    /**
+     * A locking read sees the latest committed serial, not this transaction's snapshot.
+     *
+     * The zone and type are checked too: SQLite reuses a deleted row's id.
+     *
+     * @param list<int> $ids
+     * @return list<array{id: int|string, content: string}>
+     */
+    private function lockSoaRows(int $zoneId, array $ids): array
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("SELECT id, content FROM $recordsTable WHERE id IN ($placeholders) AND domain_id = ? AND type = 'SOA' ORDER BY id"
+            . DbCompat::rowLock((string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME)));
+        foreach ($ids as $position => $id) {
+            $stmt->bindValue($position + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(count($ids) + 1, $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Every SOA row gets the content, as before, so a reader sees the same serial whichever it picks.
+     *
+     * @param list<int> $ids
+     */
+    private function writeSoaContent(int $zoneId, array $ids, string $content): void
+    {
+        if ($ids === []) {
+            return;
+        }
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(', ', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("UPDATE $recordsTable SET content = ? WHERE id IN ($placeholders) AND domain_id = ? AND type = 'SOA'");
+        $stmt->bindValue(1, $content, PDO::PARAM_STR);
+        foreach ($ids as $position => $id) {
+            $stmt->bindValue($position + 2, $id, PDO::PARAM_INT);
+        }
+        $stmt->bindValue(count($ids) + 2, $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     public function addRecord(int $domainId, string $name, string $type, string $content, int $ttl, int $prio): bool
@@ -687,7 +781,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
     public function getSOARecord(int $domainId): string
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
-        $stmt = $this->db->prepare("SELECT content FROM $recordsTable WHERE type = 'SOA' AND domain_id = :did");
+        $stmt = $this->db->prepare("SELECT content FROM $recordsTable WHERE type = 'SOA' AND domain_id = :did ORDER BY id");
         $stmt->bindValue(':did', $domainId, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchColumn() ?: '';

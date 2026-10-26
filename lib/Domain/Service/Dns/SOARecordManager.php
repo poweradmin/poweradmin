@@ -280,14 +280,12 @@ class SOARecordManager implements SOARecordManagerInterface
             return true;
         }
 
-        $soa_rec = $this->getSOARecord($domain_id);
-        if ($soa_rec == null) {
-            return false;
-        }
-
-        $curr_serial = self::getSOASerial($soa_rec);
-
         if ($backendEdits) {
+            $soa_rec = $this->getSOARecord($domain_id);
+            if ($soa_rec == null) {
+                return false;
+            }
+            $curr_serial = self::getSOASerial($soa_rec);
             if (!$this->updateSOARecord($domain_id, $soa_rec)) {
                 return false;
             }
@@ -295,13 +293,14 @@ class SOARecordManager implements SOARecordManagerInterface
             return self::getSOASerial($this->getSOARecord($domain_id)) !== $curr_serial;
         }
 
-        $new_serial = $this->getNextSerial($curr_serial);
+        return $this->backendProvider->rewriteSoaContent($domain_id, function (string $soa_rec): ?string {
+            $curr_serial = self::getSOASerial($soa_rec);
+            if ($curr_serial === null) {
+                return null;
+            }
+            $new_serial = $this->getNextSerial($curr_serial);
 
-        if ($curr_serial != $new_serial) {
-            $soa_rec = self::setSOASerial($soa_rec, (string)$new_serial);
-            return $this->updateSOARecord($domain_id, $soa_rec);
-        }
-
-        return true;
+            return $curr_serial != $new_serial ? self::setSOASerial($soa_rec, (string)$new_serial) : null;
+        });
     }
 }

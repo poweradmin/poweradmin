@@ -459,6 +459,17 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     // Record operations
     // ---------------------------------------------------------------
 
+    public function rewriteSoaContent(int $zoneId, callable $change): bool
+    {
+        $current = $this->getSOARecord($zoneId);
+        if ($current === '') {
+            return false;
+        }
+        $content = $change($current);
+
+        return $content === null || $content === $current || $this->replaceSoaContent($zoneId, $content);
+    }
+
     public function replaceSoaContent(int $zoneId, string $content): bool
     {
         $zoneName = $this->getZoneNameByLocalId($zoneId);

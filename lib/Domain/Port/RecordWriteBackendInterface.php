@@ -106,4 +106,15 @@ interface RecordWriteBackendInterface
      * @return bool True when the SOA record was rewritten
      */
     public function replaceSoaContent(int $zoneId, string $content): bool;
+
+    /**
+     * Rewrites the zone's SOA content from its current value as one step, so concurrent
+     * writers to the zone cannot both bump from the same serial. The SQL backend locks the
+     * SOA row for it; the API backend reads and rewrites the RRset.
+     *
+     * @param int $zoneId Domain ID
+     * @param callable(string): (string|null) $change Gets the current content, returns the new content or null to keep it
+     * @return bool False when the zone has no SOA record or the write failed
+     */
+    public function rewriteSoaContent(int $zoneId, callable $change): bool;
 }

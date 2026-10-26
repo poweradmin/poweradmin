@@ -129,7 +129,8 @@ class SqlDnsBackendProviderTest extends TestCase
     // Cross-zone lookups and counts (sqlite in-memory)
     // ---------------------------------------------------------------
 
-    private function sqliteProvider(): SqlDnsBackendProvider
+    /** @param-out PDO $db The provider's database, for tests that inspect it */
+    private function sqliteProvider(?PDO &$db = null): SqlDnsBackendProvider
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
@@ -204,6 +205,58 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertSame($content, $soa[0]['content']);
         $this->assertSame(86400, (int)$soa[0]['ttl']);
         $this->assertSame('192.0.2.1', $provider->getRecordsByZoneId(1, 'A')[0]['content']);
+    }
+
+    public function testRewriteSoaContentCommitsItsOwnTransaction(): void
+    {
+        $provider = $this->sqliteProvider($db);
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+
+        $this->assertTrue($provider->rewriteSoaContent(1, static fn(string $soa): string => str_replace(' 1 1 1 1 1', ' 2 1 1 1 1', $soa)));
+
+        $this->assertFalse($db->inTransaction());
+        $this->assertSame('ns1.example.com. hostmaster.example.com. 2 1 1 1 1', $provider->getSOARecord(1));
+        $this->assertSame('192.0.2.1', $provider->getRecordsByZoneId(1, 'A')[0]['content']);
+    }
+
+    public function testRewriteSoaContentJoinsAnOpenTransaction(): void
+    {
+        $provider = $this->sqliteProvider($db);
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+        $db->beginTransaction();
+
+        $provider->rewriteSoaContent(1, static fn(string $soa): string => str_replace(' 1 1 1 1 1', ' 2 1 1 1 1', $soa));
+        $this->assertTrue($db->inTransaction(), 'The caller still owns the transaction');
+        $db->rollBack();
+
+        $this->assertSame('ns1.example.com. hostmaster.example.com. 1 1 1 1 1', $provider->getSOARecord(1));
+    }
+
+    public function testRewriteSoaContentWritesEverySoaRowOfTheZone(): void
+    {
+        $provider = $this->sqliteProvider($db);
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+        $provider->addRecord(1, 'example.com', 'SOA', 'ns1.example.com. hostmaster.example.com. 1 1 1 1 1', 86400, 0);
+        $provider->addRecord(2, 'other.org', 'SOA', 'ns1.other.org. hostmaster.other.org. 1 1 1 1 1', 86400, 0);
+
+        $provider->rewriteSoaContent(1, static fn(string $soa): string => str_replace(' 1 1 1 1 1', ' 2 1 1 1 1', $soa));
+
+        $this->assertSame(
+            ['ns1.example.com. hostmaster.example.com. 2 1 1 1 1', 'ns1.example.com. hostmaster.example.com. 2 1 1 1 1'],
+            $db->query("SELECT content FROM records WHERE domain_id = 1 AND type = 'SOA'")->fetchAll(PDO::FETCH_COLUMN)
+        );
+        $this->assertSame('ns1.other.org. hostmaster.other.org. 1 1 1 1 1', $provider->getSOARecord(2));
+    }
+
+    public function testRewriteSoaContentWithoutASoaRecordFails(): void
+    {
+        $called = false;
+
+        $this->assertFalse($this->sqliteProvider()->rewriteSoaContent(1, function () use (&$called): ?string {
+            $called = true;
+            return null;
+        }));
+        $this->assertFalse($called);
     }
 
     public function testRetrieveZoneReturnsFalse(): void
