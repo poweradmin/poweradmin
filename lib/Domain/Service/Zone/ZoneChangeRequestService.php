@@ -427,8 +427,10 @@ class ZoneChangeRequestService
     {
         $zoneId = $request->zoneId;
         $transactional = $this->backend->supportsLocalWriteTransaction() && !$this->transaction->inTransaction();
+        $committed = false;
         if ($transactional) {
             $this->transaction->begin();
+            $this->zoneEdit->holdAudit();
         }
 
         try {
@@ -453,6 +455,7 @@ class ZoneChangeRequestService
                     $this->soaRecords->updateSOASerial($zoneId);
                 }
                 $this->transaction->commit();
+                $committed = true;
                 if ($bump) {
                     $this->recordManager->finalizeZone($zoneId, false);
                 }
@@ -466,6 +469,11 @@ class ZoneChangeRequestService
                 $this->rollBackIfOpen();
             }
             throw $e;
+        } finally {
+            // After the rectify, so a failing audit sink cannot leave a committed zone unrectified
+            if ($transactional) {
+                $this->zoneEdit->releaseAudit($committed);
+            }
         }
 
         return null;

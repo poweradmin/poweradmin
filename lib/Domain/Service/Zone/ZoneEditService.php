@@ -51,6 +51,9 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
  */
 class ZoneEditService
 {
+    /** @var list<RecordLog>|null Audit lines held back until their transaction ends; null when not holding */
+    private ?array $heldAudit = null;
+
     /**
      * @param bool $recordCommentsEnabled Whether record comments are edited and stored with a save
      * @param bool $zoneCommentsEnabled Whether the zone comment is stored with a save
@@ -72,6 +75,30 @@ class ZoneEditService
         private readonly bool $zoneCommentsEnabled,
         private readonly ?TransactionInterface $transaction = null
     ) {
+    }
+
+    /**
+     * Holds the audit lines of the rows written from now on until releaseAudit(), so the
+     * lines of a save that is rolled back never reach the log.
+     */
+    public function holdAudit(): void
+    {
+        $this->heldAudit = [];
+    }
+
+    /**
+     * Writes the held audit lines when the transaction committed, drops them otherwise,
+     * and stops holding.
+     */
+    public function releaseAudit(bool $committed): void
+    {
+        $held = $this->heldAudit ?? [];
+        $this->heldAudit = null;
+        if ($committed) {
+            foreach ($held as $log) {
+                $log->write();
+            }
+        }
     }
 
     public function save(ZoneEditSubmission $submission): ZoneSaveResult
@@ -160,7 +187,11 @@ class ZoneEditService
         $vacated = $this->canSaveTogether() ? $this->vacatedRecords($changes) : [];
         // A row refused after another skipped it as vacated would leave a copy, so a swap is all or nothing
         $transaction = $vacated !== [] ? $this->transaction : null;
-        $transaction?->begin();
+        $committed = false;
+        if ($transaction !== null) {
+            $transaction->begin();
+            $this->holdAudit();
+        }
 
         try {
             foreach ($submission->rows as $key => $posted) {
@@ -185,19 +216,24 @@ class ZoneEditService
                     $recordsWritten = true;
                 }
             }
+
+            if ($transaction !== null && $errors !== []) {
+                $transaction->rollBack();
+                $recordsWritten = false;
+                $errors[] = _('No record was saved: some rows take each other\'s place, so they are saved together or not at all.');
+            } else {
+                $transaction?->commit();
+                $committed = true;
+            }
         } catch (\Throwable $e) {
             if ($transaction?->inTransaction()) {
                 $transaction->rollBack();
             }
             throw $e;
-        }
-
-        if ($transaction !== null && $errors !== []) {
-            $transaction->rollBack();
-            $recordsWritten = false;
-            $errors[] = _('No record was saved: some rows take each other\'s place, so they are saved together or not at all.');
-        } else {
-            $transaction?->commit();
+        } finally {
+            if ($transaction !== null) {
+                $this->releaseAudit($committed);
+            }
         }
 
         return [$changed, $errors, $recordsWritten, $unresolved];
@@ -420,7 +456,11 @@ class ZoneEditService
         }
 
         $log->logAfter($record['rid'], $record);
-        $log->write();
+        if ($this->heldAudit !== null) {
+            $this->heldAudit[] = $log;
+        } else {
+            $log->write();
+        }
 
         if ($this->recordCommentsEnabled) {
             $this->comments->updateCommentForRecord(

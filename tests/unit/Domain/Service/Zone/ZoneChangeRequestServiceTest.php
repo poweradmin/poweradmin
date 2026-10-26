@@ -76,6 +76,7 @@ class ZoneChangeRequestServiceTest extends TestCase
     private DnsRecordValidationServiceInterface&MockObject $validator;
     private ZoneManagementService&MockObject $zoneManagement;
     private BackendCapabilitiesInterface&MockObject $backend;
+    private ?AuditService $audit = null;
     /** @var array<int|string, array<string, mixed>> Stored rows keyed by id */
     private array $stored = [];
     /** @var list<string> */
@@ -392,12 +393,59 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->swapEdit('5', '192.0.2.1', '192.0.2.2'),
             $this->swapEdit('7', '192.0.2.2', '192.0.2.1'),
         ], null);
+        $this->audit = $this->createMock(AuditService::class);
+        $this->audit->expects($this->exactly(2))->method('logRecordEdit')->willReturnCallback(function (): void {
+            $this->assertFalse((new PdoTransaction($this->db))->inTransaction(), 'An audit line is written only after the commit');
+        });
 
         $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
 
         $this->assertTrue($result->success, (string)$result->message);
         $this->assertSame('192.0.2.2', $this->stored['5']['content']);
         $this->assertSame('192.0.2.1', $this->stored['7']['content']);
+    }
+
+    public function testAnApprovalThatIsRolledBackLogsNoEdit(): void
+    {
+        $this->backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->stored['7'] = $this->stored('7', 'www', '192.0.2.2');
+        $this->recordManager->method('editRecord')->willReturnCallback(fn(array $record): RecordWriteResult => (string)$record['rid'] === '7'
+            ? RecordWriteResult::failure('Invalid IP address')
+            : RecordWriteResult::ok());
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', 'swap', '2024010101', [
+            $this->swapEdit('5', '192.0.2.1', '192.0.2.9'),
+            $this->swapEdit('7', '192.0.2.2', '192.0.2.8'),
+        ], null);
+        $this->audit = $this->createMock(AuditService::class);
+        $this->audit->expects($this->never())->method('logRecordEdit');
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('Action 2 (edit) failed: Invalid IP address. Nothing was applied.', $this->repository->find($id)->error);
+    }
+
+    public function testAnApprovedSwapIsRectifiedBeforeItsAuditLinesAreWritten(): void
+    {
+        $order = [];
+        $this->backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('finalizeZone')->willReturnCallback(function () use (&$order): void {
+            $order[] = 'rectify';
+        });
+        $id = $this->repository->create(self::ZONE_ID, self::ZONE, ZoneChangeRequest::KIND_RECORDS, self::REQUESTER, 'alice', null, '2024010101', [
+            $this->swapEdit('5', '192.0.2.1', '192.0.2.9'),
+        ], null);
+        $this->audit = $this->createMock(AuditService::class);
+        $this->audit->method('logRecordEdit')->willReturnCallback(function () use (&$order): void {
+            $order[] = 'audit';
+        });
+
+        $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertSame(['rectify', 'audit'], $order);
     }
 
     /** @return array<string, mixed> */
@@ -961,7 +1009,7 @@ class ZoneChangeRequestServiceTest extends TestCase
             $this->soa,
             $this->createMock(RecordCommentService::class),
             $this->createMock(RecordCommentSyncService::class),
-            $this->createMock(AuditService::class),
+            $this->audit ?? $this->createMock(AuditService::class),
             $showComments,
             true
         );

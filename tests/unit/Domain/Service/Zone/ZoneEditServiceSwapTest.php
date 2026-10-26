@@ -68,6 +68,8 @@ class ZoneEditServiceSwapTest extends PermissionServiceTestCase
     /** @var array<int, array<string, mixed>> The zone's records by id, as the backend holds them */
     private array $rows = [];
 
+    private ?TransactionInterface $transaction = null;
+
     #[Test]
     public function aSwapIsWritten(): void
     {
@@ -139,6 +141,30 @@ class ZoneEditServiceSwapTest extends PermissionServiceTestCase
     }
 
     #[Test]
+    public function aSwapLogsEachEditOnceItIsCommitted(): void
+    {
+        $this->rows = [1 => $this->row(1, 'www', 'A', '192.0.2.1'), 2 => $this->row(2, 'www', 'A', '192.0.2.2')];
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->exactly(2))->method('logRecordEdit')->willReturnCallback(function (): void {
+            $this->assertFalse($this->transaction?->inTransaction(), 'An audit line is written only after the commit');
+        });
+
+        $this->save([$this->edit(1, 'www', 'A', '192.0.2.2'), $this->edit(2, 'www', 'A', '192.0.2.1')], $audit);
+    }
+
+    #[Test]
+    public function aSwapThatIsRolledBackLogsNothing(): void
+    {
+        $this->rows = [1 => $this->row(1, 'www', 'A', '192.0.2.1'), 2 => $this->row(2, 'www', 'A', '192.0.2.2'), 3 => $this->row(3, 'www', 'A', '192.0.2.3')];
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->never())->method('logRecordEdit');
+
+        $result = $this->save([$this->edit(1, 'www', 'A', '192.0.2.2'), $this->edit(2, 'www', 'A', '192.0.2.1'), $this->edit(3, 'www', 'A', '192.0.2.1')], $audit);
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+    }
+
+    #[Test]
     public function rowsThatDoNotOverlapStillSaveOneByOne(): void
     {
         $this->rows = [1 => $this->row(1, 'www', 'A', '192.0.2.1'), 2 => $this->row(2, 'mail', 'A', '192.0.2.2')];
@@ -167,14 +193,14 @@ class ZoneEditServiceSwapTest extends PermissionServiceTestCase
     }
 
     /** @param list<ZoneEditRow> $rows */
-    private function save(array $rows): \Poweradmin\Domain\Service\Zone\ZoneSaveResult
+    private function save(array $rows, ?AuditService $audit = null): \Poweradmin\Domain\Service\Zone\ZoneSaveResult
     {
         $config = new FakeConfiguration([
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'dns' => ['ttl' => 3600, 'hostmaster' => 'hostmaster.example.test', 'bump_serial_on_unchanged_save' => true],
             'misc' => ['edit_conflict_resolution' => 'last_writer_wins', 'record_comments_sync' => false],
         ]);
-        $transaction = $this->transaction();
+        $transaction = $this->transaction = $this->transaction();
 
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('getEditPermissionLevelForZone')->willReturn('all');
@@ -204,7 +230,7 @@ class ZoneEditServiceSwapTest extends PermissionServiceTestCase
             $soa,
             $this->createMock(RecordCommentService::class),
             $this->createMock(RecordCommentSyncService::class),
-            $this->createMock(AuditService::class),
+            $audit ?? $this->createMock(AuditService::class),
             false,
             false,
             $transaction
