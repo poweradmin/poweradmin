@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Template;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordRow;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Poweradmin\Infrastructure\Repository\DbZoneTemplateRepository;
@@ -151,6 +152,21 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
             $this->db->query("SELECT name, type FROM zone_templ_records WHERE type <> 'SOA' ORDER BY id")->fetchAll(\PDO::FETCH_ASSOC)
         );
         $this->assertSame(self::CLIENT_USER_ID, (int)$this->db->query("SELECT owner FROM zone_templ WHERE name = 'copy'")->fetchColumn());
+    }
+
+    public function testSaveAsMovesAnOlderNidPreferenceIntoTheContent(): void
+    {
+        $saved = $this->service()->addZoneTemplSaveAs('nid copy', '', self::ADMIN_USER_ID, [
+            // The zone page hands over read-only record rows
+            RecordRow::fromRow(['id' => 1, 'domain_id' => 1, 'name' => 'n.example.com', 'type' => 'NID', 'content' => '1000:0000:0000:0001', 'ttl' => 3600, 'prio' => 10]),
+            ['name' => 'm.example.com', 'type' => 'NID', 'content' => '20 1000:0000:0000:0002', 'ttl' => 3600, 'prio' => 0],
+        ], [], 'example.com');
+
+        $this->assertTrue($saved->success);
+        $this->assertSame(
+            [['content' => '10 1000:0000:0000:0001', 'prio' => 0], ['content' => '20 1000:0000:0000:0002', 'prio' => 0]],
+            $this->db->query("SELECT content, prio FROM zone_templ_records WHERE type = 'NID' ORDER BY id")->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     private function service(): ZoneTemplateService

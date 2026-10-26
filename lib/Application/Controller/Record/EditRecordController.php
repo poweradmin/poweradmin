@@ -45,6 +45,7 @@ use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns\RecordTypeService;
+use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
 
@@ -181,10 +182,9 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // An older NID row keeps its preference only in prio, which PowerDNS never reads;
-        // showing it in the content lets an unchanged save repair the row.
-        if (strtoupper((string)$record['type']) === RecordType::NID && (int)$record['prio'] > 0 && !str_contains(trim($record['content']), ' ')) {
-            $record['content'] = (int)$record['prio'] . ' ' . trim($record['content']);
+        // Showing an older NID row's preference in the content lets an unchanged save repair it
+        if (strtoupper((string)$record['type']) === RecordType::NID) {
+            $record['content'] = NIDRecordValidator::contentWithPreference((string)$record['content'], (int)$record['prio']);
         }
 
         $display_hostname_only = $this->services()->userPreferenceService()->getDisplayHostnameOnly(

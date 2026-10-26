@@ -147,6 +147,15 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
+     * An older NID row kept its preference only in prio, which PowerDNS never reads.
+     * Returns the content with that preference in front, or the content unchanged.
+     */
+    public static function contentWithPreference(string $content, int $prio): string
+    {
+        return $prio > 0 && !str_contains(trim($content), ' ') ? $prio . ' ' . trim($content) : $content;
+    }
+
+    /**
      * Validate the Node Identifier value
      * According to RFC 6742, it should be a 64-bit hexadecimal value in EUI-64 format
      * represented as 4 groups of 4 hex digits separated by colons

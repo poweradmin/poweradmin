@@ -25,7 +25,9 @@ namespace Poweradmin\Domain\Service\Template;
 use Exception;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
@@ -264,14 +266,26 @@ class ZoneTemplateWriteService
                     continue;
                 }
 
-                [$name, $content] = $this->placeholders->replaceWithTemplatePlaceholders($domain, $record, $options);
+                $content = (string)$record['content'];
+                $prio = (int)($record['prio'] ?? 0);
+                // Template records are applied as stored, so an older NID row is repaired here
+                if (strtoupper((string)$record['type']) === RecordType::NID) {
+                    $content = NIDRecordValidator::contentWithPreference($content, $prio);
+                    $prio = 0;
+                }
+
+                [$name, $content] = $this->placeholders->replaceWithTemplatePlaceholders(
+                    $domain,
+                    ['name' => $record['name'], 'type' => $record['type'], 'content' => $content],
+                    $options
+                );
 
                 $templateRecords[] = [
                     'name' => $name,
                     'type' => $record['type'],
                     'content' => $content,
                     'ttl' => $record['ttl'],
-                    'prio' => $record['prio'] ?? 0,
+                    'prio' => $prio,
                 ];
             }
 
