@@ -29,9 +29,13 @@ Thumbs.db
 /.vscode
 .phpactor.json
 
-# phpDocumentor
+# Generated API docs and class reference
 /docs
+
 /.phive
+
+# Local maintainer notes
+/notes
 
 # PHPUnit
 /.phpunit.cache
