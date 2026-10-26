@@ -1263,6 +1263,21 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         return ['id' => 3, 'domain_id' => self::ZONE_ID, 'name' => 'x.example.com', 'type' => 'CNAME', 'content' => 'foo.example.com', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0];
     }
 
+    public function testAnApiDryRunDoesNotTreatAPriorityOnATypeWithoutOneAsAReKey(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturn(['id' => 3, 'domain_id' => self::ZONE_ID, 'name' => 'n.example.com', 'type' => 'NID', 'content' => '10 1000:0000:0000:0001', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0]);
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+
+        [$response, $body] = $this->dryRun([
+            ['action' => 'update', 'id' => 3, 'priority' => 10],
+            ['action' => 'update', 'id' => 3, 'ttl' => 60],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(2, $body['data']['updated']);
+    }
+
     public function testAnApiDryRunIgnoresATrailingDotWhenAnEarlierDeleteFreedTheRecord(): void
     {
         $this->localTransactions = false;

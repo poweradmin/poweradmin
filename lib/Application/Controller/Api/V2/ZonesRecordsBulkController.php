@@ -27,6 +27,7 @@ use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -722,7 +723,9 @@ class ZonesRecordsBulkController extends PublicApiController
     {
         $oldKey = $this->batchKey((string)$stored['name'], (string)$stored['type'], (string)$stored['content']);
         $newKey = $this->batchKey((string)$submitted['name'], (string)$submitted['type'], (string)$submitted['content']);
-        if ($oldKey === $newKey && (int)($stored['prio'] ?? 0) === (int)$submitted['prio']) {
+        // The id carries a priority only for the types that have one; validation sets 0 for the rest
+        $prioMoves = RecordType::hasPriority((string)$submitted['type']) && (int)($stored['prio'] ?? 0) !== (int)$submitted['prio'];
+        if ($oldKey === $newKey && !$prioMoves) {
             return;
         }
         $this->batchGoneIds[(string)$recordId] = true;
