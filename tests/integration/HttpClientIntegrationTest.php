@@ -192,6 +192,59 @@ class HttpClientIntegrationTest extends TestCase
         $this->assertSame([], $warnings);
     }
 
+    public function testWriteRewrittenToGetByRedirectRaisesApiError(): void
+    {
+        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}");
+        [$process, $port] = $this->startStubServer("HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+
+        try {
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3))->makeRequest('PUT', '/x', ['a' => 1]);
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException $e) {
+            $this->assertSame(0, $e->getCode());
+            $this->assertStringContainsString('redirects', $e->getMessage());
+        } finally {
+            foreach ([$process, $target] as $p) {
+                proc_terminate($p);
+                proc_close($p);
+            }
+        }
+    }
+
+    public function testWriteThroughMethodKeepingRedirectSucceeds(): void
+    {
+        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n");
+        [$process, $port] = $this->startStubServer("HTTP/1.1 308 Permanent Redirect\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+
+        try {
+            $result = (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3))->makeRequest('PUT', '/x', ['a' => 1]);
+            $this->assertSame(204, $result['responseCode']);
+        } finally {
+            foreach ([$process, $target] as $p) {
+                proc_terminate($p);
+                proc_close($p);
+            }
+        }
+    }
+
+    public function testWriteThroughRedirectChainEndingIn308Succeeds(): void
+    {
+        // The wrapper picks each hop's method from the previous status only, so the 308 restores the PUT
+        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n");
+        [$middle, $middlePort] = $this->startStubServer("HTTP/1.1 308 Permanent Redirect\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+        [$process, $port] = $this->startStubServer("HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:" . $middlePort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+
+        try {
+            $result = (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3))->makeRequest('PUT', '/x', ['a' => 1]);
+            $this->assertSame(204, $result['responseCode']);
+        } finally {
+            foreach ([$process, $middle, $target] as $p) {
+                proc_terminate($p);
+                proc_close($p);
+            }
+        }
+    }
+
     public function testStalledBodyReadRaisesTimeoutError(): void
     {
         [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: 100\r\nConnection: close\r\n\r\n{\"a\":", 4);
