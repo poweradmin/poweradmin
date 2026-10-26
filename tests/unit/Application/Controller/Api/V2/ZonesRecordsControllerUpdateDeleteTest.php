@@ -50,6 +50,19 @@ use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Domain\Service\Validation\Refusal;
+use PDO;
+use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
+use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Domain\Port\RecordWriteBackendInterface;
+use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
+use TestHelpers\FakeConfiguration;
+use TestHelpers\StubActor;
 
 /**
  * Characterization of PUT and DELETE on /api/v2/zones/{id}/records/{record_id}:
@@ -68,6 +81,8 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
     private ZoneReadRepositoryInterface&MockObject $zones;
     private RecordRepositoryInterface&MockObject $records;
     private RecordManagerInterface&MockObject $recordManager;
+    /** A real manager over the same record doubles, for checks the manager itself makes */
+    private ?RecordManager $realRecordManager = null;
     private ReverseRecordCreator&MockObject $reverseCreator;
     private RecordCommentService&MockObject $comments;
     private RecordCommentSyncService&MockObject $commentSync;
@@ -633,6 +648,22 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame('new value', $record['content']);
     }
 
+    public function testEditingARecordIntoACopyOfAnotherRecordIs409WithTheContractWording(): void
+    {
+        $sibling = $this->existingRecord(['id' => self::RECORD_ID + 1, 'content' => '192.0.2.2']);
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->records->method('getRecordDetailsFromRecordId')->willReturn(['zid' => self::ZONE_ID] + $this->existingRecord());
+        $this->records->method('getRRSetRecords')->willReturn([$this->existingRecord(), $sibling]);
+        $backend = $this->createMockForIntersectionOfInterfaces([RecordWriteBackendInterface::class, BackendCapabilitiesInterface::class]);
+        $backend->expects($this->never())->method('editRecord');
+        $this->useRealRecordManager($backend);
+
+        $response = $this->update(['content' => '192.0.2.2']);
+
+        $this->assertSame(409, $response->getStatusCode());
+        $this->assertSame('A record with this hostname, type, and content already exists', $this->messageOf($response));
+    }
+
     public function testACommentInTheBodyIsStoredWithTheWriteAndAgainstTheRecord(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());
@@ -832,6 +863,38 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         ], $overrides);
     }
 
+    private function useRealRecordManager(RecordWriteBackendInterface&BackendCapabilitiesInterface $backend): void
+    {
+        $config = new FakeConfiguration(['dns' => ['ttl' => 3600, 'hostmaster' => 'hostmaster.example.com']]);
+        $validation = $this->createMock(DnsRecordValidationServiceInterface::class);
+        $validation->method('validateRecord')->willReturnCallback(
+            static fn(int|string $rid, int $zid, string $type, string $content, string $name, ?int $prio, ?int $ttl): ValidationResult => ValidationResult::success(['content' => $content, 'name' => $name, 'ttl' => $ttl, 'prio' => $prio])
+        );
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainType')->willReturn('MASTER');
+        $domains->method('getDomainNameById')->willReturn(self::ZONE_NAME);
+        $repositories = $this->createMock(RepositoryFactoryInterface::class);
+        $repositories->method('createRecordRepository')->willReturn($this->records);
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getEditPermissionLevel')->willReturn('all');
+        $permissions->method('userOwnsZone')->willReturn(true);
+
+        $this->realRecordManager = new RecordManager(
+            new PdoTransaction(new PDO('sqlite::memory:')),
+            $config,
+            $validation,
+            $this->createMock(SOARecordManagerInterface::class),
+            $domains,
+            $repositories,
+            fn() => null,
+            $backend,
+            $permissions,
+            $this->createMock(RecordChangeWriterInterface::class),
+            $this->createMock(TemplateRecordLinkRepositoryInterface::class),
+            new StubActor(self::USER_ID)
+        );
+    }
+
     private function editConfig(): ConfigurationInterface
     {
         $config = $this->createMock(ConfigurationInterface::class);
@@ -892,7 +955,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $factory->method('userRepository')->willReturn($this->stubUsers());
         // The real edit flow over the same doubles, so the PUT is characterized end to end
         $factory->method('recordEditService')->willReturn(new RecordEditService(
-            $this->recordManager,
+            $this->realRecordManager ?? $this->recordManager,
             $this->records,
             $domains,
             $this->createMock(SOARecordManagerInterface::class),
@@ -911,7 +974,7 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'zoneRepository', $this->zones);
         $this->inject($controller, 'recordRepository', $this->records);
-        $this->inject($controller, 'recordManager', $this->recordManager);
+        $this->inject($controller, 'recordManager', $this->realRecordManager ?? $this->recordManager);
         $this->inject($controller, 'apiPermissionService', $this->permissions);
         $this->inject($controller, 'reverseTtlResolver', $ttlResolver);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);

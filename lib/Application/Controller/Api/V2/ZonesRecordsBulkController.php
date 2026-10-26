@@ -669,6 +669,12 @@ class ZonesRecordsBulkController extends PublicApiController
         $username = $this->getAuthenticatedUsername();
         $rrsetComment = $comment === null ? null : ['content' => $comment, 'account' => $username];
         $result = $this->recordManager->editRecord($recordData, false, $rrsetComment, $this->validateOnly);
+        $newKey = $this->batchKey((string)$recordData['name'], (string)$recordData['type'], (string)$recordData['content']);
+        // As on create: a real run applies the batch's earlier delete or re-key first
+        if ($this->validateOnly && !$result->success && $result->refusal === Refusal::CONFLICT && isset($this->batchFreedKeys[$newKey])) {
+            unset($this->batchFreedKeys[$newKey]);
+            $result = RecordWriteResult::ok();
+        }
         if (!$result->success) {
             // Backend faults keep the generic contract string; refusals carry their reason
             if ($result->refusal === Refusal::BACKEND_FAILURE) {

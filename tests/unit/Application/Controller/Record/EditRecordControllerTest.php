@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
+use Poweradmin\Domain\Service\Validation\RecordField;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestResult;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
@@ -503,6 +504,25 @@ class EditRecordControllerTest extends SeamControllerTestCase
 
         $this->assertSame('edit_record.html', $this->output->rendered[0][0]);
         $this->assertSame([['error', 'Invalid IPv4 address.']], $this->messagesFor('system'));
+    }
+
+    public function testADuplicateRefusalMarksTheNameAndContentOfTheStoredRow(): void
+    {
+        $this->editResult = RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT, RecordField::DUPLICATE);
+        $this->post(['rid' => (string)self::RECORD_ID, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.9']);
+
+        $this->makeController()->run();
+
+        $this->assertSame('name-content-duplicate', $this->renderedParams()['field_error']);
+        $this->assertSame('192.0.2.1', $this->renderedParams()['record']['content'], 'the form shows the stored row');
+        $this->assertSame([['error', 'A record with this hostname, type, and content already exists.']], $this->messagesFor('system'));
+    }
+
+    public function testAFormThatWasNotRefusedMarksNoField(): void
+    {
+        $this->makeController()->run();
+
+        $this->assertSame('', $this->renderedParams()['field_error']);
     }
 
     public function testAMissingRowStopsTheSaveWithAMessageAndStillRendersTheForm(): void

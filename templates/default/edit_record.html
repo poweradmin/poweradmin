@@ -68,10 +68,10 @@
                             <input type="hidden" name="rid" value="{{ record_id }}">
                             <input type="hidden" name="zid" value="{{ zid }}">
                             {% if display_hostname_only %}
-                            <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
+                            <input class="form-control form-control-sm{% if (field_error ?? '') in ['name', 'name-content-duplicate'] %} is-invalid{% endif %}" type="text" name="name" value="{{ record['record_name'] }}">
                             .{{ zone_display_name }}
                             {% else %}
-                            <input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}">
+                            <input class="form-control form-control-sm{% if (field_error ?? '') in ['name', 'name-content-duplicate'] %} is-invalid{% endif %}" type="text" name="name" value="{{ record['name'] }}">
                             {% endif %}
                             {% if record_address ?? null %}
                             <div class="form-text" data-testid="record-reverse-address">{{ record_address }}</div>
@@ -98,7 +98,7 @@
                         </td>
                         <td>
                             <div id="contentInputContainer">
-                                <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
+                                <input id="recordContent" class="form-control form-control-sm{% if (field_error ?? '') in ['content', 'name-content-duplicate'] %} is-invalid{% endif %}" type="text" name="content" value="{{ record['content'] }}" required>
                             </div>
                             {% if soa_structured %}
                             <div class="form-text d-none" data-soa-note="recordContent"><i class="bi bi-arrow-down me-1"></i>{% trans %}Edit the SOA fields below{% endtrans %}</div>
@@ -107,7 +107,11 @@
                             {% if not soa_structured %}
                             <div class="mt-1{% if record['type'] != 'SOA' %} d-none{% endif %}" data-soa-type="recordTypeSelect">{{ macros.soa_breakdown(soa_fields ?? {}, 'recordContent', soa_durations) }}</div>
                             {% endif %}
+                            {% if (field_error ?? '') == 'name-content-duplicate' %}
+                            <div class="invalid-feedback">{% trans %}This record already exists{% endtrans %}</div>
+                            {% else %}
                             <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                            {% endif %}
                             <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
                             </div>

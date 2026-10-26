@@ -53,7 +53,7 @@ class RecordManagerFinalizeZoneTest extends SqliteIntegrationTestCase
         parent::setUp();
 
         $this->createZoneTables();
-        $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0, ordername TEXT, auth INTEGER DEFAULT 1)");
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::ZONE_ID . ", " . self::ADMIN_USER_ID . ")");
     }
 

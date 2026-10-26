@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Record;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Presenter\RecordFormFieldPresenter;
 use Poweradmin\Application\Presenter\SoaFieldsPresenter;
 use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Application\Service\Record\RecordCommentService;
@@ -58,6 +59,8 @@ class EditRecordController extends BaseController
 
     /** @var array<string, string> The search to return to after a save, when the record was opened from its results */
     private array $searchReturn = [];
+    /** The input a refused save names, as the add forms mark it */
+    private string $fieldError = RecordFormFieldPresenter::FIELD_NONE;
 
     private function recordCommentService(): RecordCommentService
     {
@@ -228,6 +231,7 @@ class EditRecordController extends BaseController
             // Only this record's RRset is rewritten by the save
             'api_escape_rrsets' => array_values(array_intersect($this->apiEscapeRiskRrsets((int)$zid, $zone_name), [$record['name'] . ' ' . $record['type']])),
             'search_return' => $this->searchReturn,
+            'field_error' => $this->fieldError,
         ]);
     }
 
@@ -366,6 +370,7 @@ class EditRecordController extends BaseController
         ));
         if (!$edited->isOk()) {
             $this->addSystemMessage('error', (string)$edited->write->message);
+            $this->fieldError = RecordFormFieldPresenter::fieldId($edited->write->field, (string)$edited->write->message, $edited->write->refusal);
             return false;
         }
 

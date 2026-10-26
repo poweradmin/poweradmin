@@ -1097,6 +1097,25 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(['Operation 1 (create): A record with this hostname, type, and content already exists.'], $body['data']['errors']);
     }
 
+    public function testAnApiDryRunAllowsAnUpdateOntoTheContentAnEarlierDeleteFreed(): void
+    {
+        $this->localTransactions = false;
+        $this->records->method('getRecordById')->willReturnCallback(
+            fn(int|string $id): array => (int)$id === 3 ? $this->storedARecord() : ['id' => 4, 'content' => '192.0.2.9'] + $this->storedARecord()
+        );
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        // The dry run still sees the deleted row, so the record manager reports a copy
+        $this->recordManager->method('editRecord')
+            ->willReturn(RecordWriteResult::failure('A record with this hostname, type, and content already exists.', Refusal::CONFLICT));
+
+        [$response] = $this->dryRun([
+            ['action' => 'delete', 'id' => 3],
+            ['action' => 'update', 'id' => 4, 'content' => '192.0.2.5'],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAnApiDryRunAllowsADifferentCreateAfterARename(): void
     {
         $this->apiDryRunOfStoredRecord();

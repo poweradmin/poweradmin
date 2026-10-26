@@ -208,6 +208,43 @@ class RecordManager implements RecordManagerInterface
         return $unquoted !== null && $recordRepository->recordExists($zoneId, $name, $type, $unquoted);
     }
 
+    /**
+     * Whether a record other than $recordId already holds this name, type and content,
+     * with the same equivalences the add check applies. Ids are compared as strings:
+     * PDO returns them that way, and the API backend encodes them.
+     */
+    private function copiesAnotherRecord(RecordRepositoryInterface $recordRepository, int $zoneId, int|string $recordId, string $name, string $type, string $content): bool
+    {
+        foreach ($recordRepository->getRRSetRecords($zoneId, $name, $type) as $sibling) {
+            if ((string)($sibling['id'] ?? '') === (string)$recordId) {
+                continue;
+            }
+            if (self::sameContent($type, $content, (string)($sibling['content'] ?? ''))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Content equality as the duplicate checks see it: exact, the unquoted ech form, or
+     * the same AAAA address written another way.
+     */
+    private static function sameContent(string $type, string $content, string $stored): bool
+    {
+        if ($stored === $content) {
+            return true;
+        }
+        $unquoted = DnsFormatter::unquoteEch($type, $content);
+        if ($unquoted !== null && $stored === $unquoted) {
+            return true;
+        }
+        $packed = $type === RecordType::AAAA ? @inet_pton($content) : false;
+
+        return $packed !== false && @inet_pton($stored) === $packed;
+    }
+
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
@@ -530,6 +567,14 @@ class RecordManager implements RecordManagerInterface
         $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
         $validatedTtl = $validatedData['ttl'];
         $validatedPrio = $validatedData['prio'];
+
+        // Only a new name, type or content can create a copy; legacy twins keep TTL, comment and state edits
+        $keyChanged = $name !== strtolower((string)($recordDetails['name'] ?? ''))
+            || strtoupper((string)$record['type']) !== strtoupper((string)($recordDetails['type'] ?? ''))
+            || !self::sameContent($record['type'], $content, (string)($recordDetails['content'] ?? ''));
+        if ($keyChanged && $this->copiesAnotherRecord($recordRepository, $record['zid'], $record['rid'], $name, $record['type'], $content)) {
+            return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
+        }
 
         $submitted = [
             'name' => $name,

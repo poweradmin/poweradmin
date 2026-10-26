@@ -707,6 +707,17 @@ class ZonesRecordsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(
+        response: 409,
+        description: 'Another record with the same name, type and content already exists',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'A record with this hostname, type, and content already exists'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
     private function updateRecord(): JsonResponse
     {
         try {
