@@ -1014,15 +1014,6 @@ class UserProvisioningService
             }
         }
 
-        foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
-            if ($this->removeUserFromGroup($userId, $groupId)) {
-                $this->logger->info('Removed user {userId} from group: {group} (no longer in external group)', [
-                    'userId' => $userId,
-                    'group' => $idToName[$groupId] ?? $groupId
-                ]);
-            }
-        }
-
         $addedGroups = [];
         foreach (array_diff($targetGroupIds, $currentGroupIds) as $groupId) {
             if ($this->addUserToGroup($userId, $groupId)) {
@@ -1035,6 +1026,17 @@ class UserProvisioningService
                 'userId' => $userId,
                 'groups' => implode(', ', $addedGroups)
             ]);
+        }
+
+        // Adds go first, so the last-super-admin check on a removal already
+        // counts a group the provider moved the user to in this sign-in
+        foreach (array_diff($currentGroupIds, $targetGroupIds) as $groupId) {
+            if ($this->removeUserFromGroup($userId, $groupId)) {
+                $this->logger->info('Removed user {userId} from group: {group} (no longer in external group)', [
+                    'userId' => $userId,
+                    'group' => $idToName[$groupId] ?? $groupId
+                ]);
+            }
         }
     }
 

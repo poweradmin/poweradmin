@@ -47,12 +47,16 @@ class UserProvisioningServiceLastSuperAdminTest extends TestCase
     private const USER_ID = 5;
     private const ADMIN_GROUP_ID = 1;
     private const OTHER_GROUP_ID = 2;
+    private const SECOND_ADMIN_GROUP_ID = 3;
 
     private UserRepositoryInterface&MockObject $users;
     private UserGroupMemberRepositoryInterface&MockObject $members;
 
     /** @var list<array{0: string, 1: string}> */
     private array $logged = [];
+
+    /** @var list<int> Group ids the user is in, for the stateful membership double */
+    private array $memberOf = [];
 
     protected function setUp(): void
     {
@@ -178,5 +182,90 @@ class UserProvisioningServiceLastSuperAdminTest extends TestCase
         $this->members->expects($this->exactly(2))->method('remove')->willReturn(true);
 
         $this->syncWithNoExternalGroups();
+    }
+
+    public function testAMoveBetweenAdminGroupsCompletesInOneSignIn(): void
+    {
+        $this->signInAsSoleSuperAdminOfTheFirstAdminGroupWith(['idp-admins-2']);
+
+        $this->assertSame([self::SECOND_ADMIN_GROUP_ID], $this->memberOf);
+        $this->assertSame([], $this->warnings());
+    }
+
+    public function testAMoveToANonAdminGroupKeepsTheAdminGroupWithAWarning(): void
+    {
+        $this->signInAsSoleSuperAdminOfTheFirstAdminGroupWith(['idp-operators']);
+
+        $this->assertSame([self::ADMIN_GROUP_ID, self::OTHER_GROUP_ID], $this->memberOf);
+        $warnings = $this->warnings();
+        $this->assertCount(1, $warnings);
+        $this->assertStringContainsString('would leave no active super admin', $warnings[0][1]);
+    }
+
+    /**
+     * The user is the only super admin, through the first admin group alone, and the
+     * provider now sends $externalGroups. Memberships and the super admin count follow
+     * the writes the sync makes.
+     *
+     * @param list<string> $externalGroups
+     */
+    private function signInAsSoleSuperAdminOfTheFirstAdminGroupWith(array $externalGroups): void
+    {
+        $this->memberOf = [self::ADMIN_GROUP_ID];
+        $adminGroups = [self::ADMIN_GROUP_ID, self::SECOND_ADMIN_GROUP_ID];
+
+        $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
+        $this->members->method('findByUserId')->willReturnCallback(
+            fn(int $userId): array => array_map(static fn(int $groupId) => UserGroupMember::create($groupId, $userId), $this->memberOf)
+        );
+        $this->members->method('add')->willReturnCallback(function (int $groupId, int $userId): UserGroupMember {
+            $this->memberOf[] = $groupId;
+            sort($this->memberOf);
+            return UserGroupMember::create($groupId, $userId);
+        });
+        $this->members->method('remove')->willReturnCallback(function (int $groupId): bool {
+            $this->memberOf = array_values(array_diff($this->memberOf, [$groupId]));
+            return true;
+        });
+        $this->users->method('countUberusersAfter')->willReturnCallback(
+            function (UberuserChange $change) use ($adminGroups): int {
+                $after = array_diff($this->memberOf, [$change->memberGroupId]);
+                return array_intersect($after, $adminGroups) === [] ? 0 : 1;
+            }
+        );
+
+        $groups = $this->createMock(UserGroupLookupInterface::class);
+        $groups->method('findIdByExactName')->willReturnMap([
+            ['Admins', self::ADMIN_GROUP_ID],
+            ['Operators', self::OTHER_GROUP_ID],
+            ['Admins 2', self::SECOND_ADMIN_GROUP_ID],
+        ]);
+
+        $logger = $this->createMock(Logger::class);
+        $logger->method('log')->willReturnCallback(function (string $level, string $message): void {
+            $this->logged[] = [$level, $message];
+        });
+
+        $service = new UserProvisioningService(
+            new FakeConfiguration(['oidc' => [
+                'allow_superuser_provisioning' => true,
+                'group_mapping' => ['idp-admins' => 'Admins', 'idp-operators' => 'Operators', 'idp-admins-2' => 'Admins 2'],
+            ]]),
+            $logger,
+            $this->users,
+            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $groups,
+            $this->members
+        );
+
+        (new ReflectionMethod($service, 'applyGroupMembership'))->invoke($service, self::USER_ID, $externalGroups, 'oidc');
+    }
+
+    /**
+     * @return list<array{0: string, 1: string}>
+     */
+    private function warnings(): array
+    {
+        return array_values(array_filter($this->logged, static fn(array $entry): bool => $entry[0] === 'warning'));
     }
 }
