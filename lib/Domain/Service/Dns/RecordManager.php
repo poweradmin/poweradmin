@@ -170,57 +170,18 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Resolve the zone name, normalize the record name against it, and reject
-     * record types a client-level editor may not add.
-     *
-     * Normalization happens first so the apex comparison sees the FQDN.
-     *
-     * @return array{0: string, 1: string} Zone name and normalized record name
-     * @throws Exception When the record type is restricted for the user
-     */
-    /**
-     * The same IPv6 address can be written in several forms ("2001:db8::1", "2001:0db8:0:0::1"), so compare AAAA content by value.
-     */
-    private function equivalentAaaaExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
-    {
-        $packed = $type === RecordType::AAAA ? @inet_pton($content) : false;
-        if ($packed === false) {
-            return false;
-        }
-
-        foreach ($recordRepository->getRRSetRecords($zoneId, $name, RecordType::AAAA) as $record) {
-            if (@inet_pton((string)($record['content'] ?? '')) === $packed) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * SQL mode may hold an SVCB or HTTPS row saved with its ech value unquoted, before
-     * Poweradmin started quoting it; that row is the same record.
-     */
-    private function unquotedEchExists(RecordRepositoryInterface $recordRepository, int $zoneId, string $name, string $type, string $content): bool
-    {
-        $unquoted = DnsFormatter::unquoteEch($type, $content);
-
-        return $unquoted !== null && $recordRepository->recordExists($zoneId, $name, $type, $unquoted);
-    }
-
-    /**
-     * Whether a record other than $recordId already holds this name, type and content,
-     * with the same equivalences the add check applies. Ids are compared as strings:
-     * PDO returns them that way, and the API backend encodes them.
+     * Whether a record other than $recordId (any record, when null) already holds this
+     * name, type and content, exactly or by the sameContent() equivalences. Ids are compared
+     * as strings: PDO returns them that way, and the API backend encodes them.
      *
      * @param array<int|string, string> $vacated Stored content by id of siblings the same save moves away
      */
-    private function copiesAnotherRecord(RecordRepositoryInterface $recordRepository, int $zoneId, int|string $recordId, string $name, string $type, string $content, array $vacated = []): bool
+    private function copiesAnotherRecord(RecordRepositoryInterface $recordRepository, int $zoneId, int|string|null $recordId, string $name, string $type, string $content, array $vacated = []): bool
     {
         foreach ($recordRepository->getRRSetRecords($zoneId, $name, $type) as $sibling) {
             $siblingId = (string)($sibling['id'] ?? '');
             $stored = (string)($sibling['content'] ?? '');
-            if ($siblingId === (string)$recordId) {
+            if ($recordId !== null && $siblingId === (string)$recordId) {
                 continue;
             }
             // A sibling already written by the same save holds other content and counts again
@@ -235,13 +196,22 @@ class RecordManager implements RecordManagerInterface
         return false;
     }
 
+    /** Types whose whole content is one or more domain names */
+    private const NAME_CONTENT_TYPES = [RecordType::NS, RecordType::CNAME, RecordType::PTR, RecordType::DNAME, RecordType::ALIAS, RecordType::MR, RecordType::RP, RecordType::MINFO];
+
+    /** Types whose content ends in a domain name after numeric fields, such as the SRV weight and port */
+    private const NAME_TARGET_TYPES = [RecordType::MX, RecordType::KX, RecordType::SRV, RecordType::AFSDB, RecordType::LP];
+
     /**
-     * Content equality as the duplicate checks see it: exact, the unquoted ech form, or
-     * the same AAAA address written another way.
+     * Content equality as the duplicate checks see it: exact, domain names compared without
+     * case as DNS does, the unquoted ech form, or the same AAAA address written another way.
      */
     private static function sameContent(string $type, string $content, string $stored): bool
     {
         if ($stored === $content) {
+            return true;
+        }
+        if (self::foldNames($type, $stored) === self::foldNames($type, $content)) {
             return true;
         }
         $unquoted = DnsFormatter::unquoteEch($type, $content);
@@ -253,6 +223,29 @@ class RecordManager implements RecordManagerInterface
         return $packed !== false && @inet_pton($stored) === $packed;
     }
 
+    /** The content with its domain names lowercased; other types and fields are left as they are */
+    private static function foldNames(string $type, string $content): string
+    {
+        if (in_array($type, self::NAME_CONTENT_TYPES, true)) {
+            return strtolower($content);
+        }
+        if (!in_array($type, self::NAME_TARGET_TYPES, true)) {
+            return $content;
+        }
+        $cut = strrpos($content, ' ');
+
+        return $cut === false ? strtolower($content) : substr($content, 0, $cut + 1) . strtolower(substr($content, $cut + 1));
+    }
+
+    /**
+     * Resolve the zone name, normalize the record name against it, and reject
+     * record types a client-level editor may not add.
+     *
+     * Normalization happens first so the apex comparison sees the FQDN.
+     *
+     * @return array{0: string, 1: string} Zone name and normalized record name
+     * @throws Exception When the record type is restricted for the user
+     */
     private function normalizeNameAndAssertAddAllowed(int $zone_id, string $name, string $type, string $perm_edit): array
     {
         $zone = $this->domainRepository->getDomainNameById($zone_id);
@@ -354,11 +347,8 @@ class RecordManager implements RecordManagerInterface
 
         // Create RecordRepository to check if record exists
         $recordRepository = $this->repositoryFactory->createRecordRepository();
-        if (
-            $recordRepository->recordExists($zone_id, $name, $type, $content)
-            || $this->equivalentAaaaExists($recordRepository, $zone_id, $name, $type, $content)
-            || $this->unquotedEchExists($recordRepository, $zone_id, $name, $type, $content)
-        ) {
+        // Compared in PHP, as on edit: a MySQL _ci collation would call TXT content differing in case a copy
+        if ($this->copiesAnotherRecord($recordRepository, $zone_id, null, $name, $type, $content)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
