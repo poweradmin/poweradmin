@@ -161,7 +161,7 @@ final class UserServices
 
     public function permissionTemplateWriteService(): PermissionTemplateWriteService
     {
-        return new PermissionTemplateWriteService($this->permissionTemplateRepository(), $this->userRepository());
+        return new PermissionTemplateWriteService($this->permissionTemplateRepository(), $this->userRepository(), $this->lastSuperAdminGuard());
     }
 
     /**

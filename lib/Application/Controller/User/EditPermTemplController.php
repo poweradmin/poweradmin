@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
@@ -162,6 +163,7 @@ class EditPermTemplController extends BaseController
                 _('Granting administrator rights in a permission template requires administrator rights.'),
             PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED =>
                 _('Editing a permission template with administrator rights requires administrator rights.'),
+            LastSuperAdminGuard::MESSAGE => _('Cannot remove super admin from the last remaining super admin user.'),
             default => _('The permission template could not be updated.'),
         };
     }

@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\User;
 
 use Poweradmin\Application\Controller\User\EditPermTemplController;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -112,7 +113,7 @@ class EditPermTemplControllerTargetTest extends SeamControllerTestCase
 
         $this->factory->method('permissionTemplateRepository')->willReturn($repository);
         $this->factory->method('permissionTemplateWriteService')
-            ->willReturn(new PermissionTemplateWriteService($repository, $userRepository));
+            ->willReturn(new PermissionTemplateWriteService($repository, $userRepository, new LastSuperAdminGuard($userRepository)));
         $config = $this->configure(['security' => ['global_token_validation' => false]]);
         $controller = new EditPermTemplController($requestData, true, $this->environment($config));
 

@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -461,6 +462,7 @@ class PermissionTemplatesController extends PublicApiController
             new OA\Response(response: 401, description: 'Unauthorized'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 404, description: 'Permission template not found'),
+            new OA\Response(response: 409, description: 'Removing user_is_ueberuser would leave no active super admin'),
             new OA\Response(response: 500, description: 'Internal Server Error')
         ]
     )]
@@ -519,10 +521,10 @@ class PermissionTemplatesController extends PublicApiController
             $result = $this->permissionTemplateWriteService->update($currentUserId, $id, $details);
 
             if (!$result['success']) {
-                return $this->returnApiError($result['message'], $result['status']);
+                return $this->returnApiError($result['message'], RefusalStatus::ofResult($result, 500));
             }
 
-            return $this->returnApiResponse(null, true, $result['message'], $result['status']);
+            return $this->returnApiResponse(null, true, $result['message'], $result['status'] ?? 200);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::updateTemplate', 'Failed to update permission template');
         }

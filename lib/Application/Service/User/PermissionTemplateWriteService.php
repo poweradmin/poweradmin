@@ -22,9 +22,12 @@
 
 namespace Poweradmin\Application\Service\User;
 
+use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateContentGuard;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
  * The single guarded entry point for permission template writes.
@@ -36,7 +39,8 @@ readonly class PermissionTemplateWriteService
 {
     public function __construct(
         private PermissionTemplateRepositoryInterface $templateRepository,
-        private UserPermissionReadInterface $userRepository
+        private UserPermissionReadInterface $userRepository,
+        private LastSuperAdminGuard $superAdminGuard
     ) {
     }
 
@@ -64,15 +68,16 @@ readonly class PermissionTemplateWriteService
 
     /**
      * @param array<string, mixed> $details Repository payload; templ_id is forced to $templateId
-     * @return array{success: bool, message: string, status: int}
+     * @return array{success: bool, message: string, status?: int, refusal?: Refusal, code?: string}
      */
     public function update(int $callerId, int $templateId, array $details): array
     {
+        $permIds = $this->submittedPermIds($details);
         $error = PermissionTemplateContentGuard::apply(
             $this->userRepository,
             $callerId,
             $templateId,
-            $this->submittedPermIds($details)
+            $permIds
         );
 
         if ($error !== null) {
@@ -82,7 +87,14 @@ readonly class PermissionTemplateWriteService
         // The guarded id wins, so a caller-supplied templ_id can never target another row.
         $details['templ_id'] = $templateId;
 
-        if (!$this->templateRepository->updatePermissionTemplateDetails($details)) {
+        $write = fn(): bool => $this->templateRepository->updatePermissionTemplateDetails($details);
+        $written = $permIds !== null && !$this->grantsUberuser($permIds)
+            ? $this->superAdminGuard->guard(UberuserChange::templateDropsUberuser($templateId), $write)
+            : $write();
+        if (is_array($written)) {
+            return $written;
+        }
+        if (!$written) {
             return ['success' => false, 'message' => 'Failed to update permission template', 'status' => 500];
         }
 
@@ -102,6 +114,23 @@ readonly class PermissionTemplateWriteService
         }
 
         return is_array($details['perm_id']) ? $details['perm_id'] : [];
+    }
+
+    /**
+     * Whether the submitted permission ids include user_is_ueberuser.
+     *
+     * @param array<mixed> $permIds
+     */
+    private function grantsUberuser(array $permIds): bool
+    {
+        $uberuserPermIds = $this->userRepository->getPermissionIdsByName(PermissionTemplateContentGuard::UBERUSER_PERMISSION);
+        foreach ($permIds as $permId) {
+            if (is_scalar($permId) && in_array((int)$permId, $uberuserPermIds, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

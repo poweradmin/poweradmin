@@ -151,7 +151,11 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
     {
         $template_type = $details['template_type'] ?? 'user';
 
-        $this->transaction()->begin();
+        // A caller holding the last-super-admin lock owns the transaction; this write only joins it
+        $owned = !$this->transaction()->inTransaction();
+        if ($owned) {
+            $this->transaction()->begin();
+        }
         try {
             $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
             $stmt->execute([
@@ -177,10 +181,14 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
                 }
             }
 
-            $this->transaction()->commit();
+            if ($owned) {
+                $this->transaction()->commit();
+            }
             return true;
         } catch (Throwable $e) {
-            $this->transaction()->rollBack();
+            if ($owned) {
+                $this->transaction()->rollBack();
+            }
             throw $e;
         }
     }

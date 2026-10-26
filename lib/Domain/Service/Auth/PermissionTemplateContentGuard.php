@@ -57,7 +57,7 @@ class PermissionTemplateContentGuard
         ?int $templateId,
         ?array $permIds
     ): ?string {
-        // hasAdminPermission() honours group-granted superuser; isUberuser() would not.
+        // Like isUberuser() this honours group grants; unlike it, it does not also require users.active
         if ($userRepository->hasAdminPermission($callerId)) {
             return null;
         }
