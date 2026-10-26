@@ -295,6 +295,30 @@ class EditRecordControllerTest extends SeamControllerTestCase
         $this->assertSame(['refresh' => 10800, 'retry' => 900, 'expire' => 1209600, 'minimum' => 300], $params['soa_defaults']);
     }
 
+    public function testAnNidWithItsPreferenceOnlyInPrioShowsItInTheContent(): void
+    {
+        $this->storedRecord['type'] = 'nid';
+        $this->storedRecord['content'] = '1000:0000:0000:0001';
+        $this->storedRecord['prio'] = 10;
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame('10 1000:0000:0000:0001', $this->renderedParams()['record']['content']);
+    }
+
+    public function testAnNidWithThePreferenceInTheContentIsShownAsStored(): void
+    {
+        $this->storedRecord['type'] = 'NID';
+        $this->storedRecord['content'] = '10 1000:0000:0000:0001';
+        $this->storedRecord['prio'] = 0;
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame('10 1000:0000:0000:0001', $this->renderedParams()['record']['content']);
+    }
+
     public function testANonSoaRecordHasNoSoaPartsButStillCarriesTheDefaults(): void
     {
         $controller = $this->makeController();

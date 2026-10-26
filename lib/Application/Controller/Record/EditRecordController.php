@@ -181,6 +181,12 @@ class EditRecordController extends BaseController
             return;
         }
 
+        // An older NID row keeps its preference only in prio, which PowerDNS never reads;
+        // showing it in the content lets an unchanged save repair the row.
+        if (strtoupper((string)$record['type']) === RecordType::NID && (int)$record['prio'] > 0 && !str_contains(trim($record['content']), ' ')) {
+            $record['content'] = (int)$record['prio'] . ' ' . trim($record['content']);
+        }
+
         $display_hostname_only = $this->services()->userPreferenceService()->getDisplayHostnameOnly(
             $this->getUserContextService()->getLoggedInUserId()
         );
