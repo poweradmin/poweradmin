@@ -92,7 +92,7 @@ class RecordAddService
      * @param string $companion One of the RecordAddResult::COMPANION_* constants, or '' for none
      * @param int $disabled 1 to create the record disabled (API callers); the forms always pass 0
      * @param string $origin One of the AuditLoggerInterface::ORIGIN_* values; the API writes api_add_record
-     * @param (Closure(int): bool)|null $companionZoneAllowed Whether the caller may write the PTR into its reverse zone (an API key's zone scope)
+     * @param (Closure(int): bool)|null $companionZoneAllowed Whether the caller may write the companion or its synced comment into the other zone (an API key's zone scope)
      */
     public function add(
         int $zoneId,
@@ -122,7 +122,7 @@ class RecordAddService
             ));
         }
 
-        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username, $disabled, $origin, $userId);
+        $written = $this->records->createRecord($zoneId, $name, $type, $content, $ttl, $prio, $comment, $username, $disabled, $origin, $userId, syncZoneAllowed: $companionZoneAllowed);
         if (!$written->success) {
             return RecordAddResult::refused($written);
         }
@@ -141,7 +141,7 @@ class RecordAddService
                 zoneAllowed: $this->companionZoneGate($userId, $companionZoneAllowed)
             );
             if (!empty($ptr['success'])) {
-                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username, $userId);
+                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username, $userId, $companionZoneAllowed);
             }
 
             return new RecordAddResult(
@@ -154,9 +154,9 @@ class RecordAddService
         }
 
         if ($companion === RecordAddResult::COMPANION_A) {
-            $a = $this->domainRecords->addDomainRecord($name, $type, $content, $zoneId, $comment, $username);
+            $a = $this->domainRecords->addDomainRecord($name, $type, $content, $zoneId, $comment, $username, $this->companionZoneGate($userId, $companionZoneAllowed));
             if (!empty($a['success'])) {
-                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username, $userId);
+                $this->records->syncCompanionComment($zoneId, $name, $type, $content, $comment, $username, $userId, $companionZoneAllowed);
             }
 
             return new RecordAddResult(

@@ -110,7 +110,7 @@ class DeleteRecordsController extends BaseController
         $outcome = $this->services()->recordChangeLog()->withChangeset(
             null,
             $comment,
-            fn(): RecordBatchDeletionOutcome => $this->services()->recordDeletionService()->deleteMany($record_ids, $delete_ptr)
+            fn(): RecordBatchDeletionOutcome => $this->services()->recordDeletionService()->deleteMany($record_ids, $delete_ptr, $this->directWriteZoneGate())
         );
         foreach ($outcome->errors as $error) {
             $this->addSystemMessage('error', $error);

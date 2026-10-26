@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Record;
 
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use PDO;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Service\Web\AuditService;
@@ -59,7 +61,7 @@ class RecordManagerServicePtrSyncTest extends PermissionServiceTestCase
     }
 
     /** @param int[] $slaveZoneIds */
-    private function service(bool $sync = true, array $slaveZoneIds = []): RecordManagerService
+    private function service(bool $sync = true, array $slaveZoneIds = [], ?ChangeApprovalContext $approval = null): RecordManagerService
     {
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainNameById')->willReturnMap([[1, 'example.com'], [5, '2.0.192.in-addr.arpa']]);
@@ -78,7 +80,7 @@ class RecordManagerServicePtrSyncTest extends PermissionServiceTestCase
             ownedZonesByUser: [self::OWNER => [1]]
         );
 
-        return new RecordManagerService($domains, new SqlRecordRepository($this->db, $config), $manager, $this->comments, $this->createMock(AuditService::class), $config, $permissions);
+        return new RecordManagerService($domains, new SqlRecordRepository($this->db, $config), $manager, $this->comments, $this->createMock(AuditService::class), $config, $permissions, $approval);
     }
 
     public function testACommentIsCopiedToThePtrRecordsOfTheReverseZone(): void
@@ -247,5 +249,29 @@ class RecordManagerServicePtrSyncTest extends PermissionServiceTestCase
         $this->service()->createRecord(1, 'host.example.com', 'A', '192.0.2.1', 3600, 0, 'shared note', 'admin');
 
         $this->assertSame([[1, 'host.example.com', 'A', 'shared note', 99, 'admin']], $calls);
+    }
+
+    public function testACommentIsNotCopiedToAReverseZoneWhereTheUserMustFileAChangeRequest(): void
+    {
+        $calls = [];
+        $this->comments->method('createCommentForRecord')->willReturnCallback(function (...$args) use (&$calls) {
+            $calls[] = $args;
+            return null;
+        });
+        $approval = $this->createMock(ChangeApprovalContext::class);
+        $approval->method('modeForZone')->willReturnCallback(
+            fn(?int $userId, int $zoneId): string => $zoneId === 5 ? ChangeApprovalPolicy::MODE_REQUEST : ChangeApprovalPolicy::MODE_DIRECT
+        );
+
+        $this->service(approval: $approval)->createRecord(1, 'host.example.com', 'A', '192.0.2.1', 3600, 0, 'shared note', 'admin', userId: self::ADMIN);
+
+        $this->assertSame([[1, 'host.example.com', 'A', 'shared note', 99, 'admin']], $calls);
+    }
+
+    public function testACommentIsNotCopiedToAZoneOutsideTheCallersLimit(): void
+    {
+        $this->comments->expects($this->never())->method('createCommentForRecord');
+
+        $this->service()->syncCompanionComment(1, 'host.example.com', 'A', '192.0.2.1', 'rack 4', 'admin', self::ADMIN, fn(int $zoneId): bool => $zoneId !== 5);
     }
 }

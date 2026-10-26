@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -70,8 +71,9 @@ class DomainRecordCreator
      * @param int $zone_id Reverse zone ID
      * @param string $comment Optional record comment
      * @param string $account Optional account name for logging
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the caller may write to the forward zone, beyond the edit rights the record manager checks
      */
-    public function addDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment = '', string $account = ''): array
+    public function addDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment = '', string $account = '', ?Closure $zoneAllowed = null): array
     {
         $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
 
@@ -79,6 +81,9 @@ class DomainRecordCreator
         $domainId = $this->findManagedZoneId($content);
         if ($domainId === null) {
             return $this->errorResponse(sprintf(_('There is no managed zone for domain: %s.'), $content));
+        }
+        if ($zoneAllowed !== null && !$zoneAllowed($domainId)) {
+            return $this->errorResponse(_('You do not have the permission to add a record to this zone.'));
         }
 
         if ($name && $iface_add_domain_record && $type === 'PTR') {

@@ -22,12 +22,15 @@
 
 namespace Poweradmin\Application\Service\Record;
 
+use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Domain\Port\RecordCommentSyncInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Utility\DomainUtility;
 
 /**
@@ -39,17 +42,20 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
     private PermissionService $permissions;
     private ?RecordListingInterface $recordRepository;
     private bool $numericRecordIds;
+    private ?ChangeApprovalContext $approval;
 
     public function __construct(
         RecordCommentService $commentService,
         PermissionService $permissions,
         ?RecordListingInterface $recordRepository = null,
-        ?BackendCapabilitiesInterface $backendProvider = null
+        ?BackendCapabilitiesInterface $backendProvider = null,
+        ?ChangeApprovalContext $approval = null
     ) {
         $this->commentService = $commentService;
         $this->permissions = $permissions;
         $this->recordRepository = $recordRepository;
         $this->numericRecordIds = $backendProvider === null || $backendProvider->recordIdsAreNumeric();
+        $this->approval = $approval;
     }
 
     public function syncCommentsForPtrRecord(
@@ -97,19 +103,23 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
         $this->commentService->updateComment($ptrZoneId, $oldPtrName, $forwardType, $newPtrName, $forwardType, $comment, $account);
     }
 
+    /**
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the comment may reach the related zone (an API key's zone scope)
+     */
     public function updateRelatedRecordComments(
         DomainRepositoryInterface $domainRepository,
         array $newRecordInfo,
         string $comment,
         string $userLogin,
-        int $userId
+        int $userId,
+        ?Closure $zoneAllowed = null
     ): void {
         if (in_array($newRecordInfo['type'], [RecordType::A, RecordType::AAAA])) {
             $ptrName = $newRecordInfo['type'] === RecordType::A
                 ? DomainUtility::convertIPv4AddrToPtrRec($newRecordInfo['content'])
                 : DomainUtility::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $domainRepository->getBestMatchingZoneIdFromName($ptrName);
-            if ($ptrZoneId !== -1 && $this->mayEditZone($domainRepository, $userId, $ptrZoneId)) {
+            if ($ptrZoneId !== -1 && $this->mayEditZone($domainRepository, $userId, $ptrZoneId, $zoneAllowed)) {
                 $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
@@ -126,7 +136,7 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
                 }
             }
 
-            if ($contentDomainId !== null && $this->mayEditZone($domainRepository, $userId, $contentDomainId)) {
+            if ($contentDomainId !== null && $this->mayEditZone($domainRepository, $userId, $contentDomainId, $zoneAllowed)) {
                 $forwardType = str_ends_with(strtolower((string)($newRecordInfo['name'] ?? '')), '.ip6.arpa') ? RecordType::AAAA : RecordType::A;
                 $this->updateRecordComments($contentDomainId, $hostname, $forwardType, $comment, $userLogin);
             }
@@ -134,11 +144,14 @@ class RecordCommentSyncService implements RecordCommentSyncInterface
     }
 
     /**
-     * The related zone comes from the record content, so it can belong to someone else.
+     * The related zone comes from the record content, so it can belong to someone else,
+     * or be one where the user must file a change request.
      */
-    private function mayEditZone(DomainRepositoryInterface $domainRepository, int $userId, int $zoneId): bool
+    private function mayEditZone(DomainRepositoryInterface $domainRepository, int $userId, int $zoneId, ?Closure $zoneAllowed): bool
     {
-        return $this->permissions->canEditZoneContent($userId, $zoneId, $domainRepository->getDomainType($zoneId));
+        return $this->permissions->canEditZoneContent($userId, $zoneId, $domainRepository->getDomainType($zoneId))
+            && $this->approval?->modeForZone($userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST
+            && ($zoneAllowed === null || $zoneAllowed($zoneId));
     }
 
     private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void

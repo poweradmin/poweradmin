@@ -177,7 +177,8 @@ final class RecordServices
             $this->recordCommentService(),
             $this->services->permissionService(),
             $this->services->recordRepository(),
-            $this->services->dnsBackendProvider()
+            $this->services->dnsBackendProvider(),
+            $this->changeApprovalContext()
         );
     }
 
@@ -295,7 +296,8 @@ final class RecordServices
             $this->recordCommentService(),
             $this->services->auditService(),
             $this->config,
-            $this->services->permissionService()
+            $this->services->permissionService(),
+            $this->changeApprovalContext()
         );
     }
 

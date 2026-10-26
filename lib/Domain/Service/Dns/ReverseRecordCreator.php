@@ -233,9 +233,10 @@ class ReverseRecordCreator
      *
      * @param string $ptrName PTR record name (e.g., 1.0.168.192.in-addr.arpa)
      * @param string $ptrContent PTR record content (hostname)
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the caller may write to the zone holding the A/AAAA record
      * @return bool True if a matching A/AAAA record was found and deleted
      */
-    public function deleteForwardRecord(string $ptrName, string $ptrContent): bool
+    public function deleteForwardRecord(string $ptrName, string $ptrContent, ?Closure $zoneAllowed = null): bool
     {
         // Extract IP address from PTR name
         $ipAddress = $this->extractIpFromPtrName($ptrName);
@@ -264,6 +265,9 @@ class ReverseRecordCreator
         }
 
         foreach ($records as $r) {
+            if ($zoneAllowed !== null && !$zoneAllowed((int)($r['domain_id'] ?? 0))) {
+                continue;
+            }
             $recordId = $r['id'] ?? 0;
             if (!empty($recordId) && $this->recordManager->deleteRecord($recordId)->success) {
                 return true;

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Port;
 
+use Closure;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 
 /**
@@ -32,12 +33,14 @@ interface RecordCommentSyncInterface
     /**
      * @param array<string, mixed> $newRecordInfo Record row after the edit (type, name, content)
      * @param int $userId The acting user; a related record is updated only in a zone this user may edit
+     * @param (Closure(int): bool)|null $zoneAllowed Whether the comment may reach the related zone (an API key's zone scope)
      */
     public function updateRelatedRecordComments(
         DomainRepositoryInterface $domainRepository,
         array $newRecordInfo,
         string $comment,
         string $userLogin,
-        int $userId
+        int $userId,
+        ?Closure $zoneAllowed = null
     ): void;
 }

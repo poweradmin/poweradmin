@@ -257,4 +257,26 @@ class RecordDeletionServiceTest extends TestCase
         $this->assertFalse($outcome->ptrCandidate);
         $this->assertFalse($outcome->forwardCandidate);
     }
+
+    public function testTheCallersZoneCheckReachesTheCounterpartDeletes(): void
+    {
+        $gate = fn(int $zoneId): bool => false;
+        $this->reverse->expects($this->once())->method('deleteReverseRecord')
+            ->with('A', '192.0.2.1', 'www.example.com', $this->identicalTo($gate))->willReturn(false);
+
+        $outcome = $this->service()->deleteWithReverse(self::ZONE_ID, self::RECORD_ID, true, true, $gate);
+
+        $this->assertTrue($outcome->recordDeleted);
+        $this->assertFalse($outcome->ptrDeleted);
+    }
+
+    public function testTheCallersZoneCheckReachesThePtrDeletesOfASelection(): void
+    {
+        $this->selection();
+        $gate = fn(int $zoneId): bool => false;
+        $this->reverse->expects($this->once())->method('deleteReverseRecord')
+            ->with('A', '192.0.2.1', 'www.example.com', $this->identicalTo($gate));
+
+        $this->service()->deleteMany([1, 2, 3], true, $gate);
+    }
 }

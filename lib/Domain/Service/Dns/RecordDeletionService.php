@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
@@ -49,8 +50,9 @@ class RecordDeletionService
      * @param int|string $recordId Numeric id, or the encoded identifier of an API-backed record
      * @param bool $deletePtr Also remove the PTR of an A/AAAA record
      * @param bool $deleteForward Also remove the A/AAAA of a PTR record
+     * @param (Closure(int): bool)|null $companionZoneAllowed Whether the counterpart may be removed from its zone, which the caller did not check
      */
-    public function deleteWithReverse(int $zoneId, int|string $recordId, bool $deletePtr, bool $deleteForward): RecordDeletionOutcome
+    public function deleteWithReverse(int $zoneId, int|string $recordId, bool $deletePtr, bool $deleteForward, ?Closure $companionZoneAllowed = null): RecordDeletionOutcome
     {
         $record = $this->recordRepository->getRecordFromId($recordId);
         if ($record === null) {
@@ -76,9 +78,9 @@ class RecordDeletionService
         );
 
         $ptrDeleted = $ptrCandidate && $deletePtr
-            && $this->reverseRecordCreator->deleteReverseRecord($type, $record['content'], $record['name']);
+            && $this->reverseRecordCreator->deleteReverseRecord($type, $record['content'], $record['name'], $companionZoneAllowed);
         $forwardDeleted = $forwardCandidate && $deleteForward
-            && $this->reverseRecordCreator->deleteForwardRecord($record['name'], $record['content']);
+            && $this->reverseRecordCreator->deleteForwardRecord($record['name'], $record['content'], $companionZoneAllowed);
 
         return RecordDeletionOutcome::deleted($ptrCandidate, $ptrDeleted, $forwardCandidate, $forwardDeleted);
     }
@@ -89,8 +91,9 @@ class RecordDeletionService
      *
      * @param list<int|string> $recordIds
      * @param bool $deletePtr Also remove the PTR of each deleted A/AAAA record
+     * @param (Closure(int): bool)|null $companionZoneAllowed Whether a PTR may be removed from its zone, which the caller did not check
      */
-    public function deleteMany(array $recordIds, bool $deletePtr): RecordBatchDeletionOutcome
+    public function deleteMany(array $recordIds, bool $deletePtr, ?Closure $companionZoneAllowed = null): RecordBatchDeletionOutcome
     {
         $deleted = 0;
         $errors = [];
@@ -132,7 +135,7 @@ class RecordDeletionService
             $this->audit->logRecordDelete($zoneId, $type, (string)$record['name'], (string)$record['content'], $record['ttl'], $record['prio'] ?? null);
 
             if ($deletePtr && $this->reverseHandling && ($type === RecordType::A || $type === RecordType::AAAA)) {
-                $this->reverseRecordCreator->deleteReverseRecord($type, $record['content'], $record['name']);
+                $this->reverseRecordCreator->deleteReverseRecord($type, $record['content'], $record['name'], $companionZoneAllowed);
             }
         }
 

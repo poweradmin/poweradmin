@@ -22,12 +22,14 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Closure;
 use InvalidArgumentException;
 use LogicException;
 use Poweradmin\Application\Boot\BootContext;
 use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Application\Http\Request as HttpRequest;
 use Poweradmin\Application\Http\RequestContext;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Application\Presenter\OwnerOptionsPresenter;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\ControllerEnvironment;
@@ -608,6 +610,17 @@ abstract class BaseController
     protected function changeApprovalModeForZone(int $zoneId): string
     {
         return $this->changeApproval()->modeForZone($this->getCurrentUserId(), $zoneId);
+    }
+
+    /**
+     * For a write that lands in a zone other than the one the request was checked against,
+     * such as the PTR of an A record: refused where the user must file a change request.
+     *
+     * @return Closure(int): bool
+     */
+    protected function directWriteZoneGate(): Closure
+    {
+        return fn(int $zoneId): bool => $this->changeApprovalModeForZone($zoneId) !== ChangeApprovalPolicy::MODE_REQUEST;
     }
 
     private function pendingChangeRequestCount(): ?int

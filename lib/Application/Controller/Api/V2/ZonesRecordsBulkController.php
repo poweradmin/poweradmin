@@ -531,7 +531,7 @@ class ZonesRecordsBulkController extends PublicApiController
         }
         // Whatever became of the PTR, the comment follows an existing counterpart, as on a single POST
         if ($comment !== '' && !$this->validateOnly) {
-            $this->services()->recordManagerService()->syncCompanionComment($zoneId, $normalizedName, $type, $content, $comment, $username, $this->getAuthenticatedUserId());
+            $this->services()->recordManagerService()->syncCompanionComment($zoneId, $normalizedName, $type, $content, $comment, $username, $this->getAuthenticatedUserId(), $this->apiKeyZoneGate());
         }
 
         return $type;
@@ -747,7 +747,8 @@ class ZonesRecordsBulkController extends PublicApiController
                 $stored,
                 $comment,
                 $username,
-                $this->getAuthenticatedUserId()
+                $this->getAuthenticatedUserId(),
+                $this->apiKeyZoneGate()
             );
         }
     }

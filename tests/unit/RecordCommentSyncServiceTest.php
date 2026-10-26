@@ -4,9 +4,11 @@ namespace Poweradmin\Tests\Unit;
 
 use Poweradmin\Application\Service\Record\RecordCommentService;
 use Poweradmin\Application\Service\Record\RecordCommentSyncService;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use TestHelpers\PermissionServiceTestCase;
 
 class RecordCommentSyncServiceTest extends PermissionServiceTestCase
@@ -242,5 +244,29 @@ class RecordCommentSyncServiceTest extends PermissionServiceTestCase
 
         $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
         $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN);
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsAPtrZoneWhereTheUserMustFileAChangeRequest()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+        $approval = $this->createMock(ChangeApprovalContext::class);
+        $approval->method('modeForZone')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions(), null, null, $approval);
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN);
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsAPtrZoneOutsideTheCallersLimit()
+    {
+        $domainRepositoryMock = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepositoryMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock, $this->permissions());
+        $service->updateRelatedRecordComments($domainRepositoryMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user', self::ADMIN, fn(int $zoneId): bool => $zoneId !== 2);
     }
 }

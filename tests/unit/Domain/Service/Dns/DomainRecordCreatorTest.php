@@ -424,4 +424,17 @@ class DomainRecordCreatorTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertSame([1, 'example.com', 'AAAA', '2001:db8::1'], $written);
     }
+
+    public function testRefusesAForwardZoneTheCallerMayNotWriteTo(): void
+    {
+        $creator = $this->createCreator([
+            'example.com' => 2,
+            '2.0.192.in-addr.arpa' => 5,
+        ]);
+
+        $result = $creator->addDomainRecord('55', 'PTR', 'host.example.com', 5, zoneAllowed: fn(int $zoneId): bool => $zoneId !== 2);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('You do not have the permission to add a record to this zone.', $result['message']);
+    }
 }

@@ -92,7 +92,8 @@ class DeleteRecordController extends BaseController
                 $zid,
                 $record_id,
                 $this->httpRequest->getPostParam('delete_ptr') === '1',
-                $this->httpRequest->getPostParam('delete_forward') === '1'
+                $this->httpRequest->getPostParam('delete_forward') === '1',
+                $this->directWriteZoneGate()
             );
             if ($outcome->notFound) {
                 $this->showError((string)$outcome->message);
