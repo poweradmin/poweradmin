@@ -278,7 +278,7 @@ final class SamlService
         $this->logger->info('SAML Response length: {length}', ['length' => strlen((string) $this->request->getPostParam('SAMLResponse', ''))]);
 
         // Process the SAML response; with a request ID php-saml rejects a missing or different InResponseTo
-        $auth->processResponse($allowIdpInitiated ? null : $requestId);
+        $this->withPublicRequestUri(fn() => $auth->processResponse($allowIdpInitiated ? null : $requestId), $this->getAcsUrl());
 
         $errors = $auth->getErrors();
         if (!empty($errors)) {
@@ -500,7 +500,8 @@ final class SamlService
         try {
             $auth = $this->createAuth($providerId);
             if ($auth) {
-                $this->withProxyServerVars(fn() => $auth->processSLO(), $this->getSloUrl());
+                $sloUrl = $this->getSloUrl();
+                $this->withProxyServerVars(fn() => $this->withPublicRequestUri(fn() => $auth->processSLO(), $sloUrl), $sloUrl);
 
                 $errors = $auth->getErrors();
                 if (!empty($errors)) {
@@ -702,13 +703,30 @@ final class SamlService
         Utils::setSelfProtocol($scheme);
         Utils::setSelfHost($parts['host']);
         Utils::setSelfPort((string)($parts['port'] ?? ($scheme === 'https' ? 443 : 80)));
-        // A proxy serving Poweradmin under a path prefix strips it before PHP sees the request
-        $prefix = self::strippedPathPrefix((string)($parts['path'] ?? ''), (string)parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH));
-        if ($prefix !== '') {
-            Utils::setBaseURLPath($prefix);
-        }
 
         return true;
+    }
+
+    /**
+     * Runs a php-saml check with REQUEST_URI carrying the path prefix that a proxy serving
+     * Poweradmin under a sub-path stripped, so the rebuilt URL matches $endpointUrl.
+     * php-saml's own base path setting cannot do this: it also deletes the prefix from the
+     * middle of the request path (a /saml prefix turned /saml/acs into acs).
+     */
+    private function withPublicRequestUri(callable $fn, string $endpointUrl): mixed
+    {
+        $originalUri = $_SERVER['REQUEST_URI'] ?? null;
+        $prefix = self::strippedPathPrefix((string)parse_url($endpointUrl, PHP_URL_PATH), explode('?', (string)$originalUri, 2)[0]);
+        if ($prefix === '') {
+            return $fn();
+        }
+
+        $_SERVER['REQUEST_URI'] = $prefix . $originalUri;
+        try {
+            return $fn();
+        } finally {
+            $_SERVER['REQUEST_URI'] = $originalUri;
+        }
     }
 
     /**
