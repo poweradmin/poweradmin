@@ -47,7 +47,7 @@ class ResetPasswordController extends BaseController
     {
         parent::__construct($request, false, $environment); // No authentication required for password reset
         // Extract token from URL parameters
-        $this->token = $this->httpRequest->getQueryParam('token');
+        $this->token = $this->httpRequest->getQueryString('token');
     }
 
     private function csrfTokenService(): CsrfTokenService
@@ -170,7 +170,7 @@ class ResetPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $this->httpRequest->getPostParam('reset_password_token', '');
+            $token = $this->httpRequest->getPostString('reset_password_token');
 
             if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::RESET_PASSWORD_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -187,8 +187,8 @@ class ResetPasswordController extends BaseController
             $this->session()->remove(AuthFlowSessionKeys::RESET_PASSWORD_TOKEN);
         }
 
-        $password = $this->httpRequest->getPostParam('password', '');
-        $confirmPassword = $this->httpRequest->getPostParam('confirm_password', '');
+        $password = $this->httpRequest->getPostString('password');
+        $confirmPassword = $this->httpRequest->getPostString('confirm_password');
 
         // Check if passwords match
         if ($password !== $confirmPassword) {

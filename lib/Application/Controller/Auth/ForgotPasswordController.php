@@ -126,7 +126,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $this->httpRequest->getPostParam('password_reset_token', '');
+            $token = $this->httpRequest->getPostString('password_reset_token');
 
             if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::PASSWORD_RESET_TOKEN)) {
                 $this->logger->warning('Password reset failed - invalid CSRF token', [
@@ -144,7 +144,7 @@ class ForgotPasswordController extends BaseController
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService()->isEnabled()) {
-            $recaptchaToken = $this->httpRequest->getPostParam('g-recaptcha-response', '');
+            $recaptchaToken = $this->httpRequest->getPostString('g-recaptcha-response');
             if (!$this->recaptchaService()->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
                 $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -156,7 +156,7 @@ class ForgotPasswordController extends BaseController
             }
         }
 
-        $email = trim($this->httpRequest->getPostParam('email', ''));
+        $email = trim($this->httpRequest->getPostString('email'));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

@@ -146,9 +146,9 @@ class MfaVerifyController extends BaseController
         // Basic logging
         $this->logger->debug('[MfaVerifyController] Verification attempt started');
 
-        $code = $this->httpRequest->getPostParam('mfa_code', '');
+        $code = $this->httpRequest->getPostString('mfa_code');
         $userId = $this->challengedUserId();
-        $mfaToken = $this->httpRequest->getPostParam('mfa_token', '');
+        $mfaToken = $this->httpRequest->getPostString('mfa_token');
 
         // Validate CSRF token for security
         if (!$this->csrfTokenService()->validateToken($mfaToken, AuthFlowSessionKeys::MFA_TOKEN)) {

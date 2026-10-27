@@ -166,7 +166,7 @@ class MfaSetupController extends BaseController
     private function handleAppVerification(): void
     {
         $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
-        $code = $this->httpRequest->getPostParam('verification_code', '');
+        $code = $this->httpRequest->getPostString('verification_code');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));
@@ -280,7 +280,7 @@ class MfaSetupController extends BaseController
     private function handleEmailVerification(): void
     {
         $userId = $this->getUserContextService()->getLoggedInUserId() ?? 0;
-        $code = $this->httpRequest->getPostParam('verification_code', '');
+        $code = $this->httpRequest->getPostString('verification_code');
 
         if (empty($code)) {
             $this->addSystemMessage('error', _('Verification code is required.'));
@@ -394,7 +394,7 @@ class MfaSetupController extends BaseController
             return false;
         }
 
-        $code = trim((string)$this->httpRequest->getPostParam('mfa_code', ''));
+        $code = trim($this->httpRequest->getPostString('mfa_code'));
         if ($code === '') {
             // Email codes only exist once sent, so an empty submit asks for one
             if ($this->mfaService()->getMfaType($userId) === UserMfa::TYPE_EMAIL && $this->sendStepUpEmailCode($userId)) {

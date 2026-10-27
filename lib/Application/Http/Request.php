@@ -78,6 +78,26 @@ class Request
     }
 
     /**
+     * Query string value as a string; $default when absent or not a string (?key[]=x).
+     */
+    public function getQueryString(string $key, string $default = ''): string
+    {
+        $value = $this->queryParams[$key] ?? null;
+
+        return is_string($value) ? $value : $default;
+    }
+
+    /**
+     * POST body value as a string; $default when absent or not a string (key[]=x).
+     */
+    public function getPostString(string $key, string $default = ''): string
+    {
+        $value = $this->postParams[$key] ?? null;
+
+        return is_string($value) ? $value : $default;
+    }
+
+    /**
      * 1-based page number from the query string, never below 1.
      */
     public function getPage(string $key = 'start'): int

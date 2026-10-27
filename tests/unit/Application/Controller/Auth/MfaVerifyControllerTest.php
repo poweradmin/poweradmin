@@ -97,6 +97,21 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
+    public function testAnArrayCodeIsCheckedAsAnEmptyCode(): void
+    {
+        $this->session->remove(SessionKeys::USERID);
+        $mfa = $this->pendingLoginOf(self::VICTIM_ID);
+        $mfa->method('isMfaEnabled')->willReturn(true);
+        $mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $mfa->expects($this->once())->method('verifyCode')->with(self::VICTIM_ID, '')->willReturn(false);
+
+        $this->post(['mfa_code' => ['123456'], 'mfa_token' => 'issued']);
+        $controller = new MfaVerifyController([], $this->environment($this->configure(['security' => ['mfa' => ['enabled' => true]]])));
+        $controller->run();
+
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
+    }
+
     public function testAFactorThatIsNotEnabledIsRefusedForCodesAndRecoveryCodes(): void
     {
         $this->session->remove(SessionKeys::USERID);

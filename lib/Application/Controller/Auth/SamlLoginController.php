@@ -72,7 +72,7 @@ class SamlLoginController extends BaseController
         }
 
         // Get provider parameter or use default
-        $providerId = $this->httpRequest->getQueryParam('provider');
+        $providerId = $this->httpRequest->getQueryString('provider');
 
         // If no provider specified, get the first available provider
         if (empty($providerId)) {

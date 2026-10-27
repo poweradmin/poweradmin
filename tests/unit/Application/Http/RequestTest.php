@@ -265,4 +265,23 @@ class RequestTest extends TestCase
         $this->assertSame([], $request->getQueryParams());
         $this->assertSame('GET', $request->getMethod());
     }
+
+    public function testStringGettersReturnStringValues(): void
+    {
+        $request = new Request(['token' => 'abc'], ['code' => '123456']);
+
+        $this->assertSame('abc', $request->getQueryString('token'));
+        $this->assertSame('123456', $request->getPostString('code'));
+    }
+
+    public function testStringGettersFallBackToDefaultForArraysAndMissingKeys(): void
+    {
+        $request = new Request(['token' => ['abc']], ['code' => ['123456'], 'empty' => '']);
+
+        $this->assertSame('', $request->getQueryString('token'));
+        $this->assertSame('', $request->getPostString('code'));
+        $this->assertSame('fallback', $request->getPostString('code', 'fallback'));
+        $this->assertSame('fallback', $request->getQueryString('missing', 'fallback'));
+        $this->assertSame('', $request->getPostString('empty', 'fallback'));
+    }
 }

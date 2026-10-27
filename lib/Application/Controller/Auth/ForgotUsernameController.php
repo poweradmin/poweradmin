@@ -124,7 +124,7 @@ class ForgotUsernameController extends BaseController
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $this->httpRequest->getPostParam('username_recovery_token', '');
+            $token = $this->httpRequest->getPostString('username_recovery_token');
 
             if (!$this->csrfTokenService()->validateToken($token, AuthFlowSessionKeys::USERNAME_RECOVERY_TOKEN)) {
                 $this->logger->warning('Username recovery failed - invalid CSRF token', [
@@ -142,7 +142,7 @@ class ForgotUsernameController extends BaseController
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService()->isEnabled()) {
-            $recaptchaToken = $this->httpRequest->getPostParam('g-recaptcha-response', '');
+            $recaptchaToken = $this->httpRequest->getPostString('g-recaptcha-response');
             if (!$this->recaptchaService()->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
                 $this->logger->warning('Username recovery failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
@@ -154,7 +154,7 @@ class ForgotUsernameController extends BaseController
             }
         }
 
-        $email = trim($this->httpRequest->getPostParam('email', ''));
+        $email = trim($this->httpRequest->getPostString('email'));
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {

@@ -120,7 +120,7 @@ class ChangePasswordController extends BaseController
             'new_password2' => [
                 new Assert\NotBlank(),
                 new Assert\EqualTo([
-                    'value' => $this->httpRequest->getPostParam('new_password'),
+                    'value' => $this->httpRequest->getPostString('new_password'),
                     'message' => 'Repeat password must match the new password.'
                 ])
             ]
@@ -140,8 +140,8 @@ class ChangePasswordController extends BaseController
     private function processPasswordChange(): bool
     {
         [$success, $message] = $this->passwordService()->changePassword(
-            $this->httpRequest->getPostParam('old_password'),
-            $this->httpRequest->getPostParam('new_password')
+            $this->httpRequest->getPostString('old_password'),
+            $this->httpRequest->getPostString('new_password')
         );
 
         if ($success) {
@@ -157,7 +157,7 @@ class ChangePasswordController extends BaseController
 
     private function validatePasswordPolicy(): bool
     {
-        $newPassword = $this->httpRequest->getPostParam('new_password');
+        $newPassword = $this->httpRequest->getPostString('new_password');
         $policyErrors = $this->policyService()->validatePassword($newPassword);
 
         if (!empty($policyErrors)) {
