@@ -148,11 +148,13 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
 
     /**
      * An older NID row kept its preference only in prio, which PowerDNS never reads.
-     * Returns the content with that preference in front, or the content unchanged.
+     * Returns a bare node id with that preference in front, or the content unchanged.
      */
     public static function contentWithPreference(string $content, int $prio): string
     {
-        return $prio > 0 && !str_contains(trim($content), ' ') ? $prio . ' ' . trim($content) : $content;
+        $nodeId = trim($content);
+
+        return $nodeId !== '' && preg_match('/\s/', $nodeId) !== 1 ? $prio . ' ' . $nodeId : $content;
     }
 
     /**

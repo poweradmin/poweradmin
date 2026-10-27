@@ -341,10 +341,12 @@ class NIDRecordValidatorTest extends TestCase
         $this->assertFalse($this->validator->validate('x 1000:0000:0000:0001', 'nid.example.com', 0, 3600, 86400)->isValid());
     }
 
-    public function testContentWithPreferenceRepairsOnlyABareNodeIdWithAPreference(): void
+    public function testContentWithPreferenceRepairsOnlyABareNodeId(): void
     {
         $this->assertSame('10 1000:0000:0000:0001', NIDRecordValidator::contentWithPreference('1000:0000:0000:0001', 10));
-        $this->assertSame('1000:0000:0000:0001', NIDRecordValidator::contentWithPreference('1000:0000:0000:0001', 0));
+        $this->assertSame('0 1000:0000:0000:0001', NIDRecordValidator::contentWithPreference('1000:0000:0000:0001', 0));
+        $this->assertSame('', NIDRecordValidator::contentWithPreference('', 10));
+        $this->assertSame("10\t1000:0000:0000:0001", NIDRecordValidator::contentWithPreference("10\t1000:0000:0000:0001", 0));
         $this->assertSame('20 1000:0000:0000:0001', NIDRecordValidator::contentWithPreference('20 1000:0000:0000:0001', 10));
     }
 }
