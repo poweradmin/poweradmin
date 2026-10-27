@@ -135,24 +135,52 @@ class SamlResponseValidationTest extends TestCase
 
     public function testCurrentUrlKeepsThePathPrefixAProxyStripped(): void
     {
-        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/acs?x=1', 'SCRIPT_NAME' => '/index.php'];
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/acs?x=1', 'QUERY_STRING' => 'x=1', 'SCRIPT_NAME' => '/index.php'];
 
-        $seen = $this->getPrivateMethod('withSelfUrl')
-            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'https://dns.example.com/poweradmin/saml/acs');
+        $seen = $this->routedUrlFor('https://dns.example.com/poweradmin/saml/acs');
 
         $this->assertSame('https://dns.example.com/poweradmin/saml/acs', $seen);
-        // The base path is static state too
-        $this->assertSame('http://internal/saml/acs', \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery());
+        $this->assertSame('/saml/acs?x=1', $_SERVER['REQUEST_URI']);
+    }
+
+    public function testCurrentUrlKeepsAPrefixThatRepeatsTheRoute(): void
+    {
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/sls', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = $this->routedUrlFor('https://dns.example.com/saml/saml/sls');
+
+        $this->assertSame('https://dns.example.com/saml/saml/sls', $seen);
     }
 
     public function testCurrentUrlIsUnchangedWhenThePrefixReachesPhp(): void
     {
         $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/poweradmin/saml/acs', 'SCRIPT_NAME' => '/poweradmin/index.php'];
 
-        $seen = $this->getPrivateMethod('withSelfUrl')
-            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), 'https://dns.example.com/poweradmin/saml/acs');
+        $seen = $this->routedUrlFor('https://dns.example.com/poweradmin/saml/acs');
 
         $this->assertSame('https://dns.example.com/poweradmin/saml/acs', $seen);
+        $this->assertSame('/poweradmin/saml/acs', $_SERVER['REQUEST_URI']);
+    }
+
+    public function testRequestUriIsRestoredWhenTheCheckThrows(): void
+    {
+        $_SERVER = ['REQUEST_URI' => '/saml/acs'];
+
+        try {
+            $this->getPrivateMethod('withSelfUrl')->invoke($this->service, function (): never {
+                throw new \RuntimeException('boom');
+            }, 'https://dns.example.com/poweradmin/saml/acs');
+            $this->fail('Expected the exception to propagate');
+        } catch (\RuntimeException) {
+        }
+
+        $this->assertSame('/saml/acs', $_SERVER['REQUEST_URI']);
+    }
+
+    private function routedUrlFor(string $endpointUrl): string
+    {
+        return $this->getPrivateMethod('withSelfUrl')
+            ->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), $endpointUrl);
     }
 
     public function testSingleLogoutIsCheckedAgainstTheSlsUrlEvenOnAnotherHost(): void

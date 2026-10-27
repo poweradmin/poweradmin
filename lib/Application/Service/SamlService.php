@@ -697,14 +697,25 @@ class SamlService extends LoggingService
     /**
      * Runs $fn with OneLogin's idea of the current URL set to $endpointUrl, the endpoint we
      * advertised for this message, and clears it again when $fn returns or throws.
+     * REQUEST_URI carries the path prefix a proxy serving Poweradmin under a sub-path
+     * stripped; php-saml's own base path setting cannot do this, as it also deletes the
+     * prefix from the middle of the request path (a /saml prefix turned /saml/acs into acs).
      */
     private function withSelfUrl(callable $fn, string $endpointUrl): mixed
     {
         $pinned = $this->pinSelfUrl($endpointUrl);
+        $originalUri = $_SERVER['REQUEST_URI'] ?? null;
+        $prefix = self::strippedPathPrefix((string)parse_url($endpointUrl, PHP_URL_PATH), explode('?', (string)$originalUri, 2)[0]);
+        if ($prefix !== '') {
+            $_SERVER['REQUEST_URI'] = $prefix . $originalUri;
+        }
 
         try {
             return $fn();
         } finally {
+            if ($prefix !== '') {
+                $_SERVER['REQUEST_URI'] = $originalUri;
+            }
             if ($pinned) {
                 // Static state; php-saml's own redirect exits before this runs
                 Utils::setBaseURL('');
@@ -728,11 +739,6 @@ class SamlService extends LoggingService
         Utils::setSelfProtocol($scheme);
         Utils::setSelfHost($parts['host']);
         Utils::setSelfPort((string)($parts['port'] ?? ($scheme === 'https' ? 443 : 80)));
-        // A proxy serving Poweradmin under a path prefix strips it before PHP sees the request
-        $prefix = self::strippedPathPrefix((string)($parts['path'] ?? ''), (string)parse_url((string)($_SERVER['REQUEST_URI'] ?? ''), PHP_URL_PATH));
-        if ($prefix !== '') {
-            Utils::setBaseURLPath($prefix);
-        }
 
         return true;
     }
