@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
+use OneLogin\Saml2\Auth;
 use PHPUnit\Framework\Attributes\BackupGlobals;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -262,6 +263,65 @@ class SamlResponseValidationTest extends TestCase
             $this->service,
             fn() => $withUri->invoke($this->service, fn() => \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery(), $endpointUrl),
             $endpointUrl
+        );
+    }
+
+    public function testAssertionIsCheckedWithThePathPrefixAProxyStripped(): void
+    {
+        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockSamlConfig->method('getServiceProviderConfig')
+            ->willReturn(['assertion_consumer_service_url' => 'https://dns.example.com/saml/saml/acs']);
+        $this->mockSamlConfig->method('getProviderConfig')->willReturn(['allow_idp_initiated' => true]);
+        $this->session->set('saml_provider', 'idp');
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/acs', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = null;
+        $auth = $this->createMock(Auth::class);
+        $auth->method('processResponse')->willReturnCallback(function () use (&$seen): void {
+            $seen = \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery();
+        });
+        $auth->method('getErrors')->willReturn(['stop here']);
+
+        $this->serviceWithAuth($auth)->handleAssertion();
+
+        $this->assertSame('https://dns.example.com/saml/saml/acs', $seen);
+        $this->assertSame('/saml/acs', $_SERVER['REQUEST_URI']);
+    }
+
+    public function testSingleLogoutIsCheckedWithThePathPrefixAProxyStripped(): void
+    {
+        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockSamlConfig->method('getServiceProviderConfig')
+            ->willReturn(['single_logout_service_url' => 'https://dns.example.com/saml/saml/sls']);
+        $this->session->set('saml_provider', 'idp');
+        $_SERVER = ['SERVER_PORT' => '80', 'HTTP_HOST' => 'internal', 'REQUEST_URI' => '/saml/sls?SAMLResponse=x', 'QUERY_STRING' => 'SAMLResponse=x', 'SCRIPT_NAME' => '/index.php'];
+
+        $seen = null;
+        $auth = $this->createMock(Auth::class);
+        $auth->method('processSLO')->willReturnCallback(function () use (&$seen): void {
+            $seen = \OneLogin\Saml2\Utils::getSelfRoutedURLNoQuery();
+        });
+        $auth->method('getErrors')->willReturn([]);
+
+        $this->serviceWithAuth($auth)->handleSingleLogout();
+
+        $this->assertSame('https://dns.example.com/saml/saml/sls', $seen);
+        $this->assertSame('/saml/sls?SAMLResponse=x', $_SERVER['REQUEST_URI']);
+    }
+
+    private function serviceWithAuth(Auth $auth): SamlService
+    {
+        return new SamlService(
+            $this->mockConfig,
+            $this->mockSamlConfig,
+            $this->mockUserProvisioning,
+            $this->mockLogger,
+            $this->createMock(AuthenticationService::class),
+            $this->createMock(AuditService::class),
+            $this->createMock(MfaService::class),
+            $this->session,
+            $this->mockRequest,
+            $auth
         );
     }
 
