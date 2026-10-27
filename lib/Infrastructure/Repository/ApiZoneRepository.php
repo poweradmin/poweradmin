@@ -1273,7 +1273,6 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
         foreach ($results as &$row) {
             $row['id'] = (int)$row['id'];
             $row['canonical_id'] = (int)$row['canonical_id'];
-            $row['record_count'] = 0;
         }
         return $results;
     }

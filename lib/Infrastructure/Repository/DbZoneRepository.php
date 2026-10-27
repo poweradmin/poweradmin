@@ -1263,17 +1263,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Ownership and explicit zone-id allowlist conditions (both optional).
         [$conditions, $params] = $this->buildZoneFilterConditions($zoneIds, $userId, $nameFilter, $nameContains);
 
         $query = "SELECT d.id, d.name, d.type, d.master,
-                         COALESCE(MIN(z.owner), 0) as owner,
-                         COUNT(DISTINCT r.id) as record_count
+                         COALESCE(MIN(z.owner), 0) as owner
                   FROM $domains_table d
-                  LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN $records_table r ON d.id = r.domain_id";
+                  LEFT JOIN zones z ON d.id = z.domain_id";
 
         if ($conditions !== []) {
             $query .= " WHERE " . implode(' AND ', $conditions);
