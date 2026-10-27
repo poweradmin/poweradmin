@@ -199,6 +199,36 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         return count($this->listedRecords($domainId, $recordType, false));
     }
 
+    public function getRRSetPageRecords(int $domainId, ?string $recordType, int $limit, int $offset): array
+    {
+        $records = $this->listedRecords($domainId, $recordType, false);
+        $keys = array_flip(array_slice(self::rrsetKeys($records), $offset, $limit));
+
+        return array_values(array_filter(
+            $records,
+            static fn(array $record): bool => isset($keys[$record['name'] . '|' . $record['type']])
+        ));
+    }
+
+    public function countRRSetsByDomainId(int $domainId, ?string $recordType = null): int
+    {
+        return count(self::rrsetKeys($this->listedRecords($domainId, $recordType, false)));
+    }
+
+    /**
+     * @param list<array<string, mixed>> $records
+     * @return list<string> name|type of each RRset, in the order it first appears
+     */
+    private static function rrsetKeys(array $records): array
+    {
+        $keys = [];
+        foreach ($records as $record) {
+            $keys[$record['name'] . '|' . $record['type']] = true;
+        }
+
+        return array_keys($keys);
+    }
+
     /**
      * @return list<array<string, mixed>>
      */

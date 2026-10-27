@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
@@ -264,19 +265,30 @@ class ZonesRRSetsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            // Get records for the zone
-            $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
-
-            // Group records into RRSets (by name + type)
-            $rrsets = $this->groupIntoRRSets($records);
-
-            // Records may come from the PowerDNS API, so filtering, sorting and
-            // paging happen here and behave the same for every backend.
-            [$rrsets, $extra] = $this->filterSortAndPage($rrsets, $sort, [
+            $filters = [
                 'name' => static fn(array $r): array => [$r['name']],
                 'content' => static fn(array $r): array => array_column($r['records'], 'content'),
                 'q' => static fn(array $r): array => [$r['name'], ...array_column($r['records'], 'content')],
-            ]);
+            ];
+
+            // A plain page keeps the repository order, so the repository can cut it
+            // without loading the whole zone (#1814)
+            [$page, $perPage] = $this->pagingParameters();
+            if ($perPage > 0 && $sort->fields() === [] && !$this->anyQueryParameter(array_keys($filters))) {
+                $total = $this->recordRepository->countRRSetsByDomainId((int)$zoneId, $recordType);
+                $extra = ListPaging::extra($page, $perPage, $total);
+                $rrsets = ListPaging::isPastEnd($page, $perPage, $total)
+                    ? []
+                    : $this->groupIntoRRSets($this->recordRepository->getRRSetPageRecords((int)$zoneId, $recordType, $perPage, ($page - 1) * $perPage));
+
+                return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
+            }
+
+            $rrsets = $this->groupIntoRRSets($this->recordRepository->getRecordsByDomainId($zoneId, $recordType));
+
+            // Records may come from the PowerDNS API, so filtering, sorting and
+            // paging happen here and behave the same for every backend.
+            [$rrsets, $extra] = $this->filterSortAndPage($rrsets, $sort, $filters);
 
             return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {

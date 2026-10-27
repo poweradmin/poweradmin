@@ -418,6 +418,51 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
+    public function getRRSetPageRecords(int $domainId, ?string $recordType, int $limit, int $offset): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+
+        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, $records_table.content,
+                         $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.ordername, $records_table.auth
+                  FROM (
+                      SELECT DISTINCT $records_table.type, $records_table.name FROM $records_table
+                      WHERE $where
+                      ORDER BY $records_table.type, $records_table.name
+                      LIMIT :limit OFFSET :offset
+                  ) rrset
+                  JOIN $records_table ON $records_table.domain_id = :member_domain_id
+                      AND $records_table.type = rrset.type AND $records_table.name = rrset.name
+                  ORDER BY $records_table.type, $records_table.name, $records_table.id";
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':member_domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $records[] = self::decodeFlags($row);
+        }
+
+        return $records;
+    }
+
+    public function countRRSetsByDomainId(int $domainId, ?string $recordType = null): int
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM (SELECT DISTINCT $records_table.type, $records_table.name FROM $records_table WHERE $where) rrsets");
+        $stmt->execute($params);
+
+        return (int)($stmt->fetchColumn() ?: 0);
+    }
+
     /**
      * The records an API list shows: no empty non-terminals, which have no type or no name.
      *

@@ -63,6 +63,28 @@ interface RecordListingInterface
     public function countRecordsByDomainId(int $domainId, ?string $recordType = null): int;
 
     /**
+     * The records of one page of RRsets: the RRsets (name and type) are paged in the
+     * order they first appear in getRecordsByDomainId(), and every record of each one
+     * on the page comes back, in that same order
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @param int $limit RRsets per page
+     * @param int $offset RRsets to skip
+     * @return array Array of records
+     */
+    public function getRRSetPageRecords(int $domainId, ?string $recordType, int $limit, int $offset): array;
+
+    /**
+     * Number of RRsets getRRSetPageRecords() pages through
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @return int RRset count
+     */
+    public function countRRSetsByDomainId(int $domainId, ?string $recordType = null): int;
+
+    /**
      * The comment shown for one record: the SQL backend gives the comment linked to the
      * record, else the unlinked comment for its name and type; the API backend gives
      * the RRset comment, shared by every record in the set.

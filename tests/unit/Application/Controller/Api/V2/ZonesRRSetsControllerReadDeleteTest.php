@@ -123,6 +123,34 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
         $this->assertTrue($rrsets[1]['records'][0]['disabled']);
     }
 
+    public function testAPlainPageOfRRSetsIsCutByTheRepository(): void
+    {
+        $this->records->expects($this->never())->method('getRecordsByDomainId');
+        $this->records->expects($this->once())->method('countRRSetsByDomainId')
+            ->with(self::ZONE_ID, null)->willReturn(5);
+        $this->records->expects($this->once())->method('getRRSetPageRecords')
+            ->with(self::ZONE_ID, null, 2, 2)
+            ->willReturn([
+                ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+                ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
+                ['id' => 3, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => 0],
+            ]);
+
+        $body = $this->decode($this->invokeHandler('listRRSets', [], ['page' => 2, 'per_page' => 2]));
+
+        $this->assertSame(['A', 'MX'], array_column($body['data']['rrsets'], 'type'));
+        $this->assertCount(2, $body['data']['rrsets'][0]['records']);
+        $this->assertSame(['current_page' => 2, 'per_page' => 2, 'total' => 5, 'last_page' => 3], $body['pagination']);
+    }
+
+    public function testAFilteredPageOfRRSetsStillGroupsTheWholeZone(): void
+    {
+        $this->records->expects($this->never())->method('getRRSetPageRecords');
+        $this->records->expects($this->once())->method('getRecordsByDomainId')->willReturn([]);
+
+        $this->assertSame(200, $this->invokeHandler('listRRSets', [], ['q' => 'www', 'per_page' => 2])->getStatusCode());
+    }
+
     public function testQKeepsRRSetsWhoseNameOrAnyContentMatches(): void
     {
         $this->records->method('getRecordsByDomainId')->willReturn([

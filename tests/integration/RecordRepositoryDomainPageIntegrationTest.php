@@ -146,6 +146,46 @@ class RecordRepositoryDomainPageIntegrationTest extends TestCase
         $this->assertSame(4, $repo->countRecordsByDomainId(self::ZONE_ID, 'A'));
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $rows
+     * @return list<string> name|type of each RRset in the order it first appears
+     */
+    private static function rrsetKeys(array $rows): array
+    {
+        return array_values(array_unique(array_map(static fn(array $r): string => $r['name'] . '|' . $r['type'], $rows)));
+    }
+
+    #[DataProvider('engines')]
+    public function testRRSetPagesTogetherCarryEveryRecordOnceInTheUnpagedOrder(string $engine): void
+    {
+        $repo = $this->open($engine);
+        $expected = self::listed($repo);
+
+        $paged = [];
+        foreach ([0, 2, 4, 6] as $offset) {
+            $paged = array_merge($paged, $repo->getRRSetPageRecords(self::ZONE_ID, null, 2, $offset));
+        }
+
+        $this->assertSame(self::ids($expected), self::ids($paged));
+        $this->assertSame(6, $repo->countRRSetsByDomainId(self::ZONE_ID));
+    }
+
+    #[DataProvider('engines')]
+    public function testAnRRSetPageNeverSplitsAnRRSet(string $engine): void
+    {
+        $repo = $this->open($engine);
+        $keys = self::rrsetKeys(self::listed($repo));
+
+        $page = $repo->getRRSetPageRecords(self::ZONE_ID, null, 1, array_search('www.example.com|A', $keys, true));
+
+        $contents = array_column($page, 'content');
+        sort($contents);
+
+        $this->assertSame(['www.example.com|A'], self::rrsetKeys($page));
+        $this->assertSame(['192.0.2.1', '192.0.2.2', '192.0.2.3'], $contents);
+        $this->assertSame(2, $repo->countRRSetsByDomainId(self::ZONE_ID, 'A'));
+    }
+
     #[DataProvider('engines')]
     public function testOffsetPastTheEndGivesAnEmptyPage(string $engine): void
     {
