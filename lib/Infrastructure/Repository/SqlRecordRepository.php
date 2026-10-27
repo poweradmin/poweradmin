@@ -354,12 +354,87 @@ final class SqlRecordRepository implements RecordRepositoryInterface
             $params[':type'] = $recordType;
         }
 
-        $query .= " ORDER BY $records_table.type, $records_table.name";
+        $query .= " ORDER BY $records_table.type, $records_table.name, $records_table.id";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
-        return array_map(self::decodeFlags(...), $stmt->fetchAll(PDO::FETCH_ASSOC));
+        $records = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $records[] = self::decodeFlags($row);
+        }
+
+        return $records;
+    }
+
+    public function getRecordsPageByDomainId(int $domainId, ?string $recordType, bool $withComments, int $limit, int $offset): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+
+        $columns = "$records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, $records_table.content, "
+            . "$records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.ordername, $records_table.auth";
+        if ($withComments) {
+            $columns .= ", rc.comment AS comment";
+        }
+
+        // The page is picked first, so the per-row comment lookups run for this page only
+        $query = "SELECT $columns
+                  FROM (
+                      SELECT $records_table.id FROM $records_table
+                      WHERE $where
+                      ORDER BY $records_table.type, $records_table.name, $records_table.id
+                      LIMIT :limit OFFSET :offset
+                  ) page
+                  JOIN $records_table ON $records_table.id = page.id
+                  " . ($withComments ? $this->buildCommentJoin($this->dbType, $records_table, $comments_table) : "") . "
+                  ORDER BY $records_table.type, $records_table.name, $records_table.id";
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $records = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $records[] = self::decodeFlags($row);
+        }
+
+        return $records;
+    }
+
+    public function countRecordsByDomainId(int $domainId, ?string $recordType = null): int
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+
+        $stmt = $this->db->prepare("SELECT COUNT($records_table.id) FROM $records_table WHERE $where");
+        $stmt->execute($params);
+
+        return (int)($stmt->fetchColumn() ?: 0);
+    }
+
+    /**
+     * The records an API list shows: no empty non-terminals, which have no type or no name.
+     *
+     * @return array{string, array<string, int|string>}
+     */
+    private function listedRecordsCondition(string $records_table, int $domainId, ?string $recordType): array
+    {
+        $where = "$records_table.domain_id = :domain_id
+                  AND $records_table.type IS NOT NULL AND $records_table.type != ''
+                  AND $records_table.name IS NOT NULL AND $records_table.name != ''";
+        $params = [':domain_id' => $domainId];
+        if ($recordType !== null) {
+            $where .= " AND $records_table.type = :type";
+            $params[':type'] = $recordType;
+        }
+
+        return [$where, $params];
     }
 
     public function getCommentForRecord(int|string $recordId, int $domainId, string $name, string $type): ?string

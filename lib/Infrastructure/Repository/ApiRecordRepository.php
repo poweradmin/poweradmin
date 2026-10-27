@@ -188,6 +188,28 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         }, $records);
     }
 
+    public function getRecordsPageByDomainId(int $domainId, ?string $recordType, bool $withComments, int $limit, int $offset): array
+    {
+        // PowerDNS returns the whole zone either way, so the page is cut here (#1812)
+        return array_slice($this->listedRecords($domainId, $recordType, $withComments), $offset, $limit);
+    }
+
+    public function countRecordsByDomainId(int $domainId, ?string $recordType = null): int
+    {
+        return count($this->listedRecords($domainId, $recordType, false));
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function listedRecords(int $domainId, ?string $recordType, bool $withComments): array
+    {
+        return array_values(array_filter(
+            $this->getRecordsByDomainId($domainId, $recordType, $withComments),
+            static fn(array $record): bool => !empty($record['type']) && !empty($record['name'])
+        ));
+    }
+
     public function getCommentForRecord(int|string $recordId, int $domainId, string $name, string $type): ?string
     {
         foreach ($this->backendProvider->getRecordsByName($domainId, $name, $type) as $record) {

@@ -41,6 +41,28 @@ interface RecordListingInterface
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null, bool $withComments = false): array;
 
     /**
+     * One page of the records getRecordsByDomainId() returns, in the same order, without
+     * the empty non-terminals (rows with no type or no name)
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @param bool $withComments Add a `comment` key (string or null) to every row
+     * @param int $limit Rows per page
+     * @param int $offset Rows to skip
+     * @return array Array of records
+     */
+    public function getRecordsPageByDomainId(int $domainId, ?string $recordType, bool $withComments, int $limit, int $offset): array;
+
+    /**
+     * Number of rows getRecordsPageByDomainId() pages through
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @return int Record count
+     */
+    public function countRecordsByDomainId(int $domainId, ?string $recordType = null): int;
+
+    /**
      * The comment shown for one record: the SQL backend gives the comment linked to the
      * record, else the unlinked comment for its name and type; the API backend gives
      * the RRset comment, shared by every record in the set.

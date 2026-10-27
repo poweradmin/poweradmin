@@ -401,6 +401,23 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * Whether the request sets any of these query parameters to a non-empty value; an
+     * empty filter keeps every row, the same as an absent one.
+     *
+     * @param list<string> $parameters
+     */
+    protected function anyQueryParameter(array $parameters): bool
+    {
+        foreach ($parameters as $parameter) {
+            if ((string)$this->request->query->get($parameter, '') !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Filter, sort and page a list that is already loaded. Each filter maps a query
      * parameter to the values of a row it searches as a case-insensitive substring.
      *

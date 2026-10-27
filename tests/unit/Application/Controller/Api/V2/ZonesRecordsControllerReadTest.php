@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController;
@@ -106,6 +107,67 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
             ->willReturn([]);
 
         $this->assertSame(200, $this->invokeHandler('listRecords', [], ['type' => 'MX'])->getStatusCode());
+    }
+
+    public function testAPlainPageIsCutByTheRepositoryWithoutLoadingTheZone(): void
+    {
+        $this->records->expects($this->never())->method('getRecordsByDomainId');
+        $this->records->expects($this->once())->method('countRecordsByDomainId')
+            ->with(self::ZONE_ID, 'A')->willReturn(7);
+        $this->records->expects($this->once())->method('getRecordsPageByDomainId')
+            ->with(self::ZONE_ID, 'A', true, 3, 3)
+            ->willReturn([['id' => 4, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.4', 'ttl' => 3600]]);
+
+        $body = $this->decode($this->invokeHandler('listRecords', [], ['type' => 'A', 'page' => 2, 'per_page' => 3]));
+
+        $this->assertSame([4], array_column($body['data']['records'], 'id'));
+        $this->assertSame(['current_page' => 2, 'per_page' => 3, 'total' => 7, 'last_page' => 3], $body['pagination']);
+    }
+
+    public function testAPagePastTheEndSkipsThePageQuery(): void
+    {
+        $this->records->method('countRecordsByDomainId')->willReturn(2);
+        $this->records->expects($this->never())->method('getRecordsPageByDomainId');
+
+        $body = $this->decode($this->invokeHandler('listRecords', [], ['page' => 5, 'per_page' => 10]));
+
+        $this->assertSame([], $body['data']['records']);
+        $this->assertSame(2, $body['pagination']['total']);
+    }
+
+    /**
+     * @return array<string, array{array<string, string>}>
+     */
+    public static function queriesThatNeedTheWholeZone(): array
+    {
+        return [
+            'q' => [['q' => 'www', 'per_page' => '10']],
+            'name' => [['name' => 'www', 'per_page' => '10']],
+            'content' => [['content' => '192', 'per_page' => '10']],
+            'comment' => [['comment' => 'web', 'per_page' => '10']],
+            'sort' => [['sort' => 'content', 'per_page' => '10']],
+            'unpaged' => [[]],
+        ];
+    }
+
+    /**
+     * @param array<string, string> $query
+     */
+    #[DataProvider('queriesThatNeedTheWholeZone')]
+    public function testFilteredSortedOrUnpagedListsStillFilterTheWholeZone(array $query): void
+    {
+        $this->records->expects($this->never())->method('getRecordsPageByDomainId');
+        $this->records->expects($this->once())->method('getRecordsByDomainId')->willReturn([]);
+
+        $this->assertSame(200, $this->invokeHandler('listRecords', [], $query)->getStatusCode());
+    }
+
+    public function testAnEmptyFilterStillTakesThePagedPath(): void
+    {
+        $this->records->expects($this->never())->method('getRecordsByDomainId');
+        $this->records->method('countRecordsByDomainId')->willReturn(0);
+
+        $this->assertSame(200, $this->invokeHandler('listRecords', [], ['q' => '', 'per_page' => '10'])->getStatusCode());
     }
 
     public function testQMatchesTheRecordNameOrContent(): void

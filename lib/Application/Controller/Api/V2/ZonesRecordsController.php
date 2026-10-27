@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Application\Http\ListSort;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
@@ -234,29 +235,40 @@ class ZonesRecordsController extends PublicApiController
             if ($sort->error !== null) {
                 return $this->returnApiError($sort->error, 400);
             }
-            // Get records for the zone
-            $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType, true);
-
-            // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
-            // These records have NULL/empty type and are not user-manageable.
-            // Note: Repository already filters these, but kept as defensive measure.
-            // array_values() so dropped rows cannot leave gaps in the keys, which
-            // would serialize the records list as a JSON object instead of an array.
-            $validRecords = array_values(array_filter($records, function ($record) {
-                return !empty($record['type']) && !empty($record['name']);
-            }));
-
-            $formattedRecords = array_map(fn(array $record): array => RecordResource::listItem($record, $this->formatRecordId(...)), $validRecords);
-
-            // Records come from the database or the PowerDNS API depending on the
-            // backend, so filtering, sorting and paging happen here, on the values
-            // the client sees, and behave the same for both.
-            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, [
+            $filters = [
                 'name' => static fn(array $r): array => [$r['name']],
                 'content' => static fn(array $r): array => [$r['content']],
                 'comment' => static fn(array $r): array => [$r['comment']],
                 'q' => static fn(array $r): array => [$r['name'], $r['content']],
-            ]);
+            ];
+
+            // A plain page keeps the repository order, so the repository can cut it
+            // without loading the whole zone (#1814)
+            [$page, $perPage] = $this->pagingParameters();
+            if ($perPage > 0 && $sort->fields() === [] && !$this->anyQueryParameter(array_keys($filters))) {
+                $total = $this->recordRepository->countRecordsByDomainId((int)$zoneId, $recordType);
+                $extra = ListPaging::extra($page, $perPage, $total);
+                $rows = ListPaging::isPastEnd($page, $perPage, $total)
+                    ? []
+                    : $this->recordRepository->getRecordsPageByDomainId((int)$zoneId, $recordType, true, $perPage, ($page - 1) * $perPage);
+                $formattedRecords = array_map(fn(array $record): array => RecordResource::listItem($record, $this->formatRecordId(...)), $rows);
+
+                return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200, $extra);
+            }
+
+            // Skip ENT (Empty Non-Terminal) rows, which have no type or no name and are
+            // not user-manageable; one pass, so the raw rows are not held twice.
+            $formattedRecords = [];
+            foreach ($this->recordRepository->getRecordsByDomainId($zoneId, $recordType, true) as $record) {
+                if (!empty($record['type']) && !empty($record['name'])) {
+                    $formattedRecords[] = RecordResource::listItem($record, $this->formatRecordId(...));
+                }
+            }
+
+            // Records come from the database or the PowerDNS API depending on the
+            // backend, so filtering, sorting and paging happen here, on the values
+            // the client sees, and behave the same for both.
+            [$formattedRecords, $extra] = $this->filterSortAndPage($formattedRecords, $sort, $filters);
 
             return $this->returnApiResponse(['records' => $formattedRecords], true, 'Records retrieved successfully', 200, $extra);
         } catch (\Throwable $e) {
