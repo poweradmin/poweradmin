@@ -802,6 +802,10 @@ class ZonesRecordsController extends PublicApiController
             // In API mode the record ID may change when name/type/content/prio change,
             // so fall back to the submitted data if the old ID no longer resolves.
             $updatedRecord = $this->recordRepository->getRecordById($recordId);
+            // A zone holds one SOA, and PowerDNS can move its serial on write, so it is read back by type
+            if ($updatedRecord === null && $recordData['type'] === 'SOA') {
+                $updatedRecord = $this->recordRepository->getRecordsByDomainId($zoneId, 'SOA')[0] ?? null;
+            }
 
             // Get zone name for stripping suffix
             $repositoryFactory = $this->getRepositoryFactory($this->backendProvider);
