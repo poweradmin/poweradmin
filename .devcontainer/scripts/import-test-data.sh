@@ -17,6 +17,8 @@
 #   ./import-test-data.sh --pgsql   # Import to PostgreSQL only
 #   ./import-test-data.sh --sqlite  # Import to SQLite only
 #   ./import-test-data.sh --clean   # Clean databases before import
+#   ./import-test-data.sh --perf    # Also seed the large perf data set (PERF_* sizes)
+#   ./import-test-data.sh --perf-clean  # Remove only the perf data
 #   ./import-test-data.sh --help    # Show help
 #
 # =============================================================================
@@ -693,6 +695,94 @@ import_sqlite() {
     done
 }
 
+# Perf data sizes, substituted into the perf-data-*.sql placeholders
+PERF_OWNED_ZONES="${PERF_OWNED_ZONES:-10000}"
+PERF_RECORDS_PER_ZONE="${PERF_RECORDS_PER_ZONE:-20}"
+PERF_BIG_ZONE_RECORDS="${PERF_BIG_ZONE_RECORDS:-100000}"
+PERF_OTHER_ZONES="${PERF_OTHER_ZONES:-40000}"
+PERF_USERS="${PERF_USERS:-2000}"
+PERF_GROUPS="${PERF_GROUPS:-500}"
+
+check_perf_sizes() {
+    local name
+    for name in PERF_OWNED_ZONES PERF_RECORDS_PER_ZONE PERF_BIG_ZONE_RECORDS PERF_OTHER_ZONES PERF_USERS PERF_GROUPS; do
+        # Names are zero-padded to 6 (zones) and 4 (users, groups) digits
+        if ! [[ "${!name}" =~ ^[0-9]+$ ]] || [ "${!name}" -gt 999999 ]; then
+            echo -e "${RED}❌ $name must be a number from 0 to 999999 (got '${!name}')${NC}"
+            return 1
+        fi
+    done
+    if [ "$PERF_USERS" -gt 9999 ] || [ "$PERF_GROUPS" -gt 9999 ]; then
+        echo -e "${RED}❌ PERF_USERS and PERF_GROUPS must be 9999 or less${NC}"
+        return 1
+    fi
+}
+
+perf_sizes() {
+    sed -e "s/__PERF_OWNED__/$PERF_OWNED_ZONES/g" \
+        -e "s/__PERF_RECORDS__/$PERF_RECORDS_PER_ZONE/g" \
+        -e "s/__PERF_BIG__/$PERF_BIG_ZONE_RECORDS/g" \
+        -e "s/__PERF_OTHER__/$PERF_OTHER_ZONES/g" \
+        -e "s/__PERF_USERS__/$PERF_USERS/g" \
+        -e "s/__PERF_GROUPS__/$PERF_GROUPS/g"
+}
+
+# Perf data into every MySQL pair; $1=seed|clean (seed cleans first)
+perf_mysql() {
+    local mode=$1 pair native_db pdns_db output
+    if ! check_container "$MYSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    for pair in "$MYSQL_DATABASE:$MYSQL_PDNS_DATABASE" "$MYSQL_API_DATABASE:$MYSQL_API_PDNS_DATABASE"; do
+        native_db=${pair%%:*}
+        pdns_db=${pair##*:}
+        echo -e "${YELLOW}📦 Perf data ($mode) in MySQL/MariaDB ${native_db}/${pdns_db}...${NC}"
+        if ! output=$(set -o pipefail; mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/perf-data-clean-mysql.sql" \
+            | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1); then
+            echo "$output" | grep -v 'Using a password'
+            return 1
+        fi
+        if [ "$mode" = seed ] && ! output=$(set -o pipefail; mysql_fixture "$native_db" "$pdns_db" "$SQL_DIR/perf-data-mysql.sql" \
+            | perf_sizes | docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" 2>&1); then
+            echo "$output" | grep -v 'Using a password'
+            return 1
+        fi
+    done
+}
+
+perf_pgsql() {
+    local mode=$1 target_db
+    if ! check_container "$PGSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    for target_db in "$PGSQL_DATABASE" "$PGSQL_API_DATABASE"; do
+        echo -e "${YELLOW}📦 Perf data ($mode) in PostgreSQL ${target_db}...${NC}"
+        docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -q -v ON_ERROR_STOP=1 -U "$PGSQL_USER" -d "$target_db" \
+            < "$SQL_DIR/perf-data-clean-pgsql.sql" > /dev/null || return 1
+        if [ "$mode" = seed ]; then
+            (set -o pipefail; perf_sizes < "$SQL_DIR/perf-data-pgsql.sql" \
+                | docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -q -v ON_ERROR_STOP=1 -U "$PGSQL_USER" -d "$target_db" > /dev/null) || return 1
+        fi
+    done
+}
+
+perf_sqlite() {
+    local mode=$1 db_path
+    if ! check_container "$SQLITE_CONTAINER"; then
+        echo -e "${RED}❌ Container '$SQLITE_CONTAINER' is not running${NC}"
+        return 1
+    fi
+    for db_path in "$SQLITE_DB_PATH" "$SQLITE_API_DB_PATH"; do
+        echo -e "${YELLOW}📦 Perf data ($mode) in SQLite ${db_path}...${NC}"
+        docker exec -i "$SQLITE_CONTAINER" sqlite3 -bail "$db_path" < "$SQL_DIR/perf-data-clean-sqlite.sql" || return 1
+        if [ "$mode" = seed ]; then
+            (set -o pipefail; perf_sizes < "$SQL_DIR/perf-data-sqlite.sql" | docker exec -i "$SQLITE_CONTAINER" sqlite3 -bail "$db_path") || return 1
+        fi
+    done
+}
+
 # Main import logic
 main() {
     local import_mysql=false
@@ -700,6 +790,8 @@ main() {
     local import_sqlite=false
     local import_all=true
     local do_clean=false
+    local do_perf=false
+    local perf_clean_only=false
 
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -723,6 +815,14 @@ main() {
                 do_clean=true
                 shift
                 ;;
+            --perf)
+                do_perf=true
+                shift
+                ;;
+            --perf-clean)
+                perf_clean_only=true
+                shift
+                ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
@@ -733,6 +833,8 @@ main() {
                 echo "  --pgsql       Import to PostgreSQL only"
                 echo "  --sqlite      Import to SQLite only"
                 echo "  --clean       Clean databases before import"
+                echo "  --perf        After the import, seed the large perf data set"
+                echo "  --perf-clean  Remove only the perf data (no import)"
                 echo "  --help, -h    Show this help message"
                 echo ""
                 echo "If no database options specified, imports to all available databases"
@@ -742,6 +844,17 @@ main() {
                 echo "  $0 --mysql            # Import to MySQL only"
                 echo "  $0 --clean --mysql    # Clean and import to MySQL"
                 echo "  $0 --clean            # Clean and import to all databases"
+                echo "  $0 --perf --pgsql     # Import, then add the perf data, to PostgreSQL"
+                echo "  PERF_OTHER_ZONES=0 $0 --perf --sqlite  # Perf data without the 40k extra zones"
+                echo ""
+                echo "Perf data (--perf): zones *.perf.test, users perf_owner and perf_user_NNNN,"
+                echo "groups 'Perf group NNNN'. Log in as perf_owner / Poweradmin123."
+                echo "  PERF_OWNED_ZONES      Zones of perf_owner, half direct, half via group (default: 10000)"
+                echo "  PERF_RECORDS_PER_ZONE Filler records per perf_owner zone (default: 20)"
+                echo "  PERF_BIG_ZONE_RECORDS Filler records in big.perf.test (default: 100000)"
+                echo "  PERF_OTHER_ZONES      Zones of the perf users, SOA and NS only (default: 40000)"
+                echo "  PERF_USERS            Users perf_user_NNNN (default: 2000)"
+                echo "  PERF_GROUPS           Groups 'Perf group NNNN' (default: 500)"
                 echo ""
                 echo "Environment variables:"
                 echo "  MYSQL_USER          MySQL username (default: pdns)"
@@ -780,6 +893,26 @@ main() {
     local success_count=0
     local fail_count=0
 
+    if [ "$perf_clean_only" = true ]; then
+        local engine
+        for engine in mysql pgsql sqlite; do
+            local selected="import_$engine"
+            [ "${!selected}" = true ] || continue
+            if "perf_$engine" clean; then
+                ((++success_count))
+            else
+                ((++fail_count))
+            fi
+        done
+        echo -e "${BLUE}Perf data removed: $success_count ok, $fail_count failed${NC}"
+        [ "$fail_count" -eq 0 ]
+        exit
+    fi
+
+    if [ "$do_perf" = true ]; then
+        check_perf_sizes || exit 1
+    fi
+
     # Execute clean operations if requested
     if [ "$do_clean" = true ]; then
         echo -e "${BLUE}Cleaning databases before import...${NC}"
@@ -804,28 +937,45 @@ main() {
     # Execute imports
     if [ "$import_mysql" = true ]; then
         if import_mysql; then
-            ((success_count++))
+            ((++success_count))
         else
-            ((fail_count++))
+            ((++fail_count))
         fi
         echo ""
     fi
 
     if [ "$import_pgsql" = true ]; then
         if import_pgsql; then
-            ((success_count++))
+            ((++success_count))
         else
-            ((fail_count++))
+            ((++fail_count))
         fi
         echo ""
     fi
 
     if [ "$import_sqlite" = true ]; then
         if import_sqlite; then
-            ((success_count++))
+            ((++success_count))
         else
-            ((fail_count++))
+            ((++fail_count))
         fi
+        echo ""
+    fi
+
+    # Perf data needs the regular users and templates, so it runs only after a clean import
+    if [ "$do_perf" = true ] && [ "$fail_count" -eq 0 ]; then
+        local engine
+        for engine in mysql pgsql sqlite; do
+            local selected="import_$engine"
+            [ "${!selected}" = true ] || continue
+            if "perf_$engine" seed; then
+                ((++success_count))
+            else
+                ((++fail_count))
+            fi
+            echo ""
+        done
+        echo -e "${BLUE}Perf data: log in as perf_owner / Poweradmin123; PowerDNS serves new zones after its 300 s zone cache refresh${NC}"
         echo ""
     fi
 
