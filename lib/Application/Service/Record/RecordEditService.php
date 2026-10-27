@@ -107,18 +107,8 @@ class RecordEditService
         if ($stored !== null) {
             $recordId = $stored['id'] ?? $request->recordId;
         } else {
-            // The API backend re-keys a record when name, type, content or prio change;
-            // the row is then rebuilt from the submitted values under its new id
-            $content = DnsFormatter::quoteEch($request->type, $content);
-            $recordId = $this->records->getNewRecordId($request->zoneId, $name, $request->type, $content) ?? $request->recordId;
-            $stored = [
-                'type' => $request->type,
-                'name' => $name,
-                'content' => $content,
-                'ttl' => $request->ttl,
-                'prio' => $request->prio,
-                'disabled' => $request->disabled,
-            ];
+            // The API backend re-keys a record when name, type, content or prio change
+            [$recordId, $stored] = $this->findReKeyedRecord($request, $name, DnsFormatter::quoteEch($request->type, $content), $written->key);
         }
 
         [$ptrUpdated, $ptrMessage] = $this->syncReverseRecord($request, $stored);
@@ -193,6 +183,51 @@ class RecordEditService
     {
         return fn(int $zoneId): bool => $this->approval->modeForZone($request->userId, $zoneId) !== ChangeApprovalPolicy::MODE_REQUEST
             && ($request->ptrZoneAllowed === null || ($request->ptrZoneAllowed)($zoneId));
+    }
+
+    /**
+     * Finds a record the API backend re-keyed and returns its new id and row, or the old id
+     * and a row rebuilt from the submitted values when it cannot be found.
+     *
+     * @param array{name: string, type: string, content: string}|null $writtenKey
+     * @return array{0: int|string, 1: array<string, mixed>}
+     */
+    private function findReKeyedRecord(RecordEditRequest $request, string $name, string $content, ?array $writtenKey): array
+    {
+        $validated = (string)($writtenKey['content'] ?? '');
+        $forms = array_values(array_unique(array_filter([$validated, $content], fn(string $form): bool => $form !== '')));
+        $newId = null;
+        if ($request->type === RecordType::SOA) {
+            // A zone holds one SOA, and its serial moves after the write, so it is read back by name
+            $newId = $this->records->getRecordsByName($request->zoneId, $name, RecordType::SOA)[0]['id'] ?? null;
+        } elseif (RecordType::hasPriority($request->type)) {
+            // Siblings of these types can share content and differ only in prio, so both have to match
+            foreach ($this->records->getRecordsByName($request->zoneId, $name, $request->type) as $candidate) {
+                if (in_array((string)$candidate['content'], $forms, true) && (int)$candidate['prio'] === (int)$request->prio) {
+                    $newId = $candidate['id'] ?? null;
+                    break;
+                }
+            }
+        } else {
+            // The record is stored in its validated form, which validation may have changed
+            foreach ($forms as $form) {
+                $newId = $this->records->getNewRecordId($request->zoneId, $name, $request->type, $form);
+                if ($newId !== null) {
+                    break;
+                }
+            }
+        }
+
+        $row = $newId === null ? null : $this->records->getRecordFromId($newId);
+
+        return [$newId ?? $request->recordId, $row ?? [
+            'type' => $request->type,
+            'name' => $name,
+            'content' => $content,
+            'ttl' => $request->ttl,
+            'prio' => $request->prio,
+            'disabled' => $request->disabled,
+        ]];
     }
 
     /**

@@ -660,7 +660,7 @@ class RecordManager implements RecordManagerInterface
             $this->finalizeZone((int)$record['zid'], $record['type'] !== 'SOA');
         }
 
-        return RecordWriteResult::ok();
+        return RecordWriteResult::saved(['name' => $name, 'type' => $record['type'], 'content' => $content]);
     }
 
     /**

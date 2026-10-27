@@ -63,6 +63,9 @@ class RecordEditServiceTest extends TestCase
     /** @var array<string, mixed>|null */
     private ?array $reread = ['id' => self::RECORD_ID, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => 300, 'prio' => 0];
 
+    /** @var array<int|string, array<string, mixed>> Rows a re-keyed record is read back as, by its new id */
+    private array $rereadById = [];
+
     private RecordWriteResult $writeResult;
 
     /** @var array<string, array<string, mixed>> */
@@ -101,7 +104,7 @@ class RecordEditServiceTest extends TestCase
         $this->recordManager = $this->createMock(RecordManagerInterface::class);
         $this->recordManager->method('editRecord')->willReturnCallback(fn(): RecordWriteResult => $this->writeResult);
         $this->records = $this->createMock(RecordRepositoryInterface::class);
-        $this->records->method('getRecordFromId')->willReturnCallback(fn(): ?array => $this->reread);
+        $this->records->method('getRecordFromId')->willReturnCallback(fn(int|string $id): ?array => $this->rereadById[$id] ?? $this->reread);
         $this->domains = $this->createMock(DomainRepositoryInterface::class);
         $this->soa = $this->createMock(SOARecordManagerInterface::class);
         $this->reverse = $this->createMock(ReverseRecordCreator::class);
@@ -233,6 +236,59 @@ class RecordEditServiceTest extends TestCase
         $this->records->method('getNewRecordId')->willReturn(null);
 
         $this->assertSame(self::RECORD_ID, $this->service()->edit($this->request())->recordId);
+    }
+
+    public function testAReKeyedRecordIsFoundByTheContentItWasStoredUnder(): void
+    {
+        $this->reread = null;
+        $this->writeResult = RecordWriteResult::saved(['name' => 'n.example.com', 'type' => 'NID', 'content' => '20 1000:0000:0000:0002']);
+        $this->records->expects($this->once())->method('getNewRecordId')
+            ->with(self::ZONE_ID, 'n.example.com', 'NID', '20 1000:0000:0000:0002')
+            ->willReturn('enc-nid');
+
+        $result = $this->service()->edit($this->request(['name' => 'n', 'type' => 'NID', 'content' => '1000:0000:0000:0002', 'prio' => 20]));
+
+        $this->assertSame('enc-nid', $result->recordId);
+    }
+
+    public function testAReKeyedMxIsMatchedOnContentAndPrioBecauseItsSiblingsCanShareContent(): void
+    {
+        $this->reread = null;
+        $this->writeResult = RecordWriteResult::saved(['name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com']);
+        $this->records->method('getRecordsByName')->with(self::ZONE_ID, 'example.com', 'MX')->willReturn([
+            ['id' => 'enc-mx10', 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'prio' => 10],
+            ['id' => 'enc-mx30', 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'prio' => 30],
+        ]);
+        $this->records->expects($this->never())->method('getNewRecordId');
+
+        $result = $this->service()->edit($this->request(['name' => '@', 'type' => 'MX', 'content' => 'mail.example.com.', 'prio' => 30]));
+
+        $this->assertSame('enc-mx30', $result->recordId);
+    }
+
+    public function testAReKeyedRecordIsReportedAsItIsStoredUnderItsNewId(): void
+    {
+        $this->reread = null;
+        $stored = ['id' => 'enc-nid', 'name' => 'n.example.com', 'type' => 'NID', 'content' => '20 1000:0000:0000:0002', 'ttl' => 300, 'prio' => 0, 'disabled' => 0];
+        $this->rereadById = ['enc-nid' => $stored];
+        $this->writeResult = RecordWriteResult::saved(['name' => 'n.example.com', 'type' => 'NID', 'content' => '20 1000:0000:0000:0002']);
+        $this->records->method('getNewRecordId')->willReturn('enc-nid');
+
+        $result = $this->service()->edit($this->request(['name' => 'n', 'type' => 'NID', 'content' => '1000:0000:0000:0002', 'prio' => 20]));
+
+        $this->assertSame($stored, $result->record);
+    }
+
+    public function testAReKeyedSoaIsReadBackByNameBecauseItsSerialMovedAfterTheWrite(): void
+    {
+        $this->reread = null;
+        $this->records->method('getRecordsByName')->with(self::ZONE_ID, 'example.com', 'SOA')
+            ->willReturn([['id' => 'enc-soa', 'name' => 'example.com', 'type' => 'SOA', 'content' => 'ns1.example.com. hostmaster.example.com. 2026102702 1 2 3 4']]);
+        $this->records->expects($this->never())->method('getNewRecordId');
+
+        $result = $this->service()->edit($this->request(['name' => '@', 'type' => 'SOA', 'content' => 'ns1.example.com. hostmaster.example.com. 2026102701 1 2 3 4']));
+
+        $this->assertSame('enc-soa', $result->recordId);
     }
 
     // -------------------------------------------------------------- SOA serial

@@ -57,6 +57,16 @@ final readonly class RecordWriteResult
         return new self(true, null, null, null, null, true, null, $vacates, $key);
     }
 
+    /**
+     * An edit that was written.
+     *
+     * @param array{name: string, type: string, content: string} $key The validated name, type and content it was stored under
+     */
+    public static function saved(array $key): self
+    {
+        return new self(true, null, null, null, null, true, null, null, $key);
+    }
+
     /** @param int|string|null $recordId The new id on create; edits and deletes carry none */
     public static function ok(int|string|null $recordId = null): self
     {
