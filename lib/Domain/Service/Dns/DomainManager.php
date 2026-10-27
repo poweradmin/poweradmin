@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
@@ -35,6 +36,7 @@ use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
@@ -432,6 +434,11 @@ final class DomainManager implements DomainManagerInterface
             $content = $this->placeholders->parseTemplateValue($r["content"], $domain, $recordType);
             $ttl = $r["ttl"] ?: $dns_ttl;
             $prio = intval($r["prio"]);
+            // A template saved before NID kept its preference in the content still holds a bare node id
+            if (strtoupper((string)$recordType) === RecordType::NID) {
+                $content = NIDRecordValidator::contentWithPreference($content, $prio);
+                $prio = 0;
+            }
 
             $record_id = $this->backendProvider->addRecordGetId($domain_id, $name, $recordType, $content, (int)$ttl, $prio);
             if ($record_id === null) {

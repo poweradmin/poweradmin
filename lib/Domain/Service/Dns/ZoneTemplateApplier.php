@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\TemplateRecordLinkRepositoryInterface;
@@ -29,6 +30,7 @@ use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Psr\Log\LoggerInterface;
@@ -219,6 +221,11 @@ class ZoneTemplateApplier
             $name = strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain));
             $ttl = (int) ($record['ttl'] ?: $defaultTtl);
             $prio = intval($record['prio']);
+            // A template saved before NID kept its preference in the content still holds a bare node id
+            if (strtoupper($type) === RecordType::NID) {
+                $content = NIDRecordValidator::contentWithPreference($content, $prio);
+                $prio = 0;
+            }
 
             if ($this->backendProvider->recordExists($zoneId, $name, $type, $content)) {
                 continue;

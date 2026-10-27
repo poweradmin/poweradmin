@@ -253,6 +253,19 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
     }
 
+    public function testAnOlderBareNidTemplateRecordIsWrittenWithItsPreferenceInTheContent(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([['n.[ZONE]', 'NID', '1000:0000:0000:0001', 0, 10]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::ZONE_ID, 'n.old.example', 'NID', '10 1000:0000:0000:0001', self::TTL, 0)
+            ->willReturn(501);
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+    }
+
     public function testRecordsAlreadyInTheZoneAreNotWrittenTwice(): void
     {
         $this->seedZone(0);

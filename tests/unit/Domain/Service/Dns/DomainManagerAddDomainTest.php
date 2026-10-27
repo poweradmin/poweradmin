@@ -329,6 +329,18 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         ], $written);
     }
 
+    public function testAnOlderBareNidTemplateRecordIsCreatedWithItsPreferenceInTheContent(): void
+    {
+        $this->seedTemplateRecords([['n', 'NID', '1000:0000:0000:0001', 300, 10]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::DOMAIN_ID, 'n.new.example', 'NID', '10 1000:0000:0000:0001', 300, 0)
+            ->willReturn(601);
+
+        $this->assertTrue($this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID)->success);
+    }
+
     public function testTemplateWithGroupOwnersWritesExactLinkAndGroupRows(): void
     {
         $this->seedTemplateRecords([
