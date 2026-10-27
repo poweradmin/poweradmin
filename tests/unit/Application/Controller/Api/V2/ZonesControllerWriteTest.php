@@ -246,6 +246,33 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertStringStartsWith('Invalid master servers format:', $this->messageOf($response));
     }
 
+    /**
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function malformedUpdateFieldProvider(): array
+    {
+        return [
+            'array type' => [['type' => ['MASTER']]],
+            'integer master' => [['master' => 0]],
+            'boolean master' => [['master' => false]],
+            'integer name' => [['name' => 7]],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('malformedUpdateFieldProvider')]
+    public function testAMalformedUpdateFieldIs400(array $body): void
+    {
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', $body);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Invalid field types in request body', $this->messageOf($response));
+    }
+
     public function testABodyWithNoRecognisedFieldIs400(): void
     {
         $response = $this->invokeHandler('updateZone', 'PUT', ['nickname' => 'corp']);

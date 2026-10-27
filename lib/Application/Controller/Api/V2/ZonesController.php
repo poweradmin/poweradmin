@@ -780,6 +780,9 @@ class ZonesController extends PublicApiController
 
             foreach ($allowedFields as $field) {
                 if (isset($input[$field])) {
+                    if (!is_string($input[$field])) {
+                        return $this->returnApiError('Invalid field types in request body', 400);
+                    }
                     $updates[$field] = $input[$field];
                 }
             }
