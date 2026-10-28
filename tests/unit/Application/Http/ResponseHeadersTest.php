@@ -36,7 +36,7 @@ class ResponseHeadersTest extends TestCase
             'X-Content-Type-Options' => 'nosniff',
             'Referrer-Policy' => 'same-origin',
             'X-Frame-Options' => 'DENY',
-            'Content-Security-Policy' => "frame-ancestors 'none'",
+            'Content-Security-Policy' => "frame-ancestors 'none'; object-src 'none'; base-uri 'self'",
         ], $built['headers']);
         $this->assertSame([], $built['rejected']);
     }
@@ -46,7 +46,7 @@ class ResponseHeadersTest extends TestCase
         $built = ResponseHeaders::build(['https://portal.example.com', 'http://10.0.0.5:8443', 'https://*.example.org', 'https://portal.example.com']);
 
         $this->assertSame(
-            "frame-ancestors 'self' https://portal.example.com http://10.0.0.5:8443 https://*.example.org",
+            "frame-ancestors 'self' https://portal.example.com http://10.0.0.5:8443 https://*.example.org; object-src 'none'; base-uri 'self'",
             $built['headers']['Content-Security-Policy']
         );
         $this->assertArrayNotHasKey('X-Frame-Options', $built['headers']);
@@ -59,7 +59,7 @@ class ResponseHeadersTest extends TestCase
     {
         $built = ResponseHeaders::build([$origin]);
 
-        $this->assertSame("frame-ancestors 'none'", $built['headers']['Content-Security-Policy']);
+        $this->assertSame("frame-ancestors 'none'; object-src 'none'; base-uri 'self'", $built['headers']['Content-Security-Policy']);
         $this->assertSame('DENY', $built['headers']['X-Frame-Options']);
         $this->assertCount(1, $built['rejected']);
     }
@@ -83,7 +83,7 @@ class ResponseHeadersTest extends TestCase
     {
         $built = ResponseHeaders::build(['HTTPS://Portal.Example.COM']);
 
-        $this->assertSame("frame-ancestors 'self' https://portal.example.com", $built['headers']['Content-Security-Policy']);
+        $this->assertSame("frame-ancestors 'self' https://portal.example.com; object-src 'none'; base-uri 'self'", $built['headers']['Content-Security-Policy']);
         $this->assertSame([], $built['rejected']);
     }
 
@@ -91,7 +91,7 @@ class ResponseHeadersTest extends TestCase
     {
         $built = ResponseHeaders::build(['https://ok.example.com', 'bad;origin']);
 
-        $this->assertSame("frame-ancestors 'self' https://ok.example.com", $built['headers']['Content-Security-Policy']);
+        $this->assertSame("frame-ancestors 'self' https://ok.example.com; object-src 'none'; base-uri 'self'", $built['headers']['Content-Security-Policy']);
         $this->assertSame(['bad;origin'], $built['rejected']);
     }
 

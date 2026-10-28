@@ -56,12 +56,14 @@ final class ResponseHeaders
             'X-Content-Type-Options' => 'nosniff',
             'Referrer-Policy' => 'same-origin',
         ];
+        // No plugin content, and an injected <base> cannot redirect relative script and form URLs
+        $hardening = "; object-src 'none'; base-uri 'self'";
         if ($allowed === []) {
             $headers['X-Frame-Options'] = 'DENY';
-            $headers['Content-Security-Policy'] = "frame-ancestors 'none'";
+            $headers['Content-Security-Policy'] = "frame-ancestors 'none'" . $hardening;
         } else {
             // X-Frame-Options cannot name several origins, so only the CSP is sent
-            $headers['Content-Security-Policy'] = "frame-ancestors 'self' " . implode(' ', array_keys($allowed));
+            $headers['Content-Security-Policy'] = "frame-ancestors 'self' " . implode(' ', array_keys($allowed)) . $hardening;
         }
 
         return ['headers' => $headers, 'rejected' => $rejected];

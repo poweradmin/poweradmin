@@ -256,7 +256,7 @@ class IndexEntryPointTest extends TestCase
             $headers = $this->fetchHeaders('framed-settings.php', '/login', $method);
             $this->assertMatchesRegularExpression($method === 'GET' ? '/^HTTP\/1\.[01] 200/' : '/^HTTP\/1\.[01] 405/', $headers[0], $method);
 
-            $this->assertCount(1, preg_grep("/^Content-Security-Policy: frame-ancestors 'self' https:\\/\\/portal\\.example\\.com$/", $headers), $method);
+            $this->assertCount(1, preg_grep("/^Content-Security-Policy: frame-ancestors 'self' https:\\/\\/portal\\.example\\.com; object-src 'none'; base-uri 'self'$/", $headers), $method);
             $this->assertCount(0, preg_grep('/^X-Frame-Options:/i', $headers), $method);
         }
     }
@@ -284,7 +284,7 @@ class IndexEntryPointTest extends TestCase
     {
         foreach ($uris as $uri) {
             $headers = $this->fetchHeaders($fixture, $uri, 'GET');
-            foreach (['X-Frame-Options: DENY', "Content-Security-Policy: frame-ancestors 'none'", 'X-Content-Type-Options: nosniff', 'Referrer-Policy: same-origin'] as $line) {
+            foreach (['X-Frame-Options: DENY', "Content-Security-Policy: frame-ancestors 'none'; object-src 'none'; base-uri 'self'", 'X-Content-Type-Options: nosniff', 'Referrer-Policy: same-origin'] as $line) {
                 $this->assertCount(1, preg_grep('/^' . preg_quote($line, '/') . '$/i', $headers), $uri . ' ' . $line);
             }
             $this->assertCount(1, preg_grep('/^X-Frame-Options:/i', $headers), $uri);
