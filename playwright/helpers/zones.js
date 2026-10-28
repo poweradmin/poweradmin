@@ -498,6 +498,38 @@ export async function firstRecordIdOnZone(page, zoneId) {
 }
 
 /**
+ * Every way the web UI writes a record, posted with the given token.
+ *
+ * @param {import('@playwright/test').Page} page - Page of the acting user
+ * @param {string} token - That user's CSRF token
+ * @param {string} zoneId
+ */
+export function recordWrites(page, token, zoneId) {
+  const post = (path, form) => page.request.post(path, { form: { _token: token, ...form } });
+  return {
+    add: (name, type, content) => post(`/zones/${zoneId}/records/add`, { name, type, content, ttl: '3600', commit: '' }),
+    inlineAdd: (name, type, content) => post(`/zones/${zoneId}/edit`, { name, type, content, ttl: '3600', commit: '' }),
+    edit: (record, content) => post(`/zones/${zoneId}/records/${record.id}/edit`, {
+      rid: record.id, zid: zoneId, name: record.name, type: record.type, content, ttl: '3600', prio: '0', commit: '',
+    }),
+    // The parser skips a row without _complete and treats a post without form_complete as truncated
+    editorSave: (record, content) => post(`/zones/${zoneId}/edit`, {
+      commit: '', form_complete: '1',
+      [`record[${record.id}][_complete]`]: '1',
+      [`record[${record.id}][rid]`]: record.id,
+      [`record[${record.id}][zid]`]: zoneId,
+      [`record[${record.id}][name]`]: record.name,
+      [`record[${record.id}][type]`]: record.type,
+      [`record[${record.id}][content]`]: content,
+      [`record[${record.id}][ttl]`]: '3600',
+      [`record[${record.id}][prio]`]: '0',
+    }),
+    remove: record => post(`/zones/${zoneId}/records/${record.id}/delete`, {}),
+    bulkRemove: record => post('/zones/records/delete', { 'record_id[]': record.id, zone_id: zoneId, confirm: '' }),
+  };
+}
+
+/**
  * The records a zone stores, read from the inline editor inputs. Admin page required.
  *
  * @param {import('@playwright/test').Page} page - Admin page

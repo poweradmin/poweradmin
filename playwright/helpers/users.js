@@ -6,6 +6,7 @@
 
 import { expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from './auth.js';
+import { findPermTemplateIdByName } from './templates.js';
 import { errorMessages, uniqueName } from './zones.js';
 
 export const TEMP_USER_PASSWORD = 'TestP@ssw0rd123';
@@ -240,5 +241,55 @@ export async function withTempUser(adminPage, browser, baseURL, testInfo, templa
     await fn(user, userPage);
   } finally {
     await cleanUp(() => context.close(), () => deleteUserById(adminPage, user.id));
+  }
+}
+
+/**
+ * Run fn with a throwaway user permission template that grants exactly the given
+ * permissions; the template is removed afterwards. Delete users holding it inside fn.
+ *
+ * @param {import('@playwright/test').Page} adminPage
+ * @param {import('@playwright/test').TestInfo} testInfo
+ * @param {string} label - Distinguishes templates within one test; must not be a prefix of another label
+ * @param {string[]} permissions - Permission names, e.g. ['zone_content_view_others']
+ * @param {(templateName: string) => Promise<void>} fn
+ */
+export async function withPermTemplate(adminPage, testInfo, label, permissions, fn) {
+  const name = `${uniqueName('pt', testInfo)}-${label}`;
+  await adminPage.goto('/permissions/templates/add');
+  await adminPage.locator('input[name="templ_name"]').fill(name);
+  for (const permission of permissions) {
+    const box = adminPage.locator(`tr.permission-row:has(span:text-is("${permission}")) input[name="perm_id[]"]`);
+    if (await box.count() !== 1) {
+      throw new Error(`permission ${permission} is not offered on the template form`);
+    }
+    // Sections other than the first start collapsed, so set the box directly
+    await box.evaluate(input => { input.checked = true; });
+  }
+  await adminPage.locator('button[name="commit"]').click();
+  try {
+    await adminPage.waitForURL(url => url.pathname.endsWith('/permissions/templates'), { timeout: 15000 });
+  } catch {
+    throw new Error(`creating template ${name} was refused: ${await errorMessages(adminPage) || 'still on the add form'}`);
+  }
+
+  const id = await findPermTemplateIdByName(adminPage, name);
+  if (!id) {
+    throw new Error(`template ${name} was accepted but not listed afterwards`);
+  }
+  try {
+    await adminPage.goto(`/permissions/templates/${id}/edit`);
+    const stored = await adminPage.locator('tr.permission-row:has(input[name="perm_id[]"]:checked) span').allTextContents();
+    expect(stored.map(s => s.trim()).sort(), `template ${name} stored other permissions than requested`).toEqual([...permissions].sort());
+    await fn(name);
+  } finally {
+    await adminPage.goto(`/permissions/templates/${id}/delete`);
+    await adminPage.locator('button[name="confirm"]').click();
+    await adminPage.waitForURL(url => url.pathname.endsWith('/permissions/templates'), { timeout: 15000 });
+    // Read the flash before the lookup reloads the list and consumes it
+    const refusal = await errorMessages(adminPage);
+    if (await findPermTemplateIdByName(adminPage, name)) {
+      throw new Error(`deleting template ${name} was refused: ${refusal}`);
+    }
   }
 }

@@ -9,41 +9,13 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
-import { assignZoneOwner, createTempZone, deleteZoneById, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
+import { assignZoneOwner, createTempZone, deleteZoneById, recordWrites, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
 import { cleanUp, csrfTokenFrom, setUserTemplate, withTempUser } from '../../helpers/users.js';
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 180_000 });
 
 const byType = (records, type) => records.filter(r => r.type === type);
-
-/**
- * Every way the web UI writes a record, posted with the given token.
- */
-function recordWrites(page, token, zoneId) {
-  const post = (path, form) => page.request.post(path, { form: { _token: token, ...form } });
-  return {
-    add: (name, type, content) => post(`/zones/${zoneId}/records/add`, { name, type, content, ttl: '3600', commit: '' }),
-    inlineAdd: (name, type, content) => post(`/zones/${zoneId}/edit`, { name, type, content, ttl: '3600', commit: '' }),
-    edit: (record, content) => post(`/zones/${zoneId}/records/${record.id}/edit`, {
-      rid: record.id, zid: zoneId, name: record.name, type: record.type, content, ttl: '3600', prio: '0', commit: '',
-    }),
-    // The parser skips a row without _complete and treats a post without form_complete as truncated
-    editorSave: (record, content) => post(`/zones/${zoneId}/edit`, {
-      commit: '', form_complete: '1',
-      [`record[${record.id}][_complete]`]: '1',
-      [`record[${record.id}][rid]`]: record.id,
-      [`record[${record.id}][zid]`]: zoneId,
-      [`record[${record.id}][name]`]: record.name,
-      [`record[${record.id}][type]`]: record.type,
-      [`record[${record.id}][content]`]: content,
-      [`record[${record.id}][ttl]`]: '3600',
-      [`record[${record.id}][prio]`]: '0',
-    }),
-    remove: record => post(`/zones/${zoneId}/records/${record.id}/delete`, {}),
-    bulkRemove: record => post('/zones/records/delete', { 'record_id[]': record.id, zone_id: zoneId, confirm: '' }),
-  };
-}
 
 test.describe('Other users\' accounts', () => {
   test('a user without user_edit_others cannot change another user by its edit form or the user list', async ({ adminPage, browser, baseURL }, testInfo) => {
