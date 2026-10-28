@@ -1,0 +1,26 @@
+# Time budgets for .devcontainer/scripts/perf-timings.sh against the --perf seed
+# (import-test-data.sh --perf, default sizes). Columns, tab separated:
+#   budget  seconds, best of 3 runs; xfail:<seconds> = known problem, reported but not counted,
+#           XPASS once it answers within those seconds
+#   backend sql, api or any (api = the API backend instances 8083-8085)
+#   key     admin (the fixture test key) or owner (perf_owner, X-API-Key perf-owner-key)
+#   path    API v2 path; {big} is big.perf.test's zone id
+#   note    why the budget is what it is
+# Budgets are 3x or more the PostgreSQL baseline of 2026-10-27, so a failure means a real slowdown.
+1.0	any	admin	/zones?per_page=10	first page of 50k zones
+1.0	any	admin	/zones?per_page=10&page=2000	deep page
+1.0	any	admin	/zones?per_page=10&sort=name	natural sort
+1.0	any	admin	/zones?per_page=10&q=o0099	name filter
+3.0	any	admin	/zones	unpaged, about 4.7 MB
+1.0	any	owner	/zones?per_page=10	direct and group ownership
+2.0	any	owner	/zones	unpaged, about 0.9 MB
+2.0	sql	owner	/zones/{big}/records?per_page=50	page cut in SQL (#1814)
+2.0	sql	owner	/zones/{big}/records?per_page=50&page=1500	deep page
+3.0	sql	owner	/zones/{big}/rrsets?per_page=50	DISTINCT over 100k records
+xfail:2.0	sql	owner	/zones/{big}/records?per_page=50&q=h9999	#1814: a filter loads the whole zone
+xfail:5.0	sql	owner	/zones/{big}/records	#1814: unpaged loads the whole zone
+xfail:2.0	api	owner	/zones/{big}/records?per_page=50	#1812: API mode loads the whole zone
+xfail:3.0	api	owner	/zones/{big}/rrsets?per_page=50	#1812
+1.0	any	admin	/groups?per_page=10	groups list
+2.0	any	admin	/groups	unpaged, 3 queries per group
+1.0	any	admin	/users?per_page=10	users list

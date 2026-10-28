@@ -13,5 +13,6 @@ DELETE FROM pdns.`domainmetadata` WHERE `domain_id` IN (SELECT `id` FROM pdns.`d
 DELETE FROM pdns.`cryptokeys` WHERE `domain_id` IN (SELECT `id` FROM pdns.`domains` WHERE `name` LIKE '%.perf.test');
 DELETE FROM pdns.`domains` WHERE `name` LIKE '%.perf.test';
 DELETE FROM poweradmin.`user_groups` WHERE `name` LIKE 'Perf group %';
+DELETE FROM poweradmin.`api_keys` WHERE `name` = 'perf owner key';
 DELETE FROM poweradmin.`api_keys` WHERE `created_by` IN (SELECT `id` FROM poweradmin.`users` WHERE `username` LIKE 'perf\_%');
 DELETE FROM poweradmin.`users` WHERE `username` LIKE 'perf\_%';

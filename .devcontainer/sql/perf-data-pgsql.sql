@@ -19,6 +19,7 @@ SELECT setval('zones_groups_id_seq', GREATEST((SELECT MAX(id) FROM zones_groups)
 SELECT setval('zones_id_seq', GREATEST((SELECT MAX(id) FROM zones), 1));
 SELECT setval('domains_id_seq', GREATEST((SELECT MAX(id) FROM domains), 1));
 SELECT setval('records_id_seq', GREATEST((SELECT MAX(id) FROM records), 1));
+SELECT setval('api_keys_id_seq', GREATEST((SELECT MAX(id) FROM api_keys), 1));
 
 -- =============================================================================
 -- USERS AND GROUPS
@@ -28,6 +29,12 @@ INSERT INTO users (username, password, fullname, email, description, perm_templ,
 SELECT 'perf_owner', m.password, 'Perf Owner', 'perf_owner@example.com', 'Owns the perf zones', m.perm_templ, 1, 0
 FROM users m
 WHERE m.username = 'manager';
+
+-- API key for the timing script: X-API-Key perf-owner-key
+INSERT INTO api_keys (name, secret_key, created_by)
+SELECT 'perf owner key', 'sha256$c5bb7502c5e6b741cc05097e1f1be5c9ef720a89ef90e41d3cc58367b72e8f60', u.id
+FROM users u
+WHERE u.username = 'perf_owner';
 
 INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
 SELECT 'perf_user_' || lpad(s::text, 4, '0'), m.password, 'Perf User ' || lpad(s::text, 4, '0'),

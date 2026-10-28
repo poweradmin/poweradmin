@@ -154,6 +154,25 @@ After importing test data (`.devcontainer/scripts/import-test-data.sh`):
 - Username: `admin`, `manager`, `client`, `viewer`, `noperm`, `inactive`
 - Password: `Poweradmin123`
 
+## Large Data Timings
+
+`import-test-data.sh --perf` adds a large data set on top of the fixtures:
+- 50,000 zones named `*.perf.test`
+- `big.perf.test`, which holds 100,000 records
+- 2,000 users and 500 groups
+
+Change the sizes with `PERF_*` variables; `--help` lists them. Then time the API v2 lists
+against `perf-budgets.tsv`:
+
+```bash
+.devcontainer/scripts/import-test-data.sh --perf --mysql
+.devcontainer/scripts/perf-timings.sh 8080 8083
+.devcontainer/scripts/import-test-data.sh --perf-clean --mysql
+```
+
+The databases are shared between instances and sessions, so remove the data when done.
+`perf_owner` / `Poweradmin123` logs in to the web UI. Its API key is `perf-owner-key`.
+
 ## LDAP Test Users
 
 The `ldap` container bootstraps `ldap/bootstrap/*.ldif` on first start (users, the

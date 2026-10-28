@@ -11,5 +11,6 @@ DELETE FROM domainmetadata WHERE domain_id IN (SELECT id FROM domains WHERE name
 DELETE FROM cryptokeys WHERE domain_id IN (SELECT id FROM domains WHERE name LIKE '%.perf.test');
 DELETE FROM domains WHERE name LIKE '%.perf.test';
 DELETE FROM user_groups WHERE name LIKE 'Perf group %';
+DELETE FROM api_keys WHERE name = 'perf owner key';
 DELETE FROM api_keys WHERE created_by IN (SELECT id FROM users WHERE username LIKE 'perf\_%');
 DELETE FROM users WHERE username LIKE 'perf\_%';

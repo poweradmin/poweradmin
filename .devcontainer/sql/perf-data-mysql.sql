@@ -24,6 +24,12 @@ SELECT 'perf_owner', m.`password`, 'Perf Owner', 'perf_owner@example.com', 'Owns
 FROM poweradmin.`users` m
 WHERE m.`username` = 'manager';
 
+-- API key for the timing script: X-API-Key perf-owner-key
+INSERT INTO poweradmin.`api_keys` (`name`, `secret_key`, `created_by`)
+SELECT 'perf owner key', 'sha256$c5bb7502c5e6b741cc05097e1f1be5c9ef720a89ef90e41d3cc58367b72e8f60', u.`id`
+FROM poweradmin.`users` u
+WHERE u.`username` = 'perf_owner';
+
 INSERT INTO poweradmin.`users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
 SELECT CONCAT('perf_user_', LPAD(s.`seq`, 4, '0')), m.`password`, CONCAT('Perf User ', LPAD(s.`seq`, 4, '0')),
        CONCAT('perf_user_', LPAD(s.`seq`, 4, '0'), '@example.com'), '', m.`perm_templ`, 1, 0
