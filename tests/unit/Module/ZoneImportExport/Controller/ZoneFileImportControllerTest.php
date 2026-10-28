@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
@@ -83,6 +84,11 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     /** @var list<array<int, mixed>> */
     private array $auditLogs = [];
 
+    /** @var list<array<int, mixed>> */
+    private array $finalizes = [];
+
+    private bool $writesFail = false;
+
     private array $filesBackup = [];
     private ?string $uploadPath = null;
 
@@ -107,7 +113,12 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $records = $this->createMock(RecordManagerService::class);
         $records->method('createRecord')->willReturnCallback(function (...$args): RecordWriteResult {
             $this->writes[] = $args;
-            return RecordWriteResult::ok(count($this->writes));
+            return $this->writesFail ? RecordWriteResult::failure('refused') : RecordWriteResult::ok(count($this->writes));
+        });
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('finalizeZone')->willReturnCallback(function (...$args): void {
+            $this->finalizes[] = $args;
         });
 
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
@@ -125,6 +136,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('domainRepository')->willReturn($domains);
         $this->factory->method('recordManagerService')->willReturn($records);
+        $this->factory->method('recordManager')->willReturn($recordManager);
         $this->factory->method('recordRepository')->willReturn($recordRepository);
         $this->factory->method('auditService')->willReturn($audit);
         $this->factory->method('userGroupRepository')->willReturn($groups);
@@ -483,9 +495,10 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $controller->execute();
 
         $this->assertCount(2, $this->writes);
-        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web', null, true, null], $this->writes[0]);
-        $this->assertSame([self::ZONE_ID, 'mail.example.com', 'MX', 'mail.example.com', 3600, 10, '', self::USERNAME, 0, 'web', null, true, null], $this->writes[1]);
+        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web', null, false, null], $this->writes[0]);
+        $this->assertSame([self::ZONE_ID, 'mail.example.com', 'MX', 'mail.example.com', 3600, 10, '', self::USERNAME, 0, 'web', null, false, null], $this->writes[1]);
         $this->assertSame([[self::ZONE_ID, 'example.com', true]], $this->auditLogs);
+        $this->assertSame([[self::ZONE_ID, true, true]], $this->finalizes, 'one serial bump and rectify for the whole import');
 
         $params = $this->renderedParams();
         $this->assertTrue($params['result']);
@@ -495,6 +508,22 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
         $this->assertFalse($this->session->has(self::SESSION_KEY));
+    }
+
+    public function testAnImportWhereEveryRecordFailsLeavesTheZoneUnfinalized(): void
+    {
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::ZONE_FILE);
+        $this->makeController()->run();
+
+        $this->writesFail = true;
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertCount(2, $this->writes);
+        $this->assertSame([], $this->finalizes);
+        $this->assertSame(2, $this->renderedParams()['fail_count']);
     }
 
     public function testConfirmAsNewZoneCreatesTheZoneFromTheSubmittedNameTypeAndGroups(): void
@@ -678,7 +707,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $_FILES = [];
         $this->makeController()->execute();
 
-        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web', null, true, null], $this->writes[0]);
-        $this->assertSame([self::ZONE_ID, 'off.example.com', 'A', '192.0.2.2', 300, 0, 'parked', self::USERNAME, 1, 'web', null, true, null], $this->writes[1]);
+        $this->assertSame([self::ZONE_ID, 'www.example.com', 'A', '192.0.2.1', 3600, 0, '', self::USERNAME, 0, 'web', null, false, null], $this->writes[0]);
+        $this->assertSame([self::ZONE_ID, 'off.example.com', 'A', '192.0.2.2', 300, 0, 'parked', self::USERNAME, 1, 'web', null, false, null], $this->writes[1]);
     }
 }

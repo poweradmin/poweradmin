@@ -419,6 +419,7 @@ class ZoneFileImportController extends BaseController
         $successCount = 0;
         $failCount = 0;
         $skipCount = 0;
+        $nonSoaAdded = false;
         $replacedRRSets = [];
 
         foreach ($records as $record) {
@@ -451,14 +452,21 @@ class ZoneFileImportController extends BaseController
                 $record->priority,
                 $commentsEnabled ? (string)($record->comment ?? '') : '',
                 $userLogin,
-                !empty($record->disabled) ? 1 : 0
+                !empty($record->disabled) ? 1 : 0,
+                finalizeZone: false
             );
 
             if ($result->success) {
                 $successCount++;
+                $nonSoaAdded = $nonSoaAdded || strtoupper((string)$record->type) !== 'SOA';
             } else {
                 $failCount++;
             }
+        }
+
+        // One serial bump, rectify and cache flush for the whole import, not one per record
+        if ($successCount > 0) {
+            $dnsRecordManager->finalizeZone($zone_id, $nonSoaAdded);
         }
 
         // Clean up session data
