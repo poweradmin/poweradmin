@@ -39,6 +39,12 @@ class ZoneTemplateParsingTest extends TestCase
     /**
      * Test parsing ZONE placeholder
      */
+    public function testAViewVariantFillsThePlaceholdersWithTheNameItServes(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('[ZONE] [DOMAIN]-[TLD]', 'example.net..internal');
+        $this->assertEquals('example.net example-net', $result);
+    }
+
     public function testParseZonePlaceholder(): void
     {
         $template = '[ZONE] IN A 192.168.1.1';

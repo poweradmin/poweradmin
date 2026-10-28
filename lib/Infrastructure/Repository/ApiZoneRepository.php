@@ -109,12 +109,12 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     {
         if (!$viewOthers) {
             $where = " WHERE " . $this->ownedZonesCondition('z', $userId) . "
-            AND z.zone_name NOT LIKE '%.in-addr.arpa'
-            AND z.zone_name NOT LIKE '%.ip6.arpa'
+            AND (z.zone_name NOT LIKE '%.in-addr.arpa' AND z.zone_name NOT LIKE '%.in-addr.arpa..%')
+            AND (z.zone_name NOT LIKE '%.ip6.arpa' AND z.zone_name NOT LIKE '%.ip6.arpa..%')
             AND z.zone_name IS NOT NULL";
         } else {
-            $where = " WHERE z.zone_name NOT LIKE '%.in-addr.arpa'
-                         AND z.zone_name NOT LIKE '%.ip6.arpa'
+            $where = " WHERE (z.zone_name NOT LIKE '%.in-addr.arpa' AND z.zone_name NOT LIKE '%.in-addr.arpa..%')
+                         AND (z.zone_name NOT LIKE '%.ip6.arpa' AND z.zone_name NOT LIKE '%.ip6.arpa..%')
                          AND z.zone_name IS NOT NULL";
         }
         $unreachable = $this->unreachableSharedRowsCondition('z');
@@ -402,10 +402,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     {
         $query = "SELECT
                     COUNT(DISTINCT z.id) AS count_all,
-                    COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.in-addr.arpa' THEN z.id END) AS count_ipv4,
-                    COUNT(DISTINCT CASE WHEN z.zone_name LIKE '%.ip6.arpa' THEN z.id END) AS count_ipv6
+                    COUNT(DISTINCT CASE WHEN (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.in-addr.arpa..%') THEN z.id END) AS count_ipv4,
+                    COUNT(DISTINCT CASE WHEN (z.zone_name LIKE '%.ip6.arpa' OR z.zone_name LIKE '%.ip6.arpa..%') THEN z.id END) AS count_ipv6
                   FROM zones z";
-        $query .= " WHERE z.zone_name IS NOT NULL AND (z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.ip6.arpa')";
+        $query .= " WHERE z.zone_name IS NOT NULL AND ((z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.in-addr.arpa..%') OR (z.zone_name LIKE '%.ip6.arpa' OR z.zone_name LIKE '%.ip6.arpa..%'))";
         $query .= ($unreachable = $this->unreachableSharedRowsCondition('z')) === null ? '' : " AND $unreachable";
         if ($permType === 'own') {
             $query .= " AND " . $this->ownedZonesCondition('z', $userId);
@@ -1141,10 +1141,10 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         $clauses = [];
         if ($filter->includesIpv4()) {
-            $clauses[] = "z.zone_name LIKE '%.in-addr.arpa'";
+            $clauses[] = "(z.zone_name LIKE '%.in-addr.arpa' OR z.zone_name LIKE '%.in-addr.arpa..%')";
         }
         if ($filter->includesIpv6()) {
-            $clauses[] = "z.zone_name LIKE '%.ip6.arpa'";
+            $clauses[] = "(z.zone_name LIKE '%.ip6.arpa' OR z.zone_name LIKE '%.ip6.arpa..%')";
         }
 
         return implode(' OR ', $clauses);

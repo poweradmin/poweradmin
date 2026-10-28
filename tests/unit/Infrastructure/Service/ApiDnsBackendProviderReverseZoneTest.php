@@ -66,6 +66,28 @@ class ApiDnsBackendProviderReverseZoneTest extends TestCase
         );
     }
 
+    public function testAReverseViewVariantCanHoldThePtr(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (30, 30, '3.0.192.in-addr.arpa..internal')");
+
+        $this->assertSame(30, $this->provider->getBestMatchingReverseZoneId('5.3.0.192.in-addr.arpa'));
+    }
+
+    public function testTheBaseReverseZoneWinsOverItsViewVariant(): void
+    {
+        // The variant row is scanned before the base, so only the tie rule can keep the base
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (10, 30, '2.0.192.in-addr.arpa..internal')");
+
+        $this->assertSame(13, $this->provider->getBestMatchingReverseZoneId('99.2.0.192.in-addr.arpa'));
+    }
+
+    public function testAVariantOfAShorterApexLosesToTheMoreSpecificBase(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (10, 30, '0.192.in-addr.arpa..internal')");
+
+        $this->assertSame(13, $this->provider->getBestMatchingReverseZoneId('5.2.0.192.in-addr.arpa'));
+    }
+
     public function testTheCanonicalIdIsReturnedRatherThanTheRowId(): void
     {
         $this->assertSame(13, $this->provider->getBestMatchingReverseZoneId('99.2.0.192.in-addr.arpa'));

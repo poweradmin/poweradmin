@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Domain\Utility\DnsHelper;
 use Exception;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -1448,6 +1449,8 @@ class ZoneTemplate
      */
     public function parseTemplateValue(string $val, string $domain, ?string $recordType = null): string
     {
+        // A view variant "example.com..internal" fills the placeholders with the name it serves
+        $domain = DnsHelper::zoneApexName($domain);
         $dns_ns1 = $this->config->get('dns', 'ns1');
         $dns_ns2 = $this->config->get('dns', 'ns2');
         $dns_ns3 = $this->config->get('dns', 'ns3');

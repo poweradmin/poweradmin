@@ -42,6 +42,13 @@ class DnsHelperTest extends TestCase
         $this->assertTrue(DnsHelper::isReverseZoneName('1.0.0.127.in-addr.arpa.'), 'A trailing dot does not change classification.');
     }
 
+    public function testIsReverseZoneNameJudgesAViewVariantByItsApex(): void
+    {
+        $this->assertTrue(DnsHelper::isReverseZoneName('2.0.192.in-addr.arpa..internal'));
+        $this->assertTrue(DnsHelper::isReverseZoneName('8.b.d.0.1.0.0.2.ip6.arpa..internal.'));
+        $this->assertFalse(DnsHelper::isReverseZoneName('example.com..internal'));
+    }
+
     public function testIsReverseZoneNameNegativeCases(): void
     {
         $this->assertFalse(DnsHelper::isReverseZoneName('example.com'), 'A regular domain is not reverse.');

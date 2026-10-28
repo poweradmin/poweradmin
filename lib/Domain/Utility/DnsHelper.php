@@ -65,7 +65,8 @@ class DnsHelper
      */
     public static function isReverseZoneName(string $name): bool
     {
-        $name = strtolower(rtrim($name, '.'));
+        // A view variant "2.0.192.in-addr.arpa..internal" serves its apex name
+        $name = strtolower(self::zoneApexName($name));
 
         return $name === 'in-addr.arpa'
             || $name === 'ip6.arpa'
