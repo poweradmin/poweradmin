@@ -200,6 +200,27 @@ class ZoneSearchPagingIntegrationTest extends TestCase
         $this->assertSame(['zone05.example'], self::names($zones));
     }
 
+    #[DataProvider('engines')]
+    public function testEachZoneOnAPageCarriesItsOwnRecordCount(string $engine): void
+    {
+        $this->createScratch($engine);
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (99, 'zone99.example', 'MASTER')");
+        $this->db->exec('INSERT INTO zones (id, domain_id, owner) VALUES (999, 99, 1)');
+        $search = $this->search();
+
+        $counts = [];
+        for ($page = 1; $page <= 4; $page++) {
+            foreach ($this->page($search, $page) as $zone) {
+                $counts[$zone['name']] = $zone['count_records'] === null ? null : (int)$zone['count_records'];
+            }
+        }
+
+        $this->assertSame(3, $counts['zone03.example']);
+        $this->assertSame(30, $counts['zone30.example']);
+        $this->assertNull($counts['zone99.example'], 'A zone without records shows no count, as before');
+        $this->assertSame(31, $search->getTotalZones(['query' => 'zone', 'wildcard' => true, 'reverse' => false, 'zones' => true, 'comments' => false], 'all', 1));
+    }
+
     /** @return array<string, array{string, string, string}> */
     public static function sorts(): array
     {

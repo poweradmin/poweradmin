@@ -151,15 +151,21 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
 
         $joins = "
             LEFT JOIN zones z ON $domains_table.id = z.domain_id
-            LEFT JOIN users u ON z.owner = u.id
-            LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id = $domains_table.id";
+            LEFT JOIN users u ON z.owner = u.id";
+
+        // Counting every zone's records is only needed to sort by that count; otherwise
+        // only the zones on the page are counted, below
+        $sortsOnCount = $sort_zones_by === 'count_records ' . $zone_sort_direction;
+        $countJoin = $sortsOnCount
+            ? " LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id = $domains_table.id"
+            : '';
 
         // Page over zones, not joined rows: a zone with several owners is one row per owner,
         // so LIMIT on the joined rows gave short pages and split zones across pages
         $pageSort = $sort_zones_by === 'fullname ' . $zone_sort_direction ? "MIN(u.fullname) $zone_sort_direction" : $sort_zones_by;
-        $pageQuery = "SELECT $domains_table.id FROM $domains_table $joins
+        $pageQuery = "SELECT $domains_table.id FROM $domains_table $joins$countJoin
             WHERE $whereConditions
-            GROUP BY $domains_table.id, $domains_table.name, $domains_table.type, record_count.count_records
+            GROUP BY $domains_table.id, $domains_table.name, $domains_table.type" . ($sortsOnCount ? ', record_count.count_records' : '') . "
             ORDER BY $pageSort, $domains_table.id
             LIMIT $iface_rowamount OFFSET $offset";
         $stmt = $this->db->prepare($pageQuery);
@@ -187,11 +193,11 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
                 u.id as user_id,
                 u.fullname,
                 u.username,
-                record_count.count_records
+                NULLIF((SELECT COUNT(r.domain_id) FROM $records_table r WHERE r.domain_id = $domains_table.id AND r.type IS NOT NULL), 0) AS count_records
                 $comment_field
             FROM $domains_table $joins
             WHERE ($whereConditions) AND $domains_table.id IN (" . implode(', ', $idPlaceholders) . ")
-            ORDER BY $sort_zones_by";
+            ORDER BY $sort_zones_by, z.owner";
 
         $stmt = $this->db->prepare($zonesQuery);
         $stmt->execute($params);
@@ -235,7 +241,6 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
     {
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
-        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Prepare query parameters
         $params = [];
@@ -251,7 +256,6 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
             $domains_table
         LEFT JOIN zones z on $domains_table.id = z.domain_id
         LEFT JOIN users u on z.owner = u.id
-        LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
         WHERE
             " . $whereConditions;
 
