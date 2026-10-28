@@ -5,7 +5,8 @@
  */
 
 import { expect } from '@playwright/test';
-import { errorMessages } from './zones.js';
+import { loginAndWaitForDashboard } from './auth.js';
+import { errorMessages, uniqueName } from './zones.js';
 
 export const TEMP_USER_PASSWORD = 'TestP@ssw0rd123';
 
@@ -208,4 +209,36 @@ export async function csrfTokenFrom(page, path) {
   const token = await page.locator('input[name="_token"]').first().inputValue();
   expect(token, `no CSRF token rendered on ${path}`).not.toBe('');
   return token;
+}
+
+/**
+ * Run every cleanup step even when an earlier one throws, then rethrow the first error.
+ */
+export async function cleanUp(...steps) {
+  let first = null;
+  for (const step of steps) {
+    try {
+      await step();
+    } catch (error) {
+      first ??= error;
+    }
+  }
+  if (first) {
+    throw first;
+  }
+}
+
+/**
+ * Run fn with a throwaway user and a page logged in as that user; both are removed afterwards.
+ */
+export async function withTempUser(adminPage, browser, baseURL, testInfo, templateName, fn) {
+  const user = await createUser(adminPage, uniqueName('perm', testInfo).slice(0, 40), templateName);
+  const context = await browser.newContext({ baseURL });
+  try {
+    const userPage = await context.newPage();
+    await loginAndWaitForDashboard(userPage, user.username, user.password, 3, { fresh: true });
+    await fn(user, userPage);
+  } finally {
+    await cleanUp(() => context.close(), () => deleteUserById(adminPage, user.id));
+  }
 }

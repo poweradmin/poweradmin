@@ -497,6 +497,22 @@ export async function firstRecordIdOnZone(page, zoneId) {
   return fallback;
 }
 
+/**
+ * The records a zone stores, read from the inline editor inputs. Admin page required.
+ *
+ * @param {import('@playwright/test').Page} page - Admin page
+ * @param {string|number} zoneId
+ * @returns {Promise<Array<{id: string, name: string, type: string, content: string}>>}
+ */
+export async function storedRecords(page, zoneId) {
+  await page.goto(`/zones/${zoneId}/edit`);
+  return page.locator('[name^="record["][name$="[type]"]').evaluateAll(nodes => nodes.map(node => {
+    const id = node.getAttribute('name').match(/^record\[([^\]]+)\]/)[1];
+    const field = key => document.getElementsByName(`record[${id}][${key}]`)[0]?.value ?? '';
+    return { id, name: field('name'), type: node.value, content: field('content') };
+  }));
+}
+
 export async function findRecordId(page, zoneId, recordName, recordType = null) {
   await page.goto(`/zones/${zoneId}/edit`);
 

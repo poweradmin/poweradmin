@@ -9,21 +9,20 @@
  */
 
 import { test, expect } from '../../fixtures/test-fixtures.js';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
 import { assignZoneOwner, createTempZone, deleteZoneById, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
 import {
   addGroupMember,
   assignZoneGroup,
+  cleanUp,
   createGroup,
-  createUser,
   csrfTokenFrom,
   deleteGroupById,
-  deleteUserById,
   removeGroupMember,
   removeZoneOwner,
   setUserTemplate,
   storedUserTemplate,
+  withTempUser,
 } from '../../helpers/users.js';
 
 const DENIAL_ALERT = '[data-testid="system-message"].alert-danger';
@@ -32,38 +31,6 @@ const zoneHeading = zone => `text=Edit zone "${zone.name}"`;
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 120_000 });
-
-/**
- * Run every cleanup step even when an earlier one throws, then rethrow the first error.
- */
-async function cleanUp(...steps) {
-  let first = null;
-  for (const step of steps) {
-    try {
-      await step();
-    } catch (error) {
-      first ??= error;
-    }
-  }
-  if (first) {
-    throw first;
-  }
-}
-
-/**
- * Run fn with a throwaway user and a page logged in as that user; both are removed afterwards.
- */
-async function withTempUser(adminPage, browser, baseURL, testInfo, templateName, fn) {
-  const user = await createUser(adminPage, uniqueName('perm', testInfo).slice(0, 40), templateName);
-  const context = await browser.newContext({ baseURL });
-  try {
-    const userPage = await context.newPage();
-    await loginAndWaitForDashboard(userPage, user.username, user.password, 3, { fresh: true });
-    await fn(user, userPage);
-  } finally {
-    await cleanUp(() => context.close(), () => deleteUserById(adminPage, user.id));
-  }
-}
 
 async function expectZoneVisible(page, zone) {
   await page.goto(`/zones/${zone.id}/edit`);
