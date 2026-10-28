@@ -484,9 +484,10 @@ interface DnsBackendProvider
      * @param string $query Search query (supports wildcards)
      * @param string $objectType Filter: 'all', 'zone', 'record'
      * @param int $max Maximum results
+     * @param bool $exact Match the query as a whole name or content instead of a substring
      * @return array{zones: array, records: array}
      */
-    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array;
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100, bool $exact = false): array;
 
     // ---------------------------------------------------------------
     // Capability check

@@ -234,7 +234,7 @@ class ReverseRecordCreatorDeleteTest extends TestCase
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('isApiBackend')->willReturn(true);
         $backend->method('searchDnsData')
-            ->with('host.example.com', 'record', 100)
+            ->with('192.0.2.10', 'record', 10000, true)
             ->willReturn([
                 'records' => [
                     ['id' => 50, 'type' => 'A', 'name' => 'host.example.com', 'content' => '192.0.2.99', 'domain_id' => 1],

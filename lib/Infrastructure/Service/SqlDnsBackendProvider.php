@@ -730,14 +730,14 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     // Search operations
     // ---------------------------------------------------------------
 
-    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100, bool $exact = false): array
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $zones = [];
         $records = [];
-        $pattern = '%' . $query . '%';
+        $pattern = $exact ? $query : '%' . $query . '%';
 
         if ($objectType === 'all' || $objectType === 'zone') {
             $sql = "SELECT id, name, type FROM $domainsTable WHERE name LIKE :pattern ORDER BY name";

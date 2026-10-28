@@ -48,6 +48,9 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
  */
 class CNAMERecordValidator implements DnsRecordValidatorInterface
 {
+    /** Exact API-mode lookups ask for this many matches; the search counts name and content hits alike */
+    private const EXACT_SEARCH_LIMIT = 10000;
+
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private ConfigurationManager $config;
@@ -227,7 +230,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private function validateCnameUnique(string $name, int|string $rid): ValidationResult
     {
         if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            $result = $this->backendProvider->searchDnsData($name, 'record', self::EXACT_SEARCH_LIMIT, true);
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
             foreach ($result['records'] as $r) {
                 if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
@@ -271,10 +274,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private function validateCnameName(string $name): ValidationResult
     {
         if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
-            foreach ($result['records'] as $r) {
-                if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
-                    return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
+            // The search reads * as a wildcard, and MX and NS content never holds one
+            if (str_contains($name, '*')) {
+                return ValidationResult::success(true);
+            }
+            // Content is stored with or without its trailing dot depending on how it was written
+            foreach ([rtrim($name, '.'), rtrim($name, '.') . '.'] as $query) {
+                $result = $this->backendProvider->searchDnsData($query, 'record', self::EXACT_SEARCH_LIMIT, true);
+                foreach ($result['records'] as $r) {
+                    if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
+                        return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
+                    }
                 }
             }
             return ValidationResult::success(true);
@@ -322,7 +332,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     public function validateCnameExistence(string $name, int|string $rid): ValidationResult
     {
         if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+            $result = $this->backendProvider->searchDnsData($name, 'record', self::EXACT_SEARCH_LIMIT, true);
             foreach ($result['records'] as $r) {
                 if (strcasecmp($r['name'], $name) === 0 && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
