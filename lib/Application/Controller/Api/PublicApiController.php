@@ -418,6 +418,25 @@ abstract class PublicApiController extends AbstractApiController
     }
 
     /**
+     * The non-empty query parameters among these, for a repository pre-filter.
+     *
+     * @param list<string> $parameters
+     * @return array<string, string>
+     */
+    protected function queryNeedles(array $parameters): array
+    {
+        $needles = [];
+        foreach ($parameters as $parameter) {
+            $value = trim((string)$this->request->query->get($parameter, ''));
+            if ($value !== '') {
+                $needles[$parameter] = $value;
+            }
+        }
+
+        return $needles;
+    }
+
+    /**
      * Filter, sort and page a list that is already loaded. Each filter maps a query
      * parameter to the values of a row it searches as a case-insensitive substring.
      *

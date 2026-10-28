@@ -26,6 +26,8 @@ use PDO;
 use PDOException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Controller\Api\V2\Resource\RecordResource;
+use Poweradmin\Application\Http\ListPaging;
 use Poweradmin\Infrastructure\Repository\SqlRecordRepository;
 use TestHelpers\RecordCommentFixture;
 
@@ -55,6 +57,10 @@ class RecordRepositoryDomainPageIntegrationTest extends TestCase
             $db = RecordCommentFixture::connect($engine);
         } catch (PDOException $e) {
             $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
+        }
+        // The app's MySQL connection uses native prepares, which refuse a reused placeholder
+        if ($engine === 'mysql') {
+            $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         }
         $this->db = $db;
         $this->engine = $engine;
@@ -184,6 +190,59 @@ class RecordRepositoryDomainPageIntegrationTest extends TestCase
         $this->assertSame(['www.example.com|A'], self::rrsetKeys($page));
         $this->assertSame(['192.0.2.1', '192.0.2.2', '192.0.2.3'], $contents);
         $this->assertSame(2, $repo->countRRSetsByDomainId(self::ZONE_ID, 'A'));
+    }
+
+    /**
+     * Ids of the listed rows the API's own PHP filter keeps for one query parameter.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return list<string>
+     */
+    private static function phpMatches(array $rows, string $parameter, string $needle): array
+    {
+        $values = [
+            'name' => static fn(array $r): array => [$r['name']],
+            'content' => static fn(array $r): array => [$r['content']],
+            'q' => static fn(array $r): array => [$r['name'], $r['content']],
+        ][$parameter];
+        $items = array_map(static fn(array $r): array => RecordResource::listItem($r, static fn($id) => (string)$id), $rows);
+
+        return array_column(ListPaging::filterContains($items, $needle, $values), 'id');
+    }
+
+    #[DataProvider('engines')]
+    public function testThePreFilterKeepsEveryRowThePhpFilterKeeps(string $engine): void
+    {
+        $repo = $this->open($engine);
+        RecordCommentFixture::addRecord($this->db, 20, 'txt.example.com', 'TXT', '"Hello World"');
+        RecordCommentFixture::addRecord($this->db, 21, 'pct.example.com', 'TXT', '"50% off_now"');
+        // mb_stripos folds the Kelvin sign to k and the long s to s; SQL LOWER does not
+        RecordCommentFixture::addRecord($this->db, 22, 'kelvin.example.com', 'TXT', "\"\u{212A}elvin\"");
+        RecordCommentFixture::addRecord($this->db, 23, 'longs.example.com', 'TXT', "\"\u{17F}ecret\"");
+        $listed = self::listed($repo);
+
+        foreach (['name', 'content', 'q'] as $parameter) {
+            foreach (['www', 'WWW', ' 192.0.2.1 ', 'example', 'hello world', '"', 'Wörld', '50%', '_now', 'mail.example.com', 'nomatch', 'k', 'kelvin', 's', 'secret'] as $needle) {
+                $sql = self::ids($repo->getRecordsByDomainIdContaining(self::ZONE_ID, null, true, [$parameter => $needle]));
+                $missing = array_diff(self::phpMatches($listed, $parameter, $needle), $sql);
+                $this->assertSame([], array_values($missing), "$parameter=$needle drops rows the PHP filter keeps");
+            }
+        }
+
+        $this->assertSame(['4', '5', '6'], self::ids($repo->getRecordsByDomainIdContaining(self::ZONE_ID, null, true, ['name' => 'WWW'])), 'An ASCII needle narrows exactly');
+        $this->assertCount(count($listed), $repo->getRecordsByDomainIdContaining(self::ZONE_ID, null, true, ['content' => '50%']), 'A LIKE wildcard does not narrow');
+        $this->assertCount(count($listed), $repo->getRecordsByDomainIdContaining(self::ZONE_ID, null, true, ['q' => 'Wörld']), 'A non-ASCII needle does not narrow');
+    }
+
+    #[DataProvider('engines')]
+    public function testAnRRSetWithOneMatchingMemberComesBackWhole(string $engine): void
+    {
+        $repo = $this->open($engine);
+
+        $rows = $repo->getRRSetRecordsContaining(self::ZONE_ID, null, ['content' => '192.0.2.3']);
+
+        $this->assertSame(['www.example.com|A'], self::rrsetKeys($rows));
+        $this->assertCount(3, $rows);
     }
 
     #[DataProvider('engines')]

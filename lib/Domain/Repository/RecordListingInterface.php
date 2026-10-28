@@ -85,6 +85,31 @@ interface RecordListingInterface
     public function countRRSetsByDomainId(int $domainId, ?string $recordType = null): int;
 
     /**
+     * getRecordsByDomainId(), narrowed to rows that may contain the given substrings,
+     * case-insensitively. It never drops a row that contains them; it may keep more, so
+     * callers still apply their own exact filter.
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @param bool $withComments Add a `comment` key (string or null) to every row
+     * @param array<string, string> $contains Needles by query parameter: name, content, q (name or content)
+     * @return array Array of records
+     */
+    public function getRecordsByDomainIdContaining(int $domainId, ?string $recordType, bool $withComments, array $contains): array;
+
+    /**
+     * Every record of each RRset (name and type) that has a member which may contain the
+     * given substrings, in getRecordsByDomainId() order. Like
+     * getRecordsByDomainIdContaining() it may keep more than the exact match.
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @param array<string, string> $contains Needles by query parameter: name, content, q
+     * @return array Array of records
+     */
+    public function getRRSetRecordsContaining(int $domainId, ?string $recordType, array $contains): array;
+
+    /**
      * The comment shown for one record: the SQL backend gives the comment linked to the
      * record, else the unlinked comment for its name and type; the API backend gives
      * the RRset comment, shared by every record in the set.

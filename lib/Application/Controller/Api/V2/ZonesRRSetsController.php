@@ -284,7 +284,11 @@ class ZonesRRSetsController extends PublicApiController
                 return $this->returnApiResponse(['rrsets' => $rrsets], true, 'RRSets retrieved successfully', 200, $extra);
             }
 
-            $rrsets = $this->groupIntoRRSets($this->recordRepository->getRecordsByDomainId($zoneId, $recordType));
+            // The repository keeps whole RRsets with a member that may match; the exact filter still runs below
+            $needles = $this->queryNeedles(['name', 'content', 'q']);
+            $rrsets = $this->groupIntoRRSets($needles === []
+                ? $this->recordRepository->getRecordsByDomainId($zoneId, $recordType)
+                : $this->recordRepository->getRRSetRecordsContaining((int)$zoneId, $recordType, $needles));
 
             // Records may come from the PowerDNS API, so filtering, sorting and
             // paging happen here and behave the same for every backend.

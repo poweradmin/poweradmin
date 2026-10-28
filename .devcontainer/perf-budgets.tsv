@@ -17,7 +17,7 @@
 2.0	sql	owner	/zones/{big}/records?per_page=50	page cut in SQL (#1814)
 2.0	sql	owner	/zones/{big}/records?per_page=50&page=1500	deep page
 3.0	sql	owner	/zones/{big}/rrsets?per_page=50	DISTINCT over 100k records
-xfail:2.0	sql	owner	/zones/{big}/records?per_page=50&q=h9999	#1814: a filter loads the whole zone
+2.0	sql	owner	/zones/{big}/records?per_page=50&q=h9999	filter narrowed in SQL (#1814)
 xfail:5.0	sql	owner	/zones/{big}/records	#1814: unpaged loads the whole zone
 xfail:2.0	api	owner	/zones/{big}/records?per_page=50	#1812: API mode loads the whole zone
 xfail:3.0	api	owner	/zones/{big}/rrsets?per_page=50	#1812

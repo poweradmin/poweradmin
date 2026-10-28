@@ -258,8 +258,13 @@ class ZonesRecordsController extends PublicApiController
 
             // Skip ENT (Empty Non-Terminal) rows, which have no type or no name and are
             // not user-manageable; one pass, so the raw rows are not held twice.
+            // The repository narrows by name and content first; the exact filter still runs below
+            $needles = $this->queryNeedles(['name', 'content', 'q']);
+            $records = $needles === []
+                ? $this->recordRepository->getRecordsByDomainId($zoneId, $recordType, true)
+                : $this->recordRepository->getRecordsByDomainIdContaining((int)$zoneId, $recordType, true, $needles);
             $formattedRecords = [];
-            foreach ($this->recordRepository->getRecordsByDomainId($zoneId, $recordType, true) as $record) {
+            foreach ($records as $record) {
                 if (!empty($record['type']) && !empty($record['name'])) {
                     $formattedRecords[] = RecordResource::listItem($record, $this->formatRecordId(...));
                 }

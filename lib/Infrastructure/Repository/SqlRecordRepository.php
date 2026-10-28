@@ -463,6 +463,124 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         return (int)($stmt->fetchColumn() ?: 0);
     }
 
+    public function getRecordsByDomainIdContaining(int $domainId, ?string $recordType, bool $withComments, array $contains): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+        [$filter, $filterParams] = $this->containsCondition($records_table, $contains);
+
+        $columns = "$records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, $records_table.content, "
+            . "$records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.ordername, $records_table.auth";
+        if ($withComments) {
+            $columns .= ", rc.comment AS comment";
+        }
+
+        $query = "SELECT $columns
+                  FROM $records_table
+                  " . ($withComments ? $this->buildCommentJoin($this->dbType, $records_table, $comments_table) : "") . "
+                  WHERE $where $filter
+                  ORDER BY $records_table.type, $records_table.name, $records_table.id";
+
+        return $this->fetchDecoded($query, $params + $filterParams);
+    }
+
+    public function getRRSetRecordsContaining(int $domainId, ?string $recordType, array $contains): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        [$where, $params] = $this->listedRecordsCondition($records_table, $domainId, $recordType);
+        [$filter, $filterParams] = $this->containsCondition('m', $contains);
+
+        // An RRset matches when any member does, and then every member is listed
+        $members = $filter === '' ? '' : "AND EXISTS (
+                      SELECT 1 FROM $records_table m
+                      WHERE m.domain_id = $records_table.domain_id AND m.name = $records_table.name
+                        AND m.type = $records_table.type $filter
+                  )";
+        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, $records_table.content,
+                         $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.ordername, $records_table.auth
+                  FROM $records_table
+                  WHERE $where $members
+                  ORDER BY $records_table.type, $records_table.name, $records_table.id";
+
+        return $this->fetchDecoded($query, $params + $filterParams);
+    }
+
+    /**
+     * A case-insensitive substring pre-filter that keeps every row the API's PHP filter
+     * (mb_stripos) keeps. For printable-ASCII values both fold A-Z alike; a value with any
+     * other byte is kept unconditionally and left to the PHP filter, since mb_stripos folds
+     * some non-ASCII letters to ASCII ones that SQL LOWER does not. A needle SQL cannot
+     * match the same way (LIKE wildcards, non-ASCII) adds no condition.
+     *
+     * @param array<string, string> $contains Query parameter => needle: name, content, q
+     * @return array{string, array<string, string>} An "AND ..." clause or '', and its parameters
+     */
+    private function containsCondition(string $table, array $contains): array
+    {
+        $clauses = [];
+        $params = [];
+        foreach (['name' => ["$table.name"], 'content' => ["$table.content"], 'q' => ["$table.name", "$table.content"]] as $key => $columns) {
+            $needle = trim((string)($contains[$key] ?? ''));
+            if ($needle === '' || strpbrk($needle, '%_\\') !== false || preg_match('/[^\x20-\x7e]/', $needle) === 1) {
+                continue;
+            }
+            // One placeholder per column: native prepares refuse a reused name
+            $likes = [];
+            foreach ($columns as $i => $column) {
+                $params[":contains_{$key}_$i"] = '%' . strtolower($needle) . '%';
+                $likes[] = "(" . $this->foldAscii($column) . " LIKE :contains_{$key}_$i OR " . $this->hasNonPrintableAscii($column) . ")";
+            }
+            $clauses[] = '(' . implode(' OR ', $likes) . ')';
+        }
+
+        return [$clauses === [] ? '' : 'AND ' . implode(' AND ', $clauses), $params];
+    }
+
+    /**
+     * Lower-case A-Z only. PostgreSQL's lower() follows the cluster locale (tr_TR turns I
+     * into a dotless i), so it maps the letters explicitly.
+     */
+    private function foldAscii(string $column): string
+    {
+        return $this->dbType === 'pgsql'
+            ? "translate($column, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"
+            : "LOWER($column)";
+    }
+
+    /**
+     * Whether the column holds a byte outside printable ASCII (space to tilde). SQLite has
+     * no built-in REGEXP, so it uses GLOB.
+     */
+    private function hasNonPrintableAscii(string $column): string
+    {
+        return match ($this->dbType) {
+            'pgsql' => "$column ~ '[^ -~]'",
+            'sqlite', 'sqlite3' => "$column GLOB '*[^ -~]*'",
+            default => "$column REGEXP '[^ -~]'",
+        };
+    }
+
+    /**
+     * @param array<string, int|string> $params
+     * @return list<array<string, mixed>>
+     */
+    private function fetchDecoded(string $query, array $params): array
+    {
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        $records = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $records[] = self::decodeFlags($row);
+        }
+
+        return $records;
+    }
+
     /**
      * The records an API list shows: no empty non-terminals, which have no type or no name.
      *

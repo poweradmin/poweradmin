@@ -209,6 +209,17 @@ final class ApiRecordRepository implements RecordRepositoryInterface
         ));
     }
 
+    public function getRecordsByDomainIdContaining(int $domainId, ?string $recordType, bool $withComments, array $contains): array
+    {
+        // PowerDNS returns the whole zone either way; the caller's filter narrows it (#1812)
+        return $this->getRecordsByDomainId($domainId, $recordType, $withComments);
+    }
+
+    public function getRRSetRecordsContaining(int $domainId, ?string $recordType, array $contains): array
+    {
+        return $this->getRecordsByDomainId($domainId, $recordType);
+    }
+
     public function countRRSetsByDomainId(int $domainId, ?string $recordType = null): int
     {
         return count(self::rrsetKeys($this->listedRecords($domainId, $recordType, false)));

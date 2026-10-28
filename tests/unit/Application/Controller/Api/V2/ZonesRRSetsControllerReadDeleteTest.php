@@ -146,14 +146,16 @@ class ZonesRRSetsControllerReadDeleteTest extends V2ControllerTestCase
     public function testAFilteredPageOfRRSetsStillGroupsTheWholeZone(): void
     {
         $this->records->expects($this->never())->method('getRRSetPageRecords');
-        $this->records->expects($this->once())->method('getRecordsByDomainId')->willReturn([]);
+        $this->records->expects($this->never())->method('getRecordsByDomainId');
+        $this->records->expects($this->once())->method('getRRSetRecordsContaining')
+            ->with(self::ZONE_ID, null, ['q' => 'www'])->willReturn([]);
 
         $this->assertSame(200, $this->invokeHandler('listRRSets', [], ['q' => 'www', 'per_page' => 2])->getStatusCode());
     }
 
     public function testQKeepsRRSetsWhoseNameOrAnyContentMatches(): void
     {
-        $this->records->method('getRecordsByDomainId')->willReturn([
+        $this->records->method('getRRSetRecordsContaining')->willReturn([
             ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 2, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],
             ['id' => 3, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600, 'prio' => 10, 'disabled' => 0],

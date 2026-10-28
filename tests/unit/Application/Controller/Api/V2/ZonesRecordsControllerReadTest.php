@@ -141,9 +141,6 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
     public static function queriesThatNeedTheWholeZone(): array
     {
         return [
-            'q' => [['q' => 'www', 'per_page' => '10']],
-            'name' => [['name' => 'www', 'per_page' => '10']],
-            'content' => [['content' => '192', 'per_page' => '10']],
             'comment' => [['comment' => 'web', 'per_page' => '10']],
             'sort' => [['sort' => 'content', 'per_page' => '10']],
             'unpaged' => [[]],
@@ -154,10 +151,37 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
      * @param array<string, string> $query
      */
     #[DataProvider('queriesThatNeedTheWholeZone')]
-    public function testFilteredSortedOrUnpagedListsStillFilterTheWholeZone(array $query): void
+    public function testSortedUnpagedOrCommentFilteredListsLoadTheWholeZone(array $query): void
     {
         $this->records->expects($this->never())->method('getRecordsPageByDomainId');
+        $this->records->expects($this->never())->method('getRecordsByDomainIdContaining');
         $this->records->expects($this->once())->method('getRecordsByDomainId')->willReturn([]);
+
+        $this->assertSame(200, $this->invokeHandler('listRecords', [], $query)->getStatusCode());
+    }
+
+    /**
+     * @return array<string, array{array<string, string>, array<string, string>}>
+     */
+    public static function queriesTheRepositoryNarrows(): array
+    {
+        return [
+            'q' => [['q' => ' www ', 'per_page' => '10'], ['q' => 'www']],
+            'name' => [['name' => 'www'], ['name' => 'www']],
+            'content and comment' => [['content' => '192', 'comment' => 'web'], ['content' => '192']],
+        ];
+    }
+
+    /**
+     * @param array<string, string> $query
+     * @param array<string, string> $needles
+     */
+    #[DataProvider('queriesTheRepositoryNarrows')]
+    public function testNameContentAndQFiltersAreNarrowedByTheRepository(array $query, array $needles): void
+    {
+        $this->records->expects($this->never())->method('getRecordsByDomainId');
+        $this->records->expects($this->once())->method('getRecordsByDomainIdContaining')
+            ->with(self::ZONE_ID, null, true, $needles)->willReturn([]);
 
         $this->assertSame(200, $this->invokeHandler('listRecords', [], $query)->getStatusCode());
     }
@@ -172,7 +196,8 @@ class ZonesRecordsControllerReadTest extends V2ControllerTestCase
 
     public function testQMatchesTheRecordNameOrContent(): void
     {
-        $this->records->method('getRecordsByDomainId')->willReturn([
+        // The repository pre-filter may keep extra rows; the exact filter still drops them
+        $this->records->method('getRecordsByDomainIdContaining')->willReturn([
             ['id' => 1, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600],
             ['id' => 2, 'name' => 'example.com', 'type' => 'MX', 'content' => 'mail.example.com', 'ttl' => 3600],
             ['id' => 3, 'name' => 'mail.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600],
