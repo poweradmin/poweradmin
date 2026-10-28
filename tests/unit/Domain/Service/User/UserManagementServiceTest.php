@@ -596,6 +596,26 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testTheActingUserInheritsSharedTemplatesOnEitherDeletePath(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1]);
+        $this->userRepository->method('isLastUberuser')->willReturn(false);
+        $this->userRepository->method('getUserZones')->willReturn([]);
+        $heirs = [];
+        $this->userRepository->method('deleteUser')
+            ->willReturnCallback(function (int $userId, ?int $heir) use (&$heirs): bool {
+                $heirs[] = $heir;
+                return true;
+            });
+
+        $this->assertTrue($this->service->deleteUser(1, null, 9)['success']);
+        $this->assertTrue($this->service->deleteUserWithZoneDecisions(7, 1, [])['success']);
+        $this->assertTrue($this->service->deleteUser(1)['success']);
+
+        $this->assertSame([9, 7, null], $heirs);
+    }
+
+    #[Test]
     public function testAWriteExceptionIsLoggedAndKeptOutOfTheMessage(): void
     {
         $this->userRepository->method('getUserById')->willReturn(['id' => 1]);

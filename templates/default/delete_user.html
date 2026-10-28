@@ -16,6 +16,13 @@
         <form method="post" action="" id="delete-user-form">
             {{ macros.csrf_field() }}
 
+            {% if shared_templates is not empty %}
+            <div class="alert alert-info" role="alert" id="shared-templates-note">
+                <p class="mb-1">{% trans %}This user owns zone templates that are shared with groups. They will be handed over to you so the groups can keep using them:{% endtrans %}</p>
+                <p class="mb-0">{{ shared_templates|map(t => t.name)|join(', ') }}</p>
+            </div>
+            {% endif %}
+
             {% if zones_count > 0 %}
             <div class="card border-warning mt-4 mb-4">
                 <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">

@@ -699,6 +699,33 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         }
     }
 
+    public function listSharedTemplatesOwnedBy(int $ownerId): array
+    {
+        $stmt = $this->db->prepare("SELECT zt.id, zt.name FROM zone_templ zt
+            WHERE zt.owner = :owner AND EXISTS (SELECT 1 FROM zone_templ_groups ztg WHERE ztg.zone_templ_id = zt.id)
+            ORDER BY zt.name, zt.id");
+        $stmt->bindValue(':owner', $ownerId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map(
+            static fn(array $row): array => ['id' => (int)$row['id'], 'name' => (string)$row['name']],
+            $stmt->fetchAll(PDO::FETCH_ASSOC)
+        );
+    }
+
+    public function handOverSharedTemplates(int $ownerId, int $heirId): void
+    {
+        // Owner 0 means global; a template must never become global by inheritance
+        if ($ownerId <= 0 || $heirId <= 0) {
+            return;
+        }
+        $stmt = $this->db->prepare("UPDATE zone_templ SET owner = :heir
+            WHERE owner = :owner AND EXISTS (SELECT 1 FROM zone_templ_groups ztg WHERE ztg.zone_templ_id = zone_templ.id)");
+        $stmt->bindValue(':heir', $heirId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $ownerId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     /**
      * Add a record to a zone template
      *

@@ -171,6 +171,8 @@ class DeleteUserController extends BaseController
 
         $this->render('delete_user.html', [
             'name' => $name,
+            // Deleting yourself leaves no one to inherit them, so they go with the account
+            'shared_templates' => $uid === (int)$this->getCurrentUserId() ? [] : $this->services()->zoneTemplateRepository()->listSharedTemplatesOwnedBy($uid),
             'uid' => $uid,
             'zones' => $zones,
             'zones_count' => count($zones),

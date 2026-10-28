@@ -209,6 +209,7 @@ class ZoneListTemplateRenderTest extends TestCase
         $html = $this->twig->render('delete_user.html', [
             'name' => 'alice',
             'uid' => 5,
+            'shared_templates' => [],
             'zones' => $this->zones(),
             'zones_count' => 2,
             'users' => [['id' => 6, 'username' => 'bob', 'fullname' => '']],

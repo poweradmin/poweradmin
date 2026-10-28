@@ -525,7 +525,8 @@ class UserManagementService
      *
      * @param int $userId User ID to delete
      * @param int|null $transferToUserId User ID to transfer zones to (required if user has zones)
-     * @param int|null $actingUserId When given, the transfer needs meta-edit rights on every zone, as the web form requires
+     * @param int|null $actingUserId When given, the transfer needs meta-edit rights on every zone, as the web form requires,
+     *                               and this user inherits the deleted user's templates shared with groups
      * @return array Result with success status and message
      */
     public function deleteUser(int $userId, ?int $transferToUserId = null, ?int $actingUserId = null): array
@@ -610,7 +611,7 @@ class UserManagementService
             }
 
             // Delete the user
-            $deleted = $this->deleteUnlessLastAdmin($userId);
+            $deleted = $this->deleteUnlessLastAdmin($userId, $actingUserId);
             if (is_array($deleted)) {
                 return $deleted;
             }
@@ -737,7 +738,7 @@ class UserManagementService
         }
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
-        $deleted = $this->deleteUnlessLastAdmin($userId);
+        $deleted = $this->deleteUnlessLastAdmin($userId, $actingUserId);
         if (is_array($deleted)) {
             return $deleted;
         }
@@ -783,13 +784,14 @@ class UserManagementService
 
     /**
      * Repeats the last-admin check in the transaction that deletes, so two deletes cannot both pass.
+     * The acting user inherits the templates the deleted user shares with groups.
      *
      * @return array{success: false, message: string, refusal: Refusal, code: string}|bool
      */
-    private function deleteUnlessLastAdmin(int $userId): array|bool
+    private function deleteUnlessLastAdmin(int $userId, ?int $actingUserId = null): array|bool
     {
         return $this->underUberuserLock(
-            fn(): array|bool => $this->lastAdminDeleteRefusal($userId) ?? $this->userRepository->deleteUser($userId)
+            fn(): array|bool => $this->lastAdminDeleteRefusal($userId) ?? $this->userRepository->deleteUser($userId, $actingUserId)
         );
     }
 

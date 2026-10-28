@@ -82,9 +82,10 @@ interface UserAdminInterface
      * Delete a user by ID
      *
      * @param int $userId User ID to delete
+     * @param int|null $sharedTemplateHeir Gets the user's templates that are shared with groups; without one they are deleted too
      * @return bool True if the user was deleted successfully
      */
-    public function deleteUser(int $userId): bool;
+    public function deleteUser(int $userId, ?int $sharedTemplateHeir = null): bool;
 
     /**
      * Get zones owned by a user

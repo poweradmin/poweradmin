@@ -884,9 +884,10 @@ class DbUserRepository implements UserRepositoryInterface
      * Delete a user by ID
      *
      * @param int $userId User ID to delete
+     * @param int|null $sharedTemplateHeir Gets the user's templates that are shared with groups; without one they are deleted too
      * @return bool True if the user was deleted successfully
      */
-    public function deleteUser(int $userId): bool
+    public function deleteUser(int $userId, ?int $sharedTemplateHeir = null): bool
     {
         $transaction = $this->transaction();
         // An outer transaction owns its own commit; this one only joins it.
@@ -899,8 +900,12 @@ class DbUserRepository implements UserRepositoryInterface
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
 
-            // Private zone templates die with their owner, as they always did in the web UI.
-            (new DbZoneTemplateRepository($this->db, $this->config))->deleteZoneTemplatesOwnedBy($userId);
+            // Templates shared with groups go to the heir so the groups keep them; the rest die with their owner
+            $templates = new DbZoneTemplateRepository($this->db, $this->config);
+            if ($sharedTemplateHeir !== null && $sharedTemplateHeir !== $userId) {
+                $templates->handOverSharedTemplates($userId, $sharedTemplateHeir);
+            }
+            $templates->deleteZoneTemplatesOwnedBy($userId);
 
             $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :userId AND domain_id IS NOT NULL");
             $stmt->execute([':userId' => $userId]);

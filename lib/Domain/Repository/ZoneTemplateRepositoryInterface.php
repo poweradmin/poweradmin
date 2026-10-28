@@ -217,6 +217,19 @@ interface ZoneTemplateRepositoryInterface
     public function deleteZoneTemplatesOwnedBy(int $ownerId): void;
 
     /**
+     * The user's templates that are shared with at least one group, sorted by name.
+     *
+     * @return list<array{id: int, name: string}>
+     */
+    public function listSharedTemplatesOwnedBy(int $ownerId): array;
+
+    /**
+     * Give the user's shared templates to another user, so the groups keep them when
+     * the owner is deleted. Runs inside the caller's transaction.
+     */
+    public function handOverSharedTemplates(int $ownerId, int $heirId): void;
+
+    /**
      * Get the records of a zone template.
      *
      * @param int $templateId Zone template ID

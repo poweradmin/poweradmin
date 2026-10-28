@@ -406,6 +406,29 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame([[$kept, 3]], $this->db->query("SELECT zone_templ_id, group_id FROM zone_templ_groups")->fetchAll(PDO::FETCH_NUM));
     }
 
+    public function testSharedTemplatesOfAnOwnerAreListedAndHandedOver(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
+        $shared = $this->repository->createZoneTemplate('b shared', '', 6, 6);
+        $alsoShared = $this->repository->createZoneTemplate('a shared', '', 6, 6);
+        $private = $this->repository->createZoneTemplate('private', '', 6, 6);
+        $global = $this->repository->createZoneTemplate('global', '', 0, 6);
+        $this->repository->replaceTemplateGroups($shared, [3]);
+        $this->repository->replaceTemplateGroups($alsoShared, [3]);
+
+        $this->assertSame([['id' => $alsoShared, 'name' => 'a shared'], ['id' => $shared, 'name' => 'b shared']], $this->repository->listSharedTemplatesOwnedBy(6));
+
+        $this->repository->handOverSharedTemplates(6, 9);
+        $this->assertSame(9, $this->repository->getOwner($shared));
+        $this->assertSame(9, $this->repository->getOwner($alsoShared));
+        $this->assertSame(6, $this->repository->getOwner($private));
+        $this->assertSame(0, $this->repository->getOwner($global));
+
+        // A template never becomes global by inheritance
+        $this->repository->handOverSharedTemplates(9, 0);
+        $this->assertSame(9, $this->repository->getOwner($shared));
+    }
+
     public function testMakingATemplateGlobalDropsItsShares(): void
     {
         $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");

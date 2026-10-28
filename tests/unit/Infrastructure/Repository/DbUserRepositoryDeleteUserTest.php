@@ -132,6 +132,34 @@ class DbUserRepositoryDeleteUserTest extends TestCase
         }
     }
 
+    public function testSharedTemplatesGoToTheHeirAndKeepTheirShares(): void
+    {
+        $this->db->exec("INSERT INTO zone_templ VALUES (101, 'shared-kept', 1)");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id) VALUES (101)");
+        $this->db->exec("INSERT INTO zone_templ_groups (zone_templ_id, group_id) VALUES (101, 5)");
+
+        $this->assertTrue($this->repository->deleteUser(1, 2));
+
+        $this->assertSame(1, $this->rows('zone_templ WHERE id = 101 AND owner = 2'));
+        $this->assertSame(1, $this->rows('zone_templ_records WHERE zone_templ_id = 101'));
+        $this->assertSame(1, $this->rows('zone_templ_groups WHERE zone_templ_id = 101'));
+        // The unshared private template still goes with its owner
+        $this->assertSame(0, $this->rows('zone_templ WHERE id = 100'));
+    }
+
+    public function testWithoutAnHeirSharedTemplatesAreDeletedToo(): void
+    {
+        $this->db->exec("INSERT INTO zone_templ VALUES (101, 'shared-gone', 1)");
+        $this->db->exec("INSERT INTO zone_templ_groups (zone_templ_id, group_id) VALUES (101, 5)");
+
+        $this->assertTrue($this->repository->deleteUser(1));
+        $this->assertTrue($this->repository->deleteUser(2, 2));
+
+        $this->assertSame(0, $this->rows('zone_templ WHERE id = 101'));
+        $this->assertSame(0, $this->rows('zone_templ_groups'));
+        $this->assertSame(0, $this->rows('zone_templ WHERE owner = 2'));
+    }
+
     private function rows(string $fromWhere): int
     {
         return (int)$this->db->query("SELECT COUNT(*) FROM $fromWhere")->fetchColumn();
