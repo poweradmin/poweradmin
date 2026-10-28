@@ -35,7 +35,8 @@ use TestHelpers\ZoneTemplateServiceBuilder;
 use Poweradmin\Infrastructure\Session\ArraySession;
 
 /**
- * Zone templates are private to their owner unless global. Applying one by a posted
+ * Zone templates are private to their owner unless global or shared with one of the
+ * user's groups. Applying one by a posted
  * id (zone creation, bulk registration, template change) must follow the listing
  * scope, or an enumerated id copies another user's records into the caller's zone.
  */
@@ -45,6 +46,8 @@ class ZoneTemplateServiceCanUseTest extends TestCase
     private const OWN_TEMPLATE_ID = 10;
     private const FOREIGN_TEMPLATE_ID = 11;
     private const GLOBAL_TEMPLATE_ID = 12;
+    private const SHARED_TEMPLATE_ID = 13;
+    private const OTHER_GROUP_TEMPLATE_ID = 14;
 
     private ZoneTemplateService $zoneTemplate;
 
@@ -52,9 +55,15 @@ class ZoneTemplateServiceCanUseTest extends TestCase
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, descr TEXT, owner INTEGER, created_by INTEGER, is_default INTEGER DEFAULT 0)");
+        $db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
         $db->exec("INSERT INTO zone_templ (id, name, descr, owner) VALUES (" . self::OWN_TEMPLATE_ID . ", 'own', '', " . self::USER_ID . ")");
         $db->exec("INSERT INTO zone_templ (id, name, descr, owner) VALUES (" . self::FOREIGN_TEMPLATE_ID . ", 'foreign', '', 1)");
         $db->exec("INSERT INTO zone_templ (id, name, descr, owner) VALUES (" . self::GLOBAL_TEMPLATE_ID . ", 'global', '', 0)");
+        $db->exec("INSERT INTO zone_templ (id, name, descr, owner) VALUES (" . self::SHARED_TEMPLATE_ID . ", 'shared', '', 1)");
+        $db->exec("INSERT INTO zone_templ (id, name, descr, owner) VALUES (" . self::OTHER_GROUP_TEMPLATE_ID . ", 'other group', '', 1)");
+        $db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::USER_ID . ", 3), (1, 4)");
+        $db->exec("INSERT INTO zone_templ_groups (zone_templ_id, group_id) VALUES (" . self::SHARED_TEMPLATE_ID . ", 3), (" . self::OTHER_GROUP_TEMPLATE_ID . ", 4)");
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturn(null);
@@ -73,6 +82,16 @@ class ZoneTemplateServiceCanUseTest extends TestCase
     {
         $this->assertTrue($this->zoneTemplate->canUseTemplate(self::OWN_TEMPLATE_ID, self::USER_ID, false));
         $this->assertTrue($this->zoneTemplate->canUseTemplate(self::GLOBAL_TEMPLATE_ID, self::USER_ID, false));
+    }
+
+    public function testTemplateSharedWithTheUsersGroupIsAllowed(): void
+    {
+        $this->assertTrue($this->zoneTemplate->canUseTemplate(self::SHARED_TEMPLATE_ID, self::USER_ID, false));
+    }
+
+    public function testTemplateSharedWithAnotherGroupIsRefused(): void
+    {
+        $this->assertFalse($this->zoneTemplate->canUseTemplate(self::OTHER_GROUP_TEMPLATE_ID, self::USER_ID, false));
     }
 
     public function testNoTemplateIsAllowed(): void

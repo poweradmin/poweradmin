@@ -141,7 +141,19 @@ class ZoneTemplatesController extends PublicApiController
                                             new OA\Property(property: 'description', type: 'string', example: 'Default zone template'),
                                             new OA\Property(property: 'owner', type: 'integer', example: 1),
                                             new OA\Property(property: 'is_global', type: 'boolean', example: false),
-                                            new OA\Property(property: 'zones_linked', type: 'integer', example: 3)
+                                            new OA\Property(property: 'zones_linked', type: 'integer', example: 3),
+                                            new OA\Property(
+                                                property: 'groups',
+                                                type: 'array',
+                                                description: 'User groups the template is shared with (read-only). A non-owner sees only groups they belong to.',
+                                                items: new OA\Items(
+                                                    type: 'object',
+                                                    properties: [
+                                                        new OA\Property(property: 'id', type: 'integer', example: 2),
+                                                        new OA\Property(property: 'name', type: 'string', example: 'Operators')
+                                                    ]
+                                                )
+                                            )
                                         ]
                                     )
                                 )
@@ -181,6 +193,7 @@ class ZoneTemplatesController extends PublicApiController
                     'owner' => (int)$template['owner'],
                     'is_global' => (int)$template['owner'] === 0,
                     'zones_linked' => (int)$template['zones_linked'],
+                    'groups' => $template['groups'] ?? [],
                 ];
             }, $templates);
 
@@ -232,6 +245,18 @@ class ZoneTemplatesController extends PublicApiController
                                         new OA\Property(property: 'owner', type: 'integer', example: 1),
                                         new OA\Property(property: 'is_global', type: 'boolean', example: false),
                                         new OA\Property(
+                                            property: 'groups',
+                                            type: 'array',
+                                            description: 'User groups the template is shared with (read-only). A non-owner sees only groups they belong to.',
+                                            items: new OA\Items(
+                                                type: 'object',
+                                                properties: [
+                                                    new OA\Property(property: 'id', type: 'integer', example: 2),
+                                                    new OA\Property(property: 'name', type: 'string', example: 'Operators')
+                                                ]
+                                            )
+                                        ),
+                                        new OA\Property(
                                             property: 'records',
                                             type: 'array',
                                             items: new OA\Items(
@@ -278,7 +303,7 @@ class ZoneTemplatesController extends PublicApiController
             }
 
             $owner = (int)$template['owner'];
-            if ($owner !== 0 && $owner !== $userId && !$isUeberuser) {
+            if ($owner !== 0 && $owner !== $userId && !$isUeberuser && !$this->repository->isSharedWithUser($id, $userId)) {
                 return $this->returnApiError('You do not have permission to view this zone template', 403);
             }
 
@@ -292,6 +317,7 @@ class ZoneTemplatesController extends PublicApiController
                 'description' => $template['descr'],
                 'owner' => $owner,
                 'is_global' => $owner === 0,
+                'groups' => $this->repository->listGroupsForTemplates([$id], $isUeberuser ? null : $userId)[$id] ?? [],
                 'records' => $formattedRecords,
             ]]);
         } catch (\Throwable $e) {
@@ -480,7 +506,7 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('Only ueberusers can edit global zone templates', 403);
             }
 
-            if ($owner !== 0 && $owner !== $userId && !$isUeberuser) {
+            if ($owner !== 0 && $owner !== $userId && !$isUeberuser && !$this->repository->isSharedWithUser($id, $userId)) {
                 return $this->returnApiError('You do not have permission to edit this zone template', 403);
             }
 

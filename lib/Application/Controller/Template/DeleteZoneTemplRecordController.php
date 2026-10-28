@@ -45,11 +45,10 @@ class DeleteZoneTemplRecordController extends BaseController
 
         $confirmed = $this->httpRequest->getPostParam('confirm') !== null;
 
-        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, (int)$this->getCurrentUserId());
+        $canChange = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserEditTemplateById($zone_templ_id);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
-        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete this record."));
+        $this->checkCondition(!($perm_godlike || $canChange), _("You do not have the permission to delete this record."));
 
         if ($confirmed) {
             $deleted = $this->zoneTemplate()->deleteZoneTemplRecord($record_id, $zone_templ_id);

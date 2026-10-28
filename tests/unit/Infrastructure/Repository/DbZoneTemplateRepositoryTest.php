@@ -52,6 +52,9 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->db->exec("CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL)");
 
         $this->repository = new DbZoneTemplateRepository($this->db, $this->makeConfig());
     }
@@ -364,6 +367,58 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame(['global', 'mine', 'theirs'], array_column($all, 'name'));
     }
 
+    public function testListZoneTemplatesIncludesTemplatesSharedWithTheUsersGroups(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops'), (4, 'Billing')");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (5, 3), (6, 4)");
+        $shared = $this->repository->createZoneTemplate('shared', '', 6, 6);
+        $this->repository->createZoneTemplate('unshared', '', 6, 6);
+        $this->repository->replaceTemplateGroups($shared, [3, 4]);
+
+        $scoped = array_column($this->repository->listZoneTemplates(5, false), null, 'name');
+        $this->assertSame(['shared'], array_keys($scoped));
+        // A member sees only their own groups on a template they do not own
+        $this->assertSame([['id' => 3, 'name' => 'Ops']], $scoped['shared']['groups']);
+
+        $owner = array_column($this->repository->listZoneTemplates(6, false), null, 'name');
+        $this->assertSame(['Billing', 'Ops'], array_column($owner['shared']['groups'], 'name'));
+        $this->assertSame([], $owner['unshared']['groups']);
+
+        $this->assertTrue($this->repository->isSharedWithUser($shared, 5));
+        $this->assertFalse($this->repository->isSharedWithUser($shared, 7));
+    }
+
+    public function testReplaceTemplateGroupsAndDeletionDropTheShares(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops'), (4, 'Billing')");
+        $first = $this->repository->createZoneTemplate('first', '', 6, 6);
+        $second = $this->repository->createZoneTemplate('second', '', 6, 6);
+        $kept = $this->repository->createZoneTemplate('kept', '', 7, 7);
+        $this->repository->replaceTemplateGroups($first, [3, 4, 3]);
+        $this->repository->replaceTemplateGroups($first, [4]);
+        $this->repository->replaceTemplateGroups($second, [3]);
+        $this->repository->replaceTemplateGroups($kept, [3]);
+
+        $this->assertSame([$first => [['id' => 4, 'name' => 'Billing']]], $this->repository->listGroupsForTemplates([$first]));
+
+        $this->repository->deleteZoneTemplate($first);
+        $this->repository->deleteZoneTemplatesOwnedBy(6);
+        $this->assertSame([[$kept, 3]], $this->db->query("SELECT zone_templ_id, group_id FROM zone_templ_groups")->fetchAll(PDO::FETCH_NUM));
+    }
+
+    public function testMakingATemplateGlobalDropsItsShares(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
+        $template = $this->repository->createZoneTemplate('t', '', 6, 6);
+        $this->repository->replaceTemplateGroups($template, [3]);
+
+        $this->repository->updateZoneTemplate($template, 't', '', 6);
+        $this->assertCount(1, $this->repository->listGroupsForTemplates([$template])[$template]);
+
+        $this->repository->updateZoneTemplate($template, 't', '', 0);
+        $this->assertSame([], $this->repository->listGroupsForTemplates([$template]));
+    }
+
     public function testListZoneTemplatesDecodesIsDefaultToABool(): void
     {
         $global = $this->repository->createZoneTemplate('global', '', 0, 1);
@@ -376,7 +431,7 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $byName = array_column($this->repository->listZoneTemplates(5, true), null, 'name');
 
         $this->assertSame(
-            ['id', 'name', 'descr', 'owner', 'created_by', 'is_default', 'owner_username', 'owner_fullname', 'creator_username', 'creator_fullname', 'zones_linked'],
+            ['id', 'name', 'descr', 'owner', 'created_by', 'is_default', 'owner_username', 'owner_fullname', 'creator_username', 'creator_fullname', 'zones_linked', 'groups'],
             array_keys($byName['global'])
         );
         $this->assertTrue($byName['global']['is_default']);

@@ -155,6 +155,16 @@ ALTER TABLE "public"."user_groups" ADD COLUMN IF NOT EXISTS "max_zones" integer 
 -- in a long zone outgrew varchar(255) and zone creation from a template failed
 ALTER TABLE "public"."records_zone_templ_api" ALTER COLUMN "record_id" TYPE text;
 
+-- Zone templates shared with user groups (#1267)
+CREATE TABLE IF NOT EXISTS "public"."zone_templ_groups" (
+    "id" SERIAL PRIMARY KEY,
+    "zone_templ_id" integer NOT NULL REFERENCES "public"."zone_templ"("id") ON DELETE CASCADE,
+    "group_id" integer NOT NULL REFERENCES "public"."user_groups"("id") ON DELETE CASCADE,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE ("zone_templ_id", "group_id")
+);
+CREATE INDEX IF NOT EXISTS "idx_zone_templ_groups_group" ON "public"."zone_templ_groups" ("group_id");
+
 -- Usernames are unique (a rename could collide with another account). Older data may
 -- already hold a name twice; then the index is skipped with a warning. Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

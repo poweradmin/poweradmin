@@ -47,6 +47,7 @@ class ZoneTemplateGlobalOwnerTest extends SqliteIntegrationTestCase
 
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL, created_by INTEGER, is_default INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
 
         // A non-ueberuser "client" who may add and edit templates but is not an admin.
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (60, '" . Permission::PERM_ZONE_TEMPL_ADD . "'), (61, '" . Permission::PERM_ZONE_TEMPL_EDIT . "')");

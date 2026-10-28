@@ -2298,6 +2298,61 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'zone_templ_groups',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'zone_templ_groups',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'zone_templ_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'zone_templ_id',
+                        'table' => 'zone_templ_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'group_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'name' => 'group_id',
+                        'table' => 'zone_templ_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'zone_templ_groups',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_zone_templ_group' => array('zone_templ_id', 'group_id', 'unique' => true),
+                    'idx_zone_templ_groups_group' => array('group_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_zone_templ_groups_templ' => array(
+                        'table' => 'zone_templ',
+                        'fields' => array('zone_templ_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    ),
+                    'fk_zone_templ_groups_group' => array(
+                        'table' => 'user_groups',
+                        'fields' => array('group_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'record_comment_links',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

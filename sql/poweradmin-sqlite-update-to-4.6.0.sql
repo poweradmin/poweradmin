@@ -68,6 +68,18 @@ CREATE INDEX IF NOT EXISTS idx_log_users_created_at ON log_users(created_at);
 CREATE INDEX IF NOT EXISTS idx_log_zones_created_at ON log_zones(created_at);
 CREATE INDEX IF NOT EXISTS idx_log_groups_created_at ON log_groups(created_at);
 
+-- Zone templates shared with user groups (#1267)
+CREATE TABLE IF NOT EXISTS zone_templ_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    zone_templ_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (zone_templ_id, group_id),
+    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_zone_templ_groups_group ON zone_templ_groups(group_id);
+
 -- Usernames are unique (a rename could collide with another account). Kept last: on data
 -- that already holds a name twice this fails with "UNIQUE constraint failed". Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

@@ -209,8 +209,9 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $params = [];
 
         if (!$isUeberuser && $userId !== null) {
-            $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
+            $query .= " WHERE " . self::visibleToUserSql('zt', ':userid', ':userid_group');
             $params[':userid'] = $userId;
+            $params[':userid_group'] = $userId;
         }
 
         $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
@@ -221,11 +222,97 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
 
+        $rows = $stmt->fetchAll();
+        $groups = $this->listGroupsForTemplates(array_map('intval', array_column($rows, 'id')), $isUeberuser ? null : $userId);
+
         // PostgreSQL hands is_default back as 't'/'f'; callers get a bool on every driver
-        return array_map(static function (array $row): array {
+        return array_map(static function (array $row) use ($groups): array {
             $row['is_default'] = (bool)DbCompat::boolFromDb($row['is_default'] ?? 0);
+            $row['groups'] = $groups[(int)$row['id']] ?? [];
             return $row;
-        }, $stmt->fetchAll());
+        }, $rows);
+    }
+
+    /**
+     * WHERE condition for the templates a user may see: global ones, their own, and
+     * those shared with a group they belong to. Takes two placeholders bound to the
+     * same user id, since native MySQL prepares cannot reuse one.
+     */
+    public static function visibleToUserSql(string $alias, string $userParam, string $groupUserParam): string
+    {
+        return "($alias.owner = $userParam OR $alias.owner = 0 OR EXISTS (
+                SELECT 1 FROM zone_templ_groups ztg
+                INNER JOIN user_group_members ztg_m ON ztg_m.group_id = ztg.group_id
+                WHERE ztg.zone_templ_id = $alias.id AND ztg_m.user_id = $groupUserParam))";
+    }
+
+    public function isSharedWithUser(int $templateId, int $userId): bool
+    {
+        $stmt = $this->db->prepare("SELECT 1 FROM zone_templ_groups ztg
+            INNER JOIN user_group_members m ON m.group_id = ztg.group_id
+            WHERE ztg.zone_templ_id = :id AND m.user_id = :user_id");
+        $stmt->bindValue(':id', $templateId, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    public function listGroupsForTemplates(array $templateIds, ?int $viewerId = null): array
+    {
+        if ($templateIds === []) {
+            return [];
+        }
+
+        $placeholders = [];
+        $params = [];
+        foreach (array_values($templateIds) as $i => $templateId) {
+            $placeholders[] = ":t$i";
+            $params[":t$i"] = (int)$templateId;
+        }
+        $query = "SELECT ztg.zone_templ_id, ug.id, ug.name FROM zone_templ_groups ztg
+            INNER JOIN user_groups ug ON ug.id = ztg.group_id
+            INNER JOIN zone_templ zt ON zt.id = ztg.zone_templ_id
+            WHERE ztg.zone_templ_id IN (" . implode(', ', $placeholders) . ")";
+        if ($viewerId !== null) {
+            $query .= " AND (zt.owner = :viewer OR EXISTS (SELECT 1 FROM user_group_members m
+                WHERE m.group_id = ztg.group_id AND m.user_id = :viewer_member))";
+            $params[':viewer'] = $viewerId;
+            $params[':viewer_member'] = $viewerId;
+        }
+        $query .= " ORDER BY ug.name, ug.id";
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $name => $value) {
+            $stmt->bindValue($name, $value, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        $groups = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $groups[(int)$row['zone_templ_id']][] = ['id' => (int)$row['id'], 'name' => (string)$row['name']];
+        }
+
+        return $groups;
+    }
+
+    public function replaceTemplateGroups(int $templateId, array $groupIds): void
+    {
+        $this->transaction()->begin();
+        try {
+            $stmt = $this->db->prepare("DELETE FROM zone_templ_groups WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $templateId]);
+
+            $insert = $this->db->prepare("INSERT INTO zone_templ_groups (zone_templ_id, group_id) VALUES (:id, :group_id)");
+            foreach (array_unique(array_map('intval', $groupIds)) as $groupId) {
+                $insert->execute([':id' => $templateId, ':group_id' => $groupId]);
+            }
+
+            $this->transaction()->commit();
+        } catch (Exception $e) {
+            $this->transaction()->rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -531,8 +618,21 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         }
 
         $query .= ' WHERE id = :id';
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
+        $this->transaction()->begin();
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($params);
+
+            // Everyone sees a global template, so its shares would only come back if it turned private
+            if ($owner === 0) {
+                $this->db->prepare("DELETE FROM zone_templ_groups WHERE zone_templ_id = :id")->execute([':id' => $id]);
+            }
+
+            $this->transaction()->commit();
+        } catch (Exception $e) {
+            $this->transaction()->rollBack();
+            throw $e;
+        }
 
         return true;
     }
@@ -560,6 +660,9 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
+            $stmt = $this->db->prepare("DELETE FROM zone_templ_groups WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
             // Unlink the zones that used it. Leaving the id behind re-links them to
             // whichever template later reuses it (SQLite and MariaDB reuse ids).
             $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :id");
@@ -585,6 +688,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
                 "DELETE FROM zone_templ_records WHERE zone_templ_id IN ($owned)",
                 "DELETE FROM records_zone_templ WHERE zone_templ_id IN ($owned)",
                 "DELETE FROM records_zone_templ_api WHERE zone_templ_id IN ($owned)",
+                "DELETE FROM zone_templ_groups WHERE zone_templ_id IN ($owned)",
                 // Same unlink as deleteZoneTemplate(): a reused id would re-link the zones.
                 "UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id IN ($owned)",
                 "DELETE FROM zone_templ WHERE owner = :owner",

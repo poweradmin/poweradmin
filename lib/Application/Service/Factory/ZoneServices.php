@@ -54,6 +54,7 @@ use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
+use Poweradmin\Domain\Service\Template\ZoneTemplateGroupShares;
 use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Service\Dns\DomainParsingService;
 use Poweradmin\Infrastructure\Network\PdpPublicSuffixList;
@@ -311,6 +312,15 @@ final class ZoneServices
             $this->zoneTemplateRepository(),
             $this->services->permissionService(),
             $this->services->actor()
+        );
+    }
+
+    public function zoneTemplateGroupShares(): ZoneTemplateGroupShares
+    {
+        return new ZoneTemplateGroupShares(
+            $this->zoneTemplateRepository(),
+            $this->zoneTemplateAccessPolicy(),
+            $this->services->userGroupRepository()
         );
     }
 

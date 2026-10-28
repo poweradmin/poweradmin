@@ -371,7 +371,7 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'template',
-                    description: 'Zone template ID to use (get IDs from GET /api/v2/zone-templates). Must be a global template, one owned by the caller, or the caller must be ueberuser.',
+                    description: 'Zone template ID to use (get IDs from GET /api/v2/zone-templates). Must be a global template, one owned by the caller, one shared with a group the caller belongs to, or the caller must be ueberuser.',
                     type: 'integer',
                     example: 1
                 ),

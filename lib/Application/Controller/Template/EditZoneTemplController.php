@@ -49,12 +49,10 @@ class EditZoneTemplController extends BaseController
         }
 
         $zone_templ_id = (int)$id;
-        $userId = $this->getUserContextService()->getLoggedInUserId();
-        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $canChange = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserEditTemplateById($zone_templ_id);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
-        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone templates."));
+        $this->checkCondition(!($perm_godlike || $canChange), _("You do not have the permission to edit zone templates."));
 
         // Set the current page for navigation highlighting
         $this->setCurrentPage('edit_zone_templ');
@@ -85,11 +83,7 @@ class EditZoneTemplController extends BaseController
 
     private function updateZoneTemplate(int $zone_templ_id): void
     {
-        $userId = $this->getUserContextService()->getLoggedInUserId();
-        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
-        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-
-        if ($this->httpRequest->getPostParam('edit') !== null && ($owner || $perm_godlike)) {
+        if ($this->httpRequest->getPostParam('edit') !== null) {
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
@@ -125,8 +119,15 @@ class EditZoneTemplController extends BaseController
         $syncService = $this->services()->zoneTemplateSync();
         $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
 
+        $access = $this->services()->zoneTemplateAccessPolicy();
+        $shares = $this->services()->zoneTemplateGroupShares();
+        $canManage = $access->canCurrentUserManageTemplateById($zone_templ_id);
+
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
+            'can_manage_shares' => $canManage,
+            'shared_groups' => $shares->sharedGroups($zone_templ_id, $userId),
+            'shareable_groups' => $canManage ? $shares->shareableGroups($userId) : [],
             ...$this->paginationVariables($record_count, $iface_rowamount, '/zones/templates/' . $zone_templ_id . '/edit?start={PageNumber}', ['id' => $zone_templ_id]),
             'records' => $templates->getZoneTemplateRecords($zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
@@ -169,10 +170,32 @@ class EditZoneTemplController extends BaseController
         }
 
         $userId = $this->getUserContextService()->getLoggedInUserId();
+        $access = $this->services()->zoneTemplateAccessPolicy();
+        $shares = $this->services()->zoneTemplateGroupShares();
+        // Group members edit without the share list; only the owner's form carries it
+        $submittedGroups = null;
+        if (isset($postParams['templ_groups_shown']) && $access->canCurrentUserManageTemplateById($zone_templ_id)) {
+            $posted = $postParams['templ_groups'] ?? [];
+            $submittedGroups = is_array($posted) ? $posted : [$posted];
+            $refused = $shares->refusal($zone_templ_id, $submittedGroups, $userId);
+            if ($refused !== null) {
+                $this->addSystemMessage('error', (string)$refused->message);
+                return;
+            }
+        }
+
         $edited = $this->zoneTemplate()->editZoneTempl($postParams, $zone_templ_id, $userId);
         if (!$edited->success) {
             $this->addSystemMessage('error', (string)$edited->message);
             return;
+        }
+        // A template made global just dropped its shares (see updateZoneTemplate)
+        if ($submittedGroups !== null && $this->services()->zoneTemplateRepository()->getOwner($zone_templ_id) !== 0) {
+            $shared = $shares->update($zone_templ_id, $submittedGroups, $userId);
+            if (!$shared->success) {
+                $this->addSystemMessage('error', (string)$shared->message);
+                return;
+            }
         }
         $auditService = $this->services()->auditService();
         $auditService->logZoneTemplateEdit($zone_templ_id, $postParams['templ_name'] ?? '');

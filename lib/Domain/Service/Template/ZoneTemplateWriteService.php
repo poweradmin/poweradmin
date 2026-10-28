@@ -202,14 +202,13 @@ class ZoneTemplateWriteService
             return ZoneTemplateWriteResult::failure(_('Zone template with this name already exists, please choose another one.'), Refusal::CONFLICT);
         }
 
-        // Making a template global (owner 0) is reserved for ueberusers; keep
-        // created_by intact. A private template also loses the default flag,
-        // which the repository clears along with a non-zero owner.
+        // Only a ueberuser changes the owner (see resolveEditedTemplateOwner); created_by
+        // stays. A template made private loses the default flag along with owner 0.
         $this->repository->updateZoneTemplate(
             $zone_templ_id,
             $details['templ_name'],
             $details['templ_descr'],
-            $this->access->resolveTemplateOwner(isset($details['templ_global']), $user_id)
+            $this->access->resolveEditedTemplateOwner($zone_templ_id, isset($details['templ_global']), $user_id)
         );
 
         return ZoneTemplateWriteResult::ok();

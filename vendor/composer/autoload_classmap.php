@@ -1618,6 +1618,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\ZoneTemplateApplier' => $baseDir . '/lib/Domain/Service/Dns/ZoneTemplateApplier.php',
     'Poweradmin\\Domain\\Service\\Dns\\ZoneWriteResult' => $baseDir . '/lib/Domain/Service/Dns/ZoneWriteResult.php',
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateAccessPolicy' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateAccessPolicy.php',
+    'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateGroupShares' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateGroupShares.php',
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplatePlaceholders' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplatePlaceholders.php',
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateRecordService' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateRecordService.php',
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateRecordValidationService' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php',

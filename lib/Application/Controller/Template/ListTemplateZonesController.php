@@ -50,7 +50,8 @@ class ListTemplateZonesController extends BaseController
 
         $zone_templ_id = (int)$id;
 
-        if (!$this->services()->zoneTemplateRepository()->zoneTemplateExists($zone_templ_id)) {
+        // A template the user may not see answers like a missing one
+        if (!$this->services()->zoneTemplateAccessPolicy()->canCurrentUserViewTemplate($zone_templ_id)) {
             $this->showError(_('Template does not exist.'));
             return;
         }

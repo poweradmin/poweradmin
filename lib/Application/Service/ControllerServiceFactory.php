@@ -121,6 +121,7 @@ use Poweradmin\Domain\Service\Zone\ZoneSigningService;
 use Poweradmin\Domain\Service\Zone\DnssecKeyService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
+use Poweradmin\Domain\Service\Template\ZoneTemplateGroupShares;
 use Poweradmin\Domain\Service\Template\ZoneTemplateRecordService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateWriteService;
@@ -624,6 +625,11 @@ class ControllerServiceFactory implements ModuleServices
     public function zoneTemplateAccessPolicy(): ZoneTemplateAccessPolicy
     {
         return $this->zones->zoneTemplateAccessPolicy();
+    }
+
+    public function zoneTemplateGroupShares(): ZoneTemplateGroupShares
+    {
+        return $this->zones->zoneTemplateGroupShares();
     }
 
     public function zoneTemplateWriteService(): ZoneTemplateWriteService

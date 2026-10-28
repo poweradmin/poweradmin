@@ -78,7 +78,10 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if template['owner'] != 0 %}
+                        {% if template['owner'] != 0 and template['groups'] is not empty %}
+                        <span class="badge bg-info text-dark" title="{{ template['groups']|map(g => g.name)|join(', ') }}">{% trans %}shared{% endtrans %}</span>
+                        <small class="text-muted">{{ template['groups']|map(g => g.name)|join(', ') }}</small>
+                        {% elseif template['owner'] != 0 %}
                         <span class="badge bg-secondary text-white">{% trans %}private{% endtrans %}</span>
                         {% else %}
                         <span class="badge bg-warning text-dark">{% trans %}global{% endtrans %}</span>
@@ -131,11 +134,13 @@
                                title="{% trans %}Edit{% endtrans %}">
                                 <i class="bi bi-pencil-square text-primary"></i>
                             </a>
+                            {% if template['can_delete'] %}
                             <a class="btn btn-sm btn-outline-danger"
                                href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/delete"
                                title="{% trans %}Delete{% endtrans %}">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>
+                            {% endif %}
                         </div>
                     </td>
                     {% else %}

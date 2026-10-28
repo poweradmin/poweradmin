@@ -70,6 +70,7 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $this->createZoneTables();
         $this->db->exec("INSERT INTO domains (name, type) VALUES ('xn--bcher-kva.example', 'MASTER'), ('parent.example', 'MASTER')");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL DEFAULT 0, created_by INTEGER)");
+        $this->db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (2, 'Client')");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::OTHER_USER . ", 'client', 2)");
         $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES

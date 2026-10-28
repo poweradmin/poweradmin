@@ -103,6 +103,27 @@ interface ZoneTemplateRepositoryInterface
     public function isOwner(int $templateId, int $userId): bool;
 
     /**
+     * Whether the template is shared with a group the user belongs to.
+     */
+    public function isSharedWithUser(int $templateId, int $userId): bool;
+
+    /**
+     * Groups each template is shared with, sorted by name. With a viewer, a template
+     * the viewer does not own lists only the groups the viewer belongs to.
+     *
+     * @param int[] $templateIds
+     * @return array<int, list<array{id: int, name: string}>> Keyed by template ID; unshared templates are absent
+     */
+    public function listGroupsForTemplates(array $templateIds, ?int $viewerId = null): array;
+
+    /**
+     * Replace the groups a template is shared with.
+     *
+     * @param int[] $groupIds
+     */
+    public function replaceTemplateGroups(int $templateId, array $groupIds): void;
+
+    /**
      * ID of the global template flagged is_default, if any.
      *
      * @return int|null Template ID or null when no template is flagged

@@ -528,6 +528,18 @@ CREATE TABLE `zones_groups` (
   CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `zone_templ_groups` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `zone_templ_id` INT NOT NULL,
+  `group_id` INT UNSIGNED NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_zone_templ_group` (`zone_templ_id`, `group_id`),
+  KEY `idx_zone_templ_groups_group` (`group_id`),
+  CONSTRAINT `fk_zone_templ_groups_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_zone_templ_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `record_comment_links` (
     `record_id` VARCHAR(3072) CHARACTER SET ascii NOT NULL,
     `comment_id` INT NOT NULL,

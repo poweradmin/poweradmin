@@ -99,8 +99,8 @@ class ZoneTemplateRecordsController extends PublicApiController
 
     private function canViewTemplate(int $userId, int $templateId): bool
     {
-        // Viewing zone templates requires a zone-template permission (matches the
-        // web UI); global and own templates are then readable within that.
+        // Viewing zone templates requires a zone-template permission (matches the web
+        // UI); global, own and group-shared templates are then readable within that.
         if (!$this->apiPermissionService->canViewZoneTemplates($userId)) {
             return false;
         }
@@ -114,7 +114,8 @@ class ZoneTemplateRecordsController extends PublicApiController
             return true;
         }
 
-        return $this->repository->isOwner($templateId, $userId);
+        return $this->repository->isOwner($templateId, $userId)
+            || ($owner !== null && $this->repository->isSharedWithUser($templateId, $userId));
     }
 
     private function canEditTemplate(int $userId, int $templateId): bool
@@ -132,7 +133,8 @@ class ZoneTemplateRecordsController extends PublicApiController
             return false;
         }
 
-        return $this->repository->isOwner($templateId, $userId);
+        return $this->repository->isOwner($templateId, $userId)
+            || ($owner !== null && $this->repository->isSharedWithUser($templateId, $userId));
     }
 
     private function formatRecord(array $record): array

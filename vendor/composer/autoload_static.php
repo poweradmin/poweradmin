@@ -2033,6 +2033,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Dns\\ZoneTemplateApplier' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/ZoneTemplateApplier.php',
         'Poweradmin\\Domain\\Service\\Dns\\ZoneWriteResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/ZoneWriteResult.php',
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateAccessPolicy' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateAccessPolicy.php',
+        'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateGroupShares' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateGroupShares.php',
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplatePlaceholders' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplatePlaceholders.php',
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateRecordService' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateRecordService.php',
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateRecordValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php',

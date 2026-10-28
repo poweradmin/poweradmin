@@ -57,10 +57,10 @@ class ListZoneTemplController extends BaseController
 
         // Get sync status for all templates
         $syncService = $this->services()->zoneTemplateSync();
-        $syncStatus = $syncService->getTemplateSyncStatus($userId);
+        $isGodlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
+        $syncStatus = $syncService->getTemplateSyncStatus($isGodlike ? null : $userId);
 
         $effectiveDefaultId = $zone_templates->getDefaultTemplateId();
-        $isGodlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $access = $this->services()->zoneTemplateAccessPolicy();
         $hasDbDefault = false;
         foreach ($templatesList as &$row) {
@@ -68,7 +68,9 @@ class ListZoneTemplController extends BaseController
             $isDefault = $row['is_default'] === true;
             $hasDbDefault = $hasDbDefault || $isDefault;
             // Row flags follow the edit/delete and set-default pages' rules
-            $row['can_edit'] = $access->canCurrentUserEditTemplate($owner);
+            // A non-owner's groups list holds only groups they belong to, so non-empty means shared with them
+            $row['can_edit'] = $access->canCurrentUserEditTemplate($owner, ($row['groups'] ?? []) !== []);
+            $row['can_delete'] = $access->canCurrentUserManageTemplate($owner);
             $row['can_set_default'] = $isGodlike && ($owner === 0 || $isDefault);
             $row['has_zones'] = (int)($row['zones_linked'] ?? 0) > 0;
         }

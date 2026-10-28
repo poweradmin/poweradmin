@@ -61,12 +61,10 @@ class AddZoneTemplRecordController extends BaseController
         }
 
         $zone_templ_id = (int)$this->getSafeRequestValue('id');
-        $userId = $this->getUserContextService()->getLoggedInUserId();
-        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate($zone_templ_id, $userId);
+        $canChange = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserEditTemplateById($zone_templ_id);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
-        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to add records to zone templates."));
+        $this->checkCondition(!($perm_godlike || $canChange), _("You do not have the permission to add records to zone templates."));
 
         if ($this->isPost()) {
             $constraints = [

@@ -238,14 +238,14 @@ final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryIn
                   LEFT JOIN zone_template_sync zts ON zt.id = zts.zone_templ_id";
 
         if ($userId !== null) {
-            $query .= " WHERE zt.owner = :user_id OR zt.owner = 0";
+            $query .= " WHERE " . DbZoneTemplateRepository::visibleToUserSql('zt', ':user_id', ':user_id_group');
         }
 
         $query .= " GROUP BY zt.id, zt.name";
 
         $stmt = $this->db->prepare($query);
         if ($userId !== null) {
-            $stmt->execute(['user_id' => $userId]);
+            $stmt->execute([':user_id' => $userId, ':user_id_group' => $userId]);
         } else {
             $stmt->execute();
         }

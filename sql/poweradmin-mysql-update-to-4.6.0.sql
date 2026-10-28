@@ -114,6 +114,19 @@ DEALLOCATE PREPARE repair;
 -- in a long zone outgrew varchar(255) and zone creation from a template failed
 ALTER TABLE `records_zone_templ_api` MODIFY `record_id` text NOT NULL;
 
+-- Zone templates shared with user groups (#1267)
+CREATE TABLE IF NOT EXISTS `zone_templ_groups` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `zone_templ_id` INT NOT NULL,
+    `group_id` INT UNSIGNED NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_zone_templ_group` (`zone_templ_id`, `group_id`),
+    KEY `idx_zone_templ_groups_group` (`group_id`),
+    CONSTRAINT `fk_zone_templ_groups_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ`(`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_zone_templ_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Usernames are unique (a rename could collide with another account). Older data may
 -- already hold a name twice; then the index is skipped with a notice. Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

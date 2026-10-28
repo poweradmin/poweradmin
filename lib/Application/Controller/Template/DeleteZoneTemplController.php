@@ -55,11 +55,10 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = $this->getSafeRequestValue('id');
-        $owner = $this->zoneTemplate()->isUserOwnerOfTemplate((int)$zone_templ_id, (int)$this->getCurrentUserId());
+        $canChange = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserManageTemplateById((int)$zone_templ_id);
         $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $perm_templ_edit = $this->hasPermission(Permission::PERM_ZONE_TEMPL_EDIT);
 
-        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to delete zone templates."));
+        $this->checkCondition(!($perm_godlike || $canChange), _("You do not have the permission to delete zone templates."));
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->deleteZoneTempl();

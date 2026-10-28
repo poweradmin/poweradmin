@@ -445,6 +445,18 @@ CREATE TABLE zones_groups (
 CREATE INDEX idx_zones_groups_domain ON zones_groups(domain_id);
 CREATE INDEX idx_zones_groups_group ON zones_groups(group_id);
 
+CREATE TABLE zone_templ_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    zone_templ_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (zone_templ_id, group_id),
+    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE
+);
+
+CREATE INDEX idx_zone_templ_groups_group ON zone_templ_groups(group_id);
+
 CREATE TABLE record_comment_links (
     record_id VARCHAR(4096) NOT NULL,
     comment_id INTEGER NOT NULL,

@@ -149,6 +149,36 @@
                     </div>
                     {% endif %}
 
+                    {% if can_manage_shares and templ_details['owner'] != 0 %}
+                    <div class="mb-3" id="templ-groups">
+                        <input type="hidden" name="templ_groups_shown" value="1">
+                        <span class="form-label d-block">{% trans %}Shared with groups{% endtrans %}</span>
+                        {% set shared_ids = shared_groups|map(g => g.id) %}
+                        {% set shareable_ids = shareable_groups|map(g => g.id) %}
+                        {% for group in shareable_groups %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="templ_group_{{ group.id }}" name="templ_groups[]" value="{{ group.id }}" {% if group.id in shared_ids %}checked{% endif %}>
+                            <label for="templ_group_{{ group.id }}" class="form-check-label">{{ group.name }}</label>
+                        </div>
+                        {% endfor %}
+                        {% for group in shared_groups|filter(g => g.id not in shareable_ids) %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="templ_group_{{ group.id }}" checked disabled>
+                            <label for="templ_group_{{ group.id }}" class="form-check-label">{{ group.name }}</label>
+                        </div>
+                        {% endfor %}
+                        {% if shareable_groups is empty and shared_groups is empty %}
+                        <div class="form-text text-muted">{% trans %}You are not a member of any group.{% endtrans %}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">{% trans %}Members of these groups can see and use this template, and edit it when they may edit zone templates{% endtrans %}</small>
+                    </div>
+                    {% elseif shared_groups is not empty %}
+                    <div class="mb-3">
+                        <span class="form-label d-block">{% trans %}Shared with groups{% endtrans %}</span>
+                        <div>{{ shared_groups|map(g => g.name)|join(', ') }}</div>
+                    </div>
+                    {% endif %}
+
                     <div class="mt-3">
                         <button type="submit" class="btn btn-primary btn-sm" name="edit" onclick="return checkZoneTemplateSOA('template-form', '.table')">
                             <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}

@@ -590,4 +590,62 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $this->assertSame(403, $response->getStatusCode());
         $this->assertSame('You do not have permission to delete this zone template', $this->messageOf($response));
     }
+
+    public function testGetZoneTemplateSharedWithTheCallersGroupListsOnlyTheirGroups(): void
+    {
+        $this->permissions->method('canViewZoneTemplates')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('getZoneTemplateDetails')->willReturn(['id' => 2, 'name' => 'Shared', 'descr' => 'Team template', 'owner' => 99]);
+        $this->repository->method('isSharedWithUser')->with(2, self::USER_ID)->willReturn(true);
+        $this->repository->method('getZoneTemplateRecords')->willReturn([]);
+        $this->repository->expects($this->once())->method('listGroupsForTemplates')
+            ->with([2], self::USER_ID)
+            ->willReturn([2 => [['id' => 3, 'name' => 'Ops']]]);
+
+        $response = $this->invoke('getZoneTemplate', path: ['id' => '2']);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame([['id' => 3, 'name' => 'Ops']], $this->decode($response)['data']['template']['groups']);
+    }
+
+    public function testListZoneTemplatesCarriesTheSharedGroups(): void
+    {
+        $this->permissions->method('canViewZoneTemplates')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('listZoneTemplates')->willReturn([
+            ['id' => 2, 'name' => 'Shared', 'descr' => '', 'owner' => 99, 'zones_linked' => 0, 'groups' => [['id' => 3, 'name' => 'Ops']]],
+        ]);
+
+        $response = $this->invoke('listZoneTemplates');
+
+        $this->assertSame([['id' => 3, 'name' => 'Ops']], $this->decode($response)['data']['templates'][0]['groups']);
+    }
+
+    public function testGroupMemberMayUpdateASharedTemplateWithoutTakingItOver(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(99);
+        $this->repository->method('isSharedWithUser')->with(1, self::USER_ID)->willReturn(true);
+        $this->repository->expects($this->once())->method('updateZoneTemplate')->with(1, 'X', 'Y', null);
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'is_global' => false], ['id' => '1']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testGroupMemberMayNotDeleteASharedTemplate(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(99);
+        $this->repository->method('isSharedWithUser')->willReturn(true);
+        $this->repository->expects($this->never())->method('deleteZoneTemplate');
+
+        $response = $this->invoke('deleteZoneTemplate', 'DELETE', null, ['id' => '1']);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
 }
