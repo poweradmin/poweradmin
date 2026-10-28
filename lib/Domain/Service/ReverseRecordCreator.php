@@ -235,7 +235,8 @@ class ReverseRecordCreator
         $hostname = rtrim($ptrContent, '.');
 
         if ($this->isApiBackend()) {
-            $result = $this->backendProvider->searchDnsData($hostname, 'record', 100);
+            // The address is exact content; the name may sit below the hostname, so it is filtered here
+            $result = $this->backendProvider->searchDnsData($ipAddress, 'record', 10000, true);
             foreach ($result['records'] ?? [] as $r) {
                 if ($r['type'] === $recordType && $r['content'] === $ipAddress && ($r['name'] === $hostname || str_starts_with($r['name'], "$hostname."))) {
                     $recordId = $r['id'] ?? 0;

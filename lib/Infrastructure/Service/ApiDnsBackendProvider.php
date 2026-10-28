@@ -923,10 +923,13 @@ class ApiDnsBackendProvider implements DnsBackendProvider
     // Search operations
     // ---------------------------------------------------------------
 
-    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array
+    public function searchDnsData(string $query, string $objectType = 'all', int $max = 100, bool $exact = false): array
     {
-        $wildcardQuery = '*' . $query . '*';
-        $apiResults = $this->client->searchData($wildcardQuery, $objectType, $max);
+        $apiResults = $this->client->searchData($exact ? $query : '*' . $query . '*', $objectType, $max);
+        if ($exact && count($apiResults) >= $max) {
+            // Name and content hits share the limit, so the exact record may be missing
+            $this->logger->warning('Exact search for {query} filled its limit of {max}; a record check may have missed a match', ['query' => $query, 'max' => $max]);
+        }
 
         $zones = [];
         $records = [];

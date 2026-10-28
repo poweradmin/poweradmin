@@ -134,7 +134,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
 
     public function hasNonDelegationRecords(string $name): bool
     {
-        $result = $this->backendProvider->searchDnsData($name, 'record', 100);
+        $result = $this->backendProvider->searchDnsData($name, 'record', 10000, true);
         foreach ($result['records'] as $r) {
             if ($r['name'] === $name && !in_array($r['type'], ['NS', 'DS'], true)) {
                 return true;
