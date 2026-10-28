@@ -41,10 +41,11 @@ class ApiDnsBackendProviderExactLookupTest extends TestCase
 {
     private PowerdnsApiClient&MockObject $client;
     private ApiDnsBackendProvider $provider;
+    private PDO $db;
 
     protected function setUp(): void
     {
-        $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db = $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec('CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_name VARCHAR(255), zone_type VARCHAR(8), zone_master VARCHAR(255))');
         $db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES (1, 1, 'example.com', 'MASTER'), (2, 2, 'sub.example.com', 'MASTER')");
 
@@ -133,6 +134,21 @@ class ApiDnsBackendProviderExactLookupTest extends TestCase
         $records = $this->provider->findRecordsByName('WWW.Example.com', 'CNAME');
 
         $this->assertSame('www.example.com', $records[0]['name'], 'The record id is encoded from the stored lower-case name');
+    }
+
+    public function testAReverseViewVariantCanHoldThePtr(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES (3, 3, '2.0.192.in-addr.arpa..internal', 'MASTER')");
+
+        $this->assertSame(3, $this->provider->getBestMatchingReverseZoneId('5.2.0.192.in-addr.arpa'));
+    }
+
+    public function testTheBaseReverseZoneWinsOverItsViewVariant(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES
+            (3, 3, '2.0.192.in-addr.arpa..internal', 'MASTER'), (4, 4, '2.0.192.in-addr.arpa', 'MASTER')");
+
+        $this->assertSame(4, $this->provider->getBestMatchingReverseZoneId('5.2.0.192.in-addr.arpa'));
     }
 
     public function testAContentLookupUnderTheLimitIsComplete(): void

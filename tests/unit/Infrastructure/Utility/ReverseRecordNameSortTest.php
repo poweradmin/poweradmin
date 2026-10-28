@@ -48,6 +48,20 @@ class ReverseRecordNameSortTest extends TestCase
         return ['mysql' => ['mysql'], 'mysqli' => ['mysqli'], 'pgsql' => ['pgsql'], 'sqlite' => ['sqlite']];
     }
 
+    public function testAReverseViewVariantIsSortedByAddress(): void
+    {
+        // IP order puts 9.2 before 10.1; a plain string sort would not
+        $records = [['name' => '1.10.0.192.in-addr.arpa'], ['name' => '2.9.0.192.in-addr.arpa']];
+        $this->assertSame(
+            ['2.9.0.192.in-addr.arpa', '1.10.0.192.in-addr.arpa'],
+            array_column(ResultPaginator::sortRecords($records, 'name', 'ASC', '0.192.in-addr.arpa..internal'), 'name')
+        );
+
+        $this->assertTrue(SortHelper::isIpv4ReverseZone('2.0.192.in-addr.arpa..internal'));
+        $this->assertTrue(SortHelper::sortsByAddress('2.0.192.in-addr.arpa..internal'));
+        $this->assertFalse(SortHelper::sortsByAddress('example.com..internal'));
+    }
+
     public function testSqlAndApiModeFallBackTogetherForAZoneNameThatIsNotPlain(): void
     {
         $zone = "x'y.2.0.192.in-addr.arpa";

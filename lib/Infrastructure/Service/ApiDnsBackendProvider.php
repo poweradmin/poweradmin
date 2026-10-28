@@ -1133,19 +1133,25 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         $bestLength = -1;
 
         $lowerName = strtolower($name);
+        $bestIsVariant = false;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $zoneName = strtolower((string)$row['zone_name']);
-            if ($reverseOnly && !str_ends_with($zoneName, '.arpa')) {
+            $apexLength = strlen(DnsHelper::zoneApexName($zoneName));
+            if ($reverseOnly && !str_ends_with(DnsHelper::zoneApexName($zoneName), '.arpa')) {
                 continue;
             }
             // Match on a label boundary (apex or suffix) and keep the longest
             // (most specific) zone, so a record is not dropped into a shorter
-            // zone that merely shares a trailing substring.
-            if (DnsHelper::isWithinZone($lowerName, $zoneName)) {
-                if (strlen($zoneName) > $bestLength) {
-                    $bestLength = strlen($zoneName);
-                    $foundId = (int)$row['id'];
-                }
+            // zone that merely shares a trailing substring. On an equal apex the
+            // base zone wins over its view variant, as in the DDNS zone pick.
+            if (!DnsHelper::isWithinZone($lowerName, $zoneName)) {
+                continue;
+            }
+            $isVariant = DnsHelper::isViewVariant($zoneName);
+            if ($apexLength > $bestLength || ($apexLength === $bestLength && $bestIsVariant && !$isVariant)) {
+                $bestLength = $apexLength;
+                $bestIsVariant = $isVariant;
+                $foundId = (int)$row['id'];
             }
         }
         return $foundId;

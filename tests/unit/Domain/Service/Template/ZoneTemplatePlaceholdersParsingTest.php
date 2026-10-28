@@ -46,6 +46,12 @@ class ZoneTemplatePlaceholdersParsingTest extends TestCase
     /**
      * Test parsing DOMAIN and TLD placeholders for simple domain
      */
+    public function testAViewVariantFillsThePlaceholdersWithTheNameItServes(): void
+    {
+        $result = $this->zoneTemplate->parseTemplateValue('[ZONE] [DOMAIN]-[TLD]', 'example.net..internal');
+        $this->assertEquals('example.net example-net', $result);
+    }
+
     public function testParseDomainAndTldPlaceholders(): void
     {
         $template = '[DOMAIN]-[TLD].mail.protection.outlook.com';

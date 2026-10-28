@@ -90,7 +90,8 @@ class DomainUtility
     public static function resolveAddressAsRecordName(string $name, string $zoneName): array
     {
         $address = trim($name);
-        $zone = rtrim($zoneName, '.');
+        // A view variant "2.0.192.in-addr.arpa..internal" keeps its records under its apex
+        $zone = DnsHelper::zoneApexName($zoneName);
         $lowerZone = strtolower($zone);
         $ip6Zone = $lowerZone === 'ip6.arpa' || str_ends_with($lowerZone, '.ip6.arpa');
         // Only classful zones: under bare in-addr.arpa a dotted quad is also a valid relative name

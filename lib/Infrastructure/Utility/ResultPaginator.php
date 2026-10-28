@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Utility;
 
 use Poweradmin\Domain\Model\ZoneStartingLetter;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * In-memory sorting, filtering, and pagination for datasets.
@@ -81,7 +82,7 @@ final class ResultPaginator
             return $data;
         }
 
-        $apex = strtolower(rtrim($apexName, '.'));
+        $apex = strtolower(DnsHelper::zoneApexName($apexName));
         $dir = strtoupper($direction) === 'DESC' ? -1 : 1;
 
         $byIp = $sortBy === 'name' && SortHelper::sortsByAddress($apex);

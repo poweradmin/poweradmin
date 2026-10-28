@@ -27,6 +27,7 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\DomainParsingService;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Expands the [ZONE], [NS1], [SERIAL] style placeholders of zone template records.
@@ -107,6 +108,8 @@ class ZoneTemplatePlaceholders
      */
     public function parseTemplateValue(string $val, string $domain, ?string $recordType = null): string
     {
+        // A view variant "example.com..internal" fills the placeholders with the name it serves
+        $domain = DnsHelper::zoneApexName($domain);
         $dns_ns1 = $this->config->get('dns', 'ns1');
         $dns_ns2 = $this->config->get('dns', 'ns2');
         $dns_ns3 = $this->config->get('dns', 'ns3');

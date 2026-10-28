@@ -136,6 +136,18 @@ class DomainUtilityTest extends TestCase
         $this->assertSame(['name' => $name, 'error' => $error], DomainUtility::resolveAddressAsRecordName($name, $zone));
     }
 
+    public function testAnAddressInAReverseViewVariantLandsUnderTheApex(): void
+    {
+        $this->assertSame(
+            ['name' => '5.2.0.192.in-addr.arpa', 'error' => null],
+            DomainUtility::resolveAddressAsRecordName('192.0.2.5', '2.0.192.in-addr.arpa..internal')
+        );
+        $this->assertSame(
+            ['name' => '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', 'error' => null],
+            DomainUtility::resolveAddressAsRecordName('2001:db8::1', '8.b.d.0.1.0.0.2.ip6.arpa..internal')
+        );
+    }
+
     public function testAnIpv4MappedAddressLandsUnderItsOwnNibbles(): void
     {
         $this->assertSame(

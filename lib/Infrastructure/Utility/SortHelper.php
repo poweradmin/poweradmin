@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Utility;
 use Closure;
 use LogicException;
 use Poweradmin\Domain\Enum\SortDirection;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Per-database ORDER BY clauses that sort zone and record names naturally instead of
@@ -67,7 +68,7 @@ final class SortHelper
      */
     public static function isIpv4ReverseZone(string $zoneName): bool
     {
-        $zoneName = strtolower(rtrim($zoneName, '.'));
+        $zoneName = strtolower(DnsHelper::zoneApexName($zoneName));
 
         return $zoneName === 'in-addr.arpa' || str_ends_with($zoneName, self::IPV4_ARPA_SUFFIX);
     }
@@ -79,7 +80,7 @@ final class SortHelper
      */
     public static function sortsByAddress(string $zoneName): bool
     {
-        $zoneName = strtolower(rtrim($zoneName, '.'));
+        $zoneName = strtolower(DnsHelper::zoneApexName($zoneName));
 
         return self::isIpv4ReverseZone($zoneName)
             && preg_match('/^[a-z0-9_*\/-]+(\.[a-z0-9_*\/-]+)*$/', $zoneName) === 1;
