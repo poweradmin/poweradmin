@@ -756,6 +756,11 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return $this->findRecords('content = :value', $content, $type);
     }
 
+    public function findAllRecordsByContent(string $content, ?string $type = null): array
+    {
+        return $this->findRecordsByContent($content, $type);
+    }
+
     /**
      * Cross-zone record lookup on one bound predicate, ENTs excluded.
      */

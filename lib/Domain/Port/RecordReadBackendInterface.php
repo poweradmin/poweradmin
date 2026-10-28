@@ -78,8 +78,8 @@ interface RecordReadBackendInterface
     /**
      * Find the records at one name across every zone, optionally filtered by type.
      *
-     * Names match case-insensitively. The API backend answers through the PowerDNS
-     * search endpoint, which caps the candidate set at 100 matches before filtering.
+     * Names match case-insensitively. The API backend reads the RRsets of the most
+     * specific zone that holds the name.
      *
      * @param string $name Record name
      * @param string|null $type Optional record type filter
@@ -89,14 +89,24 @@ interface RecordReadBackendInterface
 
     /**
      * Find the records whose content equals the given value across every zone,
-     * optionally filtered by type. Same 100-candidate cap on the API backend as
-     * findRecordsByName().
+     * optionally filtered by type. The API backend answers through the PowerDNS search
+     * endpoint, which stops at 10,000 matches; use findAllRecordsByContent() when a
+     * missed record would let a check pass.
      *
      * @param string $content Record content, exact match
      * @param string|null $type Optional record type filter
      * @return array Array of record data (id, domain_id, name, type, content, ttl, prio, disabled)
      */
     public function findRecordsByContent(string $content, ?string $type = null): array;
+
+    /**
+     * findRecordsByContent(), or null when the backend could not see every match.
+     *
+     * @param string $content Record content, exact match
+     * @param string|null $type Optional record type filter
+     * @return array|null Array of record data, or null when the lookup may be incomplete
+     */
+    public function findAllRecordsByContent(string $content, ?string $type = null): ?array;
 
     /**
      * Get SOA record content for a zone.

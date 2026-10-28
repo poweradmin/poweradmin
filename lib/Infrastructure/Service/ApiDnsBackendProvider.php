@@ -52,6 +52,9 @@ use Psr\Log\NullLogger;
  */
 final class ApiDnsBackendProvider implements DnsBackendProviderInterface, ReportsWriteRejection
 {
+    /** Exact record lookups ask for this many matches, the limit zone search uses too */
+    private const EXACT_SEARCH_LIMIT = 10000;
+
     private PowerdnsApiClient $client;
     private PDO $db;
     private TransactionInterface $transaction;
@@ -1006,33 +1009,80 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
     public function findRecordsByName(string $name, ?string $type = null): array
     {
-        $name = rtrim($name, '.');
+        // PowerDNS stores names in lower case and echoes the query's case on a filtered read
+        $name = strtolower(rtrim($name, '.'));
 
-        return $this->searchRecordsMatching(
-            $name,
+        // A name lives in the most specific zone that holds it, so read that zone's
+        // RRsets: the search endpoint matches contents too and stops at its cap
+        $zoneId = $this->bestMatchingZoneId($name, false);
+        if ($zoneId > 0) {
+            return $this->getRecordsByName($zoneId, $name, $type);
+        }
+
+        // PowerDNS may hold a zone the local zones table has not synced yet
+        return $this->exactRecordSearch(
+            [$name],
             fn(array $r): bool => strcasecmp($r['name'], $name) === 0 && ($type === null || $r['type'] === $type)
-        );
+        )[0];
     }
 
     public function findRecordsByContent(string $content, ?string $type = null): array
     {
-        return $this->searchRecordsMatching(
-            $content,
+        return $this->contentMatches($content, $type)[0];
+    }
+
+    public function findAllRecordsByContent(string $content, ?string $type = null): ?array
+    {
+        [$records, $complete] = $this->contentMatches($content, $type);
+
+        return $complete ? $records : null;
+    }
+
+    /**
+     * Name-like content is stored with or without its trailing dot depending on how it
+     * was written, and the search matches the stored form, so both are asked for.
+     *
+     * @return array{0: list<array<string, mixed>>, 1: bool} The matches, and whether the search saw all of them
+     */
+    private function contentMatches(string $content, ?string $type): array
+    {
+        // search-data reads * and ? as wildcards with no escape, so a wildcard name cannot
+        // be asked for exactly; MX and NS content never holds one, which is what callers check
+        if (strpbrk($content, '*?') !== false) {
+            return [[], true];
+        }
+        $bare = rtrim($content, '.');
+
+        return $this->exactRecordSearch(
+            [$bare, $bare . '.'],
             fn(array $r): bool => $r['content'] === $content && ($type === null || $r['type'] === $type)
         );
     }
 
     /**
-     * The search endpoint matches names and contents alike and caps at 100 candidates,
-     * so the exact predicate is applied here.
+     * Exact (not wildcard) search-data queries, filtered by the caller's predicate. The
+     * endpoint matches names and contents alike and stops at its limit, so a query that
+     * fills the limit may have left matches out.
      *
+     * @param list<string> $queries
      * @param callable(array): bool $match
+     * @return array{0: list<array<string, mixed>>, 1: bool} The matches, and whether every query stayed under the limit
      */
-    private function searchRecordsMatching(string $query, callable $match): array
+    private function exactRecordSearch(array $queries, callable $match): array
     {
-        $records = $this->searchDnsData($query, 'record', 100)['records'];
+        $matches = [];
+        $complete = true;
+        foreach (array_unique($queries) as $query) {
+            $results = $this->client->searchData($query, 'record', self::EXACT_SEARCH_LIMIT);
+            $complete = $complete && count($results) < self::EXACT_SEARCH_LIMIT;
+            foreach ($this->mapSearchResults($results)['records'] as $record) {
+                if ($match($record)) {
+                    $matches[$record['id']] = $record;
+                }
+            }
+        }
 
-        return array_values(array_filter($records, $match));
+        return [array_values($matches), $complete];
     }
 
     public function getSOARecord(int $domainId): string
@@ -1066,6 +1116,14 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
     public function getBestMatchingReverseZoneId(string $reverseName): int
     {
+        return $this->bestMatchingZoneId($reverseName, true);
+    }
+
+    /**
+     * The most specific local zone that holds the name, or -1 when none does.
+     */
+    private function bestMatchingZoneId(string $name, bool $reverseOnly): int
+    {
         // Return the canonical id, the value every other zone id in this backend
         // carries. Returning zones.id let the resolver prefer an unrelated row
         // whose domain_id happened to equal it, writing the PTR into that zone.
@@ -1074,10 +1132,10 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         $foundId = -1;
         $bestLength = -1;
 
-        $lowerName = strtolower($reverseName);
+        $lowerName = strtolower($name);
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $zoneName = strtolower((string)$row['zone_name']);
-            if (!str_ends_with($zoneName, '.arpa')) {
+            if ($reverseOnly && !str_ends_with($zoneName, '.arpa')) {
                 continue;
             }
             // Match on a label boundary (apex or suffix) and keep the longest
@@ -1329,9 +1387,18 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
     public function searchDnsData(string $query, string $objectType = 'all', int $max = 100): array
     {
-        $wildcardQuery = '*' . $query . '*';
-        $apiResults = $this->client->searchData($wildcardQuery, $objectType, $max);
+        return $this->mapSearchResults($this->client->searchData('*' . $query . '*', $objectType, $max));
+    }
 
+    /**
+     * Map search-data results to the zone, record and comment rows the rest of the
+     * application reads, with local zone ids and trailing dots stripped from content.
+     *
+     * @param array<int, array<string, mixed>> $apiResults
+     * @return array{zones: array, records: array, comments: array}
+     */
+    private function mapSearchResults(array $apiResults): array
+    {
         $zones = [];
         $records = [];
         $comments = [];

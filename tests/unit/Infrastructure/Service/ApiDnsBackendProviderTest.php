@@ -83,17 +83,26 @@ class ApiDnsBackendProviderTest extends TestCase
     // ---------------------------------------------------------------
 
     /**
-     * Wire searchData() to a fixed hit list and the local zones query to one zone.
+     * Wire searchData() to a fixed hit list and the local zones query to one zone; records
+     * the queries it was asked, which must be exact (no wildcard) and use the large limit.
+     *
+     * @param list<string> $queries Filled with each query searchData() received
      */
-    private function stubSearchHits(array $hits): void
+    private function stubSearchHits(array $hits, array &$queries): void
     {
-        $this->mockClient->expects($this->once())
-            ->method('searchData')
-            ->with($this->anything(), 'record', 100)
-            ->willReturn($hits);
+        $this->mockClient->method('searchData')
+            ->willReturnCallback(function (string $query, string $type, int $max) use ($hits, &$queries): array {
+                $this->assertSame('record', $type);
+                $this->assertSame(10000, $max);
+                $queries[] = $query;
+
+                return $hits;
+            });
 
         $stmtZones = $this->createMock(PDOStatement::class);
         $stmtZones->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 1, 'domain_id' => 1, 'zone_name' => 'example.com'],
+            false,
             ['id' => 1, 'domain_id' => 1, 'zone_name' => 'example.com'],
             false
         );
@@ -105,48 +114,23 @@ class ApiDnsBackendProviderTest extends TestCase
         return ['object_type' => 'record', 'name' => $name, 'type' => $type, 'content' => $content, 'ttl' => 3600, 'zone' => $zone];
     }
 
-    public function testFindRecordsByNameKeepsOnlyExactNameMatches(): void
-    {
-        $this->stubSearchHits([
-            self::searchHit('www.example.com.', 'A', '192.0.2.1'),
-            self::searchHit('WWW.example.com.', 'TXT', 'hello'),
-            self::searchHit('www2.example.com.', 'A', '192.0.2.2'),
-            self::searchHit('mail.example.com.', 'MX', '10 www.example.com.'),
-        ]);
-
-        $records = $this->provider->findRecordsByName('www.example.com.');
-
-        $this->assertSame(['A', 'TXT'], array_column($records, 'type'));
-        $this->assertSame(1, $records[0]['domain_id']);
-    }
-
-    public function testFindRecordsByNameFiltersByType(): void
-    {
-        $this->stubSearchHits([
-            self::searchHit('www.example.com.', 'A', '192.0.2.1'),
-            self::searchHit('www.example.com.', 'CNAME', 'other.org.'),
-        ]);
-
-        $records = $this->provider->findRecordsByName('www.example.com', 'CNAME');
-
-        $this->assertCount(1, $records);
-        $this->assertSame('other.org', $records[0]['content']);
-    }
-
     public function testFindRecordsByContentMatchesTheDbFormattedContent(): void
     {
+        $queries = [];
         $this->stubSearchHits([
             self::searchHit('mail.example.com.', 'MX', '10 www.example.com.'),
             self::searchHit('ns.example.com.', 'NS', 'www.example.com.'),
             self::searchHit('txt.example.com.', 'TXT', 'www.example.com'),
             self::searchHit('www.example.com.', 'A', '192.0.2.1'),
-        ]);
+        ], $queries);
 
         $records = $this->provider->findRecordsByContent('www.example.com');
 
-        // MX and NS lose the trailing dot (and MX its priority) like the SQL rows they mirror
+        // MX and NS lose the trailing dot (and MX its priority) like the SQL rows they mirror;
+        // both stored forms are asked for and a record found by both is listed once
         $this->assertSame(['MX', 'NS', 'TXT'], array_column($records, 'type'));
         $this->assertSame(10, $records[0]['prio']);
+        $this->assertSame(['www.example.com', 'www.example.com.'], $queries);
     }
 
     public function testGetZonesByIdsSortsByNameAndSkipsUnknownIds(): void

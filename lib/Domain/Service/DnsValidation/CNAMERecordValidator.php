@@ -228,7 +228,12 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        foreach ($this->backendProvider->findRecordsByContent($name) as $r) {
+        $pointingHere = $this->backendProvider->findAllRecordsByContent($name);
+        if ($pointingHere === null) {
+            return ValidationResult::failure(_('This CNAME cannot be checked: too many records point to this name.'))
+                ->withField(RecordField::NAME);
+        }
+        foreach ($pointingHere as $r) {
             if (in_array($r['type'], ['MX', 'NS'], true)) {
                 return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'))
                     ->withField(RecordField::NAME);

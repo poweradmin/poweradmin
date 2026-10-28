@@ -255,6 +255,19 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $this->assertSame(RecordField::NAME, $result->getField());
     }
 
+    public function testValidateCnameNameRefusesWhenTheBackendCannotSeeEveryRecordPointingHere()
+    {
+        $backend = $this->createMock(\Poweradmin\Domain\Port\RecordReadBackendInterface::class);
+        $backend->method('findAllRecordsByContent')->willReturn(null);
+        $method = (new \ReflectionClass(CNAMERecordValidator::class))->getMethod('validateCnameName');
+
+        $result = $method->invoke(new CNAMERecordValidator($this->hostnameValidator, $backend), 'busy.example.com');
+
+        $this->assertFalse($result->isValid(), 'An incomplete lookup must not pass as "no MX or NS points here"');
+        $this->assertStringContainsString('too many records point to this name', $result->getFirstError());
+        $this->assertSame(RecordField::NAME, $result->getField());
+    }
+
     public function testValidateNotEmptyCnameRR()
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
