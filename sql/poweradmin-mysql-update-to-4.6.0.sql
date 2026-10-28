@@ -134,6 +134,38 @@ PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
 
+-- The log pages sort and filter by created_at; installer databases name these *_created_at_idx
+SET @has_log_users_created_at_index = (
+    SELECT COUNT(*) FROM information_schema.statistics
+    WHERE table_schema = DATABASE() AND table_name = 'log_users' AND index_name IN ('idx_log_users_created_at', 'log_users_created_at_idx')
+);
+SET @repair = IF(@has_log_users_created_at_index = 0,
+    'CREATE INDEX `idx_log_users_created_at` ON `log_users` (`created_at`)',
+    'SELECT ''log_users.created_at index already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+SET @has_log_zones_created_at_index = (
+    SELECT COUNT(*) FROM information_schema.statistics
+    WHERE table_schema = DATABASE() AND table_name = 'log_zones' AND index_name IN ('idx_log_zones_created_at', 'log_zones_created_at_idx')
+);
+SET @repair = IF(@has_log_zones_created_at_index = 0,
+    'CREATE INDEX `idx_log_zones_created_at` ON `log_zones` (`created_at`)',
+    'SELECT ''log_zones.created_at index already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+SET @has_log_groups_created_at_index = (
+    SELECT COUNT(*) FROM information_schema.statistics
+    WHERE table_schema = DATABASE() AND table_name = 'log_groups' AND index_name IN ('idx_log_groups_created_at', 'log_groups_created_at_idx')
+);
+SET @repair = IF(@has_log_groups_created_at_index = 0,
+    'CREATE INDEX `idx_log_groups_created_at` ON `log_groups` (`created_at`)',
+    'SELECT ''log_groups.created_at index already present'' AS notice');
+PREPARE repair FROM @repair;
+EXECUTE repair;
+DEALLOCATE PREPARE repair;
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:

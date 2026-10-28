@@ -12,7 +12,8 @@ CREATE TABLE `log_users` (
                              `event` varchar(2048) NOT NULL,
                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                              `priority` int(11) NOT NULL,
-                             PRIMARY KEY (`id`)
+                             PRIMARY KEY (`id`),
+                             KEY `idx_log_users_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -33,7 +34,8 @@ CREATE TABLE `log_zones` (
                              `priority` int(11) NOT NULL,
                              `zone_id` int(11) DEFAULT NULL,
                              PRIMARY KEY (`id`),
-                             KEY `idx_log_zones_zone_id` (`zone_id`)
+                             KEY `idx_log_zones_zone_id` (`zone_id`),
+                             KEY `idx_log_zones_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `log_groups` (
@@ -43,7 +45,8 @@ CREATE TABLE `log_groups` (
                               `priority` int(11) NOT NULL,
                               `group_id` int(11) DEFAULT NULL,
                               PRIMARY KEY (`id`),
-                              KEY `idx_log_groups_group_id` (`group_id`)
+                              KEY `idx_log_groups_group_id` (`group_id`),
+                              KEY `idx_log_groups_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `log_changesets` (

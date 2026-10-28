@@ -750,6 +750,11 @@ class DatabaseStructureHelper
                         'fields' => array(
                             'zone_id' => array()
                         )
+                    ),
+                    'log_zones_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
                     )
                 )
             ),
@@ -793,6 +798,13 @@ class DatabaseStructureHelper
                         'name' => 'priority',
                         'table' => 'log_users',
                         'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_users_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
+                        )
                     )
                 )
             ),
@@ -901,6 +913,11 @@ class DatabaseStructureHelper
                     'log_groups_group_id_idx' => array(
                         'fields' => array(
                             'group_id' => array()
+                        )
+                    ),
+                    'log_groups_created_at_idx' => array(
+                        'fields' => array(
+                            'created_at' => array()
                         )
                     )
                 )

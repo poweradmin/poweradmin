@@ -63,6 +63,11 @@ COMMIT;
 ALTER TABLE users ADD COLUMN max_zones integer DEFAULT NULL;
 ALTER TABLE user_groups ADD COLUMN max_zones INTEGER DEFAULT NULL;
 
+-- The log pages sort and filter by created_at
+CREATE INDEX IF NOT EXISTS idx_log_users_created_at ON log_users(created_at);
+CREATE INDEX IF NOT EXISTS idx_log_zones_created_at ON log_zones(created_at);
+CREATE INDEX IF NOT EXISTS idx_log_groups_created_at ON log_groups(created_at);
+
 -- Usernames are unique (a rename could collide with another account). Kept last: on data
 -- that already holds a name twice this fails with "UNIQUE constraint failed". Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

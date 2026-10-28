@@ -168,6 +168,32 @@ BEGIN
     END IF;
 END $$;
 
+-- The log pages sort and filter by created_at; installer databases name these *_created_at_idx
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'log_users'
+          AND indexname IN ('idx_log_users_created_at', 'log_users_created_at_idx')
+    ) THEN
+        CREATE INDEX "idx_log_users_created_at" ON "public"."log_users" USING btree ("created_at");
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'log_zones'
+          AND indexname IN ('idx_log_zones_created_at', 'log_zones_created_at_idx')
+    ) THEN
+        CREATE INDEX "idx_log_zones_created_at" ON "public"."log_zones" USING btree ("created_at");
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE schemaname = 'public' AND tablename = 'log_groups'
+          AND indexname IN ('idx_log_groups_created_at', 'log_groups_created_at_idx')
+    ) THEN
+        CREATE INDEX "idx_log_groups_created_at" ON "public"."log_groups" USING btree ("created_at");
+    END IF;
+END $$;
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:

@@ -1,6 +1,7 @@
 -- Adminer 4.8.1 SQLite 3 3.38.5 dump
 
 CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL);
+CREATE INDEX idx_log_users_created_at ON log_users(created_at);
 
 
 CREATE TABLE log_api (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL);
@@ -11,11 +12,13 @@ CREATE INDEX idx_log_api_created_at ON log_api(created_at);
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
 CREATE INDEX idx_log_zones_zone_id ON log_zones(zone_id);
+CREATE INDEX idx_log_zones_created_at ON log_zones(created_at);
 
 
 CREATE TABLE log_groups (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, group_id integer);
 
 CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
+CREATE INDEX idx_log_groups_created_at ON log_groups(created_at);
 
 
 CREATE TABLE log_changesets (

@@ -10,6 +10,8 @@ CREATE TABLE "public"."log_users" (
                                       CONSTRAINT "log_users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_log_users_created_at" ON "public"."log_users" USING btree ("created_at");
+
 
 CREATE SEQUENCE log_api_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -36,6 +38,7 @@ CREATE TABLE "public"."log_zones" (
 ) WITH (oids = false);
 
 CREATE INDEX "idx_log_zones_zone_id" ON "public"."log_zones" USING btree ("zone_id");
+CREATE INDEX "idx_log_zones_created_at" ON "public"."log_zones" USING btree ("created_at");
 
 
 CREATE SEQUENCE log_groups_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -50,6 +53,7 @@ CREATE TABLE "public"."log_groups" (
 ) WITH (oids = false);
 
 CREATE INDEX "idx_log_groups_group_id" ON "public"."log_groups" USING btree ("group_id");
+CREATE INDEX "idx_log_groups_created_at" ON "public"."log_groups" USING btree ("created_at");
 
 
 CREATE SEQUENCE log_record_changes_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
