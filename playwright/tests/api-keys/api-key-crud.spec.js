@@ -12,6 +12,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
@@ -479,46 +480,32 @@ test.describe('API Key Actions', () => {
 });
 
 test.describe('API Keys User Permissions', () => {
-  test.describe('Admin Access', () => {
-    test('admin should access API keys page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      await page.goto('/settings/api-keys');
+  // Always rendered by the list page; the add link is hidden once a user reaches max_keys_per_user
+  const KEYS_PAGE_MARKER = '#disableApiKeyModal';
 
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
+  // A refusal renders the same URL with only the alert, so check the page's own content
+  async function expectKeysPage(page) {
+    await expect(page.locator('[data-testid="system-message"].alert-danger')).toHaveCount(0);
+    await expect(page.locator(KEYS_PAGE_MARKER)).toBeAttached();
+  }
 
-      const hasAccess = url.includes('api-keys') ||
-                        bodyText.toLowerCase().includes('api key');
-      expect(hasAccess || bodyText.toLowerCase().includes('permission')).toBeTruthy();
-    });
+  test('admin should access API keys page', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    await page.goto('/settings/api-keys');
+    await expectKeysPage(page);
   });
 
-  test.describe('Manager Access', () => {
-    test('manager should access API keys for own account', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/settings/api-keys');
-
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-
-      expect(url.includes('api-keys') ||
-             bodyText.toLowerCase().includes('api') ||
-             bodyText.toLowerCase().includes('permission')).toBeTruthy();
-    });
+  test('manager should access API keys with api_manage_keys', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    await page.goto('/settings/api-keys');
+    await expectKeysPage(page);
   });
 
-  test.describe('Client Access', () => {
-    test('client should access API keys for own account', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/settings/api-keys');
-
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-
-      expect(url.includes('api-keys') ||
-             bodyText.toLowerCase().includes('api') ||
-             bodyText.toLowerCase().includes('permission')).toBeTruthy();
-    });
+  test('client should be refused API keys without api_manage_keys', async ({ page }) => {
+    await loginAndWaitForDashboard(page, users.client.username, users.client.password);
+    await page.goto('/settings/api-keys');
+    await expectAccessDenied(page, KEYS_PAGE_MARKER);
+    await expect(page.locator('[data-testid="system-message"]')).toContainText('You do not have permission to manage API keys.');
   });
 });
 

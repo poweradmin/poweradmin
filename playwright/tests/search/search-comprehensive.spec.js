@@ -7,6 +7,7 @@
 
 import { test, expect, useFileZone } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 import zones from '../../fixtures/zones.json' with { type: 'json' };
 
@@ -202,22 +203,25 @@ test.describe('Search Functionality', () => {
   });
 
   test.describe('Search Permissions', () => {
-    test('manager should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/search');
-      await expect(page).toHaveURL(/.*\/search/);
-    });
+    // A refusal renders the same URL with only the alert, so check the search form itself
+    const expectSearchForm = async page => {
+      await expect(page.locator('[data-testid="system-message"].alert-danger')).toHaveCount(0);
+      await expect(page.locator('input#query')).toBeVisible();
+    };
 
-    test('client should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/search');
-      await expect(page).toHaveURL(/.*\/search/);
-    });
+    for (const role of ['manager', 'client', 'viewer']) {
+      test(`${role} should access search`, async ({ page }) => {
+        await loginAndWaitForDashboard(page, users[role].username, users[role].password);
+        await page.goto('/search');
+        await expectSearchForm(page);
+      });
+    }
 
-    test('viewer should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('a user without the search permission should be refused', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.noperm.username, users.noperm.password);
       await page.goto('/search');
-      await expect(page).toHaveURL(/.*\/search/);
+      await expectAccessDenied(page, 'input#query');
+      await expect(page.locator('[data-testid="system-message"]')).toContainText('You do not have the permission to perform searches.');
     });
   });
 

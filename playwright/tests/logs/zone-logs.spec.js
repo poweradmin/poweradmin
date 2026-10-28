@@ -1,7 +1,16 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { createZone, deleteZoneById } from '../../helpers/zones.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
+
+const LOG_FILTER = 'input[name="name"]';
+
+// A refusal renders the same URL with only the alert, so check the page's own content
+async function expectAllowed(page) {
+  await expect(page.locator('[data-testid="system-message"].alert-danger')).toHaveCount(0);
+  await expect(page.locator(LOG_FILTER)).toBeVisible();
+}
 
 test.describe('Zone Logs', () => {
   test.describe('Admin User', () => {
@@ -159,8 +168,7 @@ test.describe('Zone Logs', () => {
       // fixture holds zone_logs_view_own so the page must load.
       await page.goto('/zones/logs');
       await expect(page).toHaveURL(/zones\/logs/);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).not.toContain('denied');
+      await expectAllowed(page);
     });
   });
 
@@ -172,8 +180,7 @@ test.describe('Zone Logs', () => {
     test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
       await page.goto('/zones/logs');
       await expect(page).toHaveURL(/zones\/logs/);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).not.toContain('denied');
+      await expectAllowed(page);
     });
   });
 
@@ -185,8 +192,19 @@ test.describe('Zone Logs', () => {
     test('should have access to zone logs (zone_logs_view_own)', async ({ page }) => {
       await page.goto('/zones/logs');
       await expect(page).toHaveURL(/zones\/logs/);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).not.toContain('denied');
+      await expectAllowed(page);
+    });
+  });
+
+  test.describe('No Access User - Permission Check', () => {
+    test.beforeEach(async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.noperm.username, users.noperm.password);
+    });
+
+    test('should refuse zone logs without zone_logs_view_own', async ({ page }) => {
+      await page.goto('/zones/logs');
+      await expectAccessDenied(page, LOG_FILTER);
+      await expect(page.locator('[data-testid="system-message"]')).toContainText('You do not have the permission to see any logs');
     });
   });
 });

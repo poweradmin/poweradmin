@@ -6,6 +6,7 @@
  */
 
 import { test, expect } from '../../fixtures/test-fixtures.js';
+import { expectAccessDenied } from '../../helpers/access.js';
 
 test.describe('PowerDNS Status Page', () => {
   // PowerDNS status page may be slow due to API calls and supermaster connectivity checks
@@ -91,20 +92,11 @@ test.describe('PowerDNS Status Page', () => {
 
   // Auth/redirect checks stay separate - they exercise different sessions.
   test.describe('Access Control', () => {
-    test('should require admin authentication', async ({ managerPage: page }) => {
+    test('should refuse a user without server_status_view', async ({ managerPage: page }) => {
       await page.goto('/tools/pdns-status', { timeout: 30000 });
 
-      const bodyText = await page.locator('body').textContent();
-      const url = page.url();
-
-      // Non-admin should be denied or redirected
-      const hasAccess = url.includes('pdns-status');
-      const accessDenied = bodyText.toLowerCase().includes('denied') ||
-                           bodyText.toLowerCase().includes('permission') ||
-                           !hasAccess;
-
-      // Either granted access or denied - both are valid depending on permissions
-      expect(accessDenied || hasAccess).toBeTruthy();
+      await expectAccessDenied(page, 'table.table-hover');
+      await expect(page.locator('[data-testid="system-message"]')).toContainText('You do not have permission to view PowerDNS server status.');
     });
 
     test('should require login to access', async ({ page }) => {
