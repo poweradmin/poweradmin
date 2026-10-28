@@ -670,6 +670,31 @@ return [
             ],
             */
 
+            // Example GitHub configuration (OAuth 2.0, not OIDC; added in 4.6.0). Register an
+            // OAuth App with the callback {interface.application_url}/oidc/callback.
+            // emails_url reads the verified address, also when the profile email is private.
+            /*
+            'github' => [
+                'name' => 'GitHub',
+                'display_name' => 'Sign in with GitHub',
+                'client_id' => '',                     // Client ID of the GitHub OAuth App
+                'client_secret' => '',                 // Client secret of the GitHub OAuth App
+                'auto_discovery' => false,
+                'authorize_url' => 'https://github.com/login/oauth/authorize',
+                'token_url' => 'https://github.com/login/oauth/access_token',
+                'userinfo_url' => 'https://api.github.com/user',
+                'emails_url' => 'https://api.github.com/user/emails',
+                'scopes' => 'read:user user:email',
+                'user_mapping' => [
+                    'username' => 'login',
+                    'email' => 'email',
+                    'display_name' => 'name',
+                    'subject' => 'id',
+                    'avatar' => 'avatar_url',
+                ],
+            ],
+            */
+
             // Generic OIDC provider configuration
             /*
             'generic' => [
@@ -682,6 +707,7 @@ return [
                 'token_url' => '',                     // Token endpoint URL
                 'userinfo_url' => '',                  // UserInfo endpoint URL
                 'logout_url' => '',                    // Logout endpoint URL (optional)
+                'emails_url' => '',                    // OAuth 2.0 email list such as GitHub's /user/emails (optional)
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',

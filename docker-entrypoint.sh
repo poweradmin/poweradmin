@@ -656,8 +656,10 @@ validate_oidc_config() {
         google_enabled=$(to_php_bool "${PA_OIDC_GOOGLE_ENABLED:-false}")
         local generic_enabled
         generic_enabled=$(to_php_bool "${PA_OIDC_GENERIC_ENABLED:-false}")
+        local github_enabled
+        github_enabled=$(to_php_bool "${PA_OIDC_GITHUB_ENABLED:-false}")
 
-        if [ "$azure_enabled" != "true" ] && [ "$google_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
+        if [ "$azure_enabled" != "true" ] && [ "$google_enabled" != "true" ] && [ "$generic_enabled" != "true" ] && [ "$github_enabled" != "true" ]; then
             log "ERROR: OIDC is enabled but no OIDC providers are configured. Enable at least one provider (PA_OIDC_*_ENABLED=true)"
             exit 1
         fi
@@ -674,6 +676,14 @@ validate_oidc_config() {
         if [ "$google_enabled" = "true" ]; then
             if [ -z "${PA_OIDC_GOOGLE_CLIENT_ID}" ] || [ -z "${PA_OIDC_GOOGLE_CLIENT_SECRET}" ]; then
                 log "ERROR: PA_OIDC_GOOGLE_CLIENT_ID and PA_OIDC_GOOGLE_CLIENT_SECRET are required when Google OIDC is enabled"
+                exit 1
+            fi
+        fi
+
+        # Validate GitHub configuration if enabled
+        if [ "$github_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_GITHUB_CLIENT_ID}" ] || [ -z "${PA_OIDC_GITHUB_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_GITHUB_CLIENT_ID and PA_OIDC_GITHUB_CLIENT_SECRET are required when GitHub sign-in is enabled"
                 exit 1
             fi
         fi
@@ -1095,6 +1105,8 @@ generate_config() {
     oidc_google_enabled=$(to_php_bool "${PA_OIDC_GOOGLE_ENABLED:-false}")
     local oidc_google_auto_discovery
     oidc_google_auto_discovery=$(to_php_bool "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}")
+    local oidc_github_enabled
+    oidc_github_enabled=$(to_php_bool "${PA_OIDC_GITHUB_ENABLED:-false}")
     local oidc_generic_enabled
     oidc_generic_enabled=$(to_php_bool "${PA_OIDC_GENERIC_ENABLED:-false}")
     local oidc_generic_auto_discovery
@@ -1629,6 +1641,31 @@ EOF
 EOF
     fi
 
+    # Add GitHub configuration if enabled (OAuth 2.0, not OIDC)
+    if [ "${oidc_github_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'github' => [
+                'name' => $(php_sq "${PA_OIDC_GITHUB_NAME:-GitHub}"),
+                'display_name' => $(php_sq "${PA_OIDC_GITHUB_DISPLAY_NAME:-Sign in with GitHub}"),
+                'client_id' => $(php_sq "${PA_OIDC_GITHUB_CLIENT_ID:-}"),
+                'client_secret' => $(php_sq "${PA_OIDC_GITHUB_CLIENT_SECRET:-}"),
+                'auto_discovery' => false,
+                'authorize_url' => 'https://github.com/login/oauth/authorize',
+                'token_url' => 'https://github.com/login/oauth/access_token',
+                'userinfo_url' => 'https://api.github.com/user',
+                'emails_url' => 'https://api.github.com/user/emails',
+                'scopes' => 'read:user user:email',
+                'user_mapping' => [
+                    'username' => 'login',
+                    'email' => 'email',
+                    'display_name' => 'name',
+                    'subject' => 'id',
+                    'avatar' => 'avatar_url',
+                ],
+            ],
+EOF
+    fi
+
     # Add Generic OIDC configuration if enabled (for Authentik, Keycloak, Okta, etc.)
     if [ "${oidc_generic_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
@@ -1643,6 +1680,7 @@ EOF
                 'token_url' => $(php_sq "${PA_OIDC_GENERIC_TOKEN_URL:-}"),
                 'userinfo_url' => $(php_sq "${PA_OIDC_GENERIC_USERINFO_URL:-}"),
                 'logout_url' => $(php_sq "${PA_OIDC_GENERIC_LOGOUT_URL:-}"),
+                'emails_url' => $(php_sq "${PA_OIDC_GENERIC_EMAILS_URL:-}"),
                 'scopes' => $(php_sq "${PA_OIDC_GENERIC_SCOPES:-openid profile email}"),
                 'user_mapping' => [
                     'username' => $(php_sq "${PA_OIDC_GENERIC_USERNAME_ATTR:-preferred_username}"),

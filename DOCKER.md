@@ -721,6 +721,25 @@ services:
 - **Scopes**: Automatically requests `openid profile email` scopes
 - **Redirect URI**: Set the authorized redirect URI in Google Cloud Console to match your deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
 
+### GitHub Sign-in
+
+GitHub speaks OAuth 2.0 without OpenID Connect, so the endpoints are fixed and no discovery runs (added in 4.6.0).
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_OIDC_GITHUB_ENABLED` | Enable GitHub sign-in | `false` | No |
+| `PA_OIDC_GITHUB_NAME` | Provider name | `GitHub` | No |
+| `PA_OIDC_GITHUB_DISPLAY_NAME` | Display name for login button | `Sign in with GitHub` | No |
+| `PA_OIDC_GITHUB_CLIENT_ID` | Client ID of the GitHub OAuth App | Empty | Yes if GitHub enabled |
+| `PA_OIDC_GITHUB_CLIENT_SECRET` | Client secret of the GitHub OAuth App | Empty | Yes if GitHub enabled |
+
+**GitHub Configuration Notes:**
+
+- **OAuth App**: Create one under GitHub Settings > Developer settings > OAuth Apps, with the callback URL `https://poweradmin.yourdomain.com/oidc/callback` (`PA_APPLICATION_URL` plus `/oidc/callback`)
+- **Scopes**: Requests `read:user user:email`; the email list gives the verified address even when the profile email is private
+- **Username**: The GitHub login becomes the Poweradmin username
+- **Groups**: GitHub sends no groups, so new users get `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE`
+
 ### OIDC Generic Provider
 
 Use this provider for Authentik, Keycloak, Okta, or any other standard OIDC-compliant identity provider.
@@ -738,6 +757,7 @@ Use this provider for Authentik, Keycloak, Okta, or any other standard OIDC-comp
 | `PA_OIDC_GENERIC_TOKEN_URL` | Token endpoint URL | Empty | Yes if auto_discovery disabled |
 | `PA_OIDC_GENERIC_USERINFO_URL` | UserInfo endpoint URL | Empty | No |
 | `PA_OIDC_GENERIC_LOGOUT_URL` | Logout endpoint URL | Empty | No |
+| `PA_OIDC_GENERIC_EMAILS_URL` | OAuth 2.0 email list URL (GitHub-style `/user/emails`) for a verified address | Empty | No |
 | `PA_OIDC_GENERIC_SCOPES` | OAuth scopes to request | `openid profile email` | No |
 | `PA_OIDC_GENERIC_USERNAME_ATTR` | Username claim mapping | `preferred_username` | No |
 | `PA_OIDC_GENERIC_EMAIL_ATTR` | Email claim mapping | `email` | No |

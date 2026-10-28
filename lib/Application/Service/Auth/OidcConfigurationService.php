@@ -210,7 +210,8 @@ class OidcConfigurationService
             'authorize_url',
             'token_url',
             'userinfo_url',
-            'logout_url'
+            'logout_url',
+            'emails_url'
         ];
 
         foreach ($urlFields as $field) {

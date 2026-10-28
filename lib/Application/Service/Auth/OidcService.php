@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
+use GuzzleHttp\Exception\BadResponseException;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use Poweradmin\Application\Http\Request;
@@ -479,6 +480,7 @@ final class OidcService
         $serverUrls = array_filter([
             $config['token_url'] ?? '',
             $config['userinfo_url'] ?? '',
+            $config['emails_url'] ?? '',
         ], static fn(string $url): bool => $url !== '');
 
         foreach ($serverUrls as $serverUrl) {
@@ -500,6 +502,19 @@ final class OidcService
         $resourceOwner = $provider->getResourceOwner($token);
         $userData = $resourceOwner->toArray();
 
+        $config = $this->oidcConfigurationService->getProviderConfig($providerId);
+        $mapping = $config['user_mapping'] ?? [];
+
+        $emailsUrl = $config['emails_url'] ?? '';
+        if (is_string($emailsUrl) && $emailsUrl !== '') {
+            $emailKey = $mapping['email'] ?? 'email';
+            $profileEmail = is_string($userData[$emailKey] ?? null) ? $userData[$emailKey] : '';
+            $verifiedEmail = $this->lookUpVerifiedEmail($provider, $token, $emailsUrl, $profileEmail);
+            // Without a verified address the profile one stays, marked unverified so it never links an account
+            $userData[$emailKey] = $verifiedEmail ?? $profileEmail;
+            $userData['email_verified'] = $verifiedEmail !== null;
+        }
+
         // Some providers (e.g. Microsoft Entra ID) put claims such as groups and
         // email_verified in the ID token only. Its claims fill what the userinfo
         // endpoint left out, so the userinfo response still wins on conflict.
@@ -508,9 +523,6 @@ final class OidcService
             ? $this->decodeIdTokenPayload($tokenValues['id_token'])
             : [];
         $claims = $userData + $idTokenClaims;
-
-        $config = $this->oidcConfigurationService->getProviderConfig($providerId);
-        $mapping = $config['user_mapping'] ?? [];
 
         $groupsKey = $mapping['groups'] ?? 'groups';
         $groups = $userData[$groupsKey] ?? [];
@@ -529,10 +541,53 @@ final class OidcService
             displayName: $userData[$mapping['display_name'] ?? 'name'] ?? '',
             groups: $groups,
             providerId: $providerId,
-            subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
+            // OAuth 2.0 providers such as GitHub send a numeric user id
+            subject: (string)($userData[$mapping['subject'] ?? 'sub'] ?? ''),
             rawData: $claims,
             avatarUrl: $userData[$mapping['avatar'] ?? 'picture'] ?? null
         );
+    }
+
+    /**
+     * The address to use from an OAuth 2.0 provider's email list (GitHub and Gitea answer
+     * /user/emails with email, primary and verified per entry), which also covers a private
+     * profile email. The profile's own address wins when it is verified, then the verified
+     * primary one; null when the list holds no verified address or cannot be read.
+     */
+    private function lookUpVerifiedEmail(GenericProvider $provider, AccessTokenInterface $token, string $url, string $profileEmail): ?string
+    {
+        // getParsedResponse() would hand back a 403 or 404 body as data, so the status is read here
+        try {
+            $response = $provider->getResponse($provider->getAuthenticatedRequest('GET', $url, $token));
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
+        } catch (\Throwable $e) {
+            $this->logger->warning('Could not read the email list from {url}: {error}', ['url' => $url, 'error' => $e->getMessage()]);
+            return null;
+        }
+        $entries = json_decode((string)$response->getBody(), true);
+        if ($response->getStatusCode() >= 400 || !is_array($entries) || !array_is_list($entries)) {
+            $this->logger->warning('Could not read the email list from {url}: HTTP {status}; check that the user:email scope is requested', [
+                'url' => $url,
+                'status' => $response->getStatusCode(),
+            ]);
+            return null;
+        }
+
+        $primary = null;
+        foreach ($entries as $entry) {
+            if (!is_array($entry) || !is_string($entry['email'] ?? null) || ($entry['verified'] ?? false) !== true) {
+                continue;
+            }
+            if ($profileEmail !== '' && strcasecmp($entry['email'], $profileEmail) === 0) {
+                return $entry['email'];
+            }
+            if (($entry['primary'] ?? false) === true) {
+                $primary = $entry['email'];
+            }
+        }
+
+        return $primary;
     }
 
     /**
