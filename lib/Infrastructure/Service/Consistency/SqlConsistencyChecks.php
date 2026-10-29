@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 
 /**
@@ -50,9 +51,10 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         TableNameService $tableNameService,
         ZoneOwnerRepair $ownerRepair,
         DefaultSoaBuilder $defaultSoa,
-        ?AccountOwnerLookup $accountOwners = null
+        ?AccountOwnerLookup $accountOwners = null,
+        ?ZoneChangeRequestRepositoryInterface $changeRequests = null
     ) {
-        parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
+        parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
         $this->commentsTable = $tableNameService->getTable(PdnsTable::COMMENTS);

@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -58,9 +59,10 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         ZoneOwnerRepair $ownerRepair,
         DefaultSoaBuilder $defaultSoa,
         ?AccountOwnerLookup $accountOwners = null,
-        private readonly LoggerInterface $logger = new NullLogger()
+        private readonly LoggerInterface $logger = new NullLogger(),
+        ?ZoneChangeRequestRepositoryInterface $changeRequests = null
     ) {
-        parent::__construct($ownerRepair, $defaultSoa, $accountOwners);
+        parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests);
     }
 
     /**

@@ -22,10 +22,12 @@
 
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Throwable;
 
 /**
  * The backend-independent half of a consistency checker: zone ownership lives in
@@ -36,11 +38,13 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
 {
     /**
      * @param AccountOwnerLookup|null $accountOwners Prefers the user a zone's PowerDNS account names (dns.adopt_zone_owner_from_account)
+     * @param ZoneChangeRequestRepositoryInterface|null $changeRequests Cancels the open change requests of a deleted slave zone
      */
     public function __construct(
         private readonly ZoneOwnerRepair $ownerRepair,
         protected readonly DefaultSoaBuilder $defaultSoa,
-        private readonly ?AccountOwnerLookup $accountOwners = null
+        private readonly ?AccountOwnerLookup $accountOwners = null,
+        private readonly ?ZoneChangeRequestRepositoryInterface $changeRequests = null
     ) {
     }
 
@@ -83,7 +87,7 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
             'zones_without_names' => [$this->fixZoneName($id), _('Zone name stored'), _('Failed to store the zone name')],
             'api_key_scopes_on_missing_zones' => [$this->fixApiKeyScopesOnMissingZone($id), _('API key restriction no longer names the deleted zone'), _('Failed to repair the API key restriction')],
             'records_with_uppercase_names' => [$this->fixRecordNameCase($id), _('Record name lowercased'), _('Failed to lowercase the record name')],
-            'slave_zones_without_masters' => [$this->deleteSlaveZone($id), _('Slave zone deleted successfully'), _('Failed to delete slave zone')],
+            'slave_zones_without_masters' => [$this->deleteSlaveZoneWithRequests($id), _('Slave zone deleted successfully'), _('Failed to delete slave zone')],
             'orphaned_records' => [$this->deleteOrphanedRecord($id), _('Orphaned record deleted successfully'), _('Failed to delete orphaned record')],
             'duplicate_soa' => [$this->fixDuplicateSOA($id), _('Duplicate SOA records fixed successfully'), _('Failed to fix duplicate SOA records')],
             'zones_without_soa' => [$this->createDefaultSOA($id), _('Default SOA record created successfully'), _('Failed to create default SOA record')],
@@ -91,6 +95,20 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
         };
 
         return ['status' => $repaired ? 'success' : 'error', 'message' => $repaired ? $done : $failed];
+    }
+
+    private function deleteSlaveZoneWithRequests(int $zoneId): bool
+    {
+        if (!$this->deleteSlaveZone($zoneId)) {
+            return false;
+        }
+        try {
+            $this->changeRequests?->cancelOpenForDeletedZone($zoneId, 'The zone was deleted.');
+        } catch (Throwable) {
+            // The zone is gone either way, and approve() refuses a request whose zone id names another zone
+        }
+
+        return true;
     }
 
     public function fixAll(string $type, int $currentUserId): array

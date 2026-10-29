@@ -29,9 +29,11 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Domain\Database\TableNameService;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use RuntimeException;
 use TestHelpers\FakeConfiguration;
 
 /**
@@ -440,6 +442,40 @@ class SqlConsistencyChecksTest extends TestCase
 
         $this->assertSame(1, $this->rows('records', 'domain_id = 1'));
         $this->assertSame(1, $this->rows('domains', 'id = 1'));
+    }
+
+    public function testFixingASlaveZoneWithoutMastersCancelsItsOpenChangeRequests(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $changeRequests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $changeRequests->expects($this->once())->method('cancelOpenForDeletedZone')->with(1, $this->isString());
+
+        $this->assertSame('success', $this->checkerWithChangeRequests($changeRequests)->fixOne('slave_zones_without_masters', 1, 0)['status']);
+    }
+
+    public function testAFailedSlaveZoneDeleteLeavesItsChangeRequestsOpen(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $this->db->exec("DROP TABLE zones_groups");
+        $changeRequests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $changeRequests->expects($this->never())->method('cancelOpenForDeletedZone');
+
+        $this->assertSame('error', $this->checkerWithChangeRequests($changeRequests)->fixOne('slave_zones_without_masters', 1, 0)['status']);
+    }
+
+    public function testTheSlaveZoneDeleteSucceedsWhenCancellingItsRequestsFails(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $changeRequests = $this->createStub(ZoneChangeRequestRepositoryInterface::class);
+        $changeRequests->method('cancelOpenForDeletedZone')->willThrowException(new RuntimeException('database gone'));
+
+        $this->assertSame('success', $this->checkerWithChangeRequests($changeRequests)->fixOne('slave_zones_without_masters', 1, 0)['status']);
+        $this->assertSame(0, $this->rows('domains', 'id = 1'));
+    }
+
+    private function checkerWithChangeRequests(ZoneChangeRequestRepositoryInterface $changeRequests): SqlConsistencyChecks
+    {
+        return new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), null, $changeRequests);
     }
 
     public function testDeleteOrphanedRecordRemovesOnlyThatRecord(): void

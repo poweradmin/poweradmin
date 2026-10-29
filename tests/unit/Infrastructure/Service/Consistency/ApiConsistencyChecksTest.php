@@ -31,6 +31,7 @@ use Poweradmin\Infrastructure\Session\ApiStatusService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
@@ -454,6 +455,18 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame(0, $this->rows('zones', 'domain_id = 1'));
         $this->assertSame(0, $this->rows('zones_groups'));
         $this->assertSame(1, $this->rows('zones', 'domain_id = 2'));
+    }
+
+    public function testFixingASlaveZoneWithoutMastersCancelsItsOpenChangeRequests(): void
+    {
+        $this->provider->method('getZoneNameById')->willReturn('slave.example.com');
+        $this->provider->method('deleteZone')->willReturn(true);
+        $this->zoneRow(1, 1, 5, 'slave.example.com');
+        $changeRequests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $changeRequests->expects($this->once())->method('cancelOpenForDeletedZone')->with(1, $this->isString());
+        $checker = new ApiConsistencyChecks($this->db, $this->provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), $this->soaBuilder(), changeRequests: $changeRequests);
+
+        $this->assertSame('success', $checker->fixOne('slave_zones_without_masters', 1, 0)['status']);
     }
 
     public function testDeleteSlaveZoneKeepsOwnershipWhenTheApiDeleteFails(): void

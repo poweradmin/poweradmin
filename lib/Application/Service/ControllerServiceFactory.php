@@ -289,7 +289,7 @@ class ControllerServiceFactory implements ModuleServices
 
     public function consistencyChecker(): ConsistencyCheckerInterface
     {
-        return $this->backend->consistencyChecker();
+        return $this->backend->consistencyChecker($this->zoneChangeRequestRepository());
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService

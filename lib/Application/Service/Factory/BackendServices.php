@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\Backend\PowerdnsStatusService;
 use Poweradmin\Application\Service\Backend\RepositoryFactory;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
@@ -225,15 +226,15 @@ final class BackendServices
             : new ApiZoneMetadataStore($apiClient);
     }
 
-    public function consistencyChecker(): ConsistencyCheckerInterface
+    public function consistencyChecker(?ZoneChangeRequestRepositoryInterface $changeRequests = null): ConsistencyCheckerInterface
     {
         $provider = $this->dnsBackendProvider();
         if ($provider->isApiBackend()) {
-            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $this->logger);
+            return new ApiConsistencyChecks($this->db, $provider, new ApiStatusService($this->session), new ZoneOwnerRepair($this->db), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $this->logger, $changeRequests);
         }
         $tableNames = new TableNameService($this->config);
 
-        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup());
+        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $changeRequests);
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService
