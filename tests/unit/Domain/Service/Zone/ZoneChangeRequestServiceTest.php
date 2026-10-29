@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Zone;
 
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
@@ -550,6 +551,34 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertSame(ZoneChangeRequestResult::CODE_SELF_APPROVAL, $result->code);
         $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+        $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($id)->status);
+    }
+
+    /**
+     * @return array<string, array{?string}>
+     */
+    public static function zoneNoLongerThere(): array
+    {
+        return [
+            'zone deleted' => [null],
+            'id reused by another zone' => ['other.example.com'],
+        ];
+    }
+
+    #[DataProvider('zoneNoLongerThere')]
+    public function testApproveIsRefusedOnceTheZoneIdNoLongerNamesTheRequestedZone(?string $currentName): void
+    {
+        $this->recordManager->expects($this->never())->method('deleteRecord');
+        $id = $this->fileDeleteOnly();
+        $this->domains = $this->createMock(DomainRepositoryInterface::class);
+        $this->domains->method('getDomainType')->willReturn('MASTER');
+        $this->domains->method('getDomainNameById')->willReturn($currentName);
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_ZONE_GONE, $result->code);
+        $this->assertSame(Refusal::CONFLICT, $result->refusal);
         $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($id)->status);
     }
 

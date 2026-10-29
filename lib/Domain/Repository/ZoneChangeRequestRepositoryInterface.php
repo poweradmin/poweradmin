@@ -106,4 +106,12 @@ interface ZoneChangeRequestRepositoryInterface
 
     /** @return bool False when the request was no longer pending, so nothing changed */
     public function cancel(int $id): bool;
+
+    /**
+     * Cancels the zone's pending and failed requests once the zone is deleted, since a
+     * later zone can be given the same id and would inherit them.
+     *
+     * @return int The number of requests cancelled
+     */
+    public function cancelOpenForDeletedZone(int $zoneId, string $reason): int;
 }

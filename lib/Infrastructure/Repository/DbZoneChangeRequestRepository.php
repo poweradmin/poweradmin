@@ -233,6 +233,25 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
         return $stmt->rowCount() === 1;
     }
 
+    public function cancelOpenForDeletedZone(int $zoneId, string $reason): int
+    {
+        if (!$this->isAvailable()) {
+            return 0;
+        }
+        $stmt = $this->db->prepare(
+            'UPDATE zone_change_requests SET status = :status, error = :error, reviewed_at = CURRENT_TIMESTAMP
+             WHERE zone_id = :zone_id AND status IN (:pending, :failed)'
+        );
+        $stmt->bindValue(':status', ZoneChangeRequest::STATUS_CANCELLED, PDO::PARAM_STR);
+        $stmt->bindValue(':error', $reason, PDO::PARAM_STR);
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':pending', ZoneChangeRequest::STATUS_PENDING, PDO::PARAM_STR);
+        $stmt->bindValue(':failed', ZoneChangeRequest::STATUS_FAILED, PDO::PARAM_STR);
+        $stmt->execute();
+
+        return $stmt->rowCount();
+    }
+
     /**
      * @param array{status?: string, zoneIds?: list<int>|null, requesterId?: int, reviewableZoneIds?: list<int>|null, orRequesterId?: int} $filters
      * @return list<ZoneChangeRequest> Newest first; the whole match when no window is given

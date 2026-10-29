@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -87,6 +88,7 @@ class ZoneManagementService
     private ?ZoneOverlapService $overlapService = null;
     private ?HostnameValidator $hostnameValidator = null;
     private ?ZoneOwnershipLimit $ownershipLimit;
+    private ?ZoneChangeRequestRepositoryInterface $changeRequests;
     /** @var array<string, array{id: string}|array{success: false, message: string, refusal: Refusal, code: string}> */
     private array $resolvedTemplates = [];
 
@@ -114,8 +116,10 @@ class ZoneManagementService
         ?ZoneSigningService $signing = null,
         ?DomainRepositoryInterface $domainRepository = null,
         ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
-        ?ZoneOwnershipLimit $ownershipLimit = null
+        ?ZoneOwnershipLimit $ownershipLimit = null,
+        ?ZoneChangeRequestRepositoryInterface $changeRequests = null
     ) {
+        $this->changeRequests = $changeRequests;
         $this->zoneCacheFlusher = $zoneCacheFlusher;
         $this->ownershipLimit = $ownershipLimit;
         $this->zoneTemplates = $zoneTemplates;
@@ -452,6 +456,12 @@ class ZoneManagementService
 
         if (is_string($zoneName) && $zoneName !== '') {
             $this->zoneCacheFlusher?->flushZone($zoneName);
+        }
+
+        try {
+            $this->changeRequests?->cancelOpenForDeletedZone($zoneId, 'The zone was deleted.');
+        } catch (Throwable $e) {
+            $this->logger->warning('Failed to cancel the change requests of deleted zone {id}: {error}', ['id' => $zoneId, 'error' => $e->getMessage()]);
         }
 
         if ($zoneSnapshot !== null) {

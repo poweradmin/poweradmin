@@ -42,6 +42,7 @@ final readonly class ZoneChangeRequestResult
     public const CODE_RECORD_NOT_FOUND = 'record_not_found';
     public const CODE_PAYLOAD_TOO_LARGE = 'payload_too_large';
     public const CODE_APPLY_FAILED = 'apply_failed';
+    public const CODE_ZONE_GONE = 'zone_gone';
 
     /**
      * @param list<string> $errors Per-row refusals when filing was refused by validation

@@ -120,7 +120,8 @@ final class ZoneServices
             signing: $this->zoneSigningService(),
             domainRepository: $this->services->domainRepository(),
             zoneCacheFlusher: $this->services->zoneCacheFlusher(),
-            ownershipLimit: $this->zoneOwnershipLimit()
+            ownershipLimit: $this->zoneOwnershipLimit(),
+            changeRequests: $this->services->zoneChangeRequestRepository()
         );
     }
 

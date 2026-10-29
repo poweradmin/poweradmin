@@ -28,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
+use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -279,5 +280,45 @@ class ZoneManagementServiceTest extends TestCase
 
         $this->assertFalse($service->deleteZone(3)['success']);
         $this->assertTrue($service->deleteZone(3)['success']);
+    }
+
+    #[Test]
+    public function testDeleteZoneCancelsTheZonesOpenChangeRequestsOnlyAfterADelete(): void
+    {
+        $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->expects($this->once())->method('cancelOpenForDeletedZone')->with(3, $this->isString())->willReturn(2);
+        $this->domainRepository->method('zoneIdExists')->willReturn(true);
+        $this->zoneRepository->method('deleteZone')->willReturnOnConsecutiveCalls(false, true);
+
+        $service = $this->serviceWithChangeRequests($requests);
+
+        $this->assertFalse($service->deleteZone(3)['success']);
+        $this->assertTrue($service->deleteZone(3)['success']);
+    }
+
+    #[Test]
+    public function testDeleteZoneStillSucceedsWhenCancellingTheRequestsFails(): void
+    {
+        $requests = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
+        $requests->method('cancelOpenForDeletedZone')->willThrowException(new \RuntimeException('database gone'));
+        $this->domainRepository->method('zoneIdExists')->willReturn(true);
+        $this->zoneRepository->method('deleteZone')->willReturn(true);
+
+        $this->assertTrue($this->serviceWithChangeRequests($requests)->deleteZone(3)['success']);
+    }
+
+    private function serviceWithChangeRequests(ZoneChangeRequestRepositoryInterface $requests): ZoneManagementService
+    {
+        return new ZoneManagementService(
+            $this->zoneRepository,
+            $this->config,
+            $this->createMock(RepositoryFactoryInterface::class),
+            $this->createMock(PermissionService::class),
+            $this->createMock(RecordChangeWriterInterface::class),
+            $this->createMock(DomainManagerInterface::class),
+            $this->createMock(ZoneTemplateService::class),
+            domainRepository: $this->domainRepository,
+            changeRequests: $requests
+        );
     }
 }

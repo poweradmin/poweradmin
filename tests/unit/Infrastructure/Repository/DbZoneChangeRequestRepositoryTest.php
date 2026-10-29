@@ -209,6 +209,36 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
         $this->assertSame(0, $this->repository->countPending(null));
     }
 
+    public function testDeletingAZoneCancelsOnlyItsOpenRequests(): void
+    {
+        $pending = $this->file(1);
+        $failed = $this->file(1);
+        $this->repository->markReviewed($failed, ZoneChangeRequest::STATUS_APPROVED, 9, 'bob', null);
+        $this->repository->markFailed($failed, 'nope');
+        $rejected = $this->file(1);
+        $this->repository->markReviewed($rejected, ZoneChangeRequest::STATUS_REJECTED, 9, 'bob', 'no');
+        $otherZone = $this->file(2);
+
+        $this->assertSame(2, $this->repository->cancelOpenForDeletedZone(1, 'The zone was deleted.'));
+
+        foreach ([$pending, $failed] as $id) {
+            $request = $this->repository->find($id);
+            $this->assertSame(ZoneChangeRequest::STATUS_CANCELLED, $request->status);
+            $this->assertSame('The zone was deleted.', $request->error);
+            $this->assertFalse($request->canBeApplied());
+        }
+        $this->assertSame(ZoneChangeRequest::STATUS_REJECTED, $this->repository->find($rejected)->status);
+        $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($otherZone)->status);
+        $this->assertSame([], $this->repository->listPendingForZone(1));
+    }
+
+    public function testCancellingForADeletedZoneDoesNothingBeforeTheSchemaUpdate(): void
+    {
+        $this->db->exec('DROP TABLE zone_change_requests');
+
+        $this->assertSame(0, (new DbZoneChangeRequestRepository($this->db))->cancelOpenForDeletedZone(1, 'gone'));
+    }
+
     public function testAMalformedPayloadReadsAsNoActions(): void
     {
         $this->db->exec("INSERT INTO zone_change_requests (zone_id, zone_name, kind, status, requester_name, payload) VALUES (1, 'z', 'records', 'pending', 'x', 'not json')");

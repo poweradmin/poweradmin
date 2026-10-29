@@ -242,6 +242,11 @@ class ZoneChangeRequestService
         if ($request->requesterId === $reviewerId && !$this->config->get('approval', 'allow_self_approval', true)) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_SELF_APPROVAL, 'You cannot approve your own change request.', Refusal::FORBIDDEN, [], $requestId);
         }
+        // A zone deleted outside Poweradmin frees its id for another zone, which must not receive this request
+        $currentName = $this->domains->getDomainNameById($request->zoneId);
+        if ($currentName === null || strcasecmp(rtrim($currentName, '.'), rtrim($request->zoneName, '.')) !== 0) {
+            return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_ZONE_GONE, 'The zone this request was filed for no longer exists.', Refusal::CONFLICT, [], $requestId);
+        }
 
         // A failed request may be tried again once the reviewer has fixed what refused it
         $from = [ZoneChangeRequest::STATUS_PENDING, ZoneChangeRequest::STATUS_FAILED];
