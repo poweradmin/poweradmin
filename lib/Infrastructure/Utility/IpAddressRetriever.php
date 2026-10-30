@@ -38,7 +38,7 @@ class IpAddressRetriever
     /**
      * Get the client IP address.
      *
-     * Forwarded-IP headers (Client-IP, X-Forwarded-For, X-Real-IP) are only honored
+     * Forwarded-IP headers (X-Forwarded-For, X-Real-IP) are only honored
      * when the immediate peer (REMOTE_ADDR) is a private/loopback address - i.e. a
      * reverse proxy on the same host or internal network. Direct-internet peers
      * cannot be trusted to send accurate headers, so their values are ignored to
@@ -51,8 +51,8 @@ class IpAddressRetriever
         $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
 
         if ($remoteAddr !== '' && $this->isPrivateOrReserved($remoteAddr)) {
+            // No Client-IP: proxies rarely set it but pass a client's own through
             $proxyHeaders = [
-                'HTTP_CLIENT_IP',
                 'HTTP_X_FORWARDED_FOR',
                 'HTTP_X_REAL_IP',
             ];
