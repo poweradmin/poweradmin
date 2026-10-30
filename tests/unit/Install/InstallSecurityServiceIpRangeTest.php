@@ -31,10 +31,12 @@ use Symfony\Component\HttpFoundation\Request;
 class InstallSecurityServiceIpRangeTest extends TestCase
 {
     private ?string $remoteAddr = null;
+    private ?string $forwardedFor = null;
 
     protected function setUp(): void
     {
         $this->remoteAddr = $_SERVER['REMOTE_ADDR'] ?? null;
+        $this->forwardedFor = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
     }
 
     protected function tearDown(): void
@@ -43,6 +45,11 @@ class InstallSecurityServiceIpRangeTest extends TestCase
             unset($_SERVER['REMOTE_ADDR']);
         } else {
             $_SERVER['REMOTE_ADDR'] = $this->remoteAddr;
+        }
+        if ($this->forwardedFor === null) {
+            unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+        } else {
+            $_SERVER['HTTP_X_FORWARDED_FOR'] = $this->forwardedFor;
         }
     }
 
@@ -73,5 +80,50 @@ class InstallSecurityServiceIpRangeTest extends TestCase
         $errors = $service->validateRequest(Request::create('/install/'));
 
         $this->assertSame($allowed, !isset($errors['ip']));
+    }
+
+    /** @return array<string, array{0: string, 1: bool}> */
+    public static function portedChains(): array
+    {
+        return [
+            'forged entry before a ported one' => ['10.0.0.5, 203.0.113.7:51234', false],
+            'forged entry before an unparsable one' => ['10.0.0.5, unknown', false],
+            'ported real client' => ['198.51.100.99, 10.0.0.5:4444', true],
+            'bracketed IPv6 real client' => ['198.51.100.99, [2001:db8::5]:4444', true],
+            'IPv4-mapped entry from a dual-stack proxy' => ['10.0.0.5, ::ffff:203.0.113.7', false],
+        ];
+    }
+
+    #[DataProvider('portedChains')]
+    public function testAPortedEntryIsReadAsItsAddressAndAnUnparsableOneStopsTheWalk(string $chain, bool $allowed): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $chain;
+        $service = new InstallSecurityService(
+            [
+                'ip_access' => ['enabled' => true, 'allowed_ips' => ['10.0.0.5', '2001:db8::5'], 'trusted_proxies' => ['127.0.0.1']],
+                'csrf' => ['enabled' => false],
+            ],
+            $this->createMock(CsrfTokenService::class)
+        );
+
+        $errors = $service->validateRequest(Request::create('/install/'));
+
+        $this->assertSame($allowed, !isset($errors['ip']));
+    }
+
+    public function testAnUnparsableChainIsRefusedEvenWhenTheProxyItselfIsAllowed(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.7, unknown';
+        $service = new InstallSecurityService(
+            [
+                'ip_access' => ['enabled' => true, 'allowed_ips' => [], 'allowed_ranges' => ['10.0.0.0/8'], 'trusted_proxies' => ['10.0.0.1']],
+                'csrf' => ['enabled' => false],
+            ],
+            $this->createMock(CsrfTokenService::class)
+        );
+
+        $this->assertTrue(isset($service->validateRequest(Request::create('/install/'))['ip']));
     }
 }

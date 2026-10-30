@@ -59,18 +59,21 @@ class IpAddressRetriever
 
             foreach ($proxyHeaders as $header) {
                 if (!empty($this->server[$header])) {
-                    $ips = array_values(array_filter(
-                        array_map('trim', explode(',', $this->server[$header])),
-                        function (string $ip) use ($remoteAddr): bool {
-                            return $ip !== $remoteAddr
-                                && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
-                        }
+                    $entries = array_values(array_filter(
+                        array_map(fn(string $ip): string => self::withoutPort(trim($ip)), explode(',', $this->server[$header])),
+                        fn(string $ip): bool => $ip !== '' && $ip !== $remoteAddr
                     ));
+                    $last = $entries === [] ? null : $entries[count($entries) - 1];
 
-                    // The rightmost entry is the one the trusted peer recorded; a client can forge the rest
-                    if (!empty($ips)) {
-                        return $ips[count($ips) - 1];
+                    if ($last === null) {
+                        continue;
                     }
+                    // The rightmost entry is the one the trusted peer recorded; a client can forge the rest. One that
+                    // is not an address (filter_var takes the ::ffff: form) must not fall through to X-Real-IP
+                    if (filter_var($last, FILTER_VALIDATE_IP) === false) {
+                        break;
+                    }
+                    return $last;
                 }
             }
         }
@@ -80,6 +83,21 @@ class IpAddressRetriever
         }
 
         return '';
+    }
+
+    /**
+     * The address of an "a.b.c.d:port" or "[v6]:port" entry; anything else unchanged.
+     */
+    private static function withoutPort(string $entry): string
+    {
+        if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $m) === 1) {
+            return $m[1];
+        }
+        if (preg_match('/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/', $entry, $m) === 1) {
+            return $m[1];
+        }
+
+        return $entry;
     }
 
     private function isPrivateOrReserved(string $ip): bool

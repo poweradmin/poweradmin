@@ -111,8 +111,14 @@ class InstallSecurityService
         // address is the real client, matching Symfony's getClientIp() model.
         $forwarded = array_reverse(array_map('trim', explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])));
         foreach ($forwarded as $ip) {
-            if (!$this->isValidIp($ip)) {
+            if ($ip === '') {
                 continue;
+            }
+            // Some proxies append "client:port" or "[v6]:port"
+            $ip = (string)preg_replace(['/^\[([^\]]+)\](?::\d+)?$/', '/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/'], '$1', $ip);
+            // An entry we cannot parse leaves the client unknown; the proxy's own address could be allowlisted
+            if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+                return self::DEFAULT_IP;
             }
             if (!IpUtils::checkIp($ip, $trusted)) {
                 return $ip;
