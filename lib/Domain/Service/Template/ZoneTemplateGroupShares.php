@@ -89,6 +89,33 @@ class ZoneTemplateGroupShares
     }
 
     /**
+     * The groups a template being created is shared with, or the refusal. The creator
+     * becomes the owner, so the owner's rules apply.
+     *
+     * @param array<mixed> $submittedGroupIds
+     * @return ZoneTemplateWriteResult|list<int>
+     */
+    public function groupsForNewTemplate(array $submittedGroupIds, int $userId): ZoneTemplateWriteResult|array
+    {
+        $submitted = $this->parseGroupIds($submittedGroupIds);
+        if ($submitted === null) {
+            return ZoneTemplateWriteResult::failure(_('Invalid group selection.'));
+        }
+        if ($submitted === []) {
+            return [];
+        }
+        if (!$this->access->canCurrentUserManageTemplate($userId)) {
+            return ZoneTemplateWriteResult::forbidden(_('You do not have the permission to share this zone template.'));
+        }
+        if (array_diff_key($submitted, $this->shareableIds($userId)) !== []) {
+            return ZoneTemplateWriteResult::forbidden(_('You can only share a zone template with groups you belong to.'));
+        }
+        ksort($submitted);
+
+        return array_keys($submitted);
+    }
+
+    /**
      * Set the template's share list to the submitted groups. Stored groups the user
      * may not share with stay as they are; submitting one that is not stored is refused.
      *
@@ -122,18 +149,12 @@ class ZoneTemplateGroupShares
             return ZoneTemplateWriteResult::forbidden(_('You do not have the permission to share this zone template.'));
         }
 
-        $submitted = [];
-        foreach ($submittedGroupIds as $groupId) {
-            if (!is_scalar($groupId) || !ctype_digit((string)$groupId) || (int)$groupId <= 0) {
-                return ZoneTemplateWriteResult::failure(_('Invalid group selection.'));
-            }
-            $submitted[(int)$groupId] = (int)$groupId;
+        $submitted = $this->parseGroupIds($submittedGroupIds);
+        if ($submitted === null) {
+            return ZoneTemplateWriteResult::failure(_('Invalid group selection.'));
         }
 
-        $shareable = [];
-        foreach ($this->shareableGroups($userId) as $group) {
-            $shareable[(int)$group->getId()] = (int)$group->getId();
-        }
+        $shareable = $this->shareableIds($userId);
         $stored = array_column($this->repository->listGroupsForTemplates([$zone_templ_id])[$zone_templ_id] ?? [], 'id', 'id');
 
         if (array_diff_key($submitted, $shareable, $stored) !== []) {
@@ -145,5 +166,33 @@ class ZoneTemplateGroupShares
         ksort($stored);
 
         return array_keys($next) === array_keys($stored) ? null : array_keys($next);
+    }
+
+    /**
+     * @param array<mixed> $submittedGroupIds
+     * @return array<int, int>|null The ids keyed by themselves, or null when one is not a positive integer
+     */
+    private function parseGroupIds(array $submittedGroupIds): ?array
+    {
+        $ids = [];
+        foreach ($submittedGroupIds as $groupId) {
+            if (!is_scalar($groupId) || !ctype_digit((string)$groupId) || (int)$groupId <= 0) {
+                return null;
+            }
+            $ids[(int)$groupId] = (int)$groupId;
+        }
+
+        return $ids;
+    }
+
+    /** @return array<int, int> */
+    private function shareableIds(int $userId): array
+    {
+        $ids = [];
+        foreach ($this->shareableGroups($userId) as $group) {
+            $ids[(int)$group->getId()] = (int)$group->getId();
+        }
+
+        return $ids;
     }
 }

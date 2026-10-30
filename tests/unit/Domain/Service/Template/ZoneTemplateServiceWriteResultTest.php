@@ -85,6 +85,20 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records")->fetchColumn());
     }
 
+    public function testANewTemplateIsSharedWithTheGivenGroupsUnlessItIsGlobal(): void
+    {
+        $this->db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $service = $this->service();
+
+        $this->assertTrue($service->addZoneTempl(['templ_name' => 'shared', 'templ_descr' => ''], self::ADMIN_USER_ID, [3, 4])->success);
+        $this->assertTrue($service->addZoneTempl(['templ_name' => 'everyone', 'templ_descr' => '', 'templ_global' => 'on'], self::ADMIN_USER_ID, [3])->success);
+
+        $this->assertSame(
+            [['shared', 3], ['shared', 4]],
+            $this->db->query("SELECT t.name, g.group_id FROM zone_templ_groups g JOIN zone_templ t ON t.id = g.zone_templ_id ORDER BY g.group_id")->fetchAll(\PDO::FETCH_NUM)
+        );
+    }
+
     public function testDuplicateNameIsReportedAsAConflict(): void
     {
         $added = $this->service()->addZoneTempl(['templ_name' => 'global', 'templ_descr' => ''], self::ADMIN_USER_ID);

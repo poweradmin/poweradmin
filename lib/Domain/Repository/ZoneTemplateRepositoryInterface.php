@@ -166,9 +166,10 @@ interface ZoneTemplateRepositoryInterface
      * @param string $description Template description
      * @param int $owner Owner user ID (0 for global)
      * @param int $createdBy Creator user ID
+     * @param list<int> $groupIds User groups to share it with, written in the same transaction
      * @return int New template ID
      */
-    public function createZoneTemplate(string $name, string $description, int $owner, int $createdBy): int;
+    public function createZoneTemplate(string $name, string $description, int $owner, int $createdBy, array $groupIds = []): int;
 
     /**
      * Create a zone template together with the given records, in one transaction.
@@ -179,6 +180,7 @@ interface ZoneTemplateRepositoryInterface
      * @param int $owner Owner user ID (0 for global)
      * @param int $createdBy Creator user ID
      * @param array<int, array{name: string, type: string, content: string, ttl: mixed, prio?: mixed}> $records
+     * @param list<int> $groupIds User groups to share it with
      * @return int New template ID
      */
     public function createZoneTemplateWithRecords(
@@ -186,7 +188,8 @@ interface ZoneTemplateRepositoryInterface
         string $description,
         int $owner,
         int $createdBy,
-        array $records
+        array $records,
+        array $groupIds = []
     ): int;
 
     /**

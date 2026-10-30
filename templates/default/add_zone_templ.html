@@ -38,6 +38,20 @@
                         <small class="form-text text-muted">{% trans %}Make this template available to all users{% endtrans %}</small>
                     </div>
                     {% endif %}
+                    {% if can_share %}
+                    <div class="mb-3" id="templ-groups">
+                        <span class="form-label d-block">{% trans %}Shared with groups{% endtrans %}</span>
+                        {% for group in shareable_groups %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="templ_group_{{ group.id }}" name="templ_groups[]" value="{{ group.id }}" {% if group.id in checked_group_ids %}checked{% endif %}>
+                            <label for="templ_group_{{ group.id }}" class="form-check-label">{{ group.name }}</label>
+                        </div>
+                        {% else %}
+                        <div class="form-text text-muted">{% trans %}You are not a member of any group.{% endtrans %}</div>
+                        {% endfor %}
+                        <small class="form-text text-muted">{% trans %}Members of these groups can see and use this template, and edit it when they may edit zone templates{% endtrans %}</small>
+                    </div>
+                    {% endif %}
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
@@ -91,3 +105,23 @@
         </div>
     </div>
 </div>
+
+<script>
+(function () {
+    'use strict'
+    // A global template keeps no group shares, so the picker is not sent with it
+    var global = document.getElementById('templ_global')
+    var groups = document.getElementById('templ-groups')
+    if (!global || !groups) {
+        return
+    }
+    var sync = function () {
+        groups.classList.toggle('d-none', global.checked)
+        groups.querySelectorAll('input[name="templ_groups[]"]').forEach(function (box) {
+            box.disabled = global.checked
+        })
+    }
+    global.addEventListener('change', sync)
+    sync()
+})()
+</script>

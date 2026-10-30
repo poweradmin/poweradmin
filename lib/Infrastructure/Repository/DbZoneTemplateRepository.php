@@ -510,12 +510,13 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      * @param string $description Template description
      * @param int $owner Owner user ID (0 for global)
      * @param int $createdBy Creator user ID
+     * @param list<int> $groupIds User groups to share it with, written in the same transaction
      * @return int New template ID
      * @throws Exception On database error
      */
-    public function createZoneTemplate(string $name, string $description, int $owner, int $createdBy): int
+    public function createZoneTemplate(string $name, string $description, int $owner, int $createdBy, array $groupIds = []): int
     {
-        return $this->createZoneTemplateWithRecords($name, $description, $owner, $createdBy, []);
+        return $this->createZoneTemplateWithRecords($name, $description, $owner, $createdBy, [], $groupIds);
     }
 
     /**
@@ -526,6 +527,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      * @param int $owner Owner user ID (0 for global)
      * @param int $createdBy Creator user ID
      * @param array<int, array{name: string, type: string, content: string, ttl: mixed, prio?: mixed}> $records
+     * @param list<int> $groupIds User groups to share it with
      * @return int New template ID
      * @throws Exception On database error
      */
@@ -534,7 +536,8 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         string $description,
         int $owner,
         int $createdBy,
-        array $records
+        array $records,
+        array $groupIds = []
     ): int {
         $this->transaction()->begin();
         try {
@@ -579,6 +582,14 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
                     ':ttl' => (int)$this->config()->get('dns', 'ttl'),
                     ':prio' => 0
                 ]);
+            }
+
+            // Skipped without groups, so creating a template needs no zone_templ_groups table
+            if ($groupIds !== []) {
+                $groupStmt = $this->db->prepare("INSERT INTO zone_templ_groups (zone_templ_id, group_id) VALUES (:id, :group_id)");
+                foreach (array_unique(array_map('intval', $groupIds)) as $groupId) {
+                    $groupStmt->execute([':id' => $templateId, ':group_id' => $groupId]);
+                }
             }
 
             $this->transaction()->commit();

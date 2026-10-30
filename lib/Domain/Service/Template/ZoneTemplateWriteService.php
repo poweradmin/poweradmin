@@ -159,8 +159,9 @@ class ZoneTemplateWriteService
      *
      * @param array $details zone template details
      * @param int $userid User ID that owns template
+     * @param list<int> $groupIds Groups to share it with, as ZoneTemplateGroupShares::groupsForNewTemplate() accepted them
      */
-    public function addZoneTempl(array $details, int $userid): ZoneTemplateWriteResult
+    public function addZoneTempl(array $details, int $userid, array $groupIds = []): ZoneTemplateWriteResult
     {
         if (!$this->access->currentUserHasPermission(Permission::PERM_ZONE_TEMPL_ADD)) {
             return ZoneTemplateWriteResult::forbidden(_("You do not have the permission to add a zone template."));
@@ -173,11 +174,14 @@ class ZoneTemplateWriteService
             // The repository writes the template and its default SOA record in
             // one transaction. Only ueberusers may create a global template;
             // others get a personal one. created_by is always the current user.
+            // A global template is shared with everyone, so it keeps no group shares.
+            $owner = $this->access->resolveTemplateOwner(isset($details['templ_global']), $userid);
             $this->repository->createZoneTemplate(
                 $details['templ_name'],
                 $details['templ_descr'],
-                $this->access->resolveTemplateOwner(isset($details['templ_global']), $userid),
-                $userid
+                $owner,
+                $userid,
+                $owner === 0 ? [] : $groupIds
             );
 
             return ZoneTemplateWriteResult::ok();

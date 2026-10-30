@@ -93,9 +93,9 @@ class ZoneTemplateService
     /**
      * @see ZoneTemplateWriteService::addZoneTempl()
      */
-    public function addZoneTempl(array $details, int $userid): ZoneTemplateWriteResult
+    public function addZoneTempl(array $details, int $userid, array $groupIds = []): ZoneTemplateWriteResult
     {
-        return $this->writes->addZoneTempl($details, $userid);
+        return $this->writes->addZoneTempl($details, $userid, $groupIds);
     }
 
     /**

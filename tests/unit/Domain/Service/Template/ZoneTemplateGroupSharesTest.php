@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateGroupShares;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Infrastructure\Session\SessionActor;
@@ -131,6 +132,40 @@ class ZoneTemplateGroupSharesTest extends TestCase
 
         $this->assertSame(Refusal::INVALID_INPUT, $this->shares()->update(self::TEMPLATE, ['3x'], self::OWNER)->refusal);
         $this->assertSame(Refusal::INVALID_INPUT, $this->shares()->update(self::TEMPLATE, [['3']], self::OWNER)->refusal);
+    }
+
+    public function testANewTemplateIsSharedWithTheCreatorsOwnGroups(): void
+    {
+        $this->assertSame([3, 4], $this->shares()->groupsForNewTemplate(['4', '3', '4'], self::OWNER));
+        $this->assertSame([], $this->shares()->groupsForNewTemplate([], self::OWNER));
+    }
+
+    public function testANewTemplateIsNotSharedWithAGroupTheCreatorIsNotIn(): void
+    {
+        $result = $this->shares()->groupsForNewTemplate(['3', '9'], self::OWNER);
+
+        $this->assertInstanceOf(ZoneTemplateWriteResult::class, $result);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+    }
+
+    public function testACreatorWithoutTemplateEditRightsCannotShare(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_TEMPL_ADD];
+
+        $this->assertSame(Refusal::FORBIDDEN, $this->shares()->groupsForNewTemplate(['3'], self::OWNER)->refusal);
+        $this->assertSame([], $this->shares()->groupsForNewTemplate([], self::OWNER));
+    }
+
+    public function testAUeberuserSharesANewTemplateWithAnyGroup(): void
+    {
+        $this->granted = [Permission::PERM_USER_IS_UEBERUSER];
+
+        $this->assertSame([9], $this->shares()->groupsForNewTemplate(['9'], self::OWNER));
+    }
+
+    public function testAMalformedGroupIdOnANewTemplateIsRefused(): void
+    {
+        $this->assertSame(Refusal::INVALID_INPUT, $this->shares()->groupsForNewTemplate(['0'], self::OWNER)->refusal);
     }
 
     private function shares(): ZoneTemplateGroupShares

@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -48,11 +49,25 @@ class AddZoneTemplController extends BaseController
 
     private function showAddZoneTemplate(): void
     {
+        $this->renderForm('', '', []);
+    }
+
+    /**
+     * @param list<int> $checkedGroupIds
+     */
+    private function renderForm(string $name, string $description, array $checkedGroupIds): void
+    {
+        $userId = (int)$this->getCurrentUserId();
+        $canShare = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserManageTemplate($userId);
+
         $this->render('add_zone_templ.html', [
-            'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
+            'user_name' => $this->services()->userRepository()->getFullNameById($userId) ?: $this->getUserContextService()->getLoggedInUsername(),
             'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER),
-            'templ_name' => '',
-            'templ_descr' => '',
+            'templ_name' => $name,
+            'templ_descr' => $description,
+            'can_share' => $canShare,
+            'shareable_groups' => $canShare ? $this->services()->zoneTemplateGroupShares()->shareableGroups($userId) : [],
+            'checked_group_ids' => $checkedGroupIds,
         ]);
     }
 
@@ -75,7 +90,16 @@ class AddZoneTemplController extends BaseController
             $this->showFirstValidationError($postParams);
         }
 
-        $added = $this->services()->zoneTemplateWriteService()->addZoneTempl($postParams, (int)$this->getCurrentUserId());
+        $userId = (int)$this->getCurrentUserId();
+        $posted = $postParams['templ_groups'] ?? [];
+        $groupIds = $this->services()->zoneTemplateGroupShares()->groupsForNewTemplate(is_array($posted) ? $posted : [$posted], $userId);
+        if ($groupIds instanceof ZoneTemplateWriteResult) {
+            $this->addSystemMessage('error', (string)$groupIds->message);
+            $this->renderForm((string)($postParams['templ_name'] ?? ''), (string)($postParams['templ_descr'] ?? ''), []);
+            return;
+        }
+
+        $added = $this->services()->zoneTemplateWriteService()->addZoneTempl($postParams, $userId, $groupIds);
         if ($added->success) {
             $auditService = $this->services()->auditService();
             $auditService->logZoneTemplateAdd($postParams['templ_name'] ?? '');
@@ -83,12 +107,7 @@ class AddZoneTemplController extends BaseController
             $this->redirect('/zones/templates');
         } else {
             $this->addSystemMessage('error', (string)$added->message);
-            $this->render('add_zone_templ.html', [
-                'user_name' => $this->services()->userRepository()->getFullNameById((int)$this->getCurrentUserId()) ?: $this->getUserContextService()->getLoggedInUsername(),
-                'templ_name' => $postParams['templ_name'],
-                'templ_descr' => $postParams['templ_descr'],
-                'perm_is_godlike' => $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER)
-            ]);
+            $this->renderForm((string)$postParams['templ_name'], (string)$postParams['templ_descr'], $groupIds);
         }
     }
 }
