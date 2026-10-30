@@ -98,6 +98,59 @@ class IpAddressRetrieverTest extends TestCase
         $this->assertEquals('127.0.0.1', $ipRetriever->getClientIp());
     }
 
+    public function testAProxyThatAppendsAPortResolvesTheRealClient()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, 203.0.113.7:51234',
+            'HTTP_X_REAL_IP' => '198.51.100.98',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.7', $ipRetriever->getClientIp());
+    }
+
+    public function testABracketedIpv6WithAPortResolvesTheRealClient()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, [2001:db8::7]:51234',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('2001:db8::7', $ipRetriever->getClientIp());
+    }
+
+    public function testAnUnparsableEntryCannotHandTheResultToAForgedOne()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, unknown',
+            'HTTP_X_REAL_IP' => '9.9.9.9',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('127.0.0.1', $ipRetriever->getClientIp(), 'a client-sent X-Real-IP must not stand in for an unusable chain');
+    }
+
+    public function testAnIpv4MappedEntryFromADualStackProxyIsAnAddress()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, ::ffff:203.0.113.7',
+            'HTTP_X_REAL_IP' => '9.9.9.9',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('::ffff:203.0.113.7', $ipRetriever->getClientIp());
+    }
+
+    public function testAPortedEntryBeyondATrustedProxyResolvesTheRealClient()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, 203.0.113.7:51234, 192.0.2.10',
+        ];
+        $ipRetriever = new IpAddressRetriever($server, null, ['192.0.2.10']);
+        $this->assertEquals('203.0.113.7', $ipRetriever->getClientIp());
+    }
+
     public function testGetClientIpWithNoIp()
     {
         $server = [];
