@@ -357,7 +357,7 @@ class RRSetReplaceServiceTest extends TestCase
 
         $result = $this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'txt.example.com', 'TXT', 300, [['content' => 'quoted', 'priority' => 0, 'disabled' => 1]]);
 
-        $this->assertSame([[self::ZONE_ID, 'txt.example.com', 'TXT', '"quoted"', 60, 10, 1, false, null, false]], $added);
+        $this->assertSame([[self::ZONE_ID, 'txt.example.com', 'TXT', '"quoted"', 60, 10, 1, false, null, false, []]], $added);
         $this->assertSame([['content' => '"quoted"', 'ttl' => 60, 'priority' => 10, 'disabled' => 1]], $result['records']);
     }
 

@@ -55,10 +55,12 @@ interface RecordManagerInterface
      * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
      *                            backend writes it in the same PATCH as the record, SQL ignores it
      * @param bool $dryRun Run every check and stop before anything is written
+     * @param array<int|string, string> $vacated Stored content by id of records the same write removes
+     *                                           first (an RRset replace); they no longer conflict
      *
      * @return RecordWriteResult The new record id, or the reason the write was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult;
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult;
 
     /**
      * Edit a record. An unchanged save is skipped entirely when

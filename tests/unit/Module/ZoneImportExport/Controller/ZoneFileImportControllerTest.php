@@ -89,6 +89,18 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
     private bool $writesFail = false;
 
+    /** @var array<string, list<array<string, mixed>>> Stored RRsets by "name|type" */
+    private array $storedRrsets = [];
+
+    /** Content the dry run of a replace refuses */
+    private ?string $refusedContent = null;
+
+    /** @var list<array<int, mixed>> */
+    private array $dryRuns = [];
+
+    /** @var list<int|string> */
+    private array $deletes = [];
+
     private array $filesBackup = [];
     private ?string $uploadPath = null;
 
@@ -120,9 +132,21 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $recordManager->method('finalizeZone')->willReturnCallback(function (...$args): void {
             $this->finalizes[] = $args;
         });
+        $recordManager->method('addRecordGetId')->willReturnCallback(function (...$args): RecordWriteResult {
+            $this->dryRuns[] = $args;
+            return $args[3] === $this->refusedContent ? RecordWriteResult::failure('refused') : RecordWriteResult::ok();
+        });
+        $recordManager->method('deleteRecord')->willReturnCallback(function (int|string $id): RecordWriteResult {
+            $this->deletes[] = $id;
+            return RecordWriteResult::ok();
+        });
 
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
         $recordRepository->method('recordExists')->willReturn(false);
+        $recordRepository->method('getRRSetRecords')->willReturnCallback(
+            // Both backends look names up case-insensitively
+            fn(int $zoneId, string $name, string $type): array => $this->storedRrsets[strtolower($name) . '|' . $type] ?? []
+        );
 
         $audit = $this->createMock(AuditService::class);
         $audit->method('logZoneImport')->willReturnCallback(function (...$args): void {
@@ -508,6 +532,63 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(self::ZONE_ID, $params['zone_id']);
         $this->assertSame('example.com', $params['zone_name']);
         $this->assertFalse($this->session->has(self::SESSION_KEY));
+    }
+
+    private const REPLACE_FILE = "\$ORIGIN example.com.\n\$TTL 3600\nwww IN A 192.0.2.1\nwww IN A 192.0.2.99\nmail IN MX 10 mail.example.com.\n";
+
+    private function importWithReplace(): void
+    {
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload(self::REPLACE_FILE);
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'replace']);
+        $_FILES = [];
+        $this->makeController()->execute();
+    }
+
+    public function testAReplaceKeepsTheStoredRrsetWhenOneOfItsNewRecordsIsRefused(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [['id' => 10, 'content' => '192.0.2.1'], ['id' => 11, 'content' => '192.0.2.2']];
+        $this->refusedContent = '192.0.2.99';
+
+        $this->importWithReplace();
+
+        $this->assertSame([], $this->deletes, 'the stored www A records are kept');
+        $this->assertSame(['mail.example.com'], array_column($this->writes, 1), 'only the RRset that passed is written');
+        $this->assertSame(2, $this->renderedParams()['fail_count']);
+        $this->assertSame(1, $this->renderedParams()['success_count']);
+    }
+
+    public function testAReplaceChecksTheNewRecordsWithTheStoredOnesAlreadyGone(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [['id' => 10, 'content' => '192.0.2.1'], ['id' => 11, 'content' => '192.0.2.2']];
+
+        $this->importWithReplace();
+
+        $wwwChecks = array_values(array_filter($this->dryRuns, fn(array $args): bool => $args[1] === 'www.example.com'));
+        $this->assertCount(2, $wwwChecks);
+        foreach ($wwwChecks as $args) {
+            $this->assertTrue($args[9], 'a dry run');
+            $this->assertSame(['10' => '192.0.2.1', '11' => '192.0.2.2'], $args[10]);
+        }
+        $this->assertSame([10, 11], $this->deletes);
+        $this->assertSame(['www.example.com', 'www.example.com', 'mail.example.com'], array_column($this->writes, 1));
+    }
+
+    public function testARelativeNameFromAFileWithoutAnOriginReplacesTheStoredRrset(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [['id' => 10, 'content' => '192.0.2.1']];
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload("\$TTL 3600\nwww IN A 192.0.2.5\n");
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'replace']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame([10], $this->deletes, 'the stored www.example.com A RRset is the one replaced');
+        $this->assertSame(['www.example.com'], array_column($this->writes, 1));
     }
 
     public function testAnImportWhereEveryRecordFailsLeavesTheZoneUnfinalized(): void

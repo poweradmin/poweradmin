@@ -25,6 +25,8 @@ namespace Poweradmin\Module\ZoneImportExport\Controller;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -410,6 +412,12 @@ class ZoneFileImportController extends BaseController
             $records = $kept;
         }
 
+        // One spelling per name, as the record write stores it, so lookups and the RRset grouping agree with it
+        $nameNormalizer = new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig()));
+        foreach ($records as $record) {
+            $record->name = strtolower($nameNormalizer->normalizeRecordName((string)$record->name, (string)$zoneName));
+        }
+
         // Import records
         $recordRepository = $this->moduleServices()->recordRepository();
         $dnsRecordManager = $this->moduleServices()->recordManager();
@@ -421,6 +429,9 @@ class ZoneFileImportController extends BaseController
         $skipCount = 0;
         $nonSoaAdded = false;
         $replacedRRSets = [];
+        $replaceable = $importMode === 'existing' && $conflictStrategy === 'replace'
+            ? $this->replaceableRrsets($records, $zone_id, $recordRepository, $dnsRecordManager)
+            : [];
 
         foreach ($records as $record) {
             if ($importMode === 'existing' && $conflictStrategy !== 'add_all') {
@@ -433,6 +444,10 @@ class ZoneFileImportController extends BaseController
 
                 if ($conflictStrategy === 'replace') {
                     $rrsetKey = $record->name . '|' . $record->type;
+                    if (!($replaceable[$rrsetKey] ?? true)) {
+                        $failCount++;
+                        continue;
+                    }
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
@@ -484,6 +499,51 @@ class ZoneFileImportController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zoneName,
         ]);
+    }
+
+    /**
+     * Which RRsets a replace may delete: one whose every incoming record passes the
+     * checks with the stored records already gone. A refused record keeps the whole
+     * stored RRset, so a bad line in the file never costs the zone its records.
+     *
+     * @param array<int, \stdClass> $records Stashed import rows, names already normalised
+     * @return array<string, bool> Keyed by "name|type"
+     */
+    private function replaceableRrsets(array $records, int $zoneId, RecordRepositoryInterface $recordRepository, RecordManagerInterface $recordManager): array
+    {
+        $groups = [];
+        foreach ($records as $record) {
+            $groups[$record->name . '|' . $record->type][] = $record;
+        }
+
+        $replaceable = [];
+        foreach ($groups as $key => $group) {
+            $vacated = [];
+            foreach ($recordRepository->getRRSetRecords($zoneId, $group[0]->name, $group[0]->type) as $stored) {
+                $vacated[(string)$stored['id']] = (string)$stored['content'];
+            }
+            $replaceable[$key] = true;
+            foreach ($group as $record) {
+                $checked = $recordManager->addRecordGetId(
+                    $zoneId,
+                    $record->name,
+                    $record->type,
+                    $record->content,
+                    $record->ttl,
+                    $record->priority,
+                    !empty($record->disabled) ? 1 : 0,
+                    finalizeZone: false,
+                    dryRun: true,
+                    vacated: $vacated
+                );
+                if (!$checked->success) {
+                    $replaceable[$key] = false;
+                    break;
+                }
+            }
+        }
+
+        return $replaceable;
     }
 
     /**

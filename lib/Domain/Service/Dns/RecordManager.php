@@ -299,7 +299,7 @@ class RecordManager implements RecordManagerInterface
      *
      * @return RecordWriteResult Carries the new record id, or the reason it was refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false): RecordWriteResult
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, bool $finalizeZone = true, ?array $comment = null, bool $dryRun = false, array $vacated = []): RecordWriteResult
     {
         $perm_edit = $this->editPermissionLevel();
 
@@ -332,7 +332,8 @@ class RecordManager implements RecordManagerInterface
             $prio,
             $ttl,
             $dns_hostmaster,
-            (int)$dns_ttl
+            (int)$dns_ttl,
+            array_map('strval', array_keys($vacated))
         );
         if (!$validationResult->isValid()) {
             return RecordWriteResult::failure($validationResult->getFirstError(), Refusal::INVALID_INPUT, $validationResult->getField());
@@ -348,7 +349,7 @@ class RecordManager implements RecordManagerInterface
         // Create RecordRepository to check if record exists
         $recordRepository = $this->repositoryFactory->createRecordRepository();
         // Compared in PHP, as on edit: a MySQL _ci collation would call TXT content differing in case a copy
-        if ($this->copiesAnotherRecord($recordRepository, $zone_id, null, $name, $type, $content)) {
+        if ($this->copiesAnotherRecord($recordRepository, $zone_id, null, $name, $type, $content, $vacated)) {
             return RecordWriteResult::failure(_('A record with this hostname, type, and content already exists.'), Refusal::CONFLICT, RecordField::DUPLICATE);
         }
 
