@@ -70,7 +70,11 @@ class RRSetReplaceService
         try {
             $normalizedName = $this->hostnameValidator->normalizeRecordName($fqdn, $zoneName);
 
-            $validation = $this->validateRecords($zoneId, $normalizedName, $type, $ttl, $records);
+            $existing = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
+            // The old set is deleted before the new one is written, so it must not conflict with it
+            $vacatedIds = array_map(static fn(array $record): string => (string)$record['id'], $existing);
+
+            $validation = $this->validateRecords($zoneId, $normalizedName, $type, $ttl, $records, $vacatedIds);
             if ($validation['error'] !== null) {
                 return $this->rollBack($useTransaction, $validation['error']);
             }
@@ -86,8 +90,6 @@ class RRSetReplaceService
             if (count($contents) !== count(array_unique($contents))) {
                 return $this->rollBack($useTransaction, self::failure('A record with this hostname, type, and content already exists', Refusal::CONFLICT));
             }
-
-            $existing = $this->recordRepository->getRRSetRecords($zoneId, $fqdn, $type);
 
             // A replace with the stored set would still make PowerDNS bump the serial on
             // the API backend, so an install that opted out of bumping skips the writes
@@ -147,16 +149,17 @@ class RRSetReplaceService
     }
 
     /**
+     * @param list<string> $vacatedIds Ids of the stored records the replace deletes first
      * @return array{records: list<array{content: string, ttl: int, priority: int, disabled: int}>, error: array{success: false, message: string, refusal: Refusal}|null}
      */
-    private function validateRecords(int $zoneId, string $normalizedName, string $type, int $ttl, array $records): array
+    private function validateRecords(int $zoneId, string $normalizedName, string $type, int $ttl, array $records, array $vacatedIds): array
     {
         $hostmaster = $this->config->get('dns', 'hostmaster');
         $defaultTtl = (int)$this->config->get('dns', 'ttl');
 
         $validated = [];
         foreach ($records as $record) {
-            $result = $this->validationService->validateRecord(-1, $zoneId, $type, $record['content'], $normalizedName, $record['priority'], $ttl, $hostmaster, $defaultTtl);
+            $result = $this->validationService->validateRecord(-1, $zoneId, $type, $record['content'], $normalizedName, $record['priority'], $ttl, $hostmaster, $defaultTtl, $vacatedIds);
             if (!$result->isValid()) {
                 return ['records' => [], 'error' => self::failure($result->getFirstError(), Refusal::INVALID_INPUT)];
             }

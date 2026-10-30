@@ -67,6 +67,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
      * @param int|null $ttl TTL
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
+     * @param list<string> $vacatedIds Ids of records the same write removes first; they no longer conflict
      *
      * @return ValidationResult Returns ValidationResult with validated data or error messages
      */
@@ -79,7 +80,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         ?int $prio,
         ?int $ttl,
         string $dns_hostmaster,
-        int $dns_ttl
+        int $dns_ttl,
+        array $vacatedIds = []
     ): ValidationResult {
         $zone = $this->domainRepository->getDomainNameById($zid);
         if (!$zone) {
@@ -99,14 +101,14 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         // Perform common validation for all record types
         $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
         if ($type != RecordType::CNAME && $cnameValidator instanceof CNAMERecordValidator) {
-            $cnameResult = $cnameValidator->validateCnameExistence($name, $rid);
+            $cnameResult = $cnameValidator->validateCnameExistence($name, $rid, $vacatedIds);
             if (!$cnameResult->isValid()) {
                 return $cnameResult;
             }
         }
 
         // Check for DNS violations (like multiple CNAMEs with the same name)
-        $violationResult = $this->dnsViolationValidator->validate($rid, $zid, $type, $name, $content);
+        $violationResult = $this->dnsViolationValidator->validate($rid, $zid, $type, $name, $content, $vacatedIds);
         if (!$violationResult->isValid()) {
             return $violationResult;
         }
@@ -114,7 +116,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         // Perform validation using the appropriate validator
         if ($type === RecordType::CNAME) {
             // CNAME validator expects: $rid, $zone
-            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone);
+            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone, $vacatedIds);
         } elseif ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
             $validationResult = $validator->validateSoa($content, $name, $prio, $ttl, $dns_ttl, $dns_hostmaster, $zone);
         } else {

@@ -324,6 +324,24 @@ class RRSetReplaceServiceTest extends TestCase
         $this->assertSame(['begin', 'validate:192.0.2.1', 'rollBack'], $this->calls);
     }
 
+    public function testTheOldSetDoesNotConflictWithItsReplacement(): void
+    {
+        $this->existing = [
+            ['id' => 7, 'name' => 'www.example.com', 'type' => 'CNAME', 'content' => 'old.example.net', 'ttl' => 300, 'prio' => 0, 'disabled' => 0],
+        ];
+        $vacated = null;
+        $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
+        $this->validator->method('validateRecord')->willReturnCallback(
+            function ($rid, $zid, $type, $content, $name, $prio, $ttl, $hostmaster, $defaultTtl, $vacatedIds = []) use (&$vacated) {
+                $vacated = $vacatedIds;
+                return ValidationResult::success(['content' => $content, 'ttl' => $ttl, 'prio' => $prio]);
+            }
+        );
+
+        $this->assertTrue($this->service()->replace(self::ZONE_ID, self::ZONE_NAME, 'www.example.com', 'CNAME', 300, self::input(['new.example.net']))['success']);
+        $this->assertSame(['7'], $vacated);
+    }
+
     public function testTheValidatorsNormalisedValuesWinOverTheInput(): void
     {
         $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);

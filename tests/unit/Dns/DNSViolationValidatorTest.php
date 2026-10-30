@@ -62,6 +62,28 @@ class DNSViolationValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
     }
 
+    public function testAReplacedCnameDoesNotConflictWithItsReplacement()
+    {
+        $this->stubZoneRecords([
+            ['id' => 5, 'name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'other.example.com'],
+        ]);
+
+        $this->assertTrue($this->validator->validate(-1, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com', ['5'])->isValid());
+    }
+
+    public function testOnlyTheReplacedRecordsAreExcluded()
+    {
+        // A CNAME replacing its own RRset still cannot sit next to an A record at the name
+        $this->stubZoneRecords([
+            ['id' => 5, 'name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'other.example.com'],
+            ['id' => 6, 'name' => 'alias.example.com', 'type' => 'A', 'content' => '192.0.2.1'],
+        ]);
+
+        $result = $this->validator->validate(-1, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com', ['5']);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Found existing A record', $result->getFirstError());
+    }
+
     public function testDuplicateCNAMERecord()
     {
         // Existing CNAME with same name

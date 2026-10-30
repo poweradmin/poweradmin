@@ -74,15 +74,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         // Extract optional parameters
         $rid = $args[0] ?? 0;
         $zone = $args[1] ?? '';
+        $vacatedIds = $args[2] ?? [];
 
         // 1. Check if CNAME unique (already exists as another record type)
-        $uniqueResult = $this->validateCnameUnique($name, $rid);
+        $uniqueResult = $this->validateCnameUnique($name, $rid, $vacatedIds);
         if (!$uniqueResult->isValid()) {
             return $uniqueResult;
         }
 
         // 2. Check if CNAME already exists
-        $existenceResult = $this->validateCnameExistence($name, $rid);
+        $existenceResult = $this->validateCnameExistence($name, $rid, $vacatedIds);
         if (!$existenceResult->isValid()) {
             return $existenceResult;
         }
@@ -201,14 +202,18 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME
      * @param int|string $rid Record ID
+     * @param list<string> $vacatedIds Ids of records the same write removes first
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameUnique(string $name, int|string $rid): ValidationResult
+    private function validateCnameUnique(string $name, int|string $rid, array $vacatedIds = []): ValidationResult
     {
         // Existing-record edit: exclude the row being edited from the duplicate check.
         $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
         foreach ($this->backendProvider->findRecordsByName($name) as $r) {
+            if (in_array((string)($r['id'] ?? ''), $vacatedIds, true)) {
+                continue;
+            }
             if ($r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                 return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'))
                     ->withField(RecordField::DUPLICATE);
@@ -263,13 +268,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME
      * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
+     * @param list<string> $vacatedIds Ids of records the same write removes first
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    public function validateCnameExistence(string $name, int|string $rid): ValidationResult
+    public function validateCnameExistence(string $name, int|string $rid, array $vacatedIds = []): ValidationResult
     {
         // Existing-record edit: exclude the row being edited from the duplicate check.
         foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
+            if (in_array((string)($r['id'] ?? ''), $vacatedIds, true)) {
+                continue;
+            }
             if ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid) {
                 return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'))
                     ->withField(RecordField::DUPLICATE);

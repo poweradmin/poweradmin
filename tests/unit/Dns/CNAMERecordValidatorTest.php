@@ -88,6 +88,17 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
         $this->assertSame(RecordField::DUPLICATE, $result->getField());
     }
 
+    public function testACnameReplacingTheStoredCnameIsAccepted()
+    {
+        $this->validator = new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider([
+            [10, 1, 'alias.example.com', 'CNAME', 'old.example.com'],
+        ]));
+
+        $this->assertFalse($this->validator->validateCnameExistence('alias.example.com', -1)->isValid());
+        $this->assertTrue($this->validator->validateCnameExistence('alias.example.com', -1, ['10'])->isValid());
+        $this->assertTrue($this->validator->validate('target.example.com', 'alias.example.com', 0, 3600, 86400, -1, 'example.com', ['10'])->isValid());
+    }
+
     public function testValidateWithInvalidSourceHostname()
     {
         $content = 'target.example.com';

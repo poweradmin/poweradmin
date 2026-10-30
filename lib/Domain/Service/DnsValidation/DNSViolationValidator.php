@@ -60,6 +60,21 @@ class DNSViolationValidator
     }
 
     /**
+     * Whether a stored record still stands against the one being validated: not the record
+     * itself, and not one the same write removes first.
+     *
+     * @param list<string> $vacatedIds
+     */
+    private function counts(int|string $recordId, array $vacatedIds, mixed $otherIdRaw): bool
+    {
+        if (in_array((string)($otherIdRaw ?? ''), $vacatedIds, true)) {
+            return false;
+        }
+
+        return $this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $otherIdRaw);
+    }
+
+    /**
      * Validate that the record doesn't create DNS violations
      *
      * @param int|string $recordId Record ID (-1 for new records, string in API backend mode)
@@ -67,34 +82,35 @@ class DNSViolationValidator
      * @param string $type Record type
      * @param string $name Record name
      * @param string $content Record content
+     * @param list<string> $vacatedIds Ids of records the same write removes first, which no longer conflict
      *
      * @return ValidationResult ValidationResult object with validation result
      */
-    public function validate(int|string $recordId, int $zoneId, string $type, string $name, string $content): ValidationResult
+    public function validate(int|string $recordId, int $zoneId, string $type, string $name, string $content, array $vacatedIds = []): ValidationResult
     {
         switch ($type) {
             case RecordType::CNAME:
-                return $this->validateCNAMEViolations($recordId, $zoneId, $name);
+                return $this->validateCNAMEViolations($recordId, $zoneId, $name, $vacatedIds);
             case RecordType::A:
             case RecordType::AAAA:
             case RecordType::TXT:
             case RecordType::MX:
             case RecordType::NS:
             case RecordType::PTR:
-                return $this->validateConflictsWithCNAME($recordId, $zoneId, $name);
+                return $this->validateConflictsWithCNAME($recordId, $zoneId, $name, $vacatedIds);
             default:
                 return ValidationResult::success(true);
         }
     }
 
-    private function validateCNAMEViolations(int|string $recordId, int $zoneId, string $name): ValidationResult
+    private function validateCNAMEViolations(int|string $recordId, int $zoneId, string $name, array $vacatedIds): ValidationResult
     {
-        $duplicateResult = $this->checkDuplicateCNAME($recordId, $zoneId, $name);
+        $duplicateResult = $this->checkDuplicateCNAME($recordId, $zoneId, $name, $vacatedIds);
         if (!$duplicateResult->isValid()) {
             return $duplicateResult;
         }
 
-        $conflictResult = $this->checkCNAMEConflictsWithOtherTypes($recordId, $zoneId, $name);
+        $conflictResult = $this->checkCNAMEConflictsWithOtherTypes($recordId, $zoneId, $name, $vacatedIds);
         if (!$conflictResult->isValid()) {
             return $conflictResult;
         }
@@ -102,11 +118,11 @@ class DNSViolationValidator
         return ValidationResult::success(true);
     }
 
-    private function checkDuplicateCNAME(int|string $recordId, int $zoneId, string $name): ValidationResult
+    private function checkDuplicateCNAME(int|string $recordId, int $zoneId, string $name, array $vacatedIds): ValidationResult
     {
         $records = $this->recordRepository->getRecordsByName($zoneId, $name, 'CNAME');
         foreach ($records as $r) {
-            if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && $this->counts($recordId, $vacatedIds, $r['id'] ?? null)) {
                 return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'))
                     ->withField(RecordField::NAME);
             }
@@ -114,11 +130,11 @@ class DNSViolationValidator
         return ValidationResult::success(true);
     }
 
-    private function checkCNAMEConflictsWithOtherTypes(int|string $recordId, int $zoneId, string $name): ValidationResult
+    private function checkCNAMEConflictsWithOtherTypes(int|string $recordId, int $zoneId, string $name, array $vacatedIds): ValidationResult
     {
         $records = $this->recordRepository->getRecordsByName($zoneId, $name);
         foreach ($records as $r) {
-            if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && $r['type'] !== 'CNAME' && $this->counts($recordId, $vacatedIds, $r['id'] ?? null)) {
                 return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $r['type']))
                     ->withField(RecordField::NAME);
             }
@@ -126,11 +142,11 @@ class DNSViolationValidator
         return ValidationResult::success(true);
     }
 
-    private function validateConflictsWithCNAME(int|string $recordId, int $zoneId, string $name): ValidationResult
+    private function validateConflictsWithCNAME(int|string $recordId, int $zoneId, string $name, array $vacatedIds): ValidationResult
     {
         $records = $this->recordRepository->getRecordsByName($zoneId, $name, 'CNAME');
         foreach ($records as $r) {
-            if (strcasecmp($r['name'], $name) === 0 && ($this->isNewRecord($recordId) || !$this->recordIdMatches($recordId, $r['id'] ?? null))) {
+            if (strcasecmp($r['name'], $name) === 0 && $this->counts($recordId, $vacatedIds, $r['id'] ?? null)) {
                 return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'))
                     ->withField(RecordField::NAME);
             }
