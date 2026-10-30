@@ -24,9 +24,12 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Http\ListSort;
+use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -145,7 +148,7 @@ class ZoneTemplatesController extends PublicApiController
                                             new OA\Property(
                                                 property: 'groups',
                                                 type: 'array',
-                                                description: 'User groups the template is shared with (read-only). A non-owner sees only groups they belong to.',
+                                                description: 'User groups the template is shared with. A non-owner sees only groups they belong to.',
                                                 items: new OA\Items(
                                                     type: 'object',
                                                     properties: [
@@ -247,7 +250,7 @@ class ZoneTemplatesController extends PublicApiController
                                         new OA\Property(
                                             property: 'groups',
                                             type: 'array',
-                                            description: 'User groups the template is shared with (read-only). A non-owner sees only groups they belong to.',
+                                            description: 'User groups the template is shared with. A non-owner sees only groups they belong to.',
                                             items: new OA\Items(
                                                 type: 'object',
                                                 properties: [
@@ -325,6 +328,21 @@ class ZoneTemplatesController extends PublicApiController
         }
     }
 
+    /**
+     * A 400 for a groups field that is not a list of ids, or that names groups for a global template.
+     */
+    private function groupsInputError(mixed $groups, bool $global): ?JsonResponse
+    {
+        if (!is_array($groups) || !array_is_list($groups)) {
+            return $this->returnApiError('groups must be an array of group ids', 400);
+        }
+        if ($global && $groups !== []) {
+            return $this->returnApiError('A global zone template cannot be shared with groups', 400);
+        }
+
+        return null;
+    }
+
     protected function formatTemplateRecord(array $record): array
     {
         return [
@@ -356,6 +374,15 @@ class ZoneTemplatesController extends PublicApiController
                         type: 'boolean',
                         example: false,
                         description: 'Whether the template is global (owner=0). Requires ueberuser permission.'
+                    ),
+                    new OA\Property(
+                        property: 'groups',
+                        type: 'array',
+                        items: new OA\Items(type: 'integer'),
+                        example: [3],
+                        description: 'Ids of the user groups to share the template with. The owner shares with groups they belong to, '
+                            . 'a ueberuser with any group; needs zone_templ_edit. Not allowed on a global template. On update, leave it out '
+                            . 'to keep the current shares; groups the caller may not share with stay as they are.'
                     )
                 ]
             )
@@ -412,12 +439,24 @@ class ZoneTemplatesController extends PublicApiController
                 return $this->returnApiError('Only ueberusers can create global zone templates', 403);
             }
 
+            $groupIds = [];
+            if (array_key_exists('groups', $data)) {
+                $refused = $this->groupsInputError($data['groups'], $isGlobal);
+                if ($refused !== null) {
+                    return $refused;
+                }
+                $groupIds = $this->services()->zoneTemplateGroupShares()->groupsForNewTemplate($data['groups'], $userId);
+                if ($groupIds instanceof ZoneTemplateWriteResult) {
+                    return $this->returnApiError((string)$groupIds->message, RefusalStatus::of($groupIds->refusal ?? Refusal::INVALID_INPUT));
+                }
+            }
+
             if ($this->repository->zoneTemplateNameExists($name)) {
                 return $this->returnApiError('A zone template with this name already exists', 409);
             }
 
             $owner = $isGlobal ? 0 : $userId;
-            $newId = $this->repository->createZoneTemplate($name, $description, $owner, $userId);
+            $newId = $this->repository->createZoneTemplate($name, $description, $owner, $userId, $groupIds);
 
             $this->services()->auditService()->logApiZoneTemplateAdd($newId, $name);
 
@@ -455,6 +494,15 @@ class ZoneTemplatesController extends PublicApiController
                         type: 'boolean',
                         example: false,
                         description: 'Whether the template is global (owner=0). Requires ueberuser permission.'
+                    ),
+                    new OA\Property(
+                        property: 'groups',
+                        type: 'array',
+                        items: new OA\Items(type: 'integer'),
+                        example: [3],
+                        description: 'Ids of the user groups to share the template with. The owner shares with groups they belong to, '
+                            . 'a ueberuser with any group; needs zone_templ_edit. Not allowed on a global template. On update, leave it out '
+                            . 'to keep the current shares; groups the caller may not share with stay as they are.'
                     )
                 ]
             )
@@ -540,7 +588,28 @@ class ZoneTemplatesController extends PublicApiController
                 // Otherwise: non-global staying non-global, preserve existing owner
             }
 
+            $groups = $data['groups'] ?? null;
+            $shares = array_key_exists('groups', $data) ? $this->services()->zoneTemplateGroupShares() : null;
+            if ($shares !== null) {
+                $refused = $this->groupsInputError($groups, ($newOwner ?? $owner) === 0);
+                if ($refused !== null) {
+                    return $refused;
+                }
+                $shareRefusal = $shares->refusal($id, $groups, $userId);
+                if ($shareRefusal !== null) {
+                    return $this->returnApiError((string)$shareRefusal->message, RefusalStatus::of($shareRefusal->refusal ?? Refusal::INVALID_INPUT));
+                }
+            }
+
             $this->repository->updateZoneTemplate($id, $name, $description, $newOwner);
+
+            // A template made global just dropped its shares, and takes no new ones
+            if ($shares !== null && ($newOwner ?? $owner) !== 0) {
+                $shared = $shares->update($id, $groups, $userId);
+                if (!$shared->success) {
+                    return $this->returnApiError((string)$shared->message, RefusalStatus::of($shared->refusal ?? Refusal::INVALID_INPUT));
+                }
+            }
 
             $this->services()->auditService()->logApiZoneTemplateEdit($id, $name);
 

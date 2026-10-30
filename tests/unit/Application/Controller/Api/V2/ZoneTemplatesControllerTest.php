@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Api\V2\ZoneTemplatesController;
 use Poweradmin\Application\Service\ControllerServiceFactory;
@@ -30,6 +31,8 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateGroupShares;
+use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -50,17 +53,22 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
     /** @var AuditService&MockObject */
     private AuditService $audit;
 
+    /** @var ZoneTemplateGroupShares&MockObject */
+    private ZoneTemplateGroupShares $shares;
+
     protected function setUp(): void
     {
         $this->repository = $this->createMock(ZoneTemplateRepositoryInterface::class);
         $this->permissions = $this->createMock(ApiPermissionService::class);
         $this->audit = $this->createMock(AuditService::class);
+        $this->shares = $this->createMock(ZoneTemplateGroupShares::class);
     }
 
     protected function stubServiceFactory(): ControllerServiceFactory
     {
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('auditService')->willReturn($this->audit);
+        $factory->method('zoneTemplateGroupShares')->willReturn($this->shares);
         $factory->method('userRepository')->willReturn($this->stubUsers());
 
         return $factory;
@@ -647,5 +655,151 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $response = $this->invoke('deleteZoneTemplate', 'DELETE', null, ['id' => '1']);
 
         $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testCreatingATemplateWithGroupsSharesItWithTheAcceptedOnes(): void
+    {
+        $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
+        $this->repository->method('zoneTemplateNameExists')->willReturn(false);
+        $this->shares->expects($this->once())->method('groupsForNewTemplate')->with([4, 3], self::USER_ID)->willReturn([3, 4]);
+        $this->repository->expects($this->once())->method('createZoneTemplate')->with('T', 'D', self::USER_ID, self::USER_ID, [3, 4])->willReturn(5);
+
+        $response = $this->invoke('createZoneTemplate', 'POST', ['name' => 'T', 'description' => 'D', 'groups' => [4, 3]]);
+
+        $this->assertSame(201, $response->getStatusCode());
+    }
+
+    public function testCreatingATemplateWithoutGroupsLeavesTheShareServiceAlone(): void
+    {
+        $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
+        $this->repository->method('zoneTemplateNameExists')->willReturn(false);
+        $this->shares->expects($this->never())->method('groupsForNewTemplate');
+        $this->repository->expects($this->once())->method('createZoneTemplate')->with('T', 'D', self::USER_ID, self::USER_ID, [])->willReturn(5);
+
+        $this->assertSame(201, $this->invoke('createZoneTemplate', 'POST', ['name' => 'T', 'description' => 'D'])->getStatusCode());
+    }
+
+    public function testARefusedShareOnCreateCreatesNothing(): void
+    {
+        $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
+        $this->shares->method('groupsForNewTemplate')->willReturn(ZoneTemplateWriteResult::forbidden('You can only share a zone template with groups you belong to.'));
+        $this->repository->expects($this->never())->method('createZoneTemplate');
+
+        $response = $this->invoke('createZoneTemplate', 'POST', ['name' => 'T', 'description' => 'D', 'groups' => [9]]);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('You can only share a zone template with groups you belong to.', $this->messageOf($response));
+    }
+
+    /** @return array<string, array{0: array<string, mixed>, 1: string}> */
+    public static function badGroupsOnCreate(): array
+    {
+        return [
+            'not a list' => [['groups' => '3'], 'groups must be an array of group ids'],
+            'null' => [['groups' => null], 'groups must be an array of group ids'],
+            'an object' => [['groups' => ['a' => 3]], 'groups must be an array of group ids'],
+            'global' => [['groups' => [3], 'is_global' => true], 'A global zone template cannot be shared with groups'],
+        ];
+    }
+
+    /** @param array<string, mixed> $extra */
+    #[DataProvider('badGroupsOnCreate')]
+    public function testMalformedOrGlobalGroupsOnCreateAre400(array $extra, string $message): void
+    {
+        $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
+        $this->ueberuser(true);
+        $this->shares->expects($this->never())->method('groupsForNewTemplate');
+        $this->repository->expects($this->never())->method('createZoneTemplate');
+
+        $response = $this->invoke('createZoneTemplate', 'POST', ['name' => 'T', 'description' => 'D'] + $extra);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame($message, $this->messageOf($response));
+    }
+
+    public function testGroupMemberSendingGroupsOnUpdateIsRefusedBeforeAnythingIsSaved(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(99);
+        $this->repository->method('isSharedWithUser')->willReturn(true);
+        $this->shares->method('refusal')->with(1, [3], self::USER_ID)
+            ->willReturn(ZoneTemplateWriteResult::forbidden('You do not have the permission to share this zone template.'));
+        $this->repository->expects($this->never())->method('updateZoneTemplate');
+        $this->shares->expects($this->never())->method('update');
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'groups' => [3]], ['id' => '1']);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testTheOwnerSendingGroupsOnUpdateReplacesTheShares(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(self::USER_ID);
+        $this->shares->method('refusal')->willReturn(null);
+        $this->repository->expects($this->once())->method('updateZoneTemplate')->with(1, 'X', 'Y', null);
+        $this->shares->expects($this->once())->method('update')->with(1, [], self::USER_ID)->willReturn(ZoneTemplateWriteResult::ok());
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'groups' => []], ['id' => '1']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testAnUpdateWithoutGroupsKeepsTheShares(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(self::USER_ID);
+        $this->shares->expects($this->never())->method('refusal');
+        $this->shares->expects($this->never())->method('update');
+
+        $this->assertSame(200, $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y'], ['id' => '1'])->getStatusCode());
+    }
+
+    public function testMakingATemplateGlobalWithGroupsIs400(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(true);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(self::USER_ID);
+        $this->repository->expects($this->never())->method('updateZoneTemplate');
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'is_global' => true, 'groups' => [3]], ['id' => '1']);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('A global zone template cannot be shared with groups', $this->messageOf($response));
+    }
+
+    public function testAUeberuserMakingAGlobalTemplatePrivateSharesItInTheSameCall(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(true);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(0);
+        $this->shares->expects($this->once())->method('refusal')->with(1, [3], self::USER_ID)->willReturn(null);
+        $this->repository->expects($this->once())->method('updateZoneTemplate')->with(1, 'X', 'Y', self::USER_ID);
+        $this->shares->expects($this->once())->method('update')->with(1, [3], self::USER_ID)->willReturn(ZoneTemplateWriteResult::ok());
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'is_global' => false, 'groups' => [3]], ['id' => '1']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testANullGroupsFieldOnUpdateIs400(): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(self::USER_ID);
+        $this->repository->expects($this->never())->method('updateZoneTemplate');
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', ['name' => 'X', 'description' => 'Y', 'groups' => null], ['id' => '1']);
+
+        $this->assertSame(400, $response->getStatusCode());
     }
 }
