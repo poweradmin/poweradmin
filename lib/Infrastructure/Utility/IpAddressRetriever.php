@@ -83,6 +83,10 @@ class IpAddressRetriever
                 }
 
                 $clientIp = $this->resolveForwardedClientIp((string) $this->server[$header], $remoteAddr);
+                // An unusable chain must not fall through to X-Real-IP, which such proxies pass through from the client
+                if ($clientIp === false) {
+                    break;
+                }
                 if ($clientIp !== null) {
                     return $clientIp;
                 }
@@ -107,31 +111,49 @@ class IpAddressRetriever
      * client. Private/loopback ranges are NOT auto-skipped here - that allowance
      * applies only to the immediate peer (REMOTE_ADDR), since a chain entry can
      * be forged by a client on the internal network. When every hop is a
-     * configured proxy, the leftmost (the originator) is returned.
+     * configured proxy, the leftmost (the originator) is returned. A port some
+     * proxies append ("client:port", "[v6]:port") is dropped; any other entry that
+     * is not an address makes the header unusable rather than being skipped.
      *
-     * @return string|null Resolved client IP, or null when the header carries no usable address
+     * @return string|false|null Resolved client IP; null when nothing is left once the peer's own
+     *                           address is dropped; false when an entry is not an address
      */
-    private function resolveForwardedClientIp(string $headerValue, string $remoteAddr): ?string
+    private function resolveForwardedClientIp(string $headerValue, string $remoteAddr): string|false|null
     {
-        $ips = array_values(array_filter(
-            array_map('trim', explode(',', $headerValue)),
-            function (string $ip) use ($remoteAddr): bool {
-                return $ip !== $remoteAddr
-                    && ($this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip));
-            }
+        $entries = array_values(array_filter(
+            array_map(fn(string $ip): string => self::withoutPort(trim($ip)), explode(',', $headerValue)),
+            fn(string $ip): bool => $ip !== '' && $ip !== $remoteAddr
         ));
 
-        if ($ips === []) {
-            return null;
-        }
-
-        for ($i = count($ips) - 1; $i >= 0; $i--) {
-            if (!$this->trustedProxies->matches($ips[$i])) {
-                return $ips[$i];
+        $originator = null;
+        for ($i = count($entries) - 1; $i >= 0; $i--) {
+            // Skipping an entry we cannot parse would hand the result to the client's forged one
+            // filter_var, not the record validator: it also takes the ::ffff: form dual-stack proxies write
+            if (filter_var($entries[$i], FILTER_VALIDATE_IP) === false) {
+                return false;
             }
+            if (!$this->trustedProxies->matches($entries[$i])) {
+                return $entries[$i];
+            }
+            $originator = $entries[$i];
         }
 
-        return $ips[0];
+        return $originator;
+    }
+
+    /**
+     * The address of an "a.b.c.d:port" or "[v6]:port" entry; anything else unchanged.
+     */
+    private static function withoutPort(string $entry): string
+    {
+        if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $m) === 1) {
+            return $m[1];
+        }
+        if (preg_match('/^(\d{1,3}(?:\.\d{1,3}){3}):\d+$/', $entry, $m) === 1) {
+            return $m[1];
+        }
+
+        return $entry;
     }
 
     private function isPrivateOrReserved(string $ip): bool

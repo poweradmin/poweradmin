@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\CsrfTokenService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -219,6 +220,57 @@ class InstallSecurityServiceTest extends TestCase
 
         $errors = $service->validateRequest(Request::create('/install/'));
         $this->assertArrayHasKey('ip', $errors, 'Leftmost X-Forwarded-For entry is client-controllable and must not gate access');
+    }
+
+    /** @return array<string, array{0: string, 1: bool}> */
+    public static function portedChains(): array
+    {
+        return [
+            'forged entry before a ported one' => ['10.0.0.5, 203.0.113.7:51234', false],
+            'forged entry before an unparsable one' => ['10.0.0.5, unknown', false],
+            'ported real client' => ['198.51.100.99, 10.0.0.5:4444', true],
+            'bracketed IPv6 real client' => ['198.51.100.99, [2001:db8::5]:4444', true],
+        ];
+    }
+
+    public function testIpAllowlistRefusesAnUnparsableChainEvenWhenTheProxyItselfIsAllowed(): void
+    {
+        $service = $this->buildService(
+            $this->baseConfig([
+                'ip_access' => [
+                    'enabled' => true,
+                    'allowed_ranges' => ['10.0.0.0/8'],
+                    'trusted_proxies' => ['10.0.0.1'],
+                ],
+            ]),
+            [
+                'REMOTE_ADDR' => '10.0.0.1',
+                'HTTP_X_FORWARDED_FOR' => '203.0.113.7, unknown',
+            ]
+        );
+
+        $this->assertArrayHasKey('ip', $service->validateRequest(Request::create('/install/')));
+    }
+
+    #[DataProvider('portedChains')]
+    public function testIpAllowlistReadsAPortedEntryAsItsAddressAndStopsAtAnUnparsableOne(string $chain, bool $allowed): void
+    {
+        $service = $this->buildService(
+            $this->baseConfig([
+                'ip_access' => [
+                    'enabled' => true,
+                    'allowed_ips' => ['10.0.0.5', '2001:db8::5'],
+                    'trusted_proxies' => ['127.0.0.1'],
+                ],
+            ]),
+            [
+                'REMOTE_ADDR' => '127.0.0.1',
+                'HTTP_X_FORWARDED_FOR' => $chain,
+            ]
+        );
+
+        $errors = $service->validateRequest(Request::create('/install/'));
+        $this->assertSame(!$allowed, array_key_exists('ip', $errors));
     }
 
     public function testIpAllowlistHonorsXForwardedForFromConfiguredTrustedProxy(): void
