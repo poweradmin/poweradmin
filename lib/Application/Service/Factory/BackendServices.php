@@ -234,7 +234,7 @@ final class BackendServices
         }
         $tableNames = new TableNameService($this->config);
 
-        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $changeRequests);
+        return new SqlConsistencyChecks($this->db, $tableNames, new ZoneOwnerRepair($this->db, $tableNames->getTable(PdnsTable::DOMAINS)), new DefaultSoaBuilder($this->config), $this->accountOwnerLookup(), $changeRequests, $this->logger);
     }
 
     public function powerdnsStatusService(): PowerdnsStatusService

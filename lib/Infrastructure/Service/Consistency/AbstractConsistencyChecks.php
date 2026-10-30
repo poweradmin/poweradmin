@@ -27,6 +27,8 @@ use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Throwable;
 
 /**
@@ -44,7 +46,8 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
         private readonly ZoneOwnerRepair $ownerRepair,
         protected readonly DefaultSoaBuilder $defaultSoa,
         private readonly ?AccountOwnerLookup $accountOwners = null,
-        private readonly ?ZoneChangeRequestRepositoryInterface $changeRequests = null
+        private readonly ?ZoneChangeRequestRepositoryInterface $changeRequests = null,
+        private readonly LoggerInterface $changeRequestLogger = new NullLogger()
     ) {
     }
 
@@ -104,8 +107,9 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
         }
         try {
             $this->changeRequests?->cancelOpenForDeletedZone($zoneId, 'The zone was deleted.');
-        } catch (Throwable) {
+        } catch (Throwable $e) {
             // The zone is gone either way, and approve() refuses a request whose zone id names another zone
+            $this->changeRequestLogger->warning('Failed to cancel the change requests of deleted slave zone {id}: {error}', ['id' => $zoneId, 'error' => $e->getMessage()]);
         }
 
         return true;

@@ -62,7 +62,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         private readonly LoggerInterface $logger = new NullLogger(),
         ?ZoneChangeRequestRepositoryInterface $changeRequests = null
     ) {
-        parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests);
+        parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests, $logger);
     }
 
     /**

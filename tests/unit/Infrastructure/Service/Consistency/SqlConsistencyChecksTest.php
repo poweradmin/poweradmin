@@ -33,6 +33,7 @@ use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use TestHelpers\FakeConfiguration;
 
@@ -468,8 +469,11 @@ class SqlConsistencyChecksTest extends TestCase
         $this->domain(1, 'slave.example.com', 'SLAVE', '');
         $changeRequests = $this->createStub(ZoneChangeRequestRepositoryInterface::class);
         $changeRequests->method('cancelOpenForDeletedZone')->willThrowException(new RuntimeException('database gone'));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('warning')->with($this->isString(), $this->callback(fn(array $context): bool => $context['id'] === 1 && $context['error'] === 'database gone'));
+        $checker = new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), null, $changeRequests, $logger);
 
-        $this->assertSame('success', $this->checkerWithChangeRequests($changeRequests)->fixOne('slave_zones_without_masters', 1, 0)['status']);
+        $this->assertSame('success', $checker->fixOne('slave_zones_without_masters', 1, 0)['status']);
         $this->assertSame(0, $this->rows('domains', 'id = 1'));
     }
 

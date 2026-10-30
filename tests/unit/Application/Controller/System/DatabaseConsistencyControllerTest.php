@@ -22,15 +22,21 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller\System;
 
+use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
+use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
+use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 /**
  * Characterizes the fix actions of the database consistency page: which repair
@@ -55,8 +61,14 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('hasPermission')->willReturn(true);
 
+        $db = new PDO('sqlite::memory:');
         $this->checker = $this->getMockBuilder(SqlConsistencyChecks::class)
-            ->disableOriginalConstructor()
+            ->setConstructorArgs([
+                $db,
+                new TableNameService(new FakeConfiguration(['database' => ['pdns_db_name' => '']])),
+                new ZoneOwnerRepair($db),
+                new DefaultSoaBuilder($this->createStub(ConfigurationInterface::class)),
+            ])
             ->onlyMethods([
                 'fixZoneWithoutOwner',
                 'fixAllZonesWithoutOwner',
