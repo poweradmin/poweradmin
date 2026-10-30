@@ -268,7 +268,8 @@ class DynamicDnsRequestTest extends TestCase
 
         $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
 
-        $this->assertEquals('198.51.100.1', $dynamicDnsRequest->getIpv4()); // Should use first IP from X-Forwarded-For
+        // The leftmost value is claimed by the client and spoofable; the rightmost was recorded by the proxy
+        $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
     }
 
     public function testHasUsername(): void

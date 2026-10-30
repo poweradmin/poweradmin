@@ -45,7 +45,17 @@ class IpAddressRetrieverTest extends TestCase
             'HTTP_X_FORWARDED_FOR' => '192.168.1.2, 10.0.0.1',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('192.168.1.2', $ipRetriever->getClientIp());
+        $this->assertEquals('10.0.0.1', $ipRetriever->getClientIp());
+    }
+
+    public function testAnAddressAClientPrependsThroughAnAppendingProxyIsIgnored()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '198.51.100.99, 203.0.113.7',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.7', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithMultipleIpsFirstInvalid()
@@ -109,7 +119,7 @@ class IpAddressRetrieverTest extends TestCase
             'HTTP_X_FORWARDED_FOR' => '10.0.0.1, 192.168.1.4',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('10.0.0.1', $ipRetriever->getClientIp());
+        $this->assertEquals('192.168.1.4', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithSpacesOnlySecondValid()

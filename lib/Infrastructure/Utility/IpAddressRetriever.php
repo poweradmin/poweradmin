@@ -67,8 +67,9 @@ class IpAddressRetriever
                         }
                     ));
 
+                    // The rightmost entry is the one the trusted peer recorded; a client can forge the rest
                     if (!empty($ips)) {
-                        return $ips[0];
+                        return $ips[count($ips) - 1];
                     }
                 }
             }
