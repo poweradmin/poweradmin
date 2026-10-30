@@ -40,12 +40,24 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
         base_serial, payload, reviewer_id, reviewer_name, review_comment, created_at, reviewed_at, applied_at, error, snapshot';
 
     private ?bool $available = null;
+    private bool $reportedMissing = false;
 
     public function __construct(private readonly PDO $db, private readonly ?LoggerInterface $logger = null)
     {
     }
 
     public function isAvailable(): bool
+    {
+        $available = $this->tableExists();
+        if (!$available && !$this->reportedMissing) {
+            $this->reportedMissing = true;
+            $this->logger?->error('approval.enabled is on but the zone_change_requests table is missing; run the 4.6.0 update script from sql/');
+        }
+
+        return $available;
+    }
+
+    private function tableExists(): bool
     {
         if ($this->available !== null) {
             return $this->available;
@@ -57,7 +69,6 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
             if (!DbCompat::isMissingTable($e)) {
                 throw $e;
             }
-            $this->logger?->error('approval.enabled is on but the zone_change_requests table is missing; run the 4.6.0 update script from sql/');
             return $this->available = false;
         }
     }
@@ -235,7 +246,8 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
 
     public function cancelOpenForDeletedZone(int $zoneId, string $reason): int
     {
-        if (!$this->isAvailable()) {
+        // Zone deletes run with approval off too, where a missing table is expected
+        if (!$this->tableExists()) {
             return 0;
         }
         $stmt = $this->db->prepare(

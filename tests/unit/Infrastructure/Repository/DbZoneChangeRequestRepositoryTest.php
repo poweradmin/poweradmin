@@ -236,7 +236,23 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
     {
         $this->db->exec('DROP TABLE zone_change_requests');
 
-        $this->assertSame(0, (new DbZoneChangeRequestRepository($this->db))->cancelOpenForDeletedZone(1, 'gone'));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->never())->method('error');
+
+        $this->assertSame(0, (new DbZoneChangeRequestRepository($this->db, $logger))->cancelOpenForDeletedZone(1, 'gone'));
+    }
+
+    public function testAMissingTableIsStillReportedOnceAfterAZoneDeleteProbedIt(): void
+    {
+        $this->db->exec('DROP TABLE zone_change_requests');
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with($this->stringContains('4.6.0'));
+        $repository = new DbZoneChangeRequestRepository($this->db, $logger);
+
+        $repository->cancelOpenForDeletedZone(1, 'gone');
+
+        $this->assertFalse($repository->isAvailable());
+        $this->assertFalse($repository->isAvailable());
     }
 
     public function testAMalformedPayloadReadsAsNoActions(): void
