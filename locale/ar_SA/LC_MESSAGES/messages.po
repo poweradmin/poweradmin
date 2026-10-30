@@ -15774,6 +15774,10 @@ msgstr "يتطلب إرسال NOTIFY واجهة PowerDNS API الخلفية وم
 msgid "You cannot approve your own change request."
 msgstr "لا يمكنك الموافقة على طلب التغيير الخاص بك."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "المنطقة التي قُدِّم هذا الطلب من أجلها لم تعد موجودة."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "لا يوجد مراجع غير مقدم الطلب"

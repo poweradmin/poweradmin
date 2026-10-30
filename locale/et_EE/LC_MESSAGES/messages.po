@@ -15749,6 +15749,10 @@ msgstr "NOTIFY saatmiseks on vaja PowerDNS-i API taustaprogrammi ja primaarset t
 msgid "You cannot approve your own change request."
 msgstr "Te ei saa oma muudatustaotlust kinnitada."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Tsooni, mille kohta see taotlus esitati, enam ei ole."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Esitaja kõrval pole ühtegi läbivaatajat"

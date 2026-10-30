@@ -16174,6 +16174,10 @@ msgstr "Menghantar NOTIFY memerlukan bahagian belakang API PowerDNS dan zon utam
 msgid "You cannot approve your own change request."
 msgstr "Anda tidak boleh meluluskan permintaan perubahan anda sendiri."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Zon yang permintaan ini difailkan untuknya sudah tidak wujud."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Tiada penyemak selain pemohon"

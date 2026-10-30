@@ -16046,6 +16046,10 @@ msgstr "NOTIFYを送信するには、PowerDNSのAPIバックエンドとプラ�
 msgid "You cannot approve your own change request."
 msgstr "自分の変更リクエストを承認することはできません。"
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "このリクエストの対象だったゾーンはもう存在しません。"
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "申請者以外のレビュー担当者がいません"

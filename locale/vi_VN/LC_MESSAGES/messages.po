@@ -15978,6 +15978,10 @@ msgstr "Gửi NOTIFY cần có backend API của PowerDNS và một vùng chính
 msgid "You cannot approve your own change request."
 msgstr "Bạn không thể phê duyệt yêu cầu thay đổi của chính mình."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Vùng mà yêu cầu này được gửi cho nó không còn tồn tại."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Không có người xét duyệt nào khác ngoài người yêu cầu"

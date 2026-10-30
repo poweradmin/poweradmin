@@ -16093,6 +16093,10 @@ msgstr "NOTIFY göndermek için PowerDNS API arka ucu ve birincil bir bölge ger
 msgid "You cannot approve your own change request."
 msgstr "Kendi değişiklik isteğinizi onaylayamazsınız."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Bu isteğin oluşturulduğu zon artık mevcut değil."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "İsteği gönderen dışında inceleyen yok"

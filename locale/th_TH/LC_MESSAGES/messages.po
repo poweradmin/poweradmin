@@ -15336,6 +15336,10 @@ msgstr "การส่ง NOTIFY ต้องใช้แบ็กเอนด�
 msgid "You cannot approve your own change request."
 msgstr "คุณไม่สามารถอนุมัติคำขอเปลี่ยนแปลงของตนเองได้"
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "โซนที่ยื่นคำขอนี้ไม่มีอยู่แล้ว"
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "ไม่มีผู้ตรวจสอบอื่นนอกจากผู้ยื่นคำขอ"

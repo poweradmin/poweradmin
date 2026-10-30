@@ -16203,6 +16203,10 @@ msgstr "Mengirim NOTIFY memerlukan backend API PowerDNS dan zona primer."
 msgid "You cannot approve your own change request."
 msgstr "Anda tidak dapat menyetujui permintaan perubahan Anda sendiri."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Zona tempat permintaan ini diajukan sudah tidak ada."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Tidak ada peninjau selain pemohon"

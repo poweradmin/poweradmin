@@ -15932,6 +15932,10 @@ msgstr "ارسال NOTIFY به پشتیبان API در PowerDNS و یک منطق
 msgid "You cannot approve your own change request."
 msgstr "شما نمی‌توانید درخواست تغییر خودتان را تأیید کنید."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "منطقه‌ای که این درخواست برای آن ثبت شده بود دیگر وجود ندارد."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "هیچ بازبینی جز درخواست‌کننده وجود ندارد"

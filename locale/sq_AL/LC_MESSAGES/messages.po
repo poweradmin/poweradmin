@@ -16386,6 +16386,10 @@ msgstr "Dërgimi i NOTIFY kërkon backend-in API të PowerDNS dhe një zonë pri
 msgid "You cannot approve your own change request."
 msgstr "Nuk mund ta miratosh kërkesën tënde për ndryshim."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Zona për të cilën u paraqit kjo kërkesë nuk ekziston më."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Nuk ka shqyrtues tjetër përveç kërkuesit"

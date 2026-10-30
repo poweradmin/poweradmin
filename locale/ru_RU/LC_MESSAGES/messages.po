@@ -16218,6 +16218,10 @@ msgstr "Для отправки NOTIFY нужны API-бэкенд PowerDNS и �
 msgid "You cannot approve your own change request."
 msgstr "Вы не можете одобрить собственный запрос на изменение."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Зона, для которой был подан этот запрос, больше не существует."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Нет рецензента, кроме автора запроса"

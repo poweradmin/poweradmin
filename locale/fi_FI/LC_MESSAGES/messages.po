@@ -15860,6 +15860,10 @@ msgstr "NOTIFYn lähettäminen vaatii PowerDNS:n API-taustajärjestelmän ja ens
 msgid "You cannot approve your own change request."
 msgstr "Et voi hyväksyä omaa muutospyyntöäsi."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Aluetta, jota varten tämä pyyntö tehtiin, ei ole enää olemassa."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Ei muuta tarkistajaa kuin pyynnön tekijä"

@@ -16114,6 +16114,10 @@ msgstr "NOTIFY siuntimui reikalinga PowerDNS API sąsaja ir pirminė zona."
 msgid "You cannot approve your own change request."
 msgstr "Negalite patvirtinti savo keitimo užklausos."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Zonos, kuriai pateikta ši užklausa, nebėra."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Nėra peržiūrėtojo, išskyrus pateikėją"

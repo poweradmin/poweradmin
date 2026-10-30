@@ -16490,6 +16490,10 @@ msgstr "Chun NOTIFY a sheoladh, teastaíonn inneall API PowerDNS agus príomhchr
 msgid "You cannot approve your own change request."
 msgstr "Ní féidir leat d'iarratas athraithe féin a cheadú."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Níl an crios ar comhdaíodh an t-iarratas seo dó ann a thuilleadh."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Níl athbhreithnitheoir ann seachas an t-iarrthóir"

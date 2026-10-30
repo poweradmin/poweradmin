@@ -16374,6 +16374,10 @@ msgstr "Enviar NOTIFY requiere el backend de API de PowerDNS y una zona primaria
 msgid "You cannot approve your own change request."
 msgstr "No puede aprobar su propia solicitud de cambio."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "La zona para la que se presentó esta solicitud ya no existe."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Ningún revisor aparte del solicitante"

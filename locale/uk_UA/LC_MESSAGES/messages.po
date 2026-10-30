@@ -16158,6 +16158,10 @@ msgstr "Для надсилання NOTIFY потрібні API-бекенд Pow
 msgid "You cannot approve your own change request."
 msgstr "Ви не можете затвердити власний запит на зміну."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Зони, для якої було подано цей запит, більше не існує."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Немає рецензента, окрім автора запиту"

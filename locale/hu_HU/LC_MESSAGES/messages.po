@@ -16236,6 +16236,10 @@ msgstr "A NOTIFY küldéséhez a PowerDNS API-háttér és egy elsődleges zóna
 msgid "You cannot approve your own change request."
 msgstr "Nem hagyhatja jóvá a saját módosítási kérelmét."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "A zóna, amelyre ezt a kérelmet benyújtották, már nem létezik."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "A kérelmezőn kívül nincs felülvizsgáló"

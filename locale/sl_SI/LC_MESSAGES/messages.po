@@ -16110,6 +16110,10 @@ msgstr "Pošiljanje NOTIFY zahteva zaledje API PowerDNS in primarno cono."
 msgid "You cannot approve your own change request."
 msgstr "Svoje zahteve za spremembo ne morete odobriti."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Cona, za katero je bila vložena ta zahteva, ne obstaja več."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Razen vlagatelja ni drugega pregledovalca"

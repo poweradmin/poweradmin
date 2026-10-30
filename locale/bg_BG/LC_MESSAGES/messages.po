@@ -16290,6 +16290,10 @@ msgstr "Изпращането на NOTIFY изисква API бекенда н�
 msgid "You cannot approve your own change request."
 msgstr "Не можете да одобрите собствената си заявка за промяна."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Зоната, за която е подадена тази заявка, вече не съществува."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Няма проверяващ освен заявителя"

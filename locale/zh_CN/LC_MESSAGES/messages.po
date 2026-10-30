@@ -15004,6 +15004,10 @@ msgstr "发送 NOTIFY 需要 PowerDNS API 后端和主区域。"
 msgid "You cannot approve your own change request."
 msgstr "您不能批准自己的变更请求。"
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "提交此请求的区域已不存在。"
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "除请求者外没有审核者"

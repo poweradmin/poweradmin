@@ -15601,6 +15601,10 @@ msgstr "שליחת NOTIFY דורשת את שרת ה-API של PowerDNS ואזור
 msgid "You cannot approve your own change request."
 msgstr "אינך יכול לאשר את בקשת השינוי שלך."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "האזור שעבורו הוגשה בקשה זו כבר אינו קיים."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "אין סוקר מלבד מגיש הבקשה"

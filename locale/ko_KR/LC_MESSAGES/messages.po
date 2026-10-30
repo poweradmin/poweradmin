@@ -15836,6 +15836,10 @@ msgstr "NOTIFY를 보내려면 PowerDNS API 백엔드와 프라이머리 존이 
 msgid "You cannot approve your own change request."
 msgstr "본인의 변경 요청은 승인할 수 없습니다."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "이 요청이 제출된 존이 더 이상 존재하지 않습니다."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "요청자 외에 검토자가 없습니다"

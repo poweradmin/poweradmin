@@ -16599,6 +16599,10 @@ msgstr "Η αποστολή NOTIFY απαιτεί το API backend του PowerD
 msgid "You cannot approve your own change request."
 msgstr "Δεν μπορείτε να εγκρίνετε το δικό σας αίτημα αλλαγής."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Η ζώνη για την οποία υποβλήθηκε αυτό το αίτημα δεν υπάρχει πλέον."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Δεν υπάρχει εξεταστής εκτός από τον αιτούντα"

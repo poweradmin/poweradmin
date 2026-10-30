@@ -15805,6 +15805,10 @@ msgstr "NOTIFY sūtīšanai nepieciešama PowerDNS API aizmugursistēma un prim�
 msgid "You cannot approve your own change request."
 msgstr "Jūs nevarat apstiprināt savu izmaiņu pieprasījumu."
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "Zona, kurai tika iesniegts šis pieprasījums, vairs nepastāv."
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "Nav cita izskatītāja, izņemot iesniedzēju"

@@ -15785,6 +15785,10 @@ msgstr "NOTIFY भेजने के लिए PowerDNS API बैकएंड 
 msgid "You cannot approve your own change request."
 msgstr "आप अपना खुद का परिवर्तन अनुरोध स्वीकृत नहीं कर सकते।"
 
+#: lib/Application/Service/Zone/ChangeRequestMessages.php
+msgid "The zone this request was filed for no longer exists."
+msgstr "जिस ज़ोन के लिए यह अनुरोध दर्ज किया गया था, वह अब मौजूद नहीं है।"
+
 #: templates/default/list_change_requests.html
 msgid "No reviewer other than the requester"
 msgstr "अनुरोधकर्ता के अलावा कोई समीक्षक नहीं"
