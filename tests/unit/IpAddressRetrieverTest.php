@@ -7,24 +7,35 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class IpAddressRetrieverTest extends TestCase
 {
-    public function testGetClientIpWithHttpClientIp()
+    public function testAClientIpHeaderIsIgnored()
     {
         $server = [
             'REMOTE_ADDR' => '127.0.0.1',
             'HTTP_CLIENT_IP' => '192.168.1.1',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('192.168.1.1', $ipRetriever->getClientIp());
+        $this->assertEquals('127.0.0.1', $ipRetriever->getClientIp());
     }
 
-    public function testGetClientIpWithHttpClientIp6()
+    public function testAClientIpHeaderIsIgnoredOnIpv6()
     {
         $server = [
             'REMOTE_ADDR' => '::1',
             'HTTP_CLIENT_IP' => '2001:db8:85a3:8d3:1319:8a2e:370:7348',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('2001:db8:85a3:8d3:1319:8a2e:370:7348', $ipRetriever->getClientIp());
+        $this->assertEquals('::1', $ipRetriever->getClientIp());
+    }
+
+    public function testAClientIpHeaderPassedThroughAProxyCannotReplaceTheForwardedAddress()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_CLIENT_IP' => '198.51.100.77',
+            'HTTP_X_FORWARDED_FOR' => '203.0.113.5',
+        ];
+        $ipRetriever = new IpAddressRetriever($server);
+        $this->assertEquals('203.0.113.5', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithMultipleIpsReturnsRightmostUntrusted()
