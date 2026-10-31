@@ -1248,6 +1248,11 @@ generate_config() {
         oidc_group_mapping="[$(parse_mapping "${PA_OIDC_GROUP_MAPPING}")]"
     fi
 
+    local oidc_required_claims="[]"
+    if [ -n "${PA_OIDC_REQUIRED_CLAIMS:-}" ]; then
+        oidc_required_claims="[$(parse_mapping "${PA_OIDC_REQUIRED_CLAIMS}")]"
+    fi
+
     # Process LDAP permission template and group mappings
     local ldap_permission_template_mapping="[]"
     if [ -n "${PA_LDAP_PERMISSION_TEMPLATE_MAPPING:-}" ]; then
@@ -1269,6 +1274,11 @@ generate_config() {
     local saml_group_mapping="[]"
     if [ -n "${PA_SAML_GROUP_MAPPING}" ]; then
         saml_group_mapping="[$(parse_mapping "${PA_SAML_GROUP_MAPPING}")]"
+    fi
+
+    local saml_required_attributes="[]"
+    if [ -n "${PA_SAML_REQUIRED_ATTRIBUTES:-}" ]; then
+        saml_required_attributes="[$(parse_mapping "${PA_SAML_REQUIRED_ATTRIBUTES}")]"
     fi
 
     # Process remote user permission template and group mappings
@@ -1588,6 +1598,7 @@ return [
         'sync_user_info' => ${oidc_sync_user_info},
         'allow_superuser_provisioning' => ${oidc_allow_superuser_provisioning},
         'default_permission_template' => $(php_sq "${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
+        'required_claims' => ${oidc_required_claims},
         'permission_template_mapping' => ${oidc_permission_template_mapping},
         'group_mapping' => ${oidc_group_mapping},
         'providers' => [
@@ -1704,6 +1715,7 @@ EOF
         'sync_user_info' => ${saml_sync_user_info},
         'allow_superuser_provisioning' => ${saml_allow_superuser_provisioning},
         'default_permission_template' => $(php_sq "${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
+        'required_attributes' => ${saml_required_attributes},
         'permission_template_mapping' => ${saml_permission_template_mapping},
         'group_mapping' => ${saml_group_mapping},
 

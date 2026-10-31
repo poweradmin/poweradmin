@@ -111,6 +111,11 @@ class UserProvisioningService
             return null;
         }
 
+        // Before any lookup, so it applies to accounts that are already linked too
+        if (!$this->requiredClaimsMatch($userInfo, $authMethod)) {
+            return null;
+        }
+
         try {
             // First, try to find existing user by subject (LDAP identity is the
             // username itself - there is no separate link table)
@@ -829,6 +834,91 @@ class UserProvisioningService
     private function determineAuthMethodFromUserInfo(UserInfoInterface $userInfo): string
     {
         return $userInfo->authMethod()->value;
+    }
+
+    /**
+     * Whether the identity carries every claim (OIDC `required_claims`) or attribute
+     * (SAML `required_attributes`) the configuration asks for. Each one must be present
+     * and equal the configured value, or contain it when it is a list. Nothing
+     * configured admits everyone.
+     */
+    private function requiredClaimsMatch(UserInfoInterface $userInfo, string $authMethod): bool
+    {
+        $setting = match ($authMethod) {
+            self::AUTH_METHOD_OIDC => 'required_claims',
+            self::AUTH_METHOD_SAML => 'required_attributes',
+            default => null,
+        };
+        if ($setting === null) {
+            return true;
+        }
+
+        // Not ??: a null setting must refuse like any other malformed value, not admit everyone
+        $methodConfig = $this->getAuthMethodConfig($authMethod);
+        $required = array_key_exists($setting, $methodConfig) ? $methodConfig[$setting] : [];
+        if (!$this->isValidRequiredClaims($required)) {
+            // Fail closed: a typo must not open sign-in to everyone the provider knows
+            $this->logger->error('{method} {setting} must map claim names to non-empty single values; refusing the login', [
+                'method' => strtoupper($authMethod),
+                'setting' => $setting,
+            ]);
+            return false;
+        }
+
+        $claims = $userInfo->getRawData();
+        foreach ($required as $name => $expected) {
+            if (!$this->claimContains($claims[$name] ?? null, $expected)) {
+                $this->logger->warning('Refusing {method} login for {username}: {name} is missing or does not match {setting}', [
+                    'method' => strtoupper($authMethod),
+                    'username' => $userInfo->getUsername(),
+                    'name' => $name,
+                    'setting' => $setting,
+                ]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @phpstan-assert-if-true array<string, bool|int|float|string> $required
+     */
+    private function isValidRequiredClaims(mixed $required): bool
+    {
+        if (!is_array($required)) {
+            return false;
+        }
+        foreach ($required as $name => $expected) {
+            if (!is_string($name) || !is_scalar($expected) || $expected === '') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether a claim equals the expected value, or contains it when the claim is a list
+     * (OIDC groups or roles, every SAML attribute). Values compare as text, so `true`
+     * matches true and "true" but not 1. A JSON object claim (address, realm_access)
+     * never matches.
+     */
+    private function claimContains(mixed $actual, bool|int|float|string $expected): bool
+    {
+        $text = static fn(mixed $value): ?string => match (true) {
+            is_bool($value) => $value ? 'true' : 'false',
+            is_scalar($value) => (string)$value,
+            default => null,
+        };
+
+        $values = match (true) {
+            is_array($actual) => array_is_list($actual) ? array_map($text, $actual) : [],
+            is_scalar($actual) => [$text($actual)],
+            default => [],
+        };
+
+        return in_array($text($expected), $values, true);
     }
 
     /**
