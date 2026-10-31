@@ -814,6 +814,189 @@ class UserProvisioningServiceTest extends TestCase
         return $repository;
     }
 
+    public static function requiredClaimProvider(): array
+    {
+        return [
+            'equal string' => ['it', 'it', true],
+            'different string' => ['ops', 'it', false],
+            'case matters' => ['IT', 'it', false],
+            'absent claim' => [null, 'it', false],
+            'whole value only, no word split' => ['openid profile poweradmin', 'poweradmin', false],
+            'whole value with spaces' => ['DNS Admins', 'DNS Admins', true],
+            'list of groups' => [['dns', 'it'], 'it', true],
+            'list without the value' => [['dns', 'ops'], 'it', false],
+            'SAML attribute bag' => [['it'], 'it', true],
+            'JSON object is not a list' => [['region' => 'it'], 'it', false],
+            'boolean claim' => [true, true, true],
+            'boolean claim as text' => [true, 'true', true],
+            'false is not true' => [false, true, false],
+            'number' => [42, '42', true],
+            'true is not 1' => [1, true, false],
+            'string 1 is not true' => ['1', true, false],
+        ];
+    }
+
+    #[DataProvider('requiredClaimProvider')]
+    public function testClaimContainsTheRequiredValue(mixed $claim, bool|int|float|string $expected, bool $matches): void
+    {
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('claimContains');
+
+        $this->assertSame($matches, $method->invoke($this->createServiceWithMocks(), $claim, $expected));
+    }
+
+    /**
+     * Refused before any lookup: an account that is already linked must not
+     * keep signing in once it no longer carries the claim.
+     */
+    public function testRequiredClaimsRefuseTheLoginBeforeAnyAccountLookup(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->with('oidc')->willReturn(['required_claims' => ['department' => 'it'], 'link_by_email' => true]);
+
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->expects($this->never())->method($this->anything());
+
+        $warnings = [];
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $logger->method('log')->willReturnCallback(function ($level, $message, array $context = []) use (&$warnings): void {
+            if ($level === 'warning') {
+                $warnings[] = [(string)$message, $context];
+            }
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository, $logger);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['department' => 'sales']);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertCount(1, $warnings, print_r($warnings, true));
+        $this->assertSame('department', $warnings[0][1]['name']);
+        $this->assertSame('required_claims', $warnings[0][1]['setting']);
+    }
+
+    public function testMatchingClaimsGoOnToTheAccountLookup(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn([
+            'required_claims' => ['groups' => 'dns-admins', 'department' => 'it'],
+            'link_by_email' => true,
+        ]);
+
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findActiveUserIdByEmail')->willReturn(null);
+        $repository->method('findInactiveUserIdByEmail')->with('john@example.com')->willReturn(42);
+
+        $service = $this->createServiceWithMocks($config, $repository);
+        $userInfo = new OidcUserInfo(
+            username: 'john',
+            email: 'john@example.com',
+            subject: 'sub-1',
+            rawData: ['groups' => ['staff', 'dns-admins'], 'department' => 'it']
+        );
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testSamlChecksRequiredAttributesNotRequiredClaims(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->with('saml')->willReturn([
+            'required_claims' => ['department' => 'ops'],
+            'required_attributes' => ['department' => 'it'],
+        ]);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->expects($this->never())->method($this->anything());
+        $service = $this->createServiceWithMocks($config, $repository);
+
+        $userInfo = new SamlUserInfo(username: 'john', email: 'john@example.com', nameId: 'name-1', rawAttributes: ['department' => ['ops']]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'adfs'));
+    }
+
+    public function testRequiredClaimsThatAreNotAnArrayRefuseEveryLogin(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['required_claims' => 'poweradmin']);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->expects($this->never())->method($this->anything());
+
+        $errors = [];
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $logger->method('log')->willReturnCallback(function ($level, $message) use (&$errors): void {
+            if ($level === 'error') {
+                $errors[] = (string)$message;
+            }
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository, $logger);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['scope' => 'poweradmin']);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertCount(1, $errors);
+    }
+
+    public static function malformedRequiredClaimsProvider(): array
+    {
+        return [
+            'list instead of name => value' => [['it']],
+            'list value' => [['groups' => ['dns', 'it']]],
+            'empty value' => [['department' => '']],
+            'null setting' => [null],
+        ];
+    }
+
+    #[DataProvider('malformedRequiredClaimsProvider')]
+    public function testMalformedRequiredClaimsRefuseEveryLoginAsAConfigError(?array $required): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['required_claims' => $required]);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->expects($this->never())->method($this->anything());
+
+        $levels = [];
+        $logger = $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class);
+        $logger->method('log')->willReturnCallback(function ($level) use (&$levels): void {
+            $levels[] = $level;
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository, $logger);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['department' => '', 0 => 'it', 'groups' => ['dns', 'it']]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertContains('error', $levels);
+        $this->assertNotContains('warning', $levels);
+    }
+
+    /**
+     * An account already linked to the subject is refused too once its claims stop matching.
+     */
+    public function testLinkedAccountIsRefusedWhenClaimsNoLongerMatch(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['required_claims' => ['department' => 'it']]);
+
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findUserIdByOidcSubject')->with('sub-1', 'okta')->willReturn(42);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getUserById')->willReturn(['id' => 42, 'username' => 'john']);
+        $repository->method('isActiveUser')->willReturn(true);
+
+        $service = $this->createServiceWithMocks($config, $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['department' => 'sales']);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testRequiredClaimsDoNotApplyToLdap(): void
+    {
+        $method = (new ReflectionClass(UserProvisioningService::class))->getMethod('requiredClaimsMatch');
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->expects($this->never())->method('getGroup');
+
+        $userInfo = new LdapUserInfo(username: 'john', email: 'john@example.com');
+
+        $this->assertTrue($method->invoke($this->createServiceWithMocks($config), $userInfo, UserProvisioningService::AUTH_METHOD_LDAP));
+    }
+
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
     {
         $repository = $this->createMock(UserRepositoryInterface::class);

@@ -530,6 +530,8 @@ final class OidcService
         // An empty groups list from userinfo is treated as absent, not as "no groups"
         if (empty($groups) && !empty($idTokenClaims[$groupsKey])) {
             $groups = $idTokenClaims[$groupsKey];
+            // Keep the raw claims in step, so oidc.required_claims sees the same groups
+            $claims[$groupsKey] = $groups;
             $this->logger->info('Extracted groups from ID token: {groups}', ['groups' => $groups]);
         }
 

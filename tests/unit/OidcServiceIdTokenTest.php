@@ -92,6 +92,21 @@ class OidcServiceIdTokenTest extends TestCase
         $this->assertSame(['admins'], $userInfo->getGroups());
     }
 
+    /**
+     * An empty groups list from userinfo is read as absent; the raw claims must carry
+     * the ID token's groups too, or oidc.required_claims refuses a user getGroups() admits.
+     */
+    public function testEmptyUserinfoGroupsAreFilledFromTheIdTokenInTheRawClaims(): void
+    {
+        $userInfo = $this->resolveUserInfo(
+            ['sub' => 'user-123', 'email' => 'test@example.com', 'groups' => []],
+            ['sub' => 'user-123', 'groups' => ['dns-admins']]
+        );
+
+        $this->assertSame(['dns-admins'], $userInfo->getGroups());
+        $this->assertSame(['dns-admins'], $userInfo->getRawData()['groups']);
+    }
+
     public function testUserinfoWinsWhenBothSourcesCarryTheSameClaim(): void
     {
         $userInfo = $this->resolveUserInfo(
