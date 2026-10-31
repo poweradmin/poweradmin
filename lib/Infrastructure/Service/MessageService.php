@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -171,10 +171,12 @@ class MessageService
                     default => '',
                 };
 
+                // Messages quote record names and content, so they are text, never markup
+                $content = htmlspecialchars((string)$message['content'], ENT_QUOTES, 'UTF-8');
                 $output .= <<<EOF
 <div class="alert $alertClass bg-$bgClass bg-opacity-10 py-2 border $borderClass alert-dismissible small fade show" role="alert" data-testid="alert-message">
     <i class="bi bi-$icon-fill me-2 $textClass"></i>
-    <strong class="$textClass">$title</strong> {$message['content']}
+    <strong class="$textClass">$title</strong> {$content}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 EOF;
