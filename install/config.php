@@ -19,7 +19,8 @@ return [
             //'10.0.0.0/8'
         ],
         // Reverse proxies whose X-Forwarded-For header may be believed.
-        // Leave empty to match on the connecting address only.
+        // Leave empty to match on the connecting address only. Each listed proxy must write
+        // X-Forwarded-For itself; one that passes a client's header through lets it choose.
         'trusted_proxies' => []
     ],
 
