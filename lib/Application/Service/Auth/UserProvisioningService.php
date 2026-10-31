@@ -111,6 +111,11 @@ class UserProvisioningService
             return null;
         }
 
+        // Before any lookup, so it applies to accounts that are already linked too
+        if (!$this->requiredClaimsMatch($userInfo, $authMethod)) {
+            return null;
+        }
+
         try {
             // First, try to find existing user by subject (LDAP identity is the
             // username itself - there is no separate link table)
@@ -800,6 +805,69 @@ class UserProvisioningService
     private function determineAuthMethodFromUserInfo(UserInfoInterface $userInfo): string
     {
         return $userInfo->authMethod()->value;
+    }
+
+    /**
+     * Whether the identity carries every claim (OIDC `required_claims`) or attribute
+     * (SAML `required_attributes`) the configuration asks for. Each one must be present
+     * and equal the configured value, or contain it when it is a list or a
+     * space-separated string such as `scope`. Nothing configured admits everyone.
+     */
+    private function requiredClaimsMatch(UserInfoInterface $userInfo, string $authMethod): bool
+    {
+        $setting = match ($authMethod) {
+            self::AUTH_METHOD_OIDC => 'required_claims',
+            self::AUTH_METHOD_SAML => 'required_attributes',
+            default => null,
+        };
+        if ($setting === null) {
+            return true;
+        }
+
+        $required = $this->getAuthMethodConfig($authMethod)[$setting] ?? [];
+        if (!is_array($required)) {
+            // Fail closed: a typo must not open sign-in to everyone the provider knows
+            $this->logger->error('{method} {setting} must be an array of name => value; refusing the login', [
+                'method' => strtoupper($authMethod),
+                'setting' => $setting,
+            ]);
+            return false;
+        }
+
+        $claims = $userInfo->getRawData();
+        foreach ($required as $name => $expected) {
+            if (!is_string($name) || !is_scalar($expected) || !$this->claimContains($claims[$name] ?? null, $expected)) {
+                $this->logger->warning('Refusing {method} login for {username}: {name} is missing or does not match {setting}', [
+                    'method' => strtoupper($authMethod),
+                    'username' => $userInfo->getUsername(),
+                    'name' => (string)$name,
+                    'setting' => $setting,
+                ]);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function claimContains(mixed $actual, bool|int|float|string $expected): bool
+    {
+        $text = static fn(mixed $value): ?string => match (true) {
+            is_bool($value) => $value ? 'true' : 'false',
+            is_scalar($value) => (string)$value,
+            default => null,
+        };
+
+        // SAML attribute bags and OIDC claims such as groups or roles are lists; a JSON
+        // object (address, realm_access) is not a value to compare. A string also
+        // matches on one of its space-separated words, as scope does.
+        $values = match (true) {
+            is_array($actual) => array_is_list($actual) ? array_map($text, $actual) : [],
+            is_scalar($actual) => [$text($actual), ...(preg_split('/\s+/', trim((string)$text($actual))) ?: [])],
+            default => [],
+        };
+
+        return in_array($text($expected), $values, true);
     }
 
     /**
