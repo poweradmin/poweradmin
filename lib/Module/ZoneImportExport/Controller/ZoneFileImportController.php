@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\RecordIdHelper;
@@ -430,6 +431,10 @@ class ZoneFileImportController extends BaseController
         $skipCount = 0;
         $nonSoaAdded = false;
         $replacedRRSets = [];
+        // Stored rows each replace deleted and the content it wrote since, to undo a failed write
+        $storedRrsets = [];
+        $writtenInRrset = [];
+        $restoredRrsets = [];
         $replaceable = $importMode === 'existing' && $conflictStrategy === 'replace'
             ? $this->replaceableRrsets($records, $zone_id, $recordRepository, $dnsRecordManager)
             : [];
@@ -445,17 +450,26 @@ class ZoneFileImportController extends BaseController
 
                 if ($conflictStrategy === 'replace') {
                     $rrsetKey = $record->name . '|' . $record->type;
-                    if (!($replaceable[$rrsetKey] ?? true)) {
+                    if (!($replaceable[$rrsetKey] ?? true) || isset($restoredRrsets[$rrsetKey])) {
                         $failCount++;
                         continue;
                     }
                     if (!isset($replacedRRSets[$rrsetKey])) {
-                        $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
-                        foreach ($rrsetRecords as $existing) {
+                        $deleted = [];
+                        foreach ($recordRepository->getRRSetRecords($zone_id, $record->name, $record->type) as $existing) {
                             // API backend ids are encoded strings, which an int cast would turn into 0
-                            $dnsRecordManager->deleteRecord(RecordIdHelper::normalizeId($existing['id']), false);
+                            if ($dnsRecordManager->deleteRecord(RecordIdHelper::normalizeId($existing['id']), false)->success) {
+                                $deleted[] = $existing;
+                            }
                         }
+                        if ($deleted !== []) {
+                            $storedRrsets[$rrsetKey] = $deleted;
+                        }
+                        $writtenInRrset[$rrsetKey] = [];
                         $replacedRRSets[$rrsetKey] = true;
+                    } elseif (self::listedTwice($record, $writtenInRrset[$rrsetKey] ?? [])) {
+                        $skipCount++;
+                        continue;
                     }
                 }
             }
@@ -473,16 +487,27 @@ class ZoneFileImportController extends BaseController
                 finalizeZone: false
             );
 
+            $rrsetKey = $record->name . '|' . $record->type;
             if ($result->success) {
                 $successCount++;
                 $nonSoaAdded = $nonSoaAdded || strtoupper((string)$record->type) !== 'SOA';
+                if (isset($writtenInRrset[$rrsetKey])) {
+                    $writtenInRrset[$rrsetKey][] = (string)$record->content;
+                }
+            } elseif (isset($storedRrsets[$rrsetKey])) {
+                // A write refused after the stored RRset was deleted: put the stored rows back
+                $this->restoreRrset($zone_id, $record, $storedRrsets[$rrsetKey], $recordRepository, $dnsRecordManager);
+                $successCount -= count($writtenInRrset[$rrsetKey]);
+                $failCount += count($writtenInRrset[$rrsetKey]) + 1;
+                $restoredRrsets[$rrsetKey] = true;
+                unset($storedRrsets[$rrsetKey]);
             } else {
                 $failCount++;
             }
         }
 
         // One serial bump, rectify and cache flush for the whole import, not one per record
-        if ($successCount > 0) {
+        if ($successCount > 0 || $restoredRrsets !== []) {
             $dnsRecordManager->finalizeZone($zone_id, $nonSoaAdded);
         }
 
@@ -501,6 +526,51 @@ class ZoneFileImportController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zoneName,
         ]);
+    }
+
+    /**
+     * Whether the file already listed this record for the RRset, by the rule the
+     * write's duplicate check uses.
+     *
+     * @param list<string> $written Content this import wrote for the RRset
+     */
+    private static function listedTwice(\stdClass $record, array $written): bool
+    {
+        foreach ($written as $content) {
+            if (RecordManager::sameContent((string)$record->type, (string)$record->content, $content)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Replace whatever the import wrote for this RRset with the rows it held before.
+     * The stored rows go straight to the backend with their TTL, priority and disabled
+     * flag, as they may not pass today's checks; one that cannot be written is reported.
+     *
+     * @param array<int, array<string, mixed>> $stored
+     */
+    private function restoreRrset(int $zoneId, \stdClass $record, array $stored, RecordRepositoryInterface $recordRepository, RecordManagerInterface $recordManager): void
+    {
+        foreach ($recordRepository->getRRSetRecords($zoneId, $record->name, $record->type) as $written) {
+            $recordManager->deleteRecord(RecordIdHelper::normalizeId($written['id']), false);
+        }
+        $backend = $this->moduleServices()->dnsBackendProvider();
+        foreach ($stored as $row) {
+            $restored = $backend->createRecordAtomic(
+                $zoneId,
+                (string)$row['name'],
+                (string)$row['type'],
+                (string)$row['content'],
+                (int)$row['ttl'],
+                (int)($row['prio'] ?? 0),
+                !empty($row['disabled']) ? 1 : 0
+            );
+            if ($restored === null) {
+                $this->addSystemMessage('error', $row['name'] . ' ' . $row['type'] . ' ' . $row['content'] . ': ' . _('Failed to add record to DNS backend.'));
+            }
+        }
     }
 
     /**

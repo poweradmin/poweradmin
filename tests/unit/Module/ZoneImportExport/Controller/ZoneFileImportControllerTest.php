@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Record\RecordManagerService;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -92,6 +93,9 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     /** @var array<string, list<array<string, mixed>>> Stored RRsets by "name|type" */
     private array $storedRrsets = [];
 
+    /** Content the backend refuses to write although the dry run passed it */
+    private ?string $writeRefusedContent = null;
+
     /** Content the dry run of a replace refuses */
     private ?string $refusedContent = null;
 
@@ -100,6 +104,9 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
     /** @var list<int|string> */
     private array $deletes = [];
+
+    /** @var list<array<int, mixed>> Rows written straight to the backend */
+    private array $restores = [];
 
     private array $filesBackup = [];
     private ?string $uploadPath = null;
@@ -125,7 +132,9 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $records = $this->createMock(RecordManagerService::class);
         $records->method('createRecord')->willReturnCallback(function (...$args): RecordWriteResult {
             $this->writes[] = $args;
-            return $this->writesFail ? RecordWriteResult::failure('refused') : RecordWriteResult::ok(count($this->writes));
+            return $this->writesFail || $args[3] === $this->writeRefusedContent
+                ? RecordWriteResult::failure('refused')
+                : RecordWriteResult::ok(count($this->writes));
         });
 
         $recordManager = $this->createMock(RecordManagerInterface::class);
@@ -142,7 +151,13 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         });
 
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
-        $recordRepository->method('recordExists')->willReturn(false);
+        // Only rows this import wrote exist; the stored RRsets are replaced, never matched
+        $recordRepository->method('recordExists')->willReturnCallback(
+            fn(int $zoneId, string $name, string $type, string $content): bool => array_filter(
+                $this->writes,
+                fn(array $args): bool => [$args[1], $args[2], $args[3]] === [$name, $type, $content]
+            ) !== []
+        );
         $recordRepository->method('getRRSetRecords')->willReturnCallback(
             // Both backends look names up case-insensitively
             fn(int $zoneId, string $name, string $type): array => $this->storedRrsets[strtolower($name) . '|' . $type] ?? []
@@ -164,6 +179,13 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->factory->method('recordRepository')->willReturn($recordRepository);
         $this->factory->method('auditService')->willReturn($audit);
         $this->factory->method('userGroupRepository')->willReturn($groups);
+
+        $backend = $this->createMock(DnsBackendProviderInterface::class);
+        $backend->method('createRecordAtomic')->willReturnCallback(function (...$args): int {
+            $this->restores[] = $args;
+            return 100 + count($this->restores);
+        });
+        $this->factory->method('dnsBackendProvider')->willReturn($backend);
     }
 
     protected function tearDown(): void
@@ -589,6 +611,59 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
 
         $this->assertSame([10], $this->deletes, 'the stored www.example.com A RRset is the one replaced');
         $this->assertSame(['www.example.com'], array_column($this->writes, 1));
+    }
+
+    public function testAReplaceSkipsALineTheFileListsTwice(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [['id' => 10, 'content' => '192.0.2.1']];
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload("\$ORIGIN example.com.\n\$TTL 3600\nwww IN A 192.0.2.5\nwww IN A 192.0.2.5\n");
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'replace']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertSame([10], $this->deletes);
+        $this->assertCount(1, $this->writes, 'the repeated line is not written again');
+        $this->assertSame(1, $this->renderedParams()['skip_count']);
+        $this->assertSame(0, $this->renderedParams()['fail_count']);
+    }
+
+    public function testAReplacePutsTheStoredRrsetBackWhenTheBackendRefusesANewRecord(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [
+            ['id' => 10, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 600, 'prio' => 0, 'disabled' => 0],
+            ['id' => 11, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 600, 'prio' => 0, 'disabled' => 1],
+        ];
+        $this->writeRefusedContent = '192.0.2.99';
+
+        $this->importWithReplace();
+
+        $this->assertSame(
+            [['192.0.2.1', 600, 0], ['192.0.2.2', 600, 1]],
+            array_map(fn(array $args): array => [$args[3], $args[4], $args[6]], $this->restores),
+            'the stored rows are written back with their TTL and disabled flag'
+        );
+        $this->assertSame([], array_filter($this->dryRuns, fn(array $args): bool => empty($args[9])), 'not through the checks');
+        $this->assertSame(1, $this->renderedParams()['success_count'], 'only the MX RRset counts');
+        $this->assertSame(2, $this->renderedParams()['fail_count'], 'both www lines failed');
+    }
+
+    public function testAReplaceSkipsTheSameAddressWrittenAnotherWay(): void
+    {
+        $this->storedRrsets['www.example.com|AAAA'] = [['id' => 10, 'content' => '2001:db8::5']];
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);
+        $this->upload("\$ORIGIN example.com.\n\$TTL 3600\nwww IN AAAA 2001:db8::1\nwww IN AAAA 2001:DB8:0::1\n");
+        $this->makeController()->run();
+
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'replace']);
+        $_FILES = [];
+        $this->makeController()->execute();
+
+        $this->assertCount(1, $this->writes);
+        $this->assertSame([], $this->restores, 'a copy is no reason to put the stored RRset back');
+        $this->assertSame(1, $this->renderedParams()['skip_count']);
     }
 
     public function testAReplaceDeletesTheStoredRecordsByTheirApiBackendIds(): void
