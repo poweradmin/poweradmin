@@ -591,6 +591,16 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(['www.example.com'], array_column($this->writes, 1));
     }
 
+    public function testAReplaceDeletesTheStoredRecordsByTheirApiBackendIds(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [['id' => 'ZXhhbXBsZS5jb20', 'content' => '192.0.2.1'], ['id' => '12', 'content' => '192.0.2.2']];
+        $this->refusedContent = null;
+
+        $this->importWithReplace();
+
+        $this->assertSame(['ZXhhbXBsZS5jb20', 12], $this->deletes);
+    }
+
     public function testAnImportWhereEveryRecordFailsLeavesTheZoneUnfinalized(): void
     {
         $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID]);

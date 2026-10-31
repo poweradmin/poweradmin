@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
@@ -451,7 +452,8 @@ class ZoneFileImportController extends BaseController
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
-                            $dnsRecordManager->deleteRecord((int)$existing['id'], false);
+                            // API backend ids are encoded strings, which an int cast would turn into 0
+                            $dnsRecordManager->deleteRecord(RecordIdHelper::normalizeId($existing['id']), false);
                         }
                         $replacedRRSets[$rrsetKey] = true;
                     }
