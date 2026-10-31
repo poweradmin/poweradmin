@@ -430,6 +430,12 @@ class ZoneFileImportController extends BaseController
             $records = $kept;
         }
 
+        // One spelling per name, as the record write stores it, so the replace lookup finds the stored RRset
+        $nameNormalizer = new HostnameValidator($this->config);
+        foreach ($records as $record) {
+            $record->name = strtolower($nameNormalizer->normalizeRecordName((string)$record->name, (string)$zoneName));
+        }
+
         // Import records
         $backendProvider = $this->createDnsBackendProvider();
         $repositoryFactory = $this->getRepositoryFactory($backendProvider);
