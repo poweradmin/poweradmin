@@ -106,6 +106,22 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $this->assertNotNull($ids[0]);
     }
 
+    public function testTheChangesetRecordsTheClientBehindAProxy(): void
+    {
+        $saved = $_SERVER;
+        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '198.51.100.99, 203.0.113.9';
+        try {
+            $this->logger->withChangeset(10, 'move', function () {
+                $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+            });
+        } finally {
+            $_SERVER = $saved;
+        }
+
+        $this->assertSame('203.0.113.9', $this->db->query("SELECT client_ip FROM log_changesets")->fetchColumn());
+    }
+
     public function testCommentIsStoredOnTheChangeset(): void
     {
         $this->logger->withChangeset(10, '  move web tier  ', function () {

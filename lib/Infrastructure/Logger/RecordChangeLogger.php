@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use InvalidArgumentException;
 use PDO;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
@@ -318,11 +319,10 @@ class RecordChangeLogger implements RecordChangeWriterInterface
 
     private function getClientIp(): ?string
     {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
-        if (!is_string($ip) || $ip === '') {
-            return null;
-        }
-        return substr($ip, 0, 64);
+        // Behind a proxy REMOTE_ADDR is the proxy; read the client the way every other log does
+        $ip = IpAddressRetriever::fromConfig($_SERVER, $this->config)->getClientIp();
+
+        return $ip === '' ? null : substr($ip, 0, 64);
     }
 
     private function isDatabaseLoggingEnabled(): bool
