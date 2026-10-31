@@ -485,6 +485,15 @@ return [
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
+        // Only admit logins whose claims match (added in 4.6.0). Each claim must be present and
+        // equal the value, or contain it when the claim is a list or a space-separated string
+        // (as scope is). Checked before account lookup, so it also gates existing accounts.
+        // Empty admits everyone the provider authenticates.
+        'required_claims' => [
+            // 'scope' => 'poweradmin',
+            // 'department' => 'it',
+        ],
+
         // Permission template mapping for automatic role assignment
         // Maps OIDC groups to existing user permission template names
         // Note: Users can only have one permission template assigned
@@ -706,6 +715,12 @@ return [
         'allow_superuser_provisioning' => false, // Let SAML mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
         'default_permission_template' => 'Guest',  // Default permission template for new SAML users (minimal access until assigned proper role)
+
+        // Only admit logins whose attributes match (added in 4.6.0), same rules as
+        // oidc.required_claims. Use the attribute names your IdP sends.
+        'required_attributes' => [
+            // 'department' => 'it',
+        ],
 
         // Permission template mapping for automatic role assignment
         // Maps SAML groups/roles to existing user permission template names
