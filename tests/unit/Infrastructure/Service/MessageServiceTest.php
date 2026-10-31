@@ -186,6 +186,16 @@ class MessageServiceTest extends TestCase
 
     // ========== renderMessages tests ==========
 
+    public function testADirectErrorThatDoesNotExitIsKeptForTheNextPage(): void
+    {
+        ob_start();
+        $this->service->dontExit()->displayDirectSystemError('Database unavailable');
+        $echoed = (string)ob_get_clean();
+
+        $this->assertStringContainsString('Database unavailable', $echoed);
+        $this->assertSame('Database unavailable', $this->service->getMessages('system')[0]['content'] ?? null);
+    }
+
     public function testRenderMessagesPrintsContentAsText(): void
     {
         $this->service->addError('test', '<img src=x onerror=alert(1)>.example.com A: refused');
