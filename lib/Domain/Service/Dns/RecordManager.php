@@ -191,24 +191,11 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Add a record and return its ID
+     * Refuse a record type or zone the current user may not add to.
      *
-     * This function validates and inserts a record into the database,
-     * returning the new record's ID for use with per-record comments.
-     *
-     * @param int $zone_id Zone ID
-     * @param string $name Name part of record
-     * @param string $type Type of record
-     * @param string $content Content of record
-     * @param int $ttl Time-To-Live of record
-     * @param mixed $prio Priority of record
-     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
-     *                            backend writes it in the same PATCH as the record, SQL ignores it
-     *
-     * @return int|string|null The new record ID, or null on failure
-     * @throws Exception
+     * @throws Exception With the reason the add is refused
      */
-    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, ?array $comment = null): int|string|null
+    private function assertAddAllowed(int $zone_id, string $type): void
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -232,6 +219,60 @@ class RecordManager implements RecordManagerInterface
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
+    }
+
+    /**
+     * Whether addRecordGetId() would pass this record's permission and validation checks,
+     * without writing it or reporting anything. $rid leaves one stored record out of the
+     * CNAME checks, for a replace that deletes it first; the duplicate check is skipped
+     * for the same reason. Master does this with addRecordGetId's dry run instead.
+     */
+    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    {
+        try {
+            $this->assertAddAllowed($zone_id, $type);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        $content = $this->dnsFormatter->formatContent($type, $content);
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $name = (new HostnameValidator($this->config))->normalizeRecordName($name, $zone);
+
+        return $this->validationService->validateRecord(
+            $rid,
+            $zone_id,
+            $type,
+            $content,
+            $name,
+            $prio,
+            $ttl,
+            $this->config->get('dns', 'hostmaster'),
+            (int)$this->config->get('dns', 'ttl')
+        )->isValid();
+    }
+
+    /**
+     * Add a record and return its ID
+     *
+     * This function validates and inserts a record into the database,
+     * returning the new record's ID for use with per-record comments.
+     *
+     * @param int $zone_id Zone ID
+     * @param string $name Name part of record
+     * @param string $type Type of record
+     * @param string $content Content of record
+     * @param int $ttl Time-To-Live of record
+     * @param mixed $prio Priority of record
+     * @param array|null $comment RRset comment ['content' => string, 'account' => string]; the API
+     *                            backend writes it in the same PATCH as the record, SQL ignores it
+     *
+     * @return int|string|null The new record ID, or null on failure
+     * @throws Exception
+     */
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, ?array $comment = null): int|string|null
+    {
+        $this->assertAddAllowed($zone_id, $type);
 
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $dns_ttl = $this->config->get('dns', 'ttl');

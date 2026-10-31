@@ -26,6 +26,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserContextService;
@@ -423,6 +424,9 @@ class ZoneFileImportController extends BaseController
         $failCount = 0;
         $skipCount = 0;
         $replacedRRSets = [];
+        $replaceable = $importMode === 'existing' && $conflictStrategy === 'replace'
+            ? $this->replaceableRrsets($records, $zone_id, $recordRepository, $dnsRecord)
+            : [];
 
         foreach ($records as $record) {
             if ($importMode === 'existing' && $conflictStrategy !== 'add_all') {
@@ -434,7 +438,11 @@ class ZoneFileImportController extends BaseController
                 }
 
                 if ($conflictStrategy === 'replace') {
-                    $rrsetKey = $record->name . '|' . $record->type;
+                    $rrsetKey = self::rrsetKey($record);
+                    if (!($replaceable[$rrsetKey] ?? true)) {
+                        $failCount++;
+                        continue;
+                    }
                     if (!isset($replacedRRSets[$rrsetKey])) {
                         $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
                         foreach ($rrsetRecords as $existing) {
@@ -480,6 +488,46 @@ class ZoneFileImportController extends BaseController
             'zone_id' => $zone_id,
             'zone_name' => $zoneName ?: $origin,
         ]);
+    }
+
+    /**
+     * The RRset a parsed record belongs to, spelled as the lookup and the write see it.
+     */
+    private static function rrsetKey(object $record): string
+    {
+        return strtolower(rtrim((string)$record->name, '.')) . '|' . strtoupper((string)$record->type);
+    }
+
+    /**
+     * Which RRsets a replace may delete: one whose every incoming record passes the
+     * checks. A refused record keeps the whole stored RRset, so a bad line in the file
+     * never costs the zone its records.
+     *
+     * @param array<int, \stdClass> $records Stashed import rows (name, type, content, ttl, priority)
+     * @return array<string, bool> Keyed by rrsetKey()
+     */
+    private function replaceableRrsets(array $records, int $zoneId, RecordRepositoryInterface $recordRepository, DnsRecord $dnsRecord): array
+    {
+        $groups = [];
+        foreach ($records as $record) {
+            $groups[self::rrsetKey($record)][] = $record;
+        }
+
+        $replaceable = [];
+        foreach ($groups as $key => $group) {
+            $stored = $recordRepository->getRRSetRecords($zoneId, $group[0]->name, $group[0]->type);
+            // The stored CNAME is deleted first, so it must not refuse its replacement
+            $rid = strtoupper($group[0]->type) === 'CNAME' && count($stored) === 1 ? $stored[0]['id'] : -1;
+            $replaceable[$key] = true;
+            foreach ($group as $record) {
+                if (!$dnsRecord->canAddRecord($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid)) {
+                    $replaceable[$key] = false;
+                    break;
+                }
+            }
+        }
+
+        return $replaceable;
     }
 
     private function dnssecSkippedMessage(int $count): string

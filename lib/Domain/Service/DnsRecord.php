@@ -292,6 +292,15 @@ class DnsRecord
         return $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio, $comment);
     }
 
+    /**
+     * Whether addRecordGetId() would accept this record, without writing it.
+     * $rid leaves one stored record out of the CNAME checks.
+     */
+    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    {
+        return $this->recordManager->canAddRecord($zone_id, $name, $type, $content, $ttl, $prio, $rid);
+    }
+
     /** Add Supermaster
      *
      * Add a trusted supermaster to the global supermasters table
