@@ -181,7 +181,7 @@ class AddUserController extends BaseController
 
                 // Display the generated password to the admin if allowed by configuration
                 if ($showGeneratedPasswords) {
-                    $successMessage .= ' ' . sprintf(_('Generated password: %s'), '<strong>' . $generatedPassword . '</strong>');
+                    $successMessage .= ' ' . sprintf(_('Generated password: %s'), $generatedPassword);
                 }
 
                 // Send email with credentials if mail is enabled and checkbox is checked
