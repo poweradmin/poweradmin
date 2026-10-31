@@ -157,6 +157,42 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * Whether addRecordGetId() would pass this record's permission and validation checks,
+     * without writing it or reporting anything. $rid leaves one stored record out of the
+     * CNAME checks, for a replace that deletes it first; the duplicate check is skipped
+     * for the same reason. Master does this with addRecordGetId's dry run instead.
+     */
+    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
+
+        try {
+            [, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
+        } catch (Exception $e) {
+            return false;
+        }
+
+        if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $this->userIsZoneOwner($zone_id) == "0")) {
+            return false;
+        }
+
+        $content = $this->dnsFormatter->formatContent($type, $content);
+
+        return $this->validationService->validateRecord(
+            $rid,
+            $zone_id,
+            $type,
+            $content,
+            $name,
+            $prio,
+            $ttl,
+            $this->config->get('dns', 'hostmaster'),
+            (int)$this->config->get('dns', 'ttl')
+        )->isValid();
+    }
+
+    /**
      * Add a record
      *
      * This function validates it if correct it inserts it into the database.
