@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\PermissionService;
@@ -401,6 +402,12 @@ class ZoneFileImportController extends BaseController
 
             // New zone: no conflicts possible
             $conflictStrategy = 'add_all';
+        }
+
+        // One spelling per name, as the record write stores it, so the replace lookup finds the stored RRset
+        $nameNormalizer = new HostnameValidator($this->config);
+        foreach ($records as $record) {
+            $record->name = strtolower($nameNormalizer->normalizeRecordName((string)$record->name, (string)$zoneName));
         }
 
         // Import records
