@@ -463,6 +463,8 @@ class ZoneFileImportController extends BaseController
         $storedRrsets = [];
         $writtenInRrset = [];
         $restoredRrsets = [];
+        // Stored rows whose delete failed: still in place, so a restore must leave them alone
+        $keptIds = [];
         $replaceable = $importMode === 'existing' && $conflictStrategy === 'replace'
             ? $this->replaceableRrsets($records, $zone_id, $recordRepository, $dnsRecordManager)
             : [];
@@ -483,14 +485,20 @@ class ZoneFileImportController extends BaseController
                         continue;
                     }
                     if (!isset($replacedRRSets[$rrsetKey])) {
-                        $rrsetRecords = $recordRepository->getRRSetRecords($zone_id, $record->name, $record->type);
-                        if ($rrsetRecords !== []) {
-                            $storedRrsets[$rrsetKey] = $rrsetRecords;
-                            $writtenInRrset[$rrsetKey] = 0;
-                        }
-                        foreach ($rrsetRecords as $existing) {
+                        $deleted = [];
+                        $keptIds[$rrsetKey] = [];
+                        foreach ($recordRepository->getRRSetRecords($zone_id, $record->name, $record->type) as $existing) {
                             // API backend ids are encoded strings, which an int cast would turn into 0
-                            $dnsRecordManager->deleteRecord(RecordIdHelper::normalizeId($existing['id']));
+                            if ($dnsRecordManager->deleteRecord(RecordIdHelper::normalizeId($existing['id']))) {
+                                $deleted[] = $existing;
+                            } else {
+                                $keptIds[$rrsetKey][] = (string)$existing['id'];
+                            }
+                        }
+                        // Only rows actually deleted may be written back
+                        if ($deleted !== []) {
+                            $storedRrsets[$rrsetKey] = $deleted;
+                            $writtenInRrset[$rrsetKey] = 0;
                         }
                         $replacedRRSets[$rrsetKey] = true;
                     } elseif ($exists) {
@@ -521,7 +529,7 @@ class ZoneFileImportController extends BaseController
                 }
             } elseif (isset($storedRrsets[$rrsetKey])) {
                 // A write refused after the stored RRset was deleted: put the stored rows back
-                $this->restoreRrset($zone_id, $record, $storedRrsets[$rrsetKey], $recordRepository, $dnsRecordManager, $backendProvider);
+                $this->restoreRrset($zone_id, $record, $storedRrsets[$rrsetKey], $keptIds[$rrsetKey] ?? [], $recordRepository, $dnsRecordManager, $backendProvider);
                 $successCount -= $writtenInRrset[$rrsetKey];
                 $failCount += $writtenInRrset[$rrsetKey] + 1;
                 $restoredRrsets[$rrsetKey] = true;
@@ -529,6 +537,11 @@ class ZoneFileImportController extends BaseController
             } else {
                 $failCount++;
             }
+        }
+
+        // Rows written back straight to the backend miss the per-write rectify
+        if ($restoredRrsets !== []) {
+            $this->rectifyZoneAfterWrite($zoneName);
         }
 
         // Clean up session data
@@ -554,11 +567,14 @@ class ZoneFileImportController extends BaseController
      * priority and disabled flag; one that cannot be written is reported.
      *
      * @param array<int, array<string, mixed>> $stored
+     * @param list<string> $keptIds Stored rows the replace could not delete
      */
-    private function restoreRrset(int $zoneId, object $record, array $stored, RecordRepositoryInterface $recordRepository, RecordManagerInterface $recordManager, DnsBackendProvider $backendProvider): void
+    private function restoreRrset(int $zoneId, object $record, array $stored, array $keptIds, RecordRepositoryInterface $recordRepository, RecordManagerInterface $recordManager, DnsBackendProvider $backendProvider): void
     {
         foreach ($recordRepository->getRRSetRecords($zoneId, $record->name, $record->type) as $written) {
-            $recordManager->deleteRecord(RecordIdHelper::normalizeId($written['id']));
+            if (!in_array((string)$written['id'], $keptIds, true)) {
+                $recordManager->deleteRecord(RecordIdHelper::normalizeId($written['id']));
+            }
         }
         foreach ($stored as $row) {
             $restored = $backendProvider->createRecordAtomic(
