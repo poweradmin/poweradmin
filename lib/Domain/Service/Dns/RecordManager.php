@@ -222,24 +222,24 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Whether addRecordGetId() would pass this record's permission and validation checks,
-     * without writing it or reporting anything. $rid leaves one stored record out of the
+     * Why addRecordGetId() would refuse this record on a permission or validation check, or null
+     * when it would pass; nothing is written or reported. $rid leaves one stored record out of the
      * CNAME checks, for a replace that deletes it first; the duplicate check is skipped
      * for the same reason. Master does this with addRecordGetId's dry run instead.
      */
-    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    public function recordAddRefusal(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): ?string
     {
         try {
             $this->assertAddAllowed($zone_id, $type);
         } catch (Exception $e) {
-            return false;
+            return $e->getMessage();
         }
 
         $content = $this->dnsFormatter->formatContent($type, $content);
         $zone = $this->domainRepository->getDomainNameById($zone_id);
         $name = (new HostnameValidator($this->config))->normalizeRecordName($name, $zone);
 
-        return $this->validationService->validateRecord(
+        $result = $this->validationService->validateRecord(
             $rid,
             $zone_id,
             $type,
@@ -249,7 +249,9 @@ class RecordManager implements RecordManagerInterface
             $ttl,
             $this->config->get('dns', 'hostmaster'),
             (int)$this->config->get('dns', 'ttl')
-        )->isValid();
+        );
+
+        return $result->isValid() ? null : (string)$result->getFirstError();
     }
 
     /**

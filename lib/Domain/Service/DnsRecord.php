@@ -293,12 +293,12 @@ class DnsRecord
     }
 
     /**
-     * Whether addRecordGetId() would accept this record, without writing it.
+     * Why addRecordGetId() would refuse this record, or null when it would pass; nothing is written.
      * $rid leaves one stored record out of the CNAME checks.
      */
-    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    public function recordAddRefusal(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): ?string
     {
-        return $this->recordManager->canAddRecord($zone_id, $name, $type, $content, $ttl, $prio, $rid);
+        return $this->recordManager->recordAddRefusal($zone_id, $name, $type, $content, $ttl, $prio, $rid);
     }
 
     /** Add Supermaster

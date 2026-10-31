@@ -503,7 +503,7 @@ class ZoneFileImportController extends BaseController
     /**
      * Which RRsets a replace may delete: one whose every incoming record passes the
      * checks. A refused record keeps the whole stored RRset, so a bad line in the file
-     * never costs the zone its records.
+     * never costs the zone its records; the first refusal of each kept RRset is shown.
      *
      * @param array<int, \stdClass> $records Stashed import rows (name, type, content, ttl, priority)
      * @return array<string, bool> Keyed by rrsetKey()
@@ -522,7 +522,10 @@ class ZoneFileImportController extends BaseController
             $rid = strtoupper($group[0]->type) === 'CNAME' && count($stored) === 1 ? $stored[0]['id'] : -1;
             $replaceable[$key] = true;
             foreach ($group as $record) {
-                if (!$dnsRecord->canAddRecord($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid)) {
+                $refusal = $dnsRecord->recordAddRefusal($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid);
+                if ($refusal !== null) {
+                    // System messages render raw on this branch, and the name comes from the uploaded file
+                    $this->addSystemMessage('error', htmlspecialchars($record->name . ' ' . $record->type . ': ' . $refusal, ENT_QUOTES, 'UTF-8'));
                     $replaceable[$key] = false;
                     break;
                 }
