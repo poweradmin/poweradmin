@@ -5,6 +5,7 @@
 .devcontainer/
 addons/
 install/includes/helper.js
+tests/
 
 # Third-party and generated
 vendor/
