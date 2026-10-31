@@ -270,8 +270,10 @@ EOF;
             $error = sprintf('%s (Record: %s)', $error, $recordName);
         }
 
-        // First store the error in the session for later display if needed
-        $this->addSystemError($error, $recordName);
+        // A page that exits has shown the error already; storing it too would repeat it on a later page
+        if (!$exit) {
+            $this->addSystemError($error, $recordName);
+        }
 
         // Process the error message based on allowHtml parameter
         $processedError = $allowHtml ? $error : htmlspecialchars($error, ENT_QUOTES);
