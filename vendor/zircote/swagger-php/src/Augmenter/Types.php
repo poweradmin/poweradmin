@@ -6,12 +6,16 @@
 
 namespace OpenApi\Augmenter;
 
+use OpenApi\HybridBridge;
 use OpenApi\Spec as OA;
 use OpenApi\Specification;
 use OpenApi\Type\SchemaType;
+use OpenApi\Type\TypeMapper;
 use OpenApi\Type\TypeResolver;
 use OpenApi\Undefined;
 use OpenApi\Utils\PipeInterface;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Infers schema type, format, nullable, items, etc. from PHP type declarations and docblocks.
@@ -21,10 +25,18 @@ use OpenApi\Utils\PipeInterface;
  *
  * @implements PipeInterface<Specification>
  */
-class Types implements PipeInterface
+class Types implements PipeInterface, LoggerAwareInterface
 {
+    protected ?LoggerInterface $logger = null;
+
     /** @var array<string, string> class name => component pointer, for the components that exist */
     protected array $refMap = [];
+
+    /** the member whose type is being applied, for the warning when a class in it has no schema */
+    protected ?\Reflector $subject = null;
+
+    /** @var \SplObjectStorage<OA\Schema, null> schemas whose `type` this augmenter inferred, not the author */
+    protected \SplObjectStorage $inferredTypes;
 
     public function __construct(
         protected TypeResolver $typeResolver = new TypeResolver(),
@@ -34,6 +46,7 @@ class Types implements PipeInterface
     public function __invoke(mixed $payload): mixed
     {
         $this->refMap = $payload->buildComponentIndex()->buildRefMap();
+        $this->inferredTypes = new \SplObjectStorage();
 
         $payload->getWalker()->eachSchema(function (OA\Schema $schema): void {
             $this->inferSchemaType($schema);
@@ -70,8 +83,20 @@ class Types implements PipeInterface
     public function setTypeResolver(TypeResolver $typeResolver): static
     {
         $this->typeResolver = $typeResolver;
+        if ($this->logger instanceof LoggerInterface) {
+            $this->typeResolver->setLogger($this->logger);
+        }
 
         return $this;
+    }
+
+    /**
+     * Passes the logger to the type resolver, including one set later.
+     */
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
+        $this->typeResolver->setLogger($logger);
     }
 
     public function group(): string|\BackedEnum
@@ -87,8 +112,10 @@ class Types implements PipeInterface
 
         if ($schema->items instanceof OA\Schema) {
             $schema->type = 'array';
+            $this->inferredTypes->offsetSet($schema);
         } elseif ($schema->properties || $schema->patternProperties) {
             $schema->type = 'object';
+            $this->inferredTypes->offsetSet($schema);
         }
     }
 
@@ -206,6 +233,8 @@ class Types implements PipeInterface
             return;
         }
 
+        $this->subject = $reflector;
+
         if (!$property->schema instanceof OA\Schema) {
             $property->schema = $this->schemaTypeToSchema($resolved);
         } else {
@@ -222,13 +251,8 @@ class Types implements PipeInterface
         if (Undefined::isDefault($schema->const)) {
             $schema->const = $value;
         }
-        $schema->type ??= match (true) {
-            is_string($value) => 'string',
-            is_int($value) => 'integer',
-            is_float($value) => 'number',
-            is_bool($value) => 'boolean',
-            default => null,
-        };
+        // an array constant stays untyped, as it always has
+        $schema->type ??= is_array($value) ? null : TypeMapper::valueType($value);
         $property->schema = $schema;
     }
 
@@ -242,6 +266,8 @@ class Types implements PipeInterface
         if (!$resolved instanceof SchemaType) {
             return;
         }
+
+        $this->subject = $method;
 
         if (!$property->schema instanceof OA\Schema) {
             $property->schema = $this->schemaTypeToSchema($resolved);
@@ -288,13 +314,21 @@ class Types implements PipeInterface
             $resolved->nullable = null;
         }
 
+        $this->subject = $reflector;
+
         if (!$parameter->schema instanceof OA\Schema) {
             $parameter->schema = $this->schemaTypeToSchema($resolved);
         } else {
             $this->mergeIntoSchema($parameter->schema, $resolved);
         }
 
-        $parameter->required ??= !$isNullable;
+        // a default means a value exists when the parameter is left out. A path parameter is required
+        // whatever its default, and one converted from classic keeps classic's rule
+        $hasDefault = $reflector->isDefaultValueAvailable()
+            && $parameter->in !== 'path'
+            && $parameter->getMeta(HybridBridge::class) !== true;
+
+        $parameter->required ??= !$isNullable && !$hasDefault;
     }
 
     protected function isComponent(string $class): bool
@@ -316,7 +350,27 @@ class Types implements PipeInterface
             $this->applySchemaType($schema, $schemaType);
         }
 
-        $schema->nullable ??= $schemaType->nullable;
+        // a type the author wrote out is the whole type, so the PHP type's `null` is not added to it
+        if (!$this->hasExplicitType($schema)) {
+            $schema->nullable ??= $schemaType->nullable;
+        }
+    }
+
+    /**
+     * Whether the author gave the schema its type, rather than a shortcut or this augmenter.
+     *
+     * `Schema\Items` is always an array, whatever its arguments say, and `inferSchemaType()` types
+     * a schema from its `items` or `properties`.
+     */
+    protected function hasExplicitType(OA\Schema $schema): bool
+    {
+        if ($schema->oneOf !== null || $schema->allOf !== null || $schema->anyOf !== null) {
+            return true;
+        }
+
+        return $schema->type !== null
+            && !$schema instanceof OA\Schema\Items
+            && !$this->inferredTypes->offsetExists($schema);
     }
 
     protected function applySchemaType(OA\Schema $schema, SchemaType $schemaType): void
@@ -328,8 +382,13 @@ class Types implements PipeInterface
         if ($schemaType->type !== null) {
             if ($schemaType->isRef()) {
                 // a class is referenced only when it is a component, and never in place of an explicit enum
-                if ($schema->enum === null && $this->isComponent($schemaType->type)) {
-                    $schema->ref = $schemaType->type;
+                if ($schema->enum === null) {
+                    if ($this->isComponent($schemaType->type)) {
+                        $schema->ref = $schemaType->type;
+                    } else {
+                        $subject = $this->subject instanceof \Reflector ? $this->typeResolver->describe($this->subject) : 'a schema';
+                        $this->logger?->warning("No schema for {$schemaType->type} in {$subject}, so its type is left out");
+                    }
                 }
             } else {
                 $schema->type = $schemaType->type;

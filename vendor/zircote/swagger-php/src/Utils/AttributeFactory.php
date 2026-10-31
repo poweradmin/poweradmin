@@ -7,6 +7,7 @@
 namespace OpenApi\Utils;
 
 use OpenApi\Assembler\DefaultAttributeTranslator;
+use OpenApi\Assembler\OperationMethodsTranslator;
 use OpenApi\Assembler\OptionalPropertyAttributeTranslator;
 use OpenApi\Contracts\AttributeInterface;
 use OpenApi\Contracts\AttributeTranslatorInterface;
@@ -15,6 +16,7 @@ use OpenApi\Spec as OA;
 use OpenApi\Specification\ComponentName;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 
 /**
  * Creates spec attribute instances from PHP reflectors.
@@ -39,6 +41,7 @@ class AttributeFactory implements LoggerAwareInterface
         $translators = [
             new DefaultAttributeTranslator(),
             new OptionalPropertyAttributeTranslator(),
+            new OperationMethodsTranslator(),
         ];
 
         $this->translators = new TypedList($translators);
@@ -78,13 +81,17 @@ class AttributeFactory implements LoggerAwareInterface
     }
 
     /**
-     * Reset all translators.
+     * Reset all translators, and give those that log this factory's logger.
      *
      * Called at the start of each top-level collection unit.
      */
     public function resetTranslators(): void
     {
         foreach ($this->translators as $translator) {
+            if ($translator instanceof LoggerAwareInterface && $this->logger instanceof LoggerInterface) {
+                $translator->setLogger($this->logger);
+            }
+
             $translator->reset();
         }
     }
@@ -149,13 +156,13 @@ class AttributeFactory implements LoggerAwareInterface
                 continue;
             }
 
-            array_push($inner, ...$this->resolveNesting($this->readAttributes($property)));
+            array_push($inner, ...$this->fromMember($property));
         }
 
         $constructor = $class->getConstructor();
         if ($constructor) {
             foreach ($constructor->getParameters() as $parameter) {
-                array_push($inner, ...$this->resolveNesting($this->readAttributes($parameter)));
+                array_push($inner, ...$this->fromMember($parameter));
             }
 
             $this->reportConstructorAttributes($class, $constructor);
@@ -168,14 +175,38 @@ class AttributeFactory implements LoggerAwareInterface
                 continue;
             }
 
-            array_push($inner, ...$this->resolveNesting($this->readAttributes($constant)));
+            array_push($inner, ...$this->fromMember($constant));
         }
 
         foreach ($this->getDirectMethods($class) as $method) {
-            array_push($inner, ...$this->fromReflector($method));
+            array_push($inner, ...$this->fromMember($method));
         }
 
         return $inner;
+    }
+
+    /**
+     * Read and resolve the attributes of one class member, as {@see self::fromReflector()} does.
+     *
+     * A member that fails assembly, such as an attribute several attributes could hold, is left
+     * out with a warning, so the rest of its class is kept. Without a logger there is nobody to
+     * tell, so the error is thrown as {@see self::fromReflector()} throws it.
+     *
+     * @return list<AttributeInterface>
+     */
+    public function fromMember(\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $member): array
+    {
+        try {
+            return $this->fromReflector($member);
+        } catch (OpenApiException $openApiException) {
+            if (!$this->logger instanceof LoggerInterface) {
+                throw $openApiException;
+            }
+
+            $this->logger->warning(sprintf('Skipping %s: %s', $this->memberLabel($member), $openApiException->getMessage()));
+
+            return [];
+        }
     }
 
     /**
@@ -269,8 +300,9 @@ class AttributeFactory implements LoggerAwareInterface
     /**
      * Hierarchical absorb: inner-level attributes declare which outer-level types can contain them.
      *
-     * Inner attributes that match an outer attribute via contained() are nested into it (first match wins).
-     * Inner attributes that find no container pass through alongside outer.
+     * An inner attribute matching one outer attribute via contained() is nested into it. Matching
+     * more than one is an error, unless the inner attribute fans out to all of them. Inner
+     * attributes that find no container pass through alongside outer.
      *
      * @param  list<AttributeInterface> $outer
      * @param  list<AttributeInterface> $inner
@@ -279,24 +311,20 @@ class AttributeFactory implements LoggerAwareInterface
     public function resolveHierarchy(array $outer, array $inner): array
     {
         foreach ($inner as $innerAttribute) {
-            $absorbed = false;
-            $containedTargets = $innerAttribute->contained();
-
-            if ($containedTargets !== []) {
-                foreach ($outer as $outerAttribute) {
-                    foreach ($containedTargets as $parentClass => $slot) {
-                        if ($outerAttribute instanceof $parentClass) {
-                            $this->nestChild($outerAttribute, $innerAttribute, $slot);
-                            $absorbed = true;
-                            break 2;
-                        }
-                    }
+            $matches = [];
+            foreach ($outer as $outerAttribute) {
+                $match = $this->matchTarget($innerAttribute, $outerAttribute, $innerAttribute->contained());
+                if ($match !== null) {
+                    $matches[] = $match;
                 }
             }
 
-            if (!$absorbed) {
+            if ($matches === []) {
                 $outer[] = $innerAttribute;
+                continue;
             }
+
+            $this->nestIntoMatches($innerAttribute, $matches, 'Ambiguous hierarchy: %s matches multiple containers');
         }
 
         return $outer;
@@ -347,6 +375,16 @@ class AttributeFactory implements LoggerAwareInterface
         }
 
         return $kept;
+    }
+
+    protected function memberLabel(\ReflectionMethod|\ReflectionProperty|\ReflectionParameter|\ReflectionClassConstant $member): string
+    {
+        return match (true) {
+            $member instanceof \ReflectionMethod => $member->class . '::' . $member->name . '()',
+            $member instanceof \ReflectionProperty => $member->class . '::$' . $member->name,
+            $member instanceof \ReflectionClassConstant => $member->class . '::' . $member->name,
+            default => '$' . $member->name . ' of ' . $member->getDeclaringClass()?->getName() . '::' . $member->getDeclaringFunction()->name . '()',
+        };
     }
 
     /**
@@ -460,7 +498,8 @@ class AttributeFactory implements LoggerAwareInterface
     }
 
     /**
-     * Merge one attribute into a matching unmerged sibling, if there is exactly one.
+     * Merge one attribute into its matching unmerged sibling. Matching more than one is an error,
+     * unless the attribute fans out to all of them.
      *
      * @param list<AttributeInterface> $attributes
      * @param array<int,true>          $merged
@@ -468,36 +507,102 @@ class AttributeFactory implements LoggerAwareInterface
     protected function mergeIntoSibling(array $attributes, int $index, array &$merged): void
     {
         $attribute = $attributes[$index];
-        $mergeTargets = $attribute->merge();
 
-        $matchingTarget = null;
-        $matchingSlot = null;
+        $matches = [];
         foreach ($attributes as $candidateIndex => $candidate) {
             if ($candidateIndex === $index || isset($merged[$candidateIndex])) {
                 continue;
             }
 
-            foreach ($mergeTargets as $targetClass => $slot) {
-                if ($candidate instanceof $targetClass) {
-                    if ($matchingTarget instanceof AttributeInterface) {
-                        throw OpenApiException::fromSource(
-                            sprintf(
-                                'Ambiguous merge: %s matches multiple siblings on the same target. Nest it explicitly in the one it belongs to, or give it a `component` and reference it from each.',
-                                $attribute::class
-                            ),
-                            $attribute->getSourceLocation(),
-                        );
-                    }
-                    $matchingTarget = $candidate;
-                    $matchingSlot = $slot;
-                }
+            $match = $this->matchTarget($attribute, $candidate, $attribute->merge());
+            if ($match !== null) {
+                $matches[] = $match;
             }
         }
 
-        if ($matchingTarget instanceof AttributeInterface) {
-            $this->nestChild($matchingTarget, $attribute, $matchingSlot);
+        if ($matches !== []) {
+            $this->nestIntoMatches($attribute, $matches, 'Ambiguous merge: %s matches multiple siblings on the same target');
             $merged[$index] = true;
         }
+    }
+
+    /**
+     * Nest a child into the one parent it matched, or with `Fan::All` into each of several that
+     * match by the same target type: the child itself into the first, a copy into every other.
+     * Several matches are an error otherwise, and so are matches of different target types,
+     * whatever the child's `fan`.
+     *
+     * @param non-empty-list<array{AttributeInterface, string, list<class-string>}> $matches parent, slot and the target types it matched by
+     */
+    protected function nestIntoMatches(AttributeInterface $child, array $matches, string $ambiguous): void
+    {
+        if (count($matches) > 1) {
+            // one type when a target type is shared by every match, whichever order they come in
+            $shared = array_intersect(...array_column($matches, 2));
+            $fanned = $child->getFan() === OA\Fan::All;
+
+            if (!$fanned || $shared === []) {
+                throw OpenApiException::fromSource(
+                    sprintf(
+                        '%s (%s). %s',
+                        sprintf($ambiguous, $child::class),
+                        implode(', ', array_map($this->matchLabel(...), array_column($matches, 0))),
+                        $fanned
+                            ? 'Fan::All only puts it into several attributes of one type. Nest it explicitly in the one it belongs to.'
+                            : 'Nest it explicitly in the one it belongs to, give it a `component` and reference it from each, or set `fan: Fan::All` to put it in all of them.',
+                    ),
+                    $child->getSourceLocation(),
+                );
+            }
+        }
+
+        foreach ($matches as $position => [$parent, $slot]) {
+            $this->nestChild($parent, $position === 0 ? $child : $child->copy(), $slot);
+        }
+    }
+
+    /**
+     * The slot a child takes in a candidate parent, with the target types of `$targets` the
+     * candidate is an instance of, or null when it is none of them. A candidate matching
+     * several target types that name different slots is an error: the slot would be decided by
+     * the order of `$targets`.
+     *
+     * @param array<class-string, string> $targets target type and slot, from `merge()` or `contained()`
+     *
+     * @return array{AttributeInterface, string, list<class-string>}|null
+     */
+    protected function matchTarget(AttributeInterface $child, AttributeInterface $candidate, array $targets): ?array
+    {
+        $matched = array_filter($targets, static fn (string $slot, string $type): bool => $candidate instanceof $type, ARRAY_FILTER_USE_BOTH);
+        if ($matched === []) {
+            return null;
+        }
+
+        $slots = array_values(array_unique($matched));
+        if (count($slots) > 1) {
+            throw OpenApiException::fromSource(
+                sprintf(
+                    'Ambiguous slot: %s matches %s as more than one target type (%s), and they name different slots (%s)',
+                    $child::class,
+                    $this->matchLabel($candidate),
+                    implode(', ', array_keys($matched)),
+                    implode(', ', $slots),
+                ),
+                $child->getSourceLocation(),
+            );
+        }
+
+        return [$candidate, $slots[0], array_keys($matched)];
+    }
+
+    /**
+     * An attribute as an ambiguity message names it: its class, and its component key if it has one.
+     */
+    protected function matchLabel(AttributeInterface $attribute): string
+    {
+        $component = ComponentName::isComponentType($attribute) ? ComponentName::of($attribute) : null;
+
+        return $component !== null ? sprintf('%s "%s"', $attribute::class, $component) : $attribute::class;
     }
 
     protected function nestChild(AttributeInterface $parent, AttributeInterface $child, string $slot): void
