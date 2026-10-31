@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -185,6 +185,16 @@ class MessageServiceTest extends TestCase
     }
 
     // ========== renderMessages tests ==========
+
+    public function testRenderMessagesPrintsContentAsText(): void
+    {
+        $this->service->addError('test', '<img src=x onerror=alert(1)>.example.com A: refused');
+
+        $html = $this->service->renderMessages('test.twig');
+
+        $this->assertStringNotContainsString('<img', $html);
+        $this->assertStringContainsString('&lt;img src=x onerror=alert(1)&gt;.example.com A: refused', $html);
+    }
 
     #[Test]
     public function testRenderMessagesReturnsHtmlWithAlert(): void

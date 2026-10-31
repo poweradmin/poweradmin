@@ -531,8 +531,7 @@ class ZoneFileImportController extends BaseController
             foreach ($group as $record) {
                 $refusal = $dnsRecord->recordAddRefusal($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid);
                 if ($refusal !== null) {
-                    // System messages render raw on this branch, and the name comes from the uploaded file
-                    $this->addSystemMessage('error', htmlspecialchars($record->name . ' ' . $record->type . ': ' . $refusal, ENT_QUOTES, 'UTF-8'));
+                    $this->addSystemMessage('error', $record->name . ' ' . $record->type . ': ' . $refusal);
                     $replaceable[$key] = false;
                     break;
                 }
