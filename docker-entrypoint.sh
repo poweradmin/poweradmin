@@ -51,6 +51,20 @@ php_num() {
     fi
 }
 
+# Print PA_CLIENT_IP_HEADER as one of the values Poweradmin accepts; warn on stderr and print
+# auto for anything else, so a typo does not pass unnoticed
+client_ip_header() {
+    local value
+    value=$(printf '%s' "${PA_CLIENT_IP_HEADER:-auto}" | tr '[:upper:]' '[:lower:]' | tr -d '[:space:]')
+    case "${value}" in
+        auto|x-forwarded-for|x-real-ip|none) printf '%s' "${value}" ;;
+        *)
+            log "WARNING: PA_CLIENT_IP_HEADER='${PA_CLIENT_IP_HEADER}' is not one of auto, x-forwarded-for, x-real-ip, none; using auto" >&2
+            printf 'auto'
+            ;;
+    esac
+}
+
 # Print $2 when it names a PHP LOG_* constant; otherwise warn on stderr and print $3
 php_log_facility() {
     local name="$1" value="$2" default="$3"
@@ -157,6 +171,18 @@ configure_trusted_proxies() {
         return
     fi
 
+    # Caddy reads the same header the application trusts, so its log and Poweradmin's agree
+    local headers_line
+    case "$(client_ip_header)" in
+        none)
+            log "PA_CLIENT_IP_HEADER=none: leaving Caddy on the peer address"
+            return
+            ;;
+        x-forwarded-for) headers_line='client_ip_headers X-Forwarded-For' ;;
+        x-real-ip) headers_line='client_ip_headers X-Real-IP' ;;
+        *) headers_line='client_ip_headers X-Forwarded-For X-Real-IP' ;;
+    esac
+
     # Convert comma-separated input to space-separated (Caddy format)
     local proxies
     proxies=$(echo "${TRUSTED_PROXIES}" | tr ',' ' ' | tr -s ' ')
@@ -166,7 +192,7 @@ configure_trusted_proxies() {
     # & and | are special in the sed replacement; a stray one would corrupt the Caddyfile
     local proxies_sed
     proxies_sed=$(printf '%s' "${proxies}" | sed 's/[&|\\]/\\&/g')
-    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies_sed}\n        client_ip_headers X-Forwarded-For X-Real-IP\n    }|" "${caddyfile}"
+    sed -i "s|order php_server before file_server|order php_server before file_server\n    servers {\n        trusted_proxies static ${proxies_sed}\n        ${headers_line}\n    }|" "${caddyfile}"
 
     log "Trusted proxies configured in Caddyfile"
 }
@@ -1338,6 +1364,7 @@ return [
         'login_token_validation' => ${login_token_validation},
         'global_token_validation' => ${global_token_validation},
         'trusted_proxies' => ${trusted_proxies_php},
+        'client_ip_header' => $(php_sq "$(client_ip_header)"),
         'password_policy' => [
             'enable_password_rules' => ${password_rules_enabled},
             'min_length' => $(php_num PA_PASSWORD_MIN_LENGTH "${PA_PASSWORD_MIN_LENGTH:-6}" 6),

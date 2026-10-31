@@ -205,6 +205,23 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         $this->assertStringContainsString("'allow_self_approval' => \${approval_allow_self_approval},", $this->settingsGroupBody($entrypoint, 'approval'));
     }
 
+    public function testClientIpHeaderDefaultsToAutoAndCaddyFollowsIt(): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+
+        $this->assertSame('auto', $defaults['security']['client_ip_header']);
+        $this->assertStringContainsString("'client_ip_header' => \$(php_sq \"\$(client_ip_header)\"),", $this->settingsGroupBody($entrypoint, 'security'));
+        $this->assertStringContainsString('"${PA_CLIENT_IP_HEADER:-auto}"', $this->validatorBody('client_ip_header'));
+
+        $caddy = $this->validatorBody('configure_trusted_proxies');
+        $this->assertStringContainsString("x-real-ip) headers_line='client_ip_headers X-Real-IP'", $caddy);
+        $this->assertStringContainsString("x-forwarded-for) headers_line='client_ip_headers X-Forwarded-For'", $caddy);
+        $this->assertStringContainsString('${headers_line}', $caddy);
+        $this->assertStringNotContainsString('client_ip_headers X-Forwarded-For X-Real-IP\\n', $caddy);
+    }
+
     private function settingsGroupBody(string $entrypoint, string $group): string
     {
         $start = strpos($entrypoint, sprintf("    '%s' => [\n", $group));

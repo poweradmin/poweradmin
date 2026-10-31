@@ -382,4 +382,75 @@ class IpAddressRetrieverTest extends TestCase
         $this->assertEquals('203.0.113.10', IpAddressRetriever::fromConfig($server, $malformed)->getClientIp());
         $this->assertEquals('203.0.113.10', IpAddressRetriever::fromConfig($server, new FakeConfiguration())->getClientIp());
     }
+
+    /** @return array<string, array{0: string, 1: string}> */
+    public static function headerModes(): array
+    {
+        return [
+            'auto reads X-Forwarded-For first' => ['auto', '203.0.113.7'],
+            'x-forwarded-for only' => ['x-forwarded-for', '203.0.113.7'],
+            'x-real-ip only' => ['x-real-ip', '198.51.100.20'],
+            'none uses the peer' => ['none', '127.0.0.1'],
+            'an unknown value reads as auto' => ['forwarded', '203.0.113.7'],
+            'case and spaces are ignored' => [' X-Real-IP ', '198.51.100.20'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('headerModes')]
+    public function testTheConfiguredHeaderIsTheOnlyOneRead(string $mode, string $expected)
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '203.0.113.7',
+            'HTTP_X_REAL_IP' => '198.51.100.20',
+        ];
+        $this->assertEquals($expected, (new IpAddressRetriever($server, null, [], $mode))->getClientIp());
+    }
+
+    public function testXForwardedForOnlyIgnoresAClientSentXRealIp()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_REAL_IP' => '9.9.9.9',
+        ];
+        $this->assertEquals('127.0.0.1', (new IpAddressRetriever($server, null, [], 'x-forwarded-for'))->getClientIp());
+    }
+
+    public function testXRealIpOnlyIgnoresAClientSentXForwardedFor()
+    {
+        $server = [
+            'REMOTE_ADDR' => '127.0.0.1',
+            'HTTP_X_FORWARDED_FOR' => '9.9.9.9',
+        ];
+        $this->assertEquals('127.0.0.1', (new IpAddressRetriever($server, null, [], 'x-real-ip'))->getClientIp());
+    }
+
+    public function testXRealIpOnlyFallsBackToThePeerOnAnUnusableValue()
+    {
+        foreach (['unknown', '127.0.0.1'] as $value) {
+            $server = ['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_REAL_IP' => $value];
+            $this->assertEquals('127.0.0.1', (new IpAddressRetriever($server, null, [], 'x-real-ip'))->getClientIp(), $value);
+        }
+    }
+
+    public function testEveryModeStillIgnoresHeadersFromAPublicPeer()
+    {
+        $server = [
+            'REMOTE_ADDR' => '203.0.113.10',
+            'HTTP_X_FORWARDED_FOR' => '1.2.3.4',
+            'HTTP_X_REAL_IP' => '5.6.7.8',
+        ];
+        foreach (['auto', 'x-forwarded-for', 'x-real-ip', 'none'] as $mode) {
+            $this->assertEquals('203.0.113.10', (new IpAddressRetriever($server, null, [], $mode))->getClientIp(), $mode);
+        }
+    }
+
+    public function testFromConfigReadsTheHeaderSetting()
+    {
+        $config = $this->createStub(\Poweradmin\Domain\Config\ConfigurationInterface::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $key === 'client_ip_header' ? 'x-real-ip' : $default);
+        $server = ['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '203.0.113.7', 'HTTP_X_REAL_IP' => '198.51.100.20'];
+
+        $this->assertEquals('198.51.100.20', IpAddressRetriever::fromConfig($server, $config)->getClientIp());
+    }
 }

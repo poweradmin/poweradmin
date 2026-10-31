@@ -626,6 +626,7 @@ Supports Docker secrets via `TRUSTED_CA_FILE__FILE` (see [DOCKER-SECRETS.md](DOC
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
 | `TRUSTED_PROXIES` | Comma-separated list of trusted proxy CIDRs or `private_ranges` | Empty | No |
+| `PA_CLIENT_IP_HEADER` | Forwarded header that holds the client address: `x-forwarded-for`, `x-real-ip`, `none` (the proxy's address only) or `auto` (`X-Forwarded-For`, then `X-Real-IP`). Set it to the header your proxy writes, so a client cannot supply the other one; Caddy then reads the same header. Use `none` only with no proxy in front, since behind one every client would share the proxy's address for login lockout | `auto` | No |
 
 When running behind a reverse proxy (Nginx, Traefik, HAProxy, etc.), the container sees the proxy's IP instead of the real client IP. Setting `TRUSTED_PROXIES` configures Caddy to resolve the real client IP from `X-Forwarded-For` headers, so both access logs and application logs show the correct IP.
 

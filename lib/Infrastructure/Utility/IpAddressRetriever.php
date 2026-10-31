@@ -34,24 +34,38 @@ class IpAddressRetriever
     private IPAddressValidator $ipValidator;
     private TrustedProxyList $trustedProxies;
 
+    /** Forwarded headers read for each security.client_ip_header value; anything else reads as 'auto' */
+    private const HEADERS_BY_MODE = [
+        'auto' => ['HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP'],
+        'x-forwarded-for' => ['HTTP_X_FORWARDED_FOR'],
+        'x-real-ip' => ['HTTP_X_REAL_IP'],
+        'none' => [],
+    ];
+
+    /** @var list<string> */
+    private array $proxyHeaders;
+
     /**
      * @param array<int, string> $trustedProxies Public peers whose forwarded headers are honoured (security.trusted_proxies)
+     * @param string $clientIpHeader Which forwarded header holds the client address (security.client_ip_header)
      */
-    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, array $trustedProxies = [])
+    public function __construct(array $server, ?IPAddressValidator $ipValidator = null, array $trustedProxies = [], string $clientIpHeader = 'auto')
     {
         $this->server = $server;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->trustedProxies = new TrustedProxyList($trustedProxies);
+        $this->proxyHeaders = self::HEADERS_BY_MODE[strtolower(trim($clientIpHeader))] ?? self::HEADERS_BY_MODE['auto'];
     }
 
     /**
-     * Build with the trusted proxy list from security.trusted_proxies.
+     * Build with security.trusted_proxies and security.client_ip_header.
      */
     public static function fromConfig(array $server, ConfigurationInterface $config, ?IPAddressValidator $ipValidator = null): self
     {
         $configured = $config->get('security', 'trusted_proxies', []);
+        $header = $config->get('security', 'client_ip_header', 'auto');
 
-        return new self($server, $ipValidator, is_array($configured) ? $configured : []);
+        return new self($server, $ipValidator, is_array($configured) ? $configured : [], is_string($header) ? $header : 'auto');
     }
 
     /**
@@ -72,12 +86,7 @@ class IpAddressRetriever
 
         if ($remoteAddr !== '' && $this->isTrustedPeer($remoteAddr)) {
             // No Client-IP: proxies rarely set it but pass a client's own through
-            $proxyHeaders = [
-                'HTTP_X_FORWARDED_FOR',
-                'HTTP_X_REAL_IP',
-            ];
-
-            foreach ($proxyHeaders as $header) {
+            foreach ($this->proxyHeaders as $header) {
                 if (empty($this->server[$header])) {
                     continue;
                 }
