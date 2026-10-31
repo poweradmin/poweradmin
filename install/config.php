@@ -22,7 +22,8 @@ return [
         // Leave empty (default) to ignore X-Forwarded-For entirely and gate access
         // strictly on REMOTE_ADDR. Add the IPs of your reverse proxy chain (the
         // local nginx, any internal load balancer, the public CDN/WAF) if you want
-        // allowlist decisions to use the real client behind those proxies.
+        // allowlist decisions to use the real client behind those proxies. Each listed
+        // proxy must write X-Forwarded-For itself; one that passes a client's header through lets it choose.
         'trusted_proxies' => [
             //'127.0.0.1',
             //'203.0.113.10',
