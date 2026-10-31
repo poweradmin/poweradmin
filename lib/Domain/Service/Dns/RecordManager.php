@@ -157,12 +157,12 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
-     * Whether addRecordGetId() would pass this record's permission and validation checks,
-     * without writing it or reporting anything. $rid leaves one stored record out of the
+     * Why addRecordGetId() would refuse this record on a permission or validation check, or null
+     * when it would pass; nothing is written or reported. $rid leaves one stored record out of the
      * CNAME checks, for a replace that deletes it first; the duplicate check is skipped
      * for the same reason. Master does this with addRecordGetId's dry run instead.
      */
-    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool
+    public function recordAddRefusal(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): ?string
     {
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
@@ -170,16 +170,16 @@ class RecordManager implements RecordManagerInterface
         try {
             [, $name] = $this->normalizeNameAndAssertAddAllowed($zone_id, $name, $type, $perm_edit);
         } catch (Exception $e) {
-            return false;
+            return $e->getMessage();
         }
 
         if (ZoneType::isReadOnly($zone_type) || $perm_edit == "none" || (AccessScope::fromString($perm_edit)->isOwnedOnly() && $this->userIsZoneOwner($zone_id) == "0")) {
-            return false;
+            return _("You do not have the permission to add a record to this zone.");
         }
 
         $content = $this->dnsFormatter->formatContent($type, $content);
 
-        return $this->validationService->validateRecord(
+        $result = $this->validationService->validateRecord(
             $rid,
             $zone_id,
             $type,
@@ -189,7 +189,9 @@ class RecordManager implements RecordManagerInterface
             $ttl,
             $this->config->get('dns', 'hostmaster'),
             (int)$this->config->get('dns', 'ttl')
-        )->isValid();
+        );
+
+        return $result->isValid() ? null : (string)$result->getFirstError();
     }
 
     /**

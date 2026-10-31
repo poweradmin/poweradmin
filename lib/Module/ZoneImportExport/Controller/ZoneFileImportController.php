@@ -529,7 +529,7 @@ class ZoneFileImportController extends BaseController
     /**
      * Which RRsets a replace may delete: one whose every incoming record passes the
      * checks. A refused record keeps the whole stored RRset, so a bad line in the file
-     * never costs the zone its records.
+     * never costs the zone its records; the first refusal of each kept RRset is shown.
      *
      * @param ParsedRecord[] $records
      * @return array<string, bool> Keyed by rrsetKey()
@@ -548,7 +548,9 @@ class ZoneFileImportController extends BaseController
             $rid = strtoupper($group[0]->type) === 'CNAME' && count($stored) === 1 ? $stored[0]['id'] : -1;
             $replaceable[$key] = true;
             foreach ($group as $record) {
-                if (!$recordManager->canAddRecord($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid)) {
+                $refusal = $recordManager->recordAddRefusal($zoneId, $record->name, $record->type, $record->content, $record->ttl, $record->priority, $rid);
+                if ($refusal !== null) {
+                    $this->addSystemMessage('error', $record->name . ' ' . $record->type . ': ' . $refusal);
                     $replaceable[$key] = false;
                     break;
                 }

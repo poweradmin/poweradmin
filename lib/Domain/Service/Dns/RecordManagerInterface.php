@@ -63,10 +63,10 @@ interface RecordManagerInterface
     public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null;
 
     /**
-     * Whether addRecordGetId() would pass this record's permission and validation checks,
-     * without writing it. $rid leaves one stored record out of the CNAME checks.
+     * Why addRecordGetId() would refuse this record on a permission or validation check, or null
+     * when it would pass; nothing is written. $rid leaves one stored record out of the CNAME checks.
      */
-    public function canAddRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): bool;
+    public function recordAddRefusal(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int|string $rid = -1): ?string;
 
     /**
      * Edit a record
