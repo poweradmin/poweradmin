@@ -403,6 +403,43 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertSame([['id' => 4, 'name' => 'member.example.com', 'kind' => 'MASTER']], $members);
     }
 
+    /**
+     * @return array<string, array{string, bool}>
+     */
+    public static function cachedMasterOnTypeChangeProvider(): array
+    {
+        return [
+            'leaving SLAVE for MASTER clears it' => ['MASTER', true],
+            'NATIVE clears it' => ['NATIVE', true],
+            'staying SLAVE keeps it' => ['SLAVE', false],
+            'CONSUMER keeps it' => ['CONSUMER', false],
+        ];
+    }
+
+    /**
+     * The cache must not keep reporting a master PowerDNS was told to drop.
+     */
+    #[DataProvider('cachedMasterOnTypeChangeProvider')]
+    public function testUpdateZoneTypeClearsTheCachedMasterOnlyWhenPowerDnsDropsIt(string $type, bool $clears): void
+    {
+        $updateSql = null;
+        $update = $this->createMock(PDOStatement::class);
+        $this->mockDb->method('prepare')->willReturnCallback(
+            function (string $sql) use (&$updateSql, $update) {
+                if (str_starts_with($sql, 'UPDATE zones')) {
+                    $updateSql = $sql;
+                    return $update;
+                }
+                return $this->stubCanonicalRowLookup(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
+            }
+        );
+        $this->mockClient->method('updateZoneProperties')->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneType(1, $type));
+        $this->assertNotNull($updateSql);
+        $this->assertSame($clears, str_contains($updateSql, "zone_master = ''"), $updateSql);
+    }
+
     public function testUpdateZoneTypeReturnsFalseWhenZoneNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);

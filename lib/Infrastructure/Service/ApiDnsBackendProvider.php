@@ -249,15 +249,18 @@ class ApiDnsBackendProvider implements DnsBackendProvider
 
         $apiName = self::ensureTrailingDot($zone['zone_name']);
         $data = ['kind' => $type];
+        $clearsMasters = !ZoneType::replicatesFromPrimary($type);
 
-        if (!ZoneType::replicatesFromPrimary($type)) {
+        if ($clearsMasters) {
             $data['masters'] = [];
         }
 
         $result = $this->client->updateZoneProperties($apiName, $data);
 
         if ($result) {
-            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type WHERE id = :id");
+            // Keep the cached master in step with the masters PowerDNS was just told to drop
+            $masterClause = $clearsMasters ? ", zone_master = ''" : '';
+            $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type{$masterClause} WHERE id = :id");
             $stmt->bindValue(':type', strtoupper($type));
             $stmt->bindValue(':id', (int)$zone['id'], PDO::PARAM_INT);
             $stmt->execute();
