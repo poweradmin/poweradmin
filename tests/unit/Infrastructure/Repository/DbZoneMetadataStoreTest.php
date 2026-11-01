@@ -93,6 +93,32 @@ class DbZoneMetadataStoreTest extends TestCase
         ], $this->rowsOf(self::ZONE_ID));
     }
 
+    public function testReplaceKindKeepsAKindWrittenAfterTheSnapshotWasLoaded(): void
+    {
+        $before = $this->store->load(self::ZONE_ID, 'example.com');
+        $this->db->exec("INSERT INTO domainmetadata (domain_id, kind, content) VALUES (5, 'ALSO-NOTIFY', '192.0.2.2')");
+
+        $this->assertTrue($this->store->replaceKind(self::ZONE_ID, 'example.com', 'X-NOTE', ['new'], $before));
+
+        $this->assertSame([
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+            ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.2'],
+            ['kind' => 'X-NOTE', 'content' => 'new'],
+        ], $this->rowsOf(self::ZONE_ID));
+    }
+
+    public function testReplaceKindAlsoReplacesRowsStoredInAnotherCase(): void
+    {
+        $this->db->exec("INSERT INTO domainmetadata (domain_id, kind, content) VALUES (5, ' x-note ', 'lower')");
+
+        $this->assertTrue($this->store->replaceKind(self::ZONE_ID, 'example.com', 'X-NOTE', ['new'], []));
+
+        $this->assertSame([
+            ['kind' => 'ALLOW-AXFR-FROM', 'content' => '192.0.2.10'],
+            ['kind' => 'X-NOTE', 'content' => 'new'],
+        ], $this->rowsOf(self::ZONE_ID));
+    }
+
     public function testReplaceKindWithNoValuesRemovesTheKind(): void
     {
         $before = $this->store->load(self::ZONE_ID, 'example.com');

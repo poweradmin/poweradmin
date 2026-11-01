@@ -27,7 +27,6 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\ZoneMetadataStoreInterface;
-use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 
@@ -57,12 +56,27 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
 
     public function replaceAll(int $zoneId, string $zoneName, array $rows, array $before): bool
     {
+        return $this->rewrite($zoneId, null, $rows);
+    }
+
+    /**
+     * Delete the zone's rows (only those of one kind when given) and insert the new
+     * ones in one transaction.
+     *
+     * @param list<array{kind: string, content: string}> $rows
+     */
+    private function rewrite(int $zoneId, ?string $kind, array $rows): bool
+    {
         $table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         $this->transaction()->begin();
         try {
-            $delete = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
+            // Matches ZoneMetadataService::normalizeKind(), so rows stored in another case go too
+            $delete = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id" . ($kind === null ? '' : ' AND UPPER(TRIM(kind)) = :kind'));
             $delete->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            if ($kind !== null) {
+                $delete->bindValue(':kind', $kind, PDO::PARAM_STR);
+            }
             $delete->execute();
 
             if ($rows !== []) {
@@ -111,7 +125,8 @@ final class DbZoneMetadataStore implements ZoneMetadataStoreInterface
 
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, array $before): bool
     {
-        return $this->replaceAll($zoneId, $zoneName, ZoneMetadataService::replaceKindIn($before, $kind, $values), $before);
+        // Only this kind's rows: a full rewrite from $before would drop a kind another request wrote meanwhile
+        return $this->rewrite($zoneId, $kind, array_map(fn(string $value): array => ['kind' => $kind, 'content' => $value], $values));
     }
 
     /**
