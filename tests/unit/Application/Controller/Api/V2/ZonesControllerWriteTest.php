@@ -256,6 +256,9 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
             'integer master' => [['master' => 0]],
             'boolean master' => [['master' => false]],
             'integer name' => [['name' => 7]],
+            'integer masters' => [['masters' => 5]],
+            'masters array with a number' => [['masters' => ['192.0.2.1', 2]]],
+            'masters array with a list' => [['masters' => [['192.0.2.1']]]],
         ];
     }
 
@@ -311,6 +314,67 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Master IP address is required for SLAVE zones', $this->messageOf($response));
+    }
+
+    /**
+     * @return array<string, array{string|list<string>}>
+     */
+    public static function mastersInputProvider(): array
+    {
+        return [
+            'array' => [['192.0.2.9', '192.0.2.10']],
+            'comma-separated string' => ['192.0.2.9, 192.0.2.10'],
+        ];
+    }
+
+    /**
+     * @param string|list<string> $masters
+     */
+    #[DataProvider('mastersInputProvider')]
+    public function testMastersUpdatesASlaveZonesMasters(string|array $masters): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE', 'master' => '192.0.2.1']);
+        $this->zoneManagement->expects($this->once())->method('updateZone')
+            ->with(self::ZONE_ID, ['master' => '192.0.2.9,192.0.2.10'])
+            ->willReturn(['success' => true]);
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['masters' => $masters]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testConvertingToSlaveAcceptsMasters(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zoneManagement->expects($this->once())->method('updateZone')
+            ->with(self::ZONE_ID, ['type' => 'SLAVE', 'master' => '192.0.2.9'])
+            ->willReturn(['success' => true]);
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'masters' => ['192.0.2.9']]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testMastersTakesPrecedenceOverMaster(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE', 'master' => '192.0.2.1']);
+        $this->zoneManagement->expects($this->once())->method('updateZone')
+            ->with(self::ZONE_ID, ['master' => '192.0.2.9'])
+            ->willReturn(['success' => true]);
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['master' => '192.0.2.5', 'masters' => ['192.0.2.9']]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testMalformedMastersAreValidatedLikeMaster(): void
+    {
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['masters' => ['not-an-ip']]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringStartsWith('Invalid master servers format:', $this->messageOf($response));
     }
 
     public function testMetadataChangesNeedTheMetadataPermissionNotJustContentEdit(): void
