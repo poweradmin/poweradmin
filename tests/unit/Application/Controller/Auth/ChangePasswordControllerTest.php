@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\ChangePasswordController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\User\PasswordChangeService;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
@@ -89,5 +90,23 @@ class ChangePasswordControllerTest extends SeamControllerTestCase
 
         $this->assertSame('change_password.html', $this->output->rendered[0][0]);
         $this->assertSame([['error', 'Current password is incorrect']], $this->messagesFor('change_password'));
+    }
+
+    public function testAnEmptyNewPasswordIsRefusedBeforeTheChange(): void
+    {
+        $config = $this->configure(['security' => ['password_policy.enable_password_rules' => false]]);
+        $this->factory->method('passwordPolicyService')->willReturn(new PasswordPolicyService($config));
+
+        $this->post(['old_password' => 'old-secret', 'new_password' => '', 'new_password2' => '']);
+        $controller = new TestableChangePasswordController([], true, $this->environment($config));
+
+        $passwordService = $this->createMock(PasswordChangeService::class);
+        $passwordService->expects($this->never())->method('changePassword');
+        $controller->plantPasswordService($passwordService);
+
+        $controller->run();
+
+        $this->assertSame('change_password.html', $this->output->rendered[0][0]);
+        $this->assertSame([['error', 'An empty password is not allowed']], $this->messagesFor('change_password'));
     }
 }

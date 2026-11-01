@@ -54,4 +54,13 @@ class PasswordPolicyServiceTest extends TestCase
 
         $this->assertSame([], $service->validatePassword('x'));
     }
+
+    public function testAnEmptyPasswordIsRefusedEvenWithRulesDisabled(): void
+    {
+        $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+            'password_policy.enable_password_rules' => false,
+        ]]));
+
+        $this->assertSame(['An empty password is not allowed'], $service->validatePassword(''));
+    }
 }
