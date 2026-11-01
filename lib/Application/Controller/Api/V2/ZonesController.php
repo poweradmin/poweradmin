@@ -686,6 +686,16 @@ class ZonesController extends PublicApiController
                     example: '192.168.1.100'
                 ),
                 new OA\Property(
+                    property: 'masters',
+                    description: 'Master server(s) for SLAVE zones, as a comma-separated string or an array; '
+                        . 'takes precedence over master',
+                    oneOf: [
+                        new OA\Schema(type: 'string'),
+                        new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+                    ],
+                    example: ['192.0.2.1', '192.0.2.2:5300']
+                ),
+                new OA\Property(
                     property: 'description',
                     description: 'Zone description or comment',
                     type: 'string',
@@ -786,6 +796,23 @@ class ZonesController extends PublicApiController
                 if (isset($input[$field])) {
                     $updates[$field] = $input[$field];
                 }
+            }
+
+            // `masters` (string or PowerDNS-style array) as on create; it wins over `master`.
+            if (isset($input['masters'])) {
+                $masters = $input['masters'];
+                if (is_array($masters)) {
+                    foreach ($masters as $entry) {
+                        if (!is_string($entry)) {
+                            return $this->returnApiError('Invalid field types in request body', 400);
+                        }
+                    }
+                    $masters = implode(',', $masters);
+                }
+                if (!is_string($masters)) {
+                    return $this->returnApiError('Invalid field types in request body', 400);
+                }
+                $updates['master'] = $masters;
             }
 
             // Validate zone type if provided
