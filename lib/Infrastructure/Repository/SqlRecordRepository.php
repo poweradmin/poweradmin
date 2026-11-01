@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
@@ -230,12 +231,15 @@ final class SqlRecordRepository implements RecordRepositoryInterface
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        $types = RecordType::DELEGATION_POINT_TYPES;
+        $placeholders = implode(', ', array_fill(0, count($types), '?'));
+
         $stmt = $this->db->prepare(
             "SELECT COUNT(id) FROM $records_table
-             WHERE name = :name
-             AND type NOT IN ('NS', 'DS', 'RRSIG')"
+             WHERE name = ?
+             AND type NOT IN ($placeholders)"
         );
-        $stmt->execute([':name' => $name]);
+        $stmt->execute([$name, ...$types]);
         $count = $stmt->fetchColumn();
         return $count > 0;
     }

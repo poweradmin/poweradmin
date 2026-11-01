@@ -125,6 +125,15 @@ class RecordType
         self::ZONEMD,
     ];
 
+    // Parent-side data at a delegation point: the NS and DS sets, and in a signed
+    // parent the NSEC and RRSIGs covering them (RFC 4035 section 2.2).
+    public const DELEGATION_POINT_TYPES = [
+        self::NS,
+        self::DS,
+        self::NSEC,
+        self::RRSIG,
+    ];
+
     // Types whose preference lives in the separate prio column. NAPTR keeps its
     // order and preference inside the content and must store prio 0.
     public const TYPES_WITH_PRIORITY = [

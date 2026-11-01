@@ -107,7 +107,19 @@ class ShadowedRecordFinderTest extends TestCase
         $this->assertNull($this->find(['example.com' => 1], [
             ['name' => 'sub.example.com', 'type' => 'NS', 'content' => 'ns.other.net'],
             ['name' => 'sub.example.com', 'type' => 'DS', 'content' => '1 13 2 abcd'],
+            ['name' => 'sub.example.com', 'type' => 'NSEC', 'content' => 'www.example.com. NS DS RRSIG NSEC'],
+            ['name' => 'sub.example.com', 'type' => 'RRSIG', 'content' => 'DS 13 3 3600 20261201000000 20261101000000 1234 example.com. abcd'],
         ], 'sub.example.com'));
+    }
+
+    public function testSignatureDataBelowTheCutIsStillHidden(): void
+    {
+        $found = $this->find(['example.com' => 1], [
+            ['name' => 'sub.example.com', 'type' => 'RRSIG', 'content' => 'DS 13 3 3600 20261201000000 20261101000000 1234 example.com. abcd'],
+            ['name' => 'www.sub.example.com', 'type' => 'RRSIG', 'content' => 'A 13 4 3600 20261201000000 20261101000000 1234 example.com. abcd'],
+        ], 'sub.example.com');
+
+        $this->assertSame([['name' => 'www.sub.example.com', 'type' => 'RRSIG']], $found?->records);
     }
 
     public function testARootZoneIsTheLastParent(): void

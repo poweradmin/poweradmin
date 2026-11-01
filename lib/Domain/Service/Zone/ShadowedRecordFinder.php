@@ -22,14 +22,15 @@
 
 namespace Poweradmin\Domain\Service\Zone;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Finds the records a new zone would hide in its closest existing parent zone.
- * Delegation data is left out: NS, DS and RRSIG at the new apex, and the A/AAAA glue
- * for the name servers those NS records point at. Records under an existing
+ * Delegation data is left out: NS, DS, NSEC and RRSIG at the new apex, and the
+ * A/AAAA glue for the name servers those NS records point at. Records under an existing
  * deeper zone are left out too, since that zone already hides them.
  */
 class ShadowedRecordFinder
@@ -109,15 +110,15 @@ class ShadowedRecordFinder
     }
 
     /**
-     * Whether the row is delegation data for the cut: NS, DS or RRSIG at it, or A/AAAA
-     * glue for a name server its NS records point at.
+     * Whether the row is delegation data for the cut: a delegation-point type at it,
+     * or A/AAAA glue for a name server its NS records point at.
      *
      * @param array{name: string, type: string} $row
      * @param array<string, array<string, true>> $nsTargets NS targets by owner name
      */
     private function delegates(array $row, string $cut, array $nsTargets): bool
     {
-        if ($row['name'] === $cut && in_array($row['type'], ['NS', 'DS', 'RRSIG'], true)) {
+        if ($row['name'] === $cut && in_array($row['type'], RecordType::DELEGATION_POINT_TYPES, true)) {
             return true;
         }
 

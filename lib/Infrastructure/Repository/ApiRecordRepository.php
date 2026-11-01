@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\RecordRow;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -117,7 +118,7 @@ final class ApiRecordRepository implements RecordRepositoryInterface
     public function hasNonDelegationRecords(string $name): bool
     {
         foreach ($this->backendProvider->findRecordsByName($name) as $r) {
-            if (!in_array($r['type'], ['NS', 'DS', 'RRSIG'], true)) {
+            if (!in_array($r['type'], RecordType::DELEGATION_POINT_TYPES, true)) {
                 return true;
             }
         }
