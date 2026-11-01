@@ -146,6 +146,16 @@ class UserProvisioningService extends LoggingService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->userIsLinkedToAnotherSubject($existingUserId, $providerId, $authMethod)) {
+                    // The account already belongs to a different identity at this provider;
+                    // a matching address must not re-point the link and lock that identity out.
+                    $this->logWarning(
+                        'Refusing to link {method} identity to account {id} by email: the account is already linked to another subject at provider {provider}; if the provider changed the subject, delete that link row so the next login re-links',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId, 'provider' => $providerId]
+                    );
+                    $existingUserId = null;
+                }
+
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
@@ -307,6 +317,34 @@ class UserProvisioningService extends LoggingService
             $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    /**
+     * Whether the user already holds a link at this provider. Only called after the
+     * subject lookup missed, so any stored subject belongs to a different identity.
+     * Fails closed: a lookup error counts as linked.
+     */
+    private function userIsLinkedToAnotherSubject(int $userId, string $providerId, string $authMethod): bool
+    {
+        [$table, $column] = $authMethod === self::AUTH_METHOD_SAML
+            ? ['saml_user_links', 'saml_subject']
+            : ['oidc_user_links', 'oidc_subject'];
+
+        try {
+            $stmt = $this->db->prepare("
+                SELECT {$column} FROM {$table}
+                WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
+            ");
+            $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+            $stmt->bindValue(2, $providerId, PDO::PARAM_STR);
+            $stmt->execute();
+            $subject = $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            $this->logError('Error checking existing identity link for user {id}: {error}', ['id' => $userId, 'error' => $e->getMessage()]);
+            return true;
+        }
+
+        return $subject !== false && $subject !== null;
     }
 
     /**
@@ -542,7 +580,7 @@ class UserProvisioningService extends LoggingService
             // Check if link already exists
             $stmt = $this->db->prepare("
                 SELECT id FROM oidc_user_links 
-                WHERE user_id = ? AND provider_id = ?
+                WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$userId, $providerId]);
 
@@ -551,7 +589,7 @@ class UserProvisioningService extends LoggingService
                 $stmt = $this->db->prepare("
                     UPDATE oidc_user_links 
                     SET oidc_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                    WHERE user_id = ? AND provider_id = ?
+                    WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
                 ");
                 $stmt->execute([
                     $userInfo->getSubject(),
@@ -629,7 +667,7 @@ class UserProvisioningService extends LoggingService
             // Check if link already exists
             $stmt = $this->db->prepare("
                 SELECT id FROM saml_user_links
-                WHERE user_id = ? AND provider_id = ?
+                WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$userId, $providerId]);
 
@@ -638,7 +676,7 @@ class UserProvisioningService extends LoggingService
                 $stmt = $this->db->prepare("
                     UPDATE saml_user_links
                     SET saml_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                    WHERE user_id = ? AND provider_id = ?
+                    WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
                 ");
                 $stmt->execute([
                     $userInfo->getSubject(),
