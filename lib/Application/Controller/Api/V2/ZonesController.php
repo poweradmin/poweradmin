@@ -804,6 +804,9 @@ class ZonesController extends PublicApiController
 
             foreach ($allowedFields as $field) {
                 if (isset($input[$field])) {
+                    if (!is_string($input[$field])) {
+                        return $this->returnApiError('Invalid field types in request body', 400);
+                    }
                     $updates[$field] = $input[$field];
                 }
             }
@@ -832,10 +835,6 @@ class ZonesController extends PublicApiController
                 if (!in_array($updates['type'], $validTypes)) {
                     return $this->returnApiError('Invalid zone type. Must be one of: ' . implode(', ', $validTypes), 400);
                 }
-            }
-
-            if (isset($updates['master']) && !is_string($updates['master'])) {
-                return $this->returnApiError('Invalid field types in request body', 400);
             }
 
             // Validate master servers format if provided

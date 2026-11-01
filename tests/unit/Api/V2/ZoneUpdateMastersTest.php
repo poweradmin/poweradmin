@@ -94,20 +94,27 @@ class ZoneUpdateMastersTest extends TestCase
     }
 
     /**
-     * @return array<string, array{mixed}>
+     * @return array<string, array{array<string, mixed>}>
      */
-    public static function nonStringMasterProvider(): array
+    public static function nonStringFieldProvider(): array
     {
         return [
-            'empty array' => [[]],
-            'array' => [['192.0.2.1']],
+            'empty array master' => [['master' => []]],
+            'array master' => [['master' => ['192.0.2.1']]],
+            'integer master' => [['master' => 5]],
+            'array type' => [['type' => []]],
+            'integer type' => [['type' => 5]],
+            'integer name' => [['name' => 5]],
         ];
     }
 
-    #[DataProvider('nonStringMasterProvider')]
-    public function testANonStringMasterIs400(mixed $master): void
+    /**
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('nonStringFieldProvider')]
+    public function testANonStringFieldIs400(array $body): void
     {
-        $this->assertSame(400, $this->updateZone(['master' => $master]));
+        $this->assertSame(400, $this->updateZone($body));
         $this->assertNull($this->written);
     }
 
