@@ -56,7 +56,8 @@ class PasswordResetTokenExpiryClockTest extends TestCase
     #[RunInSeparateProcess]
     public function testFreshTokenIsValidUnderWestOfUtcTimezone(): void
     {
-        date_default_timezone_set('America/Los_Angeles');
+        // Fixed offset without DST: local time repeats an hour at fall-back, which flakes the check
+        date_default_timezone_set('Etc/GMT+8');
 
         $db = $this->makeDb();
         $repo = $this->makeRepository($db);
@@ -78,7 +79,8 @@ class PasswordResetTokenExpiryClockTest extends TestCase
     #[RunInSeparateProcess]
     public function testExpiredTokenIsRejectedUnderWestOfUtcTimezone(): void
     {
-        date_default_timezone_set('America/Los_Angeles');
+        // Fixed offset without DST: local time repeats an hour at fall-back, which flakes the check
+        date_default_timezone_set('Etc/GMT+8');
 
         $db = $this->makeDb();
         $repo = $this->makeRepository($db);
