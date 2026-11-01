@@ -233,7 +233,7 @@ final class SqlRecordRepository implements RecordRepositoryInterface
         $stmt = $this->db->prepare(
             "SELECT COUNT(id) FROM $records_table
              WHERE name = :name
-             AND type NOT IN ('NS', 'DS')"
+             AND type NOT IN ('NS', 'DS', 'RRSIG')"
         );
         $stmt->execute([':name' => $name]);
         $count = $stmt->fetchColumn();

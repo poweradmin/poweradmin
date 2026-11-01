@@ -134,8 +134,9 @@ interface RecordLookupInterface
      *
      * Per RFC 1034: Delegation NS records are NOT authoritative data.
      * Per RFC 4034: DS records are part of the delegation for DNSSEC.
-     * This method checks for records other than NS/DS which indicate authoritative data.
-     * Only delegation records (NS, DS) at a name should not prevent zone creation.
+     * Per RFC 4035: RRSIG records at a delegation point sign the delegation's DS and NSEC data.
+     * This method checks for records other than NS/DS/RRSIG which indicate authoritative data.
+     * Only delegation records (NS, DS, RRSIG) at a name should not prevent zone creation.
      *
      * @param string $name Record name
      * @return bool True if non-delegation records exist, false otherwise
