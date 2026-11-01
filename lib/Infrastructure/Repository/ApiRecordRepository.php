@@ -139,7 +139,7 @@ class ApiRecordRepository implements RecordRepositoryInterface
     {
         $result = $this->backendProvider->searchDnsData($name, 'record', 10000, true);
         foreach ($result['records'] as $r) {
-            if ($r['name'] === $name && !in_array($r['type'], ['NS', 'DS'], true)) {
+            if ($r['name'] === $name && !in_array($r['type'], ['NS', 'DS', 'NSEC', 'RRSIG'], true)) {
                 return true;
             }
         }

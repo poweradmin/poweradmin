@@ -165,7 +165,7 @@ class ZoneManagementService
         }
 
         // Check if non-delegation records exist (prevents zone hijacking)
-        // Only delegation records (NS, DS) are allowed
+        // Only delegation-point data (NS, DS and the parent's NSEC/RRSIG) is allowed
         if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
