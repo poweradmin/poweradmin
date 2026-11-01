@@ -153,6 +153,16 @@ class UserProvisioningService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->userIsLinkedToAnotherSubject($existingUserId, $providerId, $authMethod)) {
+                    // The account already belongs to a different identity at this provider;
+                    // a matching address must not re-point the link and lock that identity out.
+                    $this->logger->warning(
+                        'Refusing to link {method} identity to account {id} by email: the account is already linked to another subject at provider {provider}; if the provider changed the subject, delete that link row so the next login re-links',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId, 'provider' => $providerId]
+                    );
+                    $existingUserId = null;
+                }
+
                 if ($existingUserId) {
                     $this->logger->info('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     if (!array_key_exists('email_verified', $userInfo->getRawData())) {
@@ -268,6 +278,25 @@ class UserProvisioningService
         } else {
             $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
         }
+    }
+
+    /**
+     * Whether the user already holds a link at this provider. Only called after the
+     * subject lookup missed, so any stored subject belongs to a different identity.
+     * Fails closed: a lookup error counts as linked.
+     */
+    private function userIsLinkedToAnotherSubject(int $userId, string $providerId, string $authMethod): bool
+    {
+        try {
+            $subject = $authMethod === self::AUTH_METHOD_SAML
+                ? $this->identities->findSamlSubjectByUserId($userId, $providerId)
+                : $this->identities->findOidcSubjectByUserId($userId, $providerId);
+        } catch (\Exception $e) {
+            $this->logger->error('Error checking existing identity link for user {id}: {error}', ['id' => $userId, 'error' => $e->getMessage()]);
+            return true;
+        }
+
+        return $subject !== null;
     }
 
     /**

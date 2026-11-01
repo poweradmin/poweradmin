@@ -70,7 +70,7 @@ final class DbExternalIdentityRepository implements ExternalIdentityRepositoryIn
     {
         $stmt = $this->db->prepare("
             SELECT id FROM oidc_user_links
-            WHERE user_id = ? AND provider_id = ?
+            WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
         ");
         $stmt->execute([$userId, $providerId]);
 
@@ -78,7 +78,7 @@ final class DbExternalIdentityRepository implements ExternalIdentityRepositoryIn
             $stmt = $this->db->prepare("
                 UPDATE oidc_user_links
                 SET oidc_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE user_id = ? AND provider_id = ?
+                WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$subject, $username, $email, $userId, $providerId]);
             return;
@@ -96,7 +96,7 @@ final class DbExternalIdentityRepository implements ExternalIdentityRepositoryIn
     {
         $stmt = $this->db->prepare("
             SELECT id FROM saml_user_links
-            WHERE user_id = ? AND provider_id = ?
+            WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
         ");
         $stmt->execute([$userId, $providerId]);
 
@@ -104,7 +104,7 @@ final class DbExternalIdentityRepository implements ExternalIdentityRepositoryIn
             $stmt = $this->db->prepare("
                 UPDATE saml_user_links
                 SET saml_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
-                WHERE user_id = ? AND provider_id = ?
+                WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
             ");
             $stmt->execute([$subject, $username, $email, $userId, $providerId]);
             return;
@@ -116,6 +116,30 @@ final class DbExternalIdentityRepository implements ExternalIdentityRepositoryIn
             VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
         ");
         $stmt->execute([$userId, $providerId, $subject, $username, $email]);
+    }
+
+    public function findOidcSubjectByUserId(int $userId, string $providerId): ?string
+    {
+        return $this->findSubjectByUserId('oidc_user_links', 'oidc_subject', $userId, $providerId);
+    }
+
+    public function findSamlSubjectByUserId(int $userId, string $providerId): ?string
+    {
+        return $this->findSubjectByUserId('saml_user_links', 'saml_subject', $userId, $providerId);
+    }
+
+    private function findSubjectByUserId(string $table, string $column, int $userId, string $providerId): ?string
+    {
+        $stmt = $this->db->prepare("
+            SELECT {$column} FROM {$table}
+            WHERE user_id = ? AND provider_id{$this->binaryCollation} = ?
+        ");
+        $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $providerId, PDO::PARAM_STR);
+        $stmt->execute();
+        $subject = $stmt->fetchColumn();
+
+        return $subject === false || $subject === null ? null : (string)$subject;
     }
 
     public function findOrphanedOidcLinks(): array

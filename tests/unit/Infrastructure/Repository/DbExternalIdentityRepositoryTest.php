@@ -86,6 +86,18 @@ class DbExternalIdentityRepositoryTest extends TestCase
         $this->assertNull($this->repository->findUserIdBySamlSubject('shared', 'okta'));
     }
 
+    public function testSubjectByUserIdIsScopedToTheProvider(): void
+    {
+        $this->repository->linkOidc(1, 'okta', 'sub-1', 'alice', 'a@x');
+        $this->repository->linkSaml(1, 'adfs', 'name-1', 'alice', 'a@x');
+
+        $this->assertSame('sub-1', $this->repository->findOidcSubjectByUserId(1, 'okta'));
+        $this->assertNull($this->repository->findOidcSubjectByUserId(1, 'adfs'));
+        $this->assertNull($this->repository->findOidcSubjectByUserId(2, 'okta'));
+        $this->assertSame('name-1', $this->repository->findSamlSubjectByUserId(1, 'adfs'));
+        $this->assertNull($this->repository->findSamlSubjectByUserId(1, 'okta'));
+    }
+
     public function testOrphanedLinksAreFoundAndDeletedWithoutTouchingLiveOnes(): void
     {
         $this->repository->linkOidc(1, 'okta', 'sub-1', 'alice', 'a@x');

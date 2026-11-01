@@ -48,6 +48,16 @@ interface ExternalIdentityRepositoryInterface
     public function linkSaml(int $userId, string $providerId, string $subject, string $username, string $email): void;
 
     /**
+     * The OIDC subject a user is already linked to at a provider, if any.
+     */
+    public function findOidcSubjectByUserId(int $userId, string $providerId): ?string;
+
+    /**
+     * The SAML NameID a user is already linked to at a provider, if any.
+     */
+    public function findSamlSubjectByUserId(int $userId, string $providerId): ?string;
+
+    /**
      * OIDC links whose user no longer exists.
      *
      * @return array<int, array{id: int|string, user_id: int|string, provider_id: string, username: string}>

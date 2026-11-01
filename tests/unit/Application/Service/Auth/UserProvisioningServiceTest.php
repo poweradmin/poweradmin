@@ -285,7 +285,8 @@ class UserProvisioningServiceTest extends TestCase
     private function createServiceWithMocks(
         ?\Poweradmin\Infrastructure\Configuration\ConfigurationManager $configManager = null,
         ?UserRepositoryInterface $userRepository = null,
-        ?\Poweradmin\Infrastructure\Logger\Logger $logger = null
+        ?\Poweradmin\Infrastructure\Logger\Logger $logger = null,
+        ?ExternalIdentityRepositoryInterface $identities = null
     ): UserProvisioningService {
         if ($userRepository === null) {
             $userRepository = $this->createMock(UserRepositoryInterface::class);
@@ -296,7 +297,7 @@ class UserProvisioningServiceTest extends TestCase
             $configManager ?? $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class),
             $logger ?? $this->createMock(\Poweradmin\Infrastructure\Logger\Logger::class),
             $userRepository,
-            $this->createMock(ExternalIdentityRepositoryInterface::class),
+            $identities ?? $this->createMock(ExternalIdentityRepositoryInterface::class),
             $this->createMock(UserGroupLookupInterface::class),
             $this->createMock(UserGroupMemberRepositoryInterface::class)
         );
@@ -723,6 +724,94 @@ class UserProvisioningServiceTest extends TestCase
 
         $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
         $this->assertSame([], $warnings);
+    }
+
+    /**
+     * An account already linked to another identity at the provider must not be
+     * re-pointed by an email match; that would hand it over and lock the owner out.
+     */
+    public function testEmailMatchDoesNotRelinkAnAccountLinkedToAnotherOidcSubject(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->with(42, 'okta')->willReturn('sub-owner');
+        $identities->expects($this->never())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->expects($this->never())->method('updateProvisionedUser');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'john@example.com', subject: 'sub-other', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testEmailMatchDoesNotRelinkAnAccountLinkedToAnotherSamlSubject(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findSamlSubjectByUserId')->with(42, 'adfs')->willReturn('name-owner');
+        $identities->expects($this->never())->method('linkSaml');
+
+        $repository = $this->emailMatchRepository();
+        $repository->expects($this->never())->method('updateProvisionedUser');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new SamlUserInfo(
+            username: 'mallory',
+            email: 'john@example.com',
+            firstName: '',
+            lastName: '',
+            displayName: '',
+            groups: [],
+            providerId: 'adfs',
+            nameId: 'name-other',
+            sessionIndex: '',
+            rawAttributes: []
+        );
+
+        $this->assertNull($service->provisionUser($userInfo, 'adfs'));
+    }
+
+    public function testEmailMatchLinksAnAccountWithoutALinkAtTheProvider(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->once())->method('linkOidc')->with(42, 'okta', 'sub-1', 'john', 'john@example.com');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $this->emailMatchRepository(), null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
+    public function testEmailMatchIsRefusedWhenTheLinkLookupFails(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willThrowException(new \RuntimeException('db down'));
+        $identities->expects($this->never())->method('linkOidc');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $this->emailMatchRepository(), null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    private function emailLinkConfig(): \Poweradmin\Infrastructure\Configuration\ConfigurationManager
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true, 'auto_provision' => false]);
+        $config->method('get')->willReturnCallback(static fn($group, $key, $default = null) => $default);
+
+        return $config;
+    }
+
+    private function emailMatchRepository(): UserRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findActiveUserIdByEmail')->with('john@example.com')->willReturn(42);
+        $repository->method('findInactiveUserIdByEmail')->willReturn(null);
+        $repository->method('hasAdminPermission')->willReturn(false);
+
+        return $repository;
     }
 
     public function testUserHoldsSuperuserPermissionFailsClosedOnDatabaseError(): void
