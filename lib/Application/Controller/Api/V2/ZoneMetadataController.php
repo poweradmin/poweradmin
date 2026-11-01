@@ -573,13 +573,12 @@ class ZoneMetadataController extends PublicApiController
             return $this->apiClient->updateZoneMetadata(new Zone($zone['name']), $kind, $values);
         }
 
-        // DB backend: load current metadata, replace this kind, save all
-        $currentRows = $this->zoneRepository->getDomainMetadata($zoneId);
-        $newRows = array_filter($currentRows, fn($row) => strtoupper($row['kind']) !== $kind);
+        // Only this kind's rows: rewriting every row would drop a kind another request wrote meanwhile
+        $newRows = [];
         foreach ($values as $value) {
             $newRows[] = ['kind' => $kind, 'content' => $value];
         }
-        return $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
+        return $this->zoneRepository->replaceDomainMetadata($zoneId, $newRows, $kind);
     }
 
     /**
@@ -605,10 +604,7 @@ class ZoneMetadataController extends PublicApiController
             return $this->apiClient->deleteZoneMetadata(new Zone($zone['name']), $kind);
         }
 
-        // DB backend: load current metadata, remove this kind, save remaining
-        $currentRows = $this->zoneRepository->getDomainMetadata($zoneId);
-        $newRows = array_filter($currentRows, fn($row) => strtoupper($row['kind']) !== $kind);
-        return $this->zoneRepository->replaceDomainMetadata($zoneId, array_values($newRows));
+        return $this->zoneRepository->replaceDomainMetadata($zoneId, [], $kind);
     }
 
     /**

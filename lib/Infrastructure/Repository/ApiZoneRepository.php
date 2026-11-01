@@ -1089,7 +1089,7 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
+    public function replaceDomainMetadata(int $zoneId, array $metadata, ?string $onlyKind = null): bool
     {
         throw new LogicException(self::METADATA_NOT_SUPPORTED);
     }

@@ -1003,22 +1003,27 @@ class DbZoneRepository implements ZoneRepositoryInterface
     }
 
     /**
-     * Replace all PowerDNS domain metadata rows for a zone.
+     * Replace all PowerDNS domain metadata rows for a zone, or only those of one kind.
      *
      * @param int $zoneId The zone ID
      * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
+     * @param string|null $onlyKind Upper-case kind whose rows alone are replaced; null replaces every row
      * @return bool True if metadata was replaced successfully
      */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool
+    public function replaceDomainMetadata(int $zoneId, array $metadata, ?string $onlyKind = null): bool
     {
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         $this->db->beginTransaction();
 
         try {
-            $deleteQuery = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";
+            $deleteQuery = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id"
+                . ($onlyKind === null ? '' : ' AND UPPER(kind) = :kind');
             $deleteStmt = $this->db->prepare($deleteQuery);
             $deleteStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            if ($onlyKind !== null) {
+                $deleteStmt->bindValue(':kind', $onlyKind, PDO::PARAM_STR);
+            }
             $deleteStmt->execute();
 
             if (!empty($metadata)) {

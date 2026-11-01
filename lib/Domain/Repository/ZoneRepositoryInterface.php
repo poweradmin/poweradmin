@@ -188,13 +188,14 @@ interface ZoneRepositoryInterface
     public function getDomainMetadata(int $zoneId): array;
 
     /**
-     * Replace all PowerDNS domain metadata rows for a zone.
+     * Replace all PowerDNS domain metadata rows for a zone, or only those of one kind.
      *
      * @param int $zoneId The zone ID
      * @param array $metadata Array of metadata rows [['kind' => string, 'content' => string], ...]
+     * @param string|null $onlyKind Upper-case kind whose rows alone are replaced; null replaces every row
      * @return bool True if metadata was replaced successfully
      */
-    public function replaceDomainMetadata(int $zoneId, array $metadata): bool;
+    public function replaceDomainMetadata(int $zoneId, array $metadata, ?string $onlyKind = null): bool;
 
     /**
      * Update zone metadata
