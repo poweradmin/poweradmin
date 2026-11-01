@@ -358,6 +358,16 @@ class ZonesController extends PublicApiController
                     example: '192.168.1.1:5300,192.168.1.2:5300'
                 ),
                 new OA\Property(
+                    property: 'masters',
+                    description: 'Master server(s) for SLAVE zones, as a comma-separated string or an array; '
+                        . 'takes precedence over master',
+                    oneOf: [
+                        new OA\Schema(type: 'string'),
+                        new OA\Schema(type: 'array', items: new OA\Items(type: 'string')),
+                    ],
+                    example: ['192.0.2.1', '192.0.2.2:5300']
+                ),
+                new OA\Property(
                     property: 'description',
                     description: 'Zone description or comment',
                     type: 'string',
@@ -824,7 +834,8 @@ class ZonesController extends PublicApiController
             }
 
             // Validate master servers format if provided
-            if (isset($updates['master']) && !empty($updates['master'])) {
+            // Not empty(): "0" would skip validation; a blank list stays valid and clears it.
+            if (isset($updates['master'])) {
                 $validation = $this->validateMasterServers($updates['master']);
                 if (!$validation['valid']) {
                     return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
@@ -842,11 +853,21 @@ class ZonesController extends PublicApiController
 
             // Clients often resend every field; a value equal to the stored one changes
             // nothing, so only real changes are written and permission-gated.
+            $submittedMaster = $updates['master'] ?? '';
             $updates = $this->dropUnchangedZoneFields($zone, $updates);
 
-            // A zone becoming SLAVE needs a master; one that already is keeps its stored master
-            if (isset($updates['type']) && $updates['type'] === 'SLAVE' && empty($updates['master'])) {
+            // A zone becoming SLAVE needs a master. A submitted one equal to the stored
+            // value is dropped as unchanged above, but still counts.
+            $staysSlave = !isset($updates['type']) && strtoupper((string)($zone['type'] ?? '')) === 'SLAVE';
+            if (
+                (isset($updates['type']) && $updates['type'] === 'SLAVE' && ($updates['master'] ?? $submittedMaster) === '')
+                || ($staysSlave && isset($updates['master']) && $updates['master'] === '')
+            ) {
                 return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
+            }
+            // Send it anyway: in API mode the stored value may be a cache PowerDNS no longer holds.
+            if (isset($updates['type']) && $updates['type'] === 'SLAVE') {
+                $updates['master'] ??= $submittedMaster;
             }
 
             // name/type/master are zone metadata, so they need the metadata permission

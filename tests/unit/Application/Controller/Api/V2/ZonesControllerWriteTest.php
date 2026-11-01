@@ -377,6 +377,97 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertStringStartsWith('Invalid master servers format:', $this->messageOf($response));
     }
 
+    /**
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function zeroMasterProvider(): array
+    {
+        return [
+            'master' => [['master' => '0']],
+            'masters' => [['masters' => ['0']]],
+        ];
+    }
+
+    /**
+     * empty("0") is true, so "0" used to skip validation and be written as the master.
+     *
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('zeroMasterProvider')]
+    public function testAZeroMasterIsValidatedNotWritten(array $body): void
+    {
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', $body);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringStartsWith('Invalid master servers format:', $this->messageOf($response));
+    }
+
+    public function testConvertingToSlaveWithTheStoredMasterIsAccepted(): void
+    {
+        // A MASTER zone can still carry a master from an earlier life as a SLAVE; it is
+        // re-sent so the backend is told, since the stored one may be only a cache.
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER', 'master' => '192.0.2.9']);
+        $this->zoneManagement->expects($this->once())->method('updateZone')
+            ->with(self::ZONE_ID, ['type' => 'SLAVE', 'master' => '192.0.2.9'])
+            ->willReturn(['success' => true]);
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'masters' => ['192.0.2.9']]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testConvertingToSlaveWithAnEmptyMastersIs400(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER', 'master' => '192.0.2.9']);
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'masters' => []]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Master IP address is required for SLAVE zones', $this->messageOf($response));
+    }
+
+    /**
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function blankMasterProvider(): array
+    {
+        return [
+            'empty masters array' => [['masters' => []]],
+            'empty master' => [['master' => '']],
+            'whitespace master' => [['master' => '   ']],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('blankMasterProvider')]
+    public function testAnExistingSlaveCannotBeLeftWithoutAMaster(array $body): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE', 'master' => '192.0.2.1']);
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', $body);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Master IP address is required for SLAVE zones', $this->messageOf($response));
+    }
+
+    public function testLeavingSlaveMayClearTheMaster(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE', 'master' => '192.0.2.1']);
+        $this->zoneManagement->expects($this->once())->method('updateZone')
+            ->with(self::ZONE_ID, ['type' => 'MASTER', 'master' => ''])
+            ->willReturn(['success' => true]);
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'MASTER', 'masters' => []]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testMetadataChangesNeedTheMetadataPermissionNotJustContentEdit(): void
     {
         $this->permissions = $this->createMock(ApiPermissionService::class);
