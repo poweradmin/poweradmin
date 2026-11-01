@@ -35,6 +35,11 @@ class PasswordPolicyService
 
     public function validatePassword(#[\SensitiveParameter] string $password): array
     {
+        // Login refuses an empty password, so storing one would lock the account out
+        if ($password === '') {
+            return ['An empty password is not allowed'];
+        }
+
         $errors = [];
 
         if ($this->configManager->get('security', 'password_policy.enable_password_rules')) {
