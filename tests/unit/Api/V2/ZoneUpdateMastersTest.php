@@ -93,6 +93,24 @@ class ZoneUpdateMastersTest extends TestCase
         ];
     }
 
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function nonStringMasterProvider(): array
+    {
+        return [
+            'empty array' => [[]],
+            'array' => [['192.0.2.1']],
+        ];
+    }
+
+    #[DataProvider('nonStringMasterProvider')]
+    public function testANonStringMasterIs400(mixed $master): void
+    {
+        $this->assertSame(400, $this->updateZone(['master' => $master]));
+        $this->assertNull($this->written);
+    }
+
     #[DataProvider('malformedMastersProvider')]
     public function testMalformedMastersIs400(mixed $masters): void
     {
@@ -104,6 +122,68 @@ class ZoneUpdateMastersTest extends TestCase
     {
         $this->assertSame(400, $this->updateZone(['masters' => ['not-an-ip']]));
         $this->assertNull($this->written);
+    }
+
+    /**
+     * empty("0") is true, so "0" used to skip validation and be written as the master.
+     *
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function zeroMasterProvider(): array
+    {
+        return [
+            'master' => [['master' => '0']],
+            'masters' => [['masters' => ['0']]],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('zeroMasterProvider')]
+    public function testAZeroMasterIsValidatedNotWritten(array $body): void
+    {
+        $this->assertSame(400, $this->updateZone($body));
+        $this->assertNull($this->written);
+    }
+
+    public function testConvertingToSlaveWithTheStoredMasterResendsIt(): void
+    {
+        // In API mode the stored master may be a cache PowerDNS no longer holds.
+        $status = $this->updateZone(['type' => 'SLAVE', 'masters' => ['192.0.2.9']], ['master' => '192.0.2.9']);
+
+        $this->assertSame(200, $status);
+        $this->assertSame(['type' => 'SLAVE', 'master' => '192.0.2.9'], $this->written);
+    }
+
+    /**
+     * @return array<string, array{array<string, mixed>}>
+     */
+    public static function blankMasterProvider(): array
+    {
+        return [
+            'empty masters array' => [['masters' => []]],
+            'empty master' => [['master' => '']],
+            'whitespace master' => [['master' => '   ']],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('blankMasterProvider')]
+    public function testAnExistingSlaveCannotBeLeftWithoutAMaster(array $body): void
+    {
+        $this->assertSame(400, $this->updateZone($body, ['type' => 'SLAVE', 'master' => '192.0.2.1']));
+        $this->assertNull($this->written);
+    }
+
+    public function testLeavingSlaveMayClearTheMaster(): void
+    {
+        $status = $this->updateZone(['type' => 'MASTER', 'masters' => []], ['type' => 'SLAVE', 'master' => '192.0.2.1']);
+
+        $this->assertSame(200, $status);
+        $this->assertSame(['type' => 'MASTER', 'master' => ''], $this->written);
     }
 
     /**
