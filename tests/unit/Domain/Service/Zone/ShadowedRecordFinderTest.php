@@ -145,6 +145,8 @@ class ShadowedRecordFinderTest extends TestCase
         $found = $this->find(['example.com' => 1, 'deep.sub.example.com' => 3, 'deeper.deep.sub.example.com' => 4], [
             ['name' => 'deep.sub.example.com', 'type' => 'DS', 'content' => '1 13 2 abcd'],
             ['name' => 'deep.sub.example.com', 'type' => 'NS', 'content' => 'ns.deep.sub.example.com'],
+            ['name' => 'deep.sub.example.com', 'type' => 'NSEC', 'content' => 'www.example.com. NS DS RRSIG NSEC'],
+            ['name' => 'deep.sub.example.com', 'type' => 'RRSIG', 'content' => 'DS 13 4 3600 20261201000000 20261101000000 1234 example.com. abcd'],
             ['name' => 'ns.deep.sub.example.com', 'type' => 'A', 'content' => '192.0.2.1'],
             ['name' => 'www.deep.sub.example.com', 'type' => 'A', 'content' => '192.0.2.2'],
             ['name' => 'deeper.deep.sub.example.com', 'type' => 'NS', 'content' => 'ns.other.net'],
@@ -153,6 +155,8 @@ class ShadowedRecordFinderTest extends TestCase
         $this->assertSame([
             ['name' => 'deep.sub.example.com', 'type' => 'DS'],
             ['name' => 'deep.sub.example.com', 'type' => 'NS'],
+            ['name' => 'deep.sub.example.com', 'type' => 'NSEC'],
+            ['name' => 'deep.sub.example.com', 'type' => 'RRSIG'],
             ['name' => 'ns.deep.sub.example.com', 'type' => 'A'],
         ], $found?->records);
     }
