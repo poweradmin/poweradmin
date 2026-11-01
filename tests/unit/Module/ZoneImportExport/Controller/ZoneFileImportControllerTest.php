@@ -96,6 +96,9 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     /** Content the backend refuses to write although the dry run passed it */
     private ?string $writeRefusedContent = null;
 
+    /** Record id whose delete fails */
+    private ?int $undeletableId = null;
+
     /** Content the dry run of a replace refuses */
     private ?string $refusedContent = null;
 
@@ -147,7 +150,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         });
         $recordManager->method('deleteRecord')->willReturnCallback(function (int|string $id): RecordWriteResult {
             $this->deletes[] = $id;
-            return RecordWriteResult::ok();
+            return $id === $this->undeletableId ? RecordWriteResult::failure('refused') : RecordWriteResult::ok();
         });
 
         $recordRepository = $this->createMock(RecordRepositoryInterface::class);
@@ -648,6 +651,21 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame([], array_filter($this->dryRuns, fn(array $args): bool => empty($args[9])), 'not through the checks');
         $this->assertSame(1, $this->renderedParams()['success_count'], 'only the MX RRset counts');
         $this->assertSame(2, $this->renderedParams()['fail_count'], 'both www lines failed');
+    }
+
+    public function testARestoreLeavesAStoredRecordItCouldNotDeleteAlone(): void
+    {
+        $this->storedRrsets['www.example.com|A'] = [
+            ['id' => 10, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 600, 'prio' => 0, 'disabled' => 0],
+            ['id' => 11, 'name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 600, 'prio' => 0, 'disabled' => 0],
+        ];
+        $this->undeletableId = 10;
+        $this->writeRefusedContent = '192.0.2.99';
+
+        $this->importWithReplace();
+
+        $this->assertSame([10, 11, 11], $this->deletes, 'the restore deletes again only what the replace removed');
+        $this->assertSame(['192.0.2.2'], array_column($this->restores, 3), 'and writes back only the record it deleted');
     }
 
     public function testAReplaceSkipsTheSameAddressWrittenAnotherWay(): void
