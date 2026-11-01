@@ -16439,3 +16439,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Ingen post blev gemt: nogle rækker bytter plads med hinanden, så de gemmes samlet eller slet ikke."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Adgangskoden skal være mindst %d tegn lang"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Adgangskoden skal indeholde mindst ét stort bogstav"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Adgangskoden skal indeholde mindst ét lille bogstav"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Adgangskoden skal indeholde mindst ét tal"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Adgangskoden skal indeholde mindst ét specialtegn"

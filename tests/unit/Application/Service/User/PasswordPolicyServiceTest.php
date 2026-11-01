@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\User;
 
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use TestHelpers\FakeConfiguration;
@@ -62,5 +63,36 @@ class PasswordPolicyServiceTest extends TestCase
         ]]));
 
         $this->assertSame(['An empty password is not allowed'], $service->validatePassword(''));
+    }
+
+    /** The German catalogue stays loaded for the rest of the process, hence the separate one */
+    #[RunInSeparateProcess]
+    public function testLocalizeTranslatesEveryRuleMessageForTheWebPage(): void
+    {
+        if (setlocale(LC_MESSAGES, 'de_DE.UTF-8', 'de_DE') === false) {
+            $this->markTestSkipped('The de_DE locale is not installed');
+        }
+        putenv('LANGUAGE=de_DE');
+        bindtextdomain('messages', dirname(__DIR__, 5) . '/locale');
+        textdomain('messages');
+
+        $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+            'password_policy.enable_password_rules' => true,
+            'password_policy.min_length' => 20,
+            'password_policy.require_uppercase' => true,
+            'password_policy.require_lowercase' => true,
+            'password_policy.require_numbers' => true,
+            'password_policy.require_special' => true,
+            'password_policy.special_characters' => '!@#',
+        ]]));
+
+        $this->assertSame([
+            'Das Passwort muss mindestens 20 Zeichen lang sein',
+            'Das Passwort muss mindestens einen Großbuchstaben enthalten',
+            'Das Passwort muss mindestens einen Kleinbuchstaben enthalten',
+            'Das Passwort muss mindestens eine Ziffer enthalten',
+            'Das Passwort muss mindestens ein Sonderzeichen enthalten',
+            'Ein leeres Passwort ist nicht erlaubt',
+        ], $service->localize([...$service->validatePassword(' '), ...$service->validatePassword('')]));
     }
 }

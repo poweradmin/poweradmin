@@ -15364,3 +15364,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "未保存任何记录：部分行互换了位置，因此要么全部一起保存，要么都不保存。"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "密码长度至少为 %d 个字符"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "密码必须包含至少一个大写字母"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "密码必须包含至少一个小写字母"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "密码必须包含至少一个数字"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "密码必须包含至少一个特殊字符"

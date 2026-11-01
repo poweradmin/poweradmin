@@ -16912,3 +16912,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Nu a fost salvată nicio înregistrare: unele rânduri își iau locul unul altuia, așa că sunt salvate toate împreună sau niciunul."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Parola trebuie să aibă cel puțin %d caractere"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Parola trebuie să conțină cel puțin o literă mare"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Parola trebuie să conțină cel puțin o literă mică"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Parola trebuie să conțină cel puțin o cifră"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Parola trebuie să conțină cel puțin un caracter special"

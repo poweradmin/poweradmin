@@ -15961,3 +15961,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "לא נשמרה אף רשומה: חלק מהשורות תופסות זו את מקומה של זו, ולכן הן נשמרות כולן יחד או אף אחת מהן."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "הסיסמה חייבת להכיל לפחות %d תווים"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "הסיסמה חייבת להכיל לפחות אות גדולה אחת"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "הסיסמה חייבת להכיל לפחות אות קטנה אחת"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "הסיסמה חייבת להכיל לפחות ספרה אחת"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"

@@ -16194,3 +16194,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "레코드가 저장되지 않았습니다. 일부 행이 서로의 자리를 바꾸므로 모두 함께 저장되거나 하나도 저장되지 않습니다."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "비밀번호는 %d자 이상이어야 합니다"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "비밀번호에는 대문자가 하나 이상 포함되어야 합니다"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "비밀번호에는 소문자가 하나 이상 포함되어야 합니다"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "비밀번호에는 숫자가 하나 이상 포함되어야 합니다"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "비밀번호에는 특수 문자가 하나 이상 포함되어야 합니다"

@@ -15694,3 +15694,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "ไม่มีระเบียนใดถูกบันทึก: บางแถวสลับที่กันเอง จึงต้องบันทึกทั้งหมดพร้อมกันหรือไม่บันทึกเลย"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "รหัสผ่านต้องมีความยาวอย่างน้อย %d อักขระ"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "รหัสผ่านต้องมีตัวพิมพ์ใหญ่อย่างน้อยหนึ่งตัว"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "รหัสผ่านต้องมีตัวพิมพ์เล็กอย่างน้อยหนึ่งตัว"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "รหัสผ่านต้องมีตัวเลขอย่างน้อยหนึ่งตัว"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "รหัสผ่านต้องมีอักขระพิเศษอย่างน้อยหนึ่งตัว"

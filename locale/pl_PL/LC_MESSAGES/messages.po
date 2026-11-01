@@ -16577,3 +16577,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Nie zapisano żadnego rekordu: niektóre wiersze zajmują nawzajem swoje miejsca, więc są zapisywane wszystkie razem albo żaden."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Hasło musi mieć co najmniej %d znaków"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Hasło musi zawierać co najmniej jedną wielką literę"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Hasło musi zawierać co najmniej jedną małą literę"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Hasło musi zawierać co najmniej jedną cyfrę"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Hasło musi zawierać co najmniej jeden znak specjalny"

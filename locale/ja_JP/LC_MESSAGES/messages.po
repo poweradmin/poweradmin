@@ -16404,3 +16404,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "レコードは保存されませんでした。一部の行が互いの位置を入れ替えるため、すべてまとめて保存されるか、まったく保存されないかのどちらかです。"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "パスワードは %d 文字以上にしてください"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "パスワードには大文字を 1 文字以上含めてください"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "パスワードには小文字を 1 文字以上含めてください"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "パスワードには数字を 1 文字以上含めてください"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "パスワードには特殊文字を 1 文字以上含めてください"

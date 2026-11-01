@@ -16109,3 +16109,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Ühtegi kirjet ei salvestatud: mõned read võtavad üksteise koha, seega salvestatakse need kõik koos või mitte ühtegi."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Parool peab olema vähemalt %d tähemärki pikk"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Parool peab sisaldama vähemalt ühte suurtähte"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Parool peab sisaldama vähemalt ühte väiketähte"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Parool peab sisaldama vähemalt ühte numbrit"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Parool peab sisaldama vähemalt ühte erimärki"

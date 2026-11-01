@@ -16167,3 +16167,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Neviens ieraksts netika saglabāts: dažas rindas ieņem cita citas vietu, tāpēc tās tiek saglabātas visas kopā vai neviena."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Parolei jābūt vismaz %d rakstzīmes garai"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Parolē jābūt vismaz vienam lielajam burtam"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Parolē jābūt vismaz vienam mazajam burtam"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Parolē jābūt vismaz vienam ciparam"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Parolē jābūt vismaz vienai speciālajai rakstzīmei"

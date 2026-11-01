@@ -16563,3 +16563,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Tidak ada catatan yang disimpan: beberapa baris saling menggantikan tempat, sehingga semuanya disimpan bersama atau tidak sama sekali."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Kata sandi harus terdiri dari minimal %d karakter"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Kata sandi harus berisi minimal satu huruf besar"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Kata sandi harus berisi minimal satu huruf kecil"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Kata sandi harus berisi minimal satu angka"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Kata sandi harus berisi minimal satu karakter khusus"

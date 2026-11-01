@@ -16614,3 +16614,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Er is geen record opgeslagen: sommige rijen nemen elkaars plaats in, dus worden ze allemaal samen opgeslagen of geen enkele."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Het wachtwoord moet minstens %d tekens lang zijn"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Het wachtwoord moet minstens één hoofdletter bevatten"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Het wachtwoord moet minstens één kleine letter bevatten"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Het wachtwoord moet minstens één cijfer bevatten"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Het wachtwoord moet minstens één speciaal teken bevatten"

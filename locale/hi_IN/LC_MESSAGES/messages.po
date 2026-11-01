@@ -16145,3 +16145,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "कोई रिकॉर्ड सहेजा नहीं गया: कुछ पंक्तियाँ एक-दूसरे की जगह लेती हैं, इसलिए वे सभी एक साथ सहेजी जाती हैं या एक भी नहीं।"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "पासवर्ड कम से कम %d वर्णों का होना चाहिए"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "पासवर्ड में कम से कम एक बड़ा अक्षर होना चाहिए"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "पासवर्ड में कम से कम एक छोटा अक्षर होना चाहिए"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "पासवर्ड में कम से कम एक अंक होना चाहिए"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "पासवर्ड में कम से कम एक विशेष वर्ण होना चाहिए"

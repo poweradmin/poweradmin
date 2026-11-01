@@ -16856,3 +16856,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Níor sábháladh aon taifead: glacann roinnt rónna áit a chéile, mar sin sábháiltear iad go léir le chéile nó ní shábháiltear ceann ar bith acu."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Caithfidh %d carachtar ar a laghad a bheith sa phasfhocal"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Caithfidh ceannlitir amháin ar a laghad a bheith sa phasfhocal"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Caithfidh litir bheag amháin ar a laghad a bheith sa phasfhocal"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Caithfidh uimhir amháin ar a laghad a bheith sa phasfhocal"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Caithfidh carachtar speisialta amháin ar a laghad a bheith sa phasfhocal"

@@ -16476,3 +16476,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Neišsaugotas nė vienas įrašas: kai kurios eilutės užima viena kitos vietą, todėl jos išsaugomos visos kartu arba nė viena."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Slaptažodis turi būti bent %d simbolių ilgio"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Slaptažodyje turi būti bent viena didžioji raidė"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Slaptažodyje turi būti bent viena mažoji raidė"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Slaptažodyje turi būti bent vienas skaitmuo"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Slaptažodyje turi būti bent vienas specialusis simbolis"

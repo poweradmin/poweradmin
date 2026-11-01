@@ -16336,3 +16336,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Không có bản ghi nào được lưu: một số hàng thay thế vị trí của nhau, vì vậy chúng được lưu cùng lúc hoặc không lưu hàng nào."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Mật khẩu phải dài ít nhất %d ký tự"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Mật khẩu phải chứa ít nhất một chữ hoa"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Mật khẩu phải chứa ít nhất một chữ thường"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Mật khẩu phải chứa ít nhất một chữ số"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Mật khẩu phải chứa ít nhất một ký tự đặc biệt"

@@ -161,7 +161,7 @@ class ChangePasswordController extends BaseController
         $policyErrors = $this->policyService()->validatePassword($newPassword);
 
         if (!empty($policyErrors)) {
-            $this->setMessage('change_password', 'error', array_shift($policyErrors));
+            $this->setMessage('change_password', 'error', $this->policyService()->localize($policyErrors)[0]);
             return false;
         }
 

@@ -212,7 +212,7 @@ class ResetPasswordController extends BaseController
                 'ip' => $ipAddress,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm($tokenData, '', $policyErrors);
+            $this->showPasswordResetForm($tokenData, '', $this->passwordPolicyService()->localize($policyErrors));
             return;
         }
 

@@ -75,6 +75,28 @@ class PasswordPolicyService implements PasswordPolicyInterface
         return $errors;
     }
 
+    /**
+     * The messages validatePassword() returned, translated for a web page. They stay in
+     * English there because API v2 passes them on as error strings.
+     *
+     * @param list<string> $errors
+     * @return list<string>
+     */
+    public function localize(array $errors): array
+    {
+        $minLength = $this->configManager->get('security', 'password_policy.min_length');
+
+        return array_map(static fn(string $error): string => match ($error) {
+            'An empty password is not allowed' => _('An empty password is not allowed'),
+            "Password must be at least {$minLength} characters long" => sprintf(_('Password must be at least %d characters long'), $minLength),
+            'Password must contain at least one uppercase letter' => _('Password must contain at least one uppercase letter'),
+            'Password must contain at least one lowercase letter' => _('Password must contain at least one lowercase letter'),
+            'Password must contain at least one number' => _('Password must contain at least one number'),
+            'Password must contain at least one special character' => _('Password must contain at least one special character'),
+            default => $error,
+        }, $errors);
+    }
+
     public function getPolicyConfig(): array
     {
         return [

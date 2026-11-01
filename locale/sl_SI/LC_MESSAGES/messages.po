@@ -16474,3 +16474,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Noben zapis ni bil shranjen: nekatere vrstice zasedajo mesto druga druge, zato se shranijo vse skupaj ali nobena."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Geslo mora imeti vsaj %d znakov"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Geslo mora vsebovati vsaj eno veliko črko"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Geslo mora vsebovati vsaj eno malo črko"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Geslo mora vsebovati vsaj eno številko"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Geslo mora vsebovati vsaj en poseben znak"

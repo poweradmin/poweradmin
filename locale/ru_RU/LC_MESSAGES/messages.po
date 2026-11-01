@@ -16580,3 +16580,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Ни одна запись не сохранена: некоторые строки занимают места друг друга, поэтому они сохраняются все вместе или ни одна."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Пароль должен содержать не менее %d символов"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Пароль должен содержать хотя бы одну заглавную букву"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Пароль должен содержать хотя бы одну строчную букву"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Пароль должен содержать хотя бы одну цифру"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Пароль должен содержать хотя бы один специальный символ"

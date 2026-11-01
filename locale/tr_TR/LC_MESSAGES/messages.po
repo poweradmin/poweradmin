@@ -16453,3 +16453,24 @@ msgid ""
 "No record was saved: some rows take each other's place, so they are saved "
 "together or not at all."
 msgstr "Hiçbir kayıt kaydedilmedi: bazı satırlar birbirinin yerini alıyor, bu yüzden ya hepsi birlikte kaydedilir ya da hiçbiri."
+
+#: lib/Application/Service/User/PasswordPolicyService.php:91
+#, php-format
+msgid "Password must be at least %d characters long"
+msgstr "Parola en az %d karakter uzunluğunda olmalıdır"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:92
+msgid "Password must contain at least one uppercase letter"
+msgstr "Parola en az bir büyük harf içermelidir"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:93
+msgid "Password must contain at least one lowercase letter"
+msgstr "Parola en az bir küçük harf içermelidir"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:94
+msgid "Password must contain at least one number"
+msgstr "Parola en az bir rakam içermelidir"
+
+#: lib/Application/Service/User/PasswordPolicyService.php:95
+msgid "Password must contain at least one special character"
+msgstr "Parola en az bir özel karakter içermelidir"
