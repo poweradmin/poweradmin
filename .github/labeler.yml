@@ -100,7 +100,6 @@ integration:
 core:
   - changed-files:
     - any-glob-to-any-file:
-      - 'lib/Domain/**'
       - 'lib/Application/Controller/*.php'
       - 'lib/Application/Controller/System/**'
       - 'lib/Application/Controller/Log/**'
@@ -118,7 +117,6 @@ core:
 infra:
   - changed-files:
     - any-glob-to-any-file:
-      - 'lib/Infrastructure/**'
       - '.github/workflows/**'
       - 'Dockerfile'
       - '.devcontainer/**/*.Dockerfile'
@@ -150,13 +148,3 @@ installer:
     - any-glob-to-any-file:
       - 'install/**'
       - 'lib/Application/Controller/InstallController.php'
-
-dependencies:
-  - changed-files:
-    - any-glob-to-any-file:
-      - 'composer.json'
-      - 'composer.lock'
-      - 'package.json'
-      - 'package-lock.json'
-      - '!vendor/**'
-      - '!node_modules/**'

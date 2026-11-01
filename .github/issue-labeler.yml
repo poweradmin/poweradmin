@@ -1,6 +1,6 @@
 # Issue auto-labeling configuration
 # Automatically applies labels to issues based on keywords in title and body
-# Uses regex patterns - case insensitive matching
+# Patterns match case-sensitively; wrap one as '/.../i' to ignore case.
 #
 # NOTE: bug/feature types are handled by GitHub's built-in issue types
 # (set via `type:` field in issue templates), not by labels.
@@ -10,7 +10,7 @@ auth:
   - '(authentication|log\s?in|log\s?out|session\smanagement|mfa|2fa|two.factor|ldap\s|saml\s|oidc\s|oauth\s|sso\s|sign.in|credentials|password\s(reset|change|policy))'
 
 security:
-  - '(security|vulnerability|vulnerabilities|xss|sql.injection|csrf|exploit|cve-\d|penetration|breach|malicious|attack)'
+  - '/(security|vulnerability|vulnerabilities|xss|sql.injection|csrf|exploit|cve-\d|penetration|breach|malicious|attack)/i'
 
 # === DNS Core ===
 dns:
@@ -18,14 +18,14 @@ dns:
   - '(\bdns\b|zone\s(?!template)|record\s(?!template)|nameserver|ns\srecord|a\srecord|aaaa\srecord|cname\srecord|mx\srecord|txt\srecord|srv\srecord|ptr\srecord|soa\srecord)'
 
 dnssec:
-  - '(dnssec|ds\srecord|dnskey|nsec3?|rrsig|key.signing|zone.signing)'
+  - '/(dnssec|ds\srecord|dnskey|nsec3?|rrsig|key.signing|zone.signing)/i'
 
 dns-templates:
   - '(zone.template|record.template|template.zone|template.record|default.record)'
 
 # === API ===
 api:
-  - '(rest\sapi|api\sendpoint|/api/v|json\sresponse|swagger|openapi|api.key|api.authentication)'
+  - '/(rest\sapi|api\sendpoint|/api/v|json\sresponse|swagger|openapi|api.key|api.authentication)/i'
 
 # === User Interface ===
 ui:
