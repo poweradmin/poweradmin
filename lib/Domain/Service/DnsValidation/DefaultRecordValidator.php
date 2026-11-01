@@ -92,7 +92,7 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : 0;
 
         return ValidationResult::success([
-            'content' => $content,
+            'content' => $trimmed,
             'name' => $name,
             'ttl' => $validatedTtl,
             'prio' => $priority

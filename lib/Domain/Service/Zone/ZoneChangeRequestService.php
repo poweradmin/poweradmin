@@ -687,10 +687,12 @@ class ZoneChangeRequestService
     }
 
     /**
+     * On success the row's content is replaced with the validated form, which is what the save writes.
+     *
      * @param array<string, mixed> $row
      * @return string|null The first validation error, or null when the row is valid
      */
-    private function validate(int|string $recordId, int $zoneId, array $row): ?string
+    private function validate(int|string $recordId, int $zoneId, array &$row): ?string
     {
         $result = $this->validator->validateRecord(
             $recordId,
@@ -704,7 +706,15 @@ class ZoneChangeRequestService
             (int)$this->config->get('dns', 'ttl')
         );
 
-        return $result->isValid() ? null : $result->getFirstError();
+        if (!$result->isValid()) {
+            return $result->getFirstError();
+        }
+        $data = $result->getData();
+        if (is_array($data) && isset($data['content'])) {
+            $row['content'] = (string)$data['content'];
+        }
+
+        return null;
     }
 
     /**

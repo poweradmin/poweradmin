@@ -259,6 +259,21 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
     }
 
+    public function testAFiledAddKeepsTheValidatedContentAndMatchesItAgainstTheZone(): void
+    {
+        $this->validator = $this->createMock(DnsRecordValidationServiceInterface::class);
+        $this->validator->method('validateRecord')->willReturn(ValidationResult::success(['content' => 'abcd']));
+
+        $result = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'CUSTOM', 'content' => "abcd ", 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+        $this->assertTrue($result->success);
+        $this->assertSame('abcd', $this->repository->find($result->requestId)->actions[0]['after']['content']);
+
+        $this->records = $this->createMock(RecordRepositoryInterface::class);
+        $this->records->method('getRecordsByName')->willReturn([['id' => '9', 'content' => 'abcd']]);
+        $duplicate = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'CUSTOM', 'content' => "abcd ", 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+        $this->assertSame(Refusal::CONFLICT, $duplicate->refusal);
+    }
+
     public function testFilingAnAddComparesContentLikeTheRecordEditor(): void
     {
         $this->records = $this->createMock(RecordRepositoryInterface::class);

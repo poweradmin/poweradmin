@@ -683,6 +683,7 @@ class ZonesRecordsBulkController extends PublicApiController
         ) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
+        $content = trim($content);
         // Trimmed as on create; whitespace-only becomes '' and clears the comment
         $comment = $comment === null ? null : trim($comment);
         // A TTL of 0 is RFC-valid ("do not cache") and TTLValidator accepts it, so

@@ -202,6 +202,25 @@ class DefaultRecordValidatorTest extends TestCase
         $this->assertTrue((new DefaultRecordValidator('CUSTOM'))->validate('abcd', 'record.example.com', '', 3600, 86400)->isValid());
     }
 
+    public function testStoresContentWithoutSurroundingNewlines(): void
+    {
+        $validator = new DefaultRecordValidator('CUSTOM');
+
+        $leading = $validator->validate("\nevil 300 IN A 192.0.2.1", 'record.example.com', '', 3600, 86400);
+        $this->assertTrue($leading->isValid());
+        $this->assertSame('evil 300 IN A 192.0.2.1', $leading->getData()['content']);
+
+        $trailing = $validator->validate("abcd\n", 'record.example.com', '', 3600, 86400);
+        $this->assertSame('abcd', $trailing->getData()['content']);
+    }
+
+    public function testRejectsANewlineInsideContent(): void
+    {
+        $validator = new DefaultRecordValidator('CUSTOM');
+
+        $this->assertFalse($validator->validate("abcd\nevil 300 IN A 192.0.2.1", 'record.example.com', '', 3600, 86400)->isValid());
+    }
+
     public function testRejectsEscapedDotInName(): void
     {
         $validator = new DefaultRecordValidator('TYPE65280');
