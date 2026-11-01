@@ -798,10 +798,9 @@ class DnsRecord
     /**
      * Check if non-delegation records exist for a given name
      *
-     * Per RFC 1034: Delegation NS records are NOT authoritative data.
-     * Per RFC 4034: DS records are part of the delegation for DNSSEC.
-     * This method checks for records other than NS/DS which indicate authoritative data.
-     * Only delegation records (NS, DS) at a name should not prevent zone creation.
+     * Delegation-point data in the parent (NS, DS, and the NSEC and RRSIGs a signed
+     * parent keeps there, RFC 4035 section 2.2) is not authoritative data and does
+     * not prevent creating a zone at that name.
      *
      * @param string $name Record name
      * @return bool True if non-delegation records exist, false otherwise
