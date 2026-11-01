@@ -27,6 +27,9 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\ResetPasswordController;
 use Poweradmin\Application\Http\ClientContext;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
+use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -46,5 +49,37 @@ class ResetPasswordControllerTest extends SeamControllerTestCase
 
         $this->assertSame('reset_password.html', $this->renderedTemplate());
         $this->assertSame('Invalid or missing password reset token.', $this->renderedParams()['error']);
+    }
+
+    public function testAnEmptyNewPasswordIsRefusedWithoutTouchingTheAccount(): void
+    {
+        $config = $this->configure(['security' => [
+            'global_token_validation' => false,
+            'password_reset' => ['enabled' => true],
+            'password_policy.enable_password_rules' => false,
+        ]]);
+        $this->factory->method('clientContext')->willReturn(new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false));
+        $this->factory->method('passwordPolicyService')->willReturn(new PasswordPolicyService($config));
+
+        $tokens = $this->createMock(PasswordResetTokenRepositoryInterface::class);
+        $tokens->method('findByToken')->willReturn(['id' => 3, 'email' => 'user@example.com']);
+        $tokens->expects($this->never())->method('markAsUsed');
+        $this->factory->method('passwordResetTokenRepository')->willReturn($tokens);
+
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getUserByEmail')->willReturn(['id' => 5, 'email' => 'user@example.com', 'auth_method' => 'sql']);
+        $users->method('countUsersByEmail')->willReturn(1);
+        $users->expects($this->never())->method('updatePassword');
+        $this->factory->method('userRepository')->willReturn($users);
+
+        $this->session->remove(SessionKeys::USERID);
+        $this->query(['token' => 'abc']);
+        $this->post(['password' => '', 'confirm_password' => '']);
+
+        $controller = new ResetPasswordController([], $this->environment($config));
+        $controller->run();
+
+        $this->assertSame('reset_password.html', $this->renderedTemplate());
+        $this->assertSame(['An empty password is not allowed'], $this->renderedParams()['policy_errors']);
     }
 }
