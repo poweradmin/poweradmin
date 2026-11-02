@@ -179,6 +179,16 @@ class ZoneMetadataControllerTest extends TestCase
         );
     }
 
+    public function testListUppercasesKindsLikeTheKindEndpoints(): void
+    {
+        $grouped = $this->invokePrivateMethod($this->createController(), 'groupMetadataByKind', [[
+            ['kind' => 'also-notify', 'content' => '192.0.2.53'],
+            ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.54'],
+        ]]);
+
+        $this->assertSame([['kind' => 'ALSO-NOTIFY', 'values' => ['192.0.2.53', '192.0.2.54']]], $grouped);
+    }
+
     private function kindWriteRejection(ZoneMetadataController $controller, string $kind): ?JsonResponse
     {
         return $this->invokePrivateMethod($controller, 'kindWriteRejection', [$kind]);
