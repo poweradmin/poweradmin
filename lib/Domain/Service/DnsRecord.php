@@ -1962,6 +1962,23 @@ class DnsRecord
                     WHERE domain_id = " . $this->db->quote($zone_id, 'integer');
         $this->db->exec($query);
         $this->db->commit();
+
+        // Template records are written straight to the table, so a signed zone needs rectifying
+        if ($zone_template_id != 0 && $this->config->get('pdnssec_use') && $this->get_domain_type($zone_id) !== 'SLAVE') {
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                new FakeConfiguration($this->config->get('pdns_api_url'), $this->config->get('pdns_api_key'))
+            );
+            $zone_name = $this->get_domain_name_by_id($zone_id);
+            if ($zone_name) {
+                // Already committed: a failure must not abort the remaining zones of a bulk update
+                try {
+                    $dnssecProvider->rectifyZone($zone_name);
+                } catch (\Throwable $e) {
+                    error_log(sprintf('Zone rectify failed for %s: %s', $zone_name, $e->getMessage()));
+                }
+            }
+        }
     }
 
     /** Delete array of domains
