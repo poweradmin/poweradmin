@@ -74,11 +74,11 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     private static array $freshCache = [];
 
-    public const VERSION = '7.4.21';
-    public const VERSION_ID = 70421;
+    public const VERSION = '7.4.22';
+    public const VERSION_ID = 70422;
     public const MAJOR_VERSION = 7;
     public const MINOR_VERSION = 4;
-    public const RELEASE_VERSION = 21;
+    public const RELEASE_VERSION = 22;
     public const EXTRA_VERSION = '';
 
     public const END_OF_MAINTENANCE = '11/2028';
@@ -143,6 +143,18 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
             return;
         }
 
+        if (!$this->handlingHttpCache && $this->container->has('http_cache') && ($httpCache = $this->container->get('http_cache')) instanceof TerminableInterface) {
+            $this->handlingHttpCache = true;
+
+            try {
+                $httpCache->terminate($request, $response);
+            } finally {
+                $this->handlingHttpCache = false;
+            }
+
+            return;
+        }
+
         if ($this->getHttpKernel() instanceof TerminableInterface) {
             $this->getHttpKernel()->terminate($request, $response);
         }
@@ -164,8 +176,6 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         $this->container = null;
         $this->requestStackSize = 0;
         $this->resetServices = false;
-
-        gc_collect_cycles();
     }
 
     public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true): Response
@@ -459,6 +469,8 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         } finally {
             error_reporting($errorLevel);
         }
+
+        $this->container = null;
 
         try {
             if ($collectDeprecations = $this->debug && !\defined('PHPUNIT_COMPOSER_INSTALL')) {
