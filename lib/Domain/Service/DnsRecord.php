@@ -1976,9 +1976,9 @@ class DnsRecord
                 new FakeConfiguration($this->config->get('pdns_api_url'), $this->config->get('pdns_api_key'))
             );
             $zone_name = $this->get_domain_name_by_id($zone_id);
-            if ($zone_name && self::$rectifyStalled) {
+            if (is_string($zone_name) && self::$rectifyStalled) {
                 error_log(sprintf('Zone rectify skipped for %s: an earlier rectify in this request failed after timing out or stalling', $zone_name));
-            } elseif ($zone_name) {
+            } elseif (is_string($zone_name)) {
                 // Already committed: a failure must not abort the remaining zones of a bulk update,
                 // and after one slow failure the rest skip rectify instead of waiting per zone
                 $started = hrtime(true);
