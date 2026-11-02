@@ -173,11 +173,9 @@ class UserManagerTemplateAssignmentTest extends TestCase
 
         $manager = (new ReflectionClass(UserManager::class))->newInstanceWithoutConstructor();
         $property = new ReflectionProperty($manager, 'db');
-        $property->setAccessible(true);
         $property->setValue($manager, $db);
 
         $method = new ReflectionMethod($manager, 'permissionTemplateAssignmentError');
-        $method->setAccessible(true);
 
         return $method->invoke($manager, 3, $targetUserId, $callerIsSuperuser, $callerMayEditOthers);
     }

@@ -59,11 +59,9 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         $reflection = new ReflectionClass($this->validator);
 
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
     }
 
@@ -273,7 +271,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         // Inject mock validator
         $reflection = new ReflectionClass($this->validator);
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $result = $this->validator->validate(
@@ -303,7 +300,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         // Inject mock validator
         $reflection = new ReflectionClass($this->validator);
         $ttlProperty = $reflection->getProperty('ttlValidator');
-        $ttlProperty->setAccessible(true);
         $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
 
         $result = $this->validator->validate(
@@ -336,7 +332,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         // Inject mock validator
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(
@@ -406,7 +401,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         // Inject the mock validator
         $reflection = new ReflectionClass($this->validator);
         $hostnameProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameProperty->setAccessible(true);
         $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         $result = $this->validator->validate(

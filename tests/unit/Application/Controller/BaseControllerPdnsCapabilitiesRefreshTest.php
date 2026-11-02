@@ -105,7 +105,6 @@ class BaseControllerPdnsCapabilitiesRefreshTest extends TestCase
     private function capabilities(BaseController $controller): PdnsCapabilities
     {
         $method = (new ReflectionClass(BaseController::class))->getMethod('getPdnsCapabilities');
-        $method->setAccessible(true);
         return $method->invoke($controller);
     }
 

@@ -100,7 +100,6 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
     private function invokeAssign(object $controller): object
     {
         $method = new ReflectionMethod($controller, 'assignPermissionTemplate');
-        $method->setAccessible(true);
 
         return $method->invoke($controller);
     }
@@ -108,7 +107,6 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
     private function setProperty(object $target, string $name, mixed $value): void
     {
         $property = new ReflectionProperty($target, $name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

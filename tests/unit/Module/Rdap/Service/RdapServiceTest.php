@@ -62,7 +62,6 @@ class RdapServiceTest extends TestCase
     {
         $reflection = new ReflectionClass($this->rdapService);
         $method = $reflection->getMethod('isValidRdapUrl');
-        $method->setAccessible(true);
         return $method;
     }
 
@@ -153,7 +152,6 @@ class RdapServiceTest extends TestCase
     {
         $reflectionClass = new ReflectionClass($this->rdapService);
         $property = $reflectionClass->getProperty('requestTimeout');
-        $property->setAccessible(true);
 
         $this->assertEquals(10, $property->getValue($this->rdapService));
 

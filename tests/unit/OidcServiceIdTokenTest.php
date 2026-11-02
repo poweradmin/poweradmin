@@ -55,7 +55,6 @@ class OidcServiceIdTokenTest extends TestCase
         );
 
         $this->decodeMethod = new ReflectionMethod(OidcService::class, 'decodeIdTokenPayload');
-        $this->decodeMethod->setAccessible(true);
     }
 
     private function buildJwt(array $payload): string

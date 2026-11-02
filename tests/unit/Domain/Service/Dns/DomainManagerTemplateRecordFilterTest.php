@@ -38,7 +38,6 @@ class DomainManagerTemplateRecordFilterTest extends TestCase
     private function shouldApply(string $domain, string $type): bool
     {
         $method = new ReflectionMethod(DomainManager::class, 'shouldApplyTemplateRecord');
-        $method->setAccessible(true);
         return $method->invoke(null, $domain, $type);
     }
 

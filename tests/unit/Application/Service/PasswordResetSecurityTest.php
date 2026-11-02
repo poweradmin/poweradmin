@@ -100,12 +100,10 @@ class PasswordResetSecurityTest extends TestCase
     {
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
 
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue(ConfigurationManager::getInstance(), false);
     }
 
@@ -118,11 +116,9 @@ class PasswordResetSecurityTest extends TestCase
 
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $settingsProperty->setValue($configManager, $settings);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
     }
 

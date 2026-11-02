@@ -35,7 +35,6 @@ class LogoutControllerTest extends TestCase
         $reflection = new ReflectionClass(LogoutController::class);
         $controller = $reflection->newInstanceWithoutConstructor();
         $method = $reflection->getMethod('getLogoutParameterName');
-        $method->setAccessible(true);
 
         return $method->invoke($controller, $logoutUrl);
     }
@@ -45,7 +44,6 @@ class LogoutControllerTest extends TestCase
         $reflection = new ReflectionClass(LogoutController::class);
         $controller = $reflection->newInstanceWithoutConstructor();
         $method = $reflection->getMethod('buildOidcLogoutUrl');
-        $method->setAccessible(true);
 
         return $method->invoke($controller, $providerConfig, $returnUrl, $idToken);
     }

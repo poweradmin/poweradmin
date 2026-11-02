@@ -127,7 +127,6 @@ class SamlResponseValidationTest extends TestCase
     {
         $reflection = new ReflectionClass($this->service);
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
         return $method;
     }
 }

@@ -190,7 +190,6 @@ class SymfonyRouterTest extends TestCase
         // Use reflection to test private method
         $reflection = new \ReflectionClass($router);
         $method = $reflection->getMethod('isApiRoute');
-        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($router));
     }
@@ -204,7 +203,6 @@ class SymfonyRouterTest extends TestCase
         // Use reflection to test private method
         $reflection = new \ReflectionClass($router);
         $method = $reflection->getMethod('isApiRoute');
-        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($router));
     }

@@ -22,7 +22,6 @@ class PowerdnsStatusServiceTest extends TestCase
     public function testIsSecureUrl(string $url, bool $expected): void
     {
         $method = $this->reflection->getMethod('isSecureUrl');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $url);
         $this->assertSame($expected, $result);
@@ -59,7 +58,6 @@ class PowerdnsStatusServiceTest extends TestCase
     public function testSanitizeDisplayName($input, string $expected): void
     {
         $method = $this->reflection->getMethod('sanitizeDisplayName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $input);
         $this->assertSame($expected, $result);

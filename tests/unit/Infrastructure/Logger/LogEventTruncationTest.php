@@ -66,7 +66,6 @@ class LogEventTruncationTest extends TestCase
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
 
         $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
 
         if ($settings === null) {
@@ -76,11 +75,9 @@ class LogEventTruncationTest extends TestCase
         $configManager = ConfigurationManager::getInstance();
 
         $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $settingsProperty->setValue($configManager, $settings);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
     }
 

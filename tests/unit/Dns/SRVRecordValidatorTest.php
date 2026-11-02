@@ -178,7 +178,6 @@ class SRVRecordValidatorTest extends TestCase
         // we'll test the private validateTarget method directly using reflection
 
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateTarget');
-        $method->setAccessible(true);
 
         $dotResult = $method->invoke($this->validator, '.');
 
@@ -412,7 +411,6 @@ class SRVRecordValidatorTest extends TestCase
     {
         // Using reflection to access private method
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvName');
-        $method->setAccessible(true);
 
         // Test valid name
         $validResult = $method->invoke($this->validator, '_sip._tcp.example.com');
@@ -437,7 +435,6 @@ class SRVRecordValidatorTest extends TestCase
     {
         // Using reflection to access private method
         $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvContent');
-        $method->setAccessible(true);
 
         // Test valid content
         $validResult = $method->invoke($this->validator, '20 5060 sip.example.com', '_sip._tcp.example.com');

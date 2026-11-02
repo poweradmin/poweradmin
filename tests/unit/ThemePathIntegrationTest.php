@@ -81,13 +81,11 @@ class ThemePathIntegrationTest extends TestCase
     {
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $instanceProperty = $reflectionClass->getProperty('instance');
-        $instanceProperty->setAccessible(true);
         $instanceProperty->setValue(null, null);
 
         $config = ConfigurationManager::getInstance();
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($config, false);
     }
 
@@ -100,11 +98,9 @@ class ThemePathIntegrationTest extends TestCase
 
         $reflectionClass = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflectionClass->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $settingsProperty->setValue($configManager, $settings);
 
         $initializedProperty = $reflectionClass->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
         $initializedProperty->setValue($configManager, true);
     }
 
@@ -133,7 +129,6 @@ class ThemePathIntegrationTest extends TestCase
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
         $styleDir = $reflection->getProperty('styleDir');
-        $styleDir->setAccessible(true);
 
         // This should be pointing to {tempDir}/templates/default/style
         $this->assertEquals(
@@ -170,7 +165,6 @@ class ThemePathIntegrationTest extends TestCase
         // Get the styleDir property to verify the path
         $reflection = new \ReflectionObject($styleManager);
         $styleDir = $reflection->getProperty('styleDir');
-        $styleDir->setAccessible(true);
 
         // This should be pointing to {tempDir}/templates/custom/style
         $this->assertEquals(

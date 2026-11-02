@@ -256,7 +256,6 @@ class CNAMERecordValidatorTest extends TestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validatePriority');
-        $method->setAccessible(true);
 
         // With empty priority
         $result = $method->invoke($this->validator, '');
@@ -278,7 +277,6 @@ class CNAMERecordValidatorTest extends TestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         // Mock DB for unique CNAME
         $stmtMock = $this->createMock(\PDOStatement::class);
@@ -298,7 +296,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->validator, 'conflict.example.com', 0);
         $this->assertFalse($result->isValid());
@@ -309,7 +306,6 @@ class CNAMERecordValidatorTest extends TestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameName');
-        $method->setAccessible(true);
 
         // Mock DB for valid CNAME name
         $this->dbMock = $this->createMock(PDO::class);
@@ -321,7 +317,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->validator, 'valid.example.com');
         $this->assertTrue($result->isValid());
@@ -336,7 +331,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->validator, 'invalid.example.com');
         $this->assertFalse($result->isValid());
@@ -347,7 +341,6 @@ class CNAMERecordValidatorTest extends TestCase
     {
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateNotEmptyCnameRR');
-        $method->setAccessible(true);
 
         // Valid case (name different from zone)
         $result = $method->invoke($this->validator, 'alias.example.com', 'example.com');
@@ -596,7 +589,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameExistence');
-        $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'alias.example.com', '123');
         $this->assertTrue($result->isValid());
@@ -621,7 +613,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'alias.example.com', '123');
         $this->assertTrue($result->isValid());
@@ -646,7 +637,6 @@ class CNAMERecordValidatorTest extends TestCase
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
         $method = $reflection->getMethod('validateCnameExistence');
-        $method->setAccessible(true);
 
         $result = $method->invoke($validator, 'alias.example.com', -1);
         $this->assertTrue($result->isValid());
