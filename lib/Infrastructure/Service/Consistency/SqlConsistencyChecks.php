@@ -35,6 +35,7 @@ use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\AccountOwnerLookup;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -55,7 +56,8 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         DefaultSoaBuilder $defaultSoa,
         ?AccountOwnerLookup $accountOwners = null,
         ?ZoneChangeRequestRepositoryInterface $changeRequests = null,
-        LoggerInterface $logger = new NullLogger()
+        LoggerInterface $logger = new NullLogger(),
+        private readonly ?PostWriteZoneRectifier $zoneRectifier = null
     ) {
         parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests, $logger);
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
@@ -389,6 +391,20 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
      */
     public function fixRecordNameCase(int $recordId): bool
     {
+        $domainId = $this->lowercaseRecordName($recordId);
+        if ($domainId === null) {
+            return false;
+        }
+        $this->rectify($domainId);
+
+        return true;
+    }
+
+    /**
+     * @return int|null The zone of the repaired record, null when nothing was repaired
+     */
+    private function lowercaseRecordName(int $recordId): ?int
+    {
         // LOWER() in SQL rather than strtolower(), so the checks look at the name the UPDATE writes
         $stmt = $this->db->prepare(
             "SELECT domain_id, name, LOWER(name) AS lower_name, type, content, prio, disabled
@@ -398,14 +414,14 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $stmt->execute();
         $record = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($record === false) {
-            return false;
+            return null;
         }
 
         $domainId = (int)$record['domain_id'];
         $lowerName = (string)$record['lower_name'];
         $resolution = $this->caseRepairFor($record, $this->recordsAtName($domainId, $lowerName, $recordId));
         if ($resolution === 'refuse') {
-            return false;
+            return null;
         }
 
         $this->transaction()->begin();
@@ -421,10 +437,10 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             $this->lowercaseComments($domainId, (string)$record['name'], $lowerName, (string)$record['type']);
 
             $this->transaction()->commit();
-            return true;
+            return $domainId;
         } catch (Exception $e) {
             $this->transaction()->rollBack();
-            return false;
+            return null;
         }
     }
 
@@ -542,11 +558,25 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
     public function fixAllRecordNamesCase(): array
     {
-        return ConsistencyReport::repairEach(
+        $zoneIds = [];
+        $report = ConsistencyReport::repairEach(
             ConsistencyReport::findingIds($this->checkRecordNamesInLowercase()),
-            fn(int $recordId): bool => $this->fixRecordNameCase($recordId),
+            function (int $recordId) use (&$zoneIds): bool {
+                $domainId = $this->lowercaseRecordName($recordId);
+                if ($domainId === null) {
+                    return false;
+                }
+                $zoneIds[$domainId] = true;
+                return true;
+            },
             'fixed'
         );
+        // Once per zone, not once per renamed record
+        foreach (array_keys($zoneIds) as $domainId) {
+            $this->rectify($domainId);
+        }
+
+        return $report;
     }
 
     public function deleteSlaveZone(int $zoneId): bool
@@ -619,12 +649,31 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             VALUES (:domain_id, :name, 'SOA', :content, :ttl, 0, 0)
         ");
 
-        return $stmt->execute([
+        $created = $stmt->execute([
             'domain_id' => $zoneId,
             'name' => strtolower($zoneName),
             'content' => $this->defaultSoa->content(),
             'ttl' => $this->defaultSoa->ttl(),
         ]);
+        if ($created) {
+            $this->zoneRectifier?->rectify($zoneName);
+        }
+
+        return $created;
+    }
+
+    /**
+     * A renamed or added record changes the nodes of a signed zone, so its NSEC/NSEC3 chain needs rebuilding.
+     */
+    private function rectify(int $zoneId): void
+    {
+        if ($this->zoneRectifier === null) {
+            return;
+        }
+        $zoneName = $this->zoneName($zoneId);
+        if ($zoneName !== null) {
+            $this->zoneRectifier->rectify($zoneName);
+        }
     }
 
     private function zoneName(int $zoneId): ?string

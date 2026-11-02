@@ -28,6 +28,9 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
+use Psr\Log\NullLogger;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
@@ -540,6 +543,54 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(3600, (int)$row['ttl']);
         $this->assertSame(0, (int)$row['prio']);
         $this->assertSame(0, (int)$row['disabled']);
+    }
+
+    public function testACreatedDefaultSoaRectifiesTheZone(): void
+    {
+        $this->domain(1, 'example.com');
+        $rectified = [];
+
+        $this->assertTrue($this->rectifyingChecker($rectified)->createDefaultSOA(1));
+        $this->assertSame(['example.com'], $rectified);
+    }
+
+    public function testRenamedRecordsRectifyEachZoneOnceAndARefusedRenameNone(): void
+    {
+        $this->commentTables();
+        $this->domain(1, 'example.com');
+        $this->domain(2, 'example.org');
+        $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
+        $this->record(12, 1, 'MAIL.example.com', 'A', '192.0.2.2');
+        $this->record(21, 2, 'WWW.example.org', 'A', '192.0.2.3');
+        // Renaming would put a CNAME next to the A record, so this one is refused
+        $this->domain(3, 'example.net');
+        $this->record(31, 3, 'Www.example.net', 'CNAME', 'host.example.org');
+        $this->record(32, 3, 'www.example.net', 'A', '192.0.2.4');
+        $rectified = [];
+        $checker = $this->rectifyingChecker($rectified);
+
+        $this->assertSame(['fixed' => 3, 'failed' => 1], $checker->fixAllRecordNamesCase());
+        sort($rectified);
+        $this->assertSame(['example.com', 'example.org'], $rectified);
+
+        $rectified = [];
+        $this->assertFalse($checker->fixRecordNameCase(31));
+        $this->assertSame([], $rectified);
+    }
+
+    /**
+     * @param list<string> $rectified Receives the name of every zone rectified
+     */
+    private function rectifyingChecker(array &$rectified): SqlConsistencyChecks
+    {
+        $provider = $this->createStub(ZoneRectifierInterface::class);
+        $provider->method('rectifyZone')->willReturnCallback(function (string $zone) use (&$rectified): bool {
+            $rectified[] = $zone;
+            return true;
+        });
+        $rectifier = new PostWriteZoneRectifier(new FakeConfiguration(['dnssec' => ['enabled' => true]]), static fn() => $provider, new NullLogger());
+
+        return new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), zoneRectifier: $rectifier);
     }
 
     public function testCreateDefaultSoaFailsForAnUnknownZone(): void
