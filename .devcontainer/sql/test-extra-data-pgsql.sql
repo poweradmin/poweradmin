@@ -294,3 +294,5 @@ SELECT 'admin@example.com', 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409
 WHERE NOT EXISTS (
     SELECT 1 FROM password_reset_tokens WHERE token = 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c'
 );
+-- The 4.6.0 update retires unused links, so re-arm the token on every import
+UPDATE password_reset_tokens SET used = false WHERE token = 'sha256$74d4fcd56b4b86538b903e4c31d861254f231652f409e9a6b7f145ff5123903c';

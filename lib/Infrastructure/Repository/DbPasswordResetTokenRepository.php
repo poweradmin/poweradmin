@@ -74,8 +74,8 @@ final class DbPasswordResetTokenRepository implements PasswordResetTokenReposito
     public function findByToken(string $token): ?array
     {
         $db_type = $this->config->get('database', 'type');
-        // Compare expires_at against PHP's clock (it was written with PHP's), not
-        // DbCompat::now() whose DB/UTC clock skews the check by the tz offset.
+        // expires_at is written as UTC by PHP; compare against PHP's UTC clock, not
+        // DbCompat::now(), whose time zone depends on the DB server and session.
         $sql = "SELECT * FROM password_reset_tokens
                 WHERE token = :token
                 AND expires_at > :now
@@ -83,7 +83,7 @@ final class DbPasswordResetTokenRepository implements PasswordResetTokenReposito
                 LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':token' => $token, ':now' => date('Y-m-d H:i:s')]);
+        $stmt->execute([':token' => $token, ':now' => gmdate('Y-m-d H:i:s')]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
@@ -168,7 +168,7 @@ final class DbPasswordResetTokenRepository implements PasswordResetTokenReposito
     public function deleteExpired(): int
     {
         $db_type = $this->config->get('database', 'type');
-        // expires_at is compared against PHP's clock (matching how it was written);
+        // expires_at is compared against PHP's UTC clock (matching how it was written);
         // the used-token retention window keys off DB-written created_at, so it stays
         // on the DB clock via dateSubtract.
         $sql = "DELETE FROM password_reset_tokens
@@ -176,7 +176,7 @@ final class DbPasswordResetTokenRepository implements PasswordResetTokenReposito
                 OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':now' => date('Y-m-d H:i:s')]);
+        $stmt->execute([':now' => gmdate('Y-m-d H:i:s')]);
 
         return $stmt->rowCount();
     }

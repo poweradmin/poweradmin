@@ -202,7 +202,8 @@ class PasswordResetService
         $success = $this->tokenRepository->create([
             'email' => $storedEmail,
             'token' => $token,
-            'expires_at' => date('Y-m-d H:i:s', $expiresAt),
+            // UTC, so the expiry check does not repeat or skip an hour across a DST change
+            'expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
             'ip_address' => $ip
         ]);
 
@@ -213,7 +214,7 @@ class PasswordResetService
                 'user_id' => $user['id'],
                 'email' => $email,
                 'ip' => $ip,
-                'token_expires_at' => date('Y-m-d H:i:s', $expiresAt),
+                'token_expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
                 'email_sent' => $emailSent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);

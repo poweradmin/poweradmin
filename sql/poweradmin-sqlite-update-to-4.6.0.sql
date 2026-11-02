@@ -80,6 +80,10 @@ CREATE TABLE IF NOT EXISTS zone_templ_groups (
 );
 CREATE INDEX IF NOT EXISTS idx_zone_templ_groups_group ON zone_templ_groups(group_id);
 
+-- Password reset token expiry is now stored and compared in UTC (#1850). Links issued before
+-- the upgrade hold local time, so they are retired.
+UPDATE password_reset_tokens SET used = 1 WHERE used = 0;
+
 -- Usernames are unique (a rename could collide with another account). Kept last: on data
 -- that already holds a name twice this fails with "UNIQUE constraint failed". Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

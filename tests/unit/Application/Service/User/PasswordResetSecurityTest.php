@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Service\User;
 
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\ClientContext;
 use Poweradmin\Application\Service\User\PasswordResetService;
@@ -339,6 +340,44 @@ class PasswordResetSecurityTest extends TestCase
             ->willReturn(true);
 
         $this->assertTrue($this->passwordResetService->createResetRequest($submitted));
+    }
+
+    /**
+     * expires_at is stored in UTC (#1850): local wall-clock time repeats or skips an hour at a
+     * DST change, which expired fresh links early or revived expired ones.
+     */
+    #[RunInSeparateProcess]
+    public function testTokenExpiryIsStoredInUtc(): void
+    {
+        date_default_timezone_set('Etc/GMT-8');
+
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 3,
+            'username' => 'sql-user',
+            'email' => 'sql-user@example.com',
+            'fullname' => 'SQL User',
+            'auth_method' => 'sql'
+        ]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->mailService->method('sendMail')->willReturn(true);
+
+        $stored = null;
+        $this->tokenRepository->expects($this->once())
+            ->method('create')
+            ->with($this->callback(function ($data) use (&$stored) {
+                $stored = $data['expires_at'];
+                return true;
+            }))
+            ->willReturn(true);
+
+        $before = time();
+        $this->assertTrue($this->passwordResetService->createResetRequest('sql-user@example.com'));
+
+        $expiresAt = (new \DateTimeImmutable($stored, new \DateTimeZone('UTC')))->getTimestamp();
+        $this->assertGreaterThanOrEqual($before + 3600, $expiresAt);
+        $this->assertLessThanOrEqual(time() + 3600, $expiresAt);
     }
 
     /**

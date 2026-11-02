@@ -1838,7 +1838,7 @@ class DatabaseStructureHelper
                         'flags' => 'not_null'
                     ),
                     'expires_at' => array(
-                        'type' => 'timestamp',
+                        'type' => 'datetime',
                         'notnull' => 1,
                         'name' => 'expires_at',
                         'table' => 'password_reset_tokens',

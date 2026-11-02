@@ -204,6 +204,10 @@ BEGIN
     END IF;
 END $$;
 
+-- Password reset token expiry is now stored and compared in UTC (#1850). Links issued before
+-- the upgrade hold local time, so they are retired.
+UPDATE password_reset_tokens SET used = TRUE WHERE used = FALSE;
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:

@@ -21,10 +21,10 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 
 /**
- * expires_at is written with PHP's clock, so the validity check must use PHP's
- * clock too. SQLite's datetime('now') is UTC, so under a PHP timezone west of
- * UTC the old DbCompat::now() comparison marked freshly-created tokens as
- * already expired (audit H11).
+ * expires_at is written as UTC by PHP, so the validity check must use PHP's UTC
+ * clock too, whatever the PHP or DB time zone. Comparing against the DB clock
+ * marked fresh tokens expired west of UTC (audit H11); comparing local wall-clock
+ * time repeated or skipped an hour at a DST change (#1850).
  */
 class PasswordResetTokenExpiryClockTest extends TestCase
 {
@@ -65,7 +65,7 @@ class PasswordResetTokenExpiryClockTest extends TestCase
         $repo->create([
             'email' => 'user@example.com',
             'token' => 'fresh-token',
-            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600),
             'ip_address' => '203.0.113.1',
         ]);
 
@@ -88,11 +88,50 @@ class PasswordResetTokenExpiryClockTest extends TestCase
         $repo->create([
             'email' => 'user@example.com',
             'token' => 'stale-token',
-            'expires_at' => date('Y-m-d H:i:s', time() - 60),
+            'expires_at' => gmdate('Y-m-d H:i:s', time() - 60),
             'ip_address' => '203.0.113.1',
         ]);
 
         $this->assertNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('stale-token')));
+    }
+
+    #[RunInSeparateProcess]
+    public function testFreshTokenIsValidUnderEastOfUtcTimezone(): void
+    {
+        // Comparing against local time here would read a fresh UTC expiry as 8 hours past
+        date_default_timezone_set('Etc/GMT-8');
+
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'east-token',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600),
+        ]);
+
+        $this->assertNotNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('east-token')));
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeleteExpiredKeepsAFreshTokenUnderEastOfUtcTimezone(): void
+    {
+        date_default_timezone_set('Etc/GMT-8');
+
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'keep',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600),
+        ]);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'drop',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() - 60),
+        ]);
+
+        $this->assertSame(1, $repo->deleteExpired());
+        $this->assertNotNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('keep')));
     }
 
     public function testTokenCanBeClaimedOnlyOnce(): void
@@ -102,7 +141,7 @@ class PasswordResetTokenExpiryClockTest extends TestCase
         $repo->create([
             'email' => 'user@example.com',
             'token' => 'one-shot',
-            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600),
         ]);
         $id = (int) $repo->findByToken(DbPasswordResetTokenRepository::hashToken('one-shot'))['id'];
 
@@ -118,7 +157,7 @@ class PasswordResetTokenExpiryClockTest extends TestCase
         $repo->create([
             'email' => 'user@example.com',
             'token' => 'retry',
-            'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600),
         ]);
         $id = (int) $repo->findByToken(DbPasswordResetTokenRepository::hashToken('retry'))['id'];
 

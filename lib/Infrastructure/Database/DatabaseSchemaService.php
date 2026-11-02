@@ -92,6 +92,11 @@ class DatabaseSchemaService
                 $arr['type'] = 'VARCHAR';
             }
 
+            // DATETIME on MySQL keeps the literal value; TIMESTAMP shifts it by the session time zone
+            if ($db_type != 'mysql' && $arr['type'] == 'datetime') {
+                $arr['type'] = 'timestamp';
+            }
+
             // Convert boolean type to TINYINT(1) for MySQL/MariaDB
             if (($db_type == 'mysql') && $arr['type'] == 'boolean') {
                 $arr['type'] = 'TINYINT';

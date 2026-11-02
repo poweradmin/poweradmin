@@ -179,6 +179,12 @@ PREPARE repair FROM @repair;
 EXECUTE repair;
 DEALLOCATE PREPARE repair;
 
+-- Password reset token expiry is now stored and compared in UTC (#1850). DATETIME keeps the
+-- value as written; TIMESTAMP rejects UTC values that fall in the skipped spring-forward hour.
+-- Links issued before the upgrade hold local time, so they are retired.
+ALTER TABLE `password_reset_tokens` MODIFY `expires_at` datetime NOT NULL;
+UPDATE `password_reset_tokens` SET `used` = 1 WHERE `used` = 0;
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:
