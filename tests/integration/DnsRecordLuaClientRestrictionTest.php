@@ -107,7 +107,6 @@ class DnsRecordLuaClientRestrictionTest extends TestCase
     public function testClientLevelEditorCannotStoreLuaTemplateRecords(): void
     {
         $method = new ReflectionMethod(ZoneTemplate::class, 'can_store_template_record_type');
-        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke(null, $this->db, 'LUA'));
         $this->assertFalse($method->invoke(null, $this->db, 'lua'));

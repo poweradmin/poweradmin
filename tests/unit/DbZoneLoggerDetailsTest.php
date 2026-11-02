@@ -13,7 +13,6 @@ class DbZoneLoggerDetailsTest extends TestCase
     {
         $logger = new DbZoneLogger($this->createMock(PDOLayer::class));
         $method = new ReflectionMethod(DbZoneLogger::class, 'processDetails');
-        $method->setAccessible(true);
 
         return $method->invoke($logger, $event);
     }

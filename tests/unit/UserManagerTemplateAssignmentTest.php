@@ -192,7 +192,6 @@ class UserManagerTemplateAssignmentTest extends TestCase
         );
 
         $method = new ReflectionMethod(UserManager::class, 'permission_template_assignment_error');
-        $method->setAccessible(true);
 
         return $method->invoke(
             null,
