@@ -2,14 +2,12 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Dns;
 
-use Closure;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\BatchReverseRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
-use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use PDO;
@@ -23,7 +21,6 @@ class BatchReverseRecordCreatorTest extends TestCase
         ?RecordManagerInterface $recordManager = null,
         ?ConfigurationInterface $config = null,
         ?RecordRepositoryInterface $recordRepository = null,
-        ?Closure $dnssecProvider = null,
         bool $reverseHandling = true
     ): BatchReverseRecordCreator {
         $audit = $this->createMock(AuditService::class);
@@ -40,63 +37,34 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $ipValidator = new IPAddressValidator();
 
-        $dnssecProvider ??= fn() => $this->createMock(DnssecProviderInterface::class);
-
-        return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $dnssecProvider, $reverseHandling, $ipValidator);
+        return new BatchReverseRecordCreator($config, $audit, $domainRepository, $recordRepository ?? $this->createMock(RecordRepositoryInterface::class), $recordManager, $reverseHandling, $ipValidator);
     }
 
-    private function dnssecConfig(bool $enabled): FakeConfiguration
-    {
-        return new FakeConfiguration(['dnssec' => ['enabled' => $enabled]]);
-    }
-
-    private function createDnssecService(bool $enabled, int &$builds): BatchReverseRecordCreator
+    public function testEachPtrIsWrittenWithTheRecordManagersOwnFinalizeAndRectify(): void
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
-        $domainRepository->method('getDomainNameById')->willReturn('1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa');
-
-        $recordManager = $this->createMock(RecordManagerInterface::class);
-        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
-
         $recordRepo = $this->createMock(RecordRepositoryInterface::class);
         $recordRepo->method('hasPtrRecord')->willReturn(false);
 
-        $provider = $this->createMock(DnssecProviderInterface::class);
-        $provider->expects($enabled ? $this->exactly(2) : $this->never())
-            ->method('rectifyZone')
-            ->with('1.0.0.0.1.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa')
-            ->willReturn(true);
+        $calls = [];
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->exactly(2))->method('addRecordGetId')
+            ->willReturnCallback(function (...$args) use (&$calls): RecordWriteResult {
+                $calls[] = $args;
+                return RecordWriteResult::ok(1);
+            });
 
-        $builds = 0;
-        $closure = function () use ($provider, &$builds): DnssecProviderInterface {
-            $builds++;
-            return $provider;
-        };
+        $result = $this->createService($domainRepository, $recordManager, null, $recordRepo)
+            ->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 3, false);
 
-        return $this->createService($domainRepository, $recordManager, $this->dnssecConfig($enabled), $recordRepo, $closure);
-    }
-
-    public function testRectifiesEachPtrThroughOneLazilyBuiltProviderWhenDnssecEnabled(): void
-    {
-        $builds = 0;
-        $service = $this->createDnssecService(true, $builds);
-
-        $result = $service->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 3, false);
-
+        // Asserted after the batch: it catches exceptions per PTR, an assertion failure included
         $this->assertTrue($result['success']);
-        $this->assertSame(1, $builds, 'two PTRs (the network address is skipped) share one provider build');
-    }
-
-    public function testNeverBuildsProviderWhenDnssecDisabled(): void
-    {
-        $builds = 0;
-        $service = $this->createDnssecService(false, $builds);
-
-        $result = $service->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 3, false);
-
-        $this->assertTrue($result['success']);
-        $this->assertSame(0, $builds);
+        $this->assertSame([], $result['errors']);
+        $this->assertStringStartsWith('Created 2 IPv6 PTR records', $result['message']);
+        foreach ($calls as $args) {
+            $this->assertTrue($args[7], 'finalizeZone stays on, so RecordManager rectifies the reverse zone');
+        }
     }
 
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void

@@ -70,8 +70,7 @@ class RecordManager implements RecordManagerInterface
     private ActorInterface $actor;
     private RepositoryFactoryInterface $repositoryFactory;
     private TemplateRecordLinkRepositoryInterface $templateLinks;
-    private Closure $dnssecProvider;
-    private ?ZoneRectifierInterface $builtDnssecProvider = null;
+    private PostWriteZoneRectifier $zoneRectifier;
     private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
 
     /**
@@ -121,7 +120,7 @@ class RecordManager implements RecordManagerInterface
         $this->changeLogger = $changeLogger;
         $this->actor = $actor;
         $this->repositoryFactory = $repositoryFactory;
-        $this->dnssecProvider = $dnssecProvider;
+        $this->zoneRectifier = new PostWriteZoneRectifier($config, $dnssecProvider, $this->logger);
     }
 
     private function captureChange(callable $callback): void
@@ -741,27 +740,8 @@ class RecordManager implements RecordManagerInterface
         }
         $zoneName = $this->domainRepository->getDomainNameById($zoneId);
         if (is_string($zoneName)) {
-            $this->rectifyZone($zoneName);
+            $this->zoneRectifier->rectify($zoneName);
             $this->zoneCacheFlusher?->flushZone($zoneName);
-        }
-    }
-
-    /**
-     * Rectify after a write when DNSSEC is in use, so signatures cover the change.
-     * The write is already committed, so a failure here is logged, not raised.
-     */
-    private function rectifyZone(string $zoneName): void
-    {
-        if (!$this->config->get('dnssec', 'enabled')) {
-            return;
-        }
-        try {
-            $this->builtDnssecProvider ??= ($this->dnssecProvider)();
-            if (!$this->builtDnssecProvider->rectifyZone($zoneName)) {
-                $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
-            }
-        } catch (\Throwable $e) {
-            $this->logger->warning('Zone rectify failed for {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
         }
     }
 

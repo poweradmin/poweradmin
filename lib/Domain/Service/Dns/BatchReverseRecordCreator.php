@@ -22,12 +22,10 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
-use Closure;
 use Exception;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\ReverseNetwork;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
-use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -48,11 +46,8 @@ class BatchReverseRecordCreator
     private IPAddressValidator $ipValidator;
     private RecordLookupInterface&RecordListingInterface $recordRepository;
     private RecordMatchingService $recordMatchingService;
-    private Closure $dnssecProvider;
-    private ?ZoneRectifierInterface $builtDnssecProvider = null;
 
     /**
-     * @param Closure(): ZoneRectifierInterface $dnssecProvider Built on first use, so DNSSEC-disabled installs never construct one
      * @param bool $reverseHandling Whether PTR records may be created at all
      */
     public function __construct(
@@ -61,7 +56,6 @@ class BatchReverseRecordCreator
         DomainRepositoryInterface $domainRepository,
         RecordLookupInterface&RecordListingInterface $recordRepository,
         RecordManagerInterface $recordManager,
-        Closure $dnssecProvider,
         private readonly bool $reverseHandling,
         ?IPAddressValidator $ipValidator = null
     ) {
@@ -72,7 +66,6 @@ class BatchReverseRecordCreator
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->recordRepository = $recordRepository;
         $this->recordMatchingService = new RecordMatchingService($domainRepository, $this->recordRepository);
-        $this->dnssecProvider = $dnssecProvider;
     }
 
     /**
@@ -538,12 +531,6 @@ class BatchReverseRecordCreator
         }
 
         $this->audit->logBatchPtrRecordAdd($zone_rev_id, $content_rev, $fqdn_name, $ttl, $prio);
-
-        if ($this->config->get('dnssec', 'enabled')) {
-            $this->builtDnssecProvider ??= ($this->dnssecProvider)();
-            $zone_name = $this->domainRepository->getDomainNameById($zone_rev_id);
-            $this->builtDnssecProvider->rectifyZone($zone_name);
-        }
 
         return $result;
     }

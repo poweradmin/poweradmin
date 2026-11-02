@@ -381,7 +381,6 @@ final class RecordServices
             $this->services->domainRepository(),
             $this->services->recordRepository(),
             $this->recordManager(),
-            fn() => $this->services->dnssecProvider(),
             $this->reverseHandling()
         );
     }
