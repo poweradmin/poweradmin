@@ -520,6 +520,20 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('records', 'id = 9'));
     }
 
+    public function testFixDuplicateSoaKeepsTheApexSoaOverALowerIdStrayAndRectifies(): void
+    {
+        $this->domain(1, 'example.com');
+        $this->record(3, 1, 'stray.example.com', 'SOA', 'stray');
+        $this->record(5, 1, 'Example.com', 'SOA', 'apex');
+        $this->record(8, 1, 'example.com', 'SOA', 'copy');
+        $rectified = [];
+
+        $this->assertTrue($this->rectifyingChecker($rectified)->fixDuplicateSOA(1));
+
+        $this->assertSame([5], array_map('intval', $this->db->query("SELECT id FROM records WHERE type = 'SOA'")->fetchAll(PDO::FETCH_COLUMN)));
+        $this->assertSame(['example.com'], $rectified);
+    }
+
     public function testFixDuplicateSoaIsANoOpWithAtMostOneSoa(): void
     {
         $this->domain(1, 'example.com');

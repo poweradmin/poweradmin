@@ -622,26 +622,39 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     {
         $this->transaction()->begin();
         try {
-            $stmt = $this->db->prepare("SELECT id FROM {$this->recordsTable} WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
+            $stmt = $this->db->prepare("SELECT id, name FROM {$this->recordsTable} WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
             $stmt->execute(['zone_id' => $zoneId]);
-            $soaRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $soaRecords = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
             if (count($soaRecords) <= 1) {
                 $this->transaction()->commit();
                 return true;
             }
 
-            array_shift($soaRecords);
-            $placeholders = implode(',', array_fill(0, count($soaRecords), '?'));
+            // Keep the lowest-id SOA at the apex; a stray one under another name is never the survivor
+            $apex = strtolower((string)$this->zoneName($zoneId));
+            $keep = array_key_first($soaRecords);
+            foreach ($soaRecords as $id => $name) {
+                if (strtolower((string)$name) === $apex) {
+                    $keep = $id;
+                    break;
+                }
+            }
+            unset($soaRecords[$keep]);
+
+            $ids = array_keys($soaRecords);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id IN ($placeholders)");
-            $stmt->execute($soaRecords);
+            $stmt->execute($ids);
 
             $this->transaction()->commit();
-            return true;
         } catch (Exception $e) {
             $this->transaction()->rollBack();
             return false;
         }
+        $this->rectify($zoneId);
+
+        return true;
     }
 
     public function createDefaultSOA(int $zoneId): bool
