@@ -40,6 +40,7 @@ use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
 
 /**
  * Builds the dyndns2 request value object and the update service that handles it.
@@ -57,7 +58,8 @@ class DynamicDnsRequestFactory
         DynamicDnsRepositoryInterface $repository,
         PermissionService $permissions,
         AuditService $auditService,
-        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
+        ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
+        ?PostWriteZoneRectifier $zoneRectifier = null
     ): DynamicDnsUpdateService {
         $client = ClientContext::fromServer($_SERVER, $config);
 
@@ -72,7 +74,8 @@ class DynamicDnsRequestFactory
             $auditService,
             $client->ip,
             self::requiresApproval($config, $permissions),
-            $zoneCacheFlusher
+            $zoneCacheFlusher,
+            $zoneRectifier
         );
     }
 

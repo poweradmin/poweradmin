@@ -35,6 +35,13 @@
 </div>
 {% endif %}
 
+{% if dnssec_rectify_unavailable %}
+<div class="alert alert-warning py-2" role="alert">
+    <i class="bi bi-exclamation-triangle me-1"></i>
+    {% trans %}DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is not configured, so signed zones are not rectified after changes and their NSEC/NSEC3 chains go stale. Configure the PowerDNS API.{% endtrans %}
+</div>
+{% endif %}
+
 {% if permissions['user_is_ueberuser'] %}
 {# The ueberuser dashboard has enough tiles to warrant grouped, collapsible sections. #}
 

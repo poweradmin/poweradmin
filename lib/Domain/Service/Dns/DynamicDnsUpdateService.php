@@ -52,7 +52,8 @@ readonly class DynamicDnsUpdateService
         private ?AuditLoggerInterface $auditService = null,
         private string $clientIp = '',
         private ?Closure $requiresApproval = null,
-        private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
+        private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
+        private ?PostWriteZoneRectifier $zoneRectifier = null
     ) {
     }
 
@@ -246,6 +247,7 @@ readonly class DynamicDnsUpdateService
 
         if ($wasUpdated) {
             $this->repository->updateSOASerial($zoneId);
+            $this->zoneRectifier?->rectify($zoneName);
             $this->zoneCacheFlusher?->flushZone($zoneName);
         }
 

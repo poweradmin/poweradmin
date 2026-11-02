@@ -110,6 +110,16 @@ class IndexControllerCardsTest extends SeamControllerTestCase
         $this->assertFalse($params['show_groups_card']);
     }
 
+    public function testDnssecWithoutPdnsApiWarnsOnlyTheUeberuser(): void
+    {
+        $this->granted = [Permission::PERM_USER_IS_UEBERUSER];
+        $this->assertTrue($this->runAndRender(['dnssec' => ['enabled' => true]])['dnssec_rectify_unavailable']);
+        $this->assertFalse($this->runAndRender(['dnssec' => ['enabled' => false]])['dnssec_rectify_unavailable']);
+
+        $this->granted = [Permission::PERM_SEARCH];
+        $this->assertFalse($this->runAndRender(['dnssec' => ['enabled' => true]])['dnssec_rectify_unavailable']);
+    }
+
     public function testApiKeyHolderWithoutApiGetsTheRawFlags(): void
     {
         $this->granted = [Permission::PERM_API_MANAGE_KEYS, Permission::PERM_SEARCH];

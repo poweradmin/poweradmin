@@ -122,6 +122,11 @@ class IndexController extends BaseController
         $ssoTemplateMisconfigured = $permissions[Permission::PERM_USER_IS_UEBERUSER]
             && $this->ssoProvisioningTemplateMissing();
 
+        // Rectify runs through the PowerDNS API; without it, signed zones edited here keep stale NSEC/NSEC3 chains
+        $dnssecRectifyUnavailable = $permissions[Permission::PERM_USER_IS_UEBERUSER]
+            && $this->config->get('dnssec', 'enabled', false)
+            && !$pdnsApiEnabled;
+
         $dblogUse = $this->config->get('logging', 'database_enabled', false);
         $showGroupAccessTemplates = (bool)$this->config->get('permissions', 'show_group_access_templates', true);
         $ifaceAddReverseRecord = $this->config->get('interface', 'add_reverse_record', true);
@@ -187,6 +192,7 @@ class IndexController extends BaseController
             'has_tools' => $hasTools,
             'password_reset_misconfigured' => $passwordResetMisconfigured,
             'sso_template_misconfigured' => $ssoTemplateMisconfigured,
+            'dnssec_rectify_unavailable' => $dnssecRectifyUnavailable,
         ]);
     }
 

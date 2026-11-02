@@ -15,6 +15,10 @@ use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
+use Psr\Log\NullLogger;
+use TestHelpers\FakeConfiguration;
 
 class DynamicDnsUpdateServiceTest extends TestCase
 {
@@ -691,6 +695,27 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $flusher->expects($this->once())->method('flushZone')->with('example.com');
 
         $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, zoneCacheFlusher: $flusher);
+
+        $this->assertTrue($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+        $this->assertFalse($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+    }
+
+    public function testAWrittenUpdateRectifiesTheSignedZoneAndANoChangeDoesNot(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('new.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')
+            ->willReturnOnConsecutiveCalls([], ['192.168.1.1' => 123]);
+
+        $provider = $this->createMock(ZoneRectifierInterface::class);
+        $provider->expects($this->once())->method('rectifyZone')->with('example.com')->willReturn(true);
+        $rectifier = new PostWriteZoneRectifier(new FakeConfiguration(['dnssec' => ['enabled' => true]]), static fn() => $provider, new NullLogger());
+
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, zoneRectifier: $rectifier);
 
         $this->assertTrue($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
         $this->assertFalse($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);

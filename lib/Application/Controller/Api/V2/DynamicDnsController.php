@@ -52,7 +52,15 @@ class DynamicDnsController extends PublicApiController
 
         $this->validationService = new DynamicDnsValidationService($config);
         $this->apiPermissionService = $this->services()->apiPermissionService();
-        $this->updateService = DynamicDnsRequestFactory::createUpdateService($this->db, $config, $repository, $this->apiPermissionService->permissions(), $this->services()->auditService(), $this->services()->zoneCacheFlusher());
+        $this->updateService = DynamicDnsRequestFactory::createUpdateService(
+            $this->db,
+            $config,
+            $repository,
+            $this->apiPermissionService->permissions(),
+            $this->services()->auditService(),
+            $this->services()->zoneCacheFlusher(),
+            $this->services()->postWriteZoneRectifier()
+        );
     }
 
     public function run(): void

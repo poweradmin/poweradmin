@@ -85,6 +85,7 @@ use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\Dns\RecordDeletionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -275,6 +276,11 @@ class ControllerServiceFactory implements ModuleServices
     public function zoneCacheFlusher(): ?ZoneCacheFlusherInterface
     {
         return $this->backend->zoneCacheFlusher();
+    }
+
+    public function postWriteZoneRectifier(): PostWriteZoneRectifier
+    {
+        return $this->backend->postWriteZoneRectifier();
     }
 
     public function dnsDataService(): DnsDataService

@@ -1607,6 +1607,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsHelper' => $baseDir . '/lib/Domain/Service/Dns/DynamicDnsHelper.php',
     'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsUpdateService' => $baseDir . '/lib/Domain/Service/Dns/DynamicDnsUpdateService.php',
     'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsValidationService' => $baseDir . '/lib/Domain/Service/Dns/DynamicDnsValidationService.php',
+    'Poweradmin\\Domain\\Service\\Dns\\PostWriteZoneRectifier' => $baseDir . '/lib/Domain/Service/Dns/PostWriteZoneRectifier.php',
     'Poweradmin\\Domain\\Service\\Dns\\RRSetReplaceService' => $baseDir . '/lib/Domain/Service/Dns/RRSetReplaceService.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordBatchDeletionOutcome' => $baseDir . '/lib/Domain/Service/Dns/RecordBatchDeletionOutcome.php',
     'Poweradmin\\Domain\\Service\\Dns\\RecordDeletionOutcome' => $baseDir . '/lib/Domain/Service/Dns/RecordDeletionOutcome.php',

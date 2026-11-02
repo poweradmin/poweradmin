@@ -59,6 +59,7 @@ use Poweradmin\Infrastructure\Service\Consistency\SqlConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Service\PdnsApiZoneCacheFlusher;
 use Poweradmin\Infrastructure\Service\ZoneSyncService;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -92,6 +93,7 @@ final class BackendServices
     private ?PdnsCapabilities $pdnsCapabilities = null;
     private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null;
     private bool $zoneCacheFlusherResolved = false;
+    private ?PostWriteZoneRectifier $postWriteZoneRectifier = null;
 
     public function __construct(PDO $db, ConfigurationInterface $config, LoggerInterface $logger, ActorInterface $actor, SessionInterface $session)
     {
@@ -210,6 +212,11 @@ final class BackendServices
         }
 
         return $this->dnssecProvider;
+    }
+
+    public function postWriteZoneRectifier(): PostWriteZoneRectifier
+    {
+        return $this->postWriteZoneRectifier ??= new PostWriteZoneRectifier($this->config, fn() => $this->dnssecProvider(), $this->logger);
     }
 
     public function dnsDataService(): DnsDataService

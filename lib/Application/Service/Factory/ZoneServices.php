@@ -257,7 +257,8 @@ final class ZoneServices
             $this->zoneAccountSyncService(),
             $this->services->actor(),
             zoneCacheFlusher: $this->services->zoneCacheFlusher(),
-            ownershipLimit: $this->zoneOwnershipLimit()
+            ownershipLimit: $this->zoneOwnershipLimit(),
+            zoneRectifier: $this->services->postWriteZoneRectifier()
         );
     }
 

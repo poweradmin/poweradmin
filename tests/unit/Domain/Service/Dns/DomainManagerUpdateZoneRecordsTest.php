@@ -30,7 +30,9 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RepositoryFactoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManager;
+use Poweradmin\Domain\Service\Dns\PostWriteZoneRectifier;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
+use Poweradmin\Domain\Port\ZoneRectifierInterface;
 use Poweradmin\Domain\Service\Dns\ZoneTemplateApplier;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Port\RecordChangeWriterInterface;
@@ -73,6 +75,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
     private RecordChangeWriterInterface&MockObject $changeLogger;
     private string $zoneType = 'MASTER';
     private string $zoneName = 'old.example';
+    private ?PostWriteZoneRectifier $zoneRectifier = null;
 
     /** @var list<array<string, mixed>> */
     private array $loggedDeletes = [];
@@ -116,6 +119,30 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->changeLogger->method('logRecordCreate')->willReturnCallback(function (array $record, ?int $zoneId): void {
             $this->loggedCreates[] = ['zone' => $zoneId] + $record;
         });
+    }
+
+    public function testAppliedTemplateRectifiesTheZoneWhenDnssecIsEnabled(): void
+    {
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->seedTemplateRecords([['www.[ZONE]', 'A', '192.0.2.10', 0, 0]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->method('addRecordGetId')->willReturn(501);
+        $this->zoneRectifier = $this->rectifierExpecting($this->once(), 'dnssec');
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+    }
+
+    public function testAppliedTemplateIsNotRectifiedWithDnssecDisabled(): void
+    {
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->seedTemplateRecords([['www.[ZONE]', 'A', '192.0.2.10', 0, 0]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->method('addRecordGetId')->willReturn(501);
+        $this->zoneRectifier = $this->rectifierExpecting($this->never(), null);
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
     }
 
     public function testReadOnlyZoneIsLeftUntouched(): void
@@ -481,8 +508,18 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
             new DbZoneGroupRepository($this->db, $this->config, $this->backend->isApiBackend()),
             new ZoneAccountSyncService(new DbZoneAccountOwnerRepository($this->db, $this->backend->allocatesZoneIdsLocally()), $this->config, $this->backend),
             new StubActor(self::CALLER_ID),
-            new NullLogger()
+            new NullLogger(),
+            zoneRectifier: $this->zoneRectifier
         );
+    }
+
+    private function rectifierExpecting(\PHPUnit\Framework\MockObject\Rule\InvocationOrder $times, ?string $dnssec): PostWriteZoneRectifier
+    {
+        $provider = $this->createMock(ZoneRectifierInterface::class);
+        $provider->expects($times)->method('rectifyZone')->with($this->zoneName)->willReturn(true);
+        $config = new FakeConfiguration(['dnssec' => ['enabled' => $dnssec !== null]]);
+
+        return new PostWriteZoneRectifier($config, static fn() => $provider, new NullLogger());
     }
 
     private function sqlBackend(): DnsBackendProviderInterface&MockObject

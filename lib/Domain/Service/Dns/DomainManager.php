@@ -79,6 +79,7 @@ final class DomainManager implements DomainManagerInterface
     private ZoneAccountSyncService $accountSync;
     private ?ZoneCacheFlusherInterface $zoneCacheFlusher;
     private ?ZoneOwnershipLimit $ownershipLimit;
+    private ?PostWriteZoneRectifier $zoneRectifier;
 
     /**
      * Constructor
@@ -101,6 +102,7 @@ final class DomainManager implements DomainManagerInterface
      * @param ActorInterface $actor The user the ownership and permission checks are about
      * @param ZoneCacheFlusherInterface|null $zoneCacheFlusher Tells PowerDNS about a committed zone, null when it needs no telling
      * @param ZoneOwnershipLimit|null $ownershipLimit Zone limit of an added owner; null enforces none
+     * @param PostWriteZoneRectifier|null $zoneRectifier Rectifies a zone a template was applied to; null skips it
      */
     public function __construct(
         TransactionInterface $transaction,
@@ -121,9 +123,11 @@ final class DomainManager implements DomainManagerInterface
         ActorInterface $actor,
         ?LoggerInterface $logger = null,
         ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
-        ?ZoneOwnershipLimit $ownershipLimit = null
+        ?ZoneOwnershipLimit $ownershipLimit = null,
+        ?PostWriteZoneRectifier $zoneRectifier = null
     ) {
         $this->zoneCacheFlusher = $zoneCacheFlusher;
+        $this->zoneRectifier = $zoneRectifier;
         $this->ownershipLimit = $ownershipLimit;
         $this->templateLinks = $templateLinks;
         $this->zoneGroups = $zoneGroups;
@@ -744,6 +748,7 @@ final class DomainManager implements DomainManagerInterface
         $result = $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
         $zoneName = $result->success ? $this->domainRepository->getDomainNameById($zone_id) : null;
         if (is_string($zoneName)) {
+            $this->zoneRectifier?->rectify($zoneName);
             $this->zoneCacheFlusher?->flushZone($zoneName);
         }
 

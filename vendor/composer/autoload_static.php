@@ -2022,6 +2022,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DynamicDnsHelper.php',
         'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsUpdateService' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DynamicDnsUpdateService.php',
         'Poweradmin\\Domain\\Service\\Dns\\DynamicDnsValidationService' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/DynamicDnsValidationService.php',
+        'Poweradmin\\Domain\\Service\\Dns\\PostWriteZoneRectifier' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/PostWriteZoneRectifier.php',
         'Poweradmin\\Domain\\Service\\Dns\\RRSetReplaceService' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RRSetReplaceService.php',
         'Poweradmin\\Domain\\Service\\Dns\\RecordBatchDeletionOutcome' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RecordBatchDeletionOutcome.php',
         'Poweradmin\\Domain\\Service\\Dns\\RecordDeletionOutcome' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/RecordDeletionOutcome.php',
