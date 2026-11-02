@@ -3637,6 +3637,7 @@ return array(
     'Symfony\\Polyfill\\Php84\\Php84' => $vendorDir . '/symfony/polyfill-php84/Php84.php',
     'Symfony\\Polyfill\\Php85\\Php85' => $vendorDir . '/symfony/polyfill-php85/Php85.php',
     'TestHelpers\\BaseDnsTest' => $baseDir . '/tests/helpers/BaseDnsTest.php',
+    'TestHelpers\\SqliteIntegrationTestCase' => $baseDir . '/tests/helpers/SqliteIntegrationTestCase.php',
     'Twig\\AbstractTwigCallable' => $vendorDir . '/twig/twig/src/AbstractTwigCallable.php',
     'Twig\\Attribute\\AsTwigFilter' => $vendorDir . '/twig/twig/src/Attribute/AsTwigFilter.php',
     'Twig\\Attribute\\AsTwigFunction' => $vendorDir . '/twig/twig/src/Attribute/AsTwigFunction.php',

@@ -4043,6 +4043,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Symfony\\Polyfill\\Php84\\Php84' => __DIR__ . '/..' . '/symfony/polyfill-php84/Php84.php',
         'Symfony\\Polyfill\\Php85\\Php85' => __DIR__ . '/..' . '/symfony/polyfill-php85/Php85.php',
         'TestHelpers\\BaseDnsTest' => __DIR__ . '/../..' . '/tests/helpers/BaseDnsTest.php',
+        'TestHelpers\\SqliteIntegrationTestCase' => __DIR__ . '/../..' . '/tests/helpers/SqliteIntegrationTestCase.php',
         'Twig\\AbstractTwigCallable' => __DIR__ . '/..' . '/twig/twig/src/AbstractTwigCallable.php',
         'Twig\\Attribute\\AsTwigFilter' => __DIR__ . '/..' . '/twig/twig/src/Attribute/AsTwigFilter.php',
         'Twig\\Attribute\\AsTwigFunction' => __DIR__ . '/..' . '/twig/twig/src/Attribute/AsTwigFunction.php',
