@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -50,7 +51,8 @@ $updateService = new DynamicDnsUpdateService(
     new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config)),
     $repository,
     new LegacyLogger($db),
-    new IpAddressRetriever($_SERVER)
+    new IpAddressRetriever($_SERVER),
+    fn(string $zoneName) => DnssecProviderFactory::rectifyAfterWrite($db, $config, $zoneName, DnsBackendProviderFactory::apiClientFrom($backendProvider))
 );
 
 $result = $updateService->processUpdate(DynamicDnsRequest::fromHttpRequest($request));

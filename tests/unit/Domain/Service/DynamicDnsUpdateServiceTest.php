@@ -591,4 +591,30 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertEquals('dnserr', $result);
     }
+
+    public function testAWrittenUpdateRectifiesTheOwningZoneAndANoChangeDoesNot(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('new.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')
+            ->willReturnOnConsecutiveCalls([], ['192.168.1.1' => 123]);
+
+        $rectified = [];
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            rectifyZone: function (string $zoneName) use (&$rectified): void {
+                $rectified[] = $zoneName;
+            }
+        );
+
+        $this->assertTrue($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+        $this->assertFalse($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+        $this->assertSame(['example.com'], $rectified);
+    }
 }

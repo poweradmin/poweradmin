@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\LoginAttemptService;
@@ -63,7 +65,8 @@ class DynamicDnsController extends PublicApiController
             new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config)),
             $repository,
             new LegacyLogger($this->db),
-            new IpAddressRetriever($_SERVER)
+            new IpAddressRetriever($_SERVER),
+            fn(string $zoneName) => DnssecProviderFactory::rectifyAfterWrite($this->db, $config, $zoneName, DnsBackendProviderFactory::apiClientFrom($backendProvider))
         );
         $this->permissionService = new ApiPermissionService($this->db);
     }

@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
@@ -1038,6 +1039,20 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_template_id Zone Template ID to use for update
      */
     public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
+    {
+        $updated = $this->applyZoneTemplate($db_type, $dns_ttl, $zone_id, $zone_template_id);
+        // Template records are written straight to the backend, so rectify here as RecordManager does
+        if ($updated && $zone_template_id != 0 && !ZoneType::isReadOnly($this->domainRepository->getDomainType($zone_id))) {
+            $zoneName = $this->domainRepository->getDomainNameById($zone_id);
+            if (is_string($zoneName)) {
+                DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, DnsBackendProviderFactory::apiClientFrom($this->backendProvider), $this->logger);
+            }
+        }
+
+        return $updated;
+    }
+
+    private function applyZoneTemplate(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
         // Secondary and Consumer zones replicate from a primary - applying a
         // template would write replicated records, so skip them entirely

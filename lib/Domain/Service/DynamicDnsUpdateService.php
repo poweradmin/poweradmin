@@ -40,7 +40,8 @@ readonly class DynamicDnsUpdateService
         private DynamicDnsAuthenticationService $authService,
         private DynamicDnsRepositoryInterface $repository,
         private ?LegacyLogger $auditLogger = null,
-        private ?IpAddressRetriever $ipRetriever = null
+        private ?IpAddressRetriever $ipRetriever = null,
+        private ?\Closure $rectifyZone = null
     ) {
     }
 
@@ -101,10 +102,11 @@ readonly class DynamicDnsUpdateService
         ?array $allowedZoneIds = null,
         bool $mayRemoveRecords = true
     ): array {
-        $zoneId = $this->findOwningZoneId($user, $hostname);
-        if ($zoneId === null) {
+        $owningZone = $this->findOwningZone($user, $hostname);
+        if ($owningZone === null) {
             return $this->emptyResult('nohost', null);
         }
+        [$zoneId, $zoneName] = $owningZone;
 
         if ($allowedZoneIds !== null && !in_array($zoneId, $allowedZoneIds, true)) {
             return $this->emptyResult('forbidden', $zoneId);
@@ -116,7 +118,7 @@ readonly class DynamicDnsUpdateService
         }
 
         try {
-            $updateResult = $this->updateZone($zoneId, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
+            $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);
         }
@@ -187,7 +189,10 @@ readonly class DynamicDnsUpdateService
      * Avoids writing the same record into every owned zone, which would create
      * authoritative duplicates across unrelated zones.
      */
-    private function findOwningZoneId(User $user, HostnameValue $hostname): ?int
+    /**
+     * @return array{0: int, 1: string}|null
+     */
+    private function findOwningZone(User $user, HostnameValue $hostname): ?array
     {
         $userZones = $this->authService->getUserZones($user);
         $fqdn = strtolower($hostname->getValue());
@@ -210,11 +215,12 @@ readonly class DynamicDnsUpdateService
             }
         }
 
-        return $bestZoneId;
+        return $bestZoneId === null ? null : [$bestZoneId, (string)$bestZoneName];
     }
 
     private function updateZone(
         int $zoneId,
+        string $zoneName,
         HostnameValue $hostname,
         IpAddressList $ipList,
         bool $dualstackUpdate,
@@ -250,6 +256,10 @@ readonly class DynamicDnsUpdateService
 
         if ($wasUpdated) {
             $this->repository->updateSOASerial($zoneId);
+            // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
+            if ($this->rectifyZone !== null) {
+                ($this->rectifyZone)($zoneName);
+            }
         }
 
         return [
