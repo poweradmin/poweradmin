@@ -24,9 +24,11 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Domain\Error\ZoneIdNotFoundException;
@@ -903,6 +905,15 @@ class DomainManager implements DomainManagerInterface
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+            return;
+        }
+
+        // Template records are written straight to the backend, so rectify here as RecordManager does
+        if ($zone_template_id != 0 && $this->domainRepository->getDomainType($zone_id) !== ZoneType::SLAVE) {
+            $zoneName = $this->domainRepository->getDomainNameById($zone_id);
+            if (is_string($zoneName)) {
+                DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, $this->logger);
+            }
         }
     }
 

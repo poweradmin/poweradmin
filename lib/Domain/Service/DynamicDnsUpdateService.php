@@ -34,12 +34,18 @@ class DynamicDnsUpdateService
     private DynamicDnsValidationService $validationService;
     private DynamicDnsAuthenticationService $authService;
     private DynamicDnsRepositoryInterface $repository;
+    private ?\Closure $rectifyZone;
 
+    /**
+     * @param \Closure|null $rectifyZone Called with the zone ID after records of that zone were written
+     */
     public function __construct(
         DynamicDnsValidationService $validationService,
         DynamicDnsAuthenticationService $authService,
-        DynamicDnsRepositoryInterface $repository
+        DynamicDnsRepositoryInterface $repository,
+        ?\Closure $rectifyZone = null
     ) {
+        $this->rectifyZone = $rectifyZone;
         $this->validationService = $validationService;
         $this->authService = $authService;
         $this->repository = $repository;
@@ -115,6 +121,10 @@ class DynamicDnsUpdateService
 
             if ($zoneUpdated) {
                 $this->repository->updateSOASerial($zoneId);
+                // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
+                if ($this->rectifyZone !== null) {
+                    ($this->rectifyZone)($zoneId);
+                }
             }
         }
 
