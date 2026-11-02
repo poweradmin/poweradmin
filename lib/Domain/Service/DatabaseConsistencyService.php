@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -453,14 +453,23 @@ class DatabaseConsistencyService
      */
     public function deleteOrphanedRecord(int $recordId): bool
     {
+        // PowerDNS keeps every record in a zone in API mode, so a submitted id names a live record
         if ($this->isApiBackend()) {
-            return $this->backendProvider->deleteRecord($recordId);
+            return false;
         }
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = :id");
-        return $stmt->execute(['id' => $recordId]);
+        // Gate on the stored row: a stale or crafted id must not delete a record of a live zone
+        $stmt = $this->db->prepare(
+            "DELETE FROM $records_table WHERE id = :id
+             AND NOT EXISTS (SELECT 1 FROM $domains_table d WHERE d.id = $records_table.domain_id)"
+        );
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
     }
 
     /**
