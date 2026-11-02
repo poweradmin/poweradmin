@@ -10,7 +10,7 @@ interface supports most of
 the features of PowerDNS. It is a hybrid solution that uses SQL for most operations and has PowerDNS API support for
 DNSSEC operations.
 
-**This is the Long-Term Support (LTS) branch.** For new features, see the [4.x release branch](https://github.com/poweradmin/poweradmin/tree/release/4.x).
+**This is the Long-Term Support (LTS) branch.** For new features, see the [latest release](https://github.com/poweradmin/poweradmin/releases/latest); for a 4.x LTS line, see [`release/4.4.x`](https://github.com/poweradmin/poweradmin/tree/release/4.4.x).
 
 ## Features
 
@@ -57,13 +57,15 @@ DNSSEC operations.
 
 ## Version Support
 
-Poweradmin maintains multiple release branches:
+| Version | Status |
+|---------|--------|
+| 4.5.x | Current release |
+| 4.4.x | LTS until December 2027, recommended for production. Last line with API v1 |
+| 4.3.x, 4.2.x | Last fixes only, end of life on 2027-01-31 |
+| 3.9.x | LTS until December 2027 |
+| 4.1.x, 4.0.x, 3.8.x and older | End of life, please upgrade |
 
-| Branch | Status | Support |
-|--------|--------|---------|
-| `master` | Development | Experimental features, unstable |
-| `release/4.x` | Stable | Current release with new features |
-| `release/3.x` | **LTS** | Bug fixes and security updates until December 2027 |
+The support rules, a timeline, and the PHP, PowerDNS and distribution support dates are on [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/).
 
 ### Long-Term Support (LTS)
 
