@@ -139,7 +139,6 @@ class UserManagerAddUserTemplateTest extends TestCase
     private function setProperty(object $target, string $name, mixed $value): void
     {
         $property = new \ReflectionProperty($target, $name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

@@ -71,7 +71,6 @@ class SharedZoneIdsTest extends TestCase
     private function configProperty(string $name): ReflectionProperty
     {
         $property = new ReflectionProperty(ConfigurationManager::class, $name);
-        $property->setAccessible(true);
 
         return $property;
     }

@@ -113,9 +113,7 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $config = ConfigurationManager::getInstance();
         $reflection = new ReflectionClass(ConfigurationManager::class);
         $settings = $reflection->getProperty('settings');
-        $settings->setAccessible(true);
         $initialized = $reflection->getProperty('initialized');
-        $initialized->setAccessible(true);
         $settings->setValue($config, [
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'dns' => ['backend' => $backend],
@@ -140,7 +138,6 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
     public function testUndoingAFailedCreationOfTheZoneAnIdOpensLeavesItsApiKeysMatchingNoZone(): void
     {
         $cleanup = new \ReflectionMethod(DomainManager::class, 'cleanupZoneMetadata');
-        $cleanup->setAccessible(true);
         $cleanup->invoke($this->domainManager(), 5);
 
         $this->assertSame([5, 30], $this->idsOf("SELECT id FROM zones ORDER BY id"));

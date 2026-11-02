@@ -22,9 +22,7 @@ class EditZoneMetadataControllerTest extends TestCase
 
         $configReflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $config = ConfigurationManager::getInstance();
         $this->configBackup = $settingsProperty->getValue($config);
@@ -35,9 +33,7 @@ class EditZoneMetadataControllerTest extends TestCase
     {
         $configReflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $configReflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $configReflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $config = ConfigurationManager::getInstance();
         $settingsProperty->setValue($config, $this->configBackup);
@@ -494,9 +490,7 @@ class EditZoneMetadataControllerTest extends TestCase
         $config = ConfigurationManager::getInstance();
         $reflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $settings = [
             'database' => [
@@ -522,7 +516,6 @@ class EditZoneMetadataControllerTest extends TestCase
     private function invokePrivateMethod(object $object, string $methodName, array $arguments = []): mixed
     {
         $method = $this->controllerReflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $arguments);
     }
@@ -530,7 +523,6 @@ class EditZoneMetadataControllerTest extends TestCase
     private function setProperty(object $object, string $propertyName, mixed $value): void
     {
         $property = $this->controllerReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 
@@ -538,7 +530,6 @@ class EditZoneMetadataControllerTest extends TestCase
     {
         $baseReflection = new ReflectionClass($this->controllerReflection->getParentClass()->getName());
         $property = $baseReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 }

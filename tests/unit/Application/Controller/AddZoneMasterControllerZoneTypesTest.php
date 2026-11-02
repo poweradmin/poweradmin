@@ -54,12 +54,10 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
         ]);
 
         $property = $this->reflection->getParentClass()->getProperty('config');
-        $property->setAccessible(true);
         $property->setValue($controller, $config);
 
         // An expired or missing version cache triggers a refresh, which needs the logger.
         $logger = $this->reflection->getParentClass()->getProperty('logger');
-        $logger->setAccessible(true);
         $logger->setValue($controller, new NullLogger());
 
         return $controller;
@@ -68,7 +66,6 @@ class AddZoneMasterControllerZoneTypesTest extends TestCase
     private function invoke(object $controller, string $method, array $args = []): mixed
     {
         $reflectionMethod = $this->reflection->getMethod($method);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($controller, $args);
     }
 

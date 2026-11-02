@@ -68,7 +68,6 @@ class AppInitializerTest extends TestCase
         // Create AppInitializer instance using reflection to call private method
         $reflectionClass = new ReflectionClass(AppInitializer::class);
         $checkConfigMethod = $reflectionClass->getMethod('checkConfigurationFile');
-        $checkConfigMethod->setAccessible(true);
 
         // Create a mock AppInitializer instance
         $appInitializer = $this->getMockBuilder(AppInitializer::class)

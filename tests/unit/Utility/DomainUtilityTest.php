@@ -85,7 +85,6 @@ class DomainUtilityTest extends TestCase
 
         // Use reflection to set our test class
         $refProperty = new \ReflectionProperty(NetworkUtility::class, 'instance');
-        $refProperty->setAccessible(true);
         $refProperty->setValue(null, $tempNetworkUtilityClass);
 
         // Run the test

@@ -226,7 +226,6 @@ class ZoneMetadataControllerTest extends TestCase
     private function configProperty(string $name): \ReflectionProperty
     {
         $property = (new ReflectionClass(ConfigurationManager::class))->getProperty($name);
-        $property->setAccessible(true);
 
         return $property;
     }
@@ -234,7 +233,6 @@ class ZoneMetadataControllerTest extends TestCase
     private function invokePrivateMethod(object $object, string $methodName, array $arguments = []): mixed
     {
         $method = $this->controllerReflection->getMethod($methodName);
-        $method->setAccessible(true);
 
         return $method->invokeArgs($object, $arguments);
     }
@@ -242,7 +240,6 @@ class ZoneMetadataControllerTest extends TestCase
     private function setProperty(object $object, string $propertyName, mixed $value): void
     {
         $property = $this->controllerReflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 
@@ -254,7 +251,6 @@ class ZoneMetadataControllerTest extends TestCase
         }
 
         $property = $reflection->getProperty($propertyName);
-        $property->setAccessible(true);
         $property->setValue($object, $value);
     }
 }

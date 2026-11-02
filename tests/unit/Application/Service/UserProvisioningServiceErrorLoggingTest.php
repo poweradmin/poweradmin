@@ -95,7 +95,6 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
         $userInfo->method('getGroups')->willReturn([]);
 
         $method = $reflection->getMethod('createNewUser');
-        $method->setAccessible(true);
         $result = $method->invoke($service, $userInfo, 'corporate-ldap', $authMethod);
 
         $this->assertNull($result, 'a failed insert must not report a user id');
@@ -166,7 +165,6 @@ class UserProvisioningServiceErrorLoggingTest extends TestCase
     private function setProperty(ReflectionClass $reflection, object $target, string $name, mixed $value): void
     {
         $property = $reflection->getProperty($name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

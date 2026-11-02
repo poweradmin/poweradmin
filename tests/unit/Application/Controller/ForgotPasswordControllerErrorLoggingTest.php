@@ -110,14 +110,12 @@ class ForgotPasswordControllerErrorLoggingTest extends TestCase
 
         $method = (new ReflectionClass(ForgotPasswordController::class))
             ->getMethod('handlePasswordResetRequest');
-        $method->setAccessible(true);
         $method->invoke($controller);
     }
 
     private function setPrivate(object $controller, string $name, object $value): void
     {
         $property = (new ReflectionClass(ForgotPasswordController::class))->getProperty($name);
-        $property->setAccessible(true);
         $property->setValue($controller, $value);
     }
 }

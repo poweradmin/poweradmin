@@ -117,9 +117,7 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
         $config = ConfigurationManager::getInstance();
         $reflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $settingsProperty->setValue($config, [
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],

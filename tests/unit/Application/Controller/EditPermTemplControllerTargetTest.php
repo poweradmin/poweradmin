@@ -141,7 +141,6 @@ class EditPermTemplControllerTargetTest extends TestCase
         $this->setBaseProperty($controller, 'requestData', $requestData);
 
         $method = $this->reflection->getMethod('handleFormSubmission');
-        $method->setAccessible(true);
 
         try {
             $method->invoke($controller);
@@ -159,11 +158,9 @@ class EditPermTemplControllerTargetTest extends TestCase
         $reflection = new ReflectionClass(ConfigurationManager::class);
 
         $settings = $reflection->getProperty('settings');
-        $settings->setAccessible(true);
         $settings->setValue($config, ['security' => ['global_token_validation' => false]]);
 
         $initialized = $reflection->getProperty('initialized');
-        $initialized->setAccessible(true);
         $initialized->setValue($config, true);
 
         return $config;
@@ -172,14 +169,12 @@ class EditPermTemplControllerTargetTest extends TestCase
     private function setProperty(object $target, string $name, mixed $value): void
     {
         $property = $this->reflection->getProperty($name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 
     private function setBaseProperty(object $target, string $name, mixed $value): void
     {
         $property = new \ReflectionProperty($this->reflection->getParentClass()->getName(), $name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

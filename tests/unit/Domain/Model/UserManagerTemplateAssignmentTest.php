@@ -141,7 +141,6 @@ class UserManagerTemplateAssignmentTest extends TestCase
         $this->setProperty($manager, 'apiPermissionService', $apiPermissionService);
 
         $method = new ReflectionMethod($manager, 'permissionTemplateAssignmentError');
-        $method->setAccessible(true);
 
         return $method->invoke($manager, 3, $targetUserId);
     }
@@ -149,7 +148,6 @@ class UserManagerTemplateAssignmentTest extends TestCase
     private function setProperty(object $target, string $name, mixed $value): void
     {
         $property = new \ReflectionProperty($target, $name);
-        $property->setAccessible(true);
         $property->setValue($target, $value);
     }
 }

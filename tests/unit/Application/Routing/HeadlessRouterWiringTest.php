@@ -94,11 +94,9 @@ class HeadlessRouterWiringTest extends TestCase
         $reflection = new ReflectionClass(ConfigurationManager::class);
 
         $instance = $reflection->getProperty('instance');
-        $instance->setAccessible(true);
         $instance->setValue(null, null);
 
         $initialized = $reflection->getProperty('initialized');
-        $initialized->setAccessible(true);
         $initialized->setValue(ConfigurationManager::getInstance(), false);
     }
 }

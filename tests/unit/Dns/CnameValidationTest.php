@@ -61,7 +61,6 @@ class CnameValidationTest extends BaseDnsTest
         $validator = new CNAMERecordValidator($configMock, $dbMock);
         $reflection = new ReflectionClass($validator);
         $method = $reflection->getMethod('validateCnameName');
-        $method->setAccessible(true);
 
         // Valid CNAME name (no MX/NS records exist that point to it)
         $name = 'valid.cname.example.com';
@@ -102,7 +101,6 @@ class CnameValidationTest extends BaseDnsTest
         $validator = new CNAMERecordValidator($configMock, $dbMock);
         $reflection = new ReflectionClass($validator);
         $method = $reflection->getMethod('validateCnameExistence');
-        $method->setAccessible(true);
 
         // Valid case - no existing CNAME record with this name
         $name = 'new.example.com';
@@ -144,7 +142,6 @@ class CnameValidationTest extends BaseDnsTest
         $validator = new CNAMERecordValidator($configMock, $dbMock);
         $reflection = new ReflectionClass($validator);
         $method = $reflection->getMethod('validateCnameUnique');
-        $method->setAccessible(true);
 
         // Valid case - no existing record with this name
         $name = 'new.example.com';
@@ -204,7 +201,6 @@ class CnameValidationTest extends BaseDnsTest
         $validator = new CNAMERecordValidator($configMock, $dbMock);
         $reflection = new ReflectionClass($validator);
         $method = $reflection->getMethod('validateNotEmptyCnameRR');
-        $method->setAccessible(true);
 
         // Valid non-empty CNAME
         $result1 = $method->invoke($validator, 'subdomain.example.com', 'example.com');

@@ -111,16 +111,13 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
             ->newInstanceWithoutConstructor();
 
         $configProperty = (new ReflectionClass(BaseController::class))->getProperty('config');
-        $configProperty->setAccessible(true);
         $configProperty->setValue($controller, $this->buildConfig($overrides));
 
         // An expired or missing cache now triggers a refresh, which logs failures.
         $loggerProperty = (new ReflectionClass(BaseController::class))->getProperty('logger');
-        $loggerProperty->setAccessible(true);
         $loggerProperty->setValue($controller, new NullLogger());
 
         $method = (new ReflectionClass(BaseController::class))->getMethod('getRecordTypeCapabilities');
-        $method->setAccessible(true);
 
         return $method->invoke($controller);
     }
@@ -150,9 +147,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
     {
         $reflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $config = ConfigurationManager::getInstance();
         return [$settingsProperty->getValue($config), $initializedProperty->getValue($config)];
@@ -162,9 +157,7 @@ class BaseControllerRecordTypeCapabilitiesTest extends TestCase
     {
         $reflection = new ReflectionClass(ConfigurationManager::class);
         $settingsProperty = $reflection->getProperty('settings');
-        $settingsProperty->setAccessible(true);
         $initializedProperty = $reflection->getProperty('initialized');
-        $initializedProperty->setAccessible(true);
 
         $config = ConfigurationManager::getInstance();
         $settingsProperty->setValue($config, $settings);

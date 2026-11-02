@@ -73,12 +73,10 @@ class RPRecordValidatorTest extends TestCase
 
         // Inject the mock hostname validator
         $reflectionProperty = new ReflectionProperty(RPRecordValidator::class, 'hostnameValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $this->hostnameValidatorMock);
 
         // Inject the mock TTL validator
         $reflectionProperty = new ReflectionProperty(RPRecordValidator::class, 'ttlValidator');
-        $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $this->ttlValidatorMock);
     }
 

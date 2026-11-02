@@ -47,7 +47,6 @@ class AddZoneMasterControllerSoaEditApiTest extends TestCase
 
         $baseReflection = $this->reflection->getParentClass();
         $property = $baseReflection->getProperty('config');
-        $property->setAccessible(true);
         $property->setValue($controller, $config);
 
         return $controller;
@@ -56,7 +55,6 @@ class AddZoneMasterControllerSoaEditApiTest extends TestCase
     private function invoke(AddZoneMasterController $controller, string $method, array $args = []): mixed
     {
         $reflectionMethod = $this->reflection->getMethod($method);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($controller, $args);
     }
 

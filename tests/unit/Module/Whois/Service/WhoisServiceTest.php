@@ -132,7 +132,6 @@ class WhoisServiceTest extends TestCase
     {
         $reflectionClass = new \ReflectionClass(WhoisService::class);
         $property = $reflectionClass->getProperty('socketTimeout');
-        $property->setAccessible(true);
 
         $this->assertEquals(10, $property->getValue($this->whoisService));
 

@@ -23,7 +23,6 @@ class PowerdnsStatusServiceTest extends TestCase
     public function testSanitizeDisplayName($input, string $expected): void
     {
         $method = $this->reflection->getMethod('sanitizeDisplayName');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $input);
         $this->assertSame($expected, $result);
@@ -63,14 +62,12 @@ class PowerdnsStatusServiceTest extends TestCase
     private function setApiUrl(object $service, string $url): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiUrl');
-        $property->setAccessible(true);
         $property->setValue($service, $url);
     }
 
     private function invokePrivate(object $service, string $method, array $args = []): mixed
     {
         $reflectionMethod = (new ReflectionClass(PowerdnsStatusService::class))->getMethod($method);
-        $reflectionMethod->setAccessible(true);
         return $reflectionMethod->invokeArgs($service, $args);
     }
 
@@ -121,7 +118,6 @@ class PowerdnsStatusServiceTest extends TestCase
     private function enableApi(object $service): void
     {
         $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiEnabled');
-        $property->setAccessible(true);
         $property->setValue($service, true);
     }
 
@@ -188,7 +184,6 @@ class PowerdnsStatusServiceTest extends TestCase
         $this->enableApi($service);
         foreach (['apiClient' => $client, 'apiUrl' => 'http://127.0.0.1:8081'] as $name => $value) {
             $property = (new ReflectionClass(PowerdnsStatusService::class))->getProperty($name);
-            $property->setAccessible(true);
             $property->setValue($service, $value);
         }
     }

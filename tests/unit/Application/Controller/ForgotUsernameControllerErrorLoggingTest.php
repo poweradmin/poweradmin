@@ -107,14 +107,12 @@ class ForgotUsernameControllerErrorLoggingTest extends TestCase
 
         $method = (new ReflectionClass(ForgotUsernameController::class))
             ->getMethod('handleUsernameRecoveryRequest');
-        $method->setAccessible(true);
         $method->invoke($controller);
     }
 
     private function setPrivate(object $controller, string $name, object $value): void
     {
         $property = (new ReflectionClass(ForgotUsernameController::class))->getProperty($name);
-        $property->setAccessible(true);
         $property->setValue($controller, $value);
     }
 }

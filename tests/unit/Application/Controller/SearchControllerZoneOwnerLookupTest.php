@@ -51,7 +51,6 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
 
         $this->controller = (new ReflectionClass(SearchController::class))->newInstanceWithoutConstructor();
         $db = new ReflectionProperty($this->controller, 'db');
-        $db->setAccessible(true);
         $db->setValue($this->controller, $this->db);
     }
 
@@ -62,7 +61,6 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
     private function fetchDirectZoneOwners(array $zoneIds): array
     {
         $method = new ReflectionMethod($this->controller, 'fetchDirectZoneOwners');
-        $method->setAccessible(true);
 
         return $method->invoke($this->controller, $zoneIds);
     }
@@ -96,7 +94,6 @@ class SearchControllerZoneOwnerLookupTest extends TestCase
             (101, 100, NULL, 60)");
 
         $method = new ReflectionMethod($this->controller, 'withoutSharedZoneIdGrants');
-        $method->setAccessible(true);
         [$groups, $owners] = $method->invoke(
             $this->controller,
             [100, 55],

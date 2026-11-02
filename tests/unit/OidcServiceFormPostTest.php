@@ -81,7 +81,6 @@ class OidcServiceFormPostTest extends TestCase
     private function invoke(OidcService $service, string $method, ...$args)
     {
         $reflection = new ReflectionMethod(OidcService::class, $method);
-        $reflection->setAccessible(true);
 
         return $reflection->invoke($service, ...$args);
     }
