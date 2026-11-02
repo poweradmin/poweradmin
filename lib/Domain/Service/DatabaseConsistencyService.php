@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -42,10 +43,12 @@ class DatabaseConsistencyService
     private ?DnsBackendProvider $backendProvider;
     private bool $apiReadFailed = false;
     private LoggerInterface $logger;
+    private ConfigurationManager $config;
 
     public function __construct(PDO $db, ConfigurationManager $config, ?DnsBackendProvider $backendProvider = null, ?LoggerInterface $logger = null)
     {
         $this->db = $db;
+        $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
         $this->logger = $logger ?? new NullLogger();
@@ -690,14 +693,23 @@ class DatabaseConsistencyService
      */
     public function deleteOrphanedRecord(int $recordId): bool
     {
+        // PowerDNS keeps every record in a zone in API mode, so a submitted id names a live record
         if ($this->isApiBackend()) {
-            return $this->backendProvider->deleteRecord($recordId);
+            return false;
         }
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = :id");
-        return $stmt->execute(['id' => $recordId]);
+        // Gate on the stored row: a stale or crafted id must not delete a record of a live zone
+        $stmt = $this->db->prepare(
+            "DELETE FROM $records_table WHERE id = :id
+             AND NOT EXISTS (SELECT 1 FROM $domains_table d WHERE d.id = $records_table.domain_id)"
+        );
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
     }
 
     /**
@@ -726,30 +738,57 @@ class DatabaseConsistencyService
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        $zoneName = null;
         $this->db->beginTransaction();
         try {
             // Get all SOA records for this zone, ordered by ID
-            $stmt = $this->db->prepare("SELECT id FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
+            $stmt = $this->db->prepare("SELECT id, name FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
             $stmt->execute(['zone_id' => $zoneId]);
-            $soaRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            $soaRecords = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
             if (count($soaRecords) <= 1) {
                 $this->db->commit();
                 return true;
             }
 
-            // Keep the first SOA record, delete the rest
-            array_shift($soaRecords); // Remove the first ID from the array
-            $placeholders = implode(',', array_fill(0, count($soaRecords), '?'));
+            // Keep the lowest-id SOA at the apex; a stray one under another name is never the survivor
+            $zoneName = $this->zoneNameById($zoneId);
+            $apex = strtolower((string)$zoneName);
+            $keep = array_key_first($soaRecords);
+            foreach ($soaRecords as $id => $name) {
+                if (strtolower((string)$name) === $apex) {
+                    $keep = $id;
+                    break;
+                }
+            }
+            unset($soaRecords[$keep]);
+
+            $ids = array_keys($soaRecords);
+            $placeholders = implode(',', array_fill(0, count($ids), '?'));
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
-            $stmt->execute($soaRecords);
+            $stmt->execute($ids);
 
             $this->db->commit();
-            return true;
         } catch (Exception $e) {
             $this->db->rollBack();
             return false;
         }
+        if ($zoneName !== null) {
+            DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, null, $this->logger);
+        }
+
+        return true;
+    }
+
+    private function zoneNameById(int $zoneId): ?string
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $name = $stmt->fetchColumn();
+
+        return is_string($name) && $name !== '' ? $name : null;
     }
 
     /**
