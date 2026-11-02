@@ -733,39 +733,35 @@ class DomainManager implements DomainManagerInterface
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
-                if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-                    if ($isApiBackend) {
-                        // API mode has no record-to-template mapping, so the old logic
-                        // matched on name+type+content and could wipe user-authored
-                        // records that happened to mirror a template entry. Leave any
-                        // existing records in place; users can prune by hand.
-                        $this->logger->info(
-                            'Skipping template record cleanup for API zone {zone_id}; '
-                            . 'pre-existing records left in place to avoid removing user data.',
-                            ['zone_id' => $zone_id, 'zone_template_id' => $zone_template_id]
-                        );
-                    } else {
-                        // Delete the template-applied records. Only MySQL can drop the
-                        // record and its mapping in one statement; the other backends
-                        // delete records here and the mapping is cleared uniformly below.
-                        if ($db_type == 'pgsql') {
-                            $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
-                        } elseif ($db_type == 'sqlite') {
-                            $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
-                        } else {
-                            $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
-                        }
-                        $stmt = $this->db->prepare($query);
-                        $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
-
-                        // Clear the template->record mapping for every backend. Otherwise
-                        // pgsql/sqlite leave orphaned rows behind, and on SQLite a reused
-                        // rowid could later resolve a stale mapping to an unrelated record.
-                        $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
-                        $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
-                    }
+                if ($isApiBackend) {
+                    // API mode has no record-to-template mapping, so the old logic
+                    // matched on name+type+content and could wipe user-authored
+                    // records that happened to mirror a template entry. Leave any
+                    // existing records in place; users can prune by hand.
+                    $this->logger->info(
+                        'Skipping template record cleanup for API zone {zone_id}; '
+                        . 'pre-existing records left in place to avoid removing user data.',
+                        ['zone_id' => $zone_id, 'zone_template_id' => $zone_template_id]
+                    );
                 } else {
-                    $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+                    // Delete the template-applied records. Only MySQL can drop the
+                    // record and its mapping in one statement; the other backends
+                    // delete records here and the mapping is cleared uniformly below.
+                    if ($db_type == 'pgsql') {
+                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                    } elseif ($db_type == 'sqlite') {
+                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                    } else {
+                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                    }
+                    $stmt = $this->db->prepare($query);
+                    $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+
+                    // Clear the template->record mapping for every backend. Otherwise
+                    // pgsql/sqlite leave orphaned rows behind, and on SQLite a reused
+                    // rowid could later resolve a stale mapping to an unrelated record.
+                    $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
+                    $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
                 }
 
                 // Use the permissions we already checked earlier
