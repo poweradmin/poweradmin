@@ -45,6 +45,12 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class DnsRecord
 {
+    /** A rectify failure this slow means PowerDNS timed out or stalled, not that it refused one zone. */
+    private const RECTIFY_SLOW_FAILURE_SECONDS = 3.0;
+
+    /** Set for the rest of the request once a template rectify fails slowly. */
+    private static bool $rectifyStalled = false;
+
     private AppConfiguration $config;
     private PDOLayer $db;
 
@@ -1970,12 +1976,20 @@ class DnsRecord
                 new FakeConfiguration($this->config->get('pdns_api_url'), $this->config->get('pdns_api_key'))
             );
             $zone_name = $this->get_domain_name_by_id($zone_id);
-            if ($zone_name) {
-                // Already committed: a failure must not abort the remaining zones of a bulk update
+            if ($zone_name && self::$rectifyStalled) {
+                error_log(sprintf('Zone rectify skipped for %s: an earlier rectify in this request failed after timing out or stalling', $zone_name));
+            } elseif ($zone_name) {
+                // Already committed: a failure must not abort the remaining zones of a bulk update,
+                // and after one slow failure the rest skip rectify instead of waiting per zone
+                $started = hrtime(true);
                 try {
-                    $dnssecProvider->rectifyZone($zone_name);
+                    $rectified = $dnssecProvider->rectifyZone($zone_name);
                 } catch (\Throwable $e) {
+                    $rectified = false;
                     error_log(sprintf('Zone rectify failed for %s: %s', $zone_name, $e->getMessage()));
+                }
+                if (!$rectified && (hrtime(true) - $started) / 1e9 >= self::RECTIFY_SLOW_FAILURE_SECONDS) {
+                    self::$rectifyStalled = true;
                 }
             }
         }
