@@ -319,13 +319,15 @@ class EditController extends BaseController
                 }
 
                 if ($current_zone_template != $new_zone_template) {
-                    $this->dnsRecord->updateZoneRecords(
+                    $updated = $this->dnsRecord->updateZoneRecords(
                         $this->config->get('database', 'type', 'mysql'),
                         $this->config->get('dns', 'ttl', 86400),
                         $zone_id,
                         $new_zone_template
                     );
-                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+                    if ($updated) {
+                        $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+                    }
                 }
             }
         }

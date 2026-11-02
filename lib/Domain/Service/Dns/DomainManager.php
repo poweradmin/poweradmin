@@ -708,10 +708,17 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+
+        // Template records (SOA and NS included) are written straight to the backend,
+        // so applying one needs the same standing as editing those records by hand.
+        if ($zone_template_id != 0 && !($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this zone."));
+            return false;
+        }
 
         $zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');
@@ -905,7 +912,7 @@ class DomainManager implements DomainManagerInterface
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
-            return;
+            return false;
         }
 
         // Template records are written straight to the backend, so rectify here as RecordManager does
@@ -915,6 +922,8 @@ class DomainManager implements DomainManagerInterface
                 DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, $this->logger);
             }
         }
+
+        return true;
     }
 
     /**
