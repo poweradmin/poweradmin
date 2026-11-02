@@ -517,6 +517,19 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testTheUpdateContentIsTrimmedAsOnCreate(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->storedARecord());
+        $this->records->method('getRecordFromId')->willReturn($this->storedARecord());
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['content'] === '192.0.2.9'))
+            ->willReturn(RecordWriteResult::ok(3));
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'content' => " 192.0.2.9\n"]]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAWhitespaceOnlyUpdateCommentClearsIt(): void
     {
         $this->records->method('getRecordById')->willReturn($this->storedARecord());
