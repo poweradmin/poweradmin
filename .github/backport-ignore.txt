@@ -64,3 +64,16 @@ release/4.2.x::fix(docker): pass DB_PORT to the admin user step of the entrypoin
 
 # 4.4.x took the escape inside its 4.4.0 environment variables commit.
 release/4.4.x::fix(docker): escape the default zone template name when generating config
+
+# The Docker request body cap stays on master: the stable lines check credentials
+# before reading the body, and memory_limit bounds each request.
+fix(docker): cap request body size in the image's Caddyfile
+
+# 4.5.x took this as 57f146248 under a longer title; older lines have no LDAP mapping variables.
+fix(docker): accept LDAP DNs in the LDAP mapping variables without breaking the comma form (closes #1769)
+
+# 4.3.x and 4.2.x take critical fixes only; these shipped on 4.5.x and 4.4.x.
+release/4.3.x::fix(auth): refuse SAML responses that do not answer a sign-in started from this browser
+release/4.2.x::fix(auth): refuse SAML responses that do not answer a sign-in started from this browser
+release/4.3.x::fix(docker): reject a non-numeric DB_PORT and warn when localhost makes MySQL ignore it (closes #1672)
+release/4.2.x::fix(docker): reject a non-numeric DB_PORT and warn when localhost makes MySQL ignore it (closes #1672)
