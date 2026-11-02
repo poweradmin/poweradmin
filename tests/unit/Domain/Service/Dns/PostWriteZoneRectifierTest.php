@@ -93,4 +93,73 @@ class PostWriteZoneRectifierTest extends TestCase
         (new PostWriteZoneRectifier(new FakeConfiguration(['dnssec' => ['enabled' => true]]), static fn() => $provider, $logger))
             ->rectify('example.com');
     }
+
+    public function testASlowFailureSkipsTheRestOfTheRequest(): void
+    {
+        $now = 0.0;
+        $provider = $this->createMock(ZoneRectifierInterface::class);
+        $provider->expects($this->once())->method('rectifyZone')->with('a.example')
+            ->willReturnCallback(function () use (&$now): bool {
+                $now += 10.0;
+                return false;
+            });
+        $logger = $this->createMock(LoggerInterface::class);
+        $logged = [];
+        $logger->method('warning')->willReturnCallback(function (string $message, array $context) use (&$logged): void {
+            $logged[] = [$message, $context['zone']];
+        });
+
+        $rectifier = new PostWriteZoneRectifier(
+            new FakeConfiguration(['dnssec' => ['enabled' => true]]),
+            static fn() => $provider,
+            $logger,
+            static function () use (&$now): float {
+                return $now;
+            }
+        );
+        $rectifier->rectify('a.example');
+        $rectifier->rectify('b.example');
+
+        $this->assertSame([
+            ['Zone rectify refused for {zone}', 'a.example'],
+            ['Zone rectify skipped for {zone}: an earlier rectify in this request failed after timing out or stalling', 'b.example'],
+        ], $logged);
+    }
+
+    public function testAFastRefusalKeepsRectifyingTheNextZones(): void
+    {
+        $provider = $this->createMock(ZoneRectifierInterface::class);
+        $provider->expects($this->exactly(2))->method('rectifyZone')->willReturn(false);
+
+        $rectifier = new PostWriteZoneRectifier(
+            new FakeConfiguration(['dnssec' => ['enabled' => true]]),
+            static fn() => $provider,
+            new NullLogger(),
+            static fn(): float => 0.0
+        );
+        $rectifier->rectify('unsigned.example');
+        $rectifier->rectify('signed.example');
+    }
+
+    public function testASlowSuccessKeepsRectifyingTheNextZones(): void
+    {
+        $now = 0.0;
+        $provider = $this->createMock(ZoneRectifierInterface::class);
+        $provider->expects($this->exactly(2))->method('rectifyZone')
+            ->willReturnCallback(function () use (&$now): bool {
+                $now += 10.0;
+                return true;
+            });
+
+        $rectifier = new PostWriteZoneRectifier(
+            new FakeConfiguration(['dnssec' => ['enabled' => true]]),
+            static fn() => $provider,
+            new NullLogger(),
+            static function () use (&$now): float {
+                return $now;
+            }
+        );
+        $rectifier->rectify('large.example');
+        $rectifier->rectify('next.example');
+    }
 }

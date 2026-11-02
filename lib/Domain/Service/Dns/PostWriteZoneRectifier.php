@@ -29,38 +29,55 @@ use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
- * Rectifies a zone after records were written outside RecordManager, so the
- * NSEC/NSEC3 ordering data of a signed zone follows nodes being added or removed.
+ * Rectifies a zone after records were written, so the NSEC/NSEC3 ordering data
+ * of a signed zone follows nodes being added or removed.
  */
 final class PostWriteZoneRectifier
 {
+    /** A failure this slow means PowerDNS timed out or stalled, not that it refused one zone. */
+    private const SLOW_FAILURE_SECONDS = 3.0;
+
     private ?ZoneRectifierInterface $rectifier = null;
+    private bool $stalled = false;
+    private Closure $clock;
 
     /**
      * @param Closure(): ZoneRectifierInterface $rectifierFactory Built on first use, so DNSSEC-disabled installs never construct one
+     * @param (Closure(): float)|null $clock Seconds, monotonic; defaults to hrtime
      */
     public function __construct(
         private readonly ConfigurationInterface $config,
         private readonly Closure $rectifierFactory,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        ?Closure $clock = null
     ) {
+        $this->clock = $clock ?? static fn(): float => hrtime(true) / 1e9;
     }
 
     /**
-     * The write is already committed, so a failure here is logged, not raised.
+     * The write is already committed, so a failure here is logged, not raised. After one
+     * slow failure the rest of the request skips rectify, so a bulk write cannot stall per zone;
+     * a slow success never trips it.
      */
     public function rectify(string $zoneName): void
     {
         if (!$this->config->get('dnssec', 'enabled')) {
             return;
         }
+        if ($this->stalled) {
+            $this->logger->warning('Zone rectify skipped for {zone}: an earlier rectify in this request failed after timing out or stalling', ['zone' => $zoneName]);
+            return;
+        }
+        $started = ($this->clock)();
         try {
             $this->rectifier ??= ($this->rectifierFactory)();
-            if (!$this->rectifier->rectifyZone($zoneName)) {
-                $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
+            if ($this->rectifier->rectifyZone($zoneName)) {
+                return;
             }
+            $this->logger->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
         } catch (Throwable $e) {
             $this->logger->warning('Zone rectify failed for {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
         }
+        $this->stalled = ($this->clock)() - $started >= self::SLOW_FAILURE_SECONDS;
     }
 }
