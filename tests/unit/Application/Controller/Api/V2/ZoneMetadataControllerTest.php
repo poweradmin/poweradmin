@@ -61,6 +61,20 @@ class ZoneMetadataControllerTest extends TestCase
         ], $data);
     }
 
+    public function testListUppercasesKindsLikeTheKindEndpoints(): void
+    {
+        $service = $this->createMock(ZoneMetadataService::class);
+        $service->method('load')->willReturn([
+            ['kind' => 'also-notify', 'content' => '192.0.2.53'],
+            ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.54'],
+        ]);
+
+        $response = $this->call($service, 'listMetadata');
+        $data = json_decode((string)$response->getContent(), true)['data']['metadata'];
+
+        $this->assertSame([['kind' => 'ALSO-NOTIFY', 'values' => ['192.0.2.53', '192.0.2.54']]], $data);
+    }
+
     public function testAnUnknownZoneIs404(): void
     {
         $service = $this->createMock(ZoneMetadataService::class);

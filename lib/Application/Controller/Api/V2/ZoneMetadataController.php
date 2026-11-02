@@ -166,7 +166,7 @@ class ZoneMetadataController extends PublicApiController
                 description: 'Metadata kind (e.g., ALLOW-AXFR-FROM)',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string', maxLength: 32, pattern: '^[A-Za-z0-9_-]+$')
             )
         ]
     )]
@@ -270,7 +270,7 @@ class ZoneMetadataController extends PublicApiController
                 description: 'Metadata kind (e.g., ALLOW-AXFR-FROM)',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string', maxLength: 32, pattern: '^[A-Za-z0-9_-]+$')
             )
         ]
     )]
@@ -347,7 +347,7 @@ class ZoneMetadataController extends PublicApiController
                 description: 'Metadata kind (e.g., ALLOW-AXFR-FROM)',
                 in: 'path',
                 required: true,
-                schema: new OA\Schema(type: 'string')
+                schema: new OA\Schema(type: 'string', maxLength: 32, pattern: '^[A-Za-z0-9_-]+$')
             )
         ]
     )]
@@ -429,7 +429,8 @@ class ZoneMetadataController extends PublicApiController
     {
         $grouped = [];
         foreach ($rows as $row) {
-            $kind = $row['kind'];
+            // Upper-cased as the per-kind endpoints match it
+            $kind = strtoupper($row['kind']);
             if (!isset($grouped[$kind])) {
                 $grouped[$kind] = [];
             }
