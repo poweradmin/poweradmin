@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -53,14 +53,26 @@ class HttpClient implements ApiClient
         }
 
         $context = stream_context_create($options);
-        $response = @file_get_contents($url, false, $context);
+        // fopen + wrapper_data instead of file_get_contents + $http_response_header, which PHP 8.5 deprecates
+        $stream = @fopen($url, 'r', false, $context);
+        $response = false;
+        $responseHeaders = [];
+        if ($stream !== false) {
+            try {
+                $response = @stream_get_contents($stream);
+                $meta = stream_get_meta_data($stream);
+                $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+            } finally {
+                fclose($stream);
+            }
+        }
 
         if ($response === false) {
             $error = error_get_last();
             throw new ApiErrorException($error['message'] ?? 'An unknown API error occurred');
         }
 
-        $responseCode = $this->getResponseCode($http_response_header);
+        $responseCode = $this->getResponseCode($responseHeaders);
         $responseData = json_decode($response, true);
 
         if ($responseCode >= 400) {
@@ -75,11 +87,14 @@ class HttpClient implements ApiClient
 
     private function getResponseCode(array $headers): ?int
     {
-        if (isset($headers[0])) {
-            preg_match('/\s(\d{3})\s/', $headers[0], $match);
-            return isset($match[1]) ? (int)$match[1] : null;
+        // The wrapper lists every redirect hop; the last status line is the final response
+        $code = null;
+        foreach ($headers as $header) {
+            if (is_string($header) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $match)) {
+                $code = (int)$match[1];
+            }
         }
 
-        return null;
+        return $code;
     }
 }
