@@ -56,7 +56,7 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * For production use, use the `release/4.2.x` branch or a specific version tag (e.g., `v4.2.1`). The `master` branch may contain unreleased features.
+    * For production use, stick with the `release/4.4.x` LTS branch or a specific version tag (e.g. `v4.4.3`). The `master` branch carries the next release and may be unstable.
 
 ### Docker Deployment
 
@@ -91,7 +91,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **release/4.2.x (stable)**: PHP 8.2, PowerDNS 4.9.18, MariaDB 10.11, PostgreSQL 16.11
+- **release/4.2.x (maintenance)**: PHP 8.2, PowerDNS 4.9.18, MariaDB 10.11, PostgreSQL 16.11
 - **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **User-reported compatibility:**
@@ -101,14 +101,15 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Version Support
 
-| Branch | Status | Support |
-|--------|--------|---------|
-| `release/4.2.x` | Stable | Current stable release, patch releases |
-| `master` | Development | Next release development (4.3.x) |
-| `develop` | Experimental | Experimental features, may be unstable |
-| `release/3.x` | LTS | Bug fixes and security updates until December 2027 |
+| Version | Status |
+|---------|--------|
+| 4.5.x | Current release |
+| 4.4.x | LTS until December 2027, recommended for production. Last line with API v1 |
+| 4.3.x, 4.2.x | Last fixes only, end of life on 2027-01-31 |
+| 3.9.x | LTS until December 2027 |
+| 4.1.x, 4.0.x, 3.8.x and older | End of life, please upgrade |
 
-> **Note:** The `release/4.0.x` and `release/4.1.x` branches are in maintenance mode and will not receive new releases.
+`release/4.2.x` takes last fixes only until its end of life on 2027-01-31. The support rules, a timeline, and the PHP, PowerDNS and distribution support dates are on [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/).
 
 ### PHP Version Support
 
