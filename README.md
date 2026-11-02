@@ -35,7 +35,7 @@ DNSSEC operations.
 
 ## Requirements
 
-* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
+* PHP 8.1 or higher (including 8.2, 8.3, 8.4 and 8.5)
 * PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+ (including 4.x and 5.x series)
@@ -75,7 +75,7 @@ The **3.x branch** is designated as Long-Term Support (LTS). This branch will re
 - No breaking changes - all updates are backwards compatible
 - Bug fixes and security updates only
 - No new features that could destabilize the codebase
-- PHP 8.1, 8.2, 8.3, and 8.4 compatibility maintained
+- PHP 8.1, 8.2, 8.3, 8.4, and 8.5 compatibility maintained
 
 ## Installation
 
