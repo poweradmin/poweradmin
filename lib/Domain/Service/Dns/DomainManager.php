@@ -24,9 +24,11 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use PDO;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Error\RecordIdNotFoundException;
 use Poweradmin\Domain\Error\ZoneIdNotFoundException;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -694,6 +696,18 @@ class DomainManager implements DomainManagerInterface
      */
     public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
     {
+        $updated = $this->applyZoneTemplate($db_type, $dns_ttl, $zone_id, $zone_template_id);
+        // Template records are written straight to the backend, so rectify here as RecordManagerService does
+        if ($updated && $zone_template_id != 0 && strtoupper($this->domainRepository->getDomainType($zone_id)) !== ZoneType::SLAVE) {
+            $zoneName = $this->domainRepository->getDomainNameById($zone_id);
+            if (is_string($zoneName)) {
+                DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, $this->logger);
+            }
+        }
+    }
+
+    private function applyZoneTemplate(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
+    {
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -889,7 +903,10 @@ class DomainManager implements DomainManagerInterface
                 $this->db->rollBack();
             }
             $this->messageService->addSystemError(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+            return false;
         }
+
+        return true;
     }
 
     /**

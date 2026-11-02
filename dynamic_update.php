@@ -4,6 +4,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -71,7 +72,18 @@ $authenticationService = new DynamicDnsAuthenticationService($repository, $userA
 $updateService = new DynamicDnsUpdateService(
     $validationService,
     $authenticationService,
-    $repository
+    $repository,
+    function (int $zoneId) use ($db, $config, $dnsRecord): void {
+        // The update is already written: a failed lookup must not turn the reply into dnserr
+        try {
+            $zoneName = $dnsRecord->getDomainNameById($zoneId);
+        } catch (\Throwable) {
+            return;
+        }
+        if (is_string($zoneName)) {
+            DnssecProviderFactory::rectifyAfterWrite($db, $config, $zoneName);
+        }
+    }
 );
 
 // Create request value object and process update

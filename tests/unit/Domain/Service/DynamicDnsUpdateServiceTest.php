@@ -342,4 +342,33 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertEquals('badauth', $result);
     }
+
+    public function testAWrittenUpdateRectifiesTheWrittenZoneAndANoChangeDoesNot(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'new.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $user = new User(1, 'hashedpass', false);
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn($user);
+        $this->validationService->method('createValidatedHostname')->willReturn(new HostnameValue('new.example.com'));
+        $this->validationService->method('createValidatedIpList')->willReturn($ipList);
+        $this->authService->method('getUserZones')->willReturn([7]);
+        $this->repository->method('getDnsRecords')
+            ->willReturnOnConsecutiveCalls([], ['192.168.1.1' => 123]);
+
+        $rectified = [];
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            function (int $zoneId) use (&$rectified): void {
+                $rectified[] = $zoneId;
+            }
+        );
+
+        $this->assertSame('good', $service->processUpdate($request));
+        $this->assertSame('good', $service->processUpdate($request));
+        $this->assertSame([7], $rectified);
+    }
 }

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use PDO;
+use Psr\Log\LoggerInterface;
 use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
@@ -138,5 +139,41 @@ class DnssecProviderFactory
             $ipRetriever->getClientIp() ?: 'unknown',
             $userContextService->getLoggedInUsername() ?? 'api_user_' . ($userContextService->getLoggedInUserId() ?? 'unknown')
         );
+    }
+
+    /** A rectify failure this slow means PowerDNS timed out or stalled, not that it refused one zone. */
+    private const RECTIFY_SLOW_FAILURE_SECONDS = 3.0;
+
+    private static bool $rectifyStalled = false;
+
+    /**
+     * Rectify a zone after its records were written, so a signed zone's NSEC/NSEC3
+     * chain follows the change. The write is already committed: failures are logged.
+     * After one slow failure the rest of the request skips rectify, so a bulk template
+     * update cannot wait the API timeout once per zone; a slow success never trips it.
+     */
+    public static function rectifyAfterWrite(
+        PDO $db,
+        ConfigurationInterface $config,
+        string $zoneName,
+        ?LoggerInterface $logger = null
+    ): void {
+        if (!$config->get('dnssec', 'enabled')) {
+            return;
+        }
+        if (self::$rectifyStalled) {
+            $logger?->warning('Zone rectify skipped for {zone}: an earlier rectify in this request failed after timing out or stalling', ['zone' => $zoneName]);
+            return;
+        }
+        $started = hrtime(true);
+        try {
+            if (self::create($db, $config)->rectifyZone($zoneName)) {
+                return;
+            }
+            $logger?->warning('Zone rectify refused for {zone}', ['zone' => $zoneName]);
+        } catch (\Throwable $e) {
+            $logger?->warning('Zone rectify failed for {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
+        }
+        self::$rectifyStalled = (hrtime(true) - $started) / 1e9 >= self::RECTIFY_SLOW_FAILURE_SECONDS;
     }
 }
