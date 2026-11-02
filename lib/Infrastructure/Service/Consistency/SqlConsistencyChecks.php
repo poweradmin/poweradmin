@@ -607,8 +607,15 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
     public function deleteOrphanedRecord(int $recordId): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
-        return $stmt->execute(['id' => $recordId]);
+        // Gate on the stored row: a stale or crafted id must not delete a record of a live zone
+        $stmt = $this->db->prepare(
+            "DELETE FROM {$this->recordsTable} WHERE id = :id
+             AND NOT EXISTS (SELECT 1 FROM {$this->domainsTable} d WHERE d.id = {$this->recordsTable}.domain_id)"
+        );
+        $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
     }
 
     public function fixDuplicateSOA(int $zoneId): bool

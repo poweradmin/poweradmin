@@ -496,6 +496,16 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('records', 'id = 2'));
     }
 
+    public function testDeleteOrphanedRecordRefusesARecordWhoseZoneExists(): void
+    {
+        $this->domain(1, 'example.com');
+        $this->record(1, 1, 'www.example.com', 'A');
+
+        $this->assertFalse($this->checker()->deleteOrphanedRecord(1));
+        $this->assertFalse($this->checker()->deleteOrphanedRecord(404));
+        $this->assertSame(1, $this->rows('records', 'id = 1'));
+    }
+
     public function testFixDuplicateSoaKeepsTheLowestIdAndDeletesTheRest(): void
     {
         $this->domain(1, 'example.com');

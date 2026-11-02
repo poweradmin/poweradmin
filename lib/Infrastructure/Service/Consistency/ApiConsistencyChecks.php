@@ -325,9 +325,10 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         }
     }
 
+    /** Nothing is ever reported as orphaned in API mode, so any id submitted here names a live record. */
     public function deleteOrphanedRecord(int $recordId): bool
     {
-        return $this->backend->deleteRecord($recordId);
+        return false;
     }
 
     public function fixDuplicateSOA(int $zoneId): bool

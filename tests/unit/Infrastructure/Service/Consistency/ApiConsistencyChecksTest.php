@@ -488,10 +488,10 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertFalse($this->checker()->deleteSlaveZone(1));
     }
 
-    public function testDeleteOrphanedRecordGoesThroughTheProvider(): void
+    public function testDeleteOrphanedRecordNeverDeletesALiveRecord(): void
     {
-        $this->assertTrue($this->checker()->deleteOrphanedRecord(77));
-        $this->assertSame([77], $this->deletedRecords);
+        $this->assertFalse($this->checker()->deleteOrphanedRecord(77));
+        $this->assertSame([], $this->deletedRecords);
     }
 
     public function testFixDuplicateSoaKeepsTheFirstListedRecordAndDeletesTheRest(): void
