@@ -510,7 +510,12 @@ class ZoneMetadataController extends PublicApiController
     private function loadMetadata(int $zoneId): array
     {
         if ($this->apiClient === null) {
-            return $this->zoneRepository->getDomainMetadata($zoneId);
+            // Upper-cased as the per-kind delete matches UPPER(kind), so a row
+            // stored in another case counts as its kind
+            return array_map(
+                fn(array $row): array => ['kind' => strtoupper((string)$row['kind']), 'content' => (string)$row['content']],
+                $this->zoneRepository->getDomainMetadata($zoneId)
+            );
         }
 
         $zone = $this->zoneRepository->getZone($zoneId);

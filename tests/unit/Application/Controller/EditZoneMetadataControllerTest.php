@@ -304,6 +304,20 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame($expectedRows, $rows);
     }
 
+    public function testALegacyLowercaseKindIsNoChangeOnSave(): void
+    {
+        $zoneRepository = $this->createMock(DbZoneRepository::class);
+        $zoneRepository->method('getDomainMetadata')->willReturn([['kind' => 'lua-axfr-script', 'content' => 'x.lua']]);
+
+        $controller = $this->controllerReflection->newInstanceWithoutConstructor();
+        $this->setProperty($controller, 'zoneRepository', $zoneRepository);
+        $this->setBaseControllerProperty($controller, 'config', $this->createRuntimeConfig());
+
+        $current = $this->invokePrivateMethod($controller, 'loadMetadata', [123, 'example.com']);
+        $this->assertSame([['kind' => 'LUA-AXFR-SCRIPT', 'content' => 'x.lua']], $current);
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'changedKinds', [[['kind' => 'LUA-AXFR-SCRIPT', 'content' => 'x.lua']], $current]));
+    }
+
     public function testSaveMetadataViaApiRoutesZoneObjectKindsWithTheirJsonType(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);

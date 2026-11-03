@@ -229,7 +229,11 @@ class EditZoneMetadataController extends BaseController
             return $this->loadMetadataViaApi($zoneName);
         }
 
-        return $this->zoneRepository->getDomainMetadata($zoneId);
+        // Upper-cased as the API loads them, so a legacy row is no change
+        return array_map(
+            fn(array $row): array => ['kind' => strtoupper((string)$row['kind']), 'content' => (string)$row['content']],
+            $this->zoneRepository->getDomainMetadata($zoneId)
+        );
     }
 
     /**

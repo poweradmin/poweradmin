@@ -179,6 +179,22 @@ class ZoneMetadataControllerTest extends TestCase
         );
     }
 
+    public function testSqlLoadNormalisesKindsStoredInAnotherCase(): void
+    {
+        $controller = $this->createController();
+        $zoneRepository = $this->createMock(DbZoneRepository::class);
+        $zoneRepository->method('getDomainMetadata')->willReturn([
+            ['kind' => 'nsec3param', 'content' => '1 0 1 ab'],
+            ['kind' => 'nsec3narrow', 'content' => '1'],
+        ]);
+        $this->setProperty($controller, 'zoneRepository', $zoneRepository);
+
+        $this->assertSame([
+            ['kind' => 'NSEC3PARAM', 'content' => '1 0 1 ab'],
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+        ], $this->invokePrivateMethod($controller, 'loadMetadata', [1]));
+    }
+
     public function testListUppercasesKindsLikeTheKindEndpoints(): void
     {
         $grouped = $this->invokePrivateMethod($this->createController(), 'groupMetadataByKind', [[
