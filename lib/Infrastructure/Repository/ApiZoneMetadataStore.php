@@ -77,18 +77,20 @@ final class ApiZoneMetadataStore implements ZoneMetadataStoreInterface
             $success = $this->apiClient->updateZoneProperties($apiName, $properties);
         }
 
+        // Deletes first: PowerDNS may match kinds case-insensitively, so deleting
+        // X-note after writing X-NOTE would remove the new values too
+        foreach (array_keys($beforeByKind) as $kind) {
+            if (isset($grouped[$kind]) || isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind]) || MetadataDefinitions::writeRejection((string)$kind, true) !== null) {
+                continue;
+            }
+            $success = $this->apiClient->deleteZoneMetadata($zone, (string)$kind) && $success;
+        }
         // Kinds the API cannot store never reach here changed; unchanged ones are left alone
         foreach ($grouped as $kind => $values) {
             if (MetadataDefinitions::writeRejection((string)$kind, true) !== null) {
                 continue;
             }
             $success = $this->apiClient->updateZoneMetadata($zone, (string)$kind, $values) && $success;
-        }
-        foreach (array_keys($beforeByKind) as $kind) {
-            if (isset($grouped[$kind]) || isset(MetadataDefinitions::ZONE_PROPERTY_KINDS[$kind]) || MetadataDefinitions::writeRejection((string)$kind, true) !== null) {
-                continue;
-            }
-            $success = $this->apiClient->deleteZoneMetadata($zone, (string)$kind) && $success;
         }
 
         return $success;

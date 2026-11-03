@@ -144,6 +144,23 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertSame(ZoneMetadataOutcome::COMPANION_REQUIRED, $service->replaceKind(self::ZONE_ID, self::ZONE, 'NSEC3NARROW', ['1'], self::ADMIN)->outcome);
     }
 
+    public function testAKindStoredInAnotherCaseCountsAsThatKind(): void
+    {
+        $this->store->method('load')->willReturn([
+            ['kind' => 'nsec3param', 'content' => '1 0 1 ab'],
+            ['kind' => ' nsec3narrow', 'content' => '1'],
+        ]);
+        $this->store->method('replaceKind')->willReturn(true);
+        $service = $this->sqlService();
+
+        $this->assertSame([
+            ['kind' => 'NSEC3PARAM', 'content' => '1 0 1 ab'],
+            ['kind' => 'NSEC3NARROW', 'content' => '1'],
+        ], $service->load(self::ZONE_ID, self::ZONE));
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'NSEC3NARROW', ['1'], self::ADMIN)->isOk());
+        $this->assertSame(ZoneMetadataOutcome::COMPANION_REQUIRED, $service->deleteKind(self::ZONE_ID, self::ZONE, 'NSEC3PARAM', self::ADMIN)->outcome);
+    }
+
     public function testRemovingTheCompanionAnotherKindNeedsIsRefused(): void
     {
         $this->store->method('load')->willReturn([
@@ -293,6 +310,30 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
             ->willReturn(true);
 
         $this->assertTrue($this->apiService($apiClient)->deleteKind(self::ZONE_ID, self::ZONE, 'X-NOTE', self::ADMIN)->isOk());
+    }
+
+    public function testTheEditorSaveOnTheApiBackendRemovesAKindStoredInAnotherCase(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([['kind' => 'X-note', 'metadata' => ['hello']]]);
+        $apiClient->method('getZone')->willReturn([]);
+        $calls = [];
+        $apiClient->expects($this->once())->method('updateZoneMetadata')
+            ->with($this->anything(), 'X-NOTE', ['hello'])
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'put X-NOTE';
+                return true;
+            });
+        $apiClient->expects($this->once())->method('deleteZoneMetadata')
+            ->with($this->anything(), 'X-note')
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'delete X-note';
+                return true;
+            });
+
+        $this->assertTrue($this->apiService($apiClient)->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-NOTE', 'content' => 'hello']], self::ADMIN)->isOk());
+        // PowerDNS may match kinds case-insensitively, so the delete must come first
+        $this->assertSame(['delete X-note', 'put X-NOTE'], $calls);
     }
 
     public function testAFailedApiWriteIsReportedAndNotLogged(): void

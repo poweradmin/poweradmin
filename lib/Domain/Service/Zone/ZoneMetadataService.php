@@ -148,13 +148,23 @@ class ZoneMetadataService
 
     /**
      * The zone's metadata rows, sorted by kind. In API mode the zone-object
-     * properties that stand in for metadata kinds are folded in.
+     * properties that stand in for metadata kinds are folded in. Kinds are
+     * normalised, so a row stored in another case counts as its kind everywhere.
      *
      * @return list<array{kind: string, content: string}>
      */
     public function load(int $zoneId, string $zoneName): array
     {
-        return $this->store->load($zoneId, $zoneName);
+        return self::normalizeKinds($this->store->load($zoneId, $zoneName));
+    }
+
+    /**
+     * @param list<array{kind: string, content: string}> $rows
+     * @return list<array{kind: string, content: string}>
+     */
+    private static function normalizeKinds(array $rows): array
+    {
+        return array_map(fn(array $row): array => ['kind' => self::normalizeKind((string)$row['kind']), 'content' => (string)$row['content']], $rows);
     }
 
     /**
@@ -171,7 +181,9 @@ class ZoneMetadataService
             return $refusal;
         }
 
-        $before = $this->load($zoneId, $zoneName);
+        // The store gets its rows as stored, so it can remove a kind in another case
+        $stored = $this->store->load($zoneId, $zoneName);
+        $before = self::normalizeKinds($stored);
         foreach (self::changedKinds($rows, $before) as $kind) {
             $refusal = $this->kindRefusal($kind, $actingUserId);
             if ($refusal !== null) {
@@ -179,7 +191,7 @@ class ZoneMetadataService
             }
         }
 
-        if (!$this->store->replaceAll($zoneId, $zoneName, $rows, $before)) {
+        if (!$this->store->replaceAll($zoneId, $zoneName, $rows, $stored)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED);
         }
         // PowerDNS caches zone metadata; the flush drops that cache for the zone
@@ -212,14 +224,16 @@ class ZoneMetadataService
             return $refusal;
         }
 
-        $before = $this->load($zoneId, $zoneName);
+        // The store gets its rows as stored, so it can remove a kind in another case
+        $stored = $this->store->load($zoneId, $zoneName);
+        $before = self::normalizeKinds($stored);
         $after = self::replaceKindIn($before, $kind, $values);
         $refusal = $this->validateCompanions($rows, $after);
         if ($refusal !== null) {
             return $refusal;
         }
 
-        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, $values, $before)) {
+        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, $values, $stored)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
         $this->zoneCacheFlusher?->flushZone($zoneName);
@@ -239,7 +253,9 @@ class ZoneMetadataService
             return $refusal;
         }
 
-        $before = $this->load($zoneId, $zoneName);
+        // The store gets its rows as stored, so it can remove a kind in another case
+        $stored = $this->store->load($zoneId, $zoneName);
+        $before = self::normalizeKinds($stored);
         $after = self::replaceKindIn($before, $kind, []);
         // A kind another one depends on cannot go while the dependant stays; rows
         // already inconsistent for other reasons are not this delete's concern
@@ -249,7 +265,7 @@ class ZoneMetadataService
             }
         }
 
-        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, [], $before)) {
+        if (!$this->store->replaceKind($zoneId, $zoneName, $kind, [], $stored)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::WRITE_FAILED, $kind);
         }
         $this->zoneCacheFlusher?->flushZone($zoneName);
