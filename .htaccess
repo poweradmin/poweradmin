@@ -18,6 +18,9 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
+    # dyndns2 path used by stock dynamic DNS clients
+    RewriteRule ^nic/update$ dynamic_update.php [QSA,L]
+
     # Single catch-all rule - let Symfony Router handle all routing
     RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>

@@ -344,8 +344,8 @@ test_with_auth "Empty Hostname" "notfqdn" "-d 'hostname=&myip=192.168.1.1'"
 # Test 6: Invalid IP Address
 test_with_auth "Invalid IP Address" "dnserr" "-d 'hostname=$TEST_HOSTNAME&myip=invalid.ip'"
 
-# Test 7: No IP Addresses Provided
-test_with_auth "No IP Addresses" "dnserr" "-d 'hostname=$TEST_HOSTNAME'"
+# Test 7: No IP Addresses Provided (falls back to the server's perceived client IP)
+test_with_auth "No IP Addresses" '^(good|nochg) .+$' "-d 'hostname=$TEST_HOSTNAME'" "" "" regex
 
 print_status "INFO" "Running IPv4 update tests..."
 

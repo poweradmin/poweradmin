@@ -257,6 +257,56 @@ class DynamicDnsRequestFactoryTest extends TestCase
         $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
     }
 
+    public function testNoAddressFallsBackToTheClientAddress(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+        $request = Request::create('/nic/update?hostname=test.example.com');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('203.0.113.7', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testNoAddressFallsBackToAnIpv6ClientAddress(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::7';
+
+        $request = Request::create('/nic/update?hostname=test.example.com');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('2001:db8::7', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testNoAddressWithDualstackUpdateStaysEmpty(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+        $request = Request::create('/nic/update?hostname=test.example.com&dualstack_update=1');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testAnEmptyOrMalformedAddressDoesNotFallBack(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+        foreach (['myip=', 'myip=,', 'myip[]=x', 'myip6='] as $query) {
+            $request = Request::create('/nic/update?hostname=test.example.com&' . $query);
+
+            $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+            $this->assertSame('', $dynamicDnsRequest->getIpv4(), $query);
+            $this->assertSame('', $dynamicDnsRequest->getIpv6(), $query);
+        }
+    }
+
     public function testArrayQueryValuesAreTreatedAsAbsent(): void
     {
         $request = Request::create('/dynamic_update.php?username[]=u&password[]=p&hostname[]=h&myip[]=1&myip6[]=2&dualstack_update[]=1');

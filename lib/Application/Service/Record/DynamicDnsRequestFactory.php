@@ -105,6 +105,12 @@ class DynamicDnsRequestFactory
 
         [$ipv4, $ipv6] = self::routeAddressFamilies($ipv4, $ipv6);
 
+        // dyndns2 clients that omit the address expect the caller's own; not under dualstack_update,
+        // where the missing family would have its records deleted, nor when a sent value was unusable
+        if (!$dualstackUpdate && !self::sendsAnyAddress($request)) {
+            $ipv4 = $ipv6 = 'whatismyip';
+        }
+
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
             $clientIp = ClientContext::fromServer($_SERVER, $config)->ip;
             $ipValidator = new IPAddressValidator();
@@ -127,6 +133,17 @@ class DynamicDnsRequestFactory
             $dualstackUpdate,
             $userAgent
         );
+    }
+
+    private static function sendsAnyAddress(Request $request): bool
+    {
+        foreach (['myip', 'ip', 'myip6', 'ip6'] as $key) {
+            if ($request->query->has($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

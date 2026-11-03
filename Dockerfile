@@ -178,6 +178,9 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
         }
     }
 
+    # dyndns2 path used by stock dynamic DNS clients
+    rewrite /nic/update /dynamic_update.php
+
     # Clean URL routing - let Symfony Router handle all routing
     try_files {path} {path}/ /index.php{uri}
 

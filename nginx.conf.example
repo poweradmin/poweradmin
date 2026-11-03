@@ -41,6 +41,11 @@ server {
         try_files $uri $uri/ /index.php$is_args$args;
     }
 
+    # dyndns2 path used by stock dynamic DNS clients
+    location = /nic/update {
+        rewrite ^ /dynamic_update.php last;
+    }
+
     # Clean URL routing - let Symfony Router handle all routing
     location / {
         try_files $uri $uri/ /index.php$is_args$args;
@@ -99,6 +104,11 @@ server {
 
     # Keep in line with PHP's post_max_size; zone file imports need more than the 1m default
     client_max_body_size 20m;
+
+    # dyndns2 path used by stock dynamic DNS clients
+    location = /poweradmin/nic/update {
+        rewrite ^ /poweradmin/dynamic_update.php last;
+    }
 
     # Poweradmin subfolder location
     location /poweradmin {
