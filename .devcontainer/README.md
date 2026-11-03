@@ -32,9 +32,9 @@ builds, the others reuse the tag. After editing `.devcontainer/Dockerfile` or a 
 Xdebug is off by default. Set `PHP_XDEBUG=1` in `.env`, rebuild the fpm images and recreate
 the app services; `conf/xdebug.ini` holds the client settings (`host.docker.internal`, port 9003).
 
-Only the web instances (8080-8089) listen on all interfaces. Databases, LDAP, the PowerDNS
-DNS/API ports, Adminer and phpLDAPadmin are bound to 127.0.0.1, so they are unreachable from
-other machines on your network.
+Every published port, the web instances (8080-8089) included, is bound to 127.0.0.1, so none
+of them is reachable from other machines on your network. To open a web instance to another
+device (a phone, for example), change its mapping to `"8080:80"` in a local, uncommitted edit.
 
 ## Architecture
 
