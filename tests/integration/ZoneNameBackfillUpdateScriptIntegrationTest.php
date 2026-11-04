@@ -37,6 +37,11 @@ class ZoneNameBackfillUpdateScriptIntegrationTest extends TestCase
 {
     private const MARKER = '-- Name zones left unnamed by older versions (#1648)';
 
+    private const ZONE_KEYED = [
+        'log_zones' => 'zone_id', 'log_changesets' => 'zone_id', 'log_record_changes' => 'zone_id',
+        'zone_change_requests' => 'zone_id', 'records_zone_templ' => 'domain_id', 'records_zone_templ_api' => 'domain_id',
+    ];
+
     private static function scratch(): string
     {
         return 'poweradmin_it_zname_' . getmypid();
@@ -97,6 +102,10 @@ class ZoneNameBackfillUpdateScriptIntegrationTest extends TestCase
         $db->exec('CREATE UNIQUE INDEX idx_zones_zone_name ON zones (zone_name)');
         $db->exec('CREATE TABLE zones_groups (id INT PRIMARY KEY, domain_id INT NOT NULL, group_id INT NOT NULL)');
         $db->exec('CREATE TABLE api_key_zones (id INT PRIMARY KEY, api_key_id INT NOT NULL, zone_id INT NOT NULL)');
+        $db->exec('CREATE TABLE app_settings (setting_key VARCHAR(255) NOT NULL PRIMARY KEY, setting_value VARCHAR(255) NOT NULL)');
+        foreach (self::ZONE_KEYED as $table => $column) {
+            $db->exec("CREATE TABLE $table (id INT PRIMARY KEY, $column INT NOT NULL)");
+        }
 
         if ($withDomains) {
             $db->exec('CREATE TABLE domains (id INT PRIMARY KEY, name VARCHAR(255) NOT NULL, type VARCHAR(8), master VARCHAR(128))'
@@ -178,7 +187,113 @@ class ZoneNameBackfillUpdateScriptIntegrationTest extends TestCase
         $this->assertCount(11, $zones, 'only the one grant-only row is added');
     }
 
+    #[DataProvider('engines')]
+    public function testAnUnusedRowTheApiSyncAddedIsReplacedByTheZonesOwnRow(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $this->createTables($db, $engine);
+        // Rows the API sync added before 4.6.0, each keyed by its own id (#1855). 30 and 40
+        // have an owner or a group grant, 50 has neither but no row of its domain to give back
+        $db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES
+            (20, 20, 0, '', 'one.example'), (30, 30, 12, '', 'eight.example'),
+            (40, 40, 0, '', 'four.example'), (50, 50, 0, '', 'six.example')");
+        $db->exec('INSERT INTO zones_groups (id, domain_id, group_id) VALUES (3, 40, 1)');
+        foreach (self::ZONE_KEYED as $table => $column) {
+            $db->exec("INSERT INTO $table (id, $column) VALUES (1, 20), (2, 30), (3, 1)");
+        }
+        if ($engine === 'pgsql') {
+            $db->exec("SELECT setval(pg_get_serial_sequence('zones', 'id'), 50)");
+        }
+
+        $db->exec($this->backfillSql($engine));
+        $zones = $this->zones($db);
+
+        $this->assertArrayNotHasKey(20, $zones, 'an unused copy goes');
+        $this->assertSame('one.example', $zones[1][1], 'and the zone row takes the name');
+        $this->assertSame([30, 'eight.example'], $zones[30], 'a copy with an owner stays');
+        $this->assertNull($zones[9][1]);
+        $this->assertSame([40, 'four.example'], $zones[40], 'a copy with a group grant stays');
+        $this->assertNull($zones[6][1]);
+        $this->assertSame([50, 'six.example'], $zones[50], 'a copy of a zone with no rows here stays');
+        $this->assertSame('three.example', $zones[5][1], 'an owned row keyed by another id stays');
+        foreach (self::ZONE_KEYED as $table => $column) {
+            $ids = array_map('intval', $db->query("SELECT $column FROM $table ORDER BY id")->fetchAll(PDO::FETCH_COLUMN));
+            $this->assertSame([1, 30, 1], $ids, "$table rows of the removed copy move to the zone");
+        }
+
+        $db->exec($this->backfillSql($engine));
+        $this->assertSame($zones, $this->zones($db), 'a re-run changes nothing');
+    }
+
+    #[DataProvider('engines')]
+    public function testACopyIsKeptWhenOnlyAGrantOrAnUnsettledRowPointsAtItsDomain(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $this->createTables($db, $engine);
+        // API mode with the PowerDNS tables alongside: 60 and 102 were synced in. Domain 5 is
+        // reached only by a stale grant; domain 100's id is held by row 100, whose canonical id
+        // never settled (domain_id NULL), and row 101 is that zone's extra owner
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (100, 'hundred.example', 'NATIVE')");
+        $db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES
+            (60, 60, 0, '', 'five.example'), (100, NULL, 5, '', 'other.example'),
+            (101, 100, 6, NULL, NULL), (102, 102, 0, '', 'hundred.example')");
+        if ($engine === 'pgsql') {
+            $db->exec("SELECT setval(pg_get_serial_sequence('zones', 'id'), 102)");
+        }
+
+        $db->exec($this->backfillSql($engine));
+        $zones = $this->zones($db);
+
+        $this->assertSame([60, 'five.example'], $zones[60], 'a grant alone does not remove a copy');
+        $this->assertSame([102, 'hundred.example'], $zones[102], 'a named row keyed by the domain id keeps the copy');
+        $this->assertSame([100, null], $zones[101], 'and that zone keeps its extra owner unnamed');
+    }
+
     /** @return array<string, array{string, string}> */
+    /** Backend marker value after the backfill, false when the row is gone. */
+    private function runWithApiMarker(PDO $db, string $engine): string|false
+    {
+        $db->exec("INSERT INTO app_settings (setting_key, setting_value) VALUES ('backend.zone_ids', 'api'), ('other.setting', 'api')");
+        $db->exec($this->backfillSql($engine));
+        $this->assertSame('api', $db->query("SELECT setting_value FROM app_settings WHERE setting_key = 'other.setting'")->fetchColumn());
+
+        return $db->query("SELECT setting_value FROM app_settings WHERE setting_key = 'backend.zone_ids'")->fetchColumn();
+    }
+
+    #[DataProvider('engines')]
+    public function testTheApiMarkerIsClearedOnceNoRowIsKeyedByAnotherId(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $this->createTables($db, $engine);
+        // The 4.5 zone sync added copy 20 and marked the database; row 10 has no domain_id
+        $db->exec('DELETE FROM zones WHERE id = 10');
+        $db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES (20, 20, 0, '', 'one.example')");
+
+        $this->assertFalse($this->runWithApiMarker($db, $engine), 'nothing written in API mode is left');
+        $this->assertArrayNotHasKey(20, $this->zones($db));
+    }
+
+    #[DataProvider('engines')]
+    public function testTheApiMarkerStaysWhileARowIsKeyedByAnotherId(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $this->createTables($db, $engine);
+        $db->exec('DELETE FROM zones WHERE id = 10');
+        $db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES (20, 20, 0, '', 'one.example')");
+        $db->exec('INSERT INTO zones_groups (id, domain_id, group_id) VALUES (3, 20, 1)');
+
+        $this->assertSame('api', $this->runWithApiMarker($db, $engine), 'a copy with a group grant keeps the marker');
+    }
+
+    #[DataProvider('engines')]
+    public function testTheApiMarkerStaysWhileARowHasNoDomainId(string $engine): void
+    {
+        $db = $this->connect($engine);
+        $this->createTables($db, $engine);
+
+        $this->assertSame('api', $this->runWithApiMarker($db, $engine), 'row 10 has no domain_id');
+    }
+
     public static function domainsCollations(): array
     {
         return ['unicode_ci' => ['utf8mb4_unicode_ci', 'three.example'], 'bin, name held in another case' => ['utf8mb4_bin', 'Three.example']];

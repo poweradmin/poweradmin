@@ -36,6 +36,59 @@ use PDO;
  */
 final class SqlZoneNames
 {
+    /** Columns besides zones, grants and API key restrictions that hold a zone id. */
+    private const ZONE_KEYED_COLUMNS = [
+        'log_zones' => 'zone_id',
+        'log_changesets' => 'zone_id',
+        'log_record_changes' => 'zone_id',
+        'records_zone_templ' => 'domain_id',
+        'records_zone_templ_api' => 'domain_id',
+        'zone_change_requests' => 'zone_id',
+    ];
+
+    /**
+     * Remove a named row the API backend's zone sync added for this zone before 4.6.0, when
+     * nothing uses it, so the zone's own rows can take the name back. Before 4.6.0 the SQL
+     * backend stored no names, so the sync added each zone again as a new, ownerless row keyed
+     * by its own id. A row with an owner, template or comment, or with other zones rows, group
+     * grants or API key restrictions on its id, is kept. Logs, template links and change
+     * requests on its id move to the zone. The 4.6.0 update scripts do the same, but only for
+     * a zone that has zones rows of its own.
+     *
+     * @param string $domainsTable The PowerDNS domains table, prefixed when pdns_db_name is set
+     */
+    public static function dropUnusedSyncCopy(PDO $db, string $domainsTable, int $domainId): void
+    {
+        $canonicalId = 'COALESCE(NULLIF(c.domain_id, 0), c.id)';
+        $stmt = $db->prepare(
+            "SELECT c.id, $canonicalId AS zone_id FROM zones c JOIN $domainsTable d ON d.name = c.zone_name
+             WHERE d.id = :id AND $canonicalId <> d.id
+               AND (c.owner IS NULL OR c.owner = 0) AND c.zone_templ_id = 0
+               AND (c.comment IS NULL OR c.comment = '')
+               AND NOT EXISTS (SELECT 1 FROM zones e WHERE e.id <> c.id AND e.domain_id = $canonicalId)
+               AND NOT EXISTS (SELECT 1 FROM zones_groups g WHERE g.domain_id = $canonicalId)
+               AND NOT EXISTS (SELECT 1 FROM api_key_zones k WHERE k.zone_id = $canonicalId)
+               AND NOT EXISTS (SELECT 1 FROM zones n WHERE COALESCE(NULLIF(n.domain_id, 0), n.id) = d.id AND n.zone_name IS NOT NULL)"
+        );
+        $stmt->bindValue(':id', $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+        $copy = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($copy === false) {
+            return;
+        }
+
+        foreach (self::ZONE_KEYED_COLUMNS as $table => $column) {
+            $stmt = $db->prepare("UPDATE $table SET $column = :domain_id WHERE $column = :copy_id");
+            $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+            $stmt->bindValue(':copy_id', (int)$copy['zone_id'], PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+        $stmt = $db->prepare("DELETE FROM zones WHERE id = :id");
+        $stmt->bindValue(':id', (int)$copy['id'], PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
     /**
      * After an owner row is deleted: keep the zone named, and keep an ownerless named row
      * while group grants or API key restrictions still use the zone's id, as a zone created

@@ -363,6 +363,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
     public function fixZoneName(int $zoneId): bool
     {
+        SqlZoneNames::dropUnusedSyncCopy($this->db, $this->domainsTable, $zoneId);
         SqlZoneNames::ensureNamed($this->db, $this->domainsTable, $zoneId, true);
 
         $stmt = $this->db->prepare(

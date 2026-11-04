@@ -57,7 +57,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT NULL)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
-        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
+        $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, comment TEXT NULL, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT)");
@@ -340,6 +340,46 @@ class SqlConsistencyChecksTest extends TestCase
             ['a.example', null],
             $this->db->query("SELECT zone_name FROM zones WHERE domain_id = 1 ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)
         );
+    }
+
+    public function testAnUnusedRowTheApiSyncAddedGivesTheNameBackAndAUsedOneIsKept(): void
+    {
+        $this->domain(1, 'synced.example');
+        $this->domain(2, 'owned.example');
+        $this->domain(3, 'granted.example');
+        $this->domain(4, 'commented.example');
+        $this->zoneRow(1, 5);
+        $this->zoneRow(2, 5);
+        $this->zoneRow(3, 5);
+        $this->zoneRow(4, 5);
+        // The API sync keyed each copy by its own row id
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES
+            (50, 50, 0, '', 'synced.example'), (60, 60, 7, '', 'owned.example'),
+            (70, 70, 0, '', 'granted.example'), (80, 80, 0, 'note', 'commented.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (70, 9)");
+        foreach (['log_zones', 'log_changesets', 'log_record_changes', 'zone_change_requests'] as $table) {
+            $this->db->exec("CREATE TABLE $table (id INTEGER PRIMARY KEY, zone_id INTEGER)");
+            $this->db->exec("INSERT INTO $table (zone_id) VALUES (50), (70)");
+        }
+        foreach (['records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $this->db->exec("CREATE TABLE $table (id INTEGER PRIMARY KEY, domain_id INTEGER)");
+            $this->db->exec("INSERT INTO $table (domain_id) VALUES (50), (70)");
+        }
+        $checker = $this->checker();
+
+        $this->assertSame([4, 3, 2, 1], array_column($checker->checkZonesHaveNames()['data'], 'id'));
+        $this->assertSame(['fixed' => 1, 'failed' => 3], $checker->fixAllZonesWithoutName());
+
+        $this->assertSame(
+            [[1, 5, 'synced.example'], [2, 5, null], [3, 5, null], [4, 5, null], [60, 7, 'owned.example'], [70, 0, 'granted.example'], [80, 0, 'commented.example']],
+            array_map(
+                static fn(array $r): array => [(int)$r[0], $r[1] === null ? null : (int)$r[1], $r[2]],
+                $this->db->query("SELECT domain_id, owner, zone_name FROM zones ORDER BY domain_id")->fetchAll(PDO::FETCH_NUM)
+            )
+        );
+        foreach (['log_zones' => 'zone_id', 'log_changesets' => 'zone_id', 'log_record_changes' => 'zone_id', 'zone_change_requests' => 'zone_id', 'records_zone_templ' => 'domain_id', 'records_zone_templ_api' => 'domain_id'] as $table => $column) {
+            $this->assertSame([1, 70], array_map('intval', $this->db->query("SELECT $column FROM $table ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)), "$table rows of the removed row move to the zone");
+        }
     }
 
     public function testAGroupOwnedZoneWithoutRowsAndAStaleNameAreReportedAndFixed(): void

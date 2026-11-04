@@ -190,7 +190,12 @@ UPDATE `password_reset_tokens` SET `used` = 1 WHERE `used` = 0;
 -- Same rows and values as the zones_without_names consistency fix:
 --  - a zone with zones rows but no named row gets its lowest-id row named after its domain;
 --  - a zone with grants or API key restrictions but no zones row gets an ownerless named row.
--- A zone that has a named row is left alone, and so is one whose name another zones row holds.
+-- A zone that has a named row is left alone, and so is one whose name another zones row holds,
+-- except an unused copy the API backend's zone sync added before 4.6.0 (#1855): a named row
+-- keyed by an id that is not its domain's, with no owner, template or comment, and no other
+-- zones row, group grant or API key restriction on that id. It is removed first when the
+-- domain has zones rows here, so the zone keeps its owners; logs, template links and change
+-- requests on the copy's id move to the zone.
 -- Type and master are left to the API sync. Safe to re-run. Skipped when the domains table is
 -- not in @pdns_db (API backend); edit here when pdns_db_name is set, e.g. SET @pdns_db = 'pdns';
 SET @pdns_db = DATABASE();
@@ -207,6 +212,37 @@ SET @zn_charset = (SELECT character_set_name FROM information_schema.columns
 SET @zn_collation = (SELECT collation_name FROM information_schema.columns
     WHERE table_schema = DATABASE() AND table_name = 'zones' AND column_name = 'zone_name');
 SET @zn_name = CONCAT('CONVERT(d.name USING ', @zn_charset, ') COLLATE ', @zn_collation);
+
+-- The unused copies, each with its own canonical id and its domain's id. Logs, template links
+-- and change requests on that id move to the domain's id before the copy is removed.
+-- A plain work table: CREATE TEMPORARY TABLE needs a privilege upgrade users often lack
+DROP TABLE IF EXISTS `poweradmin_460_zone_copies`;
+CREATE TABLE `poweradmin_460_zone_copies` (`id` INT NOT NULL PRIMARY KEY, `zone_id` INT NOT NULL, `domain_id` INT NOT NULL);
+SET @find_copies = IF(@has_domains > 0, CONCAT(
+    'INSERT IGNORE INTO `poweradmin_460_zone_copies` (`id`, `zone_id`, `domain_id`) ',
+    'SELECT x.id, COALESCE(NULLIF(x.domain_id, 0), x.id), d.id FROM `zones` x ',
+    'INNER JOIN `', @pdns_db, '`.`domains` d ON x.zone_name = ', @zn_name, ' ',
+    'WHERE d.id <> COALESCE(NULLIF(x.domain_id, 0), x.id) ',
+    '  AND (x.owner IS NULL OR x.owner = 0) AND x.zone_templ_id = 0 ',
+    '  AND (x.comment IS NULL OR x.comment = '''') ',
+    '  AND NOT EXISTS (SELECT 1 FROM `zones` e WHERE e.id <> x.id AND e.domain_id = COALESCE(NULLIF(x.domain_id, 0), x.id)) ',
+    '  AND NOT EXISTS (SELECT 1 FROM `zones_groups` g WHERE g.domain_id = COALESCE(NULLIF(x.domain_id, 0), x.id)) ',
+    '  AND NOT EXISTS (SELECT 1 FROM `api_key_zones` k WHERE k.zone_id = COALESCE(NULLIF(x.domain_id, 0), x.id)) ',
+    '  AND NOT EXISTS (SELECT 1 FROM `zones` n WHERE COALESCE(NULLIF(n.domain_id, 0), n.id) = d.id AND n.zone_name IS NOT NULL) ',
+    '  AND EXISTS (SELECT 1 FROM `zones` s WHERE s.domain_id = d.id)'),
+    'SELECT ''PowerDNS domains table not found, unused zone copies kept'' AS notice');
+PREPARE find_copies FROM @find_copies;
+EXECUTE find_copies;
+DEALLOCATE PREPARE find_copies;
+
+UPDATE `log_zones` t INNER JOIN `poweradmin_460_zone_copies` c ON t.zone_id = c.zone_id SET t.zone_id = c.domain_id;
+UPDATE `log_changesets` t INNER JOIN `poweradmin_460_zone_copies` c ON t.zone_id = c.zone_id SET t.zone_id = c.domain_id;
+UPDATE `log_record_changes` t INNER JOIN `poweradmin_460_zone_copies` c ON t.zone_id = c.zone_id SET t.zone_id = c.domain_id;
+UPDATE `zone_change_requests` t INNER JOIN `poweradmin_460_zone_copies` c ON t.zone_id = c.zone_id SET t.zone_id = c.domain_id;
+UPDATE `records_zone_templ` t INNER JOIN `poweradmin_460_zone_copies` c ON t.domain_id = c.zone_id SET t.domain_id = c.domain_id;
+UPDATE `records_zone_templ_api` t INNER JOIN `poweradmin_460_zone_copies` c ON t.domain_id = c.zone_id SET t.domain_id = c.domain_id;
+DELETE z FROM `zones` z INNER JOIN `poweradmin_460_zone_copies` c ON c.id = z.id;
+DROP TABLE `poweradmin_460_zone_copies`;
 
 SET @name_rows = IF(@has_domains > 0, CONCAT(
     'UPDATE `zones` z ',
@@ -232,3 +268,17 @@ SET @add_rows = IF(@has_domains > 0, CONCAT(
 PREPARE add_rows FROM @add_rows;
 EXECUTE add_rows;
 DEALLOCATE PREPARE add_rows;
+
+-- The zone sync marks the database as used in API mode (backend.zone_ids), which makes 4.6.0
+-- refuse the SQL backend. Once no zones row is keyed by an id that is not its domain's, the
+-- mark is cleared and the next SQL-mode page load checks the zones rows again.
+SET @clear_marker = IF(@has_domains > 0, CONCAT(
+    'DELETE FROM `app_settings` WHERE setting_key = ''backend.zone_ids'' AND setting_value = ''api'' ',
+    'AND NOT EXISTS (SELECT 1 FROM `zones` z WHERE z.domain_id IS NULL OR z.domain_id = 0 ',
+    '  OR (z.zone_name IS NOT NULL AND z.domain_id = z.id AND (',
+    '    EXISTS (SELECT 1 FROM `', @pdns_db, '`.`domains` d WHERE ', @zn_name, ' = LOWER(z.zone_name) AND d.id <> z.domain_id) ',
+    '    OR EXISTS (SELECT 1 FROM `', @pdns_db, '`.`domains` d WHERE d.id = z.domain_id AND LOWER(', @zn_name, ') <> LOWER(z.zone_name)))))'),
+    'SELECT ''PowerDNS domains table not found, backend marker kept'' AS notice');
+PREPARE clear_marker FROM @clear_marker;
+EXECUTE clear_marker;
+DEALLOCATE PREPARE clear_marker;
