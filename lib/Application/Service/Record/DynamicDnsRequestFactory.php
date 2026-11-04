@@ -109,6 +109,9 @@ class DynamicDnsRequestFactory
         // where the missing family would have its records deleted, nor when a sent value was unusable
         if (!$dualstackUpdate && !self::sendsAnyAddress($request)) {
             $ipv4 = $ipv6 = 'whatismyip';
+        } elseif ($ipv4 === 'whatismyip' && $ipv6 === '' && !self::sendsAnyAddress($request, ['myip6', 'ip6'])) {
+            // myip carries either family, so an IPv6-only client is detected into the AAAA slot
+            $ipv6 = 'whatismyip';
         }
 
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
@@ -135,9 +138,12 @@ class DynamicDnsRequestFactory
         );
     }
 
-    private static function sendsAnyAddress(Request $request): bool
+    /**
+     * @param list<string> $keys
+     */
+    private static function sendsAnyAddress(Request $request, array $keys = ['myip', 'ip', 'myip6', 'ip6']): bool
     {
-        foreach (['myip', 'ip', 'myip6', 'ip6'] as $key) {
+        foreach ($keys as $key) {
             if ($request->query->has($key)) {
                 return true;
             }

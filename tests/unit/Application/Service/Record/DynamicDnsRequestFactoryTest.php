@@ -257,6 +257,56 @@ class DynamicDnsRequestFactoryTest extends TestCase
         $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
     }
 
+    public function testWhatIsMyIpInAMixedMyipListKeepsTheListedIpv6(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
+
+        $request = Request::create('/nic/update?hostname=test.example.com&myip=whatismyip,2001:db8::1&dualstack_update=1');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('203.0.113.7', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testWhatIsMyIpInMyipDetectsAnIpv6Client(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::9';
+
+        $request = Request::create('/nic/update?hostname=test.example.com&myip=whatismyip');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('2001:db8::9', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testWhatIsMyIpInMyipKeepsAnExplicitMyip6(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::9';
+
+        $request = Request::create('/nic/update?hostname=test.example.com&myip=whatismyip&myip6=2001:db8::1');
+
+        $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+        $this->assertSame('', $dynamicDnsRequest->getIpv4());
+        $this->assertSame('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testWhatIsMyIpInMyipKeepsAnExplicitEmptyMyip6(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::9';
+
+        foreach (['myip6=', 'ip6='] as $query) {
+            $request = Request::create('/nic/update?hostname=test.example.com&myip=whatismyip&' . $query);
+
+            $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
+
+            $this->assertSame('', $dynamicDnsRequest->getIpv4(), $query);
+            $this->assertSame('', $dynamicDnsRequest->getIpv6(), $query);
+        }
+    }
+
     public function testNoAddressFallsBackToTheClientAddress(): void
     {
         $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
@@ -297,7 +347,7 @@ class DynamicDnsRequestFactoryTest extends TestCase
     {
         $_SERVER['REMOTE_ADDR'] = '203.0.113.7';
 
-        foreach (['myip=', 'myip=,', 'myip[]=x', 'myip6='] as $query) {
+        foreach (['myip=', 'myip=,', 'myip[]=x', 'myip6=', 'ip=', 'ip6='] as $query) {
             $request = Request::create('/nic/update?hostname=test.example.com&' . $query);
 
             $dynamicDnsRequest = DynamicDnsRequestFactory::fromHttpRequest($request, new FakeConfiguration());
