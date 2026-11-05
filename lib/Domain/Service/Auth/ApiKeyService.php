@@ -453,7 +453,8 @@ class ApiKeyService
     }
 
     /**
-     * Creator username and fullname, empty when the key has no creator or the account is gone.
+     * Creator username and fullname, empty when the key has no creator or the account is gone,
+     * and whether the creator can still authenticate the key.
      */
     private function attachCreator(ApiKey $key): void
     {
@@ -461,6 +462,7 @@ class ApiKeyService
 
         $key->setCreatorUsername($user ? ($user['username'] ?: '') : '');
         $key->setCreatorFullname($user ? ($user['fullname'] ?: '') : '');
+        $key->setCreatorActive(is_array($user) && (int)($user['active'] ?? 0) === 1);
     }
 
     /**

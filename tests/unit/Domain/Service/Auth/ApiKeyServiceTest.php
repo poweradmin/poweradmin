@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Domain\Model\ApiKey;
@@ -410,6 +411,30 @@ class ApiKeyServiceTest extends PermissionServiceTestCase
         $this->apiKeyRepository->expects($this->once())->method('getAll')->with(null)->willReturn([$owned, $orphan]);
 
         $this->assertSame([$owned, $orphan], $this->service->getAllApiKeys());
+    }
+
+    /** @return array<string, array{array|false, bool}> */
+    public static function creatorRows(): array
+    {
+        return [
+            'active creator' => [['username' => 'alice', 'fullname' => '', 'active' => 1], true],
+            'deactivated creator' => [['username' => 'alice', 'fullname' => '', 'active' => 0], false],
+            'deleted creator' => [false, false],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('creatorRows')]
+    public function testTheKeyListMarksAKeyWhoseCreatorCannotAuthenticateIt(array|false $creatorRow, bool $active): void
+    {
+        $this->grantPermissions([Permission::PERM_USER_IS_UEBERUSER], $creatorRow);
+
+        $key = $this->createMock(ApiKey::class);
+        $key->method('getCreatedBy')->willReturn(7);
+        $key->expects($this->once())->method('setCreatorActive')->with($active);
+        $this->apiKeyRepository->method('getAll')->willReturn([$key]);
+
+        $this->service->getAllApiKeys();
     }
 
     #[Test]

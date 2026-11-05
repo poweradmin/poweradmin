@@ -121,6 +121,8 @@
                                         <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>
                                     {% elseif api_key.hasExpired %}
                                         <span class="badge bg-danger">{% trans %}Expired{% endtrans %}</span>
+                                    {% elseif not api_key.isCreatorActive %}
+                                        <span class="badge bg-warning text-dark">{% trans %}Inactive{% endtrans %}</span>
                                     {% else %}
                                         <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
                                     {% endif %}

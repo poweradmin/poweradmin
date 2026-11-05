@@ -41,6 +41,7 @@ class ApiKey implements JsonSerializable
     private ?DateTime $expiresAt = null;
     private string $creatorUsername = '';
     private string $creatorFullname = '';
+    private bool $creatorActive = true;
     private bool $isReadonly = false;
     /** @var string[]|null Operations the key may perform; null means all */
     private ?array $allowedOperations = null;
@@ -304,6 +305,20 @@ class ApiKey implements JsonSerializable
     public function setCreatorFullname(string $creatorFullname): void
     {
         $this->creatorFullname = $creatorFullname;
+    }
+
+    /**
+     * Whether the key's creator exists and is active. Authentication refuses a key whose
+     * creator is not, whatever status() says.
+     */
+    public function isCreatorActive(): bool
+    {
+        return $this->creatorActive;
+    }
+
+    public function setCreatorActive(bool $creatorActive): void
+    {
+        $this->creatorActive = $creatorActive;
     }
 
     /**
