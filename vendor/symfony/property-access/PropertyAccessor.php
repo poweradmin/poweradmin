@@ -194,12 +194,12 @@ class PropertyAccessor implements PropertyAccessorInterface
         if (!isset($trace[$i]['file']) || __FILE__ !== $trace[$i]['file']) {
             return;
         }
-        if (preg_match('/^\S+::\S+\(\): Argument #\d+ \(\$\S+\) must be of type (\S+), (\S+) given/', $message, $matches)) {
+        if (preg_match('/^(?:\S+(?:\0.*)?::\S+|\S+@anonymous)\(\): Argument #\d+ \(\$\S+\) must be of type (\S+), (\S+) given/s', $message, $matches)) {
             [, $expectedType, $actualType] = $matches;
 
             throw new InvalidTypeException($expectedType, $actualType, $propertyPath, $previous);
         }
-        if (preg_match('/^Cannot assign (\S+) to property \S+::\$\S+ of type (\S+)$/', $message, $matches)) {
+        if (preg_match('/^Cannot assign (\S+) to property \S+(?:\0.*)?::\$\S+ of type (\S+)$/s', $message, $matches)) {
             [, $actualType, $expectedType] = $matches;
 
             throw new InvalidTypeException($expectedType, $actualType, $propertyPath, $previous);
@@ -438,7 +438,7 @@ class PropertyAccessor implements PropertyAccessorInterface
                 }
             } catch (\Error $e) {
                 // handle uninitialized properties in PHP >= 7.4
-                if (preg_match('/^Typed property ([\w\\\\@]+)::\$(\w+) must not be accessed before initialization$/', $e->getMessage(), $matches) || preg_match('/^Cannot access uninitialized non-nullable property ([\w\\\\@]+)::\$(\w+) by reference$/', $e->getMessage(), $matches)) {
+                if (preg_match('/^Typed property ([\w\\\\@]+)(?:\0.*)?::\$(\w+) must not be accessed before initialization$/s', $e->getMessage(), $matches) || preg_match('/^Cannot access uninitialized non-nullable property ([\w\\\\@]+)(?:\0.*)?::\$(\w+) by reference$/s', $e->getMessage(), $matches)) {
                     $r = new \ReflectionProperty(str_contains($matches[1], '@anonymous') ? $class : $matches[1], $matches[2]);
                     $type = ($type = $r->getType()) instanceof \ReflectionNamedType ? $type->getName() : (string) $type;
 

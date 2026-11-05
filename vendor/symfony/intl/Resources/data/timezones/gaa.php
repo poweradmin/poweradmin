@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'Names' => [
+        'Africa/Abidjan' => 'Greenwich Be Tsɔɔmɔ (Abidjan)',
+        'Africa/Accra' => 'Greenwich Be Tsɔɔmɔ (Accra)',
+        'Africa/Bamako' => 'Greenwich Be Tsɔɔmɔ (Bamako)',
+        'Africa/Banjul' => 'Greenwich Be Tsɔɔmɔ (Banjul)',
+        'Africa/Bissau' => 'Greenwich Be Tsɔɔmɔ (Bissau)',
+        'Africa/Conakry' => 'Greenwich Be Tsɔɔmɔ (Conakry)',
+        'Africa/Dakar' => 'Greenwich Be Tsɔɔmɔ (Dakar)',
+        'Africa/Freetown' => 'Greenwich Be Tsɔɔmɔ (Freetown)',
+        'Africa/Lome' => 'Greenwich Be Tsɔɔmɔ (Lomé)',
+        'Africa/Monrovia' => 'Greenwich Be Tsɔɔmɔ (Monrovia)',
+        'Africa/Nouakchott' => 'Greenwich Be Tsɔɔmɔ (Nouakchott)',
+        'Africa/Ouagadougou' => 'Greenwich Be Tsɔɔmɔ (Ouagadougou)',
+        'Africa/Sao_Tome' => 'Greenwich Be Tsɔɔmɔ (São Tomé)',
+        'America/Adak' => 'Hawaii-Aleutia Be (Adak)',
+        'America/Danmarkshavn' => 'Greenwich Be Tsɔɔmɔ (Danmarkshavn)',
+        'Antarctica/Troll' => 'Greenwich Be Tsɔɔmɔ (Troll)',
+        'Atlantic/Reykjavik' => 'Greenwich Be Tsɔɔmɔ (Reykjavik)',
+        'Atlantic/St_Helena' => 'Greenwich Be Tsɔɔmɔ (St. Helena)',
+        'Etc/GMT' => 'Greenwich Be Tsɔɔmɔ',
+        'Etc/UTC' => 'Be Ni Maji Ni Yɔɔ Jeŋ Fɛɛ Kɛtsuɔ Nii',
+        'Europe/Dublin' => 'Ireland Be tsɔɔmɔ (Dublin)',
+        'Europe/Guernsey' => 'Britin Be tsɔɔmɔ (Guernsey)',
+        'Europe/Isle_of_Man' => 'Britin Be tsɔɔmɔ (Isle of Man)',
+        'Europe/Jersey' => 'Britin Be tsɔɔmɔ (Jersey)',
+        'Europe/London' => 'Britin Be tsɔɔmɔ (London)',
+        'Pacific/Honolulu' => 'Hawaii Be Yɛ Fɛi Beiaŋ (Honolulu)',
+    ],
+    'Meta' => [],
+];

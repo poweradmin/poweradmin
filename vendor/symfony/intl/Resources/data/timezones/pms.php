@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'Names' => [
+        'Africa/Abidjan' => 'Ora dë Greenwich (Abidjan)',
+        'Africa/Accra' => 'Ora dë Greenwich (Accra)',
+        'Africa/Bamako' => 'Ora dë Greenwich (Bamako)',
+        'Africa/Banjul' => 'Ora dë Greenwich (Banjul)',
+        'Africa/Bissau' => 'Ora dë Greenwich (Bissau)',
+        'Africa/Conakry' => 'Ora dë Greenwich (Conakry)',
+        'Africa/Dakar' => 'Ora dë Greenwich (Dakar)',
+        'Africa/Freetown' => 'Ora dë Greenwich (Freetown)',
+        'Africa/Lome' => 'Ora dë Greenwich (Lomé)',
+        'Africa/Monrovia' => 'Ora dë Greenwich (Monrovia)',
+        'Africa/Nouakchott' => 'Ora dë Greenwich (Nouakchott)',
+        'Africa/Ouagadougou' => 'Ora dë Greenwich (Ouagadougou)',
+        'Africa/Sao_Tome' => 'Ora dë Greenwich (São Tomé)',
+        'America/Danmarkshavn' => 'Ora dë Greenwich (Danmarkshavn)',
+        'Antarctica/Troll' => 'Ora dë Greenwich (Troll)',
+        'Atlantic/Reykjavik' => 'Ora dë Greenwich (Reykjavik)',
+        'Atlantic/St_Helena' => 'Ora dë Greenwich (St. Helena)',
+        'Etc/GMT' => 'Ora dë Greenwich',
+        'Etc/UTC' => 'Temp Universal Coordinà',
+        'Europe/Ljubljana' => 'Ora Slovenia (Ljubljana)',
+        'Europe/Paris' => 'Ora Fransa (Paris)',
+        'Europe/Rome' => 'Ora Italia (Rome)',
+        'Europe/San_Marino' => 'Ora Repùblica ëd San Marin (San Marino)',
+        'Europe/Vienna' => 'Ora Àustria (Vienna)',
+        'Europe/Zurich' => 'Ora Svìssera (Zurich)',
+    ],
+    'Meta' => [],
+];
