@@ -31,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 #[CoversClass(DatabaseConsistencyService::class)]
@@ -299,5 +300,43 @@ class DatabaseConsistencyServiceTest extends TestCase
 
         $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
         $this->assertTrue($service->createDefaultSOA(1));
+    }
+
+    #[Test]
+    public function apiBackendDeletesDuplicateSoaRecordsByTheirEncodedIds(): void
+    {
+        $ids = array_map(
+            static fn(string $serial): string => RecordIdentifier::encode('example.com', 'example.com', 'SOA', "ns1.example.com. hostmaster.example.com. $serial 1 2 3 4", 0),
+            ['2026110601', '2026110602', '2026110603']
+        );
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getRecordsByZoneId')->willReturn(array_map(static fn(string $id): array => ['id' => $id, 'type' => 'SOA'], $ids));
+        $deleted = [];
+        $backend->method('deleteRecord')->willReturnCallback(function (int|string $id) use (&$deleted): bool {
+            $deleted[] = $id;
+            return true;
+        });
+
+        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+
+        $this->assertTrue($service->fixDuplicateSOA(1));
+        $this->assertSame([$ids[1], $ids[2]], $deleted);
+    }
+
+    #[Test]
+    public function apiBackendReportsFailureWhenADuplicateSoaIsNotDeleted(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('isApiBackend')->willReturn(true);
+        $backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => RecordIdentifier::encode('example.com', 'example.com', 'SOA', 'a', 0), 'type' => 'SOA'],
+            ['id' => RecordIdentifier::encode('example.com', 'example.com', 'SOA', 'b', 0), 'type' => 'SOA'],
+        ]);
+        $backend->method('deleteRecord')->willReturn(false);
+
+        $service = new DatabaseConsistencyService($this->db, $this->config, $backend);
+
+        $this->assertFalse($service->fixDuplicateSOA(1));
     }
 }

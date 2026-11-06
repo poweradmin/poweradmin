@@ -727,13 +727,17 @@ class DatabaseConsistencyService
             }
             // Keep the first, delete the rest
             array_shift($records);
+            $fixed = true;
             foreach ($records as $r) {
-                $recordId = (int)($r['id'] ?? 0);
-                if ($recordId > 0) {
-                    $this->backendProvider->deleteRecord($recordId);
+                // API backend ids are encoded strings, which an int cast would turn into 0
+                $recordId = $r['id'] ?? '';
+                if ($recordId === '' || $recordId === 0) {
+                    $fixed = false;
+                    continue;
                 }
+                $fixed = $this->backendProvider->deleteRecord($recordId) && $fixed;
             }
-            return true;
+            return $fixed;
         }
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
