@@ -3,6 +3,52 @@
 Please refer to [UPGRADING](UPGRADING.md) guide for upgrading to a major version.
 
 
+## 7.15.6 - 2026-10-18
+
+### Fixed
+
+- Fix PHP 8.6 notices for oversized numeric hosts
+- Fix `MockHandler` truncating fractional delays
+- Fix stream handler responses in Swoole coroutines on PHP 8.4+
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.13.2`
+
+
+## 7.15.5 - 2026-08-24
+
+### Changed
+
+- Adjusted `guzzlehttp/psr7` version constraint to `^2.13.1`
+- Adjusted `guzzlehttp/promises` version constraint to `^2.5.3`
+
+
+## 7.15.4 - 2026-08-24
+
+### Added
+
+- Added support for PHP 8.6
+
+### Changed
+
+- Replace the deprecated spl_object_hash() in handler stack debug output for PHP 8.6
+
+
+## 7.15.3 - 2026-08-05
+
+### Changed
+
+- Adjusted `guzzlehttp/promises` version constraint to `^2.5.2`
+
+### Fixed
+
+- Fail a cURL multi handler wait with an attributable error when the transfer is no longer tracked
+- Fix `StreamHandler` resolving numeric IPv4 hosts differently from cURL handlers on macOS and Windows
+- Fix `StreamHandler` TLS peer names and proxy authorities for numeric IPv4 hosts on all platforms
+- Settle a cURL multi handler transfer displaced by a request reusing its native handle ID
+
+
 ## 7.15.2 - 2026-07-26
 
 ### Security

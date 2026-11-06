@@ -69,6 +69,7 @@ use PHPStan\PhpDocParser\Lexer\Lexer;
 use PHPStan\PhpDocParser\Parser\TokenIterator;
 use function array_keys;
 use function array_map;
+use function array_values;
 use function assert;
 use function count;
 use function get_class;
@@ -76,11 +77,14 @@ use function get_object_vars;
 use function implode;
 use function in_array;
 use function is_array;
+use function preg_match;
 use function preg_match_all;
+use function preg_replace_callback;
 use function sprintf;
 use function str_replace;
 use function strlen;
 use function strpos;
+use function substr;
 use function trim;
 use const PREG_SET_ORDER;
 
@@ -95,6 +99,12 @@ final class Printer
 
 	/** @var Differ<Node> */
 	private Differ $differ;
+
+	/**
+	 * Newline, indentation and asterisk at the start of a PHPDoc line.
+	 * Written after each newline in a printed text or description.
+	 */
+	private string $lineStart = "\n *";
 
 	/**
 	 * Map From "{$class}->{$subNode}" to string that should be inserted
@@ -178,6 +188,17 @@ final class Printer
 
 	public function printFormatPreserving(PhpDocNode $node, PhpDocNode $originalNode, TokenIterator $originalTokens): string
 	{
+		$lineStart = $this->lineStart;
+		$this->lineStart = $this->detectLineStart($originalTokens);
+		try {
+			return $this->printFormatPreservingWithLineStart($node, $originalNode, $originalTokens);
+		} finally {
+			$this->lineStart = $lineStart;
+		}
+	}
+
+	private function printFormatPreservingWithLineStart(PhpDocNode $node, PhpDocNode $originalNode, TokenIterator $originalTokens): string
+	{
 		$this->differ = new Differ(static function ($a, $b) {
 			if ($a instanceof Node && $b instanceof Node) {
 				return $a === $b->getAttribute(Attribute::ORIGINAL_NODE);
@@ -207,7 +228,7 @@ final class Printer
 		if ($node instanceof PhpDocNode) {
 			return "/**\n *" . implode("\n *", array_map(
 				function (PhpDocChildNode $child): string {
-					$s = $this->print($child);
+					$s = $this->addLineStarts($this->print($child));
 					return $s === '' ? '' : ' ' . $s;
 				},
 				$node->children,
@@ -578,17 +599,27 @@ final class Printer
 	 */
 	private function printArrayFormatPreserving(array $nodes, array $originalNodes, TokenIterator $originalTokens, int &$tokenIndex, string $parentNodeClass, string $subNodeName): ?string
 	{
+		// unset() leaves gaps in the keys, the differ reads the lists by position
+		$nodes = array_values($nodes);
+		$originalNodes = array_values($originalNodes);
+
 		$diff = $this->differ->diffWithReplacements($originalNodes, $nodes);
 		$mapKey = $parentNodeClass . '->' . $subNodeName;
 		$insertStr = $this->listInsertionMap[$mapKey] ?? null;
 		$result = '';
 		$beforeFirstKeepOrReplace = true;
+		$skipRemovedNode = false;
 		$delayedAdd = [];
 
 		$insertNewline = false;
 		[$isMultiline, $beforeAsteriskIndent, $afterAsteriskIndent] = $this->isMultiline($tokenIndex, $originalNodes, $originalTokens);
 
 		if ($insertStr === "\n * ") {
+			$lastChildIndent = $this->detectLastChildIndent($originalNodes, $originalTokens);
+			if ($lastChildIndent !== null) {
+				[$beforeAsteriskIndent, $afterAsteriskIndent] = $lastChildIndent;
+			}
+
 			$insertStr = sprintf('%s%s*%s', $originalTokens->getDetectedNewline() ?? "\n", $beforeAsteriskIndent, $afterAsteriskIndent);
 		}
 
@@ -618,7 +649,12 @@ final class Printer
 				$commentStartPos = count($origComments) > 0 ? $origComments[0]->startIndex : $itemStartPos;
 				assert($commentStartPos >= 0);
 
-				$result .= $originalTokens->getContentBetween($tokenIndex, $itemStartPos);
+				if ($skipRemovedNode) {
+					// the separator after the removed first item belongs to it
+					$skipRemovedNode = false;
+				} else {
+					$result .= $originalTokens->getContentBetween($tokenIndex, $itemStartPos);
+				}
 
 				if (count($delayedAdd) > 0) {
 					foreach ($delayedAdd as $delayedAddNode) {
@@ -636,7 +672,7 @@ final class Printer
 							}
 						}
 
-						$result .= $this->printNodeFormatPreserving($delayedAddNode, $originalTokens);
+						$result = $this->appendNode($result, $this->printNodeFormatPreserving($delayedAddNode, $originalTokens), $afterAsteriskIndent);
 						if ($parenthesesNeeded) {
 							$result .= ')';
 						}
@@ -711,7 +747,7 @@ final class Printer
 					$result .= '(';
 				}
 
-				$result .= $this->printNodeFormatPreserving($arrItem, $originalTokens);
+				$result = $this->appendNode($result, $this->printNodeFormatPreserving($arrItem, $originalTokens), $afterAsteriskIndent);
 				if ($parenthesesNeeded) {
 					$result .= ')';
 				}
@@ -735,12 +771,18 @@ final class Printer
 				if ($i === 0) {
 					// If we're removing from the start, keep the tokens before the node and drop those after it,
 					// instead of the other way around.
-					$originalTokensArray = $originalTokens->getTokens();
-					for ($j = $tokenIndex; $j < $itemStartPos; $j++) {
-						if ($originalTokensArray[$j][Lexer::TYPE_OFFSET] === Lexer::TOKEN_PHPDOC_EOL) {
-							break;
+					if ($mapKey === PhpDocNode::class . '->children') {
+						// the line of the removed child is dropped, the next child keeps its own line
+						$originalTokensArray = $originalTokens->getTokens();
+						for ($j = $tokenIndex; $j < $itemStartPos; $j++) {
+							if ($originalTokensArray[$j][Lexer::TYPE_OFFSET] === Lexer::TOKEN_PHPDOC_EOL) {
+								break;
+							}
+							$result .= $originalTokensArray[$j][Lexer::VALUE_OFFSET];
 						}
-						$result .= $originalTokensArray[$j][Lexer::VALUE_OFFSET];
+					} else {
+						$result .= $originalTokens->getContentBetween($tokenIndex, $itemStartPos);
+						$skipRemovedNode = true;
 					}
 				}
 
@@ -776,13 +818,26 @@ final class Printer
 					}
 				}
 
-				$result .= $this->printNodeFormatPreserving($delayedAddNode, $originalTokens);
+				$result = $this->appendNode($result, $this->printNodeFormatPreserving($delayedAddNode, $originalTokens), $afterAsteriskIndent);
 				$first = false;
 			}
 			$result .= $extraRight;
 		}
 
 		return $result;
+	}
+
+	/**
+	 * A new empty line in a docblock is " *", without the space after the asterisk
+	 */
+	private function appendNode(string $result, string $printedNode, string $afterAsteriskIndent): string
+	{
+		$lineStart = '*' . $afterAsteriskIndent;
+		if ($printedNode !== '' || $afterAsteriskIndent === '' || substr($result, -strlen($lineStart)) !== $lineStart) {
+			return $result . $printedNode;
+		}
+
+		return substr($result, 0, -strlen($afterAsteriskIndent));
 	}
 
 	/**
@@ -850,12 +905,45 @@ final class Printer
 		return [$isMultiline, $before, $after];
 	}
 
+	/**
+	 * Indentation before and after the asterisk on the line where the last child of a PHPDoc starts.
+	 * Other lines, e.g. the next lines of a multi-line description, can have a different indentation.
+	 *
+	 * @param Node[] $originalNodes
+	 * @return array{string, string}|null
+	 */
+	private function detectLastChildIndent(array $originalNodes, TokenIterator $originalTokens): ?array
+	{
+		$tokens = $originalTokens->getTokens();
+		for ($i = count($originalNodes) - 1; $i >= 0; $i--) {
+			$index = $originalNodes[$i]->getAttribute(Attribute::START_INDEX) - 1;
+			$lineStart = '';
+			while (isset($tokens[$index]) && $tokens[$index][Lexer::TYPE_OFFSET] === Lexer::TOKEN_HORIZONTAL_WS) {
+				$lineStart = $tokens[$index][Lexer::VALUE_OFFSET] . $lineStart;
+				$index--;
+			}
+
+			if (!isset($tokens[$index]) || $tokens[$index][Lexer::TYPE_OFFSET] !== Lexer::TOKEN_PHPDOC_EOL) {
+				continue;
+			}
+
+			$lineStart = $tokens[$index][Lexer::VALUE_OFFSET] . $lineStart;
+			if (preg_match('~\n(?<before>[\x09\x20]*)\*(?<after>[\x09\x20]*)$~', $lineStart, $match) !== 1) {
+				continue;
+			}
+
+			return [$match['before'], $match['after']];
+		}
+
+		return null;
+	}
+
 	private function printNodeFormatPreserving(Node $node, TokenIterator $originalTokens): string
 	{
 		/** @var Node|null $originalNode */
 		$originalNode = $node->getAttribute(Attribute::ORIGINAL_NODE);
 		if ($originalNode === null) {
-			return $this->print($node);
+			return $this->printReplacement($node);
 		}
 
 		$class = get_class($node);
@@ -897,14 +985,14 @@ final class Printer
 					);
 
 					if ($listResult === null) {
-						return $this->print($node);
+						return $this->printReplacement($node);
 					}
 
 					$result .= $listResult;
 					continue;
 				}
 
-				return $this->print($node);
+				return $this->printReplacement($node);
 			}
 
 			if ($origSubNode === null) {
@@ -913,7 +1001,7 @@ final class Printer
 					continue;
 				}
 
-				return $this->print($node);
+				return $this->printReplacement($node);
 			}
 
 			$subStartPos = $origSubNode->getAttribute(Attribute::START_INDEX);
@@ -923,11 +1011,16 @@ final class Printer
 			}
 
 			if ($subEndPos < $subStartPos) {
-				return $this->print($node);
+				// the original sub-node has no tokens, e.g. a Doctrine annotation without arguments
+				if ($subNode !== null && $this->print($subNode) === $this->print($origSubNode)) {
+					continue;
+				}
+
+				return $this->printReplacement($node);
 			}
 
 			if ($subNode === null) {
-				return $this->print($node);
+				return $this->printReplacement($node);
 			}
 
 			$result .= $originalTokens->getContentBetween($pos, $subStartPos);
@@ -954,6 +1047,65 @@ final class Printer
 		}
 
 		return $result . $originalTokens->getContentBetween($pos, $endPos + 1);
+	}
+
+	/**
+	 * Prints a node that replaces the tokens of the original node.
+	 *
+	 * The tokens of a Doctrine tag value do not contain the annotation name.
+	 * The parent tag prints the name from its own tokens.
+	 */
+	private function printReplacement(Node $node): string
+	{
+		if (!$node instanceof DoctrineTagValueNode) {
+			return $this->addLineStarts($this->print($node));
+		}
+
+		$arguments = '(' . implode(', ', $node->annotation->arguments) . ')';
+		if ($node->annotation->arguments === []) {
+			$originalNode = $node->getAttribute(Attribute::ORIGINAL_NODE);
+			if (
+				$originalNode instanceof DoctrineTagValueNode
+				&& $originalNode->annotation->getAttribute(Attribute::END_INDEX) < $originalNode->annotation->getAttribute(Attribute::START_INDEX)
+			) {
+				$arguments = '';
+			}
+		}
+
+		return $this->addLineStarts(trim($arguments . ' ' . $node->description));
+	}
+
+	/**
+	 * The parser removes the asterisk at the start of each line of a text or description.
+	 * This puts it back.
+	 */
+	private function addLineStarts(string $s): string
+	{
+		return preg_replace_callback(
+			'~\r?\n(?=(.?))~',
+			fn (array $matches): string => $matches[1] === '' || $matches[1] === "\r" || $matches[1] === "\n"
+				? $this->lineStart
+				: $this->lineStart . ' ',
+			$s,
+		) ?? $s;
+	}
+
+	private function detectLineStart(TokenIterator $originalTokens): string
+	{
+		foreach ($originalTokens->getTokens() as $token) {
+			if ($token[Lexer::TYPE_OFFSET] !== Lexer::TOKEN_PHPDOC_EOL) {
+				continue;
+			}
+
+			$asteriskPosition = strpos($token[Lexer::VALUE_OFFSET], '*');
+			if ($asteriskPosition === false) {
+				continue;
+			}
+
+			return substr($token[Lexer::VALUE_OFFSET], 0, $asteriskPosition + 1);
+		}
+
+		return ($originalTokens->getDetectedNewline() ?? "\n") . ' *';
 	}
 
 }
