@@ -33,6 +33,7 @@ use Poweradmin\Domain\Port\ApiStatusInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DefaultSoaBuilder;
+use Poweradmin\Domain\ValueObject\RecordIdentifier;
 use Poweradmin\Infrastructure\Service\Consistency\ApiConsistencyChecks;
 use Poweradmin\Infrastructure\Service\Consistency\ZoneOwnerRepair;
 use Poweradmin\Infrastructure\Session\ArraySession;
@@ -59,8 +60,10 @@ class ApiConsistencyChecksTest extends TestCase
     /** @var array<int, list<array<string, mixed>>> */
     private array $records = [];
 
-    /** @var list<int> */
+    /** @var list<int|string> */
     private array $deletedRecords = [];
+
+    private bool $deleteSucceeds = true;
 
     protected function setUp(): void
     {
@@ -78,8 +81,8 @@ class ApiConsistencyChecksTest extends TestCase
             ))
         );
         $this->provider->method('deleteRecord')->willReturnCallback(function (int|string $id): bool {
-            $this->deletedRecords[] = (int)$id;
-            return true;
+            $this->deletedRecords[] = $id;
+            return $this->deleteSucceeds;
         });
 
         (new ApiStatusService($this->session))->clearError();
@@ -494,17 +497,35 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame([], $this->deletedRecords);
     }
 
-    public function testFixDuplicateSoaKeepsTheFirstListedRecordAndDeletesTheRest(): void
+    public function testFixDuplicateSoaKeepsTheFirstListedRecordAndDeletesTheRestByTheirEncodedIds(): void
     {
-        $this->records[1] = [
-            ['id' => 11, 'type' => 'SOA'],
-            ['id' => 12, 'type' => 'SOA'],
-            ['id' => 0, 'type' => 'SOA'],
-            ['id' => 13, 'type' => 'SOA'],
-        ];
+        $ids = array_map(
+            static fn(string $serial): string => RecordIdentifier::encode('example.com', 'example.com', 'SOA', "ns1.example.com. hostmaster.example.com. $serial 1 2 3 4", 0),
+            ['2026110601', '2026110602', '2026110603']
+        );
+        $this->records[1] = array_map(static fn(string $id): array => ['id' => $id, 'type' => 'SOA'], $ids);
 
         $this->assertTrue($this->checker()->fixDuplicateSOA(1));
-        $this->assertSame([12, 13], $this->deletedRecords);
+        $this->assertSame([$ids[1], $ids[2]], $this->deletedRecords);
+    }
+
+    public function testFixDuplicateSoaReportsFailureWhenARecordIsNotDeleted(): void
+    {
+        $this->records[1] = [
+            ['id' => RecordIdentifier::encode('example.com', 'example.com', 'SOA', 'a', 0), 'type' => 'SOA'],
+            ['id' => RecordIdentifier::encode('example.com', 'example.com', 'SOA', 'b', 0), 'type' => 'SOA'],
+        ];
+        $this->deleteSucceeds = false;
+
+        $this->assertFalse($this->checker()->fixDuplicateSOA(1));
+    }
+
+    public function testFixDuplicateSoaReportsFailureForARecordWithoutAnId(): void
+    {
+        $this->records[1] = [['id' => 11, 'type' => 'SOA'], ['type' => 'SOA']];
+
+        $this->assertFalse($this->checker()->fixDuplicateSOA(1));
+        $this->assertSame([], $this->deletedRecords);
     }
 
     public function testFixDuplicateSoaIsANoOpWithAtMostOneSoa(): void

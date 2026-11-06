@@ -339,14 +339,18 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         }
 
         array_shift($records);
+        $fixed = true;
         foreach ($records as $record) {
-            $recordId = (int)($record['id'] ?? 0);
-            if ($recordId > 0) {
-                $this->backend->deleteRecord($recordId);
+            // API backend ids are encoded strings, which an int cast would turn into 0
+            $recordId = $record['id'] ?? '';
+            if ($recordId === '' || $recordId === 0) {
+                $fixed = false;
+                continue;
             }
+            $fixed = $this->backend->deleteRecord($recordId) && $fixed;
         }
 
-        return true;
+        return $fixed;
     }
 
     public function createDefaultSOA(int $zoneId): bool
