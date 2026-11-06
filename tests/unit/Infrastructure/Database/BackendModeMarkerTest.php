@@ -73,6 +73,11 @@ class BackendModeMarkerTest extends TestCase
         $this->assertSame(BackendModeMarker::SQL_MODE_REFUSAL, BackendModeMarker::sqlModeRefusal($this->db, 'domains'));
     }
 
+    public function testTheRefusalNamesTheOverrideForADatabaseNeverUsedWithTheApiBackend(): void
+    {
+        $this->assertStringContainsString('set the app_settings row backend.zone_ids to "sql"', BackendModeMarker::SQL_MODE_REFUSAL);
+    }
+
     public function testSqlModeDataIsClassifiedAsSqlOnce(): void
     {
         // An extra owner row and a row whose domain was deleted in PowerDNS are normal in SQL mode

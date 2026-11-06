@@ -231,7 +231,7 @@ class HealthController
                 $domainsTable = (new TableNameService($this->config()))->getTable(PdnsTable::DOMAINS);
                 $refusal = BackendModeMarker::sqlModeRefusal($db, $domainsTable);
                 if ($refusal !== null) {
-                    $this->logger()->error('Health check: ' . $refusal . ' ' . BackendModeMarker::OVERRIDE_HINT);
+                    $this->logger()->error('Health check: ' . $refusal);
                     return self::STATUS_DOWN;
                 }
             }

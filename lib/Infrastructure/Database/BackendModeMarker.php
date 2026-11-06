@@ -42,10 +42,8 @@ final class BackendModeMarker
 
     public const SQL_MODE_REFUSAL = 'This database has been used with dns.backend set to "api". Switching back to "sql" is not supported, '
         . 'because zone ids written in API mode would point at other zones in SQL mode. If this database was upgraded from 4.5 or earlier, '
-        . 'run the 4.6.0 database update scripts and reload the page. Otherwise set dns.backend to "api" again.';
-
-    /** For the log only: the override when the database was in fact never used with the API backend. */
-    public const OVERRIDE_HINT = 'If this database was never used with the API backend, set the app_settings row backend.zone_ids to "sql".';
+        . 'run the 4.6.0 database update scripts and reload the page. If it was never used with the API backend, '
+        . 'set the app_settings row backend.zone_ids to "sql". Otherwise set dns.backend to "api" again.';
 
     /**
      * Run first in the zone id allocator's transaction. The marker row stays locked until it ends,

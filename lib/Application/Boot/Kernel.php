@@ -36,7 +36,6 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\ConfigValidator;
-use Poweradmin\Infrastructure\Database\BackendModeMarker;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Domain\Port\SessionInterface;
@@ -195,7 +194,7 @@ final class Kernel
             return;
         }
 
-        $context->logger->error($refusal . ' ' . BackendModeMarker::OVERRIDE_HINT);
+        $context->logger->error($refusal);
         if (RequestContext::expectsJsonOnError()) {
             if (!headers_sent()) {
                 http_response_code(503);
