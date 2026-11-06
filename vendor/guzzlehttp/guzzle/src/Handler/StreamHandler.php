@@ -105,10 +105,6 @@ final class StreamHandler
      */
     private const DEFAULT_IDLE_TIMEOUT_MS = 60000;
 
-    private array $lastHeaders = [];
-
-    private ?float $lastDeadline = null;
-
     private ?\Throwable $onStatsException = null;
 
     private string $transportSharingMode;
@@ -180,7 +176,7 @@ final class StreamHandler
 
         // Sleep if there is a delay specified.
         if (isset($options['delay'])) {
-            \usleep((int) ($options['delay'] * 1000));
+            Clock::sleep((int) ($options['delay'] * 1000));
         }
 
         $multiplex = $options['multiplex'] ?? null;
@@ -234,11 +230,17 @@ final class StreamHandler
                 $request = $request->withHeader('Content-Length', (string) \strlen($body));
             }
 
+            $deadline = null;
+            $stream = $this->createStream($request, $options, $body, $deadline);
+            $headers = \stream_get_meta_data($stream)['wrapper_data'];
+
             return $this->createResponse(
                 $request,
                 $options,
-                $this->createStream($request, $options, $body),
-                $startTime
+                $stream,
+                \is_array($headers) ? $headers : [],
+                $startTime,
+                $deadline
             );
         } catch (\InvalidArgumentException $e) {
             throw $e;
@@ -392,13 +394,11 @@ final class StreamHandler
         #[\SensitiveParameter]
         array $options,
         $stream,
-        ?float $startTime
+        #[\SensitiveParameter]
+        array $hdrs,
+        ?float $startTime,
+        ?float $deadline
     ): PromiseInterface {
-        $hdrs = $this->lastHeaders;
-        $this->lastHeaders = [];
-        $deadline = $this->lastDeadline;
-        $this->lastDeadline = null;
-
         try {
             [$ver, $status, $reason, $headers] = HeaderProcessor::parseHeaders($hdrs);
         } catch (\Throwable $e) {
@@ -430,8 +430,8 @@ final class StreamHandler
 
         // Wrap the transport resource with the configured stream factory, and
         // decorate buffered transfers with the deadline source before optional
-        // content decoding layers an InflateStream on top, so every read that
-        // pulls from the transport observes the deadline.
+        // content decoding layers an InflateBodyStream on top, so every read
+        // that pulls from the transport observes the deadline.
         $resource = $stream;
         $stream = $streamFactory->createStreamFromResource($stream);
         if ($framingFailure === null && $deadline !== null && empty($options['stream'])) {
@@ -702,12 +702,14 @@ final class StreamHandler
             if (isset($normalizedKeys['content-encoding'])) {
                 $encoding = $headers[$normalizedKeys['content-encoding']];
                 if ($encoding[0] === 'gzip' || $encoding[0] === 'deflate') {
-                    if (empty($options['stream']) && $declaredLength !== null && $declaredLength !== '0') {
+                    if (!empty($options['stream'])) {
+                        $stream = new TransportStream($stream);
+                    } elseif ($declaredLength !== null && $declaredLength !== '0') {
                         $encodedBody = new EncodedBodyStream($stream, $declaredLength);
                         $stream = $encodedBody;
                     }
 
-                    $stream = new Psr7\InflateStream($stream);
+                    $stream = new InflateBodyStream($stream);
                     $headers['x-encoded-content-encoding'] = $headers[$normalizedKeys['content-encoding']];
 
                     // Remove content-encoding header
@@ -857,12 +859,11 @@ final class StreamHandler
 
     /**
      * Decorates the transport stream so each buffered-body read observes the
-     * remaining wall-clock budget of the "timeout" request option, bounded
-     * by the "read_timeout" idle timeout when that is shorter. The transport
-     * is switched to non-blocking mode because filtered reads (chunked and
-     * compressed responses) otherwise block until a full buffer arrives,
-     * which would keep the deadline from being enforced between small pieces
-     * of data.
+     * remaining wall-clock budget of the "timeout" request option, bounded by
+     * the "read_timeout" idle timeout when that is shorter. The transport is
+     * switched to non-blocking mode because filtered reads (chunked responses)
+     * otherwise block until a full buffer arrives, which would keep the
+     * deadline from being enforced between small pieces of data.
      *
      * @param resource $resource
      */
@@ -943,7 +944,8 @@ final class StreamHandler
         RequestInterface $request,
         #[\SensitiveParameter]
         array $options,
-        string $body
+        string $body,
+        ?float &$deadline
     ) {
         // Report a stream-open failure against the request passed here, not the
         // Connection: close clone built for the wire.
@@ -1029,8 +1031,8 @@ final class StreamHandler
         );
 
         try {
-            $resource = $this->createResource(function () use ($uri, $contextResource, $idleTimeout, $timeout) {
-                $this->lastDeadline = $timeout > 0 ? Clock::now() + $timeout / 1000 : null;
+            $resource = $this->createResource(function () use ($uri, $contextResource, $idleTimeout, $timeout, &$deadline) {
+                $deadline = $timeout > 0 ? Clock::now() + $timeout / 1000 : null;
 
                 // Blank the from ini setting for the transfer so ambient
                 // configuration cannot leak into a From header; the wrapper
@@ -1043,13 +1045,6 @@ final class StreamHandler
                         \ini_set('from', $iniFrom);
                     }
                 }
-
-                // PHP 8.5 deprecates the local $http_response_header variable.
-                if (function_exists('http_get_last_response_headers')) {
-                    $http_response_header = \http_get_last_response_headers();
-                }
-
-                $this->lastHeaders = $http_response_header ?? [];
 
                 if (false === $resource) {
                     return false;

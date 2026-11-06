@@ -261,23 +261,23 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "8.2.0",
-            "version_normalized": "8.2.0.0",
+            "version": "8.2.1",
+            "version_normalized": "8.2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "93939470950a9b11e2e84204166ef5e048c55fe4"
+                "reference": "1113a54456d52be64bf629ba80b5360800e82db3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/93939470950a9b11e2e84204166ef5e048c55fe4",
-                "reference": "93939470950a9b11e2e84204166ef5e048c55fe4",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/1113a54456d52be64bf629ba80b5360800e82db3",
+                "reference": "1113a54456d52be64bf629ba80b5360800e82db3",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "guzzlehttp/promises": "^3.0.2",
-                "guzzlehttp/psr7": "^3.1",
+                "guzzlehttp/psr7": "^3.1.1",
                 "php": "^7.4 || ^8.0",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0",
@@ -301,7 +301,7 @@
                 "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
-            "time": "2026-09-06T13:55:09+00:00",
+            "time": "2026-10-18T12:57:15+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -370,7 +370,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/8.2.0"
+                "source": "https://github.com/guzzle/guzzle/tree/8.2.1"
             },
             "funding": [
                 {
@@ -476,17 +476,17 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "3.1.0",
-            "version_normalized": "3.1.0.0",
+            "version": "3.1.1",
+            "version_normalized": "3.1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74"
+                "reference": "6a66fbd4e7a7cc67e8103b6c7fcebd9bd187e5a3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/a3059ba1a84c9139c4ae03cf0f45bea276c97c74",
-                "reference": "a3059ba1a84c9139c4ae03cf0f45bea276c97c74",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/6a66fbd4e7a7cc67e8103b6c7fcebd9bd187e5a3",
+                "reference": "6a66fbd4e7a7cc67e8103b6c7fcebd9bd187e5a3",
                 "shasum": ""
             },
             "require": {
@@ -510,7 +510,7 @@
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
-            "time": "2026-08-24T11:02:13+00:00",
+            "time": "2026-10-17T23:49:14+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -578,7 +578,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/3.1.0"
+                "source": "https://github.com/guzzle/psr7/tree/3.1.1"
             },
             "funding": [
                 {
@@ -1462,17 +1462,17 @@
         },
         {
             "name": "radebatz/type-info-extras",
-            "version": "1.0.10",
-            "version_normalized": "1.0.10.0",
+            "version": "1.0.12",
+            "version_normalized": "1.0.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DerManoMann/type-info-extras.git",
-                "reference": "1e71149dee7bf45f5cf208eb3c6c74d45a13d395"
+                "reference": "7d0f772a5a78671b032cb28ab4d93d92ab222bec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/1e71149dee7bf45f5cf208eb3c6c74d45a13d395",
-                "reference": "1e71149dee7bf45f5cf208eb3c6c74d45a13d395",
+                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/7d0f772a5a78671b032cb28ab4d93d92ab222bec",
+                "reference": "7d0f772a5a78671b032cb28ab4d93d92ab222bec",
                 "shasum": ""
             },
             "require": {
@@ -1485,7 +1485,7 @@
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^11.0"
             },
-            "time": "2026-10-14T00:51:19+00:00",
+            "time": "2026-11-05T21:27:53+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1521,7 +1521,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DerManoMann/type-info-extras/issues",
-                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.10"
+                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.12"
             },
             "install-path": "../radebatz/type-info-extras"
         },
