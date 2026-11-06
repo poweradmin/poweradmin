@@ -81,13 +81,19 @@ class LazyClosure
         $code = ProxyHelper::exportSignature($methodReflector, true, $args);
 
         if ($asClosure) {
-            $code = ' { '.preg_replace('/: static$/', ': \\'.$r->name, $code);
+            if ($methodReflector->isStatic()) {
+                $code = preg_replace('/ static /', ' ', $code, 1);
+            }
+            if (null !== $returnType = ProxyHelper::exportType($methodReflector)) {
+                $code = substr($code, 0, -\strlen($returnType)).preg_replace('/(?<![\w\\\\])static(?![\w\\\\])/', '\\'.$r->name, $returnType);
+            }
+            $code = ' { '.$code;
         } else {
             $code = ' implements \\'.$r->name.' { '.$code;
         }
 
         $code = 'new class('.$initializer.') extends \\'.self::class
-            .$code.' { '.($methodReflector->hasReturnType() && 'void' === (string) $methodReflector->getReturnType() ? '' : 'return ').'$this->service->'.$callable[1].'('.$args.'); } '
+            .$code.' { '.(\in_array((string) $methodReflector->getReturnType(), ['void', 'never'], true) ? '' : 'return ').'$this->service->'.$callable[1].'('.$args.'); } '
             .'}';
 
         return $asClosure ? '('.$code.')->'.$method.'(...)' : $code;
