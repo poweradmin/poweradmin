@@ -135,7 +135,7 @@ class ZoneTemplateGroupShares
             $this->repository->replaceTemplateGroups($zone_templ_id, $plan);
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
-            return ZoneTemplateWriteResult::backendFailure(_('Error sharing zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error sharing zone template: %s'), $e->getMessage()));
         }
     }
 

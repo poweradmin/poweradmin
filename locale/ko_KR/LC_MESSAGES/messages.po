@@ -9521,25 +9521,29 @@ msgstr "존 템플릿을 찾을 수 없습니다."
 msgid "Only global zone templates can be set as the default."
 msgstr "전역 존 템플릿만 기본값으로 설정할 수 있습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "기본 존 템플릿 설정 오류: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "기본 존 템플릿 설정 오류: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "기본 존 템플릿 해제 오류: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "기본 존 템플릿 해제 오류: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "존 템플릿 생성 오류: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "존 템플릿 생성 오류: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "존 템플릿을 편집할 권한이 없습니다."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "존 템플릿 삭제 오류: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "존 템플릿 삭제 오류: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12296,13 +12300,9 @@ msgstr "다중 레코드 모드"
 msgid "Bulk add"
 msgstr "일괄 추가"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "추가 실패"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "레코드. 레코드 형식을 확인하세요."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "%count%개의 레코드를 추가하지 못했습니다. 레코드 형식을 확인하세요."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16238,8 +16238,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "존 템플릿은 본인이 속한 그룹과만 공유할 수 있습니다."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "존 템플릿 공유 중 오류: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "존 템플릿 공유 중 오류: %s"
 
 #: templates/default/index.html:41
 msgid ""

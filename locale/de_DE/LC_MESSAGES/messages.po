@@ -9902,25 +9902,29 @@ msgstr "Zonenvorlage nicht gefunden."
 msgid "Only global zone templates can be set as the default."
 msgstr "Nur globale Zonenvorlagen können als Standard festgelegt werden."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Fehler beim Festlegen der Standard-Zonenvorlage: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Fehler beim Festlegen der Standard-Zonenvorlage: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Fehler beim Entfernen der Standard-Zonenvorlage: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Fehler beim Entfernen der Standard-Zonenvorlage: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Fehler beim Erstellen der Zonenvorlage: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Fehler beim Erstellen der Zonenvorlage: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Sie haben nicht die Berechtigung, eine Zonenvorlage zu bearbeiten."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Fehler beim Löschen der Zonenvorlage: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Fehler beim Löschen der Zonenvorlage: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12767,13 +12771,9 @@ msgstr "Multi-Record-Modus"
 msgid "Bulk add"
 msgstr "Massenhinzufügung"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Fehler beim Hinzufügen"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "Eintrag/Einträge. Bitte überprüfen Sie das Eintrag-Format."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "%count% Eintrag/Einträge konnte(n) nicht hinzugefügt werden. Bitte überprüfen Sie das Eintragsformat."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16826,8 +16826,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Sie können eine Zonenvorlage nur mit Gruppen teilen, denen Sie angehören."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Fehler beim Teilen der Zonenvorlage: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Fehler beim Teilen der Zonenvorlage: %s"
 
 #: templates/default/index.html:41
 msgid ""

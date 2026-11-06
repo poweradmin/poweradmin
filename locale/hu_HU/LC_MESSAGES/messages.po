@@ -9812,25 +9812,29 @@ msgstr "Zónasablon nem található."
 msgid "Only global zone templates can be set as the default."
 msgstr "Csak globális zónasablonok állíthatók be alapértelmezettként."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Hiba az alapértelmezett zónasablon beállításakor: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Hiba az alapértelmezett zónasablon beállításakor: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Hiba az alapértelmezett zónasablon törlésekor: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Hiba az alapértelmezett zónasablon törlésekor: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Hiba a zóna sablon létrehozásakor: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Hiba a zóna sablon létrehozásakor: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nincs jogosultsága zóna sablon szerkesztésére."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Hiba a zóna sablon törlésekor: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Hiba a zóna sablon törlésekor: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12631,13 +12635,9 @@ msgstr "Többrekordos mód"
 msgid "Bulk add"
 msgstr "Tömeges hozzáadás"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Sikertelen hozzáadás"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "rekord. Ellenőrizze a rekord formátumát."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "%count% rekord hozzáadása sikertelen. Kérjük, ellenőrizze a rekord formátumát."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16640,8 +16640,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Zónasablont csak olyan csoportokkal oszthat meg, amelyeknek tagja."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Hiba a zónasablon megosztásakor: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Hiba a zónasablon megosztásakor: %s"
 
 #: templates/default/index.html:41
 msgid ""

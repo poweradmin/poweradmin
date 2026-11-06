@@ -9631,25 +9631,29 @@ msgstr "Šablona zóny nebyla nalezena."
 msgid "Only global zone templates can be set as the default."
 msgstr "Jako výchozí lze nastavit pouze globální šablony zóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Chyba při nastavování výchozí šablony zóny: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Chyba při nastavování výchozí šablony zóny: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Chyba při rušení výchozí šablony zóny: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Chyba při rušení výchozí šablony zóny: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Chyba při vytváření šablony zóny: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Chyba při vytváření šablony zóny: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemáte oprávnění upravovat šablonu zóny."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Chyba při mazání šablony zóny: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Chyba při mazání šablony zóny: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12445,13 +12449,9 @@ msgstr "Režim více záznamů"
 msgid "Bulk add"
 msgstr "Hromadné přidání"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Nepodařilo se přidat"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "záznam(y). Zkontrolujte prosím formát záznamu."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Přidání záznamů (počet: %count%) se nezdařilo. Zkontrolujte formát záznamu."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16425,8 +16425,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Šablonu zóny můžete sdílet pouze se skupinami, do kterých patříte."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Chyba při sdílení šablony zóny: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Chyba při sdílení šablony zóny: %s"
 
 #: templates/default/index.html:41
 msgid ""

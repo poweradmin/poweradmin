@@ -9635,25 +9635,29 @@ msgstr "Zonmallen hittades inte."
 msgid "Only global zone templates can be set as the default."
 msgstr "Endast globala zonmallar kan ställas in som standard."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Fel vid inställning av standardzonmall: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Fel vid inställning av standardzonmall: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Fel vid borttagning av standardzonmall: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Fel vid borttagning av standardzonmall: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Fel vid skapande av zonmall: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Fel vid skapande av zonmall: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har inte behörighet att redigera en zonmall."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Fel vid radering av zonmall: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Fel vid radering av zonmall: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12461,13 +12465,9 @@ msgstr "Flerpostsläge"
 msgid "Bulk add"
 msgstr "Massinlägg"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Misslyckades att lägga till"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "post(er). Vänligen kontrollera postformatet."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Det gick inte att lägga till %count% post(er). Kontrollera postformatet."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16455,8 +16455,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Du kan bara dela en zonmall med grupper som du tillhör."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Fel vid delning av zonmall: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Fel vid delning av zonmall: %s"
 
 #: templates/default/index.html:41
 msgid ""

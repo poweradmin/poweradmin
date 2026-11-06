@@ -9594,25 +9594,29 @@ msgstr "Sone-mal ikke funnet."
 msgid "Only global zone templates can be set as the default."
 msgstr "Kun globale sone-maler kan settes som standard."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Feil ved angivelse av standard sone-mal: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Feil ved angivelse av standard sone-mal: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Feil ved fjerning av standard sone-mal: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Feil ved fjerning av standard sone-mal: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Feil ved opprettelse av sonemal: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Feil ved opprettelse av sonemal: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Du har ikke tillatelse til å redigere en sonemal."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Feil ved sletting av sonemal: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Feil ved sletting av sonemal: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12416,13 +12420,9 @@ msgstr "Flerpost-modus"
 msgid "Bulk add"
 msgstr "Masseinnlegging"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Kunne ikke legge til"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "post(er). Vennligst sjekk postformatet."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Kunne ikke legge til %count% post(er). Kontroller postformatet."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16401,8 +16401,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Du kan bare dele en sonemal med grupper du er medlem av."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Feil ved deling av sonemal: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Feil ved deling av sonemal: %s"
 
 #: templates/default/index.html:41
 msgid ""

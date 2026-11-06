@@ -9594,25 +9594,29 @@ msgstr "Không tìm thấy mẫu vùng."
 msgid "Only global zone templates can be set as the default."
 msgstr "Chỉ có thể đặt các mẫu vùng toàn cục làm mặc định."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Lỗi khi đặt mẫu vùng mặc định: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Lỗi khi đặt mẫu vùng mặc định: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Lỗi khi xóa mẫu vùng mặc định: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Lỗi khi xóa mẫu vùng mặc định: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Lỗi khi tạo mẫu vùng: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Lỗi khi tạo mẫu vùng: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Bạn không có quyền chỉnh sửa mẫu vùng."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Lỗi khi xóa mẫu vùng: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Lỗi khi xóa mẫu vùng: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12408,13 +12412,9 @@ msgstr "Chế độ nhiều bản ghi"
 msgid "Bulk add"
 msgstr "Thêm hàng loạt"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Không thêm được"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "(các) bản ghi. Vui lòng kiểm tra định dạng bản ghi."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Không thể thêm %count% bản ghi. Vui lòng kiểm tra định dạng bản ghi."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16380,8 +16380,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Bạn chỉ có thể chia sẻ mẫu vùng với các nhóm mà bạn là thành viên."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Lỗi khi chia sẻ mẫu vùng: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Lỗi khi chia sẻ mẫu vùng: %s"
 
 #: templates/default/index.html:41
 msgid ""

@@ -9660,25 +9660,29 @@ msgstr "ゾーンテンプレートが見つかりません。"
 msgid "Only global zone templates can be set as the default."
 msgstr "デフォルトとして設定できるのはグローバルなゾーンテンプレートのみです。"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "デフォルトのゾーンテンプレートの設定中にエラーが発生しました: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "デフォルトのゾーンテンプレートの設定中にエラーが発生しました: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "デフォルトのゾーンテンプレートのクリア中にエラーが発生しました: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "デフォルトのゾーンテンプレートのクリア中にエラーが発生しました: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "ゾーンテンプレートの作成エラー： "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "ゾーンテンプレートの作成エラー： %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "ゾーンテンプレートを編集する権限がありません。"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "ゾーンテンプレートの削除エラー： "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "ゾーンテンプレートの削除エラー： %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12468,13 +12472,9 @@ msgstr "マルチレコードモード"
 msgid "Bulk add"
 msgstr "一括追加"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "追加に失敗しました"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "レコード。レコード形式を確認してください。"
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "%count% 件のレコードの追加に失敗しました。レコードの形式を確認してください。"
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16448,8 +16448,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "ゾーンテンプレートは、自分が所属しているグループとのみ共有できます。"
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "ゾーンテンプレートの共有中にエラーが発生しました: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "ゾーンテンプレートの共有中にエラーが発生しました: %s"
 
 #: templates/default/index.html:41
 msgid ""

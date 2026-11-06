@@ -39,7 +39,7 @@
                 {{ form_data.errorMessage }}
             {% elseif form_data.multi_record_error %}
                 {% if form_data.failure_count > 0 %}
-                    {% trans %}Failed to add {% endtrans %}{{ form_data.failure_count }} {% trans %}record(s). Please check the record format.{% endtrans %}
+                    {% trans with {'%count%': form_data.failure_count} %}Failed to add %count% record(s). Please check the record format.{% endtrans %}
                 {% else %}
                     {% trans %}Failed to add records. Please check the record format.{% endtrans %}
                 {% endif %}
@@ -737,7 +737,7 @@
                 {{ form_data.errorMessage }}
             {% elseif form_data.multi_record_error %}
                 {% if form_data.failure_count > 0 %}
-                    {% trans %}Failed to add {% endtrans %}{{ form_data.failure_count }} {% trans %}record(s). Please check the record format.{% endtrans %}
+                    {% trans with {'%count%': form_data.failure_count} %}Failed to add %count% record(s). Please check the record format.{% endtrans %}
                 {% else %}
                     {% trans %}Failed to add records. Please check the record format.{% endtrans %}
                 {% endif %}

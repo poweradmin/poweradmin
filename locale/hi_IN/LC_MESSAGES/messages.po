@@ -9460,25 +9460,29 @@ msgstr "ज़ोन टेम्पलेट नहीं मिला।"
 msgid "Only global zone templates can be set as the default."
 msgstr "केवल वैश्विक ज़ोन टेम्पलेट डिफ़ॉल्ट के रूप में सेट किए जा सकते हैं।"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट सेट करने में त्रुटि: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट सेट करने में त्रुटि: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "डिफ़ॉल्ट ज़ोन टेम्पलेट को साफ़ करने में त्रुटि: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "ज़ोन टेम्पलेट बनाने में त्रुटि: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "ज़ोन टेम्पलेट बनाने में त्रुटि: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "आपको किसी ज़ोन टेम्पलेट को संपादित करने की अनुमति नहीं है।"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "ज़ोन टेम्पलेट को हटाने में त्रुटि: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "ज़ोन टेम्पलेट को हटाने में त्रुटि: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12247,13 +12251,9 @@ msgstr "बहु रिकॉर्ड मोड"
 msgid "Bulk add"
 msgstr "थोक जोड़ें"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "जोड़ने में विफल"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "रिकॉर्ड(s). कृपया रिकॉर्ड प्रारूप की जांच करें।"
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "%count% रिकॉर्ड जोड़ने में विफल। कृपया रिकॉर्ड प्रारूप जांचें।"
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16189,8 +16189,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "आप ज़ोन टेम्प्लेट को केवल उन समूहों के साथ साझा कर सकते हैं जिनके आप सदस्य हैं।"
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "ज़ोन टेम्प्लेट साझा करने में त्रुटि: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "ज़ोन टेम्प्लेट साझा करने में त्रुटि: %s"
 
 #: templates/default/index.html:41
 msgid ""

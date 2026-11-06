@@ -137,7 +137,7 @@ class ZoneTemplateWriteService
             $this->repository->flagDefaultTemplate($zone_templ_id);
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
-            return ZoneTemplateWriteResult::backendFailure(_('Error setting default zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error setting default zone template: %s'), $e->getMessage()));
         }
     }
 
@@ -150,7 +150,7 @@ class ZoneTemplateWriteService
             $this->repository->clearDefaultTemplate();
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
-            return ZoneTemplateWriteResult::backendFailure(_('Error clearing default zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error clearing default zone template: %s'), $e->getMessage()));
         }
     }
 
@@ -186,7 +186,7 @@ class ZoneTemplateWriteService
 
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
-            return ZoneTemplateWriteResult::backendFailure(_('Error creating zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error creating zone template: %s'), $e->getMessage()));
         }
     }
 
@@ -231,7 +231,7 @@ class ZoneTemplateWriteService
             $this->repository->deleteZoneTemplate($zone_templ_id);
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
-            return ZoneTemplateWriteResult::backendFailure(_('Error deleting zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error deleting zone template: %s'), $e->getMessage()));
         }
     }
 
@@ -312,7 +312,7 @@ class ZoneTemplateWriteService
             return ZoneTemplateWriteResult::ok();
         } catch (Exception $e) {
             // The repository already rolled its transaction back.
-            return ZoneTemplateWriteResult::backendFailure(_('Error creating zone template: ') . $e->getMessage());
+            return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error creating zone template: %s'), $e->getMessage()));
         }
     }
 }

@@ -10051,25 +10051,29 @@ msgstr "Το πρότυπο ζώνης δε βρέθηκε."
 msgid "Only global zone templates can be set as the default."
 msgstr "Μόνο τα καθολικά πρότυπα ζώνης μπορούν να οριστούν ως προεπιλεγμένα."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Σφάλμα ορισμού προκαθορισμένου προτύπου ζώνης: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Σφάλμα ορισμού προκαθορισμένου προτύπου ζώνης: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προτύπου ζώνης: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Σφάλμα εκκαθάρισης προεπιλεγμένου προτύπου ζώνης: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Σφάλμα δημιουργίας προτύπου ζώνης: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Σφάλμα δημιουργίας προτύπου ζώνης: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Δεν έχετε την άδεια να επεξεργαστείτε ένα πρότυπο ζώνης."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Σφάλμα διαγραφής προτύπου ζώνης: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Σφάλμα διαγραφής προτύπου ζώνης: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12923,13 +12927,9 @@ msgstr "Λειτουργία πολλαπλών εγγραφών"
 msgid "Bulk add"
 msgstr "Μαζική προσθήκη"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Αποτυχία προσθήκης"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "εγγραφή(ές). Παρακαλώ ελέγξτε τη μορφή εγγραφής."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Αποτυχία προσθήκης %count% εγγραφής(-ών). Ελέγξτε τη μορφή της εγγραφής."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -17003,8 +17003,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Μπορείτε να μοιραστείτε ένα πρότυπο ζώνης μόνο με ομάδες στις οποίες ανήκετε."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Σφάλμα κατά την κοινή χρήση του προτύπου ζώνης: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Σφάλμα κατά την κοινή χρήση του προτύπου ζώνης: %s"
 
 #: templates/default/index.html:41
 msgid ""

@@ -9783,25 +9783,29 @@ msgstr "Nie znaleziono szablonu strefy."
 msgid "Only global zone templates can be set as the default."
 msgstr "Tylko globalne szablony stref mogą być ustawione jako domyślne."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Błąd podczas ustawiania domyślnego szablonu strefy: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Błąd podczas ustawiania domyślnego szablonu strefy: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Błąd podczas czyszczenia domyślnego szablonu strefy: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Błąd podczas czyszczenia domyślnego szablonu strefy: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Błąd tworzenia szablonu strefy: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Błąd tworzenia szablonu strefy: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nie masz uprawnień do edycji szablonu strefy."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Błąd usuwania szablonu strefy: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Błąd usuwania szablonu strefy: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12619,13 +12623,9 @@ msgstr "Tryb wielu rekordów"
 msgid "Bulk add"
 msgstr "Dodaj zbiorczo"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Nie udało się dodać"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "rekordów. Proszę sprawdzić format rekordu."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Nie udało się dodać rekordów (liczba: %count%). Sprawdź format rekordu."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16621,8 +16621,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Szablon strefy można udostępniać tylko grupom, do których należysz."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Błąd podczas udostępniania szablonu strefy: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Błąd podczas udostępniania szablonu strefy: %s"
 
 #: templates/default/index.html:41
 msgid ""

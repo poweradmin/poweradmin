@@ -10055,25 +10055,29 @@ msgstr "Șablonul de zonă nu a fost găsit."
 msgid "Only global zone templates can be set as the default."
 msgstr "Doar șabloanele de zonă globale pot fi setate ca implicite."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Eroare la setarea șablonului de zonă implicit: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Eroare la setarea șablonului de zonă implicit: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Eroare la eliminarea șablonului de zonă implicit: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Eroare la eliminarea șablonului de zonă implicit: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Eroare la crearea șablonului de zonă: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Eroare la crearea șablonului de zonă: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nu aveți permisiunea de a edita un șablon de zonă."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Eroare la ștergerea șablonului de zonă: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Eroare la ștergerea șablonului de zonă: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12909,13 +12913,9 @@ msgstr "Mod înregistrări multiple"
 msgid "Bulk add"
 msgstr "Adăugare în masă"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Eroare la adăugare"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "înregistrări. Verificați formatul înregistrării."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Adăugarea a %count% înregistrări a eșuat. Verificați formatul înregistrării."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16956,8 +16956,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Puteți partaja un șablon de zonă doar cu grupuri din care faceți parte."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Eroare la partajarea șablonului de zonă: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Eroare la partajarea șablonului de zonă: %s"
 
 #: templates/default/index.html:41
 msgid ""

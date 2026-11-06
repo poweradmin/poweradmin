@@ -8831,25 +8831,29 @@ msgstr "找不到区域模板。"
 msgid "Only global zone templates can be set as the default."
 msgstr "只有全局区域模板可以设置为默认。"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "设置默认区域模板时出错: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "设置默认区域模板时出错: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "清除默认区域模板时出错: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "清除默认区域模板时出错: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "创建区域模板错误： "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "创建区域模板错误： %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "您没有编辑区域模板的权限。"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "删除区域模板错误： "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "删除区域模板错误： %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -11553,13 +11557,9 @@ msgstr "多记录模式"
 msgid "Bulk add"
 msgstr "批量添加"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "添加失败"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "条记录。请检查记录格式。"
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "添加 %count% 条记录失败。请检查记录格式。"
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -15408,8 +15408,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "您只能与自己所属的组共享区域模板。"
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "共享区域模板时出错: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "共享区域模板时出错: %s"
 
 #: templates/default/index.html:41
 msgid ""

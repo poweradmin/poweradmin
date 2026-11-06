@@ -9364,25 +9364,29 @@ msgstr "Predložak zone nije pronađen."
 msgid "Only global zone templates can be set as the default."
 msgstr "Samo globalni predlošci zone mogu se postaviti kao zadani."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Greška pri postavljanju zadanog predloška zone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Greška pri postavljanju zadanog predloška zone: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Greška pri uklanjanju zadanog predloška zone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Greška pri uklanjanju zadanog predloška zone: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Greška pri stvaranju predloška zone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Greška pri stvaranju predloška zone: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nemate dozvolu za uređivanje predloška zone."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Greška pri brisanju predloška zone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Greška pri brisanju predloška zone: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12145,13 +12149,9 @@ msgstr "Način više zapisa"
 msgid "Bulk add"
 msgstr "Skupno dodavanje"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Neuspjelo dodavanje"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "zapisa. Provjerite format zapisa."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Dodavanje %count% zapisa nije uspjelo. Provjerite format zapisa."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16108,8 +16108,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Predložak zone možete dijeliti samo s grupama kojima pripadate."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Greška pri dijeljenju predloška zone: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Greška pri dijeljenju predloška zone: %s"
 
 #: templates/default/index.html:41
 msgid ""

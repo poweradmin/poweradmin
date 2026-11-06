@@ -9712,25 +9712,29 @@ msgstr "Predloga cone ni najdena."
 msgid "Only global zone templates can be set as the default."
 msgstr "Kot privzeto se lahko nastavijo samo globalne predloge cone."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Napaka pri nastavljanju privzete predloge cone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Napaka pri nastavljanju privzete predloge cone: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Napaka pri odpravljanju privzete predloge cone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Napaka pri odpravljanju privzete predloge cone: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Napaka pri ustvarjanju predloge cone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Napaka pri ustvarjanju predloge cone: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Nimate dovoljenja za urejanje predloge cone."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Napaka pri brisanju predloge cone: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Napaka pri brisanju predloge cone: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12524,13 +12528,9 @@ msgstr "Način več zapisov"
 msgid "Bulk add"
 msgstr "Množično dodajanje"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Dodajanje ni uspelo"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "zapise. Preverite format zapisa."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Dodajanje zapisov (število: %count%) ni uspelo. Preverite obliko zapisa."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16518,8 +16518,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Predlogo območja lahko delite le s skupinami, katerih član ste."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Napaka pri deljenju predloge območja: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Napaka pri deljenju predloge območja: %s"
 
 #: templates/default/index.html:41
 msgid ""

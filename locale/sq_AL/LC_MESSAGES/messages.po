@@ -9917,25 +9917,29 @@ msgstr "Modeli i zonës nuk u gjet."
 msgid "Only global zone templates can be set as the default."
 msgstr "Vetëm modelët e zonës globale mund të vendosen si të prezgjedhur."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Gabim gjatë vendosjes së modelit të parazgjedhur të zonës: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Gabim gjatë vendosjes së modelit të parazgjedhur të zonës: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Gabim gjatë heqjes së modelit të parazgjedhur të zonës: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Gabim gjatë heqjes së modelit të parazgjedhur të zonës: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Gabim gjatë krijimit të shabllonit të zonës: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Gabim gjatë krijimit të shabllonit të zonës: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Ti nuk ke të drejta për të ndryshuar një model zone."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Gabim gjatë fshirjes së shabllonit të zonës: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Gabim gjatë fshirjes së shabllonit të zonës: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12758,13 +12762,9 @@ msgstr "Modaliteti shumë-regjistrimesh"
 msgid "Bulk add"
 msgstr "Shtim në masë"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Shtimi dështoi"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "regjistrim(e). Ju lutem kontrolloni formatin e regjistrimit."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Shtimi i %count% regjistrimi(eve) dështoi. Ju lutemi kontrolloni formatin e regjistrimit."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16790,8 +16790,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Mund ta ndani një model zone vetëm me grupe ku jeni anëtar."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Gabim gjatë ndarjes së modelit të zonës: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Gabim gjatë ndarjes së modelit të zonës: %s"
 
 #: templates/default/index.html:41
 msgid ""

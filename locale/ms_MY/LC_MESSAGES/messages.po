@@ -9743,25 +9743,29 @@ msgstr "Templat zon tidak dijumpai."
 msgid "Only global zone templates can be set as the default."
 msgstr "Hanya templat zon global boleh ditetapkan sebagai lalai."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Ralat semasa menetapkan templat zon lalai: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Ralat semasa menetapkan templat zon lalai: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Ralat semasa mengosongkan templat zon lalai: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Ralat semasa mengosongkan templat zon lalai: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Ralat semasa mencipta templat zon: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Ralat semasa mencipta templat zon: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "Anda tidak mempunyai kebenaran untuk mengedit templat zon."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Ralat semasa memadam templat zon: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Ralat semasa memadam templat zon: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12579,13 +12583,9 @@ msgstr "Mod Multi-record"
 msgid "Bulk add"
 msgstr "Tambahkan Bulk"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Gagal untuk menambah"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "record(s). Sila periksa format rekod."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Gagal menambah %count% rekod. Sila semak format rekod."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16576,8 +16576,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Anda hanya boleh berkongsi templat zone dengan kumpulan yang anda sertai."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Ralat semasa berkongsi templat zone: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Ralat semasa berkongsi templat zone: %s"
 
 #: templates/default/index.html:41
 msgid ""

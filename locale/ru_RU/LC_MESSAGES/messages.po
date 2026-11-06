@@ -9801,25 +9801,29 @@ msgstr "Шаблон зоны не найден."
 msgid "Only global zone templates can be set as the default."
 msgstr "По умолчанию можно установить только глобальные шаблоны зон."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:138
-msgid "Error setting default zone template: "
-msgstr "Ошибка при установке шаблона зоны по умолчанию: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:140
+#, php-format
+msgid "Error setting default zone template: %s"
+msgstr "Ошибка при установке шаблона зоны по умолчанию: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:151
-msgid "Error clearing default zone template: "
-msgstr "Ошибка при очистке шаблона зоны по умолчанию: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:153
+#, php-format
+msgid "Error clearing default zone template: %s"
+msgstr "Ошибка при очистке шаблона зоны по умолчанию: %s"
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:298
-msgid "Error creating zone template: "
-msgstr "Ошибка создания шаблона зоны: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:189 lib/Domain/Service/Template/ZoneTemplateWriteService.php:315
+#, php-format
+msgid "Error creating zone template: %s"
+msgstr "Ошибка создания шаблона зоны: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:197
 msgid "You do not have the permission to edit a zone template."
 msgstr "У вас нет разрешения для редактирования шаблона зоны."
 
-#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:229
-msgid "Error deleting zone template: "
-msgstr "Ошибка удаления шаблона зоны: "
+#: lib/Domain/Service/Template/ZoneTemplateWriteService.php:234
+#, php-format
+msgid "Error deleting zone template: %s"
+msgstr "Ошибка удаления шаблона зоны: %s"
 
 #: lib/Domain/Service/Template/ZoneTemplateWriteService.php:290
 #, php-format
@@ -12628,13 +12632,9 @@ msgstr "Режим множественных записей"
 msgid "Bulk add"
 msgstr "Массовое добавление"
 
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "Failed to add"
-msgstr "Не удалось добавить"
-
-#: templates/default/edit.html:38 templates/default/edit.html:725
-msgid "record(s). Please check the record format."
-msgstr "запись(и). Пожалуйста, проверьте формат записи."
+#: templates/default/edit.html:42 templates/default/edit.html:740
+msgid "Failed to add %count% record(s). Please check the record format."
+msgstr "Не удалось добавить записи (количество: %count%). Проверьте формат записи."
 
 #: templates/default/edit.html:40 templates/default/edit.html:727
 msgid "Failed to add records. Please check the record format."
@@ -16624,8 +16624,9 @@ msgid "You can only share a zone template with groups you belong to."
 msgstr "Предоставить общий доступ к шаблону зоны можно только группам, в которых вы состоите."
 
 #: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
-msgid "Error sharing zone template: "
-msgstr "Ошибка при предоставлении общего доступа к шаблону зоны: "
+#, php-format
+msgid "Error sharing zone template: %s"
+msgstr "Ошибка при предоставлении общего доступа к шаблону зоны: %s"
 
 #: templates/default/index.html:41
 msgid ""
