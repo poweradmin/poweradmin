@@ -1482,6 +1482,7 @@ return [
         'base_url_prefix' => $(php_sq "${PA_BASE_URL_PREFIX:-}"),
         'application_url' => $(php_sq "${PA_APPLICATION_URL:-}"),
         'web_enabled' => ${web_enabled},
+        'frame_ancestors' => $(php_str_array "${PA_FRAME_ANCESTORS:-}"),
         'show_record_id' => ${show_record_id},
         'show_add_record_form' => ${show_add_record_form},
         'show_record_edit_button' => ${show_record_edit_button},

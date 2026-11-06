@@ -205,6 +205,16 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
         $this->assertStringContainsString("'allow_self_approval' => \${approval_allow_self_approval},", $this->settingsGroupBody($entrypoint, 'approval'));
     }
 
+    public function testFrameAncestorsVariableDefaultsToDenyingAllFraming(): void
+    {
+        $repoRoot = dirname(__DIR__, 2);
+        $entrypoint = file_get_contents($repoRoot . '/docker-entrypoint.sh');
+        $defaults = require $repoRoot . '/config/settings.defaults.php';
+
+        $this->assertSame([], $defaults['interface']['frame_ancestors']);
+        $this->assertStringContainsString("'frame_ancestors' => \$(php_str_array \"\${PA_FRAME_ANCESTORS:-}\"),", $this->settingsGroupBody($entrypoint, 'interface'));
+    }
+
     public function testClientIpHeaderDefaultsToAutoAndCaddyFollowsIt(): void
     {
         $repoRoot = dirname(__DIR__, 2);

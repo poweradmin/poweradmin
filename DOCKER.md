@@ -402,6 +402,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
 | `PA_APPLICATION_URL` | Full application URL for emails and absolute links | Auto-detect | No |
 | `PA_WEB_ENABLED` | Serve the web interface; `false` runs API-only (headless) | `true` | No |
+| `PA_FRAME_ANCESTORS` | Comma-separated origins allowed to embed Poweradmin in a frame (e.g. `https://portal.example.com`); empty denies all framing (4.6.0+) | Empty | No |
 
 ### Interface UI Elements
 
