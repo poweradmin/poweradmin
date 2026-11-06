@@ -16215,3 +16215,74 @@ msgstr "비밀번호에는 숫자가 하나 이상 포함되어야 합니다"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "비밀번호에는 특수 문자가 하나 이상 포함되어야 합니다"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "이 CNAME은 확인할 수 없습니다. 너무 많은 레코드가 이 이름을 가리킵니다."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID 레코드에는 우선순위와 노드 식별자가 공백으로 구분되어 있어야 합니다."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "잘못된 그룹 선택입니다."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "이 존 템플릿을 공유할 권한이 없습니다."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "존 템플릿은 본인이 속한 그룹과만 공유할 수 있습니다."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "존 템플릿 공유 중 오류: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC가 활성화되어 있지만 PowerDNS API(pdns_api.url 및 pdns_api.key)가 구성되지 않아, 변경 후 서명된 존이 rectify되지 않고 NSEC/NSEC3 체인이 오래된 상태로 남습니다. PowerDNS API를 구성하세요."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "그룹과 공유됨"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "어떤 그룹에도 속해 있지 않습니다."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "이 그룹의 구성원은 이 템플릿을 보고 사용할 수 있으며, 존 템플릿을 편집할 수 있는 경우 편집도 할 수 있습니다"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "이 사용자는 그룹과 공유된 존 템플릿을 소유하고 있습니다. 그룹이 계속 사용할 수 있도록 해당 템플릿이 사용자에게 이전됩니다:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x는 API로 저장된 레코드에서 백슬래시 이스케이프를 한 단계 제거합니다. 아래 레코드와 이름 및 유형이 같은 레코드를 저장하면 이들도 함께 다시 쓰여, 백슬래시가 사라지거나 이스케이프된 따옴표가 거부됩니다. PowerDNS가 이를 수정할 때까지 pdnsutil로 편집하세요:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "이 내용에는 백슬래시가 포함되어 있습니다. PowerDNS Auth 5.1.x는 API로 저장된 레코드에서 백슬래시 이스케이프를 한 단계 제거하므로, 입력한 내용과 다르게 저장될 수 있습니다."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "공유됨"

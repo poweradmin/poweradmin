@@ -16803,3 +16803,74 @@ msgstr "Das Passwort muss mindestens eine Ziffer enthalten"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Das Passwort muss mindestens ein Sonderzeichen enthalten"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Dieser CNAME kann nicht geprüft werden: Zu viele Einträge verweisen auf diesen Namen."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Ein NID-Eintrag muss Präferenz und Knotenkennung durch ein Leerzeichen getrennt enthalten."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Ungültige Gruppenauswahl."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Sie haben keine Berechtigung, diese Zonenvorlage zu teilen."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Sie können eine Zonenvorlage nur mit Gruppen teilen, denen Sie angehören."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Fehler beim Teilen der Zonenvorlage: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC ist aktiviert, aber die PowerDNS API (pdns_api.url und pdns_api.key) ist nicht konfiguriert. Signierte Zonen werden daher nach Änderungen nicht rektifiziert, und ihre NSEC/NSEC3-Ketten veralten. Konfigurieren Sie die PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Mit Gruppen geteilt"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Sie sind kein Mitglied einer Gruppe."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Mitglieder dieser Gruppen können diese Vorlage sehen und verwenden und sie bearbeiten, wenn sie Zonenvorlagen bearbeiten dürfen"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Dieser Benutzer besitzt Zonenvorlagen, die mit Gruppen geteilt sind. Sie werden Ihnen übertragen, damit die Gruppen sie weiter verwenden können:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x entfernt eine Ebene der Backslash-Maskierung aus Einträgen, die über die API gespeichert werden. Wird ein Eintrag mit demselben Namen und Typ wie die unten genannten Einträge gespeichert, werden diese ebenfalls neu geschrieben, sodass ein Backslash verloren geht oder ein maskiertes Anführungszeichen abgelehnt wird. Bearbeiten Sie sie mit pdnsutil, bis PowerDNS dies behebt:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Dieser Inhalt enthält einen Backslash. PowerDNS Auth 5.1.x entfernt eine Ebene der Backslash-Maskierung aus Einträgen, die über die API gespeichert werden, daher kann er anders gespeichert werden als eingegeben."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "geteilt"

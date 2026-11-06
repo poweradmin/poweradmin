@@ -16617,3 +16617,74 @@ msgstr "A jelszónak legalább egy számjegyet kell tartalmaznia"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "A jelszónak legalább egy speciális karaktert kell tartalmaznia"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Ez a CNAME nem ellenőrizhető: túl sok rekord mutat erre a névre."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Az NID rekordnak tartalmaznia kell a preferenciát és a csomópont-azonosítót, szóközzel elválasztva."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Érvénytelen csoportválasztás."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Nincs jogosultsága ennek a zónasablonnak a megosztására."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Zónasablont csak olyan csoportokkal oszthat meg, amelyeknek tagja."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Hiba a zónasablon megosztásakor: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "A DNSSEC engedélyezve van, de a PowerDNS API (pdns_api.url és pdns_api.key) nincs beállítva, ezért az aláírt zónákat a módosítások után nem rectifyolja a rendszer, és az NSEC/NSEC3 láncaik elavulnak. Állítsa be a PowerDNS API-t."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Megosztva csoportokkal"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Nem tagja egyetlen csoportnak sem."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Ezeknek a csoportoknak a tagjai láthatják és használhatják ezt a sablont, és szerkeszthetik is, ha szerkeszthetnek zónasablonokat"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Ez a felhasználó csoportokkal megosztott zónasablonokat birtokol. Átkerülnek Önhöz, hogy a csoportok tovább használhassák őket:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "A PowerDNS Auth 5.1.x az API-ján keresztül mentett rekordokból eltávolítja a visszaper-escape egy szintjét. Ha az alábbi rekordokkal azonos nevű és típusú rekordot ment, azok is újraíródnak, így a visszaper elveszik, vagy az escape-elt idézőjelet elutasítja a rendszer. Szerkessze őket pdnsutil-lal, amíg a PowerDNS ezt nem javítja:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Ez a tartalom visszaperjelet tartalmaz. A PowerDNS Auth 5.1.x az API-ján keresztül mentett rekordokból eltávolítja a visszaper-escape egy szintjét, ezért a tárolt érték eltérhet a megadottól."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "megosztva"

@@ -16085,3 +16085,74 @@ msgstr "Lozinka mora sadržavati najmanje jedan broj"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Lozinka mora sadržavati najmanje jedan poseban znak"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Ovaj CNAME se ne može provjeriti: previše zapisa pokazuje na ovo ime."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID zapis mora sadržavati preferencu i identifikator čvora odvojene razmakom."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Neispravan odabir grupe."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Nemate dozvolu za dijeljenje ovog predloška zone."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Predložak zone možete dijeliti samo s grupama kojima pripadate."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Greška pri dijeljenju predloška zone: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC je omogućen, ali PowerDNS API (pdns_api.url i pdns_api.key) nije konfigurisan, pa se potpisane zone ne ispravljaju (rectify) nakon promjena i njihovi NSEC/NSEC3 lanci zastarijevaju. Konfigurišite PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Dijeli se s grupama"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Niste član nijedne grupe."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Članovi ovih grupa mogu vidjeti i koristiti ovaj predložak, te ga uređivati kada smiju uređivati predloške zona"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Ovaj korisnik posjeduje predloške zona koji se dijele s grupama. Bit će predani vama kako bi ih grupe mogle i dalje koristiti:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x uklanja jedan nivo escapiranja obrnutom kosom crtom iz zapisa sačuvanih putem njegovog API-ja. Spremanje bilo kojeg zapisa s istim imenom i tipom kao zapisi u nastavku prepisuje i njih, pa se obrnuta kosa crta gubi ili se escapirani navodnik odbija. Uređujte ih pomoću pdnsutil dok PowerDNS ne popravi ovo:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Ovaj sadržaj sadrži obrnutu kosu crtu. PowerDNS Auth 5.1.x uklanja jedan nivo escapiranja obrnutom kosom crtom iz zapisa sačuvanih putem njegovog API-ja, pa može biti pohranjen drugačije nego što ste unijeli."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "dijeljen"

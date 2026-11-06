@@ -17007,3 +17007,74 @@ msgstr "Le mot de passe doit contenir au moins un chiffre"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Le mot de passe doit contenir au moins un caractère spécial"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Ce CNAME ne peut pas être vérifié : trop d'enregistrements pointent vers ce nom."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "L'enregistrement NID doit contenir la préférence et l'identifiant du nœud séparés par un espace."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Sélection de groupe invalide."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Vous n'avez pas la permission de partager ce modèle de zone."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Vous ne pouvez partager un modèle de zone qu'avec des groupes dont vous êtes membre."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Erreur lors du partage du modèle de zone : "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC est activé mais l'API PowerDNS (pdns_api.url et pdns_api.key) n'est pas configurée : les zones signées ne sont donc pas rectifiées après les modifications et leurs chaînes NSEC/NSEC3 deviennent obsolètes. Configurez l'API PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Partagé avec des groupes"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Vous n'êtes membre d'aucun groupe."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Les membres de ces groupes peuvent voir et utiliser ce modèle, et le modifier lorsqu'ils peuvent modifier les modèles de zone"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Cet utilisateur possède des modèles de zone partagés avec des groupes. Ils vous seront transférés afin que les groupes puissent continuer à les utiliser :"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x supprime un niveau d'échappement par antislash des enregistrements sauvegardés via son API. Sauvegarder un enregistrement ayant le même nom et le même type que les enregistrements ci-dessous les réécrit également, si bien qu'un antislash est perdu ou qu'un guillemet échappé est refusé. Modifiez-les avec pdnsutil jusqu'à ce que PowerDNS corrige ce problème :"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Ce contenu contient un antislash. PowerDNS Auth 5.1.x supprime un niveau d'échappement par antislash des enregistrements sauvegardés via son API, il peut donc être stocké différemment de ce que vous avez saisi."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "partagé"

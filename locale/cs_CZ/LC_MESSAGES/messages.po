@@ -16402,3 +16402,74 @@ msgstr "Heslo musí obsahovat alespoň jednu číslici"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Heslo musí obsahovat alespoň jeden speciální znak"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Tento CNAME nelze zkontrolovat: na tento název odkazuje příliš mnoho záznamů."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Záznam NID musí obsahovat preferenci a identifikátor uzlu oddělené mezerou."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Neplatný výběr skupiny."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Nemáte oprávnění sdílet tuto šablonu zóny."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Šablonu zóny můžete sdílet pouze se skupinami, do kterých patříte."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Chyba při sdílení šablony zóny: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC je zapnut, ale PowerDNS API (pdns_api.url a pdns_api.key) není nakonfigurováno, takže podepsané zóny se po změnách nerektifikují (rectify) a jejich řetězce NSEC/NSEC3 zastarávají. Nakonfigurujte PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Sdíleno se skupinami"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Nejste členem žádné skupiny."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Členové těchto skupin mohou tuto šablonu zobrazit a používat a upravovat ji, pokud smějí upravovat šablony zón"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Tento uživatel vlastní šablony zón sdílené se skupinami. Budou vám předány, aby je skupiny mohly nadále používat:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x odstraňuje jednu úroveň escapování zpětným lomítkem ze záznamů uložených přes jeho API. Uložení jakéhokoli záznamu se stejným názvem a typem jako u záznamů níže přepíše i je, takže se zpětné lomítko ztratí nebo je escapovaná uvozovka odmítnuta. Upravte je pomocí pdnsutil, dokud PowerDNS toto neopraví:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Tento obsah obsahuje zpětné lomítko. PowerDNS Auth 5.1.x odstraňuje jednu úroveň escapování zpětným lomítkem ze záznamů uložených přes jeho API, takže může být uložen jinak, než jste zadali."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "sdíleno"

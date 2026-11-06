@@ -16357,3 +16357,74 @@ msgstr "Mật khẩu phải chứa ít nhất một chữ số"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Mật khẩu phải chứa ít nhất một ký tự đặc biệt"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Không thể kiểm tra CNAME này: có quá nhiều bản ghi trỏ tới tên này."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Bản ghi NID phải chứa mức ưu tiên và mã định danh nút, phân tách bằng dấu cách."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Lựa chọn nhóm không hợp lệ."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Bạn không có quyền chia sẻ mẫu vùng này."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Bạn chỉ có thể chia sẻ mẫu vùng với các nhóm mà bạn là thành viên."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Lỗi khi chia sẻ mẫu vùng: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC đã bật nhưng API PowerDNS (pdns_api.url và pdns_api.key) chưa được cấu hình, nên các vùng đã ký không được rectify sau khi thay đổi và chuỗi NSEC/NSEC3 của chúng bị lỗi thời. Hãy cấu hình API PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Chia sẻ với nhóm"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Bạn không phải là thành viên của nhóm nào."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Thành viên của các nhóm này có thể xem và dùng mẫu này, và chỉnh sửa nếu họ được phép chỉnh sửa mẫu vùng"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Người dùng này sở hữu các mẫu vùng được chia sẻ với nhóm. Chúng sẽ được chuyển cho bạn để các nhóm tiếp tục sử dụng:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x loại bỏ một cấp thoát dấu gạch chéo ngược khỏi các bản ghi được lưu qua API của nó. Lưu bất kỳ bản ghi nào có cùng tên và loại với các bản ghi bên dưới cũng sẽ ghi lại chúng, nên dấu gạch chéo ngược bị mất hoặc dấu nháy đã thoát bị từ chối. Hãy chỉnh sửa chúng bằng pdnsutil cho đến khi PowerDNS khắc phục:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Nội dung này chứa dấu gạch chéo ngược. PowerDNS Auth 5.1.x loại bỏ một cấp thoát dấu gạch chéo ngược khỏi các bản ghi được lưu qua API của nó, nên nội dung có thể được lưu khác với những gì bạn đã nhập."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "đã chia sẻ"

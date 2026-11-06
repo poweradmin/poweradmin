@@ -16933,3 +16933,74 @@ msgstr "Parola trebuie să conțină cel puțin o cifră"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parola trebuie să conțină cel puțin un caracter special"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Acest CNAME nu poate fi verificat: prea multe înregistrări indică spre acest nume."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Înregistrarea NID trebuie să conțină preferința și identificatorul nodului separate prin spațiu."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Selecție de grup nevalidă."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Nu aveți permisiunea de a partaja acest șablon de zonă."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Puteți partaja un șablon de zonă doar cu grupuri din care faceți parte."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Eroare la partajarea șablonului de zonă: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC este activat, dar API-ul PowerDNS (pdns_api.url și pdns_api.key) nu este configurat, astfel că zonele semnate nu sunt rectificate după modificări, iar lanțurile lor NSEC/NSEC3 devin depășite. Configurați API-ul PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Partajat cu grupuri"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Nu sunteți membru al niciunui grup."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Membrii acestor grupuri pot vedea și folosi acest șablon și îl pot edita dacă au voie să editeze șabloane de zonă"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Acest utilizator deține șabloane de zonă partajate cu grupuri. Acestea vor fi transferate către dvs. pentru ca grupurile să le poată folosi în continuare:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x elimină un nivel de escapare a backslash-ului din înregistrările salvate prin API-ul său. Salvarea oricărei înregistrări cu același nume și tip ca cele de mai jos le rescrie și pe acestea, astfel că un backslash se pierde sau ghilimelele escapate sunt refuzate. Editați-le cu pdnsutil până când PowerDNS remediază problema:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Acest conținut conține un backslash. PowerDNS Auth 5.1.x elimină un nivel de escapare a backslash-ului din înregistrările salvate prin API-ul său, deci poate fi stocat diferit față de ce ați introdus."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "partajat"

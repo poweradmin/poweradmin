@@ -16584,3 +16584,74 @@ msgstr "Kata sandi harus berisi minimal satu angka"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Kata sandi harus berisi minimal satu karakter khusus"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "CNAME ini tidak dapat diperiksa: terlalu banyak record yang mengarah ke nama ini."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Record NID harus berisi preferensi dan pengenal node yang dipisahkan spasi."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Pilihan grup tidak valid."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Anda tidak memiliki izin untuk membagikan templat zona ini."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Anda hanya dapat membagikan templat zona dengan grup yang Anda ikuti."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Kesalahan saat membagikan templat zona: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC diaktifkan tetapi PowerDNS API (pdns_api.url dan pdns_api.key) belum dikonfigurasi, sehingga zona bertanda tangan tidak di-rectify setelah perubahan dan rantai NSEC/NSEC3 -nya menjadi usang. Konfigurasikan PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Dibagikan dengan grup"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Anda bukan anggota grup mana pun."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Anggota grup ini dapat melihat dan menggunakan templat ini, serta mengeditnya jika mereka boleh mengedit templat zona"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Pengguna ini memiliki templat zona yang dibagikan dengan grup. Templat tersebut akan dialihkan kepada Anda agar grup tetap dapat menggunakannya:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x menghapus satu tingkat escape backslash dari record yang disimpan melalui API-nya. Menyimpan record apa pun dengan nama dan tipe yang sama dengan record di bawah ini akan menulis ulang record tersebut juga, sehingga backslash hilang atau tanda kutip yang di-escape ditolak. Edit dengan pdnsutil sampai PowerDNS memperbaikinya:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Konten ini mengandung backslash. PowerDNS Auth 5.1.x menghapus satu tingkat escape backslash dari record yang disimpan melalui API-nya, sehingga isinya mungkin tersimpan berbeda dari yang Anda masukkan."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "dibagikan"

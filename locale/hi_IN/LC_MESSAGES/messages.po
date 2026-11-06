@@ -16166,3 +16166,74 @@ msgstr "पासवर्ड में कम से कम एक अंक �
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "पासवर्ड में कम से कम एक विशेष वर्ण होना चाहिए"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "इस CNAME की जांच नहीं की जा सकती: बहुत सारे रिकॉर्ड इस नाम की ओर इशारा करते हैं।"
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID रिकॉर्ड में प्राथमिकता और नोड आइडेंटिफ़ायर होना चाहिए, जो स्पेस से अलग किए गए हों।"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "अमान्य समूह चयन।"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "आपके पास इस ज़ोन टेम्प्लेट को साझा करने की अनुमति नहीं है।"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "आप ज़ोन टेम्प्लेट को केवल उन समूहों के साथ साझा कर सकते हैं जिनके आप सदस्य हैं।"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "ज़ोन टेम्प्लेट साझा करने में त्रुटि: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC सक्षम है लेकिन PowerDNS API (pdns_api.url और pdns_api.key) कॉन्फ़िगर नहीं है, इसलिए बदलाव के बाद हस्ताक्षरित ज़ोन rectify नहीं होते और उनकी NSEC/NSEC3 श्रृंखलाएं पुरानी हो जाती हैं। PowerDNS API कॉन्फ़िगर करें।"
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "समूहों के साथ साझा किया गया"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "आप किसी भी समूह के सदस्य नहीं हैं।"
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "इन समूहों के सदस्य इस टेम्प्लेट को देख और उपयोग कर सकते हैं, और ज़ोन टेम्प्लेट संपादित करने की अनुमति होने पर इसे संपादित भी कर सकते हैं"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "इस उपयोगकर्ता के पास ऐसे ज़ोन टेम्प्लेट हैं जो समूहों के साथ साझा किए गए हैं। उन्हें आपको सौंप दिया जाएगा ताकि समूह उनका उपयोग जारी रख सकें:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x अपने API से सहेजे गए रिकॉर्ड से बैकस्लैश एस्केपिंग का एक स्तर हटा देता है। नीचे दिए गए रिकॉर्ड के समान नाम और प्रकार वाला कोई भी रिकॉर्ड सहेजने पर ये भी फिर से लिखे जाते हैं, जिससे बैकस्लैश खो जाता है या एस्केप किया गया उद्धरण चिह्न अस्वीकार कर दिया जाता है। PowerDNS के इसे ठीक करने तक इन्हें pdnsutil से संपादित करें:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "इस सामग्री में बैकस्लैश है। PowerDNS Auth 5.1.x अपने API से सहेजे गए रिकॉर्ड से बैकस्लैश एस्केपिंग का एक स्तर हटा देता है, इसलिए यह आपके दर्ज किए गए मान से अलग तरह से संग्रहीत हो सकता है।"
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "साझा"

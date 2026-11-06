@@ -16241,3 +16241,74 @@ msgstr "Salasanassa on oltava vähintään yksi numero"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Salasanassa on oltava vähintään yksi erikoismerkki"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Tätä CNAME-tietuetta ei voi tarkistaa: liian moni tietue osoittaa tähän nimeen."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID-tietueen on sisällettävä preferenssi ja solmun tunniste välilyönnillä erotettuina."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Virheellinen ryhmävalinta."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Sinulla ei ole oikeutta jakaa tätä aluemallia."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Voit jakaa aluemallin vain ryhmille, joihin kuulut."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Virhe aluemallin jaossa: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC on käytössä, mutta PowerDNS API:a (pdns_api.url ja pdns_api.key) ei ole määritetty, joten allekirjoitettuja alueita ei rektifioida (rectify) muutosten jälkeen ja niiden NSEC/NSEC3-ketjut vanhenevat. Määritä PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Jaettu ryhmille"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Et ole minkään ryhmän jäsen."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Näiden ryhmien jäsenet voivat nähdä ja käyttää tätä mallia sekä muokata sitä, jos he saavat muokata aluemalleja"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Tämä käyttäjä omistaa aluemalleja, jotka on jaettu ryhmille. Ne siirretään sinulle, jotta ryhmät voivat jatkaa niiden käyttöä:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x poistaa yhden kenoviivaescapauksen tason sen API:n kautta tallennetuista tietueista. Minkä tahansa alla olevien tietueiden kanssa samannimisen ja samantyyppisen tietueen tallennus kirjoittaa myös ne uudelleen, jolloin kenoviiva katoaa tai escapattu lainausmerkki hylätään. Muokkaa niitä pdnsutililla, kunnes PowerDNS korjaa tämän:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Tämä sisältö sisältää kenoviivan. PowerDNS Auth 5.1.x poistaa yhden kenoviivaescapauksen tason sen API:n kautta tallennetuista tietueista, joten se voidaan tallentaa eri tavalla kuin syötit."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "jaettu"

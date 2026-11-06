@@ -16755,3 +16755,74 @@ msgstr "La contraseña debe contener al menos un número"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "La contraseña debe contener al menos un carácter especial"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Este CNAME no se puede comprobar: demasiados registros apuntan a este nombre."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "El registro NID debe contener la preferencia y el identificador de nodo separados por un espacio."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Selección de grupo no válida."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "No tiene permiso para compartir esta plantilla de zona."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Solo puede compartir una plantilla de zona con grupos a los que pertenece."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Error al compartir la plantilla de zona: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC está habilitado pero la API de PowerDNS (pdns_api.url y pdns_api.key) no está configurada, por lo que las zonas firmadas no se rectifican tras los cambios y sus cadenas NSEC/NSEC3 quedan obsoletas. Configure la API de PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Compartida con grupos"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "No es miembro de ningún grupo."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Los miembros de estos grupos pueden ver y usar esta plantilla, y editarla cuando pueden editar plantillas de zona"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Este usuario posee plantillas de zona compartidas con grupos. Se le transferirán a usted para que los grupos puedan seguir usándolas:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x elimina un nivel de escape con barra invertida de los registros guardados a través de su API. Guardar cualquier registro con el mismo nombre y tipo que los registros siguientes también los reescribe, de modo que se pierde una barra invertida o se rechaza una comilla escapada. Edítelos con pdnsutil hasta que PowerDNS lo corrija:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Este contenido contiene una barra invertida. PowerDNS Auth 5.1.x elimina un nivel de escape con barra invertida de los registros guardados a través de su API, por lo que puede almacenarse de forma distinta a lo que introdujo."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "compartida"

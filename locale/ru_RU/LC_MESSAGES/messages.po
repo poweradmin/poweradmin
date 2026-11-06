@@ -16601,3 +16601,74 @@ msgstr "Пароль должен содержать хотя бы одну ци
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Пароль должен содержать хотя бы один специальный символ"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Этот CNAME нельзя проверить: на это имя указывает слишком много записей."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Запись NID должна содержать предпочтение и идентификатор узла, разделённые пробелом."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Недопустимый выбор группы."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "У вас нет разрешения на предоставление общего доступа к этому шаблону зоны."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Предоставить общий доступ к шаблону зоны можно только группам, в которых вы состоите."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Ошибка при предоставлении общего доступа к шаблону зоны: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC включён, но API PowerDNS (pdns_api.url и pdns_api.key) не настроен, поэтому подписанные зоны не ректифицируются после изменений, а их цепочки NSEC/NSEC3 устаревают. Настройте API PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Общий доступ для групп"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Вы не состоите ни в одной группе."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Участники этих групп могут просматривать и использовать этот шаблон, а также редактировать его, если им разрешено редактировать шаблоны зон"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Этот пользователь владеет шаблонами зон, к которым предоставлен общий доступ группам. Они будут переданы вам, чтобы группы могли продолжать ими пользоваться:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x убирает один уровень экранирования обратной косой черты в записях, сохраняемых через его API. Сохранение любой записи с тем же именем и типом, что и у записей ниже, перезаписывает и их, поэтому обратная косая черта теряется, а экранированная кавычка отклоняется. Редактируйте их через pdnsutil, пока PowerDNS не исправит это:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Это содержимое содержит обратную косую черту. PowerDNS Auth 5.1.x убирает один уровень экранирования обратной косой черты в записях, сохраняемых через его API, поэтому оно может быть сохранено не так, как вы его ввели."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "общий"

@@ -16598,3 +16598,74 @@ msgstr "Hasło musi zawierać co najmniej jedną cyfrę"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Hasło musi zawierać co najmniej jeden znak specjalny"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Nie można sprawdzić tego CNAME: zbyt wiele rekordów wskazuje na tę nazwę."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Rekord NID musi zawierać preferencję i identyfikator węzła oddzielone spacją."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Nieprawidłowy wybór grupy."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Nie masz uprawnień do udostępniania tego szablonu strefy."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Szablon strefy można udostępniać tylko grupom, do których należysz."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Błąd podczas udostępniania szablonu strefy: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC jest włączony, ale PowerDNS API (pdns_api.url i pdns_api.key) nie jest skonfigurowane, więc podpisane strefy nie są rectifikowane po zmianach, a ich łańcuchy NSEC/NSEC3 stają się nieaktualne. Skonfiguruj PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Udostępniono grupom"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Nie należysz do żadnej grupy."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Członkowie tych grup mogą wyświetlać i używać tego szablonu oraz go edytować, jeśli mogą edytować szablony stref"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Ten użytkownik jest właścicielem szablonów stref udostępnionych grupom. Zostaną one przekazane Tobie, aby grupy mogły z nich nadal korzystać:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x usuwa jeden poziom escapowania ukośnikiem odwrotnym z rekordów zapisanych przez jego API. Zapisanie dowolnego rekordu o tej samej nazwie i typie co poniższe rekordy nadpisuje także je, przez co ukośnik odwrotny zostaje utracony lub escapowany cudzysłów zostaje odrzucony. Edytuj je za pomocą pdnsutil, dopóki PowerDNS tego nie naprawi:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Ta zawartość zawiera ukośnik odwrotny. PowerDNS Auth 5.1.x usuwa jeden poziom escapowania ukośnikiem odwrotnym z rekordów zapisanych przez jego API, więc może zostać zapisana inaczej, niż wpisano."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "udostępniony"

@@ -15982,3 +15982,74 @@ msgstr "הסיסמה חייבת להכיל לפחות ספרה אחת"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "לא ניתן לבדוק את ה-CNAME הזה: יותר מדי רשומות מצביעות על שם זה."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "רשומת NID חייבת להכיל העדפה ומזהה צומת המופרדים ברווח."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "בחירת הקבוצה אינה תקינה."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "אין לך הרשאה לשתף תבנית אזור זו."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "ניתן לשתף תבנית אזור רק עם קבוצות שאתה חבר בהן."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "שגיאה בשיתוף תבנית האזור: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC מופעל אך ה-PowerDNS API (‏pdns_api.url ו-pdns_api.key) אינו מוגדר, ולכן אזורים חתומים אינם עוברים rectify לאחר שינויים ושרשראות ה-NSEC/NSEC3 שלהם מתיישנות. הגדר את ה-PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "משותף עם קבוצות"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "אינך חבר באף קבוצה."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "חברי קבוצות אלה יכולים לראות ולהשתמש בתבנית זו, ולערוך אותה כאשר מותר להם לערוך תבניות אזור"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "משתמש זה הוא הבעלים של תבניות אזור המשותפות עם קבוצות. הן יועברו אליך כדי שהקבוצות יוכלו להמשיך להשתמש בהן:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x מסיר רמה אחת של escape בלוכסן הפוך מרשומות שנשמרו דרך ה-API שלו. שמירת רשומה כלשהי עם אותו שם וסוג כמו הרשומות שלהלן כותבת אותן מחדש גם כן, כך שלוכסן הפוך אובד או שמירת מירכאות עם escape נדחית. ערוך אותן באמצעות pdnsutil עד ש-PowerDNS יתקן זאת:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "תוכן זה מכיל לוכסן הפוך. PowerDNS Auth 5.1.x מסיר רמה אחת של escape בלוכסן הפוך מרשומות שנשמרו דרך ה-API שלו, ולכן ייתכן שיישמר באופן שונה ממה שהזנת."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "משותף"

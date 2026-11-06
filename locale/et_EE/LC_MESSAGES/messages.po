@@ -16130,3 +16130,74 @@ msgstr "Parool peab sisaldama vähemalt ühte numbrit"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parool peab sisaldama vähemalt ühte erimärki"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Seda CNAME-i ei saa kontrollida: liiga paljud kirjed viitavad sellele nimele."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID-kirje peab sisaldama eelistust ja sõlme identifikaatorit, mis on eraldatud tühikuga."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Kehtetu grupi valik."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Teil pole õigust seda tsooni malli jagada."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Tsooni malli saate jagada ainult gruppidega, kuhu te kuulute."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Viga tsooni malli jagamisel: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC on lubatud, kuid PowerDNS API (pdns_api.url ja pdns_api.key) pole seadistatud, mistõttu allkirjastatud tsoone ei rektifitseerita (rectify) pärast muudatusi ja nende NSEC/NSEC3 ahelad aeguvad. Seadistage PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Jagatud gruppidega"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Te ei kuulu ühtegi gruppi."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Nende gruppide liikmed näevad ja kasutavad seda malli ning saavad seda muuta, kui nad tohivad tsooni malle muuta"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "See kasutaja omab tsooni malle, mida jagatakse gruppidega. Need antakse üle teile, et grupid saaksid neid edasi kasutada:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x eemaldab oma API kaudu salvestatud kirjetest ühe kaldkriipsu paojada taseme. Mis tahes kirje salvestamine samal nimel ja tüübiga kui allolevad kirjed kirjutab ka need ümber, mistõttu kaldkriips läheb kaduma või paojadaga jutumärk lükatakse tagasi. Muutke neid pdnsutil abil, kuni PowerDNS selle parandab:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "See sisu sisaldab kaldkriipsu. PowerDNS Auth 5.1.x eemaldab oma API kaudu salvestatud kirjetest ühe kaldkriipsu paojada taseme, seega võidakse see salvestada teisiti kui sisestasite."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "jagatud"

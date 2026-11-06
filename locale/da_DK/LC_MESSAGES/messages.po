@@ -16460,3 +16460,74 @@ msgstr "Adgangskoden skal indeholde mindst ét tal"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Adgangskoden skal indeholde mindst ét specialtegn"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Denne CNAME kan ikke kontrolleres: for mange poster peger på dette navn."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "En NID-post skal indeholde præference og node-identifikator adskilt af mellemrum."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Ugyldigt gruppevalg."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Du har ikke tilladelse til at dele denne zoneskabelon."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Du kan kun dele en zoneskabelon med grupper, du er medlem af."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Fejl ved deling af zoneskabelon: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC er aktiveret, men PowerDNS API (pdns_api.url og pdns_api.key) er ikke konfigureret, så signerede zoner bliver ikke rectificeret efter ændringer, og deres NSEC/NSEC3-kæder bliver forældede. Konfigurer PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Delt med grupper"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Du er ikke medlem af nogen gruppe."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Medlemmer af disse grupper kan se og bruge denne skabelon og redigere den, når de må redigere zoneskabeloner"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Denne bruger ejer zoneskabeloner, der er delt med grupper. De overdrages til dig, så grupperne kan fortsætte med at bruge dem:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x fjerner ét niveau af backslash-escaping fra poster gemt via dets API. Hvis du gemmer en post med samme navn og type som posterne nedenfor, omskrives de også, så en backslash går tabt, eller et escapet citationstegn afvises. Redigér dem med pdnsutil, indtil PowerDNS har rettet dette:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Dette indhold indeholder en backslash. PowerDNS Auth 5.1.x fjerner ét niveau af backslash-escaping fra poster gemt via dets API, så det kan blive gemt anderledes, end du indtastede."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "delt"

@@ -15715,3 +15715,74 @@ msgstr "รหัสผ่านต้องมีตัวเลขอย่า
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "รหัสผ่านต้องมีอักขระพิเศษอย่างน้อยหนึ่งตัว"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "ไม่สามารถตรวจสอบ CNAME นี้ได้: มีเรกคอร์ดจำนวนมากเกินไปชี้ไปที่ชื่อนี้"
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "เรกคอร์ด NID ต้องมีค่าความพึงพอใจ (preference) และตัวระบุโหนดที่คั่นด้วยช่องว่าง"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "การเลือกกลุ่มไม่ถูกต้อง"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "คุณไม่มีสิทธิ์แชร์ต้นแบบโซนนี้"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "คุณแชร์ต้นแบบโซนได้เฉพาะกับกลุ่มที่คุณเป็นสมาชิกเท่านั้น"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "เกิดข้อผิดพลาดในการแชร์ต้นแบบโซน: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC เปิดใช้งานอยู่ แต่ยังไม่ได้กำหนดค่า PowerDNS API (pdns_api.url และ pdns_api.key) โซนที่ลงนามจึงไม่ถูก rectify หลังการเปลี่ยนแปลง และสายโซ่ NSEC/NSEC3 จะล้าสมัย โปรดกำหนดค่า PowerDNS API"
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "แชร์กับกลุ่ม"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "คุณไม่ได้เป็นสมาชิกของกลุ่มใดเลย"
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "สมาชิกของกลุ่มเหล่านี้สามารถดูและใช้ต้นแบบนี้ และแก้ไขได้หากมีสิทธิ์แก้ไขต้นแบบโซน"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "ผู้ใช้นี้เป็นเจ้าของต้นแบบโซนที่แชร์กับกลุ่ม ต้นแบบเหล่านั้นจะถูกโอนให้คุณเพื่อให้กลุ่มใช้งานต่อได้:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x ลบการ escape เครื่องหมายแบ็กสแลชออกหนึ่งระดับจากเรกคอร์ดที่บันทึกผ่าน API การบันทึกเรกคอร์ดใดก็ตามที่มีชื่อและประเภทเดียวกับเรกคอร์ดด้านล่างจะเขียนทับเรกคอร์ดเหล่านั้นด้วย ทำให้แบ็กสแลชหายไปหรือเครื่องหมายคำพูดที่ escape ถูกปฏิเสธ แก้ไขด้วย pdnsutil จนกว่า PowerDNS จะแก้ไขเรื่องนี้:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "เนื้อหานี้มีเครื่องหมายแบ็กสแลช PowerDNS Auth 5.1.x ลบการ escape เครื่องหมายแบ็กสแลชออกหนึ่งระดับจากเรกคอร์ดที่บันทึกผ่าน API จึงอาจถูกเก็บไม่ตรงกับที่คุณป้อน"
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "แชร์แล้ว"

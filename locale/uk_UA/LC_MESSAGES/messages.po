@@ -16541,3 +16541,74 @@ msgstr "Пароль має містити щонайменше одну циф�
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Пароль має містити щонайменше один спеціальний символ"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Цей CNAME не можна перевірити: на це ім'я вказує забагато записів."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Запис NID має містити пріоритет і ідентифікатор вузла, розділені пробілом."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Недійсний вибір групи."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "У вас немає дозволу надавати спільний доступ до цього шаблону зони."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Надати спільний доступ до шаблону зони можна лише групам, до яких ви належите."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Помилка надання спільного доступу до шаблону зони: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC увімкнено, але API PowerDNS (pdns_api.url і pdns_api.key) не налаштовано, тому підписані зони не ректифікуються після змін, а їхні ланцюжки NSEC/NSEC3 застарівають. Налаштуйте API PowerDNS."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Спільний доступ для груп"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Ви не належите до жодної групи."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Учасники цих груп можуть переглядати та використовувати цей шаблон, а також редагувати його, якщо їм дозволено редагувати шаблони зон"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Цей користувач володіє шаблонами зон, до яких надано спільний доступ групам. Їх буде передано вам, щоб групи могли й далі ними користуватися:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x прибирає один рівень екранування зворотної косої риски в записах, збережених через його API. Збереження будь-якого запису з тим самим іменем і типом, що й записи нижче, перезаписує й їх, тому зворотна коса риска губиться, а екранована лапка відхиляється. Редагуйте їх через pdnsutil, доки PowerDNS не виправить це:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Цей вміст містить зворотну косу риску. PowerDNS Auth 5.1.x прибирає один рівень екранування зворотної косої риски в записах, збережених через його API, тому його може бути збережено інакше, ніж ви ввели."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "спільний"

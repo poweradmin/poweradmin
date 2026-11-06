@@ -16980,3 +16980,74 @@ msgstr "Ο κωδικός πρόσβασης πρέπει να περιέχει 
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Αυτό το CNAME δεν μπορεί να ελεγχθεί: πάρα πολλές εγγραφές δείχνουν σε αυτό το όνομα."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "Η εγγραφή NID πρέπει να περιέχει προτίμηση και αναγνωριστικό κόμβου χωρισμένα με κενό."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Μη έγκυρη επιλογή ομάδας."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Δεν έχετε δικαίωμα να μοιραστείτε αυτό το πρότυπο ζώνης."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Μπορείτε να μοιραστείτε ένα πρότυπο ζώνης μόνο με ομάδες στις οποίες ανήκετε."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Σφάλμα κατά την κοινή χρήση του προτύπου ζώνης: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "Το DNSSEC είναι ενεργοποιημένο αλλά το PowerDNS API (pdns_api.url και pdns_api.key) δεν έχει ρυθμιστεί, οπότε οι υπογεγραμμένες ζώνες δεν διορθώνονται (rectify) μετά από αλλαγές και οι αλυσίδες NSEC/NSEC3 τους παλιώνουν. Ρυθμίστε το PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Κοινή χρήση με ομάδες"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Δεν είστε μέλος καμίας ομάδας."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Τα μέλη αυτών των ομάδων μπορούν να δουν και να χρησιμοποιήσουν αυτό το πρότυπο και να το επεξεργαστούν όταν επιτρέπεται να επεξεργάζονται πρότυπα ζωνών"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Αυτός ο χρήστης κατέχει πρότυπα ζωνών που μοιράζονται με ομάδες. Θα μεταβιβαστούν σε εσάς ώστε οι ομάδες να συνεχίσουν να τα χρησιμοποιούν:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "Το PowerDNS Auth 5.1.x αφαιρεί ένα επίπεδο διαφυγής με ανάποδη κάθετο από τις εγγραφές που αποθηκεύονται μέσω του API του. Η αποθήκευση οποιασδήποτε εγγραφής με το ίδιο όνομα και τύπο με τις παρακάτω εγγραφές τις ξαναγράφει επίσης, οπότε μια ανάποδη κάθετος χάνεται ή ένα διαφυγμένο εισαγωγικό απορρίπτεται. Επεξεργαστείτε τις με το pdnsutil μέχρι το PowerDNS να το διορθώσει:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Αυτό το περιεχόμενο περιέχει ανάποδη κάθετο. Το PowerDNS Auth 5.1.x αφαιρεί ένα επίπεδο διαφυγής με ανάποδη κάθετο από τις εγγραφές που αποθηκεύονται μέσω του API του, οπότε μπορεί να αποθηκευτεί διαφορετικά από ό,τι εισαγάγατε."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "κοινόχρηστο"

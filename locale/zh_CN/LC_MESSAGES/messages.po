@@ -15385,3 +15385,74 @@ msgstr "密码必须包含至少一个数字"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "密码必须包含至少一个特殊字符"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "无法检查此 CNAME：指向该名称的记录过多。"
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "NID 记录必须包含优先级和节点标识符，以空格分隔。"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "组选择无效。"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "您没有共享此区域模板的权限。"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "您只能与自己所属的组共享区域模板。"
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "共享区域模板时出错: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "DNSSEC 已启用，但未配置 PowerDNS API（pdns_api.url 和 pdns_api.key），因此已签名的区域在更改后不会被 rectify，其 NSEC/NSEC3 链会过期。请配置 PowerDNS API。"
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "与组共享"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "您不属于任何组。"
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "这些组的成员可以查看和使用此模板，并在有权编辑区域模板时编辑它"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "此用户拥有与组共享的区域模板。这些模板将移交给您，以便各组继续使用:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "PowerDNS Auth 5.1.x 会从通过其 API 保存的记录中去掉一层反斜杠转义。保存与下列记录同名同类型的任何记录也会重写它们，因此反斜杠会丢失，或转义的引号被拒绝。在 PowerDNS 修复此问题之前，请使用 pdnsutil 编辑它们:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "此内容包含反斜杠。PowerDNS Auth 5.1.x 会从通过其 API 保存的记录中去掉一层反斜杠转义，因此存储结果可能与您输入的不同。"
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "已共享"

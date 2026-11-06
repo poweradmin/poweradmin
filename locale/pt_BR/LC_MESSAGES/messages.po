@@ -16686,3 +16686,74 @@ msgstr "A senha deve conter pelo menos um número"
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "A senha deve conter pelo menos um caractere especial"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "Este CNAME não pode ser verificado: muitos registros apontam para este nome."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "O registro NID deve conter a preferência e o identificador do nó separados por espaço."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "Seleção de grupo inválida."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "Você não tem permissão para compartilhar este modelo de zona."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "Você só pode compartilhar um modelo de zona com grupos dos quais faz parte."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "Erro ao compartilhar o modelo de zona: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "O DNSSEC está ativado, mas a PowerDNS API (pdns_api.url e pdns_api.key) não está configurada, então as zonas assinadas não são retificadas após alterações e suas cadeias NSEC/NSEC3 ficam desatualizadas. Configure a PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "Compartilhado com grupos"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "Você não é membro de nenhum grupo."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "Os membros desses grupos podem ver e usar este modelo, e editá-lo quando puderem editar modelos de zona"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "Este usuário possui modelos de zona compartilhados com grupos. Eles serão transferidos para você para que os grupos possam continuar usando-os:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "O PowerDNS Auth 5.1.x remove um nível de escape de barra invertida dos registros salvos pela sua API. Salvar qualquer registro com o mesmo nome e tipo dos registros abaixo também os reescreve, e então uma barra invertida é perdida ou uma aspa com escape é recusada. Edite-os com pdnsutil até o PowerDNS corrigir isso:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "Este conteúdo contém uma barra invertida. O PowerDNS Auth 5.1.x remove um nível de escape de barra invertida dos registros salvos pela sua API, então ele pode ser armazenado de forma diferente do que você digitou."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "compartilhado"

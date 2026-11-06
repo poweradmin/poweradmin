@@ -16163,3 +16163,74 @@ msgstr "يجب أن تحتوي كلمة المرور على رقم واحد عل
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:238
+msgid "This CNAME cannot be checked: too many records point to this name."
+msgstr "لا يمكن فحص سجل CNAME هذا: هناك عدد كبير جدًا من السجلات تشير إلى هذا الاسم."
+
+#: lib/Domain/Service/Template/ZoneTemplateRecordValidationService.php:127
+msgid ""
+"NID record must contain preference and node identifier separated by space."
+msgstr "يجب أن يحتوي سجل NID على الأفضلية ومعرّف العقدة مفصولين بمسافة."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:154
+msgid "Invalid group selection."
+msgstr "اختيار المجموعة غير صالح."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:149
+msgid "You do not have the permission to share this zone template."
+msgstr "ليس لديك إذن لمشاركة نموذج المنطقة هذا."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:161
+msgid "You can only share a zone template with groups you belong to."
+msgstr "يمكنك مشاركة نموذج المنطقة فقط مع المجموعات التي تنتمي إليها."
+
+#: lib/Domain/Service/Template/ZoneTemplateGroupShares.php:138
+msgid "Error sharing zone template: "
+msgstr "خطأ في مشاركة نموذج المنطقة: "
+
+#: templates/default/index.html:41
+msgid ""
+"DNSSEC is enabled but the PowerDNS API (pdns_api.url and pdns_api.key) is "
+"not configured, so signed zones are not rectified after changes and their "
+"NSEC/NSEC3 chains go stale. Configure the PowerDNS API."
+msgstr "تم تفعيل DNSSEC لكن PowerDNS API (pdns_api.url وpdns_api.key) غير مهيأ، لذلك لا يتم تصحيح المناطق الموقعة (rectify) بعد التغييرات وتصبح سلاسل NSEC/NSEC3 الخاصة بها قديمة. قم بتهيئة PowerDNS API."
+
+#: templates/default/edit_zone_templ.html:177
+msgid "Shared with groups"
+msgstr "مشتركة مع المجموعات"
+
+#: templates/default/edit_zone_templ.html:171
+msgid "You are not a member of any group."
+msgstr "لست عضوًا في أي مجموعة."
+
+#: templates/default/edit_zone_templ.html:173
+msgid ""
+"Members of these groups can see and use this template, and edit it when "
+"they may edit zone templates"
+msgstr "يمكن لأعضاء هذه المجموعات عرض هذا النموذج واستخدامه، وتعديله عندما يُسمح لهم بتعديل نماذج المناطق"
+
+#: templates/default/delete_user.html:21
+msgid ""
+"This user owns zone templates that are shared with groups. They will be "
+"handed over to you so the groups can keep using them:"
+msgstr "يمتلك هذا المستخدم نماذج مناطق مشتركة مع مجموعات. ستُنقل ملكيتها إليك حتى تتمكن المجموعات من متابعة استخدامها:"
+
+#: templates/default/_partials/api_escape_warning.html:6
+msgid ""
+"PowerDNS Auth 5.1.x removes one level of backslash escaping from records "
+"saved through its API. Saving any record with the same name and type as the "
+"records below rewrites them as well, so a backslash is lost or an escaped "
+"quote is refused. Edit them with pdnsutil until PowerDNS fixes this:"
+msgstr "يزيل PowerDNS Auth 5.1.x مستوى واحدًا من الهروب بالشرطة المائلة العكسية من السجلات المحفوظة عبر واجهته البرمجية. حفظ أي سجل له الاسم والنوع نفسهما للسجلات أدناه يعيد كتابتها أيضًا، فتُفقد الشرطة المائلة العكسية أو تُرفض علامة اقتباس مهربة. عدّلها باستخدام pdnsutil إلى أن يصلح PowerDNS هذا:"
+
+#: templates/default/_partials/api_escape_warning.html:16
+msgid ""
+"This content contains a backslash. PowerDNS Auth 5.1.x removes one level of "
+"backslash escaping from records saved through its API, so it may be stored "
+"differently from what you entered."
+msgstr "يحتوي هذا المحتوى على شرطة مائلة عكسية. يزيل PowerDNS Auth 5.1.x مستوى واحدًا من الهروب بالشرطة المائلة العكسية من السجلات المحفوظة عبر واجهته البرمجية، لذا قد يتم تخزينه بشكل مختلف عما أدخلته."
+
+#: templates/default/list_zone_templ.html:82
+msgid "shared"
+msgstr "مشتركة"
