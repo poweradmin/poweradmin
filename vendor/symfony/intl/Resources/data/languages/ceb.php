@@ -1,0 +1,38 @@
+<?php
+
+return [
+    'Names' => [
+        'ar' => 'Arabic',
+        'bn' => 'Bangla',
+        'ceb' => 'Cebuano',
+        'de' => 'German',
+        'en' => 'English',
+        'es' => 'Espanyol',
+        'fr' => 'French',
+        'hi' => 'Hindi',
+        'id' => 'Indonesian',
+        'it' => 'Italian',
+        'ja' => 'Japanese',
+        'ko' => 'Korean',
+        'nl' => 'Dutch',
+        'pl' => 'Polish',
+        'pt' => 'Portuguese',
+        'ru' => 'Russian',
+        'th' => 'Thai',
+        'tr' => 'Turkish',
+        'zh' => 'Chinese',
+    ],
+    'LocalizedNames' => [
+        'ar_001' => 'Modernong Standard nga Arabic',
+        'de_CH' => 'Swiss High German',
+        'en_GB' => 'English (British)',
+        'en_US' => 'English (America)',
+        'es_419' => 'Spanish (Latin America)',
+        'es_ES' => 'Spanish (Europe)',
+        'es_MX' => 'Spanish (Mexico)',
+        'nl_BE' => 'Flemish',
+        'pt_PT' => 'Portuguese (Europe)',
+        'zh_Hans' => 'Pinasimple nga Chinese',
+        'zh_Hant' => 'Tradisyonal nga Chinese',
+    ],
+];
