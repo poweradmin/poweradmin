@@ -341,4 +341,40 @@ class ZoneNameBackfillUpdateScriptIntegrationTest extends TestCase
 
         $this->assertSame($before, $this->zones($db));
     }
+
+    public function testThePostgresqlBackfillRunsWithoutTheTempPrivilege(): void
+    {
+        $name = self::scratch() . '_notemp';
+        $dsn = 'pgsql:host=127.0.0.1;port=5432;dbname=';
+        $options = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+        try {
+            $admin = new PDO($dsn . 'pdns', 'pdns', 'poweradmin', $options);
+        } catch (PDOException $e) {
+            $this->markTestSkipped('pgsql is not reachable: ' . $e->getMessage());
+        }
+
+        // A scratch database, so revoking TEMP from PUBLIC leaves the shared one untouched
+        $admin->exec("DROP DATABASE IF EXISTS $name WITH (FORCE)");
+        $admin->exec("DROP ROLE IF EXISTS $name");
+        $admin->exec("CREATE ROLE $name LOGIN PASSWORD 'notemp'");
+        $admin->exec("CREATE DATABASE $name");
+        try {
+            $admin->exec("REVOKE ALL ON DATABASE $name FROM PUBLIC");
+            $admin->exec("GRANT CONNECT ON DATABASE $name TO $name");
+            (new PDO($dsn . $name, 'pdns', 'poweradmin', $options))->exec("GRANT USAGE, CREATE ON SCHEMA public TO $name");
+
+            $db = new PDO($dsn . $name, $name, 'notemp', $options);
+            $this->assertFalse((bool)$db->query("SELECT has_database_privilege(current_database(), 'TEMP')")->fetchColumn());
+            $this->createTables($db, 'pgsql');
+
+            $db->exec($this->backfillSql('pgsql'));
+
+            $this->assertSame('one.example', $this->zones($db)[1][1]);
+            $this->assertNull($db->query("SELECT to_regclass('poweradmin_460_zone_copies')")->fetchColumn(), 'the work table is dropped');
+            $db = null;
+        } finally {
+            $admin->exec("DROP DATABASE IF EXISTS $name WITH (FORCE)");
+            $admin->exec("DROP ROLE IF EXISTS $name");
+        }
+    }
 }

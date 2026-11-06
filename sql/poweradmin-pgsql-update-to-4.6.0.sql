@@ -230,8 +230,9 @@ BEGIN
 
     -- The unused copies, each with its own canonical id and its domain's id. Logs, template
     -- links and change requests on that id move to the domain's id before the copy is removed.
-    DROP TABLE IF EXISTS pg_temp.zone_copies;
-    CREATE TEMP TABLE zone_copies ON COMMIT DROP AS
+    -- A plain work table: CREATE TEMP TABLE needs the TEMP privilege, which hardened servers revoke
+    DROP TABLE IF EXISTS poweradmin_460_zone_copies;
+    CREATE TABLE poweradmin_460_zone_copies AS
     SELECT c.id, COALESCE(NULLIF(c.domain_id, 0), c.id) AS zone_id, d.id AS domain_id
     FROM zones c
     JOIN domains d ON c.zone_name = d.name
@@ -244,14 +245,14 @@ BEGIN
       AND NOT EXISTS (SELECT 1 FROM zones n WHERE COALESCE(NULLIF(n.domain_id, 0), n.id) = d.id AND n.zone_name IS NOT NULL)
       AND EXISTS (SELECT 1 FROM zones s WHERE s.domain_id = d.id);
 
-    UPDATE log_zones t SET zone_id = c.domain_id FROM zone_copies c WHERE t.zone_id = c.zone_id;
-    UPDATE log_changesets t SET zone_id = c.domain_id FROM zone_copies c WHERE t.zone_id = c.zone_id;
-    UPDATE log_record_changes t SET zone_id = c.domain_id FROM zone_copies c WHERE t.zone_id = c.zone_id;
-    UPDATE zone_change_requests t SET zone_id = c.domain_id FROM zone_copies c WHERE t.zone_id = c.zone_id;
-    UPDATE records_zone_templ t SET domain_id = c.domain_id FROM zone_copies c WHERE t.domain_id = c.zone_id;
-    UPDATE records_zone_templ_api t SET domain_id = c.domain_id FROM zone_copies c WHERE t.domain_id = c.zone_id;
-    DELETE FROM zones z USING zone_copies c WHERE z.id = c.id;
-    DROP TABLE pg_temp.zone_copies;
+    UPDATE log_zones t SET zone_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.zone_id = c.zone_id;
+    UPDATE log_changesets t SET zone_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.zone_id = c.zone_id;
+    UPDATE log_record_changes t SET zone_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.zone_id = c.zone_id;
+    UPDATE zone_change_requests t SET zone_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.zone_id = c.zone_id;
+    UPDATE records_zone_templ t SET domain_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.domain_id = c.zone_id;
+    UPDATE records_zone_templ_api t SET domain_id = c.domain_id FROM poweradmin_460_zone_copies c WHERE t.domain_id = c.zone_id;
+    DELETE FROM zones z USING poweradmin_460_zone_copies c WHERE z.id = c.id;
+    DROP TABLE poweradmin_460_zone_copies;
 
     UPDATE zones
     SET zone_name = d.name
