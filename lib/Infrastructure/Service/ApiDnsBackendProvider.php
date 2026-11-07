@@ -163,6 +163,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
                 }
 
                 if (is_array($existing)) {
+                    $this->clearStaleZoneGrants((int)($existing['domain_id'] ?: $existing['id']));
                     $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id");
                     $stmt->bindValue(':type', strtoupper($type));
                     $stmt->bindValue(':master', $slaveMaster);
@@ -201,6 +202,22 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         // A caller's transaction cannot be replayed from here, so only our own is retried
         return $ownsTransaction ? DeadlockRetry::run($attempt) : $attempt();
+    }
+
+    /**
+     * Drop what the previous zone of this name left on its canonical id, so the zone created
+     * under it starts without that group grants, extra owners and API key scopes.
+     */
+    private function clearStaleZoneGrants(int $zoneId): void
+    {
+        // Keys are pointed at no zone, not stripped of the row: a key with no scope is unrestricted
+        SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**

@@ -181,13 +181,25 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame([1 => [4011], 2 => [0, 4011], 3 => [30]], $this->keyScopes());
     }
 
-    public function testApiKeysOnAReusedUnsharedRowAreKept(): void
+    public function testApiKeysOnAReusedUnsharedRowMatchNoZone(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, 9, 'example.com')");
         $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 9), (3, 30)");
 
         $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
-        $this->assertSame([1 => [9], 3 => [30]], $this->keyScopes());
+        $this->assertSame([1 => [0], 3 => [30]], $this->keyScopes());
+    }
+
+    public function testAReusedRowDropsTheGroupGrantsAndExtraOwnersOfTheOldZone(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (9, 9, 1, 'example.com'), (30, 30, 1, 'c.example')");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (50, 9, 3, NULL), (51, 30, 3, NULL)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (9, 7), (30, 8)");
+
+        $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
+
+        $this->assertSame([30], $this->idsOf("SELECT domain_id FROM zones_groups"));
+        $this->assertSame([51], $this->idsOf("SELECT id FROM zones WHERE zone_name IS NULL"));
     }
 
     public function testNoZonesRowSurvivesAFailedBackfill(): void

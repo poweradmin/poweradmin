@@ -328,6 +328,13 @@ class ZoneSyncService
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
             $stmt->execute([':id' => $zoneId]);
+
+            // Scopes stay only while another zone still opens this id; otherwise they outlive their zone
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE (id = :id OR domain_id = :did) AND zone_name IS NOT NULL");
+            $stmt->execute([':id' => $canonicalId, ':did' => $canonicalId]);
+            if ((int)$stmt->fetchColumn() === 0) {
+                SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $canonicalId);
+            }
             $count++;
         }
 

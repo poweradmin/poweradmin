@@ -110,11 +110,11 @@ class ZoneSyncServiceSharedZoneIdApiKeyScopeTest extends TestCase
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 60")->fetchColumn());
     }
 
-    public function testRemovingAZoneOnAnUnsharedIdKeepsItsApiKeyScopes(): void
+    public function testRemovingAZoneOnAnUnsharedIdLeavesItsApiKeysMatchingNoZone(): void
     {
         $this->syncWith(['a.example', 'b.example', 'c.example']);
 
         $this->assertSame([5, 12, 30], array_map('intval', $this->db->query("SELECT id FROM zones ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)));
-        $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [40]], $this->keyScopes());
+        $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [0]], $this->keyScopes());
     }
 }
