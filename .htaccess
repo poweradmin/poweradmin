@@ -13,6 +13,12 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Deny sensitive directories first: the existing-file rule below would otherwise
+    # serve real files such as config/settings.php.bak. Bootstrap assets stay allowed;
+    # the path is matched relative to this directory so subfolder installs work too.
+    RewriteRule ^vendor/twbs/(bootstrap|bootstrap-icons)/ - [L]
+    RewriteRule ^(config|lib|tests|vendor)/ - [F,L]
+
     # Disable rewriting for existing files and directories
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
@@ -42,14 +48,6 @@ AddDefaultCharset UTF-8
     Order Allow,Deny
     Allow from all
 </Files>
-
-# Security: Deny access to sensitive directories
-<IfModule mod_rewrite.c>
-    # Allow Bootstrap files before general vendor blocking
-    RewriteCond %{REQUEST_URI} !^/vendor/twbs/(bootstrap|bootstrap-icons)/
-    # Block access to sensitive directories
-    RewriteRule ^(config|lib|tests|vendor)/ - [F,L]
-</IfModule>
 
 # Security: Deny access to hidden files and directories
 <Files ~ "^\..*">
