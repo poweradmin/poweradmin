@@ -244,8 +244,7 @@ class MfaService
     /**
      * Consume the supplied code if it is one of the user's recovery codes.
      *
-     * A recovery code is the documented way back into a locked account, so callers
-     * may check it before any lockout gate.
+     * Callers must apply the lockout gate first; a throttled account refuses recovery codes too.
      */
     public function consumeRecoveryCode(int $userId, #[\SensitiveParameter] string $code): bool
     {
