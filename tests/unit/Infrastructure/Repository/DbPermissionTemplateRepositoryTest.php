@@ -244,4 +244,32 @@ class DbPermissionTemplateRepositoryTest extends TestCase
             'perm_id' => [1],
         ]);
     }
+
+    #[Test]
+    public function testPermissionIdsAreStoredAsTheIntTheGuardChecked(): void
+    {
+        // MySQL rounds a stored '52.5' up to 53 (user_is_ueberuser) while the guard saw (int) 52
+        $bound = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturnCallback(static function (?array $params = null) use (&$bound): bool {
+            if (isset($params[':perm_id'])) {
+                $bound[] = $params[':perm_id'];
+            }
+            return true;
+        });
+
+        $this->db->method('prepare')->willReturn($stmt);
+        $this->db->method('lastInsertId')->willReturn('7');
+        $this->db->method('beginTransaction')->willReturn(true);
+        $this->db->method('commit')->willReturn(true);
+
+        $this->repository->addPermissionTemplate([
+            'templ_name' => 'Delegated',
+            'templ_descr' => 'Description',
+            'template_type' => 'user',
+            'perm_id' => ['52.5', '7', ['53']],
+        ]);
+
+        $this->assertSame([52, 7], $bound, 'A non-scalar id is skipped, as the guard skips it');
+    }
 }

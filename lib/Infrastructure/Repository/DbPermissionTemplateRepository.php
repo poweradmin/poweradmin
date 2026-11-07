@@ -65,9 +65,13 @@ class DbPermissionTemplateRepository
             if (isset($details['perm_id'])) {
                 $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
                 foreach ($details['perm_id'] as $perm_id) {
+                    // Store the id the superuser guard checked: MySQL rounds '52.5' to 53, (int) gives 52
+                    if (!is_scalar($perm_id)) {
+                        continue;
+                    }
                     $stmt->execute([
                         ':templ_id' => $perm_templ_id,
-                        ':perm_id' => $perm_id
+                        ':perm_id' => (int)$perm_id
                     ]);
                 }
             }
@@ -162,9 +166,13 @@ class DbPermissionTemplateRepository
 
                 $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
                 foreach ($details['perm_id'] as $perm_id) {
+                    // Store the id the superuser guard checked: MySQL rounds '52.5' to 53, (int) gives 52
+                    if (!is_scalar($perm_id)) {
+                        continue;
+                    }
                     $stmt->execute([
                         ':templ_id' => $details['templ_id'],
-                        ':perm_id' => $perm_id
+                        ':perm_id' => (int)$perm_id
                     ]);
                 }
             }
