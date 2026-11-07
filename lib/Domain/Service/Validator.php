@@ -49,7 +49,7 @@ class Validator
         $fields = explode("@", $address, 2);
         $hostnameValidator = new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         if (
-            (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) ||
+            (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/iD", $fields[0])) ||
             (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValid($fields[1]))
         ) {
             return false;
@@ -65,7 +65,7 @@ class Validator
      */
     public static function isNumber(string $string): bool
     {
-        if (!preg_match("/^[0-9]+$/i", $string)) {
+        if (!preg_match("/^[0-9]+$/iD", $string)) {
             return false;
         } else {
             return true;

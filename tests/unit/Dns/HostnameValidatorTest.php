@@ -360,4 +360,13 @@ class HostnameValidatorTest extends TestCase
         $this->assertTrue($this->validator->isValid('www.example.com'));
         $this->assertTrue($this->validator->validate('*.example.com', true)->isValid());
     }
+
+    public function testTrailingNewlineIsRejected(): void
+    {
+        foreach (["a\n.example.com", "example.com\n", "example.com.\n", "www.example.com\n"] as $name) {
+            $this->assertFalse($this->validator->isValid($name), json_encode($name));
+            $this->assertFalse($this->validator->validate($name, true)->isValid(), json_encode($name));
+        }
+        $this->assertTrue($this->validator->isValid('example.com.'));
+    }
 }

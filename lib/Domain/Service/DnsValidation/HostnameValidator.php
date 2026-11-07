@@ -64,7 +64,7 @@ class HostnameValidator
             return ValidationResult::success(['hostname' => $normalizedHostname]);
         }
 
-        $normalizedHostname = preg_replace("/\.$/", "", $normalizedHostname);
+        $normalizedHostname = preg_replace("/\.$/D", "", $normalizedHostname);
 
         # The full domain name may not exceed a total length of 253 characters.
         if (strlen($normalizedHostname) > 253) {
@@ -82,12 +82,12 @@ class HostnameValidator
 
         foreach ($hostname_labels as $hostname_label) {
             if ($allowWildcard && !isset($first)) {
-                if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
+                if (!preg_match('/^(\*|[\w\-\/]+)$/D', $hostname_label)) {
                     $errors[] = _('Invalid characters in hostname.');
                 }
                 $first = 1;
             } else {
-                if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
+                if (!preg_match('/^[\w\-\/]+$/D', $hostname_label)) {
                     $errors[] = _('Invalid characters in hostname.');
                 }
             }
