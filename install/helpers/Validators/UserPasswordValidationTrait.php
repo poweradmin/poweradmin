@@ -45,6 +45,18 @@ trait UserPasswordValidationTrait
 
     public function validateLoginPassword(#[\SensitiveParameter] $paPass, ExecutionContextInterface $context): void
     {
+        // bcrypt, the default hash, drops every byte past 72 and throws on NUL
+        if (strlen((string)$paPass) > 72) {
+            $context->buildViolation('Password must not be longer than 72 bytes.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+        if (str_contains((string)$paPass, "\0")) {
+            $context->buildViolation('Password must not contain a NUL character.')
+                ->atPath('pa_pass')
+                ->addViolation();
+        }
+
         $policy = $this->config['password_policy'];
         if ($policy['require_uppercase'] && !preg_match('/[A-Z]/', $paPass)) {
             $context->buildViolation('Password must contain at least one uppercase letter.')
