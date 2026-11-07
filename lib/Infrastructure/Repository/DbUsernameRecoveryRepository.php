@@ -72,7 +72,7 @@ final class DbUsernameRecoveryRepository implements UsernameRecoveryRepositoryIn
         $db_type = $this->config->get('database', 'type');
         $sql = "SELECT COUNT(*)
                 FROM username_recovery_requests
-                WHERE email = :email
+                WHERE " . DbCompat::caseInsensitiveEquals($db_type, 'email', ':email') . "
                 AND created_at > " . DbCompat::dateSubtract($db_type, $seconds);
 
         $stmt = $this->db->prepare($sql);
