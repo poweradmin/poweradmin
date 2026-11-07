@@ -106,7 +106,8 @@ class ZoneTemplateRecordValidationService
             return ValidationResult::failure(_('Invalid record type.'));
         }
 
-        $resolvedName = $this->resolvePlaceholders($name);
+        // "@" is the apex; the hostname validator no longer accepts it as a literal name
+        $resolvedName = $this->resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
         $resolvedContent = $this->resolvePlaceholders($content);
 
         // Zone creation completes short SOA rdata with the configured timers, so a
