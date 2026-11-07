@@ -363,9 +363,10 @@ class EditUserController extends BaseController
 
         // Changing another user's password needs user_passwd_edit_others; without it
         // the posted password is ignored and the other fields still save. An LDAP
-        // or web server account has no local password to set.
+        // or web server account has no local password to set. Your own goes through
+        // the change password page, which asks for the current one.
         $password = (string)$this->httpRequest->getPostParam('password', '');
-        if ($password !== '' && !$useLdap && !$useRemoteUser && $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId)) {
+        if ($password !== '' && !$isOwnProfile && !$useLdap && !$useRemoteUser && $this->services()->apiPermissionService()->canEditUserPassword($callerId, $editId)) {
             $input['password'] = $password;
         }
 
