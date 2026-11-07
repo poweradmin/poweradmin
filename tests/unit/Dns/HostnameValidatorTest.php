@@ -375,4 +375,12 @@ class HostnameValidatorTest extends TestCase
         $this->assertTrue($this->validator->isValid("*.example.com", true));
         $this->assertSame("example.com", $this->validator->normalizeRecordName("@", "example.com"));
     }
+
+    public function testTrailingNewlineIsRejected(): void
+    {
+        $this->assertFalse($this->validator->isValid("example.com\n"));
+        $this->assertFalse($this->validator->isValid("a\n.example.com"));
+        $this->assertFalse($this->validator->isValid("*\n.example.com", true));
+        $this->assertTrue($this->validator->isValid("example.com"));
+    }
 }

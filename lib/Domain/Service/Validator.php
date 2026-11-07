@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ class Validator
         $fields = explode("@", $address, 2);
         $hostnameValidator = new HostnameValidator($this->config);
         if (
-            (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) ||
+            (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/iD", $fields[0])) ||
             (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValid($fields[1]))
         ) {
             return false;
@@ -61,7 +61,7 @@ class Validator
      */
     public static function isNumber(string $string): bool
     {
-        if (!preg_match("/^[0-9]+$/i", $string)) {
+        if (!preg_match("/^[0-9]+$/iD", $string)) {
             return false;
         } else {
             return true;
