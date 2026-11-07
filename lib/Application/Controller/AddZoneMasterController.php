@@ -120,6 +120,12 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode($raw_domain);
         $dom_type = $_POST["dom_type"];
+        // The form offers only these; without the check zone_master_add could create a SLAVE zone
+        if (!in_array($dom_type, ['MASTER', 'NATIVE'], true)) {
+            $this->setMessage('add_zone_master', 'error', _('Invalid or unexpected input given.'));
+            $this->showForm();
+            return;
+        }
         $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
         $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());

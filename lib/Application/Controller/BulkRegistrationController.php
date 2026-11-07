@@ -100,6 +100,12 @@ class BulkRegistrationController extends BaseController
 
         $domains = DomainHelper::getDomains($_POST['domains']);
         $dom_type = $_POST['dom_type'];
+        // The form offers only these; without the check zone_master_add could create a SLAVE zone
+        if (!in_array($dom_type, ['MASTER', 'NATIVE'], true)) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
+        }
         $zone_template = $_POST['zone_template'];
 
         $zoneTemplateModel = new ZoneTemplate($this->db, $this->getConfig());
