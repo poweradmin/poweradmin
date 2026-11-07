@@ -210,6 +210,53 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertCount(1, $errors);
     }
 
+    public function testValidateMetadataRowsRejectsAKindThatIsNotPlainAscii(): void
+    {
+        // The latin1 collation of the PowerDNS MySQL schema matches the accented kind to the real one
+        $controller = $this->createControllerWithConfig([]);
+
+        foreach (["ENABL\u{C9}-LUA-RECORDS", "ENABLE-LUA-RECORDS\u{200B}", "LUA-AXFR-SCR\u{130}PT"] as $kind) {
+            $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+                ['kind' => $kind, 'content' => '1'],
+            ]]);
+
+            $this->assertCount(1, $errors, $kind);
+        }
+    }
+
+    public function testValidateMetadataRowsKeepsAnUnchangedStoredRowButRefusesANewOrChangedOne(): void
+    {
+        // Removal is just the row's absence; an unchanged planted row may stay so the editor can save around it
+        $controller = $this->createControllerWithConfig([]);
+        $planted = ['kind' => "ENABL\u{C9}-LUA-RECORDS", 'content' => '1'];
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'validateMetadataRows', [[$planted], [$planted]]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'validateMetadataRows', [[['kind' => $planted['kind'], 'content' => '2']], [$planted]]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'validateMetadataRows', [[$planted], []]));
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'validateMetadataRows', [[['kind' => 'X-NOTE', 'content' => '1']], [$planted]]));
+    }
+
+    public function testApiModeRefusesDroppingAStoredKindThatIsNotPlainAscii(): void
+    {
+        // PowerDNS would delete it by a collation match that also hits ENABLE-LUA-RECORDS
+        $controller = $this->createControllerWithConfig([]);
+        $stored = [['kind' => "ENABL\u{C9}-LUA-RECORDS", 'content' => '1'], ['kind' => 'X-NOTE', 'content' => 'a']];
+
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'apiModeOddKindRemovals', [[['kind' => 'X-NOTE', 'content' => 'a']], $stored]));
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'apiModeOddKindRemovals', [[], [['kind' => 'x-note', 'content' => 'a']]]));
+    }
+
+    public function testValidateMetadataRowsAcceptsCustomKindsOfLettersDigitsHyphensAndUnderscores(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $errors = $this->invokePrivateMethod($controller, 'validateMetadataRows', [[
+            ['kind' => 'X-NOTE_2', 'content' => '1'],
+        ]]);
+
+        $this->assertSame([], $errors);
+    }
+
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();

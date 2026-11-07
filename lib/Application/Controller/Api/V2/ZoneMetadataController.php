@@ -304,6 +304,10 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
+        if (!MetadataDefinitions::isValidKindShape($kind)) {
+            return $this->returnApiError('Invalid metadata kind', 400);
+        }
+
         if (
             MetadataDefinitions::isOperatorOnly($kind)
             && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
@@ -392,6 +396,10 @@ class ZoneMetadataController extends PublicApiController
 
         if (!$this->apiPermissionService->canEditZoneMeta($this->authenticatedUserId, $zoneId)) {
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
+        }
+
+        if (!MetadataDefinitions::isValidKindShape($kind)) {
+            return $this->returnApiError('Invalid metadata kind', 400);
         }
 
         if (

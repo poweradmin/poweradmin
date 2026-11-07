@@ -129,7 +129,15 @@ class EditZoneMetadataController extends BaseController
 
             // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API calls
             // in API-backend mode, so it is passed lazily and skipped for ueberusers.
-            $validationErrors = $this->validateMetadataRows($submittedMetadata);
+            // The SQL save rewrites the zone's rows by id, so a stored row that comes back unchanged
+            // is kept; in API mode every kind is matched by PowerDNS's collation, so none is exempt.
+            $validationErrors = $this->validateMetadataRows(
+                $submittedMetadata,
+                $this->apiClient === null ? $this->loadMetadata($zoneId, $zone['name']) : []
+            );
+            if ($validationErrors === [] && $this->apiClient !== null) {
+                $validationErrors = $this->apiModeOddKindRemovals($submittedMetadata, $this->loadMetadata($zoneId, $zone['name']));
+            }
 
             if (!empty($validationErrors)) {
                 $this->setMessage('zone_metadata', 'error', $validationErrors[0]);
@@ -387,18 +395,44 @@ class EditZoneMetadataController extends BaseController
     }
 
     /**
+     * In API mode PowerDNS deletes a dropped kind by a collation match, so removing a stored
+     * ENABLÉ-LUA-RECORDS could also delete the real ENABLE-LUA-RECORDS.
+     *
+     * @param array<int, array<string, string>> $submitted
+     * @param array<int, array<string, string>> $stored
+     * @return array<int, string>
+     */
+    private function apiModeOddKindRemovals(array $submitted, array $stored): array
+    {
+        $submittedKinds = array_map(static fn(array $row): string => (string)($row['kind'] ?? ''), $submitted);
+        foreach ($stored as $row) {
+            $kind = strtoupper(trim((string)($row['kind'] ?? '')));
+            if (!MetadataDefinitions::isValidKindShape($kind) && !in_array($kind, $submittedKinds, true)) {
+                return [_('Failed to update zone metadata.')];
+            }
+        }
+
+        return [];
+    }
+
+    /**
      * Validate metadata rows against single-value metadata constraints.
      *
      * @param array<int, array{kind: string, content: string}> $rows
+     * @param array<int, array<string, string>> $storedRows Rows that may keep a kind outside the allowed characters
      * @return array<int, string>
      */
-    private function validateMetadataRows(array $rows): array
+    private function validateMetadataRows(array $rows, array $storedRows = []): array
     {
         $errors = [];
         $countsByKind = [];
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
+            if (!MetadataDefinitions::isValidKindShape($kind) && !in_array($row, $storedRows, true)) {
+                return [_('Failed to update zone metadata.')];
+            }
+
             $definition = $this->getMetadataDefinition($kind);
             $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
 

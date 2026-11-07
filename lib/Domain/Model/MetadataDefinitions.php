@@ -260,6 +260,16 @@ class MetadataDefinitions
     }
 
     /**
+     * Check that a kind is plain upper-case ASCII, so a look-alike cannot dodge the exact-match checks.
+     *
+     * MySQL's case- and accent-folding collations match ENABLÉ-LUA-RECORDS to the real kind.
+     */
+    public static function isValidKindShape(string $kind): bool
+    {
+        return preg_match('/^[A-Z0-9_-]+$/D', $kind) === 1;
+    }
+
+    /**
      * Check if a metadata kind may only be set by an administrator.
      */
     public static function isOperatorOnly(string $kind): bool
