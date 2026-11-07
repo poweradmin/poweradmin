@@ -160,6 +160,57 @@ class ZoneMetadataControllerTest extends TestCase
         );
     }
 
+    public function testSaveFirstRemovesTheKindStoredInAnotherCaseOnTheApiBackend(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([
+            ['kind' => 'X-note', 'metadata' => ['old']],
+            ['kind' => 'X-NOTE', 'metadata' => ['old']],
+            ['kind' => 'x-note', 'metadata' => ['unaddressable']],
+        ]);
+        $calls = [];
+        $apiClient->expects($this->once())->method('deleteZoneMetadata')
+            ->with($this->anything(), 'X-note')
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'delete X-note';
+                return true;
+            });
+        $apiClient->expects($this->once())->method('updateZoneMetadata')
+            ->with($this->anything(), 'X-NOTE', ['hello'])
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'put X-NOTE';
+                return true;
+            });
+
+        $zoneRepository = $this->createMock(DbZoneRepository::class);
+        $zoneRepository->method('getZone')->willReturn(['id' => 1, 'name' => 'example.com']);
+        $controller = $this->createController($apiClient);
+        $this->setProperty($controller, 'zoneRepository', $zoneRepository);
+
+        $this->assertTrue($this->invokePrivateMethod($controller, 'saveMetadataKind', [1, 'X-NOTE', ['hello']]));
+        $this->assertSame(['delete X-note', 'put X-NOTE'], $calls);
+    }
+
+    public function testDeleteAlsoRemovesTheKindStoredInAnotherCaseOnTheApiBackend(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([['kind' => 'X-note', 'metadata' => ['old']]]);
+        $deleted = [];
+        $apiClient->expects($this->exactly(2))->method('deleteZoneMetadata')
+            ->willReturnCallback(function ($zone, string $kind) use (&$deleted): bool {
+                $deleted[] = $kind;
+                return true;
+            });
+
+        $zoneRepository = $this->createMock(DbZoneRepository::class);
+        $zoneRepository->method('getZone')->willReturn(['id' => 1, 'name' => 'example.com']);
+        $controller = $this->createController($apiClient);
+        $this->setProperty($controller, 'zoneRepository', $zoneRepository);
+
+        $this->assertTrue($this->invokePrivateMethod($controller, 'deleteMetadataKindStorage', [1, 'X-NOTE']));
+        $this->assertSame(['X-note', 'X-NOTE'], $deleted);
+    }
+
     public function testDeleteClearsBooleanZoneObjectKindsWithFalse(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);

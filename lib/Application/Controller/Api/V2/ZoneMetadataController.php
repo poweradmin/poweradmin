@@ -576,7 +576,8 @@ class ZoneMetadataController extends PublicApiController
                 ]);
             }
 
-            return $this->apiClient->updateZoneMetadata(new Zone($zone['name']), $kind, $values);
+            $removed = $this->deleteKindStoredInAnotherCase(new Zone($zone['name']), $kind);
+            return $this->apiClient->updateZoneMetadata(new Zone($zone['name']), $kind, $values) && $removed;
         }
 
         // Only this kind's rows: rewriting every row would drop a kind another request wrote meanwhile
@@ -607,10 +608,28 @@ class ZoneMetadataController extends PublicApiController
                 ]);
             }
 
-            return $this->apiClient->deleteZoneMetadata(new Zone($zone['name']), $kind);
+            $removed = $this->deleteKindStoredInAnotherCase(new Zone($zone['name']), $kind);
+            return $this->apiClient->deleteZoneMetadata(new Zone($zone['name']), $kind) && $removed;
         }
 
         return $this->zoneRepository->replaceDomainMetadata($zoneId, [], $kind);
+    }
+
+    /**
+     * Delete rows of this kind PowerDNS stores in another case (X-note for X-NOTE),
+     * before the write, as a case-insensitive backend would drop the new values too.
+     */
+    private function deleteKindStoredInAnotherCase(Zone $zone, string $kind): bool
+    {
+        $success = true;
+        foreach ($this->apiClient?->getZoneMetadata($zone) ?? [] as $entry) {
+            $stored = (string)($entry['kind'] ?? '');
+            if ($stored !== $kind && strtoupper(trim($stored)) === $kind && MetadataDefinitions::writeRejection($stored, true) === null) {
+                $success = $this->apiClient->deleteZoneMetadata($zone, $stored) && $success;
+            }
+        }
+
+        return $success;
     }
 
     /**
