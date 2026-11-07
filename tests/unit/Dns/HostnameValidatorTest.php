@@ -312,4 +312,11 @@ class HostnameValidatorTest extends TestCase
         $this->assertTrue($this->validator->isValid('www.example.com'));
         $this->assertTrue($this->validator->isValid('*.example.com', true));
     }
+
+    public function testTrailingNewlineIsRejected()
+    {
+        $this->assertFalse($this->validator->isValid("example.com\n"));
+        $this->assertFalse($this->validator->isValid("a\n.example.com"));
+        $this->assertFalse($this->validator->isValid("*\n.example.com", true));
+    }
 }
