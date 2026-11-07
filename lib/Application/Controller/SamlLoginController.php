@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -110,7 +110,8 @@ class SamlLoginController extends BaseController
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            $sessionEntity = new SessionEntity(_('SAML authentication failed: ') . $e->getMessage(), 'danger');
+            $this->logger->error('SAML login could not be started: {error}', ['error' => $e->getMessage()]);
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authService->auth($sessionEntity);
         }
     }
