@@ -231,6 +231,36 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertSame(ZoneMetadataOutcome::INVALID_KIND, $this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => $kind, 'content' => '1']], self::ADMIN)->outcome);
     }
 
+    public function testAKindWithNonAsciiLettersIsRefusedBeforeTheOperatorOnlyCheck(): void
+    {
+        // latin1_swedish_ci (the PowerDNS MySQL schema) compares É equal to E
+        $service = $this->sqlService();
+
+        foreach (['ENABLÉ-LUA-RECORDS', "ENABLE-LUA-RECORDS\u{200B}", 'LUA-AXFR-SCRİPT'] as $kind) {
+            $this->assertSame(ZoneMetadataOutcome::INVALID_KIND, $service->replaceKind(self::ZONE_ID, self::ZONE, $kind, ['1'], self::EDITOR)->outcome, $kind);
+            $this->assertSame(ZoneMetadataOutcome::INVALID_KIND, $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => $kind, 'content' => '1']], self::EDITOR)->outcome, $kind);
+        }
+        $this->assertSame(ZoneMetadataOutcome::OPERATOR_ONLY, $service->replaceKind(self::ZONE_ID, self::ZONE, 'ENABLE-LUA-RECORDS', ['1'], self::EDITOR)->outcome);
+    }
+
+    public function testAPlantedNonAsciiKindIsDroppedOnlyByAWholeSetSave(): void
+    {
+        // A per-kind delete matches with the collation and would remove the real ENABLE-LUA-RECORDS row
+        $this->store->method('load')->willReturn([['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '1'], ['kind' => 'X-NOTE', 'content' => 'a']]);
+        $this->store->expects($this->never())->method('replaceKind');
+        $this->store->expects($this->exactly(2))->method('replaceAll')->willReturn(true);
+        $this->assertSame(
+            ZoneMetadataOutcome::INVALID_KIND,
+            $this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '0'], ['kind' => 'X-NOTE', 'content' => 'a']], self::EDITOR)->outcome,
+            'new content on a planted row is a write'
+        );
+        $service = $this->sqlService();
+
+        $this->assertSame(ZoneMetadataOutcome::INVALID_KIND, $service->deleteKind(self::ZONE_ID, self::ZONE, 'ENABLÉ-LUA-RECORDS', self::EDITOR)->outcome);
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-NOTE', 'content' => 'a']], self::EDITOR)->isOk());
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '1'], ['kind' => 'X-NOTE', 'content' => 'b']], self::EDITOR)->isOk());
+    }
+
     public function testEmptyValuesAreRefusedPerKind(): void
     {
         $this->assertSame(ZoneMetadataOutcome::EMPTY_VALUES, $this->sqlService()->replaceKind(self::ZONE_ID, self::ZONE, 'X-NOTE', [' ', ''], self::ADMIN)->outcome);

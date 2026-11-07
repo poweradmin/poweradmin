@@ -176,14 +176,15 @@ class ZoneMetadataService
      */
     public function replaceAll(int $zoneId, string $zoneName, array $rows, int $actingUserId): ZoneMetadataResult
     {
-        $refusal = $this->validateSet($rows);
+        // The store gets its rows as stored, so it can remove a kind in another case
+        $stored = $this->store->load($zoneId, $zoneName);
+        $before = self::normalizeKinds($stored);
+
+        $refusal = $this->validateSet($rows, $before);
         if ($refusal !== null) {
             return $refusal;
         }
 
-        // The store gets its rows as stored, so it can remove a kind in another case
-        $stored = $this->store->load($zoneId, $zoneName);
-        $before = self::normalizeKinds($stored);
         foreach (self::changedKinds($rows, $before) as $kind) {
             $refusal = $this->kindRefusal($kind, $actingUserId);
             if ($refusal !== null) {
@@ -209,7 +210,7 @@ class ZoneMetadataService
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, int $actingUserId): ZoneMetadataResult
     {
         $kind = self::normalizeKind($kind);
-        $refusal = $this->kindRefusal($kind, $actingUserId);
+        $refusal = $this->kindRefusal($kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
         if ($refusal !== null) {
             return $refusal;
         }
@@ -248,7 +249,7 @@ class ZoneMetadataService
     public function deleteKind(int $zoneId, string $zoneName, string $kind, int $actingUserId): ZoneMetadataResult
     {
         $kind = self::normalizeKind($kind);
-        $refusal = $this->kindRefusal($kind, $actingUserId);
+        $refusal = $this->kindRefusal($kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
         if ($refusal !== null) {
             return $refusal;
         }
@@ -278,11 +279,14 @@ class ZoneMetadataService
      * Single-value, vocabulary and companion rules over a whole set.
      *
      * @param list<array{kind: string, content: string}> $rows
+     * @param list<array{kind: string, content: string}> $storedRows Rows already stored; a whole-set rewrite may keep these unchanged
      */
-    private function validateSet(array $rows): ?ZoneMetadataResult
+    private function validateSet(array $rows, array $storedRows = []): ?ZoneMetadataResult
     {
         foreach ($rows as $row) {
-            $refusal = self::kindShapeRefusal($row['kind']);
+            // Only an unchanged stored row is exempt: new content on a planted ENABLÉ-LUA-RECORDS would turn Lua on
+            $refusal = self::kindShapeRefusal($row['kind'])
+                ?? (in_array($row, $storedRows, true) ? null : self::kindCharsetRefusal($row['kind']));
             if ($refusal !== null) {
                 return $refusal;
             }
@@ -295,6 +299,21 @@ class ZoneMetadataService
     private static function kindShapeRefusal(string $kind): ?ZoneMetadataResult
     {
         if ($kind === '' || strlen($kind) > self::MAX_KIND_LENGTH) {
+            return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_KIND, $kind);
+        }
+
+        return null;
+    }
+
+    /**
+     * Refuse a kind outside plain ASCII.
+     *
+     * MySQL's case- and accent-folding collations match ENABLÉ-LUA-RECORDS to the real kind,
+     * which would slip past the exact operator-only lookup (and a per-kind delete would hit the real row).
+     */
+    private static function kindCharsetRefusal(string $kind): ?ZoneMetadataResult
+    {
+        if (preg_match('/^[A-Z0-9_-]+$/D', $kind) !== 1) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_KIND, $kind);
         }
 
