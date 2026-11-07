@@ -134,6 +134,11 @@ class ZoneChangeRequestService
             $row = $change->record;
             // Uppercased after the change check, as the direct save does, so a lowercase stored type validates
             $row['type'] = strtoupper(trim((string)$row['type']));
+            $forbidden = $this->refuseRestrictedType($submission->userId, $submission->zoneId, $submission->zoneName, (string)($before['type'] ?? ''), (string)($before['name'] ?? ''), 'edit')
+                ?? $this->refuseRestrictedType($submission->userId, $submission->zoneId, $submission->zoneName, $row['type'], (string)$row['name'], 'edit');
+            if ($forbidden !== null) {
+                return $forbidden;
+            }
             $row['content'] = $this->formatter->formatContent((string)$row['type'], (string)$row['content']);
             $error = $this->validate($row['rid'], $submission->zoneId, $row);
             if ($error !== null) {
@@ -179,6 +184,10 @@ class ZoneChangeRequestService
             'disabled' => !empty($record['disabled']) ? 1 : 0,
             'comment' => (string)($record['comment'] ?? ''),
         ];
+        $forbidden = $this->refuseRestrictedType($userId, $zoneId, $zoneName, trim($row['type']), $row['name'], 'add');
+        if ($forbidden !== null) {
+            return $forbidden;
+        }
         $error = $this->validate(-1, $zoneId, $row);
         if ($error !== null) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
@@ -206,6 +215,10 @@ class ZoneChangeRequestService
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_RECORD_NOT_FOUND, 'Record not found.', Refusal::NOT_FOUND);
         }
         $zoneName = $this->domains->getDomainNameById($zoneId) ?? '';
+        $forbidden = $this->refuseRestrictedType($userId, $zoneId, $zoneName, (string)($stored['type'] ?? ''), (string)($stored['name'] ?? ''), 'delete');
+        if ($forbidden !== null) {
+            return $forbidden;
+        }
         $stored['comment'] = $this->linkedComments?->findByRecordId($recordId)?->getComment();
 
         $actions = [[
@@ -745,6 +758,20 @@ class ZoneChangeRequestService
         }
 
         return $this->zones->getZoneComment($zoneId) == $posted ? null : $posted;
+    }
+
+    /**
+     * The SOA/NS/LUA rule the API applies when filing; $permissions omitted, no gate.
+     *
+     * @param 'add'|'edit'|'delete' $action
+     */
+    private function refuseRestrictedType(int $userId, int $zoneId, string $zoneName, string $type, string $name, string $action): ?ZoneChangeRequestResult
+    {
+        if ($this->permissions === null || $this->permissions->canRequestZoneRecord($userId, $zoneId, $type, $name, $zoneName)) {
+            return null;
+        }
+
+        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_FORBIDDEN, Permission::restrictedRecordTypeMessage($type, $action), Refusal::FORBIDDEN);
     }
 
     private function refuseReadOnlyZone(int $zoneId): ?ZoneChangeRequestResult

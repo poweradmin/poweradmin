@@ -209,6 +209,51 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(0, $this->repository->count([]));
     }
 
+    private function permissionsDenyingRestrictedTypes(): PermissionService
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('canRequestZoneRecord')->willReturn(false);
+
+        return $permissions;
+    }
+
+    public function testFilingAnNsRecordIsRefusedWhenTheRestrictedTypeRuleDenies(): void
+    {
+        $service = $this->makeService(null, $this->permissionsDenyingRestrictedTypes());
+
+        $added = $service->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'sub', 'type' => 'ns', 'content' => 'ns1.example.net.', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+        $this->assertFalse($added->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_FORBIDDEN, $added->code);
+        $this->assertSame(Refusal::FORBIDDEN, $added->refusal);
+
+        // The submitted type is checked: an A row turned into NS is refused
+        $edited = $service->fileRecordEdits($this->submission([new ZoneEditRow('5', 'www', 'NS', 'ns1.example.net.', 3600, 0, false, null)]));
+        $this->assertSame(ZoneChangeRequestResult::CODE_FORBIDDEN, $edited->code);
+    }
+
+    public function testEditingOrDeletingAStoredNsRecordIsRefusedWhenTheRuleDenies(): void
+    {
+        $this->stored['6']['type'] = 'NS';
+        $service = $this->makeService(null, $this->permissionsDenyingRestrictedTypes());
+
+        // The stored type is checked: an NS row submitted as A is still an NS edit
+        $edited = $service->fileRecordEdits($this->submission([new ZoneEditRow('6', 'mail', 'A', '192.0.2.9', 3600, 0, false, null)]));
+        $this->assertSame(ZoneChangeRequestResult::CODE_FORBIDDEN, $edited->code);
+
+        $deleted = $service->fileRecordDelete(self::ZONE_ID, '6', self::REQUESTER, 'alice');
+        $this->assertSame(ZoneChangeRequestResult::CODE_FORBIDDEN, $deleted->code);
+    }
+
+    public function testFilingProceedsWhenTheRestrictedTypeRuleAllows(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('canRequestZoneRecord')->willReturn(true);
+
+        $result = $this->makeService(null, $permissions)->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'sub', 'type' => 'NS', 'content' => 'ns1.example.net.', 'ttl' => 300, 'prio' => 0], self::REQUESTER, 'alice');
+
+        $this->assertTrue($result->success);
+    }
+
     public function testReadOnlyZonesRefuseFiling(): void
     {
         $this->domains = $this->createMock(DomainRepositoryInterface::class);

@@ -391,18 +391,7 @@ class ApiPermissionService
      */
     public function canRequestZoneRecord(int $userId, int $zoneId, string $recordType, ?string $recordName = null, ?string $zoneName = null): bool
     {
-        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
-            return true;
-        }
-        if ($this->permissions->hasZoneContentEditPermission($userId, $zoneId)) {
-            return true;
-        }
-        if ($this->getChangeRequestPermissionLevelForZone($userId, $zoneId) !== 'none') {
-            return true;
-        }
-
-        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
-            && $this->permissions->hasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
+        return $this->permissions->canRequestZoneRecord($userId, $zoneId, $recordType, $recordName, $zoneName);
     }
 
     /**

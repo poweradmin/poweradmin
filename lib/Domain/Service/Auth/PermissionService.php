@@ -411,6 +411,27 @@ class PermissionService
     }
 
     /**
+     * canEditZoneRecord()'s record-type rule for filing a change request: SOA/NS/LUA
+     * need an edit grant above own_as_client or a request level that covers the
+     * zone, except subzone NS records for zone_content_edit_ns_subzone holders.
+     */
+    public function canRequestZoneRecord(int $userId, int $domainId, string $recordType, ?string $recordName = null, ?string $zoneName = null): bool
+    {
+        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+            return true;
+        }
+        if ($this->hasZoneContentEditPermission($userId, $domainId)) {
+            return true;
+        }
+        if ($this->getChangeRequestPermissionLevelForZone($userId, $domainId) !== 'none') {
+            return true;
+        }
+
+        return Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName)
+            && $this->hasPermission($userId, Permission::PERM_EDIT_NS_SUBZONE);
+    }
+
+    /**
      * Zone metadata (name, type, primaries): meta_edit_others (or admin), or meta_edit_own on an owned zone.
      */
     public function canEditZoneMeta(int $userId, int $domainId): bool
