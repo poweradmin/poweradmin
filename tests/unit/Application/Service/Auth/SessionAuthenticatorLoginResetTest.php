@@ -83,6 +83,35 @@ final class SessionAuthenticatorLoginResetTest extends TestCase
         $this->assertTrue($session->get(AuthFlowSessionKeys::REMOTE_USER_SIGNED_OUT));
     }
 
+    public function testAPostedLanguageWithANewlineFallsBackToTheConfiguredOne(): void
+    {
+        // The language is stored before the password is checked and later reaches the log
+        $session = $this->sessionOfAnotherUser();
+
+        $this->failLogin($session, "lt_LT\n2026-11-07 [info]: forged line");
+
+        $this->assertSame('en_EN', $session->get(SessionKeys::USERLANG));
+    }
+
+    public function testAPostedLanguageWithATrailingNewlineFallsBackToTheConfiguredOne(): void
+    {
+        // Without the D modifier, $ also matches before a final newline
+        $session = $this->sessionOfAnotherUser();
+
+        $this->failLogin($session, "lt_LT\n");
+
+        $this->assertSame('en_EN', $session->get(SessionKeys::USERLANG));
+    }
+
+    public function testALocaleShapedPostedLanguageIsKept(): void
+    {
+        $session = $this->sessionOfAnotherUser();
+
+        $this->failLogin($session, 'lt_LT');
+
+        $this->assertSame('lt_LT', $session->get(SessionKeys::USERLANG));
+    }
+
     private function sessionOfAnotherUser(): ArraySession
     {
         return new ArraySession([
@@ -99,7 +128,7 @@ final class SessionAuthenticatorLoginResetTest extends TestCase
      * Posts the login form for an account that does not exist, so the SQL check
      * refuses it and writes no identity of its own.
      */
-    private function failLogin(ArraySession $session): void
+    private function failLogin(ArraySession $session, ?string $userlang = null): void
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec((string)file_get_contents(dirname(__DIR__, 5) . '/sql/poweradmin-sqlite-db-structure.sql'));
@@ -108,12 +137,16 @@ final class SessionAuthenticatorLoginResetTest extends TestCase
             'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
             'security' => ['session_key' => 'unit-test-session-key'],
         ]);
-        $request = new Request([], [
+        $post = [
             'authenticate' => '1',
             'username' => 'mallory',
             'password' => 'wrong-password',
             '_token' => self::LOGIN_TOKEN,
-        ], ['REQUEST_METHOD' => 'POST']);
+        ];
+        if ($userlang !== null) {
+            $post['userlang'] = $userlang;
+        }
+        $request = new Request([], $post, ['REQUEST_METHOD' => 'POST']);
 
         try {
             (new SessionAuthenticator($db, $config, $request, $session))->authenticate();

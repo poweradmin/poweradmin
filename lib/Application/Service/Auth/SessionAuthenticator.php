@@ -333,7 +333,8 @@ final class SessionAuthenticator
         return new LoginCredentials(
             is_string($username) ? $username : '',
             is_string($password) ? $password : '',
-            is_string($userlang) ? $userlang : null,
+            // Stored before the password is checked, so only a locale-shaped value is kept
+            is_string($userlang) && preg_match('/^[a-zA-Z_]+$/D', $userlang) === 1 ? $userlang : null,
             is_string($recaptcha) ? $recaptcha : ''
         );
     }
