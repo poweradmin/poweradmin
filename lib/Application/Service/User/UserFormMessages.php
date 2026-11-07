@@ -28,15 +28,16 @@ use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
 
 /**
  * Words a refused UserManagementService write for the user forms. The
- * service's own message is the API wording; password policy, field length and
- * external-auth password messages are the same on both sides and pass through.
+ * service's own message is the API wording; field length and external-auth
+ * password messages are the same on both sides and pass through.
  */
 final class UserFormMessages
 {
     /**
      * @param array{message?: string, code?: string} $result
+     * @param PasswordPolicyService|null $policy Translates a password policy refusal; without it the English message passes through
      */
-    public static function errorMessage(array $result): string
+    public static function errorMessage(array $result, ?PasswordPolicyService $policy = null): string
     {
         return match ($result['code'] ?? null) {
             UserManagementService::ERR_USERNAME_REQUIRED => _('Enter a valid user name.'),
@@ -44,6 +45,9 @@ final class UserFormMessages
             UserManagementService::ERR_EMAIL_EXISTS => _('Email address already exists, please choose another one.'),
             UserManagementService::ERR_INVALID_EMAIL => _('Enter a valid email address.'),
             UserManagementService::ERR_PASSWORD_REQUIRED => _('Please fill in all required fields correctly.'),
+            UserManagementService::ERR_PASSWORD_POLICY => $policy !== null
+                ? $policy->localize([(string)($result['message'] ?? '')])[0]
+                : (string)($result['message'] ?? ''),
             UserManagementService::ERR_NO_TEMPLATE => _('No non-superuser permission template is available to assign.'),
             UserManagementService::ERR_TEMPLATE_NOT_FOUND => _('Invalid permission template: must be a user template'),
             UserManagementService::ERR_INVALID_LDAP, UserManagementService::ERR_INVALID_AUTH_METHOD => _('Invalid or unexpected input given.'),

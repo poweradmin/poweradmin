@@ -162,7 +162,7 @@ class EditUserController extends BaseController
                 $this->redirect('/users');
             }
         } else {
-            $this->setMessage('edit_user', 'error', UserFormMessages::errorMessage($updated));
+            $this->setMessage('edit_user', 'error', UserFormMessages::errorMessage($updated, $this->policyService()));
             $this->showUserEditForm($editId, $policyConfig);
         }
     }

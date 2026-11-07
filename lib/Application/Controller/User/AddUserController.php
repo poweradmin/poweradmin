@@ -213,7 +213,7 @@ class AddUserController extends BaseController
             $this->setMessage('users', 'success', $successMessage);
             $this->redirect('/users');
         } else {
-            $this->setMessage('add_user', 'error', UserFormMessages::errorMessage($created));
+            $this->setMessage('add_user', 'error', UserFormMessages::errorMessage($created, $this->passwordPolicyService()));
             $this->renderAddUserForm($policyConfig);
         }
     }

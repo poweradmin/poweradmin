@@ -23,10 +23,13 @@
 namespace Poweradmin\Tests\Unit\Application\Service\User;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use TestHelpers\FakeConfiguration;
 
 #[CoversClass(UserFormMessages::class)]
 class UserFormMessagesTest extends TestCase
@@ -71,5 +74,22 @@ class UserFormMessagesTest extends TestCase
         $result = ['message' => 'Password must be at least 8 characters long', 'code' => UserManagementService::ERR_PASSWORD_POLICY];
 
         $this->assertSame('Password must be at least 8 characters long', UserFormMessages::errorMessage($result));
+    }
+
+    /** The German catalogue stays loaded for the rest of the process, hence the separate one */
+    #[RunInSeparateProcess]
+    public function testPolicyMessagesAreTranslatedWhenThePolicyIsGiven(): void
+    {
+        if (setlocale(LC_MESSAGES, 'de_DE.UTF-8', 'de_DE') === false) {
+            $this->markTestSkipped('The de_DE locale is not installed');
+        }
+        putenv('LANGUAGE=de_DE');
+        bindtextdomain('messages', dirname(__DIR__, 5) . '/locale');
+        textdomain('messages');
+
+        $policy = new PasswordPolicyService(new FakeConfiguration(['security' => ['password_policy.min_length' => 8]]));
+        $result = ['message' => 'Password must be at least 8 characters long', 'code' => UserManagementService::ERR_PASSWORD_POLICY];
+
+        $this->assertSame('Das Passwort muss mindestens 8 Zeichen lang sein', UserFormMessages::errorMessage($result, $policy));
     }
 }
