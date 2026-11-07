@@ -16164,6 +16164,10 @@ msgstr "يجب أن تحتوي كلمة المرور على رقم واحد عل
 msgid "Password must not be longer than 72 bytes"
 msgstr "يجب ألا تتجاوز كلمة المرور 72 بايت"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "يجب ألا تحتوي كلمة المرور على حرف NUL"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "يجب أن تحتوي كلمة المرور على رمز خاص واحد على الأقل"

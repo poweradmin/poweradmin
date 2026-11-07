@@ -16216,6 +16216,10 @@ msgstr "비밀번호에는 숫자가 하나 이상 포함되어야 합니다"
 msgid "Password must not be longer than 72 bytes"
 msgstr "비밀번호는 72바이트를 초과할 수 없습니다"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "비밀번호에는 NUL 문자를 포함할 수 없습니다"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "비밀번호에는 특수 문자가 하나 이상 포함되어야 합니다"

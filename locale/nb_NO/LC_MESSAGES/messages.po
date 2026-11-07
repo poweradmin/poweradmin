@@ -16379,6 +16379,10 @@ msgstr "Passordet må inneholde minst ett tall"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Passordet kan ikke være lengre enn 72 byte"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Passordet kan ikke inneholde et NUL-tegn"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Passordet må inneholde minst ett spesialtegn"

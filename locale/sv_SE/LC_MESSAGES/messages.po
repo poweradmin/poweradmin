@@ -16433,6 +16433,10 @@ msgstr "Lösenordet måste innehålla minst en siffra"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Lösenordet får inte vara längre än 72 byte"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Lösenordet får inte innehålla ett NUL-tecken"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Lösenordet måste innehålla minst ett specialtecken"

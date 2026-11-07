@@ -16498,6 +16498,10 @@ msgstr "Slaptažodyje turi būti bent vienas skaitmuo"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Slaptažodis negali būti ilgesnis nei 72 baitai"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Slaptažodyje negali būti NUL simbolio"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Slaptažodyje turi būti bent vienas specialusis simbolis"

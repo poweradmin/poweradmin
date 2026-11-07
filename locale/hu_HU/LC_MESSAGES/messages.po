@@ -16618,6 +16618,10 @@ msgstr "A jelszónak legalább egy számjegyet kell tartalmaznia"
 msgid "Password must not be longer than 72 bytes"
 msgstr "A jelszó nem lehet hosszabb 72 bájtnál"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "A jelszó nem tartalmazhat NUL karaktert"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "A jelszónak legalább egy speciális karaktert kell tartalmaznia"

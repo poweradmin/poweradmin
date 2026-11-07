@@ -16167,6 +16167,10 @@ msgstr "पासवर्ड में कम से कम एक अंक �
 msgid "Password must not be longer than 72 bytes"
 msgstr "पासवर्ड 72 बाइट से अधिक लंबा नहीं होना चाहिए"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "पासवर्ड में NUL वर्ण नहीं होना चाहिए"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "पासवर्ड में कम से कम एक विशेष वर्ण होना चाहिए"

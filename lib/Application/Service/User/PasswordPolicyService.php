@@ -46,6 +46,11 @@ class PasswordPolicyService implements PasswordPolicyInterface
             return ['An empty password is not allowed'];
         }
 
+        // bcrypt hashing throws on it, and switching back to bcrypt later would hit the same at rehash
+        if (str_contains($password, "\0")) {
+            return ['Password must not contain a NUL character'];
+        }
+
         $errors = [];
 
         // bcrypt ignores every byte past 72; login is never checked, so stored long passwords keep working
@@ -97,6 +102,7 @@ class PasswordPolicyService implements PasswordPolicyInterface
         return array_map(static fn(string $error): string => match ($error) {
             'An empty password is not allowed' => _('An empty password is not allowed'),
             'Password must not be longer than 72 bytes' => _('Password must not be longer than 72 bytes'),
+            'Password must not contain a NUL character' => _('Password must not contain a NUL character'),
             "Password must be at least {$minLength} characters long" => sprintf(_('Password must be at least %d characters long'), $minLength),
             'Password must contain at least one uppercase letter' => _('Password must contain at least one uppercase letter'),
             'Password must contain at least one lowercase letter' => _('Password must contain at least one lowercase letter'),

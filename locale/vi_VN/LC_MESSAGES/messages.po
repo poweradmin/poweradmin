@@ -16358,6 +16358,10 @@ msgstr "Mật khẩu phải chứa ít nhất một chữ số"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Mật khẩu không được dài quá 72 byte"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Mật khẩu không được chứa ký tự NUL"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Mật khẩu phải chứa ít nhất một ký tự đặc biệt"

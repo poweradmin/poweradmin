@@ -16475,6 +16475,10 @@ msgstr "Parola en az bir rakam içermelidir"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Parola 72 bayttan uzun olamaz"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Parola NUL karakteri içeremez"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parola en az bir özel karakter içermelidir"

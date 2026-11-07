@@ -16585,6 +16585,10 @@ msgstr "Kata sandi harus berisi minimal satu angka"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Kata sandi tidak boleh lebih dari 72 byte"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Kata sandi tidak boleh berisi karakter NUL"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Kata sandi harus berisi minimal satu karakter khusus"

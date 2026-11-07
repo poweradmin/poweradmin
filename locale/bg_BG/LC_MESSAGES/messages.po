@@ -16672,6 +16672,10 @@ msgstr "Паролата трябва да съдържа поне една ци
 msgid "Password must not be longer than 72 bytes"
 msgstr "Паролата не трябва да е по-дълга от 72 байта"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Паролата не трябва да съдържа знак NUL"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Паролата трябва да съдържа поне един специален знак"

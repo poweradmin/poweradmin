@@ -16745,6 +16745,10 @@ msgstr "La password deve contenere almeno un numero"
 msgid "Password must not be longer than 72 bytes"
 msgstr "La password non deve superare i 72 byte"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "La password non deve contenere il carattere NUL"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "La password deve contenere almeno un carattere speciale"

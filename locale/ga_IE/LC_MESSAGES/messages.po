@@ -16878,6 +16878,10 @@ msgstr "Caithfidh uimhir amháin ar a laghad a bheith sa phasfhocal"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Ní féidir leis an bpasfhocal a bheith níos faide ná 72 beart"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Ní féidir carachtar NUL a bheith sa phasfhocal"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Caithfidh carachtar speisialta amháin ar a laghad a bheith sa phasfhocal"

@@ -16131,6 +16131,10 @@ msgstr "Parool peab sisaldama vähemalt ühte numbrit"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Parool ei tohi olla pikem kui 72 baiti"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Parool ei tohi sisaldada NUL-märki"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parool peab sisaldama vähemalt ühte erimärki"

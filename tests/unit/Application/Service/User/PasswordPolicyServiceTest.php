@@ -106,6 +106,19 @@ class PasswordPolicyServiceTest extends TestCase
         }
     }
 
+    /** bcrypt hashing throws on a NUL byte, which reached the API as a 500 */
+    public function testANulByteIsRefusedWithAnyAlgorithmAndRulesDisabled(): void
+    {
+        foreach (['bcrypt', 'argon2id'] as $algorithm) {
+            $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+                'password_encryption' => $algorithm,
+                'password_policy.enable_password_rules' => false,
+            ]]));
+
+            $this->assertSame(['Password must not contain a NUL character'], $service->validatePassword("pass\0word"), $algorithm);
+        }
+    }
+
     public function testAnEmptyPasswordIsRefusedEvenWithRulesDisabled(): void
     {
         $service = new PasswordPolicyService(new FakeConfiguration(['security' => [

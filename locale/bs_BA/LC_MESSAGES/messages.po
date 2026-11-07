@@ -16086,6 +16086,10 @@ msgstr "Lozinka mora sadržavati najmanje jedan broj"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Lozinka ne smije biti duža od 72 bajta"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Lozinka ne smije sadržavati NUL znak"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Lozinka mora sadržavati najmanje jedan poseban znak"

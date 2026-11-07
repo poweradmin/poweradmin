@@ -16636,6 +16636,10 @@ msgstr "Het wachtwoord moet minstens één cijfer bevatten"
 msgid "Password must not be longer than 72 bytes"
 msgstr "Het wachtwoord mag niet langer zijn dan 72 bytes"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:105
+msgid "Password must not contain a NUL character"
+msgstr "Het wachtwoord mag geen NUL-teken bevatten"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Het wachtwoord moet minstens één speciaal teken bevatten"
