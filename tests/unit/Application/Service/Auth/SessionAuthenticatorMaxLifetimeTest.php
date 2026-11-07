@@ -78,6 +78,15 @@ final class SessionAuthenticatorMaxLifetimeTest extends TestCase
         $this->assertEqualsWithDelta(time(), $session->get(SessionKeys::SIGNED_IN_AT), 2);
     }
 
+    /** Turning the limit on later must count from sign-in, not from the moment it was turned on */
+    public function testTheClockStartsEvenWithoutAMaximumLifetime(): void
+    {
+        $session = $this->signedInSession();
+
+        $this->assertFalse($this->lifetimeExceeded($this->authenticator($session, 0)));
+        $this->assertEqualsWithDelta(time(), $session->get(SessionKeys::SIGNED_IN_AT), 2);
+    }
+
     public function testASessionWithinItsMaximumLifetimeContinues(): void
     {
         $session = $this->signedInSession(['signed_in_at' => time() - 3500]);

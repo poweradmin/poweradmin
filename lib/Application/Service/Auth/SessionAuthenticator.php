@@ -540,11 +540,12 @@ final class SessionAuthenticator
      * interface.session_max_lifetime ends a session that long after its first signed-in
      * request, however active it stays; 0 leaves only the idle timeout. Every sign-in
      * starts from a session without the timestamp, so it counts from that sign-in.
+     * The stamp is taken even while the limit is off, so turning it on later still
+     * counts from sign-in.
      */
     private function sessionLifetimeExceeded(): bool
     {
-        $maxLifetime = (int)$this->configManager->get('interface', 'session_max_lifetime', 0);
-        if ($maxLifetime <= 0 || !$this->session->has(SessionKeys::USERID)) {
+        if (!$this->session->has(SessionKeys::USERID)) {
             return false;
         }
 
@@ -554,7 +555,9 @@ final class SessionAuthenticator
             return false;
         }
 
-        return time() - $signedInAt > $maxLifetime;
+        $maxLifetime = (int)$this->configManager->get('interface', 'session_max_lifetime', 0);
+
+        return $maxLifetime > 0 && time() - $signedInAt > $maxLifetime;
     }
 
     private function endSessionOfDisabledAccount(): void
