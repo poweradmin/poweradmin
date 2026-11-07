@@ -44,7 +44,7 @@
     "twig/twig": "^3.21.1",
     "pragmarx/google2fa": "^9.0.0",
     "bacon/bacon-qr-code": "^3.0.1",
-    "zircote/swagger-php": "^6.0.5",
+    "zircote/swagger-php": "^7.0.0",
     "league/oauth2-client": "^2.8",
     "onelogin/php-saml": "^4.2",
     "symfony/security-bundle": "^7.4.4",
