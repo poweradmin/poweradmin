@@ -50,11 +50,20 @@ readonly class PermissionTemplateWriteService
      */
     public function create(int $callerId, array $details): array
     {
+        $permIds = $this->submittedPermIds($details);
+        if ($permIds !== null) {
+            $permIds = PermissionTemplateContentGuard::normalizePermIds($permIds);
+            if ($permIds === null) {
+                return self::invalidPermIds();
+            }
+            $details['perm_id'] = $permIds;
+        }
+
         $error = PermissionTemplateContentGuard::apply(
             $this->userRepository,
             $callerId,
             null,
-            $this->submittedPermIds($details)
+            $permIds
         );
 
         if ($error !== null) {
@@ -73,6 +82,14 @@ readonly class PermissionTemplateWriteService
     public function update(int $callerId, int $templateId, array $details): array
     {
         $permIds = $this->submittedPermIds($details);
+        if ($permIds !== null) {
+            $permIds = PermissionTemplateContentGuard::normalizePermIds($permIds);
+            if ($permIds === null) {
+                return self::invalidPermIds();
+            }
+            $details['perm_id'] = $permIds;
+        }
+
         $error = PermissionTemplateContentGuard::apply(
             $this->userRepository,
             $callerId,
@@ -117,20 +134,23 @@ readonly class PermissionTemplateWriteService
     }
 
     /**
+     * @return array{success: false, message: string, status: int}
+     */
+    private static function invalidPermIds(): array
+    {
+        return ['success' => false, 'message' => PermissionTemplateContentGuard::INVALID_PERMISSION_ID, 'status' => 400];
+    }
+
+    /**
      * Whether the submitted permission ids include user_is_ueberuser.
      *
-     * @param array<mixed> $permIds
+     * @param list<int> $permIds Ids already passed through normalizePermIds()
      */
     private function grantsUberuser(array $permIds): bool
     {
         $uberuserPermIds = $this->userRepository->getPermissionIdsByName(PermissionTemplateContentGuard::UBERUSER_PERMISSION);
-        foreach ($permIds as $permId) {
-            if (is_scalar($permId) && in_array((int)$permId, $uberuserPermIds, true)) {
-                return true;
-            }
-        }
 
-        return false;
+        return array_intersect($permIds, $uberuserPermIds) !== [];
     }
 
     /**

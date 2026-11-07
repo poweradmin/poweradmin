@@ -74,7 +74,7 @@ class EditPermTemplControllerTargetTest extends SeamControllerTestCase
         $this->assertSame([], $details['perm_id']);
     }
 
-    public function testCheckedPermissionsSurviveUnchanged(): void
+    public function testCheckedPermissionsReachTheWriterAsInts(): void
     {
         $details = $this->captureWrite([
             'id' => '5',
@@ -83,7 +83,7 @@ class EditPermTemplControllerTargetTest extends SeamControllerTestCase
             'perm_id' => ['7', '9'],
         ]);
 
-        $this->assertSame(['7', '9'], $details['perm_id']);
+        $this->assertSame([7, 9], $details['perm_id']);
     }
 
     /**

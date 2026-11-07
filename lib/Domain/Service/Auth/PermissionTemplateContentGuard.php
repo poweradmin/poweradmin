@@ -42,6 +42,8 @@ class PermissionTemplateContentGuard
 
     public const CONTENT_SUPERUSER_DENIED = 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     public const EDIT_SUPERUSER_DENIED = 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser';
+    public const INVALID_PERMISSION_ID = 'Permission ids must be positive integers';
+    private const MAX_PERMISSION_ID = 2147483647;
 
     /**
      * Apply the rule to a template create or update.
@@ -70,19 +72,43 @@ class PermissionTemplateContentGuard
             return null;
         }
 
-        $uberuserPermIds = $userRepository->getPermissionIdsByName(self::UBERUSER_PERMISSION);
-        if ($uberuserPermIds === []) {
-            return null;
+        $normalizedIds = self::normalizePermIds($permIds);
+        if ($normalizedIds === null) {
+            return self::INVALID_PERMISSION_ID;
         }
 
-        foreach ($permIds as $permId) {
-            // Posted ids arrive as strings; non-scalars would cast to a colliding int.
-            if (is_scalar($permId) && in_array((int)$permId, $uberuserPermIds, true)) {
-                return self::CONTENT_SUPERUSER_DENIED;
-            }
+        $uberuserPermIds = $userRepository->getPermissionIdsByName(self::UBERUSER_PERMISSION);
+        if (array_intersect($normalizedIds, $uberuserPermIds) !== []) {
+            return self::CONTENT_SUPERUSER_DENIED;
         }
 
         return null;
+    }
+
+    /**
+     * Permission ids as ints, or null when any id is not a positive whole number.
+     *
+     * MySQL rounds a stored '52.5' up to 53 while PHP's (int) truncates it to 52, so an id
+     * that is not canonical could be checked as one permission and stored as another.
+     *
+     * @param array<mixed> $permIds
+     * @return ?list<int>
+     */
+    public static function normalizePermIds(array $permIds): ?array
+    {
+        $normalized = [];
+        foreach ($permIds as $permId) {
+            if (is_string($permId) && preg_match('/^[1-9][0-9]{0,9}$/', $permId) === 1) {
+                $permId = (int)$permId;
+            }
+            // perm_templ_items.perm_id is a signed 32-bit column on every backend
+            if (!is_int($permId) || $permId < 1 || $permId > self::MAX_PERMISSION_ID) {
+                return null;
+            }
+            $normalized[] = $permId;
+        }
+
+        return $normalized;
     }
 
     /**

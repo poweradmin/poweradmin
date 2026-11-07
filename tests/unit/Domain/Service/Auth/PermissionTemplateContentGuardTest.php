@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
@@ -163,9 +164,9 @@ class PermissionTemplateContentGuardTest extends TestCase
         $this->assertNull($error);
     }
 
-    public function testNestedArraysNeverMatchByCoercion(): void
+    public function testNestedArraysAreRefusedRatherThanCoerced(): void
     {
-        // (int)[1] is 1 in PHP, so non-scalars must be skipped rather than cast.
+        // (int)[1] is 1 in PHP, so a non-scalar must never be cast into an id.
         $error = PermissionTemplateContentGuard::apply(
             $this->userRepository(isSuperuser: false, uberuserPermIds: [1]),
             self::CALLER_ID,
@@ -173,7 +174,53 @@ class PermissionTemplateContentGuardTest extends TestCase
             [[42]]
         );
 
-        $this->assertNull($error);
+        $this->assertSame(PermissionTemplateContentGuard::INVALID_PERMISSION_ID, $error);
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function nonCanonicalIdProvider(): array
+    {
+        return [
+            'decimal string MySQL rounds up' => ['52.5'],
+            'exponent string' => ['5.25e1'],
+            'trailing zero fraction' => ['53.0'],
+            'leading space' => [' 53'],
+            'trailing space' => ['53 '],
+            'leading zero' => ['053'],
+            'zero' => ['0'],
+            'negative' => ['-53'],
+            'empty string' => [''],
+            'float' => [52.5],
+            'zero int' => [0],
+            'boolean' => [true],
+            'null' => [null],
+            'above the int column' => ['2147483648'],
+            'int above the int column' => [2147483648],
+        ];
+    }
+
+    #[DataProvider('nonCanonicalIdProvider')]
+    public function testNonCanonicalIdsAreRefused(mixed $permId): void
+    {
+        // (int)'52.5' is 52 but MySQL stores '52.5' as 53, so the checked and stored ids differ.
+        $error = PermissionTemplateContentGuard::apply(
+            $this->userRepository(isSuperuser: false),
+            self::CALLER_ID,
+            9,
+            [4, $permId]
+        );
+
+        $this->assertSame(PermissionTemplateContentGuard::INVALID_PERMISSION_ID, $error);
+    }
+
+    public function testNormalizePermIdsReturnsInts(): void
+    {
+        $this->assertSame([4, 53, 7], PermissionTemplateContentGuard::normalizePermIds(['4', 53, '7']));
+        $this->assertSame([], PermissionTemplateContentGuard::normalizePermIds([]));
+        $this->assertSame([2147483647], PermissionTemplateContentGuard::normalizePermIds(['2147483647']));
+        $this->assertNull(PermissionTemplateContentGuard::normalizePermIds(['4', '52.5']));
     }
 
     public function testLockedTemplateIsReportedBeforeTheContentRule(): void

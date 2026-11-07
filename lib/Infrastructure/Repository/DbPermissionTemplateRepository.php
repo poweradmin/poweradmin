@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
+use PDO;
 use Throwable;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 
@@ -73,10 +74,9 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
             if (isset($details['perm_id'])) {
                 $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
                 foreach ($details['perm_id'] as $perm_id) {
-                    $stmt->execute([
-                        ':templ_id' => $perm_templ_id,
-                        ':perm_id' => $perm_id
-                    ]);
+                    $stmt->bindValue(':templ_id', (int)$perm_templ_id, PDO::PARAM_INT);
+                    $stmt->bindValue(':perm_id', (int)$perm_id, PDO::PARAM_INT);
+                    $stmt->execute();
                 }
             }
 
@@ -174,10 +174,9 @@ final class DbPermissionTemplateRepository implements PermissionTemplateReposito
 
                 $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
                 foreach ($details['perm_id'] as $perm_id) {
-                    $stmt->execute([
-                        ':templ_id' => $details['templ_id'],
-                        ':perm_id' => $perm_id
-                    ]);
+                    $stmt->bindValue(':templ_id', (int)$details['templ_id'], PDO::PARAM_INT);
+                    $stmt->bindValue(':perm_id', (int)$perm_id, PDO::PARAM_INT);
+                    $stmt->execute();
                 }
             }
 
