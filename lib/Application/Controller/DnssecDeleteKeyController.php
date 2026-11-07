@@ -74,13 +74,13 @@ class DnssecDeleteKeyController extends BaseController
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-
         if (!Permission::canManageDnssec(Permission::getEditPermission($this->db), $user_is_zone_owner)) {
             $this->showError(_("You do not have the permission to edit this zone."));
             return;
+        }
+
+        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
+            $this->showError(_('Invalid or unexpected input given.'));
         }
 
         if ($this->isPost()) {
