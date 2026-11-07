@@ -436,11 +436,19 @@ class MfaSetupController extends BaseController
             return false;
         }
 
+        // Counted before the check so parallel guesses cannot all read an empty counter
+        if (!$attempts->reserveAttempt($username, $ip, $stage, $userId)) {
+            $this->mfaService()->invalidatePendingEmailCode($userId);
+            $this->addSystemMessage('error', _('Too many failed attempts. Please try again later.'));
+            return false;
+        }
+
         $isValid = $this->mfaService()->verifyCode($userId, $code);
-        $attempts->recordAttempt($username, $ip, $isValid, $stage, $userId);
-        if (!$isValid) {
+        if ($isValid) {
+            $attempts->recordAttempt($username, $ip, true, $stage, $userId);
+        } else {
             $this->services()->auditService()->logMfaFailed($this->mfaService()->getMfaType($userId) ?? 'unknown');
-            if ($attempts->isAccountLocked($username, $ip, $stage, $userId)) {
+            if ($this->services()->loginAttemptService()->isAccountLocked($username, $ip, $stage, $userId)) {
                 // Same as the login step: the pending email code dies with the lockout
                 $this->mfaService()->invalidatePendingEmailCode($userId);
             }

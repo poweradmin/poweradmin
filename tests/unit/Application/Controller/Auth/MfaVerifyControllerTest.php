@@ -161,7 +161,22 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
-    private function pendingLoginOf(int $userId, bool $locked = false): MfaService&MockObject
+    public function testAGuessPastTheLimitInsideTheReservationIsRefusedUnchecked(): void
+    {
+        $this->session->remove(SessionKeys::USERID);
+        $mfa = $this->pendingLoginOf(self::VICTIM_ID, false, false);
+        $mfa->method('isMfaEnabled')->willReturn(true);
+        $mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $mfa->expects($this->never())->method('verifyCode');
+        $mfa->expects($this->once())->method('invalidatePendingEmailCode')->with(self::VICTIM_ID);
+
+        $this->submitCode();
+
+        $this->assertSame('Too many failed attempts. Please try again later.', $this->output->rendered[0][1]['msg']);
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
+    }
+
+    private function pendingLoginOf(int $userId, bool $locked = false, bool $withinLimit = true): MfaService&MockObject
     {
         $this->session->set(SessionKeys::PENDING_USERID, $userId);
         $this->session->set(AuthFlowSessionKeys::MFA_REQUIRED, true);
@@ -173,6 +188,7 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->factory->method('clientContext')->willReturn(new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false));
         $attempts = $this->createMock(LoginAttemptService::class);
         $attempts->method('isAccountLocked')->willReturn($locked);
+        $attempts->method('reserveAttempt')->willReturn($withinLimit);
         $this->factory->method('loginAttemptService')->willReturn($attempts);
 
         return $mfa;

@@ -343,4 +343,46 @@ class LoginAttemptServiceThrottleTest extends TestCase
 
         $this->assertTrue($service->isAccountLocked('alice', '10.0.0.1', LoginAttemptService::STAGE_REAUTH));
     }
+
+    public function testParallelGuessesAreCountedBeforeAnyIsChecked(): void
+    {
+        $config = $this->lockoutConfig();
+        $config['mfa']['max_verify_attempts'] = 1;
+        $service = $this->service($config);
+
+        // Two requests both pass the lockout check, then reserve before either verifies
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.2', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertTrue($service->reserveAttempt('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertFalse($service->reserveAttempt('alice', '10.0.0.2', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertCount(2, $this->attempts());
+    }
+
+    public function testReservationAllowsExactlyTheConfiguredAttempts(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+
+        $this->assertTrue($service->reserveAttempt('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertTrue($service->reserveAttempt('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertFalse($service->reserveAttempt('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+    }
+
+    public function testACorrectCodeClearsItsReservedRow(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+
+        $this->assertTrue($service->reserveAttempt('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $service->recordAttempt('alice', '10.0.0.1', true, LoginAttemptService::STAGE_MFA, 1);
+
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.1', LoginAttemptService::STAGE_MFA, 1));
+        $this->assertSame([['user_id' => 1, 'ip_address' => '10.0.0.1', 'successful' => 1, 'attempt_type' => 'mfa']], $this->attempts());
+    }
+
+    public function testReservingForAnUnknownAccountRefusesTheSecondFactorOnly(): void
+    {
+        $service = $this->service($this->lockoutConfig());
+
+        $this->assertFalse($service->reserveAttempt('nobody', '10.0.0.1', LoginAttemptService::STAGE_MFA));
+        $this->assertTrue($service->reserveAttempt('nobody', '10.0.0.1'));
+    }
 }

@@ -190,9 +190,24 @@ class MfaVerifyController extends BaseController
 
         // Use the MFA service for verification (handles both regular codes and recovery codes)
         $this->logger->debug('[MfaVerifyController] Verifying code for user ID: {user_id}, type: {type}', ['user_id' => $userId, 'type' => $userMfa->getType()]);
+        // The failure is counted first so parallel guesses cannot all read an empty counter
+        $withinLimit = $this->loginAttemptService()->reserveAttempt(
+            $username,
+            $this->client()->ip,
+            LoginAttemptService::STAGE_MFA,
+            $userId
+        );
+        if (!$withinLimit) {
+            $this->logger->warning('[MfaVerifyController] Attempt limit reached, refusing MFA attempt for user ID: {user_id}', ['user_id' => $userId]);
+            $this->services()->auditService()->logMfaFailed($userMfa->getType());
+            $this->mfaService()->invalidatePendingEmailCode($userId);
+            $this->displayMfaForm(_('Too many failed attempts. Please try again later.'), 'danger');
+            return;
+        }
+
         $isValid = $this->mfaService()->verifyCode($userId, $code);
 
-        $justLocked = $this->recordMfaAttempt($username, $userId, $isValid);
+        $justLocked = $this->settleMfaAttempt($username, $userId, $isValid);
 
         // Log the verification result
         if ($isValid) {
@@ -338,22 +353,26 @@ class MfaVerifyController extends BaseController
     }
 
     /**
-     * Counts one second-factor attempt and reports whether it tripped the limit.
+     * Settles an attempt already counted by reserveAttempt(): a correct code clears the
+     * failures, a wrong one stays counted. Reports whether the wrong code tripped the limit.
      *
      * On tripping, the pending email code is burned so it stays dead even when the
      * lockout window is configured shorter than the code lifetime.
      */
-    private function recordMfaAttempt(string $username, int $userId, bool $isValid): bool
+    private function settleMfaAttempt(string $username, int $userId, bool $isValid): bool
     {
-        $this->loginAttemptService()->recordAttempt(
-            $username,
-            $this->client()->ip,
-            $isValid,
-            LoginAttemptService::STAGE_MFA,
-            $userId
-        );
+        if ($isValid) {
+            $this->loginAttemptService()->recordAttempt(
+                $username,
+                $this->client()->ip,
+                true,
+                LoginAttemptService::STAGE_MFA,
+                $userId
+            );
+            return false;
+        }
 
-        if ($isValid || !$this->isMfaThrottled($username, $userId)) {
+        if (!$this->isMfaThrottled($username, $userId)) {
             return false;
         }
 

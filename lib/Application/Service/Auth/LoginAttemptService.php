@@ -132,8 +132,41 @@ class LoginAttemptService implements LoginThrottleInterface
             return self::isSignedInProofStage($attemptType);
         }
 
+        return $this->failuresReach($userId, $ipAddress, $attemptType, $limits, 0);
+    }
+
+    /**
+     * Counts a failure before the credential is checked and reports whether it is
+     * still within the limit. Parallel guesses each see the others' rows, where
+     * check-then-record let them all read an empty counter. A correct credential
+     * clears the row again through recordAttempt().
+     */
+    public function reserveAttempt(string $username, string $ipAddress, string $attemptType = self::STAGE_PASSWORD, ?int $userId = null): bool
+    {
+        $limits = $this->stageLimits($attemptType);
+        if ($limits === null) {
+            return true;
+        }
+
+        $userId ??= $this->attempts->findUserIdByUsername($username);
+        if ($userId === null) {
+            return !self::isSignedInProofStage($attemptType);
+        }
+
+        $this->recordAttempt($username, $ipAddress, false, $attemptType, $userId);
+
+        // The reserved row is this attempt's own, so only a count past the limit refuses it
+        return !$this->failuresReach($userId, $ipAddress, $attemptType, $limits, 1);
+    }
+
+    /**
+     * @param array{attempts:int,duration:int} $limits
+     * @param int $allowance Failures tolerated beyond the limit before it counts as reached
+     */
+    private function failuresReach(int $userId, string $ipAddress, string $attemptType, array $limits, int $allowance): bool
+    {
         $cutoffTime = time() - $limits['duration'];
-        $maxAttempts = $limits['attempts'];
+        $maxAttempts = $limits['attempts'] + $allowance;
 
         // MFA failures count per user across every source address: an attacker
         // rotating IPs would otherwise reset the counter on each request.
@@ -158,7 +191,7 @@ class LoginAttemptService implements LoginThrottleInterface
             return false;
         }
 
-        return $this->attempts->countFailedAttempts($userId, $cutoffTime, $storedType, null) >= $usernameCeiling;
+        return $this->attempts->countFailedAttempts($userId, $cutoffTime, $storedType, null) >= $usernameCeiling + $allowance;
     }
 
     /**

@@ -46,6 +46,7 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
 {
     private MfaService&MockObject $mfa;
     private LoginAttemptService&MockObject $attempts;
+    private bool $withinLimit = true;
 
     protected function setUp(): void
     {
@@ -54,6 +55,7 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
         $this->mfa = $this->createMock(MfaService::class);
         $this->mfa->method('isMfaEnforced')->willReturn(false);
         $this->attempts = $this->createMock(LoginAttemptService::class);
+        $this->attempts->method('reserveAttempt')->willReturnCallback(fn(): bool => $this->withinLimit);
         $this->factory->method('mfaService')->willReturn($this->mfa);
         $this->factory->method('loginAttemptService')->willReturn($this->attempts);
         $this->factory->method('clientContext')->willReturn(new ClientContext('192.0.2.10', 'test', 'test', false));
@@ -140,12 +142,23 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
         $this->enabledMfa(UserMfa::TYPE_APP);
         $this->mfa->method('verifyCode')->with(self::USER_ID, '000000')->willReturn(false);
         $this->mfa->expects($this->never())->method('disableMfa');
-        $this->attempts->expects($this->once())->method('recordAttempt')
-            ->with(self::USERNAME, '192.0.2.10', false, LoginAttemptService::STAGE_MFA_STEP_UP, self::USER_ID);
+        $this->attempts->expects($this->never())->method('recordAttempt');
 
         $this->submit(['disable_mfa' => '1', 'mfa_code' => '000000']);
 
         $this->assertSame([['error', 'Invalid verification code. Please try again.']], $this->messagesFor('system'));
+    }
+
+    public function testAGuessPastTheLimitInsideTheReservationIsRefusedUnchecked(): void
+    {
+        $this->enabledMfa(UserMfa::TYPE_APP);
+        $this->withinLimit = false;
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $this->mfa->expects($this->never())->method('disableMfa');
+
+        $this->submit(['disable_mfa' => '1', 'mfa_code' => '123456']);
+
+        $this->assertSame([['error', 'Too many failed attempts. Please try again later.']], $this->messagesFor('system'));
     }
 
     public function testDisableWorksWithAValidCode(): void
