@@ -36,9 +36,10 @@ When the stable line changes:
    moves without waiting for the next tag build.
 4. Update the `stable` entry in the tag list above to name the new line.
 
-The `latest` tag comes from one rule in `docker.yml` on `master` and
-`release/4.5.x`, matched on the `v4.5.` tag prefix. When the next release line
-opens, change that prefix on `master` and remove the rule from the outgoing branch.
+The `latest` tag comes from one rule in `docker.yml`, matched on the tag prefix:
+`v4.6.` on `master` and `v4.5.` on `release/4.5.x`. Remove the rule from
+`release/4.5.x` when v4.6.0 is tagged. For each later release line, change the
+prefix on `master` and remove the rule from the outgoing branch.
 
 For production deployments, use the `stable` tag or pin a specific version tag (e.g., `4.4.2`). The `lts` tag covers the 3.x line with bug fixes and security updates only. The `dev` tag tracks `master` and should not be used in production.
 
