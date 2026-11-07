@@ -11,3 +11,4 @@ tests/
 vendor/
 node_modules/
 playwright/
+assets/swagger-ui/

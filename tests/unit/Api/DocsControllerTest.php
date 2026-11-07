@@ -67,4 +67,31 @@ class DocsControllerTest extends TestCase
 
         $this->assertEquals('/poweradmin', $this->controller->getDocsBaseUrlPublic());
     }
+
+    public function testSwaggerUiLoadsOnlyBundledAssets(): void
+    {
+        $this->withConfig('', '/poweradmin');
+
+        $html = $this->controller->generateSwaggerUIPublic();
+
+        preg_match_all('/(?:src|href)="([^"]+)"/', $html, $matches);
+        $this->assertCount(3, $matches[1]);
+        foreach ($matches[1] as $url) {
+            $this->assertStringStartsWith('/poweradmin/assets/swagger-ui/', $url);
+            $file = dirname(__DIR__, 3) . '/' . substr(strtok($url, '?'), strlen('/poweradmin/'));
+            $this->assertFileExists($file);
+        }
+        $this->assertStringNotContainsString('unpkg.com', $html);
+    }
+
+    public function testSwaggerUiAssetsFollowTheApplicationUrl(): void
+    {
+        // A proxy that strips its path prefix leaves base_url_prefix empty; the public URL is in application_url
+        $this->withConfig('https://gw.example.com/poweradmin', '');
+
+        $html = $this->controller->generateSwaggerUIPublic();
+
+        $this->assertStringContainsString('href="https://gw.example.com/poweradmin/assets/swagger-ui/swagger-ui.css?v=', $html);
+        $this->assertStringContainsString('src="https://gw.example.com/poweradmin/assets/swagger-ui/swagger-ui-bundle.js?v=', $html);
+    }
 }

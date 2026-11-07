@@ -30,6 +30,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class DocsController extends BaseController
 {
+    /** swagger-ui-dist release copied into assets/swagger-ui/ (Apache-2.0, see its LICENSE). */
+    private const SWAGGER_UI_VERSION = '5.10.5';
+
     /**
      * Constructor for DocsController
      *
@@ -81,6 +84,10 @@ class DocsController extends BaseController
         $baseUrl = $this->getDocsBaseUrl();
 
         $v2JsonUrl = $baseUrl . '/api/docs/v2/json';
+        // Bundled under assets/ so the page loads nothing from a third-party CDN; same base as the
+        // spec so an API-only install behind a path-stripping proxy still finds them
+        $assets = $baseUrl . '/assets/swagger-ui/';
+        $version = '?v=' . self::SWAGGER_UI_VERSION;
 
         return '<!DOCTYPE html>
 <html lang="en">
@@ -88,7 +95,7 @@ class DocsController extends BaseController
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poweradmin API Documentation</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="' . $assets . 'swagger-ui.css' . $version . '" />
     <style>
         html {
             box-sizing: border-box;
@@ -106,8 +113,8 @@ class DocsController extends BaseController
 </head>
 <body>
     <div id="swagger-ui"></div>
-    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
-    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
+    <script src="' . $assets . 'swagger-ui-bundle.js' . $version . '"></script>
+    <script src="' . $assets . 'swagger-ui-standalone-preset.js' . $version . '"></script>
     <script>
         const specUrl = \'' . $v2JsonUrl . '\';
 
