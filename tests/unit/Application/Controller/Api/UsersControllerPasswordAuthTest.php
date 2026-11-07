@@ -59,6 +59,66 @@ class UsersControllerPasswordAuthTest extends TestCase
         $this->assertStringContainsString('permission to change', (string)$response->getContent());
     }
 
+    public function testSignInMethodChangeRejectedWithoutPasswordPermission(): void
+    {
+        $permission = $this->createMock(ApiPermissionService::class);
+        $permission->method('canEditUser')->willReturn(true);
+        $permission->method('canEditUserPassword')->willReturn(false);
+
+        $userService = $this->createMock(UserManagementService::class);
+        $userService->expects($this->never())->method('updateUser');
+
+        $controller = $this->makeController(\Poweradmin\Application\Controller\Api\V2\UsersController::class, 100, 1, $permission, $userService);
+        $this->setStoredUser($controller, ['id' => 1, 'use_ldap' => 0]);
+        $this->setProperty($controller, 'request', Request::create('/', 'PUT', [], [], [], [], '{"use_ldap": true}'));
+
+        $response = $this->invokeUpdate($controller);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertStringContainsString('sign-in method', (string)$response->getContent());
+    }
+
+    public function testUnchangedSignInMethodPassesWithoutPasswordPermission(): void
+    {
+        $permission = $this->createMock(ApiPermissionService::class);
+        $permission->method('canEditUser')->willReturn(true);
+        $permission->method('canEditUserPassword')->willReturn(false);
+
+        $userService = $this->createMock(UserManagementService::class);
+        $userService->expects($this->once())->method('updateUser')
+            ->willReturn(['success' => true, 'message' => 'ok', 'user_id' => 1]);
+
+        $controller = $this->makeController(\Poweradmin\Application\Controller\Api\V2\UsersController::class, 100, 1, $permission, $userService);
+        $this->setStoredUser($controller, ['id' => 1, 'use_ldap' => 1]);
+        $this->setProperty($controller, 'request', Request::create('/', 'PUT', [], [], [], [], '{"use_ldap": true, "fullname": "A"}'));
+
+        $this->assertNotSame(403, $this->invokeUpdate($controller)->getStatusCode());
+    }
+
+    public function testMalformedSignInFlagIsLeftToTheValidator(): void
+    {
+        // "maybe" is not a change of sign-in method; the command factory answers it with 400
+        $permission = $this->createMock(ApiPermissionService::class);
+        $permission->method('canEditUser')->willReturn(true);
+        $permission->method('canEditUserPassword')->willReturn(false);
+
+        $userService = $this->createMock(UserManagementService::class);
+        $userService->expects($this->never())->method('updateUser');
+
+        $controller = $this->makeController(\Poweradmin\Application\Controller\Api\V2\UsersController::class, 100, 1, $permission, $userService);
+        $this->setStoredUser($controller, ['id' => 1, 'use_ldap' => 1]);
+        $this->setProperty($controller, 'request', Request::create('/', 'PUT', [], [], [], [], '{"use_ldap": "maybe"}'));
+
+        $this->assertSame(400, $this->invokeUpdate($controller)->getStatusCode());
+    }
+
+    private function setStoredUser(object $controller, array $row): void
+    {
+        $repo = $this->createMock(\Poweradmin\Domain\Repository\UserLookupInterface::class);
+        $repo->method('getUserById')->willReturn($row);
+        $this->setProperty($controller, 'userRepository', $repo);
+    }
+
     private function makeController(
         string $controllerClass,
         int $callerId,

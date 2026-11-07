@@ -848,6 +848,17 @@ class UsersController extends PublicApiController
                 }
             }
 
+            // Repointing sign-in needs the same right as setting the password, as on the web form.
+            if (
+                $currentUser !== null
+                && array_key_exists('use_ldap', $input)
+                && is_bool($useLdap = filter_var($input['use_ldap'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE))
+                && (int)$useLdap !== (int)($currentUser['use_ldap'] ?? 0)
+                && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
+            ) {
+                return $this->returnApiError('You do not have permission to change this user\'s sign-in method', 403);
+            }
+
             $zoneLimit = $this->readZoneLimit($currentUserId, $input);
             if ($zoneLimit instanceof JsonResponse) {
                 return $zoneLimit;
