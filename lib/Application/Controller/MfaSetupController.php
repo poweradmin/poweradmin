@@ -155,8 +155,10 @@ class MfaSetupController extends BaseController
             return;
         }
 
-        // Use getOrCreate since we're in the verification process
-        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+        $userMfa = $this->pendingEnrolment($userId, UserMfa::TYPE_APP);
+        if ($userMfa === null) {
+            return;
+        }
 
         // Verify the code
         if ($this->mfaService->verifyCode($userId, $code)) {
@@ -181,9 +183,38 @@ class MfaSetupController extends BaseController
             $this->displayRecoveryCodes($recoveryCodes);
         } else {
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
-            $userMfa = $this->mfaService->getUserMfa($userId);
             $this->displayAppVerification($userMfa->getSecret());
         }
+    }
+
+    /**
+     * The not yet enabled enrolment of the given type, or null after the setup page is shown.
+     *
+     * A failed check re-displays the pending secret, which for an enabled factor (or an email
+     * code read through the app form) would hand a hijacked session the live second factor.
+     */
+    private function pendingEnrolment(int $userId, string $type): ?UserMfa
+    {
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+        if ($userMfa === null) {
+            $this->addSystemMessage('error', _('Failed to create MFA record.'));
+            $this->displayMfaSetup();
+            return null;
+        }
+
+        if ($userMfa->isEnabled()) {
+            $this->addSystemMessage('info', _('MFA is already enabled.'));
+            $this->displayMfaSetup();
+            return null;
+        }
+
+        if ($userMfa->getType() !== $type) {
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+            $this->displayMfaSetup();
+            return null;
+        }
+
+        return $userMfa;
     }
 
     private function handleEmailSetup(): void
@@ -273,8 +304,9 @@ class MfaSetupController extends BaseController
             return;
         }
 
-        // Get user MFA record - use getOrCreate since we're in verification
-        $this->mfaService->getOrCreateUserMfa($userId);
+        if ($this->pendingEnrolment($userId, UserMfa::TYPE_EMAIL) === null) {
+            return;
+        }
 
         // Use the MfaService to verify the code instead of direct comparison
         $isValid = $this->mfaService->verifyCode($userId, $code);
