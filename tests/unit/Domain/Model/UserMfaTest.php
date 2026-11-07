@@ -49,40 +49,75 @@ class UserMfaTest extends TestCase
     #[Test]
     public function testValidRecoveryCodeIsAcceptedAndConsumed(): void
     {
-        $mfa = $this->makeMfaWithCodes(['alpha', 'bravo', 'charlie']);
+        $mfa = $this->makeMfaWithCodes([]);
+        $codes = $mfa->generateRecoveryCodes(3);
 
-        $this->assertTrue($mfa->validateRecoveryCode('bravo'));
-        $this->assertEquals(['alpha', 'charlie'], $mfa->getRecoveryCodesAsArray());
+        $this->assertTrue($mfa->validateRecoveryCode($codes[1]));
+        $this->assertCount(2, $mfa->getRecoveryCodesAsArray());
+        $this->assertFalse($mfa->validateRecoveryCode($codes[1]));
+        $this->assertTrue($mfa->validateRecoveryCode($codes[0]));
+    }
+
+    #[Test]
+    public function testStoredRecoveryCodesAreHashesNotTheCodesShown(): void
+    {
+        $mfa = $this->makeMfaWithCodes([]);
+        $codes = $mfa->generateRecoveryCodes(2);
+
+        foreach ($codes as $code) {
+            $this->assertStringNotContainsString($code, (string)$mfa->getRecoveryCodes());
+        }
+        $this->assertSame('sha256:' . hash('sha256', $codes[0]), $mfa->getRecoveryCodesAsArray()[0]);
     }
 
     #[Test]
     public function testWrongRecoveryCodeIsRejectedAndListUnchanged(): void
     {
-        $codes = ['alpha', 'bravo', 'charlie'];
-        $mfa = $this->makeMfaWithCodes($codes);
+        $mfa = $this->makeMfaWithCodes([]);
+        $mfa->generateRecoveryCodes(3);
+        $before = $mfa->getRecoveryCodes();
 
         $this->assertFalse($mfa->validateRecoveryCode('delta'));
-        $this->assertEquals($codes, $mfa->getRecoveryCodesAsArray());
+        $this->assertSame($before, $mfa->getRecoveryCodes());
     }
 
     #[Test]
-    public function testSameLengthWrongRecoveryCodeIsRejected(): void
+    public function testRecoveryCodeIsMatchedIgnoringCaseAndSurroundingSpace(): void
+    {
+        $mfa = $this->makeMfaWithCodes([]);
+        $codes = $mfa->generateRecoveryCodes(1);
+
+        $this->assertTrue($mfa->validateRecoveryCode(' ' . strtoupper($codes[0]) . ' '));
+    }
+
+    #[Test]
+    public function testLegacyPlaintextCodeStillWorksOnceAndIsConsumed(): void
+    {
+        $mfa = $this->makeMfaWithCodes(['alpha', 'bravo', 'charlie']);
+
+        $this->assertTrue($mfa->validateRecoveryCode('bravo'));
+        $this->assertFalse($mfa->validateRecoveryCode('bravo'));
+        $this->assertTrue($mfa->validateRecoveryCode('alpha'));
+    }
+
+    #[Test]
+    public function testLegacyPlaintextCodesAreHashedEvenWhenTheGuessIsWrong(): void
     {
         $mfa = $this->makeMfaWithCodes(['abcdef1234', 'fedcba9876']);
 
-        // Differs only in the last char from the first stored code.
         $this->assertFalse($mfa->validateRecoveryCode('abcdef1235'));
-        $this->assertEquals(['abcdef1234', 'fedcba9876'], $mfa->getRecoveryCodesAsArray());
+        $this->assertStringNotContainsString('abcdef1234', (string)$mfa->getRecoveryCodes());
+        $this->assertCount(2, $mfa->getRecoveryCodesAsArray());
+        $this->assertTrue($mfa->validateRecoveryCode('abcdef1234'));
     }
 
     #[Test]
-    public function testRecoveryCodeCanOnlyBeUsedOnce(): void
+    public function testALegacyCodeAsLongAsAHashIsNotMistakenForOne(): void
     {
-        $mfa = $this->makeMfaWithCodes(['alpha', 'bravo']);
+        $code = str_repeat('a', 64);
+        $mfa = $this->makeMfaWithCodes([$code]);
 
-        $this->assertTrue($mfa->validateRecoveryCode('alpha'));
-        $this->assertFalse($mfa->validateRecoveryCode('alpha'));
-        $this->assertEquals(['bravo'], $mfa->getRecoveryCodesAsArray());
+        $this->assertTrue($mfa->validateRecoveryCode($code));
     }
 
     #[Test]

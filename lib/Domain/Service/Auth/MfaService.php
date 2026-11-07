@@ -253,15 +253,19 @@ class MfaService
             return false;
         }
 
-        if (!$userMfa->validateRecoveryCode($code)) {
-            return false;
+        $before = $userMfa->getRecoveryCodes();
+        $valid = $userMfa->validateRecoveryCode($code);
+
+        // A match is removed from the list and legacy plaintext entries are hashed in place
+        if ($valid || $userMfa->getRecoveryCodes() !== $before) {
+            $this->userMfaRepository->save($userMfa);
         }
 
-        $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
-        // Recovery code is removed from the list in validateRecoveryCode
-        $this->userMfaRepository->save($userMfa);
+        if ($valid) {
+            $this->logger->info('Valid recovery code used by user ID: {userId}', ['userId' => $userId]);
+        }
 
-        return true;
+        return $valid;
     }
 
     /**
@@ -295,6 +299,8 @@ class MfaService
         if ($this->consumeRecoveryCode($userId, $code)) {
             return true;
         }
+        // The recovery check may have saved hashed codes; a later save of the old copy would restore plaintext
+        $userMfa = $this->userMfaRepository->findByUserId($userId) ?? $userMfa;
 
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {

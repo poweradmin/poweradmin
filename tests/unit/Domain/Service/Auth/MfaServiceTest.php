@@ -82,6 +82,32 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testASuccessfulEmailCodeKeepsTheLegacyCodesHashed(): void
+    {
+        // verifyCode saved its own earlier copy after the recovery check migrated the codes
+        $this->configure(['mail' => ['enabled' => true]]);
+        $stored = json_encode(['aaaaaaaaaa', 'bbbbbbbbbb']);
+        $verification = json_encode(['code' => '123456', 'generated_at' => time(), 'expires_at' => time() + 600, 'used' => false]);
+        $this->userMfaRepository->method('findByUserId')->willReturnCallback(
+            static function () use (&$stored, $verification): UserMfa {
+                return UserMfa::create(7, true, '123456', $stored, UserMfa::TYPE_EMAIL, $verification);
+            }
+        );
+        $this->userMfaRepository->method('save')->willReturnCallback(
+            static function (UserMfa $mfa) use (&$stored): UserMfa {
+                $stored = (string)$mfa->getRecoveryCodes();
+                return $mfa;
+            }
+        );
+
+        $this->assertTrue($this->service->verifyCode(7, '123456'));
+
+        foreach (json_decode($stored, true) as $code) {
+            $this->assertStringStartsWith('sha256:', $code);
+        }
+    }
+
+    #[Test]
     public function testGetUserMfaRepositoryReturnsRepository(): void
     {
         $result = $this->service->getUserMfaRepository();
@@ -451,6 +477,17 @@ class MfaServiceTest extends TestCase
         // accepted on its own and spent afterwards
         $this->assertTrue($this->service->consumeRecoveryCode($userId, 'recovery-one'));
         $this->assertFalse($this->service->consumeRecoveryCode($userId, 'recovery-one'));
+    }
+
+    public function testAFailedAttemptSavesLegacyPlaintextCodesAsHashes(): void
+    {
+        $userMfa = UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', json_encode(['recovery-one']), UserMfa::TYPE_APP);
+        $this->userMfaRepository->method('findByUserId')->willReturn($userMfa);
+        $this->userMfaRepository->expects($this->once())->method('save')
+            ->with($this->callback(fn(UserMfa $saved) => !str_contains((string)$saved->getRecoveryCodes(), 'recovery-one')));
+
+        $this->assertFalse($this->service->consumeRecoveryCode(1, 'wrong-code'));
+        $this->assertFalse($this->service->consumeRecoveryCode(1, 'wrong-code'));
     }
 
     public function testConsumeRecoveryCodeRefusesATotpCode(): void

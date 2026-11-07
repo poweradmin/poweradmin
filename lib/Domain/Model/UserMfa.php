@@ -33,6 +33,7 @@ class UserMfa
 {
     public const TYPE_APP = 'app';
     public const TYPE_EMAIL = 'email';
+    private const RECOVERY_HASH_PREFIX = 'sha256:';
 
     public function __construct(
         private readonly int $id,
@@ -229,26 +230,42 @@ class UserMfa
     /**
      * Check if a recovery code is valid and remove it from the list if it is
      *
+     * Codes saved before hashing was introduced are hashed here as they are met, so
+     * they keep working and stop sitting in the table in the clear.
+     *
      * @param string $code The recovery code to validate
      * @return bool True if the code is valid, false otherwise
      */
     public function validateRecoveryCode(#[\SensitiveParameter] string $code): bool
     {
-        $codes = $this->getRecoveryCodesAsArray();
+        $codes = array_map(
+            fn($stored) => is_string($stored) && !str_starts_with($stored, self::RECOVERY_HASH_PREFIX)
+                ? self::hashRecoveryCode($stored)
+                : $stored,
+            $this->getRecoveryCodesAsArray()
+        );
+        $candidate = self::hashRecoveryCode($code);
 
+        $valid = false;
         foreach ($codes as $key => $stored) {
-            if (is_string($stored) && hash_equals($stored, $code)) {
+            if (is_string($stored) && hash_equals($stored, $candidate)) {
                 unset($codes[$key]);
-                $this->setRecoveryCodes(array_values($codes));
-                return true;
+                $valid = true;
+                break;
             }
         }
 
-        return false;
+        if ($this->recoveryCodes !== null) {
+            $this->setRecoveryCodes(array_values($codes));
+        }
+
+        return $valid;
     }
 
     /**
      * Generate new recovery codes
+     *
+     * Only the hashes are kept, so the returned list is the one chance to show them.
      *
      * @param int $count Number of recovery codes to generate
      * @param int $length Length of each recovery code in bytes (before hex encoding)
@@ -262,9 +279,18 @@ class UserMfa
             $codes[] = $this->generateRecoveryCode($length);
         }
 
-        $this->setRecoveryCodes($codes);
+        $this->setRecoveryCodes(array_map(self::hashRecoveryCode(...), $codes));
 
         return $codes;
+    }
+
+    /**
+     * Codes carry 80 random bits, so an unsalted hash cannot be searched; the prefix
+     * keeps a hash apart from a legacy plaintext code of any configured length.
+     */
+    private static function hashRecoveryCode(#[\SensitiveParameter] string $code): string
+    {
+        return self::RECOVERY_HASH_PREFIX . hash('sha256', strtolower(trim($code)));
     }
 
     /**

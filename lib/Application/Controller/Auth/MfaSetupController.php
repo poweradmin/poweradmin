@@ -188,11 +188,8 @@ class MfaSetupController extends BaseController
 
             $this->services()->auditService()->logMfaEnable('app');
 
-            // Generate recovery codes if they don't exist
-            $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
-            if (empty($recoveryCodes)) {
-                $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
-            }
+            // Stored codes are hashes, so the ones shown must be freshly generated
+            $recoveryCodes = $this->mfaService()->regenerateRecoveryCodes($userId);
 
             $this->addSystemMessage('success', _('MFA has been enabled successfully.'));
             $this->displayRecoveryCodes($recoveryCodes);
