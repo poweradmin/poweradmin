@@ -246,7 +246,7 @@ final class OidcService
                 'error' => $error,
                 'description' => $errorDescription
             ]);
-            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $errorDescription, 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
@@ -436,7 +436,7 @@ final class OidcService
             }
         } catch (\Exception $e) {
             $this->logger->error('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
         }
 

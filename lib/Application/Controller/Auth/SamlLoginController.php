@@ -102,7 +102,8 @@ class SamlLoginController extends BaseController
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            $sessionEntity = new FlashMessage(_('SAML authentication failed: ') . $e->getMessage(), 'danger');
+            $this->logger->error('SAML login could not be started: {error}', ['error' => $e->getMessage()]);
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authService()->auth($sessionEntity);
         }
     }

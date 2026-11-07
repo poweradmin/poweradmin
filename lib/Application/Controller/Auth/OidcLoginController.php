@@ -95,10 +95,8 @@ class OidcLoginController extends BaseController
             header('Location: ' . $authUrl);
             exit;
         } catch (\Exception $e) {
-            $sessionEntity = new FlashMessage(
-                _('Failed to initiate OIDC authentication: ') . $e->getMessage(),
-                'danger'
-            );
+            $this->logger->error('OIDC login could not be started: {error}', ['error' => $e->getMessage()]);
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authService()->auth($sessionEntity);
         }
     }

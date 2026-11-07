@@ -117,10 +117,7 @@ class SamlCallbackController extends BaseController
             // failure should not feed fail2ban brute-force counters.
             $this->services()->auditService()->logSsoLoginError(AuthMethod::SAML, $e->getMessage());
 
-            $sessionEntity = new FlashMessage(
-                _('SAML authentication failed: ') . $e->getMessage(),
-                'danger'
-            );
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authService()->auth($sessionEntity);
         }
     }
@@ -141,10 +138,8 @@ class SamlCallbackController extends BaseController
             $this->authService()->logout($sessionEntity);
         } catch (\Exception $e) {
             // Even if SLO fails, we should still log the user out locally
-            $sessionEntity = new FlashMessage(
-                _('Logout completed (with warnings): ') . $e->getMessage(),
-                'warning'
-            );
+            $this->logger->warning('SAML single logout failed: {error}', ['error' => $e->getMessage()]);
+            $sessionEntity = new FlashMessage(_('You have been logged out'), 'info');
             $this->authService()->logout($sessionEntity);
         }
     }

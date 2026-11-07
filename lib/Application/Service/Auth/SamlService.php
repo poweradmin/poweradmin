@@ -239,7 +239,7 @@ final class SamlService
             return $this->withProxyServerVars(fn() => $this->processAssertion($providerId, $flow['request_id'] ?? null), $this->getAcsUrl());
         } catch (\Exception $e) {
             $this->logger->error('SAML authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
             // Clean up session data on exception
@@ -292,7 +292,7 @@ final class SamlService
                 $this->logger->error('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
             }
 
-            $sessionEntity = new FlashMessage(_('Authentication failed: ') . $errorMsg, 'danger');
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return null;
         }

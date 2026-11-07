@@ -28,6 +28,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\OidcCallbackController;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -48,6 +49,26 @@ class OidcCallbackControllerTest extends SeamControllerTestCase
                 && $entity->getType() === 'danger'
         ));
         $this->factory->expects($this->atLeastOnce())->method('authenticationService')->willReturn($authentication);
+
+        $controller = new OidcCallbackController([], $this->environment($config));
+        $controller->run();
+    }
+
+    public function testProviderErrorTextIsNotShownToTheVisitor(): void
+    {
+        $config = $this->configure(['oidc' => ['enabled' => true]]);
+        $this->queryParams = [
+            'error' => 'access_denied',
+            'error_description' => 'Call the helpdesk on 555-0100',
+        ];
+
+        $authentication = $this->createMock(AuthenticationService::class);
+        $authentication->expects($this->once())->method('auth')->with($this->callback(
+            static fn(FlashMessage $entity): bool => $entity->getMessage() === 'Authentication failed!'
+                && $entity->getType() === 'danger'
+        ));
+        $this->factory->method('authenticationService')->willReturn($authentication);
+        $this->factory->method('auditService')->willReturn($this->createMock(AuditService::class));
 
         $controller = new OidcCallbackController([], $this->environment($config));
         $controller->run();

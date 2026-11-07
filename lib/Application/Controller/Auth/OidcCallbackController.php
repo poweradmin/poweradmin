@@ -91,10 +91,12 @@ class OidcCallbackController extends BaseController
             // should not feed fail2ban brute-force counters.
             $this->services()->auditService()->logSsoLoginError(AuthMethod::OIDC, $error);
 
-            $sessionEntity = new FlashMessage(
-                _('Authentication failed: ') . $errorDescription,
-                'danger'
-            );
+            $this->logger->error('OIDC provider returned error: {error} - {description}', [
+                'error' => $error,
+                'description' => $errorDescription,
+            ]);
+
+            $sessionEntity = new FlashMessage(_('Authentication failed!'), 'danger');
             $this->authService()->auth($sessionEntity);
             return;
         }
