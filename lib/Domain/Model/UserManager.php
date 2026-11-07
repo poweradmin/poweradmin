@@ -430,12 +430,13 @@ class UserManager
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
             $stmt->execute([':uid' => $uid]);
 
+            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+            $zoneTemplate->deleteZoneTemplUserId($uid);
+
+            // Last, so a failure here cannot skip the template cleanup above
             if (is_string($email) && $email !== '') {
                 (new DbUserRepository($this->db, $this->config))->deleteEmailRequestsIfUnused($email);
             }
-
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->deleteZoneTemplUserId($uid);
         }
         return true;
     }
