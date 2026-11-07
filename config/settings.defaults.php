@@ -383,7 +383,7 @@ return [
     'oidc' => [
         'enabled' => false,                   // Enable OIDC authentication
         'auto_provision' => true,             // Automatically create user accounts from OIDC
-        'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'link_by_email' => true,              // Link OIDC accounts by email to existing users without a local password
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
@@ -603,7 +603,7 @@ return [
     'saml' => [
         'enabled' => false,                   // Enable SAML authentication
         'auto_provision' => true,             // Automatically create user accounts from SAML
-        'link_by_email' => true,              // Link SAML accounts to existing users by email
+        'link_by_email' => true,              // Link SAML accounts by email to existing users without a local password
         'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
         'default_permission_template' => 'Guest',  // Default permission template for new SAML users (minimal access until assigned proper role)
 

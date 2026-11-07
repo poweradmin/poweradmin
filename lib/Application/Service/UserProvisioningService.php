@@ -137,6 +137,17 @@ class UserProvisioningService extends LoggingService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->accountHasLocalPassword($existingUserId)) {
+                    // Whoever set this address on a password account could otherwise sign in with that
+                    // password as the provider identity. Returning here also keeps auto-provisioning
+                    // from creating a second active account with the same email.
+                    $this->logWarning(
+                        'Refusing {method} sign-in: its email matches account {id}, which signs in with a local password; clear that password or the address to let the identity link',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    return null;
+                }
+
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     if ($authMethod === self::AUTH_METHOD_SAML) {
@@ -304,6 +315,21 @@ class UserProvisioningService extends LoggingService
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ? (int)$result['id'] : null;
+    }
+
+    private function accountHasLocalPassword(int $userId): bool
+    {
+        try {
+            $stmt = $this->db->prepare('SELECT password FROM users WHERE id = ?');
+            $stmt->execute([$userId]);
+            $hash = $stmt->fetchColumn();
+
+            return !is_string($hash) || ($hash !== '' && !in_array($hash, ['LDAP_USER', 'REMOTE_USER'], true));
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable account must not be linked
+            $this->logError('Error checking local password: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
     }
 
     private function findUserByEmail(string $email): ?int

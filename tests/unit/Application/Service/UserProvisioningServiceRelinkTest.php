@@ -40,7 +40,9 @@ class UserProvisioningServiceRelinkTest extends TestCase
         }
         $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES
             (1, 'john', '', 'John', 'john@example.org', '', 5, 1, 0, 'oidc'),
-            (2, 'jane', '', 'Jane', 'jane@example.org', '', 5, 1, 0, 'sql')");
+            (2, 'jane', '', 'Jane', 'jane@example.org', '', 5, 1, 0, 'sql'),
+            (3, 'pete', '\$2y\$10\$abcdefghijklmnopqrstuuabcdefghijklmnopqrstuvwxyz0123', 'Pete', 'pete@example.org', '', 5, 1, 0, 'sql'),
+            (4, 'lara', 'LDAP_USER', 'Lara', 'lara@example.org', '', 5, 1, 1, 'ldap')");
         $this->db->exec("INSERT INTO oidc_user_links (user_id, provider_id, oidc_subject, username, email) VALUES (1, 'okta', 'sub-owner', 'john', 'john@example.org')");
         $this->db->exec("INSERT INTO saml_user_links (user_id, provider_id, saml_subject, username, email) VALUES (1, 'adfs', 'name-owner', 'john', 'john@example.org')");
 
@@ -81,5 +83,44 @@ class UserProvisioningServiceRelinkTest extends TestCase
 
         $this->assertSame(1, $this->service->provisionUser($userInfo, 'google'));
         $this->assertSame('sub-owner', $this->db->query("SELECT oidc_subject FROM oidc_user_links WHERE provider_id = 'okta'")->fetchColumn());
+    }
+
+    public function testEmailMatchDoesNotLinkAnAccountWithALocalPassword(): void
+    {
+        // A user who set their own address to the victim's would otherwise receive the victim's identity
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'pete@example.org', providerId: 'okta', subject: 'sub-mallory', rawData: ['email_verified' => true]);
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame(0, (int) $this->db->query("SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 3")->fetchColumn());
+    }
+
+    public function testRefusedEmailMatchDoesNotAutoProvisionASecondAccountWithTheSameEmail(): void
+    {
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Tpl')");
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true, 'auto_provision' => true]);
+        $config->method('get')->willReturnCallback(
+            fn(string $group, string $key, mixed $default = null): mixed => $key === 'default_permission_template' ? 'Tpl' : $default
+        );
+        $service = new UserProvisioningService($this->db, $config, $this->createMock(Logger::class));
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'pete@example.org', providerId: 'okta', subject: 'sub-mallory', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertSame(1, (int) $this->db->query("SELECT COUNT(*) FROM users WHERE email = 'pete@example.org'")->fetchColumn());
+    }
+
+    public function testSamlEmailMatchDoesNotLinkAnAccountWithALocalPassword(): void
+    {
+        $userInfo = new SamlUserInfo(username: 'mallory', email: 'pete@example.org', providerId: 'adfs', nameId: 'name-mallory');
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'adfs'));
+        $this->assertSame(0, (int) $this->db->query("SELECT COUNT(*) FROM saml_user_links WHERE user_id = 3")->fetchColumn());
+    }
+
+    public function testEmailMatchStillLinksAnAccountWhosePasswordIsAnExternalAuthPlaceholder(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'lara', email: 'lara@example.org', providerId: 'okta', subject: 'sub-lara', rawData: ['email_verified' => true]);
+
+        $this->assertSame(4, $this->service->provisionUser($userInfo, 'okta'));
     }
 }
