@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -123,7 +123,11 @@ class SessionAuthenticator extends LoggingService
                 $_SESSION["userlogin"] = $_POST["username"];
                 $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
 
-                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->config->get('iface_lang');
+                // Stored before the password is checked, so only a locale-shaped value is kept
+                $postedLang = $_POST["userlang"] ?? null;
+                $_SESSION["userlang"] = is_string($postedLang) && preg_match('/^[a-zA-Z_]+$/D', $postedLang) === 1
+                    ? $postedLang
+                    : $this->config->get('iface_lang');
                 $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
 
                 $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);
