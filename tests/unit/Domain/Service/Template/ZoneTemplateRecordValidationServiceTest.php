@@ -66,6 +66,12 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         ));
     }
 
+    public function testAcceptsApexMarkerAsName(): void
+    {
+        $this->assertTrue($this->validate('@', 'A', '192.0.2.1'));
+        $this->assertFalse($this->validate('@.' . str_repeat('a', 70) . '.example.com', 'A', '192.0.2.1'));
+    }
+
     public function testAcceptsShortSoaCompletedAtZoneCreation(): void
     {
         // Zone creation appends the configured timers when rdata has fewer than 7 fields

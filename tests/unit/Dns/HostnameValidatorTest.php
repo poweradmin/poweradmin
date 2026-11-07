@@ -337,4 +337,27 @@ class HostnameValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid('sub/domain.example.com'));
         $this->assertFalse($this->validator->isValid('0/26.example.com'));
     }
+
+    public function testAtDotPrefixDoesNotSkipValidation(): void
+    {
+        $bad = [
+            '@.' . str_repeat('a', 70) . '.example.com',
+            '@.a b.example.com',
+            '@.<script>x.com',
+            '@.' . str_repeat('a.', 130) . 'com',
+            '@.-bad.example.com',
+        ];
+        foreach ($bad as $name) {
+            $this->assertFalse($this->validator->isValid($name), $name);
+            $this->assertFalse($this->validator->validate($name, true)->isValid(), $name);
+        }
+    }
+
+    public function testLiteralAtIsNotAHostname(): void
+    {
+        $this->assertFalse($this->validator->isValid('@'));
+        $this->assertTrue($this->validator->isValid('.'));
+        $this->assertTrue($this->validator->isValid('www.example.com'));
+        $this->assertTrue($this->validator->validate('*.example.com', true)->isValid());
+    }
 }
