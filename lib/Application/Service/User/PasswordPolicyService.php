@@ -30,6 +30,8 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
  */
 class PasswordPolicyService implements PasswordPolicyInterface
 {
+    private const BCRYPT_MAX_BYTES = 72;
+
     private ConfigurationInterface $configManager;
 
     public function __construct(ConfigurationInterface $configManager)
@@ -46,9 +48,15 @@ class PasswordPolicyService implements PasswordPolicyInterface
 
         $errors = [];
 
+        // bcrypt ignores every byte past 72; login is never checked, so stored long passwords keep working
+        $algorithm = $this->configManager->get('security', 'password_encryption', 'bcrypt');
+        if (!in_array($algorithm, ['argon2i', 'argon2id'], true) && strlen($password) > self::BCRYPT_MAX_BYTES) {
+            $errors[] = 'Password must not be longer than 72 bytes';
+        }
+
         if ($this->configManager->get('security', 'password_policy.enable_password_rules')) {
             $minLength = $this->configManager->get('security', 'password_policy.min_length');
-            if (strlen($password) < $minLength) {
+            if (mb_strlen($password, 'UTF-8') < $minLength) {
                 $errors[] = "Password must be at least {$minLength} characters long";
             }
 
@@ -88,6 +96,7 @@ class PasswordPolicyService implements PasswordPolicyInterface
 
         return array_map(static fn(string $error): string => match ($error) {
             'An empty password is not allowed' => _('An empty password is not allowed'),
+            'Password must not be longer than 72 bytes' => _('Password must not be longer than 72 bytes'),
             "Password must be at least {$minLength} characters long" => sprintf(_('Password must be at least %d characters long'), $minLength),
             'Password must contain at least one uppercase letter' => _('Password must contain at least one uppercase letter'),
             'Password must contain at least one lowercase letter' => _('Password must contain at least one lowercase letter'),

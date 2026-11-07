@@ -471,4 +471,66 @@ class UserAuthenticationServiceTest extends TestCase
         $this->assertFalse($this->userAuthService->verifyPassword('LDAP_USER', AuthMethod::LDAP_PASSWORD_PLACEHOLDER));
         $this->assertFalse($this->userAuthService->verifyPassword('REMOTE_USER', AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER));
     }
+
+    /** Pins bcrypt's 72-byte limit: stored hashes of longer passwords must keep verifying */
+    public function testBcryptIgnoresEverythingPastTheSeventySecondByte(): void
+    {
+        $prefix = str_repeat('a', 72);
+        $hash = $this->userAuthService->hashPassword($prefix . 'first-tail');
+
+        $this->assertTrue($this->userAuthService->verifyPassword($prefix . 'first-tail', $hash));
+        $this->assertTrue($this->userAuthService->verifyPassword($prefix . 'other-tail', $hash));
+        $this->assertFalse($this->userAuthService->verifyPassword(str_repeat('a', 71) . 'b', $hash));
+    }
+
+    public function testBcryptCountsBytesSoMultibyteTextReachesTheLimitSooner(): void
+    {
+        $prefix = str_repeat('ą', 36);
+        $hash = $this->userAuthService->hashPassword($prefix . 'x');
+
+        $this->assertSame(72, strlen($prefix));
+        $this->assertTrue($this->userAuthService->verifyPassword($prefix . 'y', $hash));
+    }
+
+    public function testArgon2idHashesTheWholePassword(): void
+    {
+        if (!defined('PASSWORD_ARGON2ID')) {
+            $this->markTestSkipped('PHP is built without Argon2');
+        }
+        $service = new UserAuthenticationService('argon2id', 12);
+        $prefix = str_repeat('a', 72);
+        $hash = $service->hashPassword($prefix . 'first-tail');
+
+        $this->assertTrue($service->verifyPassword($prefix . 'first-tail', $hash));
+        $this->assertFalse($service->verifyPassword($prefix . 'other-tail', $hash));
+    }
+
+    /** Switching password_encryption must not lock anyone out: old hashes verify, then get upgraded at login */
+    public function testABcryptHashStillVerifiesAndAsksForRehashAfterSwitchingToArgon2id(): void
+    {
+        if (!defined('PASSWORD_ARGON2ID')) {
+            $this->markTestSkipped('PHP is built without Argon2');
+        }
+        $password = str_repeat('a', 72) . 'tail';
+        $bcryptHash = $this->userAuthService->hashPassword($password);
+        $argon = new UserAuthenticationService('argon2id', 12);
+
+        $this->assertTrue($argon->verifyPassword($password, $bcryptHash));
+        $this->assertTrue($argon->requiresRehash($bcryptHash));
+
+        $upgraded = $argon->hashPassword($password);
+        $this->assertTrue($argon->verifyPassword($password, $upgraded));
+        $this->assertFalse($argon->requiresRehash($upgraded));
+    }
+
+    public function testAnArgon2idHashStillVerifiesAfterSwitchingBackToBcrypt(): void
+    {
+        if (!defined('PASSWORD_ARGON2ID')) {
+            $this->markTestSkipped('PHP is built without Argon2');
+        }
+        $argonHash = (new UserAuthenticationService('argon2id', 12))->hashPassword('test_password');
+
+        $this->assertTrue($this->userAuthService->verifyPassword('test_password', $argonHash));
+        $this->assertTrue($this->userAuthService->requiresRehash($argonHash));
+    }
 }

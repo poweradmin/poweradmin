@@ -56,6 +56,56 @@ class PasswordPolicyServiceTest extends TestCase
         $this->assertSame([], $service->validatePassword('x'));
     }
 
+    /** NIST SP 800-63B counts each Unicode character as one */
+    public function testMinimumLengthCountsCharactersNotBytes(): void
+    {
+        $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+            'password_policy.enable_password_rules' => true,
+            'password_policy.min_length' => 4,
+            'password_policy.require_uppercase' => false,
+            'password_policy.require_lowercase' => false,
+            'password_policy.require_numbers' => false,
+            'password_policy.require_special' => false,
+        ]]));
+
+        $this->assertSame(['Password must be at least 4 characters long'], $service->validatePassword('ąčę'));
+        $this->assertSame([], $service->validatePassword('ąčęė'));
+    }
+
+    /** bcrypt would silently drop the rest, so refuse it while the password is still being chosen */
+    public function testBcryptRefusesAPasswordOverSeventyTwoBytesEvenWithRulesDisabled(): void
+    {
+        $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+            'password_encryption' => 'bcrypt',
+            'password_policy.enable_password_rules' => false,
+        ]]));
+
+        $this->assertSame([], $service->validatePassword(str_repeat('a', 72)));
+        $this->assertSame(['Password must not be longer than 72 bytes'], $service->validatePassword(str_repeat('a', 73)));
+        $this->assertSame(['Password must not be longer than 72 bytes'], $service->validatePassword(str_repeat('ą', 37)));
+    }
+
+    public function testTheByteLimitAppliesWhenPasswordEncryptionIsNotSet(): void
+    {
+        $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+            'password_policy.enable_password_rules' => false,
+        ]]));
+
+        $this->assertSame(['Password must not be longer than 72 bytes'], $service->validatePassword(str_repeat('a', 73)));
+    }
+
+    public function testArgon2HashesHaveNoByteLimit(): void
+    {
+        foreach (['argon2i', 'argon2id'] as $algorithm) {
+            $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
+                'password_encryption' => $algorithm,
+                'password_policy.enable_password_rules' => false,
+            ]]));
+
+            $this->assertSame([], $service->validatePassword(str_repeat('a', 200)), $algorithm);
+        }
+    }
+
     public function testAnEmptyPasswordIsRefusedEvenWithRulesDisabled(): void
     {
         $service = new PasswordPolicyService(new FakeConfiguration(['security' => [
