@@ -78,6 +78,8 @@ class BulkRegistrationController extends BaseController
 
         $domains = DomainHelper::getDomains($_POST['domains']);
         $dom_type = $_POST['dom_type'];
+        // The form offers only these; without the check zone_master_add could create a SLAVE zone
+        $this->checkCondition(!in_array($dom_type, ['MASTER', 'NATIVE'], true), _('Invalid or unexpected input given.'));
         $zone_template = $_POST['zone_template'];
         $owner = (int)$_POST['owner'];
 

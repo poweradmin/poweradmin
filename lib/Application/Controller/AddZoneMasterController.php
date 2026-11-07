@@ -79,6 +79,8 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
         $dom_type = $_POST["dom_type"];
+        // The form offers only these; without the check zone_master_add could create a SLAVE zone
+        $this->checkCondition(!in_array($dom_type, ['MASTER', 'NATIVE'], true), _('Invalid or unexpected input given.'));
         $owner = $_POST['owner'];
         // Only users allowed to edit other users' zones may give a new zone away
         if (
