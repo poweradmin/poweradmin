@@ -35,4 +35,10 @@ interface UserCredentialWriterInterface
      * @return bool True if the password was updated successfully
      */
     public function updatePassword(int $userId, string $hashedPassword): bool;
+
+    /**
+     * Store a new hash of the password the user already has (a cost or algorithm
+     * change at login). Unlike updatePassword() it leaves pending reset links alone.
+     */
+    public function rehashPassword(int $userId, string $hashedPassword): bool;
 }

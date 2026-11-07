@@ -150,7 +150,7 @@ final class SqlAuthenticator
         // bcrypt verify ignores everything after a NUL byte but bcrypt hashing throws on it
         if (!str_contains($sessionPassword, "\0") && $userAuthService->requiresRehash($rowObj['password'])) {
             $this->logger->info('Password requires rehashing for user {username}', ['username' => $username]);
-            $this->userRepository->updatePassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
+            $this->userRepository->rehashPassword((int)$rowObj["id"], $userAuthService->hashPassword($sessionPassword));
         }
 
         // Regenerate the session id only at actual login (credentials just posted),

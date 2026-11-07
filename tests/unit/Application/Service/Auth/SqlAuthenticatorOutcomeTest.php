@@ -211,6 +211,20 @@ class SqlAuthenticatorOutcomeTest extends TestCase
     {
         // bcrypt verify stops at the NUL, so this matches; a cost-10 hash against cost 4 config wants a rehash
         $this->storeCredentials('alice', self::PASSWORD . "\0");
+        $this->users->expects($this->never())->method('rehashPassword');
+        $this->users->expects($this->never())->method('updatePassword');
+
+        $row = $this->userRow(['password' => password_hash(self::PASSWORD, PASSWORD_BCRYPT, ['cost' => 10])]);
+        $outcome = $this->authenticator($row)->authenticate();
+
+        $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
+    }
+
+    /** A rehash keeps the same password, so it must not spend the user's pending reset links */
+    public function testAnOutdatedHashIsRehashedWithoutCountingAsAPasswordChange(): void
+    {
+        $this->storeCredentials('alice', self::PASSWORD);
+        $this->users->expects($this->once())->method('rehashPassword')->with(7, $this->stringStartsWith('$2y$'));
         $this->users->expects($this->never())->method('updatePassword');
 
         $row = $this->userRow(['password' => password_hash(self::PASSWORD, PASSWORD_BCRYPT, ['cost' => 10])]);

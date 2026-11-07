@@ -91,6 +91,15 @@ class DbUserRepositoryResetTokensTest extends TestCase
         $this->assertCount(3, $this->tokenEmails());
     }
 
+    /** Raising password_cost or switching to argon2id rehashes at login; that is the same password */
+    public function testARehashOfTheSamePasswordKeepsThem(): void
+    {
+        $this->assertTrue($this->repository->rehashPassword(1, 'rehashed'));
+
+        $this->assertCount(3, $this->tokenEmails());
+        $this->assertSame('rehashed', $this->db->query('SELECT password FROM users WHERE id = 1')->fetchColumn());
+    }
+
     public function testAnAddressSharedWithAnotherAccountIsLeftAlone(): void
     {
         $this->assertTrue($this->repository->updatePassword(3, 'new-hash'));
