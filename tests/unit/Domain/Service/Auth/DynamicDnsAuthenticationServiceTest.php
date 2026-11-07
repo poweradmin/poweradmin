@@ -186,13 +186,12 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->assertNull($service->authenticateUser($request, '198.51.100.1'));
     }
 
-    public function testAuthenticateUserRecordsSuccessfulAttempt(): void
+    /** As with Basic auth: a router's regular update must not wipe an attacker's failures */
+    public function testAuthenticateUserDoesNotRecordASuccessfulAttempt(): void
     {
         $loginAttempts = $this->createMock(LoginAttemptService::class);
         $loginAttempts->method('isAccountLocked')->willReturn(false);
-        $loginAttempts->expects($this->once())
-            ->method('recordAttempt')
-            ->with('testuser', '198.51.100.2', true);
+        $loginAttempts->expects($this->never())->method('recordAttempt');
 
         $user = new User(123, self::STORED_HASH, false);
         $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')->willReturn($user);

@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\User;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 use Poweradmin\Application\Service\User\PasswordChangeService;
 use Poweradmin\Domain\Model\User;
@@ -81,13 +82,40 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertFalse($changed);
     }
 
+    /** A borrowed session must not be able to guess the current password without limit */
+    public function testAWrongCurrentPasswordIsCountedOnTheReauthStage(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('recordAttempt')
+            ->with('victim', '203.0.113.5', false, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], false, $attempts)->changePassword('guess', 'new');
+
+        $this->assertFalse($changed);
+    }
+
+    public function testALockedReauthStageRefusesWithoutCheckingThePassword(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(true);
+        $attempts->expects($this->never())->method('recordAttempt');
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed, $message] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], true, $attempts)->changePassword('old', 'new');
+
+        $this->assertFalse($changed);
+        $this->assertSame('Too many failed attempts. Please try again later.', $message);
+    }
+
     /** @param array<string, mixed> $session */
-    private function service(array $session): PasswordChangeService
+    private function service(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): PasswordChangeService
     {
         $auth = $this->createMock(UserAuthenticationService::class);
-        $auth->method('verifyPassword')->willReturn(true);
+        $auth->method('verifyPassword')->willReturn($passwordMatches);
         $auth->method('hashPassword')->willReturn('new-hash');
 
-        return new PasswordChangeService($this->users, $auth, new UserContextService(new ArraySession($session)));
+        return new PasswordChangeService($this->users, $auth, new UserContextService(new ArraySession($session)), $attempts, '203.0.113.5');
     }
 }

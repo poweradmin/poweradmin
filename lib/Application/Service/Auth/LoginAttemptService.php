@@ -36,6 +36,7 @@ class LoginAttemptService implements LoginThrottleInterface
     public const STAGE_PASSWORD = 'password';
     public const STAGE_MFA = 'mfa';
     public const STAGE_MFA_STEP_UP = 'mfa_step_up';
+    public const STAGE_REAUTH = 'reauth';
 
     private ConfigurationInterface $configManager;
     private LoginAttemptRepositoryInterface $attempts;
@@ -69,7 +70,7 @@ class LoginAttemptService implements LoginThrottleInterface
 
         // A clean second factor always clears its own counter; the opt-in
         // clear_attempts_on_success only governs the password stage.
-        $clearOnSuccess = self::isSecondFactorStage($attemptType)
+        $clearOnSuccess = self::isSignedInProofStage($attemptType)
             || $this->configManager->get('security', 'account_lockout.clear_attempts_on_success');
 
         if ($successful && $clearOnSuccess) {
@@ -111,7 +112,7 @@ class LoginAttemptService implements LoginThrottleInterface
         // cannot lock staff out, and it takes priority over the blacklist. It is
         // skipped for the second factor, where the counter is the only barrier
         // left once the password is known.
-        if (!self::isSecondFactorStage($attemptType)) {
+        if (!self::isSignedInProofStage($attemptType)) {
             $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
             if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
                 return false; // This IP is whitelisted, never lock it
@@ -128,7 +129,7 @@ class LoginAttemptService implements LoginThrottleInterface
             // An unattributable attempt cannot be counted. The password stage
             // stays open so unknown usernames still reach the authenticator,
             // but the second factor refuses rather than dropping its only limit.
-            return self::isSecondFactorStage($attemptType);
+            return self::isSignedInProofStage($attemptType);
         }
 
         $cutoffTime = time() - $limits['duration'];
@@ -136,7 +137,7 @@ class LoginAttemptService implements LoginThrottleInterface
 
         // MFA failures count per user across every source address: an attacker
         // rotating IPs would otherwise reset the counter on each request.
-        $trackIpAddress = !self::isSecondFactorStage($attemptType)
+        $trackIpAddress = !self::isSignedInProofStage($attemptType)
             && $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $storedType = $this->attempts->hasAttemptTypeColumn() ? $attemptType : null;
@@ -280,11 +281,12 @@ class LoginAttemptService implements LoginThrottleInterface
     }
 
     /**
-     * Second-factor stages count per user across addresses and ignore the whitelist.
+     * The second factor and a signed-in user re-proving the password count per user
+     * across addresses, ignore the whitelist and are throttled even without lockout.
      */
-    private static function isSecondFactorStage(string $attemptType): bool
+    private static function isSignedInProofStage(string $attemptType): bool
     {
-        return $attemptType === self::STAGE_MFA || $attemptType === self::STAGE_MFA_STEP_UP;
+        return in_array($attemptType, [self::STAGE_MFA, self::STAGE_MFA_STEP_UP, self::STAGE_REAUTH], true);
     }
 
     private function cleanupOldAttempts(): void
@@ -309,7 +311,7 @@ class LoginAttemptService implements LoginThrottleInterface
         // Clearing must match how the stage counts. MFA counts every address, so
         // filtering the clear by IP would strand failures from an earlier address
         // and lock a roaming user who just verified correctly.
-        $clearPerIp = !self::isSecondFactorStage($attemptType)
+        $clearPerIp = !self::isSignedInProofStage($attemptType)
             && $this->configManager->get('security', 'account_lockout.track_ip_address');
 
         // Scope clearing to the matching stage so a fresh first-factor success
@@ -340,7 +342,7 @@ class LoginAttemptService implements LoginThrottleInterface
         // default this method has always fallen through to.
         $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
 
-        if ($stage === LoginAttemptStage::MFA || $stage === LoginAttemptStage::MFA_STEP_UP) {
+        if ($stage === LoginAttemptStage::MFA || $stage === LoginAttemptStage::MFA_STEP_UP || $stage === LoginAttemptStage::REAUTH) {
             // Floors, not "off" switches. A misconfigured 0 must not read as
             // "unlimited guesses" on the one control standing between a known
             // password and the account.

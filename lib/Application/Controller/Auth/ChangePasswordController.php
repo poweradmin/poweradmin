@@ -56,7 +56,9 @@ class ChangePasswordController extends BaseController
         return $this->passwordService ??= new PasswordChangeService(
             $this->services()->userRepository(),
             UserAuthenticationService::fromConfig($this->config),
-            $this->getUserContextService()
+            $this->getUserContextService(),
+            $this->services()->loginAttemptService(),
+            $this->services()->clientContext()->ip
         );
     }
 

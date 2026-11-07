@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service\User;
 use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
 
 /**
@@ -43,6 +44,8 @@ readonly class PasswordChangeService
         private UserLookupInterface&UserCredentialWriterInterface $userRepository,
         private UserAuthenticationService $authService,
         private UserContextService $userContextService,
+        private ?LoginAttemptService $loginAttempts = null,
+        private string $clientIp = '',
     ) {
     }
 
@@ -62,7 +65,15 @@ readonly class PasswordChangeService
             return [false, _(self::ERROR_MESSAGES['ldap_user'])];
         }
 
-        if (!$this->authService->verifyPassword($oldPassword, $user->getPassword())) {
+        // Counted apart from login, so a borrowed session cannot guess the password unthrottled
+        $stage = LoginAttemptService::STAGE_REAUTH;
+        if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp, $stage, $userId)) {
+            return [false, _('Too many failed attempts. Please try again later.')];
+        }
+
+        $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
+        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches, $stage, $userId);
+        if (!$matches) {
             return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
 

@@ -123,6 +123,8 @@ class SqlAuthenticatorOutcomeTest extends TestCase
     {
         $this->storeCredentials('alice', 'not it');
         $this->audit->expects($this->never())->method('logLoginFailed');
+        // A password changed elsewhere is not a guess; counting it would lock the user out
+        $this->attempts->expects($this->never())->method('recordAttempt');
 
         $outcome = $this->authenticator($this->userRow())->authenticate();
 

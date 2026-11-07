@@ -130,7 +130,10 @@ final class SqlAuthenticator
 
         if (!$userAuthService->verifyPassword($sessionPassword, $storedHash)) {
             $this->logger->warning('Password verification failed for user {username}', ['username' => $username]);
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            // Only a login is a guess; a later request fails when the password changed elsewhere
+            if ($isLogin) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            }
             $this->logger->info('Authentication process ended due to password verification failure.');
             return $this->failedAuthentication($isLogin, LoginFailureReason::WRONG_PASSWORD);
         }

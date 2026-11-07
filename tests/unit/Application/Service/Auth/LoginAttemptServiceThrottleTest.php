@@ -324,4 +324,23 @@ class LoginAttemptServiceThrottleTest extends TestCase
         // One MFA failure is under its own limit of 2; the ceiling of 1 must not trip it
         $this->assertFalse($service->isAccountLocked('alice', '10.0.0.2', LoginAttemptService::STAGE_MFA));
     }
+
+    public function testReauthStageCountsEveryAddressAndIsThrottledWithoutLockout(): void
+    {
+        $service = $this->service($this->lockoutConfig(['enable_lockout' => false]));
+        $service->recordAttempt('alice', '10.0.0.1', false, LoginAttemptService::STAGE_REAUTH);
+        $service->recordAttempt('alice', '10.0.0.2', false, LoginAttemptService::STAGE_REAUTH);
+
+        $this->assertTrue($service->isAccountLocked('alice', '10.0.0.9', LoginAttemptService::STAGE_REAUTH));
+        $this->assertFalse($service->isAccountLocked('alice', '10.0.0.9'), 'login is counted apart');
+    }
+
+    public function testReauthStageIgnoresTheWhitelist(): void
+    {
+        $service = $this->service($this->lockoutConfig(['enable_lockout' => false, 'whitelist_ip_addresses' => ['10.0.0.0/8']]));
+        $service->recordAttempt('alice', '10.0.0.1', false, LoginAttemptService::STAGE_REAUTH);
+        $service->recordAttempt('alice', '10.0.0.1', false, LoginAttemptService::STAGE_REAUTH);
+
+        $this->assertTrue($service->isAccountLocked('alice', '10.0.0.1', LoginAttemptService::STAGE_REAUTH));
+    }
 }

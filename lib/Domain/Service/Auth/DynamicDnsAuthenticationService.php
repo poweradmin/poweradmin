@@ -73,7 +73,11 @@ readonly class DynamicDnsAuthenticationService
             $this->verifyAgainstDummyHash($request->getPassword());
         }
         $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
-        $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
+        // Like Basic auth, success is not recorded: a router updating every few minutes
+        // would otherwise wipe an attacker's failures with clear_attempts_on_success
+        if (!$passwordValid) {
+            $this->loginAttemptService?->recordAttempt($username, $clientIp, false);
+        }
 
         return $passwordValid ? $user : null;
     }
