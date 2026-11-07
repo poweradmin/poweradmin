@@ -94,6 +94,16 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             $stmt->bindValue(':master', $slaveMaster);
             $stmt->bindValue(':id', (int)$existingId, PDO::PARAM_INT);
             $stmt->execute();
+
+            // The zone was deleted outside Poweradmin; grants of the previous zone must not carry over.
+            $stmt = $this->db->prepare("SELECT domain_id FROM zones WHERE id = :id");
+            $stmt->execute([':id' => (int)$existingId]);
+            $canonicalId = (int)($stmt->fetchColumn() ?: $existingId);
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
+
             return (int)$existingId;
         }
 

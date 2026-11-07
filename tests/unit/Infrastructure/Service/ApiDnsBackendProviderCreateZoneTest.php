@@ -54,6 +54,7 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
                 zone_master TEXT
             )"
         );
+        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
     }
 
     private function provider(?PDO $db = null): ApiDnsBackendProvider
