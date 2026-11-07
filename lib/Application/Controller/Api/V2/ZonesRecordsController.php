@@ -767,7 +767,7 @@ class ZonesRecordsController extends PublicApiController
             $recordData = [
                 'rid' => $recordId,
                 'zid' => $zoneId,
-                'name' => $name,
+                'name' => DnsHelper::restoreZoneSuffix($name, (string)($zone['name'] ?? '')),
                 'type' => strtoupper($type),
                 'content' => $content,
                 'ttl' => $ttl,
