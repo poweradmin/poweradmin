@@ -258,13 +258,17 @@ class DbUserRepositoryTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
 
-        $this->db->method('prepare')
-            ->with($this->stringContains('UPDATE users SET password'))
-            ->willReturn($stmt);
+        // The update is followed by the reset-link cleanup, which looks up the address
+        $prepared = [];
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$prepared, $stmt) {
+            $prepared[] = $sql;
+            return $stmt;
+        });
 
         $result = $this->repository->updatePassword(1, 'new_hashed_password');
 
         $this->assertTrue($result);
+        $this->assertStringContainsString('UPDATE users SET password', $prepared[0]);
     }
 
     // ========== createUser tests ==========
@@ -771,8 +775,14 @@ class DbUserRepositoryTest extends TestCase
             $params = $executed;
             return true;
         });
+        // Lookups around the update (the reset-link cleanup) are not the statement under test
+        $other = $this->createMock(PDOStatement::class);
+        $other->method('execute')->willReturn(true);
 
-        $this->db->method('prepare')->willReturnCallback(function ($prepared) use (&$query, $stmt) {
+        $this->db->method('prepare')->willReturnCallback(function ($prepared) use (&$query, $stmt, $other) {
+            if (!str_starts_with($prepared, 'UPDATE users SET')) {
+                return $other;
+            }
             $query = $prepared;
             return $stmt;
         });

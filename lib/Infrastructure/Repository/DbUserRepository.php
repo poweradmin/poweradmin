@@ -205,7 +205,32 @@ class DbUserRepository implements UserRepositoryInterface
     public function updatePassword(int $userId, string $hashedPassword): bool
     {
         $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
-        return $stmt->execute([$hashedPassword, $userId]);
+        $written = $stmt->execute([$hashedPassword, $userId]);
+        if ($written) {
+            $this->expireResetTokensForUser($userId);
+        }
+
+        return $written;
+    }
+
+    /**
+     * Spends outstanding reset links once a password is set, so a link requested
+     * earlier (perhaps by someone else) stops working. The rows stay, since the
+     * per-address request limit counts them. A shared address is left alone.
+     */
+    private function expireResetTokensForUser(int $userId): void
+    {
+        $stmt = $this->db->prepare('SELECT email FROM users WHERE id = :id');
+        $stmt->execute([':id' => $userId]);
+        $email = $stmt->fetchColumn();
+        if (!is_string($email) || $email === '' || $this->countUsersByEmail($email) > 1) {
+            return;
+        }
+
+        $dbType = (string)$this->config->get('database', 'type');
+        $stmt = $this->db->prepare('UPDATE password_reset_tokens SET used = ' . DbCompat::boolTrue($dbType)
+            . ' WHERE used = ' . DbCompat::boolFalse($dbType) . ' AND ' . $this->emailEquals('email', ':email'));
+        $stmt->execute([':email' => $email]);
     }
 
     /**
@@ -1620,6 +1645,9 @@ class DbUserRepository implements UserRepositoryInterface
         // Reset links and recovery requests sent to the old address must not outlive the change
         if ($written && $oldEmail !== null && $oldEmail !== '' && strcasecmp($oldEmail, (string)$changes->email) !== 0) {
             $this->deleteEmailRequestsIfUnused($oldEmail);
+        }
+        if ($written && $changes->passwordGiven()) {
+            $this->expireResetTokensForUser($userId);
         }
 
         return $written;

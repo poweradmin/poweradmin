@@ -97,7 +97,7 @@ return [
             'app_enabled' => true,               // Enable authenticator app option
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate
-            'recovery_code_length' => 10,        // Length of recovery codes
+            'recovery_code_length' => 10,        // Length of recovery codes in characters; shorter values are raised to 10
             'max_verify_attempts' => 5,          // Failed second-factor guesses before the code is refused (added in 4.5.0)
             'verify_lockout_duration' => 15,     // Minutes to refuse further attempts once the limit is hit (added in 4.5.0)
         ],

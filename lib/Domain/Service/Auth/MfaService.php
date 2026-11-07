@@ -216,12 +216,7 @@ class MfaService
         if (empty($userMfa->getRecoveryCodesAsArray())) {
             // Get configuration values for recovery codes
             $codeCount = (int)$this->configManager->get('security', 'mfa.recovery_codes', 10);
-            $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10);
-
-            // Convert length from character length to byte length (divide by 2 since hex encoding doubles length)
-            $byteLength = (int)ceil($codeLength / 2);
-
-            $userMfa->generateRecoveryCodes($codeCount, $byteLength);
+            $userMfa->generateRecoveryCodes($codeCount, $this->recoveryCodeBytes());
         }
 
         return $this->userMfaRepository->save($userMfa);
@@ -742,6 +737,17 @@ class MfaService
     }
 
     /**
+     * Random bytes per recovery code. The setting counts hex characters; below the
+     * default of 10 (40 bits) codes get guessable, so shorter values are raised.
+     */
+    private function recoveryCodeBytes(): int
+    {
+        $characters = max(10, (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10));
+
+        return (int)ceil($characters / 2);
+    }
+
+    /**
      * Generate new recovery codes for a user
      */
     public function regenerateRecoveryCodes(int $userId): array
@@ -750,13 +756,7 @@ class MfaService
 
         // Get configuration values for recovery codes
         $codeCount = (int)$this->configManager->get('security', 'mfa.recovery_codes', 8);
-        $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10);
-
-        // Convert length from character length to byte length (divide by 2 since hex encoding doubles length)
-        $byteLength = (int)ceil($codeLength / 2);
-
-        // Generate codes with the configured parameters
-        $codes = $userMfa->generateRecoveryCodes($codeCount, $byteLength);
+        $codes = $userMfa->generateRecoveryCodes($codeCount, $this->recoveryCodeBytes());
         $this->userMfaRepository->save($userMfa);
 
         return $codes;

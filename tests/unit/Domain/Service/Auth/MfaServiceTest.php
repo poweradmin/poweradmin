@@ -390,6 +390,19 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testRecoveryCodesNeverGetShorterThanTheDefault(): void
+    {
+        $this->configure(['security' => ['mfa.recovery_codes' => 3, 'mfa.recovery_code_length' => 2]]);
+        $this->userMfaRepository->method('findByUserId')->willReturn(UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', null, UserMfa::TYPE_APP));
+
+        $codes = $this->service->regenerateRecoveryCodes(1);
+
+        $this->assertCount(3, $codes);
+        foreach ($codes as $code) {
+            $this->assertSame(10, strlen($code));
+        }
+    }
+
     public function testConsumeRecoveryCodeAcceptsAPrintedCodeOnce(): void
     {
         $userId = 1;
