@@ -99,6 +99,9 @@ class Dns
                 $name = $zone;
             }
         }
+        // Names are stored lower-cased; the CNAME checks below compare case-sensitively on PostgreSQL and SQLite
+        $name = strtolower((string)$name);
+        $zone = strtolower((string)$zone);
 
         if ($type != "CNAME") {
             if (!$this->is_valid_rr_cname_exists($name, $rid)) {

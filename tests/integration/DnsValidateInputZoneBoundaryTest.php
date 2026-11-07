@@ -36,6 +36,7 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 class DnsValidateInputZoneBoundaryTest extends TestCase
 {
     private const ZONE_ID = 1;
+    private const UPPERCASE_ZONE_ID = 2;
 
     private Dns $dns;
 
@@ -45,6 +46,7 @@ class DnsValidateInputZoneBoundaryTest extends TestCase
         $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)");
         $db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
         $db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::ZONE_ID . ", 'ample.com', 'MASTER')");
+        $db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::UPPERCASE_ZONE_ID . ", 'UPPER.COM', 'MASTER')");
 
         $this->dns = new Dns($db, $this->createMock(AppConfiguration::class));
     }
@@ -95,14 +97,33 @@ class DnsValidateInputZoneBoundaryTest extends TestCase
         $this->assertFalse($this->validate($name));
     }
 
-    private function validate(string &$name, string $type = 'A', string $content = '192.0.2.1'): bool
+    public function testUppercaseNamesAreLowerCasedBeforeTheCnameChecks(): void
+    {
+        // SQLite and PostgreSQL compare names case-sensitively, so EXAMPLE.COM used to miss the apex rows
+        $apex = 'AMPLE.COM';
+        $this->assertFalse($this->validate($apex, 'CNAME', 'target.example.net'));
+
+        $name = 'WWW.Ample.Com';
+        $this->assertTrue($this->validate($name));
+        $this->assertSame('www.ample.com', $name);
+    }
+
+    public function testApexCnameIsRefusedInAZoneStoredInUpperCase(): void
+    {
+        // Zones created outside Poweradmin may keep upper-case names in domains.name
+        $apex = 'upper.com';
+
+        $this->assertFalse($this->validate($apex, 'CNAME', 'target.example.net', self::UPPERCASE_ZONE_ID));
+    }
+
+    private function validate(string &$name, string $type = 'A', string $content = '192.0.2.1', int $zoneId = self::ZONE_ID): bool
     {
         $prio = 0;
         $ttl = 3600;
 
         ob_start();
         try {
-            return $this->dns->validate_input(0, self::ZONE_ID, $type, $content, $name, $prio, $ttl, 'hostmaster.ample.com', 3600);
+            return $this->dns->validate_input(0, $zoneId, $type, $content, $name, $prio, $ttl, 'hostmaster.ample.com', 3600);
         } finally {
             ob_end_clean();
         }
