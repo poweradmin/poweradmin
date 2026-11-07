@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -352,6 +352,8 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testVerifyCodeReturnsFalseWhenUserNotFound(): void
     {
+        // Let the attempt through the lockout gate so the test reaches the check it names
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
         $userId = 1;
 
         $this->userMfaRepository->method('findByUserId')
@@ -365,6 +367,8 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testVerifyCodeReturnsFalseWhenNoSecret(): void
     {
+        // Let the attempt through the lockout gate so the test reaches the check it names
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
         $userId = 1;
         $userMfa = $this->createMock(UserMfa::class);
         $userMfa->method('getSecret')->willReturn(null);
@@ -426,6 +430,8 @@ class MfaServiceTest extends TestCase
             ->with($userId)
             ->willReturn($userMfa);
 
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
+
         $this->userMfaRepository->expects($this->once())
             ->method('save')
             ->with($userMfa)
@@ -455,6 +461,7 @@ class MfaServiceTest extends TestCase
             ->with($userId)
             ->willReturn($userMfa);
 
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(false);
         $this->userMfaRepository->expects($this->never())->method('save');
 
         $result = $this->service->verifyCode($userId, $verificationCode);
@@ -462,7 +469,7 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
-    public function testVerifyCodeLocksOutAfterRepeatedFailures(): void
+    public function testVerifyCodeCountsTheAttemptBeforeCheckingTheCode(): void
     {
         $userId = 1;
 
@@ -474,34 +481,27 @@ class MfaServiceTest extends TestCase
             'expires_at' => time() + 600,
             'used' => false,
         ]));
-        $userMfa->method('getVerificationDataAsArray')->willReturn([
-            'expires_at' => time() + 600,
-            'used' => false,
-            'failed_attempts' => 4, // the guess below is the fifth
-        ]);
+        $userMfa->method('getVerificationDataAsArray')->willReturn(['expires_at' => time() + 600, 'used' => false]);
 
         $this->configManager->method('get')
             ->willReturnMap([
                 ['mail', 'enabled', false, true],
             ]);
 
-        $this->userMfaRepository->method('findByUserId')
-            ->with($userId)
-            ->willReturn($userMfa);
+        $this->userMfaRepository->method('findByUserId')->willReturn($userMfa);
+        $this->userMfaRepository->expects($this->once())
+            ->method('reserveVerificationAttempt')
+            ->with($userId, 5, 900)
+            ->willReturn(true);
 
-        $userMfa->expects($this->once())
-            ->method('setVerificationData')
-            ->with($this->callback(static function (array $metadata): bool {
-                return isset($metadata['locked_until']) && $metadata['locked_until'] > time();
-            }));
-
-        $result = $this->service->verifyCode($userId, '999999');
-        $this->assertFalse($result);
+        $this->assertFalse($this->service->verifyCode($userId, '999999'));
     }
 
     #[Test]
     public function testVerifyCodeReturnsFalseForExpiredEmailCode(): void
     {
+        // Let the attempt through the lockout gate so the test reaches the check it names
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
         $userId = 1;
         $verificationCode = '123456';
         $metadata = json_encode([
@@ -531,6 +531,8 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testVerifyCodeReturnsFalseForUsedEmailCode(): void
     {
+        // Let the attempt through the lockout gate so the test reaches the check it names
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
         $userId = 1;
         $verificationCode = '123456';
         $metadata = json_encode([
@@ -638,6 +640,8 @@ class MfaServiceTest extends TestCase
     #[Test]
     public function testVerifyCodeReturnsFalseForInvalidTotpSecretFormat(): void
     {
+        // Let the attempt through the lockout gate so the test reaches the check it names
+        $this->userMfaRepository->method('reserveVerificationAttempt')->willReturn(true);
         $userId = 1;
         $userMfa = $this->createMock(UserMfa::class);
         $userMfa->method('getSecret')->willReturn('invalid!secret'); // Invalid Base32
