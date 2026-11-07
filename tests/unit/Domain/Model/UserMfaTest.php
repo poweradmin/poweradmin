@@ -84,4 +84,19 @@ class UserMfaTest extends TestCase
         $this->assertFalse($mfa->validateRecoveryCode('alpha'));
         $this->assertEquals(['bravo'], $mfa->getRecoveryCodesAsArray());
     }
+
+    #[Test]
+    public function testDisableDropsSecretRecoveryCodesAndPendingCode(): void
+    {
+        $mfa = UserMfa::create(7, true, 'JBSWY3DPEHPK3PXP', json_encode(['alpha', 'bravo']), UserMfa::TYPE_EMAIL, '{"code":"123456"}');
+
+        $mfa->disable();
+
+        $this->assertFalse($mfa->isEnabled());
+        $this->assertNull($mfa->getSecret());
+        $this->assertNull($mfa->getRecoveryCodes());
+        $this->assertNull($mfa->getVerificationData());
+        $this->assertSame(UserMfa::TYPE_APP, $mfa->getType());
+        $this->assertFalse($mfa->validateRecoveryCode('alpha'));
+    }
 }

@@ -362,6 +362,27 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testReEnablingAfterDisableIssuesNewSecretAndRecoveryCodes(): void
+    {
+        $userId = 1;
+        $userMfa = UserMfa::create($userId, true, 'JBSWY3DPEHPK3PXP', json_encode(['oldcode0001']), UserMfa::TYPE_APP);
+        $this->userMfaRepository->method('findByUserId')->with($userId)->willReturn($userMfa);
+        $this->userMfaRepository->method('save')->willReturnArgument(0);
+
+        $this->service->disableMfa($userId);
+        $this->assertNull($userMfa->getSecret());
+
+        $enabled = $this->service->enableMfa($userId, UserMfa::TYPE_APP);
+
+        $this->assertTrue($enabled->isEnabled());
+        $this->assertNotSame('JBSWY3DPEHPK3PXP', $enabled->getSecret());
+        $this->assertNotEmpty($enabled->getSecret());
+        $this->assertNotEmpty($enabled->getRecoveryCodesAsArray());
+        $this->assertNotContains('oldcode0001', $enabled->getRecoveryCodesAsArray());
+        $this->assertFalse($enabled->validateRecoveryCode('oldcode0001'));
+    }
+
+    #[Test]
     public function testVerifyCodeReturnsFalseWhenUserNotFound(): void
     {
         $userId = 1;

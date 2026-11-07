@@ -91,9 +91,17 @@ class UserMfa
         $this->updatedAt = new DateTime();
     }
 
+    /**
+     * Turns the factor off and drops its secret, recovery codes and pending code, so
+     * nothing from the old enrolment can be used or revived by a later one.
+     */
     public function disable(): void
     {
         $this->enabled = false;
+        $this->secret = null;
+        $this->recoveryCodes = null;
+        $this->verificationData = null;
+        $this->type = self::TYPE_APP;
         $this->updatedAt = new DateTime();
     }
 
