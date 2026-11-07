@@ -1510,6 +1510,17 @@ class DbUserRepository implements UserRepositoryInterface
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
     }
 
+    public function hasLocalPassword(int $userId): bool
+    {
+        $stmt = $this->db->prepare('SELECT password FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+        $hash = $stmt->fetchColumn();
+
+        return is_string($hash)
+            && $hash !== ''
+            && !in_array($hash, [AuthMethod::LDAP_PASSWORD_PLACEHOLDER, AuthMethod::REMOTE_USER_PASSWORD_PLACEHOLDER], true);
+    }
+
     public function countUsersByEmail(string $email): int
     {
         $match = $this->emailEquals('email', ':email');

@@ -96,6 +96,11 @@ interface UserLookupInterface
     public function getProvisioningProfile(int $userId): array;
 
     /**
+     * Whether the account can sign in with a local password (not empty, not an external-auth placeholder).
+     */
+    public function hasLocalPassword(int $userId): bool;
+
+    /**
      * Get a user's full name by ID
      *
      * @param int $userId User ID to look up

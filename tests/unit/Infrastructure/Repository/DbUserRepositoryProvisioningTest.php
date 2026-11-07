@@ -59,6 +59,18 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->repository = new DbUserRepository($this->db, new FakeConfiguration(), false);
     }
 
+    public function testHasLocalPasswordIgnoresEmptyHashesAndExternalPlaceholders(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap)
+            VALUES (3, 'sso', '', '', '', '', 5, 1, 0), (4, 'ldap', 'LDAP_USER', '', '', '', 5, 1, 1), (5, 'remote', 'REMOTE_USER', '', '', '', 5, 1, 0)");
+
+        $this->assertTrue($this->repository->hasLocalPassword(1));
+        $this->assertFalse($this->repository->hasLocalPassword(3));
+        $this->assertFalse($this->repository->hasLocalPassword(4));
+        $this->assertFalse($this->repository->hasLocalPassword(5));
+        $this->assertFalse($this->repository->hasLocalPassword(99));
+    }
+
     public function testCreateProvisionedUserWritesEveryProvisioningColumn(): void
     {
         $id = $this->repository->createProvisionedUser([

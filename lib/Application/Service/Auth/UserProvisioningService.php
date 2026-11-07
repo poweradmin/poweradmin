@@ -168,6 +168,16 @@ class UserProvisioningService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->accountHasLocalPassword($existingUserId)) {
+                    // Whoever set this address on a password account (its owner, or a user creator) could sign in
+                    // with that password as this identity; auto-provisioning instead would duplicate the address.
+                    $this->logger->warning(
+                        'Refusing {method} sign-in: its email matches account {id}, which signs in with a local password; clear that password or the address to let the identity link',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    return null;
+                }
+
                 if ($existingUserId) {
                     $this->logger->info('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     if (!array_key_exists('email_verified', $userInfo->getRawData())) {
@@ -359,6 +369,17 @@ class UserProvisioningService
         } catch (\Exception $e) {
             // Fail closed: an unreadable permission state must not permit linking.
             $this->logger->error('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+    }
+
+    private function accountHasLocalPassword(int $userId): bool
+    {
+        try {
+            return $this->userRepository->hasLocalPassword($userId);
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable account must not be linked
+            $this->logger->error('Error checking local password: {error}', ['error' => $e->getMessage()]);
             return true;
         }
     }

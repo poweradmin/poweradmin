@@ -795,6 +795,46 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertNull($service->provisionUser($userInfo, 'okta'));
     }
 
+    public function testEmailMatchDoesNotLinkAnAccountWithALocalPassword(): void
+    {
+        // A user who set their own address to the victim's would otherwise receive the victim's identity
+        $repository = $this->emailMatchRepository();
+        $repository->method('hasLocalPassword')->with(42)->willReturn(true);
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->never())->method('linkOidc');
+        $repository->expects($this->never())->method('updateProvisionedUser');
+
+        // A second account with the same address would make password reset decline both
+        $repository->expects($this->never())->method('createProvisionedUser');
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true, 'auto_provision' => true]);
+        $requestedKeys = [];
+        $config->method('get')->willReturnCallback(static function ($group, $key, $default = null) use (&$requestedKeys) {
+            $requestedKeys[] = $key;
+            return $default;
+        });
+        $service = $this->createServiceWithMocks($config, $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertNotContains('permission_template_mapping', $requestedKeys, 'auto-provisioning must not start');
+    }
+
+    public function testEmailMatchIsRefusedWhenThePasswordLookupFails(): void
+    {
+        $repository = $this->emailMatchRepository();
+        $repository->method('hasLocalPassword')->willThrowException(new \RuntimeException('db down'));
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->never())->method('linkOidc');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
     private function emailLinkConfig(): \Poweradmin\Infrastructure\Configuration\ConfigurationManager
     {
         $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
