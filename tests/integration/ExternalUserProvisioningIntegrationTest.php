@@ -164,7 +164,8 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
 
     public function testEmailLinksAnExistingActiveAccountInsteadOfCreatingOne(): void
     {
-        $userId = $this->insertLocalUser('local.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin');
+        // Only an account without a local password links by email
+        $userId = $this->insertLocalUser('local.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin', password: '');
 
         $svc = $this->service();
         $resolved = $svc->provisionUser($this->oidcUser(['dns-editors']), self::PROVIDER);
@@ -183,6 +184,16 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
         $this->assertSame(self::EDITOR_TEMPLATE_ID, (int)$row['perm_templ']);
         $this->assertSame('oidc', $row['perm_templ_source']);
         $this->assertSame('local.jane', $svc->getDatabaseUsername($userId));
+    }
+
+    public function testEmailMatchOnAnAccountWithALocalPasswordRefusesTheSignIn(): void
+    {
+        // Whoever set that address on a password account would otherwise sign in as this identity
+        $this->insertLocalUser('local.jane', 'jane@example.org', 'sql', self::GUEST_TEMPLATE_ID, 'admin');
+
+        $this->assertNull($this->service()->provisionUser($this->oidcUser(['dns-editors']), self::PROVIDER));
+        $this->assertSame(1, $this->rowCount('users'), 'no second account with the same address');
+        $this->assertSame(0, $this->rowCount('oidc_user_links'));
     }
 
     public function testEmailLinkingRefusesInactiveAndSkipsSuperuserAccounts(): void
@@ -494,13 +505,13 @@ class ExternalUserProvisioningIntegrationTest extends TestCase
 
     // --- Database helpers --------------------------------------------------
 
-    private function insertLocalUser(string $username, string $email, string $authMethod, int $permTempl, string $source, int $active = 1): int
+    private function insertLocalUser(string $username, string $email, string $authMethod, int $permTempl, string $source, int $active = 1, string $password = 'hash'): int
     {
         $stmt = $this->db->prepare(
             "INSERT INTO users (username, password, fullname, email, description, perm_templ, perm_templ_source, active, use_ldap, auth_method)
-             VALUES (?, 'hash', 'Local Person', ?, '', ?, ?, ?, 0, ?)"
+             VALUES (?, ?, 'Local Person', ?, '', ?, ?, ?, 0, ?)"
         );
-        $stmt->execute([$username, $email, $permTempl, $source, $active, $authMethod]);
+        $stmt->execute([$username, $password, $email, $permTempl, $source, $active, $authMethod]);
 
         return (int)$this->db->lastInsertId();
     }
