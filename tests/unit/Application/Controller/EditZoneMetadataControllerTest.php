@@ -176,6 +176,49 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertCount(1, $errors);
     }
 
+    public function testKindCharsetViolationsRefuseNewNonAsciiKinds(): void
+    {
+        // latin1_swedish_ci (the PowerDNS MySQL schema) compares É equal to E
+        $controller = $this->createControllerWithConfig([]);
+
+        foreach (['ENABLÉ-LUA-RECORDS', "ENABLE-LUA-RECORDS\u{200B}", 'LUA-AXFR-SCRİPT', 'X NOTE'] as $kind) {
+            $errors = $this->invokePrivateMethod($controller, 'kindCharsetViolations', [[
+                ['kind' => $kind, 'content' => '1'],
+            ], []]);
+
+            $this->assertCount(1, $errors, $kind);
+        }
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'kindCharsetViolations', [[
+            ['kind' => 'ENABLE-LUA-RECORDS', 'content' => '1'],
+            ['kind' => 'X_CUSTOM-1', 'content' => '1'],
+        ], []]));
+    }
+
+    public function testSqlSaveMayDropOrKeepAStoredNonAsciiRowButNotChangeIt(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $planted = [['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '1']];
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'kindCharsetViolations', [[], $planted]));
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'kindCharsetViolations', [$planted, $planted]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'kindCharsetViolations', [
+            [['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '2']],
+            $planted,
+        ]));
+    }
+
+    public function testApiSaveRefusesToWriteOrRemoveANonAsciiKind(): void
+    {
+        // PowerDNS matches kinds per kind on the collation, so PUT or DELETE would hit the real row
+        $controller = $this->createControllerWithConfig([]);
+        $this->setProperty($controller, 'apiClient', $this->createMock(\Poweradmin\Infrastructure\Api\PowerdnsApiClient::class));
+        $planted = [['kind' => 'ENABLÉ-LUA-RECORDS', 'content' => '1']];
+
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'kindCharsetViolations', [[], $planted]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'kindCharsetViolations', [$planted, $planted]));
+    }
+
     private function createControllerWithConfig(array $overrides): EditZoneMetadataController
     {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();

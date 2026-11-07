@@ -136,9 +136,10 @@ class EditZoneMetadataController extends BaseController
                 return;
             }
 
-            $restrictionErrors = $this->operatorOnlyViolations(
-                $submittedMetadata,
-                $this->loadMetadata($zoneId, $zone['name'])
+            $currentMetadata = $this->loadMetadata($zoneId, $zone['name']);
+            $restrictionErrors = array_merge(
+                $this->kindCharsetViolations($submittedMetadata, $currentMetadata),
+                $this->operatorOnlyViolations($submittedMetadata, $currentMetadata)
             );
             if (!empty($restrictionErrors)) {
                 $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
@@ -404,6 +405,46 @@ class EditZoneMetadataController extends BaseController
         }
 
         return array_values(array_unique($errors));
+    }
+
+    /**
+     * Refuse written kinds outside plain ASCII letters, digits, hyphens and underscores.
+     *
+     * MySQL's accent-folding collation matches ENABLÉ-LUA-RECORDS to the real kind, past the
+     * exact operator-only lookup. The SQL save rewrites the whole row set, so it may still drop
+     * a stored kind or keep one unchanged; the API save PUTs and DELETEs per kind and may not.
+     *
+     * @param array<int, array<string, string>> $submitted
+     * @param array<int, array<string, string>> $current
+     * @return array<int, string>
+     */
+    private function kindCharsetViolations(array $submitted, array $current): array
+    {
+        $valid = static fn(string $kind): bool => preg_match('/^[A-Z0-9_-]+$/D', $kind) === 1;
+        $perKind = $this->apiClient !== null;
+        $stored = [];
+        foreach ($current as $row) {
+            $stored[$row['kind'] . "\0" . $row['content']] = true;
+        }
+
+        $errors = [];
+        $submittedKinds = [];
+        foreach ($submitted as $row) {
+            $submittedKinds[$row['kind']] = true;
+            if (!$valid($row['kind']) && ($perKind || !isset($stored[$row['kind'] . "\0" . $row['content']]))) {
+                $errors[] = _('Invalid or unexpected input given.');
+            }
+        }
+
+        if ($perKind) {
+            foreach ($current as $row) {
+                if (!$valid($row['kind']) && !isset($submittedKinds[$row['kind']])) {
+                    $errors[] = _('Invalid or unexpected input given.');
+                }
+            }
+        }
+
+        return $errors;
     }
 
     /**

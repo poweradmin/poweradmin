@@ -304,6 +304,10 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
+        if ($this->isInvalidKind($kind)) {
+            return $this->returnApiError('Invalid metadata kind', 400);
+        }
+
         if (
             MetadataDefinitions::isOperatorOnly($kind)
             && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
@@ -394,6 +398,10 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('You do not have permission to edit zone metadata', 403);
         }
 
+        if ($this->isInvalidKind($kind)) {
+            return $this->returnApiError('Invalid metadata kind', 400);
+        }
+
         if (
             MetadataDefinitions::isOperatorOnly($kind)
             && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
@@ -414,6 +422,16 @@ class ZoneMetadataController extends PublicApiController
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
+    }
+
+    /**
+     * MySQL's accent-folding collation matches ENABLÉ-LUA-RECORDS to the real kind and slips
+     * past the exact operator-only lookup, so only plain ASCII kinds are accepted. Deletes
+     * are checked too: a collation match would remove the real kind.
+     */
+    private function isInvalidKind(string $kind): bool
+    {
+        return preg_match('/^[A-Z0-9_-]+$/D', $kind) !== 1;
     }
 
     /**
