@@ -95,7 +95,7 @@ return [
             'enforced' => false,                 // Enable MFA enforcement (requires user_enforce_mfa permission)
             'skip_for_external_auth' => false,   // Skip MFA enforcement for LDAP/OIDC/SAML logins - the IdP is trusted to enforce MFA (added in 4.5.0)
             'app_enabled' => true,               // Enable authenticator app option
-            'email_enabled' => true,             // Enable email verification option
+            'email_enabled' => true,             // Enable email verification codes; NIST SP 800-63B does not accept email as a second factor
             'recovery_codes' => 8,               // Number of recovery codes to generate
             'recovery_code_length' => 10,        // Length of recovery codes in characters; shorter values are raised to 10
             'max_verify_attempts' => 5,          // Failed second-factor guesses before the code is refused (added in 4.5.0)
