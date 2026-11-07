@@ -42,8 +42,13 @@ class LegacyTypeResolver extends AbstractTypeResolver
 
             if ('int' === $schema->type && is_array($details->explicitDetails)) {
                 if (array_key_exists('min', $details->explicitDetails)) {
-                    $schema->minimum = $details->explicitDetails['min'];
-                    $schema->maximum = $details->explicitDetails['max'];
+                    // an open end is `PHP_INT_MIN`/`PHP_INT_MAX`, which is no bound of the API
+                    if (\PHP_INT_MIN !== $details->explicitDetails['min']) {
+                        $schema->minimum = $details->explicitDetails['min'];
+                    }
+                    if (\PHP_INT_MAX !== $details->explicitDetails['max']) {
+                        $schema->maximum = $details->explicitDetails['max'];
+                    }
                 } elseif ('non-zero-int' === $details->explicitType) {
                     $schema->not = ['const' => 0];
                 }
@@ -99,8 +104,8 @@ class LegacyTypeResolver extends AbstractTypeResolver
             }
         }
 
-        if (!Undefined::isDefault($schema->items)) {
-            $this->mapNativeType($schema->items, $schema->items->type);
+        if ($schema->items instanceof OA\Items && !Undefined::isDefault($schema->items->type) && !$this->mapNativeType($schema->items, $schema->items->type)) {
+            $schema->items->type = Undefined::UNDEFINED;
         }
         $schema->type = 'array';
     }

@@ -40,6 +40,7 @@ use Symfony\Component\TypeInfo\TypeContext\TypeContext;
 use Symfony\Component\TypeInfo\TypeContext\TypeContextFactory;
 use Symfony\Component\TypeInfo\TypeIdentifier;
 use Symfony\Component\TypeInfo\TypeResolver\ReflectionTypeResolver;
+use Symfony\Component\TypeInfo\TypeResolver\StringTypeResolver as SymfonyStringTypeResolver;
 
 /**
  * Resolves a PHP reflector to a SchemaType value object.
@@ -124,7 +125,7 @@ class TypeResolver implements LoggerAwareInterface
             return null;
         }
 
-        $typeContext = (new TypeContextFactory())->createFromReflection($reflector);
+        $typeContext = (new TypeContextFactory(new SymfonyStringTypeResolver()))->createFromReflection($reflector);
 
         $tagName = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
@@ -247,10 +248,11 @@ class TypeResolver implements LoggerAwareInterface
         }
 
         if ($type instanceof IntRangeType) {
+            // an open end comes as `PHP_INT_MIN`/`PHP_INT_MAX`, which is no bound of the API
             return new SchemaType(
                 type: $type->getTypeIdentifier()->value,
-                minimum: $type->getFrom(),
-                maximum: $type->getTo(),
+                minimum: \PHP_INT_MIN === $type->getFrom() ? null : $type->getFrom(),
+                maximum: \PHP_INT_MAX === $type->getTo() ? null : $type->getTo(),
             );
         }
 
