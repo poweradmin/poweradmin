@@ -23,9 +23,11 @@
 namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -214,6 +216,11 @@ class EditZoneTemplController extends BaseController
         $syncedZoneIds = [];
         $failures = [];
         foreach ($zones as $zone) {
+            // A reviewed zone does not take direct record writes, as in the zone editor's template change
+            if ($this->changeApprovalModeForZone((int)$zone['domain_id']) === ChangeApprovalPolicy::MODE_REQUEST) {
+                $failures[] = ChangeRequestMessages::requiresApproval();
+                continue;
+            }
             // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
             // Only mark a zone as synced once its records actually took, otherwise a
             // failed zone is recorded as up to date and never retried.
