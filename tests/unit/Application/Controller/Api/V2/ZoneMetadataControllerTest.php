@@ -64,6 +64,16 @@ class ZoneMetadataControllerTest extends TestCase
         $this->assertStatus(403, $this->kindWriteRejection($apiController, 'CATALOG-HASH'));
     }
 
+    public function testKindsWithNonAsciiCharactersAreRejectedBeforeTheOperatorOnlyCheck(): void
+    {
+        // latin1_swedish_ci compares É equal to E, so this would otherwise pass for ENABLE-LUA-RECORDS
+        $controller = $this->createController();
+        foreach (['ENABLÉ-LUA-RECORDS', "ENABLE-LUA-RECORDS\u{200B}", 'LUA-AXFR-SCRIPT '] as $kind) {
+            $this->assertStatus(400, $this->kindWriteRejection($controller, $kind));
+        }
+        $this->assertNull($this->kindWriteRejection($controller, 'X-CUSTOM_KIND-1'));
+    }
+
     public function testSqlBackendAcceptsKindsThePowerDnsApiRefuses(): void
     {
         $controller = $this->createController();

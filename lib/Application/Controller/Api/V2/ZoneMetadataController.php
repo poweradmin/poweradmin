@@ -462,6 +462,11 @@ class ZoneMetadataController extends PublicApiController
      */
     private function kindWriteRejection(string $kind): ?JsonResponse
     {
+        // Deletes too: the single-kind delete matches by collation and could hit the real kind
+        if (!MetadataDefinitions::isValidKind($kind)) {
+            return $this->returnApiError('Invalid metadata kind', 400);
+        }
+
         return match (MetadataDefinitions::writeRejection($kind, $this->apiClient !== null)) {
             MetadataDefinitions::REJECT_SERVER_MANAGED =>
                 $this->returnApiError('Metadata kind ' . $kind . ' is maintained by PowerDNS', 403),

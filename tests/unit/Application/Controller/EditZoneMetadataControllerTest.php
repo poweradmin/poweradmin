@@ -394,6 +394,25 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertArrayNotHasKey('API-RECTIFY', $byKind);
     }
 
+    public function testInvalidKindViolationsRejectNonAsciiKinds(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+
+        $this->assertCount(2, $this->invokePrivateMethod($controller, 'invalidKindViolations', [['ENABLÉ-LUA-RECORDS', 'X-BAD KIND'], ['ENABLÉ-LUA-RECORDS', 'X-BAD KIND']]));
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'invalidKindViolations', [['ENABLE-LUA-RECORDS', 'X_OK-1'], ['ENABLE-LUA-RECORDS', 'X_OK-1']]));
+    }
+
+    public function testInvalidKindViolationsAllowRemovingAStoredInvalidKindOnTheSqlBackendOnly(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'invalidKindViolations', [['ENABLÉ-LUA-RECORDS'], []]));
+        $this->setProperty($controller, 'apiClient', $this->createMock(PowerdnsApiClient::class));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'invalidKindViolations', [['ENABLÉ-LUA-RECORDS'], []]));
+        $this->setProperty($controller, 'apiClient', null);
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'invalidKindViolations', [['ENABLÉ-LUA-RECORDS'], []]));
+    }
+
     public function testRestrictedKindViolationsRejectChangesTheApiCannotStore(): void
     {
         [$controller] = $this->controllerWithApi();

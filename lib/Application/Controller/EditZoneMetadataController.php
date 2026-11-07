@@ -140,6 +140,7 @@ class EditZoneMetadataController extends BaseController
 
             $changedKinds = $this->changedKinds($submittedMetadata, $beforeMetadata);
             $restrictionErrors = array_merge(
+                $this->invalidKindViolations($changedKinds, array_column($submittedMetadata, 'kind')),
                 $this->operatorOnlyViolations($changedKinds),
                 $this->restrictedKindViolations($changedKinds)
             );
@@ -433,6 +434,32 @@ class EditZoneMetadataController extends BaseController
         }
 
         return array_values(array_unique($errors));
+    }
+
+    /**
+     * Reject changed kinds that are not plain ASCII, before the operator-only comparison.
+     * On the SQL backend the save replaces the whole row set, so a stored invalid kind stays
+     * removable; the API backend deletes per kind by collation match and refuses it.
+     *
+     * @param array<int, string> $changedKinds
+     * @param array<int, string> $submittedKinds
+     * @return array<int, string>
+     */
+    private function invalidKindViolations(array $changedKinds, array $submittedKinds): array
+    {
+        $errors = [];
+        foreach ($changedKinds as $kind) {
+            $removed = !in_array($kind, $submittedKinds, true);
+            if ((!$removed || $this->apiClient !== null) && !MetadataDefinitions::isValidKind((string) $kind)) {
+                $errors[] = sprintf(
+                    _('Invalid value for %s. Allowed values: %s.'),
+                    $kind,
+                    'A-Z, 0-9, -, _'
+                );
+            }
+        }
+
+        return $errors;
     }
 
     /**

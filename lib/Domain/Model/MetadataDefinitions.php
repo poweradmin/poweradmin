@@ -284,6 +284,17 @@ class MetadataDefinitions
     }
 
     /**
+     * Whether an upper-cased kind is plain ASCII letters, digits, hyphens and underscores.
+     *
+     * MySQL's accent-folding collations match ENABLÉ-LUA-RECORDS to the real kind,
+     * so anything else would slip past the exact operator-only lookup.
+     */
+    public static function isValidKind(string $kind): bool
+    {
+        return preg_match('/^[A-Z0-9_-]+$/D', $kind) === 1;
+    }
+
+    /**
      * Config keys (dns group) that narrow the offered values per kind.
      */
     public const OPTION_CONFIG_KEYS = [
