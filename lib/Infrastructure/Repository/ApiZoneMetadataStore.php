@@ -124,11 +124,20 @@ final class ApiZoneMetadataStore implements ZoneMetadataStoreInterface
                 $property => MetadataDefinitions::toZonePropertyValue($kind, $values[0] ?? ''),
             ]);
         }
+        // A row of this kind stored in another case (X-note for X-NOTE) goes too; first,
+        // as PowerDNS may match kinds case-insensitively and would drop the new values
+        $success = true;
+        foreach (array_unique(array_column($before, 'kind')) as $stored) {
+            $stored = (string)$stored;
+            if ($stored !== $kind && strtoupper(trim($stored)) === $kind && MetadataDefinitions::writeRejection($stored, true) === null) {
+                $success = $this->apiClient->deleteZoneMetadata(new Zone($apiName), $stored) && $success;
+            }
+        }
         if ($values === []) {
-            return $this->apiClient->deleteZoneMetadata(new Zone($apiName), $kind);
+            return $this->apiClient->deleteZoneMetadata(new Zone($apiName), $kind) && $success;
         }
 
-        return $this->apiClient->updateZoneMetadata(new Zone($apiName), $kind, $values);
+        return $this->apiClient->updateZoneMetadata(new Zone($apiName), $kind, $values) && $success;
     }
 
     /** The PowerDNS API wants the absolute name */

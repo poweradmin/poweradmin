@@ -299,6 +299,49 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($this->apiService($apiClient)->replaceKind(self::ZONE_ID, self::ZONE, 'x-note', ['hello'], self::ADMIN)->isOk());
     }
 
+    public function testReplaceKindOnTheApiBackendFirstRemovesTheKindStoredInAnotherCase(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([
+            ['kind' => 'X-note', 'metadata' => ['old']],
+            ['kind' => 'X-NOTE', 'metadata' => ['old']],
+            ['kind' => 'x-note', 'metadata' => ['unaddressable']],
+        ]);
+        $apiClient->method('getZone')->willReturn([]);
+        $calls = [];
+        $apiClient->expects($this->once())->method('deleteZoneMetadata')
+            ->with($this->anything(), 'X-note')
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'delete X-note';
+                return true;
+            });
+        $apiClient->expects($this->once())->method('updateZoneMetadata')
+            ->with($this->anything(), 'X-NOTE', ['hello'])
+            ->willReturnCallback(function () use (&$calls): bool {
+                $calls[] = 'put X-NOTE';
+                return true;
+            });
+
+        $this->assertTrue($this->apiService($apiClient)->replaceKind(self::ZONE_ID, self::ZONE, 'X-NOTE', ['hello'], self::ADMIN)->isOk());
+        $this->assertSame(['delete X-note', 'put X-NOTE'], $calls);
+    }
+
+    public function testDeleteKindOnTheApiBackendAlsoRemovesTheKindStoredInAnotherCase(): void
+    {
+        $apiClient = $this->createMock(PowerdnsApiClient::class);
+        $apiClient->method('getZoneMetadata')->willReturn([['kind' => 'X-note', 'metadata' => ['old']]]);
+        $apiClient->method('getZone')->willReturn([]);
+        $deleted = [];
+        $apiClient->expects($this->exactly(2))->method('deleteZoneMetadata')
+            ->willReturnCallback(function (Zone $zone, string $kind) use (&$deleted): bool {
+                $deleted[] = $kind;
+                return true;
+            });
+
+        $this->assertTrue($this->apiService($apiClient)->deleteKind(self::ZONE_ID, self::ZONE, 'X-NOTE', self::ADMIN)->isOk());
+        $this->assertSame(['X-note', 'X-NOTE'], $deleted);
+    }
+
     public function testDeleteKindOnTheApiBackendRemovesOnlyThatKindsMetadata(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);
