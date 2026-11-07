@@ -58,7 +58,7 @@ class SharedZoneIdRemovalPathsTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach (
             [
-                "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, perm_templ INTEGER)",
+                "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, perm_templ INTEGER, email TEXT NOT NULL DEFAULT '')",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
@@ -75,7 +75,7 @@ class SharedZoneIdRemovalPathsTest extends TestCase
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE app_settings (setting_key TEXT NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')",
-                "INSERT INTO users VALUES (7, 'bowner', 1), (8, 'cowner', 1)",
+                "INSERT INTO users (id, username, perm_templ) VALUES (7, 'bowner', 1), (8, 'cowner', 1)",
                 "INSERT INTO zones (id, domain_id, owner, zone_name, zone_type) VALUES
                     (12, 5, 7, 'b.example', 'MASTER'), (5, 3, 8, 'c.example', 'SLAVE'), (30, 30, 7, 'd.example', 'MASTER'),
                     (40, 5, 9, NULL, NULL)",

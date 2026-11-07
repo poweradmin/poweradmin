@@ -897,6 +897,10 @@ class DbUserRepository implements UserRepositoryInterface
                 $transaction->begin();
             }
 
+            $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :userId");
+            $stmt->execute([':userId' => $userId]);
+            $email = $stmt->fetchColumn();
+
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
 
@@ -935,6 +939,9 @@ class DbUserRepository implements UserRepositoryInterface
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([':userId' => $userId]);
             }
+            if (is_string($email) && $email !== '') {
+                $this->deleteEmailRequestsIfUnused($email);
+            }
             if (!$this->isApiBackend) {
                 // The user's row may have carried the zone name, or been the zone's last row
                 $domainsTable = (new TableNameService($this->config))->getTable(PdnsTable::DOMAINS);
@@ -952,6 +959,22 @@ class DbUserRepository implements UserRepositoryInterface
                 $transaction->rollBack();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * Removes password reset tokens and username recovery requests for an address
+     * no remaining account uses; while another account shares it, its rows stay.
+     */
+    private function deleteEmailRequestsIfUnused(string $email): void
+    {
+        if ($this->countUsersByEmail($email) > 0) {
+            return;
+        }
+        $match = $this->emailEquals('email', ':email');
+        foreach (['password_reset_tokens', 'username_recovery_requests'] as $table) {
+            $stmt = $this->db->prepare("DELETE FROM $table WHERE $match");
+            $stmt->execute([':email' => $email]);
         }
     }
 

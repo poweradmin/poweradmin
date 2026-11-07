@@ -45,7 +45,9 @@ class DbUserRepositoryDeleteUserTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach (
             [
-                "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, perm_templ INTEGER)",
+                "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, perm_templ INTEGER, email TEXT NOT NULL DEFAULT '')",
+                "CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
+                "CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
@@ -62,7 +64,9 @@ class DbUserRepositoryDeleteUserTest extends TestCase
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
-                "INSERT INTO users VALUES (1, 'gone', 2), (2, 'stays', 2)",
+                "INSERT INTO users VALUES (1, 'gone', 2, 'gone@example.com'), (2, 'stays', 2, 'stays@example.com')",
+                "INSERT INTO password_reset_tokens (email) VALUES ('Gone@Example.com'), ('stays@example.com')",
+                "INSERT INTO username_recovery_requests (email) VALUES ('gone@example.com'), ('stays@example.com')",
                 "INSERT INTO oidc_user_links (user_id) VALUES (1), (2)",
                 "INSERT INTO user_preferences (user_id) VALUES (1), (2)",
                 "INSERT INTO user_mfa (user_id) VALUES (1), (2)",
@@ -158,6 +162,26 @@ class DbUserRepositoryDeleteUserTest extends TestCase
         $this->assertSame(0, $this->rows('zone_templ WHERE id = 101'));
         $this->assertSame(0, $this->rows('zone_templ_groups'));
         $this->assertSame(0, $this->rows('zone_templ WHERE owner = 2'));
+    }
+
+    public function testDeleteUserRemovesResetAndRecoveryRequestsForTheirEmail(): void
+    {
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        $this->assertSame(0, $this->rows("password_reset_tokens WHERE LOWER(email) = 'gone@example.com'"));
+        $this->assertSame(0, $this->rows("username_recovery_requests WHERE email = 'gone@example.com'"));
+        $this->assertSame(1, $this->rows("password_reset_tokens WHERE email = 'stays@example.com'"));
+        $this->assertSame(1, $this->rows("username_recovery_requests WHERE email = 'stays@example.com'"));
+    }
+
+    public function testResetAndRecoveryRequestsStayWhileAnotherAccountSharesTheEmail(): void
+    {
+        $this->db->exec("UPDATE users SET email = 'STAYS@example.com' WHERE id = 1");
+
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        $this->assertSame(1, $this->rows("password_reset_tokens WHERE email = 'stays@example.com'"));
+        $this->assertSame(1, $this->rows("username_recovery_requests WHERE email = 'stays@example.com'"));
     }
 
     private function rows(string $fromWhere): int
