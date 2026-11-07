@@ -36,10 +36,24 @@ class PermissionTemplateSqlQuotingTest extends TestCase
         $this->assertStringContainsString("templ_id = 'QUOTED:5'", $delete);
     }
 
+    public function testPermissionIdsAreStoredAsTheIntTheGuardChecked(): void
+    {
+        // MySQL rounds a stored '52.5' up to 53 (user_is_ueberuser) while the guard saw (int) 52
+        $queries = $this->runUpdateWith('5', ['52.5', '5.35e1', '7', ['53']]);
+
+        $inserts = array_values(array_filter($queries, static fn(string $q): bool => str_contains($q, 'INSERT INTO perm_templ_items')));
+
+        $this->assertCount(3, $inserts, 'A non-scalar id is skipped, as the guard skips it');
+        $this->assertStringContainsString("'QUOTED:52')", $inserts[0]);
+        $this->assertStringContainsString("'QUOTED:53')", $inserts[1]);
+        $this->assertStringContainsString("'QUOTED:7')", $inserts[2]);
+    }
+
     /**
+     * @param ?array<mixed> $permIds
      * @return array<int, string> Every statement the repository executed
      */
-    private function runUpdateWith(string $templId): array
+    private function runUpdateWith(string $templId, ?array $permIds = null): array
     {
         $queries = [];
 
@@ -59,11 +73,15 @@ class PermissionTemplateSqlQuotingTest extends TestCase
         );
 
         $repository = new DbPermissionTemplateRepository($db);
-        $repository->updatePermissionTemplateDetails([
+        $details = [
             'templ_id' => $templId,
             'templ_name' => 'Ordinary',
             'templ_descr' => '',
-        ]);
+        ];
+        if ($permIds !== null) {
+            $details['perm_id'] = $permIds;
+        }
+        $repository->updatePermissionTemplateDetails($details);
 
         return $queries;
     }

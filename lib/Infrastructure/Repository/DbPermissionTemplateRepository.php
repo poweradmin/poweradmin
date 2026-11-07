@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -52,7 +52,11 @@ class DbPermissionTemplateRepository
 
         if (isset($details['perm_id'])) {
             foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($perm_templ_id, 'integer') . "," . $this->db->quote($perm_id, 'integer') . ")";
+                // Store the id the superuser guard checked: MySQL rounds '52.5' to 53, (int) gives 52
+                if (!is_scalar($perm_id)) {
+                    continue;
+                }
+                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($perm_templ_id, 'integer') . "," . $this->db->quote((string)(int)$perm_id, 'integer') . ")";
                 $this->db->query($query);
             }
         }
@@ -133,7 +137,11 @@ class DbPermissionTemplateRepository
 
         if (isset($details['perm_id'])) {
             foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($details['templ_id'], 'integer') . "," . $this->db->quote($perm_id, 'integer') . ")";
+                // Store the id the superuser guard checked: MySQL rounds '52.5' to 53, (int) gives 52
+                if (!is_scalar($perm_id)) {
+                    continue;
+                }
+                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($details['templ_id'], 'integer') . "," . $this->db->quote((string)(int)$perm_id, 'integer') . ")";
                 $this->db->query($query);
             }
         }
