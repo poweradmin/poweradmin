@@ -109,6 +109,10 @@ class DatabaseSchemaService
                 $line .= ' CHARACTER SET ' . $arr['charset'];
             }
 
+            if ($db_type == 'mysql' && isset($arr['collation'])) {
+                $line .= ' COLLATE ' . $arr['collation'];
+            }
+
             if (isset($arr['notnull']) && $arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';
             }
