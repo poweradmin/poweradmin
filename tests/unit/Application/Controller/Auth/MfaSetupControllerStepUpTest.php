@@ -76,6 +76,65 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
         (new MfaSetupController([], true, $this->environment($config)))->run();
     }
 
+    /**
+     * @return UserMfa&MockObject
+     */
+    private function storedMfa(bool $enabled, string $type): UserMfa
+    {
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('isEnabled')->willReturn($enabled);
+        $userMfa->method('getType')->willReturn($type);
+        $this->mfa->method('getOrCreateUserMfa')->willReturn($userMfa);
+        $this->mfa->method('getUserMfa')->willReturn($userMfa);
+
+        return $userMfa;
+    }
+
+    public function testAppVerificationOfAnEnabledFactorNeverShowsItsSecret(): void
+    {
+        // The failure page printed the secret, so a wrong code used to hand over the live factor
+        $userMfa = $this->storedMfa(true, UserMfa::TYPE_APP);
+        $userMfa->expects($this->never())->method('getSecret');
+        $this->mfa->expects($this->never())->method('verifyCode');
+
+        $this->submit(['verify_app' => '1', 'verification_code' => '000000']);
+
+        $this->assertSame([['info', 'MFA is already enabled.']], $this->messagesFor('system'));
+    }
+
+    public function testAppVerificationNeverPrintsAPendingEmailCode(): void
+    {
+        $userMfa = $this->storedMfa(false, UserMfa::TYPE_EMAIL);
+        $userMfa->expects($this->never())->method('getSecret');
+        $this->mfa->expects($this->never())->method('verifyCode');
+
+        $this->submit(['verify_app' => '1', 'verification_code' => '000000']);
+
+        $this->assertSame([['error', 'Invalid verification code. Please try again.']], $this->messagesFor('system'));
+    }
+
+    public function testEmailVerificationOfAnEnabledFactorIsRefused(): void
+    {
+        $this->storedMfa(true, UserMfa::TYPE_EMAIL);
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $this->mfa->expects($this->never())->method('regenerateRecoveryCodes');
+
+        $this->submit(['verify_email' => '1', 'verification_code' => '123456']);
+
+        $this->assertSame([['info', 'MFA is already enabled.']], $this->messagesFor('system'));
+    }
+
+    public function testAPendingAppEnrolmentStillShowsItsSecretAfterAWrongCode(): void
+    {
+        $userMfa = $this->storedMfa(false, UserMfa::TYPE_APP);
+        $userMfa->expects($this->atLeastOnce())->method('getSecret')->willReturn('JBSWY3DPEHPK3PXP');
+        $this->mfa->method('verifyCode')->willReturn(false);
+
+        $this->submit(['verify_app' => '1', 'verification_code' => '000000']);
+
+        $this->assertSame([['error', 'Invalid verification code. Please try again.']], $this->messagesFor('system'));
+    }
+
     public function testDisableIsRefusedWithAWrongCode(): void
     {
         $this->enabledMfa(UserMfa::TYPE_APP);
