@@ -139,7 +139,28 @@ class ListLogZonesController extends AbstractListLogController
 
     protected function fetchLogs(array $filters, int $limit, int $offset): array
     {
-        return $this->dbZoneLogger()->getFilteredLogs($filters, $limit, $offset, $this->ownedZoneIds);
+        $logs = $this->dbZoneLogger()->getFilteredLogs($filters, $limit, $offset, $this->ownedZoneIds);
+
+        return $this->applyOwnerFilter ? $this->withoutClientIp($logs) : $logs;
+    }
+
+    /**
+     * Owners see who changed their zones but not the actor's address. Every
+     * listing, modal and export reads rows from fetchLogs(), so this is the one place.
+     *
+     * @param array<int, array<string, mixed>> $logs
+     * @return array<int, array<string, mixed>>
+     */
+    protected function withoutClientIp(array $logs): array
+    {
+        foreach ($logs as &$log) {
+            if (isset($log['event']) && is_string($log['event'])) {
+                $log['event'] = preg_replace('/^client_ip:\S*\s*/', '', $log['event']) ?? $log['event'];
+            }
+        }
+        unset($log);
+
+        return $logs;
     }
 
     protected function getAdditionalRenderParams(): array

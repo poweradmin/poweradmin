@@ -113,4 +113,20 @@ class ListLogZonesCsvExportTest extends TestCase
             ['say \\"hi\\"', 'C:\\zones\\', "'=1+1"],
         ], $rows);
     }
+
+    public function testOwnerViewDropsClientIpFromEventAndParsedRows(): void
+    {
+        $controller = new ListLogZonesController([], true, $this->environment());
+
+        $logs = (new ReflectionMethod($controller, 'withoutClientIp'))->invoke($controller, [[
+            'created_at' => 't1',
+            'event' => 'client_ip:2001:db8::1 user:alice operation:add_record record:a.example.com content:"client_ip:x"',
+        ]]);
+        $parsed = (new ReflectionMethod($controller, 'parseLogEvents'))->invoke($controller, $logs);
+
+        $this->assertStringStartsWith('user:alice operation:add_record', $logs[0]['event']);
+        $this->assertStringNotContainsString('2001:db8', $logs[0]['event']);
+        $this->assertArrayNotHasKey('client_ip', $parsed[0]);
+        $this->assertSame('alice', $parsed[0]['user']);
+    }
 }
