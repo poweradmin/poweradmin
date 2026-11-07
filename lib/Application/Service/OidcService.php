@@ -194,7 +194,7 @@ class OidcService extends LoggingService
                 'error' => $error,
                 'description' => $errorDescription
             ]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorDescription, 'danger');
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
         }
@@ -387,7 +387,7 @@ class OidcService extends LoggingService
             }
         } catch (\Exception $e) {
             $this->logError('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
         }
 
