@@ -29,10 +29,10 @@ namespace Poweradmin\Domain\Port;
 interface TotpInterface
 {
     /**
-     * @param int $length Secret length in bytes; 16 is what authenticator apps expect
+     * @param int $length Base32 characters; 32 (160 bits) is the RFC 4226 recommendation
      * @return string Base32-encoded secret
      */
-    public function generateSecret(int $length = 16): string;
+    public function generateSecret(int $length = 32): string;
 
     /**
      * @param int $window How many periods either side of now are accepted, to

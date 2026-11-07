@@ -390,6 +390,13 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testNewTotpSecretsCarry160Bits(): void
+    {
+        $secret = $this->service->generateSecretKey();
+
+        $this->assertMatchesRegularExpression('/^[A-Z2-7]{32}$/', $secret);
+    }
+
     public function testRecoveryCodesNeverGetShorterThanTheDefault(): void
     {
         $this->configure(['security' => ['mfa.recovery_codes' => 3, 'mfa.recovery_code_length' => 2]]);

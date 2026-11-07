@@ -38,7 +38,7 @@ final class Google2FaTotp implements TotpInterface
         $this->google2fa = $google2fa ?? new Google2FA();
     }
 
-    public function generateSecret(int $length = 16): string
+    public function generateSecret(int $length = 32): string
     {
         return $this->google2fa->generateSecretKey($length);
     }

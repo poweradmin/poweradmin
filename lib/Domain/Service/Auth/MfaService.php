@@ -157,10 +157,10 @@ class MfaService
      * that is compatible with Google Authenticator, Microsoft Authenticator,
      * and other TOTP apps
      *
-     * @param int $length Length of the secret key in bytes (16 is standard)
+     * @param int $length Base32 characters; 32 is 160 bits, above the 112 bits NIST SP 800-63B asks for
      * @return string Base32-encoded secret key
      */
-    public function generateSecretKey(int $length = 16): string
+    public function generateSecretKey(int $length = 32): string
     {
         $secret = $this->totp->generateSecret($length);
 
