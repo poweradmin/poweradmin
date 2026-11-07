@@ -152,6 +152,9 @@ abstract class SqliteIntegrationTestCase extends TestCase
             fullname TEXT, email TEXT, description TEXT, active INTEGER NOT NULL DEFAULT 1, use_ldap INTEGER NOT NULL DEFAULT 0, auth_method TEXT, max_zones INTEGER)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER, max_zones INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        // Deleting a user with an email also clears that address's reset and recovery rows
+        $this->db->exec("CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
     }
 
     private function seedAdminWithUeberuser(): void
