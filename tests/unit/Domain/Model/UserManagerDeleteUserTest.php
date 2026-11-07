@@ -46,6 +46,9 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
         foreach (
             [
                 "ALTER TABLE users ADD COLUMN active INTEGER NOT NULL DEFAULT 1",
+                "ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT ''",
+                "CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
+                "CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
@@ -94,6 +97,19 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
     {
         $this->assertTrue($this->manager()->deleteUser(self::PLAIN_USER, []));
         $this->assertSame(0, $this->userRows(self::PLAIN_USER));
+    }
+
+    #[Test]
+    public function testDeletingAUserRemovesTheResetAndRecoveryRequestsForTheirEmail(): void
+    {
+        $this->db->exec("UPDATE users SET email = 'plain@example.com' WHERE id = " . self::PLAIN_USER);
+        $this->db->exec("INSERT INTO password_reset_tokens (email) VALUES ('plain@example.com')");
+        $this->db->exec("INSERT INTO username_recovery_requests (email) VALUES ('plain@example.com')");
+
+        $this->assertTrue($this->manager()->deleteUser(self::PLAIN_USER, []));
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM password_reset_tokens")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM username_recovery_requests")->fetchColumn());
     }
 
     private function manager(): UserManager

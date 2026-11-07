@@ -275,8 +275,16 @@ class UserManager
             $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
             $stmt->execute([':uid' => $uid]);
 
+            $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :uid");
+            $stmt->execute([':uid' => $uid]);
+            $email = $stmt->fetchColumn();
+
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
             $stmt->execute([':uid' => $uid]);
+
+            if (is_string($email) && $email !== '') {
+                (new DbUserRepository($this->db, $this->config))->deleteEmailRequestsIfUnused($email);
+            }
 
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTemplUserId($uid);
