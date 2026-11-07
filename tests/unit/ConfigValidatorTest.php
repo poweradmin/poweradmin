@@ -1449,4 +1449,49 @@ class ConfigValidatorTest extends TestCase
             'security' => ['password_encryption' => $method],
         ];
     }
+
+    /** @param array<string, mixed> $security */
+    private static function passwordPolicyConfig(array $security): array
+    {
+        return [
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE'],
+            'logging' => ['syslog_enabled' => false, 'syslog_identity' => 'poweradmin', 'syslog_facility' => LOG_USER],
+            'security' => $security,
+        ];
+    }
+
+    public function testMinLengthAboveTheBcryptByteLimitWarns(): void
+    {
+        $validator = new ConfigValidator(self::passwordPolicyConfig([
+            'password_encryption' => 'bcrypt',
+            'password_policy' => ['enable_password_rules' => true, 'min_length' => 73],
+        ]));
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayHasKey('security.password_policy.min_length', $validator->getWarnings());
+    }
+
+    public function testMinLengthAtTheBcryptByteLimitHasNoWarning(): void
+    {
+        $validator = new ConfigValidator(self::passwordPolicyConfig([
+            'password_encryption' => 'bcrypt',
+            'password_policy' => ['enable_password_rules' => true, 'min_length' => 72],
+        ]));
+
+        $validator->validate();
+        $this->assertEmpty($validator->getWarnings());
+    }
+
+    public function testLongMinLengthHasNoWarningWithArgon2idOrRulesDisabled(): void
+    {
+        foreach ([['argon2id', true], ['bcrypt', false]] as [$algorithm, $rules]) {
+            $validator = new ConfigValidator(self::passwordPolicyConfig([
+                'password_encryption' => $algorithm,
+                'password_policy' => ['enable_password_rules' => $rules, 'min_length' => 100],
+            ]));
+
+            $validator->validate();
+            $this->assertEmpty($validator->getWarnings(), $algorithm);
+        }
+    }
 }

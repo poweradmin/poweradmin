@@ -188,6 +188,16 @@ final class ConfigValidator
                 . 'Existing md5 password hashes still verify and are rehashed at the next login',
                 is_scalar($method) ? (string)$method : get_debug_type($method)
             );
+            return;
+        }
+
+        $policy = $this->getSetting('security', 'password_policy', []);
+        $minLength = is_array($policy) ? ($policy['min_length'] ?? 0) : 0;
+        if ($method === 'bcrypt' && !empty($policy['enable_password_rules']) && is_numeric($minLength) && (int)$minLength > 72) {
+            $this->warnings['security.password_policy.min_length'] = sprintf(
+                'password_policy.min_length %d is longer than bcrypt accepts (72 bytes), so no password can pass; lower it or use argon2id',
+                (int)$minLength
+            );
         }
     }
 
