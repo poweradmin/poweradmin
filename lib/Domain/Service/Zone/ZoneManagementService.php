@@ -218,6 +218,11 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Invalid domain name', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_INVALID_NAME];
         }
 
+        // The overlap check cannot see descendants of the root, so only a superuser may create it.
+        if ($domain === '.' && $actingUserId !== null && !$this->permissions->isAdmin($actingUserId)) {
+            return ['success' => false, 'message' => 'Invalid domain name', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_INVALID_NAME];
+        }
+
         // The validator tolerates the absolute-name dot; the existence and parent
         // checks below compare against stored names, which carry none (root stays ".").
         if ($domain !== '.') {

@@ -134,6 +134,16 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $this->assertSame(ZoneManagementService::ERR_NO_OWNER, $this->service()->createZone('new.example', 'MASTER', null)['code']);
     }
 
+    public function testOnlyASuperuserMayCreateTheRootZone(): void
+    {
+        $refused = $this->service()->createZone('.', 'MASTER', self::OTHER_USER, '', 'none', false, [], self::OTHER_USER);
+        $this->assertFalse($refused['success']);
+        $this->assertSame(ZoneManagementService::ERR_INVALID_NAME, $refused['code']);
+
+        $admin = $this->service()->createZone('.', 'MASTER', self::ADMIN_USER_ID, '', 'none', false, [], self::ADMIN_USER_ID);
+        $this->assertNotSame(ZoneManagementService::ERR_INVALID_NAME, $admin['code'] ?? null);
+    }
+
     public function testAReplicatingZoneNeedsAValidPrimary(): void
     {
         $missing = $this->service()->createZone('new.example', 'SLAVE', self::ADMIN_USER_ID);
