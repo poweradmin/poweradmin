@@ -34,6 +34,9 @@ updates:
         versions: [">=8.0"]
       - dependency-name: "tomasvotruba/cognitive-complexity"
         versions: [">=1.2"]
+      # 7.0 deprecates OpenApi\Attributes; migrating is planned for 4.7.0
+      - dependency-name: "zircote/swagger-php"
+        versions: [">=7.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
