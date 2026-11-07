@@ -33,6 +33,11 @@ declare(strict_types=1);
 
 use Poweradmin\Domain\Model\PermissionCatalogue;
 
+if (PHP_SAPI !== 'cli') {
+    echo "bin/regenerate-seed-sql.php must be run from the command line\n";
+    exit(1);
+}
+
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $check = in_array('--check', $argv, true);
