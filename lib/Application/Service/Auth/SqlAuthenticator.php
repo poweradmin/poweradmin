@@ -92,7 +92,8 @@ final class SqlAuthenticator
             if ($isLogin) {
                 $this->auditService->logLoginLocked(AuthMethod::SQL);
             }
-            return AuthOutcome::failure(_('Account is temporarily locked. Please try again later.'));
+            // Same text as a bad password: lockout never applies to unknown names, so a distinct message would reveal real accounts.
+            return AuthOutcome::failure(_('Authentication failed!'));
         }
 
         $sessionKey = $this->configManager->get('security', 'session_key');

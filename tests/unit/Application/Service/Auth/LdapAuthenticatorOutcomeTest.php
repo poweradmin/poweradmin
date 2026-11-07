@@ -74,7 +74,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
 
         $outcome = $this->authenticator(userRow: null)->authenticate(new LoginCredentials('alice', 'secret'));
 
-        $this->assertFailure($outcome, 'Account is temporarily locked. Please try again later.', endSession: false);
+        $this->assertFailure($outcome, 'Authentication failed!', endSession: false);
     }
 
     public function testMissingSessionCredentialsFailWithoutAMessage(): void

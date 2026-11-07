@@ -102,7 +102,8 @@ final class LdapAuthenticator
             if ($isLogin) {
                 $this->auditService->logLoginLocked(AuthMethod::LDAP);
             }
-            return AuthOutcome::failure(_('Account is temporarily locked. Please try again later.'));
+            // Same text as a bad password: lockout never applies to unknown names, so a distinct message would reveal real accounts.
+            return AuthOutcome::failure(_('Authentication failed!'));
         }
 
         // Check if LDAP authentication is cached and still valid

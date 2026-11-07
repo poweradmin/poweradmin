@@ -163,7 +163,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $outcome = $this->authenticator($this->userRow(), expectQuery: false)->authenticate($this->login('alice', self::PASSWORD));
 
-        $this->assertFailure($outcome, 'Account is temporarily locked. Please try again later.');
+        $this->assertFailure($outcome, 'Authentication failed!');
         $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
