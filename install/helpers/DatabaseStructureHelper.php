@@ -1950,6 +1950,8 @@ class DatabaseStructureHelper
                         'notnull' => 1,
                         'length' => 50,
                         'fixed' => 0,
+                        // Binary collation keeps SSO identifiers case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
                         'name' => 'provider_id',
                         'table' => 'oidc_user_links',
                         'flags' => 'not_null'
@@ -1959,6 +1961,8 @@ class DatabaseStructureHelper
                         'notnull' => 1,
                         'length' => 255,
                         'fixed' => 0,
+                        // Binary collation keeps SSO identifiers case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
                         'name' => 'oidc_subject',
                         'table' => 'oidc_user_links',
                         'flags' => 'not_null'
@@ -2038,6 +2042,8 @@ class DatabaseStructureHelper
                         'notnull' => 1,
                         'length' => 50,
                         'fixed' => 0,
+                        // Binary collation keeps SSO identifiers case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
                         'name' => 'provider_id',
                         'table' => 'saml_user_links',
                         'flags' => 'not_null'
@@ -2047,6 +2053,8 @@ class DatabaseStructureHelper
                         'notnull' => 1,
                         'length' => 255,
                         'fixed' => 0,
+                        // Binary collation keeps SSO identifiers case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
                         'name' => 'saml_subject',
                         'table' => 'saml_user_links',
                         'flags' => 'not_null'

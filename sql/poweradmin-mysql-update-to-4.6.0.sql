@@ -282,3 +282,20 @@ SET @clear_marker = IF(@has_domains > 0, CONCAT(
 PREPARE clear_marker FROM @clear_marker;
 EXECUTE clear_marker;
 DEALLOCATE PREPARE clear_marker;
+
+-- Databases created by the 4.5.x web installer got case- and accent-insensitive subject
+-- columns; the lookups compare byte-exact, but the unique index must not fold. Safe to re-run.
+SET @has_oidc_links = (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'oidc_user_links');
+SET @oidc_links_bin = IF(@has_oidc_links > 0,
+    'ALTER TABLE `oidc_user_links` MODIFY COLUMN `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin, MODIFY COLUMN `oidc_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin',
+    'SELECT ''oidc_user_links not found, collation unchanged'' AS notice');
+PREPARE oidc_links_bin FROM @oidc_links_bin;
+EXECUTE oidc_links_bin;
+DEALLOCATE PREPARE oidc_links_bin;
+SET @has_saml_links = (SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = 'saml_user_links');
+SET @saml_links_bin = IF(@has_saml_links > 0,
+    'ALTER TABLE `saml_user_links` MODIFY COLUMN `provider_id` VARCHAR(50) NOT NULL COLLATE utf8mb4_bin, MODIFY COLUMN `saml_subject` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin',
+    'SELECT ''saml_user_links not found, collation unchanged'' AS notice');
+PREPARE saml_links_bin FROM @saml_links_bin;
+EXECUTE saml_links_bin;
+DEALLOCATE PREPARE saml_links_bin;
