@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -107,6 +107,10 @@ class DatabaseSchemaService
 
             if ($db_type == 'mysql' && isset($arr['charset'])) {
                 $line .= ' CHARACTER SET ' . $arr['charset'];
+            }
+
+            if ($db_type == 'mysql' && isset($arr['collation'])) {
+                $line .= ' COLLATE ' . $arr['collation'];
             }
 
             if (isset($arr['notnull']) && $arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
