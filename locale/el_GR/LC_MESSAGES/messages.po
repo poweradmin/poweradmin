@@ -16977,6 +16977,10 @@ msgstr "Ο κωδικός πρόσβασης πρέπει να περιέχει 
 msgid "Password must contain at least one number"
 msgstr "Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν αριθμό"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Ο κωδικός πρόσβασης δεν πρέπει να υπερβαίνει τα 72 byte"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Ο κωδικός πρόσβασης πρέπει να περιέχει τουλάχιστον έναν ειδικό χαρακτήρα"

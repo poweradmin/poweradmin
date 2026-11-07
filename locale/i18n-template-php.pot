@@ -14793,6 +14793,10 @@ msgstr ""
 msgid "Password must contain at least one number"
 msgstr ""
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr ""
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr ""

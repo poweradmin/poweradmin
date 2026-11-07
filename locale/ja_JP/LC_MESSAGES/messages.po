@@ -16422,6 +16422,10 @@ msgstr "パスワードには小文字を 1 文字以上含めてください"
 msgid "Password must contain at least one number"
 msgstr "パスワードには数字を 1 文字以上含めてください"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "パスワードは 72 バイト以内にしてください"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "パスワードには特殊文字を 1 文字以上含めてください"

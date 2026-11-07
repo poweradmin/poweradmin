@@ -16494,6 +16494,10 @@ msgstr "Slaptažodyje turi būti bent viena mažoji raidė"
 msgid "Password must contain at least one number"
 msgstr "Slaptažodyje turi būti bent vienas skaitmuo"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Slaptažodis negali būti ilgesnis nei 72 baitai"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Slaptažodyje turi būti bent vienas specialusis simbolis"

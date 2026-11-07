@@ -16800,6 +16800,10 @@ msgstr "Das Passwort muss mindestens einen Kleinbuchstaben enthalten"
 msgid "Password must contain at least one number"
 msgstr "Das Passwort muss mindestens eine Ziffer enthalten"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Das Passwort darf nicht länger als 72 Byte sein"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Das Passwort muss mindestens ein Sonderzeichen enthalten"

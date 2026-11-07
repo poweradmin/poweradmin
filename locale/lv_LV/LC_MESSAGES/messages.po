@@ -16185,6 +16185,10 @@ msgstr "Parolē jābūt vismaz vienam mazajam burtam"
 msgid "Password must contain at least one number"
 msgstr "Parolē jābūt vismaz vienam ciparam"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Parole nedrīkst būt garāka par 72 baitiem"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parolē jābūt vismaz vienai speciālajai rakstzīmei"

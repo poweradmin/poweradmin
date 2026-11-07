@@ -16598,6 +16598,10 @@ msgstr "Пароль должен содержать хотя бы одну ст
 msgid "Password must contain at least one number"
 msgstr "Пароль должен содержать хотя бы одну цифру"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Пароль не должен быть длиннее 72 байт"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Пароль должен содержать хотя бы один специальный символ"

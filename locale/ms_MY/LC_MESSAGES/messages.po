@@ -16550,6 +16550,10 @@ msgstr "Kata laluan mesti mengandungi sekurang-kurangnya satu huruf kecil"
 msgid "Password must contain at least one number"
 msgstr "Kata laluan mesti mengandungi sekurang-kurangnya satu nombor"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Kata laluan tidak boleh melebihi 72 bait"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Kata laluan mesti mengandungi sekurang-kurangnya satu aksara khas"

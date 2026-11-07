@@ -15979,6 +15979,10 @@ msgstr "הסיסמה חייבת להכיל לפחות אות קטנה אחת"
 msgid "Password must contain at least one number"
 msgstr "הסיסמה חייבת להכיל לפחות ספרה אחת"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "הסיסמה לא יכולה להיות ארוכה מ-72 בתים"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "הסיסמה חייבת להכיל לפחות תו מיוחד אחד"

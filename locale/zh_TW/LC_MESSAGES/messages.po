@@ -15399,6 +15399,10 @@ msgstr "密碼必須包含至少一個小寫字母"
 msgid "Password must contain at least one number"
 msgstr "密碼必須包含至少一個數字"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "密碼長度不得超過 72 位元組"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "密碼必須包含至少一個特殊字元"

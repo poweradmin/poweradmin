@@ -16764,6 +16764,10 @@ msgstr "Fjalëkalimi duhet të përmbajë të paktën një shkronjë të vogël"
 msgid "Password must contain at least one number"
 msgstr "Fjalëkalimi duhet të përmbajë të paktën një numër"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Fjalëkalimi nuk duhet të jetë më i gjatë se 72 bajt"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Fjalëkalimi duhet të përmbajë të paktën një karakter të veçantë"

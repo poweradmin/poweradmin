@@ -16930,6 +16930,10 @@ msgstr "Parola trebuie să conțină cel puțin o literă mică"
 msgid "Password must contain at least one number"
 msgstr "Parola trebuie să conțină cel puțin o cifră"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Parola nu trebuie să depășească 72 de octeți"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Parola trebuie să conțină cel puțin un caracter special"

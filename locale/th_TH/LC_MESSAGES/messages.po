@@ -15712,6 +15712,10 @@ msgstr "รหัสผ่านต้องมีตัวพิมพ์เล
 msgid "Password must contain at least one number"
 msgstr "รหัสผ่านต้องมีตัวเลขอย่างน้อยหนึ่งตัว"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "รหัสผ่านต้องยาวไม่เกิน 72 ไบต์"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "รหัสผ่านต้องมีอักขระพิเศษอย่างน้อยหนึ่งตัว"

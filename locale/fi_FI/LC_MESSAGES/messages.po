@@ -16238,6 +16238,10 @@ msgstr "Salasanassa on oltava vähintään yksi pieni kirjain"
 msgid "Password must contain at least one number"
 msgstr "Salasanassa on oltava vähintään yksi numero"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Salasana saa olla enintään 72 tavua pitkä"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Salasanassa on oltava vähintään yksi erikoismerkki"

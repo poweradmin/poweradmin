@@ -16375,6 +16375,10 @@ msgstr "Passordet må inneholde minst én liten bokstav"
 msgid "Password must contain at least one number"
 msgstr "Passordet må inneholde minst ett tall"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Passordet kan ikke være lengre enn 72 byte"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Passordet må inneholde minst ett spesialtegn"

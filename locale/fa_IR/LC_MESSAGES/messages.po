@@ -16310,6 +16310,10 @@ msgstr "رمز عبور باید حداقل یک حرف کوچک داشته با
 msgid "Password must contain at least one number"
 msgstr "رمز عبور باید حداقل یک عدد داشته باشد"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "رمز عبور نباید بیشتر از 72 بایت باشد"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "رمز عبور باید حداقل یک نویسه ویژه داشته باشد"

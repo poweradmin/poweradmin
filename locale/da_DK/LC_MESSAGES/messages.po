@@ -16457,6 +16457,10 @@ msgstr "Adgangskoden skal indeholde mindst ét lille bogstav"
 msgid "Password must contain at least one number"
 msgstr "Adgangskoden skal indeholde mindst ét tal"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Adgangskoden må ikke være længere end 72 byte"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Adgangskoden skal indeholde mindst ét specialtegn"

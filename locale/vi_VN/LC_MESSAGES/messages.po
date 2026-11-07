@@ -16354,6 +16354,10 @@ msgstr "Mật khẩu phải chứa ít nhất một chữ thường"
 msgid "Password must contain at least one number"
 msgstr "Mật khẩu phải chứa ít nhất một chữ số"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Mật khẩu không được dài quá 72 byte"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Mật khẩu phải chứa ít nhất một ký tự đặc biệt"

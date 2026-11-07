@@ -16360,6 +16360,10 @@ msgstr "Heslo musí obsahovať aspoň jedno malé písmeno"
 msgid "Password must contain at least one number"
 msgstr "Heslo musí obsahovať aspoň jednu číslicu"
 
+#: lib/Application/Service/User/PasswordPolicyService.php:99
+msgid "Password must not be longer than 72 bytes"
+msgstr "Heslo nesmie byť dlhšie ako 72 bajtov"
+
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
 msgstr "Heslo musí obsahovať aspoň jeden špeciálny znak"
