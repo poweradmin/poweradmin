@@ -156,6 +156,17 @@ class UserProvisioningService extends LoggingService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->accountHasLocalPassword($existingUserId)) {
+                    // Whoever set this address on a password account (its owner, or a user creator)
+                    // could otherwise sign in with that password as the provider identity's account.
+                    $this->logWarning(
+                        'Refusing {method} sign-in: its email matches account {id}, which signs in with a local password; clear that password or the address to let the identity link',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    // Not provisioned either: a second account on this address would break password reset
+                    return null;
+                }
+
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
@@ -317,6 +328,25 @@ class UserProvisioningService extends LoggingService
             $this->logError('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    /**
+     * Whether the account has a usable local password hash (not empty, not the LDAP placeholder).
+     * Fails closed: a lookup error counts as having one.
+     */
+    private function accountHasLocalPassword(int $userId): bool
+    {
+        try {
+            $stmt = $this->db->prepare('SELECT password FROM users WHERE id = ?');
+            $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $hash = $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            $this->logError('Error checking local password for user {id}: {error}', ['id' => $userId, 'error' => $e->getMessage()]);
+            return true;
+        }
+
+        return is_string($hash) && $hash !== '' && $hash !== AuthMethod::LDAP_PASSWORD_PLACEHOLDER;
     }
 
     /**

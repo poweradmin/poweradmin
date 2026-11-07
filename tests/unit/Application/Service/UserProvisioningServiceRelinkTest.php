@@ -40,7 +40,9 @@ class UserProvisioningServiceRelinkTest extends TestCase
         }
         $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES
             (1, 'john', '', 'John', 'john@example.org', '', 5, 1, 0, 'oidc'),
-            (2, 'jane', '', 'Jane', 'jane@example.org', '', 5, 1, 0, 'sql')");
+            (2, 'jane', '', 'Jane', 'jane@example.org', '', 5, 1, 0, 'sql'),
+            (3, 'pat', 'hashed-password', 'Pat', 'pat@example.org', '', 5, 1, 0, 'sql'),
+            (4, 'lena', 'LDAP_USER', 'Lena', 'lena@example.org', '', 5, 1, 1, 'ldap')");
         $this->db->exec("INSERT INTO oidc_user_links (user_id, provider_id, oidc_subject, username, email) VALUES (1, 'okta', 'sub-owner', 'john', 'john@example.org')");
         $this->db->exec("INSERT INTO saml_user_links (user_id, provider_id, saml_subject, username, email) VALUES (1, 'adfs', 'name-owner', 'john', 'john@example.org')");
 
@@ -73,6 +75,35 @@ class UserProvisioningServiceRelinkTest extends TestCase
 
         $this->assertSame(2, $this->service->provisionUser($userInfo, 'okta'));
         $this->assertSame('sub-jane', $this->db->query("SELECT oidc_subject FROM oidc_user_links WHERE user_id = 2")->fetchColumn());
+    }
+
+    public function testEmailMatchDoesNotLinkAnAccountWithALocalPassword(): void
+    {
+        // A user who set their own address to the victim's would otherwise receive the victim's identity
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'pat@example.org', providerId: 'okta', subject: 'sub-pat', rawData: ['email_verified' => true]);
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame('0', (string) $this->db->query("SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 3")->fetchColumn());
+    }
+
+    public function testEmailMatchWithALocalPasswordIsNotAutoProvisionedAsASecondAccount(): void
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => true, 'auto_provision' => true]);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $key === 'default_permission_template' ? 'Viewer' : $default);
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Viewer')");
+        $service = new UserProvisioningService($this->db, $config, $this->createMock(Logger::class));
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'pat@example.org', providerId: 'okta', subject: 'sub-pat', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+        $this->assertSame('4', (string) $this->db->query("SELECT COUNT(*) FROM users")->fetchColumn());
+    }
+
+    public function testEmailMatchStillLinksAnAccountWithTheLdapPlaceholderPassword(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'lena', email: 'lena@example.org', providerId: 'okta', subject: 'sub-lena', rawData: ['email_verified' => true]);
+
+        $this->assertSame(4, $this->service->provisionUser($userInfo, 'okta'));
     }
 
     public function testALinkAtAnotherProviderDoesNotBlockEmailLinking(): void
