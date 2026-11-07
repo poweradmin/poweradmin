@@ -195,6 +195,8 @@ class HostnameValidatorTest extends TestCase
     {
         // Valid hostnames
         $this->assertTrue($this->validator->isValid('example.com'));
+        $this->assertFalse($this->validator->isValid('@'));
+        $this->assertTrue($this->validator->isValid('.'));
         $this->assertTrue($this->validator->isValid('www.example.com'));
         $this->assertTrue($this->validator->isValid('example.com.'));  // With trailing dot
         $this->assertTrue($this->validator->isValid('sub-domain.example.com'));  // With dash
@@ -299,5 +301,15 @@ class HostnameValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid('example.com/test'));
         $this->assertFalse($this->validator->isValid('sub/domain.example.com'));
         $this->assertFalse($this->validator->isValid('0/26.example.com'));
+    }
+
+    public function testAtPrefixDoesNotSkipValidation()
+    {
+        $this->assertFalse($this->validator->isValid('@.' . str_repeat('a', 70) . '.example.com'));
+        $this->assertFalse($this->validator->isValid('@.a b.example.com'));
+        $this->assertFalse($this->validator->isValid('@.<script>x.com'));
+        $this->assertFalse($this->validator->isValid('@.-bad.example.com'));
+        $this->assertTrue($this->validator->isValid('www.example.com'));
+        $this->assertTrue($this->validator->isValid('*.example.com', true));
     }
 }
