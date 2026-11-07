@@ -58,6 +58,8 @@ class DeleteUserHandOverZoneTest extends TestCase
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT NOT NULL, perm_templ INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL, created_by INTEGER, is_default INTEGER NOT NULL DEFAULT 0)");
 
         // An ueberuser admin so the permission checks pass
@@ -143,6 +145,21 @@ class DeleteUserHandOverZoneTest extends TestCase
 
         $rows = $this->db->query("SELECT domain_id, owner FROM zones")->fetchAll(PDO::FETCH_NUM);
         $this->assertSame([[50, self::NEW_OWNER]], array_map(static fn(array $r): array => [(int)$r[0], (int)$r[1]], $rows));
+    }
+
+    #[RunInSeparateProcess]
+    public function testDeletingAUserRemovesTheResetAndRecoveryRequestsForTheirEmail(): void
+    {
+        CanonicalZoneSql::setRowIdFallback(false);
+        $this->db->exec("UPDATE users SET email = 'leaver@example.com' WHERE id = " . self::DELETED);
+        $this->db->exec("INSERT INTO password_reset_tokens (email) VALUES ('leaver@example.com')");
+        $this->db->exec("INSERT INTO username_recovery_requests (email) VALUES ('leaver@example.com')");
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES (1, 50, NULL, " . self::DELETED . ")");
+
+        $this->assertTrue($this->deleteUser('sql', self::NEW_OWNER, 50));
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM password_reset_tokens")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM username_recovery_requests")->fetchColumn());
     }
 
     #[RunInSeparateProcess]

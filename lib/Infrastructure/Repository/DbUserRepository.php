@@ -258,6 +258,10 @@ class DbUserRepository implements UserRepository
             // Start transaction to ensure atomicity
             $this->db->beginTransaction();
 
+            $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :userId");
+            $stmt->execute([':userId' => $userId]);
+            $email = $stmt->fetchColumn();
+
             // Delete related OIDC/SAML authentication links first
             $this->cleanupExternalAuthLinks($userId);
 
@@ -277,6 +281,10 @@ class DbUserRepository implements UserRepository
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
             $result = $stmt->execute([':userId' => $userId]);
 
+            if ($result && is_string($email) && $email !== '') {
+                $this->deleteEmailRequestsIfUnused($email);
+            }
+
             if ($result) {
                 $this->db->commit();
                 return true;
@@ -287,6 +295,23 @@ class DbUserRepository implements UserRepository
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
+        }
+    }
+
+    /**
+     * Removes password reset tokens and username recovery requests for an address
+     * no remaining account uses; while another account shares it, its rows stay.
+     * Also called by UserManager::deleteUser(), the web UI delete path.
+     */
+    public function deleteEmailRequestsIfUnused(string $email): void
+    {
+        if ($this->countUsersByEmail($email) > 0) {
+            return;
+        }
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        foreach (['password_reset_tokens', 'username_recovery_requests'] as $table) {
+            $stmt = $this->db->prepare("DELETE FROM $table WHERE $match");
+            $stmt->execute([':email' => $email]);
         }
     }
 
