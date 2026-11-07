@@ -1,0 +1,14 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
+EMAIL ADDRESS CHANGED
+=====================
+
+{{ greeting }}
+
+The email address on your account was changed to {{ newEmail }} on {{ changedAt }}.
+
+Password reset links sent to this address before the change no longer work.
+
+If you did not expect this change, please contact your system administrator.
+{% endblock %}

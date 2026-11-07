@@ -1,0 +1,15 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Email Address Changed{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Email Address Changed</h2>
+    <p>{{ greeting }}</p>
+    <p>The email address on your account was changed to <strong>{{ newEmail }}</strong> on {{ changedAt }}.</p>
+
+    <p>Password reset links sent to this address before the change no longer work.</p>
+
+    <p style="font-size: 14px;" class="disclaimer-text">
+        If you did not expect this change, please contact your system administrator.
+    </p>
+{% endblock %}

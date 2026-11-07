@@ -255,6 +255,32 @@ class EmailTemplateService implements EmailTemplateRendererInterface
     }
 
     /**
+     * Render the notice sent to the old address when an account's email is changed
+     *
+     * @param string $name Account holder's full name or username
+     * @param string $newEmail The address now on the account
+     * @param string $changedAt Timestamp of the change
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderEmailChangedEmail(string $name, string $newEmail, string $changedAt): array
+    {
+        $variables = [
+            'greeting' => $name ? "Hi $name," : "Hi,",
+            'newEmail' => $newEmail,
+            'changedAt' => $changedAt,
+        ];
+
+        return [
+            'html' => $this->render('email-changed.html.twig', $variables),
+            'text' => $this->render('email-changed.txt.twig', $variables),
+            'subject' => 'Your email address was changed'
+        ];
+    }
+
+    /**
      * Render zone access revoked email templates
      *
      * @param string $zoneName Zone name that access was revoked from

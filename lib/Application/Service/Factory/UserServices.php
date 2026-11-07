@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\Web\PaginationService;
+use Poweradmin\Application\Service\User\EmailChangeNotifier;
 use Poweradmin\Application\Service\User\PasswordGenerationService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
@@ -130,7 +131,8 @@ final class UserServices
             $this->services->zoneOwnershipLimit(),
             (bool)$this->config->get('security', 'protect_last_admin_on_edit', false),
             $this->logger,
-            $this->services->transaction()
+            $this->services->transaction(),
+            new EmailChangeNotifier($this->services->mailService(), $this->config)
         );
     }
 

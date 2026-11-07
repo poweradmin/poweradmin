@@ -1448,9 +1448,21 @@ class DbUserRepository implements UserRepositoryInterface
             return;
         }
 
+        $oldEmail = null;
+        if (array_key_exists('email', $fields)) {
+            $emailStmt = $this->db->prepare('SELECT email FROM users WHERE id = ?');
+            $emailStmt->execute([$userId]);
+            $oldEmail = (string)$emailStmt->fetchColumn();
+        }
+
         $values[] = $userId;
         $stmt = $this->db->prepare("UPDATE users SET " . implode(', ', $setFields) . " WHERE id = ?");
         $stmt->execute($values);
+
+        // A provider-driven address change must retire reset links sent to the old address, as an edit does
+        if ($oldEmail !== null && $oldEmail !== '' && strcasecmp($oldEmail, (string)$fields['email']) !== 0) {
+            $this->deleteEmailRequestsIfUnused($oldEmail);
+        }
     }
 
     public function getUserByUsername(string $username): ?array
@@ -1594,10 +1606,23 @@ class DbUserRepository implements UserRepositoryInterface
             return true; // No fields to update
         }
 
+        $oldEmail = null;
+        if ($changes->email !== null) {
+            $emailStmt = $this->db->prepare('SELECT email FROM users WHERE id = :id');
+            $emailStmt->execute([':id' => $userId]);
+            $oldEmail = (string)$emailStmt->fetchColumn();
+        }
+
         $query = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
         $stmt = $this->db->prepare($query);
+        $written = $stmt->execute($params);
 
-        return $stmt->execute($params);
+        // Reset links and recovery requests sent to the old address must not outlive the change
+        if ($written && $oldEmail !== null && $oldEmail !== '' && strcasecmp($oldEmail, (string)$changes->email) !== 0) {
+            $this->deleteEmailRequestsIfUnused($oldEmail);
+        }
+
+        return $written;
     }
 
     /**

@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\User;
 
 use Exception;
+use Poweradmin\Domain\Port\EmailChangeNotifierInterface;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
@@ -95,7 +96,8 @@ class UserManagementService
         ?ZoneOwnershipLimit $ownershipLimit = null,
         bool $protectLastAdminOnEdit = false,
         ?LoggerInterface $logger = null,
-        private readonly ?TransactionInterface $transaction = null
+        private readonly ?TransactionInterface $transaction = null,
+        private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -500,6 +502,8 @@ class UserManagementService
                 $this->permissions->forgetUser($userId);
             }
 
+            $this->notifyOldEmail($user, $command);
+
             return [
                 'success' => true,
                 'message' => 'User updated successfully',
@@ -517,6 +521,30 @@ class UserManagementService
                 'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
+        }
+    }
+
+    /**
+     * Tells the previous address its account moved. A mail failure is logged and
+     * never undoes the edit; self-edits are noticed too, since a hijacked session
+     * could make that change.
+     *
+     * @param array<string, mixed> $before The stored row before the write
+     */
+    private function notifyOldEmail(array $before, UpdateUserCommand $command): void
+    {
+        $old = (string)($before['email'] ?? '');
+        if ($this->emailChangeNotifier === null || $old === '' || $command->email === null || $command->email === '' || strcasecmp($old, $command->email) === 0) {
+            return;
+        }
+
+        try {
+            $name = (string)($before['fullname'] ?? '') ?: (string)($before['username'] ?? '');
+            if (!$this->emailChangeNotifier->notifyEmailChanged($old, $command->email, $name)) {
+                $this->logger->warning('Email change notice was not sent', ['user_id' => $before['id'] ?? null]);
+            }
+        } catch (\Throwable $e) {
+            $this->logFailure('send email change notice', $e);
         }
     }
 
