@@ -42,7 +42,13 @@ on:
 
 jobs:
   plan:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    # head_branch is only a name: a fork can call its branch master or release/4.4.x, so a
+    # workflow_run build must come from a push to this repository, never from a pull request.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
