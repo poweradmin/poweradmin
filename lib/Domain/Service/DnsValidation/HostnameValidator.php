@@ -60,8 +60,8 @@ class HostnameValidator
 
         $normalizedHostname = $hostname;
 
-        // Special case for root zone (@) or @.domain format
-        if ($normalizedHostname == "." || $normalizedHostname == "@" || str_starts_with($normalizedHostname, "@.")) {
+        // Root zone only; "@" is resolved to the apex by normalizeRecordName() before validation
+        if ($normalizedHostname == ".") {
             return ValidationResult::success(['hostname' => $normalizedHostname]);
         }
 
