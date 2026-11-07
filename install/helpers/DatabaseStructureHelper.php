@@ -1751,6 +1751,7 @@ class DatabaseStructureHelper
                     'provider_id' => array(
                         'type' => 'text',
                         'notnull' => 1,
+                        'collation' => 'utf8mb4_bin',
                         'length' => 50,
                         'fixed' => 0,
                         'name' => 'provider_id',
@@ -1760,6 +1761,7 @@ class DatabaseStructureHelper
                     'oidc_subject' => array(
                         'type' => 'text',
                         'notnull' => 1,
+                        'collation' => 'utf8mb4_bin',
                         'length' => 255,
                         'fixed' => 0,
                         'name' => 'oidc_subject',
@@ -1839,6 +1841,7 @@ class DatabaseStructureHelper
                     'provider_id' => array(
                         'type' => 'text',
                         'notnull' => 1,
+                        'collation' => 'utf8mb4_bin',
                         'length' => 50,
                         'fixed' => 0,
                         'name' => 'provider_id',
@@ -1848,6 +1851,7 @@ class DatabaseStructureHelper
                     'saml_subject' => array(
                         'type' => 'text',
                         'notnull' => 1,
+                        'collation' => 'utf8mb4_bin',
                         'length' => 255,
                         'fixed' => 0,
                         'name' => 'saml_subject',
