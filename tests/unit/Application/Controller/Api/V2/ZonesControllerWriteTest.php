@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use TestHelpers\FakeConfiguration;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
@@ -58,6 +59,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
     private ZoneManagementService&MockObject $zoneManagement;
     private ApiKeyScope $scope;
     private int $zoneIdParameter = self::ZONE_ID;
+    private ?FakeConfiguration $config = null;
 
     protected function setUp(): void
     {
@@ -495,6 +497,64 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertSame('You do not have permission to edit this zone', $this->messageOf($response));
     }
 
+    #[DataProvider('readOnlyKinds')]
+    public function testADescriptionOnAReadOnlyZoneIsRefusedBeforeAnyWrite(string $kind): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => $kind]);
+        $this->zones->method('getZoneComment')->willReturn('old');
+        $this->zones->expects($this->never())->method('updateZoneComment');
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['description' => 'new', 'master' => '192.0.2.1']);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertStringContainsString('read-only', $this->messageOf($response));
+    }
+
+    /** @return array<string, array{string}> */
+    public static function readOnlyKinds(): array
+    {
+        return ['slave' => ['SLAVE'], 'consumer' => ['CONSUMER']];
+    }
+
+    public function testADescriptionIsRefusedWhenTheZoneRequiresApproval(): void
+    {
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneMeta')->willReturn(true);
+        $this->permissions->method('hasZoneContentEditPermission')->willReturn(true);
+        $this->permissions->method('getChangeApprovalMode')->willReturn('request');
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zones->method('getZoneComment')->willReturn('old');
+        $this->zones->expects($this->never())->method('updateZoneComment');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['description' => 'new']);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame(ZonesController::CHANGE_REQUEST_REQUIRED, $this->messageOf($response));
+    }
+
+    public function testADescriptionIsRefusedWhenZoneCommentsAreDisabled(): void
+    {
+        $this->config = new FakeConfiguration(['interface' => ['show_zone_comments' => false]]);
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zones->method('getZoneComment')->willReturn('old');
+        $this->zones->expects($this->never())->method('updateZoneComment');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['description' => 'new']);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testResendingTheStoredDescriptionOnAReadOnlyZoneIsAccepted(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE']);
+        $this->zones->method('getZoneComment')->willReturn('same');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['description' => 'same']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testConvertingAZoneNeedsTheCreatePermissionForTheTargetKind(): void
     {
         $this->permissions = $this->createMock(ApiPermissionService::class);
@@ -665,6 +725,9 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'apiKeyScope', $this->scope);
         $this->inject($controller, 'pathParameters', ['id' => $this->zoneIdParameter]);
+        if ($this->config !== null) {
+            $this->inject($controller, 'config', $this->config);
+        }
 
         return $this->callHandler($controller, $handler);
     }

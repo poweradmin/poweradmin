@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The web edit form gates a zone's type and slave master behind zone_meta_edit_*,
@@ -90,7 +91,7 @@ class ZoneMetadataPermissionTest extends TestCase
     public function testContentOnlyUserMayRepeatStoredSlaveTypeWithoutResendingMaster(): void
     {
         $response = $this->updateZone(
-            ['type' => 'SLAVE', 'description' => 'still allowed'],
+            ['type' => 'SLAVE', 'description' => ''],
             meta: false,
             content: true,
             stored: ['type' => 'SLAVE', 'master' => '203.0.113.1']
@@ -168,6 +169,7 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->inject($controller, 'pathParameters', ['id' => self::ZONE_ID]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'ipAddressValidator', new IPAddressValidator());
+        $this->inject($controller, 'config', new FakeConfiguration());
 
         $reflection = new ReflectionClass($controller);
         $response = $reflection->getMethod('updateZone')->invoke($controller);

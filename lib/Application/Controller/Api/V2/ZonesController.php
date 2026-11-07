@@ -37,6 +37,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Application\Http\RefusalStatus;
 
 /**
@@ -878,6 +879,20 @@ class ZonesController extends PublicApiController
 
             if ($hasDescriptionUpdate && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
+            }
+
+            // Same gates as the web comment editor, checked before anything is written.
+            // An unchanged description is a no-op, like the other fields above.
+            if ($hasDescriptionUpdate && (string)$input['description'] !== (string)$this->zoneRepository->getZoneComment($zoneId)) {
+                if (!$this->getConfig()->get('interface', 'show_zone_comments', true)) {
+                    return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
+                }
+                if (ZoneType::isReadOnly((string)($zone['type'] ?? ''))) {
+                    return $this->returnApiError($this->zoneEditDeniedMessage((string)$zone['type']), 403);
+                }
+                if (($refused = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                    return $refused;
+                }
             }
 
             // Converting a zone is equivalent to creating one of the target type.
