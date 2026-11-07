@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneTemplateSyncService;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -181,7 +182,8 @@ class DomainManager implements DomainManagerInterface
                                 foreach ($templ_records as $r) {
                                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
                                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-                                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                                        // A template name without a [ZONE] placeholder is a bare label and has to be qualified
+                                        $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
                                         $type = $r["type"];
                                         $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                                         $ttl = $r["ttl"];
@@ -550,7 +552,8 @@ class DomainManager implements DomainManagerInterface
                 // Process each template record
                 foreach ($templ_records as $r) {
                     if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
+                        // A template name without a [ZONE] placeholder is a bare label and has to be qualified
+                        $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
                         $type = $r["type"];
 
                         if ($type == "SOA") {
