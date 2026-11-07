@@ -48,6 +48,8 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
+        $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, owner INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
