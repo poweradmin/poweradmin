@@ -196,6 +196,11 @@ class ZoneFileImportController extends BaseController
             return;
         }
 
+        if ($this->exceedsRecordLimit(count($filteredRecords))) {
+            $this->showError($this->recordLimitMessage());
+            return;
+        }
+
         $warnings = $parsed->getWarnings();
         if ($dnssecSkipped > 0) {
             $warnings[] = $this->dnssecSkippedMessage($dnssecSkipped);
@@ -300,6 +305,10 @@ class ZoneFileImportController extends BaseController
         $records = json_decode($importData['records']);
         if (!is_array($records)) {
             $this->showError(_('Invalid import data. Please upload the file again.'));
+            return;
+        }
+        if ($this->exceedsRecordLimit(count($records))) {
+            $this->showError($this->recordLimitMessage());
             return;
         }
         $origin = $importData['origin'];
@@ -630,6 +639,23 @@ class ZoneFileImportController extends BaseController
      * Whether the zone carries PRESIGNED metadata. An unreadable state counts as not presigned,
      * so the import falls back to skipping the DNSSEC records PowerDNS would otherwise sign over.
      */
+    private function maxRecords(): int
+    {
+        return (int)$this->getConfig()->get('modules', 'zone_import_export.max_records', 5000);
+    }
+
+    private function exceedsRecordLimit(int $count): bool
+    {
+        $max = $this->maxRecords();
+
+        return $max > 0 && $count > $max;
+    }
+
+    private function recordLimitMessage(): string
+    {
+        return sprintf(_('The file has more records than the maximum allowed per import of %d.'), $this->maxRecords());
+    }
+
     private function isPresignedZone(int $zoneId): bool
     {
         $zoneName = $this->moduleServices()->domainRepository()->getDomainNameById($zoneId);

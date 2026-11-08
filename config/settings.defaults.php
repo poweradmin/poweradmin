@@ -976,6 +976,8 @@ return [
             'enabled' => false,
             'auto_ttl_value' => 300,
             'max_file_size' => 1048576,
+            // Records allowed in one import; 0 removes the cap
+            'max_records' => 5000,
         ],
         'whois' => [
             'enabled' => false,

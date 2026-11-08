@@ -78,6 +78,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
     private bool $domainExists = false;
     private string $zoneType = 'MASTER';
     private bool $commentsEnabled = false;
+    private int $maxRecords = 5000;
 
     /** @var list<array<int, mixed>> */
     private array $writes = [];
@@ -206,7 +207,7 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $request = $this->requestData();
 
         return new ZoneFileImportController($request, true, $this->environment($this->configure([
-            'modules' => ['zone_import_export.max_file_size' => 1048576, 'zone_import_export.auto_ttl_value' => 300],
+            'modules' => ['zone_import_export.max_file_size' => 1048576, 'zone_import_export.auto_ttl_value' => 300, 'zone_import_export.max_records' => $this->maxRecords],
             'interface' => ['show_record_comments' => $this->commentsEnabled],
         ])));
     }
@@ -271,6 +272,37 @@ class ZoneFileImportControllerTest extends SeamControllerTestCase
         $this->assertSame(0, $params['target_zone_id']);
         $this->assertSame('', $params['target_zone_name']);
         $this->assertArrayNotHasKey('preview', $params);
+    }
+
+    public function testUploadWithMoreRecordsThanTheCapIsRefusedAndNothingIsStashed(): void
+    {
+        $this->maxRecords = 1;
+        $this->post(['import_mode' => 'new']);
+        $this->upload(self::ZONE_FILE);
+
+        $controller = $this->makeController();
+        $halt = $this->haltOf(fn() => $controller->run());
+
+        $this->assertStringContainsString('maximum allowed per import of 1', $halt->getMessage());
+        $this->assertNull($this->session->get(self::SESSION_KEY));
+    }
+
+    public function testExecuteWithMoreRecordsThanTheCapWritesNothing(): void
+    {
+        $this->post(['import_mode' => 'new']);
+        $this->upload(self::ZONE_FILE);
+        $this->makeController()->run();
+        $this->assertNotNull($this->session->get(self::SESSION_KEY));
+
+        $this->maxRecords = 1;
+        $this->post(['import_mode' => 'existing', 'existing_zone_id' => (string)self::ZONE_ID, 'conflict_strategy' => 'add_all']);
+        $_FILES = [];
+        $controller = $this->makeController();
+        $halt = $this->haltOf(fn() => $controller->execute());
+
+        $this->assertStringContainsString('maximum allowed per import of 1', $halt->getMessage());
+        $this->assertSame([], $this->writes);
+        $this->assertSame([], $this->auditLogs);
     }
 
     public function testUploadAsNewZonePreviewsRecordsAndStashesThemInTheSession(): void
