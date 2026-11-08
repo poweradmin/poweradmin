@@ -364,6 +364,15 @@ class ApiPermissionService
     }
 
     /**
+     * Whether the user may name the target as a zone owner: the same users the
+     * ownership picker offers (self, or anyone with user_view_others or superuser).
+     */
+    public function canAssignZoneOwner(int $userId, int $targetUserId): bool
+    {
+        return $this->canViewUser($userId, $targetUserId);
+    }
+
+    /**
      * Check if user can edit another user (stateless)
      *
      * @param int $userId User ID to check

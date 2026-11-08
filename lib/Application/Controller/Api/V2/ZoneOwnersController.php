@@ -247,6 +247,10 @@ class ZoneOwnersController extends PublicApiController
 
             $userId = (int)$data['user_id'];
 
+            if (!$this->apiPermissionService->canAssignZoneOwner($this->authenticatedUserId, $userId)) {
+                return $this->returnApiError('You do not have permission to edit zone ownership', 403);
+            }
+
             if ($this->userRepository->getUserById($userId) === null) {
                 return $this->returnApiError('User not found', 404);
             }
@@ -272,6 +276,12 @@ class ZoneOwnersController extends PublicApiController
      */
     private function addOwnersBatch(int $zoneId, array $userIds): JsonResponse
     {
+        foreach ($userIds as $uid) {
+            if (!$this->apiPermissionService->canAssignZoneOwner($this->authenticatedUserId, (int)$uid)) {
+                return $this->returnApiError('You do not have permission to edit zone ownership', 403);
+            }
+        }
+
         $added = [];
         $skipped = [];
         $notFound = [];

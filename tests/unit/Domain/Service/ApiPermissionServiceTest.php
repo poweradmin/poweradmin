@@ -745,4 +745,21 @@ class ApiPermissionServiceTest extends TestCase
 
         $this->assertSame([3, 8], $this->service->getExistingGroupIds([3, 5, 8]));
     }
+
+    #[Test]
+    public function testCanAssignZoneOwnerSelfOnly(): void
+    {
+        $this->setupPermissionMock([0, 0]);
+
+        $this->assertTrue($this->service->canAssignZoneOwner(3, 3));
+        $this->assertFalse($this->service->canAssignZoneOwner(3, 5));
+    }
+
+    #[Test]
+    public function testCanAssignZoneOwnerAnyoneWithViewOthers(): void
+    {
+        $this->setupPermissionMock([0, 1]);
+
+        $this->assertTrue($this->service->canAssignZoneOwner(3, 5));
+    }
 }
