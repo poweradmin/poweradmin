@@ -723,8 +723,9 @@ class MfaService
 
             return $result !== false;
         } catch (\PDOException $e) {
+            // Reporting "not enforced" here would let an enforced user skip the MFA setup redirect.
             $this->logger->error('Error checking MFA enforcement permission: {error}', ['error' => $e->getMessage()]);
-            return false;
+            throw $e;
         }
     }
 
