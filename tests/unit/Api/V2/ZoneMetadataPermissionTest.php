@@ -110,6 +110,12 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->assertSame(403, $response['status']);
     }
 
+    public function testConvertingNeedsTheCreatePermissionOfTheTargetType(): void
+    {
+        $this->assertSame(403, $this->updateZone(['type' => 'SLAVE', 'master' => '192.0.2.1'], meta: true, content: false, create: false)['status']);
+        $this->assertSame(200, $this->updateZone(['type' => 'MASTER'], meta: true, content: false, create: false)['status']);
+    }
+
     public function testMetaUserMayChangeZoneType(): void
     {
         $response = $this->updateZone(['type' => 'NATIVE'], meta: true, content: false);
@@ -136,10 +142,11 @@ class ZoneMetadataPermissionTest extends TestCase
      * @param array<string, string> $stored Overrides for the stored zone row
      * @return array{status: int, body: string}
      */
-    private function updateZone(array $body, bool $meta, bool $content, array $stored = []): array
+    private function updateZone(array $body, bool $meta, bool $content, array $stored = [], bool $create = true): array
     {
         $permissionService = $this->createMock(ApiPermissionService::class);
         $permissionService->method('canEditZoneMeta')->willReturn($meta);
+        $permissionService->method('canCreateZone')->willReturn($create);
         $permissionService->method('canEditZone')->willReturn($content);
 
         $zoneRepository = $this->createMock(ZoneRepositoryInterface::class);

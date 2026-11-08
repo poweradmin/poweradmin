@@ -696,6 +696,14 @@ class ZonesController extends PublicApiController
                 }
             }
 
+            // Converting a zone is equivalent to creating one of the target type; resending the current type is not
+            if (isset($updates['type'])) {
+                $currentType = strtoupper((string)($this->zoneRepository->getZoneById($zoneId)['type'] ?? ''));
+                if ($updates['type'] !== $currentType && !$this->permissionService->canCreateZone($userId, $updates['type'])) {
+                    return $this->returnApiError('You do not have permission to change this zone to that type', 403);
+                }
+            }
+
             // Validate master servers format if provided
             if (isset($updates['master']) && !empty($updates['master'])) {
                 $validation = $this->validateMasterServers($updates['master']);
