@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -82,9 +82,12 @@ class SaveZoneAsTemplateController extends BaseController
             return;
         }
 
-        // Only zone owners or admins can save their zones as templates
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
-        if ($perm_view !== "all" && !$user_is_zone_owner) {
+        // The zone-aware level (group templates) or the user's own level, so whoever can open the zone may save it
+        $viewLevels = [
+            $this->permissionService->getViewPermissionLevelForZone($this->db, $userId, $zone_id),
+            $this->permissionService->getViewPermissionLevel($userId),
+        ];
+        if (!in_array('all', $viewLevels, true) && !(in_array('own', $viewLevels, true) && $user_is_zone_owner)) {
             $this->showError(_('You do not have permission to access this zone.'));
             return;
         }
