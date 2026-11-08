@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 
 use LWP::Simple;
+use LWP::UserAgent;
+use HTTP::Request;
 
 use strict;
 use warnings;
@@ -24,11 +26,12 @@ if ($ip_address !~ /^(?:[0-9a-fA-F]{0,4}:){2}(?:[0-9a-fA-F]{0,4}:){0,5}[0-9a-fA-
 
 print "Updating the IP address ($ip_address) now ... \n" if $verbose;
 
-# insert authentication data to url
-$poweradmin_url =~ s/^(http[s]?:\/\/)/$1$login:$password\@/;
-
-my $response = LWP::Simple::get($ip_update_url . "?hostname=$domain&myip=$ip_address&verbose=$verbose")
-    or die($!);
+# Send the credentials as a Basic Authorization header with the update request.
+my $request = HTTP::Request->new(GET => $ip_update_url . "?hostname=$domain&myip=$ip_address&verbose=$verbose");
+$request->authorization_basic($login, $password);
+my $reply = LWP::UserAgent->new->request($request);
+die("Error: " . $reply->status_line . "\n") unless $reply->is_success;
+my $response = $reply->decoded_content;
 
 if (!defined $response || $response eq "") {
     print "Error: Could not contact your poweradmin web server\n";
