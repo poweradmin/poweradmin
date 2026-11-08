@@ -29,9 +29,14 @@ fi
 
 [ $verbose -eq 1 ] && echo "Updating the IP address ($ip_address) now ..."
 
-auth_url=$(echo "$poweradmin_url" | sed "s#^http[s]*://#&$login:$password@#")
+# Credentials go to curl on stdin (-K -) so they never appear in the process list.
+curl_quote() {
+    local s=${1//\\/\\\\}
+    printf '%s' "${s//\"/\\\"}"
+}
 
-response=$(curl -s "$auth_url/dynamic_update.php?hostname=$domain&myip=$ip_address&verbose=$verbose")
+response=$(printf 'user = "%s:%s"\n' "$(curl_quote "$login")" "$(curl_quote "$password")" |
+    curl -s -K - "$poweradmin_url/dynamic_update.php?hostname=$domain&myip=$ip_address&verbose=$verbose")
 if [ $? -ne 0 ] || [ -z "$response" ]; then
     echo "Error: Could not contact your poweradmin web server"
     exit 1

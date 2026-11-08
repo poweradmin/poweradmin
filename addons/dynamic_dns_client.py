@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import ipaddress
 import socket
 from unittest.mock import patch
@@ -13,19 +14,19 @@ DEFAULTS = {
     "login": "username",
     "password": "password",
     "dyndns": "mydynamicdns.example.com",
-    "url": "http://www.example.com/poweradmin",
+    "url": "https://www.example.com/poweradmin",
 }
 
 parser = argparse.ArgumentParser(description='Client for Poweradmin dynamic DNS')
 parser.add_argument('-l', '--login', help='Poweradmin user name')
-parser.add_argument('-p', '--password', help='Poweradmin user password')
+parser.add_argument('-p', '--password', help='Poweradmin user password (visible in the process list; prefer the POWERADMIN_DDNS_PASSWORD environment variable)')
 parser.add_argument('-d', '--dyndns', help='Dynamic DNS name (FQDN)')
 parser.add_argument('-u', '--url', help='Poweradmin base URL')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print progress messages')
 args = parser.parse_args()
 
 login = args.login or DEFAULTS["login"]
-password = args.password or DEFAULTS["password"]
+password = args.password or os.environ.get("POWERADMIN_DDNS_PASSWORD") or DEFAULTS["password"]
 dyndns = args.dyndns or DEFAULTS["dyndns"]
 url = args.url or DEFAULTS["url"]
 verbose = args.verbose

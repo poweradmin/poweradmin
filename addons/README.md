@@ -94,7 +94,7 @@ python dynamic_dns_client.py --domain example.com --host myserver
 **Python Client** supports command-line arguments:
 - `-d` / `--dyndns`: Domain name to update
 - `-l` / `--login`: Authentication username
-- `-p` / `--password`: Authentication password
+- `-p` / `--password`: Authentication password (visible in the process list; prefer the `POWERADMIN_DDNS_PASSWORD` environment variable)
 - `-u` / `--url`: Custom Poweradmin base URL
 - `-v` / `--verbose`: Enable detailed output
 
