@@ -42,26 +42,32 @@ class LdapUserEventLogger
 
     public function logSuccessAuth(): void
     {
-        $this->logger->logNotice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logNotice(sprintf('Successful LDAP authentication attempt from [%s] for user \'%s\'', $this->ipRetriever->getClientIp(), self::logName($_SESSION['userlogin'] ?? '')));
     }
 
     public function logFailedAuth(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: No such user', $this->ipRetriever->getClientIp(), self::logName($_SESSION['userlogin'] ?? '')));
     }
 
     public function logFailedDuplicateAuth(): void
     {
-        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logError(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Duplicate usernames detected', $this->ipRetriever->getClientIp(), self::logName($_SESSION['userlogin'] ?? '')));
     }
 
     public function logFailedIncorrectPass(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: Incorrect password', $this->ipRetriever->getClientIp(), self::logName($_SESSION['userlogin'] ?? '')));
     }
 
     public function logFailedUserInactive(): void
     {
-        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $this->ipRetriever->getClientIp(), $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed LDAP authentication attempt from [%s] for user \'%s\' Reason: User is inactive', $this->ipRetriever->getClientIp(), self::logName($_SESSION['userlogin'] ?? '')));
+    }
+
+    /** The login name as the sign-in line carries it: no line breaks, and no "name:" that a fail2ban filter could read as a field */
+    private static function logName(mixed $name): string
+    {
+        return str_replace(':', '%3A', (string)preg_replace('/[\x00-\x1F\x7F]/', '?', (string)$name));
     }
 }
