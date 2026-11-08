@@ -682,8 +682,9 @@ class MfaService
 
             return $result !== false;
         } catch (\PDOException $e) {
+            // Fail closed: reporting "not enforced" would let an enforced user skip MFA setup
             $this->logger->error('Error checking MFA enforcement permission: {error}', ['error' => $e->getMessage()]);
-            return false;
+            throw $e;
         }
     }
 

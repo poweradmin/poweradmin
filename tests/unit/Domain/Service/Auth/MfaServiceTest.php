@@ -913,4 +913,15 @@ class MfaServiceTest extends TestCase
 
         $this->assertFalse($this->service->isMfaEnforced(1, $db, 'internal'));
     }
+
+    #[Test]
+    public function testIsMfaEnforcedRethrowsDatabaseErrors(): void
+    {
+        $this->configureMfaEnforcementSettings(true, true, false);
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willThrowException(new \PDOException('Database error'));
+
+        $this->expectException(\PDOException::class);
+        $this->service->isMfaEnforced(1, $db, 'internal');
+    }
 }
