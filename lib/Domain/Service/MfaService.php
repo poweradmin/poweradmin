@@ -705,6 +705,9 @@ class MfaService
 
     /**
      * Check if MFA is enabled for a user
+     *
+     * @throws PDOException when the state cannot be read: a login must stop rather than
+     *                      skip a second factor it could not look up
      */
     public function isMfaEnabled(int $userId): bool
     {
@@ -712,9 +715,8 @@ class MfaService
             $userMfa = $this->userMfaRepository->findByUserId($userId);
             return $userMfa && $userMfa->isEnabled();
         } catch (PDOException $e) {
-            // If the table doesn't exist or there's another database error, assume MFA is disabled
             $this->logger->error('MFA check failed: {error}', ['error' => $e->getMessage()]);
-            return false;
+            throw $e;
         }
     }
 

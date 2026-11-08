@@ -236,7 +236,7 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
-    public function testIsMfaEnabledReturnsFalseOnDatabaseError(): void
+    public function testIsMfaEnabledDoesNotReportDisabledOnDatabaseError(): void
     {
         $userId = 1;
 
@@ -244,8 +244,8 @@ class MfaServiceTest extends TestCase
             ->with($userId)
             ->willThrowException(new \PDOException('Database error'));
 
-        $result = $this->service->isMfaEnabled($userId);
-        $this->assertFalse($result);
+        $this->expectException(\PDOException::class);
+        $this->service->isMfaEnabled($userId);
     }
 
     #[Test]

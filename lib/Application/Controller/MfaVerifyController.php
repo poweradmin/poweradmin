@@ -148,7 +148,14 @@ class MfaVerifyController extends BaseController
         }
 
         // Only a factor the account has finished enrolling counts, codes and recovery codes alike
-        if (!$this->mfaService->isMfaEnabled((int)$userId)) {
+        try {
+            $enabled = $this->mfaService->isMfaEnabled((int)$userId);
+        } catch (Exception $e) {
+            $this->logger->error('[MfaVerifyController] Error retrieving MFA data: {error}', ['error' => $e->getMessage()]);
+            $this->displayMfaForm(_('An error occurred. Please try again.'), 'danger');
+            return;
+        }
+        if (!$enabled) {
             $this->logger->warning('[MfaVerifyController] MFA is not enabled for user ID: {user_id}', ['user_id' => $userId]);
             $this->displayMfaForm(_('No MFA record found. Please contact administrator.'), 'danger');
             return;

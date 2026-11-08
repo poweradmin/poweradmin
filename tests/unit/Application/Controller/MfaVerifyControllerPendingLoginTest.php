@@ -116,6 +116,18 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
         $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
     }
 
+    public function testAnUnreadableMfaStateStopsTheLoginWithoutCheckingTheCode(): void
+    {
+        $this->mfa->method('isMfaEnabled')->willThrowException(new \PDOException('gone'));
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $this->mfa->expects($this->never())->method('consumeRecoveryCode');
+
+        $this->submitCode(locked: true);
+
+        $this->assertSame('An error occurred. Please try again.', $this->rendered[0][1]['msg']);
+        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+    }
+
     public function testAFactorThatIsNotEnabledIsRefusedForCodesAndRecoveryCodes(): void
     {
         $this->mfa->method('isMfaEnabled')->with(self::VICTIM_ID)->willReturn(false);
