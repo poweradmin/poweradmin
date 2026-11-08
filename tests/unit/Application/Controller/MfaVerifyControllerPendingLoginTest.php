@@ -103,6 +103,19 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
         $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
     }
 
+    public function testAGuessPastTheLimitInsideTheReservationIsRefusedUnchecked(): void
+    {
+        $this->mfa->method('isMfaEnabled')->willReturn(true);
+        $this->mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $this->mfa->expects($this->once())->method('invalidatePendingEmailCode')->with(self::VICTIM_ID);
+
+        $this->submitCode(false, false);
+
+        $this->assertSame('Too many failed attempts. Please try again later.', $this->rendered[0][1]['msg']);
+        $this->assertArrayNotHasKey(SessionKeys::USERID, $_SESSION);
+    }
+
     public function testAFactorThatIsNotEnabledIsRefusedForCodesAndRecoveryCodes(): void
     {
         $this->mfa->method('isMfaEnabled')->with(self::VICTIM_ID)->willReturn(false);
@@ -133,11 +146,11 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
     /**
      * Posts a code and returns the redirect target, or null when the form was rendered.
      */
-    private function submitCode(bool $locked = false): ?string
+    private function submitCode(bool $locked = false, bool $withinLimit = true): ?string
     {
         $_POST = ['mfa_code' => '123456', 'mfa_token' => 'issued'];
         try {
-            $this->controller([], $locked)->run();
+            $this->controller([], $locked, $withinLimit)->run();
         } catch (RuntimeException $redirect) {
             return $redirect->getMessage();
         }
@@ -148,7 +161,7 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
     /**
      * @param array<string, mixed> $settings keyed as "group.key"
      */
-    private function controller(array $settings, bool $locked = false): MfaVerifyController
+    private function controller(array $settings, bool $locked = false, bool $withinLimit = true): MfaVerifyController
     {
         $settings += ['security.mfa.enabled' => true];
         $config = $this->createMock(ConfigurationManager::class);
@@ -158,6 +171,7 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
 
         $attempts = $this->createMock(LoginAttemptService::class);
         $attempts->method('isAccountLocked')->willReturn($locked);
+        $attempts->method('reserveAttempt')->willReturn($withinLimit);
 
         $controller = $this->getMockBuilder(MfaVerifyController::class)
             ->disableOriginalConstructor()

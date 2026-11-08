@@ -470,9 +470,17 @@ class MfaSetupController extends BaseController
             return false;
         }
 
+        // Counted before the check so parallel guesses cannot all read an empty counter
+        if (!$this->loginAttemptService->reserveAttempt($username, $ip, $stage, $userId)) {
+            $this->mfaService->invalidatePendingEmailCode($userId);
+            $this->addSystemMessage('error', _('Too many failed attempts. Please try again later.'));
+            return false;
+        }
+
         $isValid = $this->mfaService->verifyCode($userId, $code);
-        $this->loginAttemptService->recordAttempt($username, $ip, $isValid, $stage, $userId);
-        if (!$isValid) {
+        if ($isValid) {
+            $this->loginAttemptService->recordAttempt($username, $ip, true, $stage, $userId);
+        } else {
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
                 $ip,
