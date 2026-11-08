@@ -246,6 +246,17 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testIsMfaSetupRequiredDoesNotAssumeNotEnforcedOnDatabaseError(): void
+    {
+        $this->configManager->method('get')->willReturn(true);
+        $db = $this->createMock(\PDO::class);
+        $db->method('prepare')->willThrowException(new \PDOException('Database error'));
+
+        $this->expectException(\PDOException::class);
+        $this->service->isMfaSetupRequired(1, $db);
+    }
+
+    #[Test]
     public function testGetMfaTypeReturnsTypeWhenFound(): void
     {
         $userId = 1;
