@@ -107,11 +107,13 @@ class OidcCallbackController extends BaseController
                 $this->ipAddressRetriever->getClientIp(),
                 $error
             ));
+            $this->logger->warning('OIDC provider returned error: {error} - {description}', [
+                'error' => $error,
+                'description' => $errorDescription,
+            ]);
 
-            $sessionEntity = new SessionEntity(
-                _('Authentication failed: ') . $errorDescription,
-                'danger'
-            );
+            // The query string is unauthenticated, so none of it is shown to the user.
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
