@@ -80,7 +80,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
 
     public function testRefusesAnUnknownUserSoNoZoneEndsUpOrphaned(): void
     {
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [])->addOwnerToZone(5, 42);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS], [])->addOwnerToZone(5, 42);
 
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::NOT_FOUND, $result->refusal);
@@ -89,7 +89,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
 
     public function testRefusesAZoneIdTwoZonesShareBecauseTheGrantWouldNotCount(): void
     {
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], sharedZoneId: true)->addOwnerToZone(5, 42);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS], [42], sharedZoneId: true)->addOwnerToZone(5, 42);
 
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::CONFLICT, $result->refusal);
@@ -103,7 +103,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $limit = $this->createMock(ZoneOwnershipLimit::class);
         $limit->expects($this->never())->method('addUserOwner');
 
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
 
         $this->assertTrue($result->success);
     }
@@ -116,7 +116,7 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $limit = $this->createMock(ZoneOwnershipLimit::class);
         $limit->method('addUserOwner')->with(42)->willReturn(new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'alice', 4, 4));
 
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
 
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::CONFLICT, $result->refusal);
@@ -131,7 +131,42 @@ class DomainManagerAddOwnerTest extends PermissionServiceTestCase
         $limit = $this->createMock(ZoneOwnershipLimit::class);
         $limit->method('addUserOwner')->with(42)->willReturnCallback(static fn(int $id, callable $write): mixed => $write());
 
-        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS, Permission::PERM_USER_VIEW_OTHERS], [42], false, $zones, $limit)->addOwnerToZone(5, 42);
+
+        $this->assertTrue($result->success);
+    }
+
+    public function testRefusesAnotherUserWhenTheCallerCannotViewOthers(): void
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->expects($this->never())->method('addOwnerToZone');
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42], false, $zones)->addOwnerToZone(5, 42);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::FORBIDDEN, $result->refusal);
+    }
+
+    public function testACallerWithoutViewOthersMayStillAddThemselves(): void
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('isUserZoneOwner')->willReturn(false);
+        $zones->expects($this->once())->method('addOwnerToZone')->with(5, self::CALLER_ID)->willReturn(true);
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [self::CALLER_ID], false, $zones)->addOwnerToZone(5, self::CALLER_ID);
+
+        $this->assertTrue($result->success);
+    }
+
+    public function testAZoneHandOverOnUserDeletionDoesNotNeedViewOthers(): void
+    {
+        // The delete-user page offers the new owner, not the owner picker; SQL mode always falls back to the grant
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('handOverNamedZoneRow')->willReturn(null);
+        $zones->method('isUserZoneOwner')->willReturn(false);
+        $zones->expects($this->once())->method('addOwnerToZone')->with(5, 42)->willReturn(true);
+
+        $result = $this->manager([Permission::PERM_ZONE_META_EDIT_OTHERS], [42, 7], false, $zones)->handOverZone(5, 7, 42);
 
         $this->assertTrue($result->success);
     }

@@ -51,6 +51,9 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
     /** Whether the zone is still there when a refused write looks again */
     private bool $zoneExistsAfterWrite = true;
 
+    /** Whether the caller holds user_view_others */
+    private bool $canViewOthers = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -150,6 +153,34 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
         $this->assertSame('Zone not found', $this->messageOf($response));
     }
 
+    public function testASingleAddOfAnotherUserWithoutViewOthersIsForbidden(): void
+    {
+        $this->canViewOthers = false;
+        $this->zoneRepository->expects($this->never())->method('addOwnerToZone');
+
+        $response = $this->addOwner(['user_id' => 6]);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testABatchNamingAnotherUserWithoutViewOthersIsForbiddenAndAddsNobody(): void
+    {
+        $this->canViewOthers = false;
+        $this->zoneRepository->expects($this->never())->method('addOwnerToZone');
+
+        $response = $this->addOwner(['user_ids' => [1, 6]]);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testACallerWithoutViewOthersMayAddThemselves(): void
+    {
+        $this->canViewOthers = false;
+        $this->zoneRepository->expects($this->once())->method('addOwnerToZone')->with(self::ZONE_ID, 1)->willReturn(true);
+
+        $this->assertSame(201, $this->addOwner(['user_id' => 1])->getStatusCode());
+    }
+
     /**
      * @param array<string, mixed> $body
      */
@@ -164,6 +195,7 @@ class ZoneOwnersControllerZoneLimitTest extends V2ControllerTestCase
 
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canEditZoneMeta')->willReturn(true);
+        $permissions->method('canViewUser')->willReturnCallback(fn(int $caller, int $target): bool => $caller === $target || $this->canViewOthers);
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('zoneIdExists')->willReturnOnConsecutiveCalls(true, $this->zoneExistsAfterWrite);
         $domainRepository->method('getDomainNameById')->willReturn('example.com');

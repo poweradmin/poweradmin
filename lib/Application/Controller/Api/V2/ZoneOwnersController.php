@@ -299,6 +299,10 @@ class ZoneOwnersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
 
+            if (!$this->apiPermissionService->canViewUser($this->authenticatedUserId, $userId)) {
+                return $this->returnApiError('You do not have permission to edit zone ownership', 403);
+            }
+
             if ($this->userRepository->getUserById($userId) === null) {
                 return $this->returnApiError('User not found', 404);
             }
@@ -362,6 +366,13 @@ class ZoneOwnersController extends PublicApiController
         $failed = [];
         $zoneName = $this->auditZoneName($zoneId);
         $ownershipLimit = $this->services()->zoneOwnershipLimit();
+
+        // Refuse the whole batch up front so a mixed one never half-applies.
+        foreach ($userIds as $uid) {
+            if (is_numeric($uid) && !$this->apiPermissionService->canViewUser($this->authenticatedUserId, (int)$uid)) {
+                return $this->returnApiError('You do not have permission to edit zone ownership', 403);
+            }
+        }
 
         foreach ($userIds as $uid) {
             // Skip non-numeric ids; (int) would coerce an array/garbage value to 1.

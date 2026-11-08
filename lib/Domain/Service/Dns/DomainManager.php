@@ -674,12 +674,12 @@ final class DomainManager implements DomainManagerInterface
     public function handOverZone(int $zone_id, int $from_user_id, int $to_user_id): ZoneWriteResult
     {
         if (!$this->userCanEditZoneMetadata($zone_id) || $this->userRepository->getUserById($to_user_id) === null) {
-            return $this->addOwnerToZone($zone_id, $to_user_id);
+            return $this->grantZoneOwner($zone_id, $to_user_id);
         }
 
         $moved = $this->repositoryFactory->createZoneRepository()->handOverNamedZoneRow($zone_id, $from_user_id, $to_user_id);
         if ($moved === null) {
-            return $this->addOwnerToZone($zone_id, $to_user_id);
+            return $this->grantZoneOwner($zone_id, $to_user_id);
         }
         if (!$moved) {
             return ZoneWriteResult::failure(_('Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them.'), Refusal::CONFLICT);
@@ -693,6 +693,24 @@ final class DomainManager implements DomainManagerInterface
      * reported as success.
      */
     public function addOwnerToZone(int $zone_id, int $user_id): ZoneWriteResult
+    {
+        if (!$this->userCanEditZoneMetadata($zone_id)) {
+            return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
+        }
+        // The owner picker offers only the caller without user_view_others; hold the write to that.
+        if ($user_id !== $this->actor->userId() && !$this->userHasPermission(Permission::PERM_USER_VIEW_OTHERS)) {
+            return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
+        }
+
+        return $this->grantZoneOwner($zone_id, $user_id);
+    }
+
+    /**
+     * Owner write shared by the ownership page and the zone hand-over on user deletion.
+     *
+     * The hand-over's candidate list is gated by the delete-user page, not the owner picker.
+     */
+    private function grantZoneOwner(int $zone_id, int $user_id): ZoneWriteResult
     {
         if (!$this->userCanEditZoneMetadata($zone_id)) {
             return ZoneWriteResult::forbidden(_('You do not have the permission to edit zone metadata.'));
