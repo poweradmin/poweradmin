@@ -60,11 +60,17 @@ class UserEventLogger
         $base = sprintf(
             'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            $_SESSION[SessionKeys::USERLOGIN] ?? '',
+            self::logName($_SESSION[SessionKeys::USERLOGIN] ?? ''),
             $operation,
             $authMethod->value
         );
 
         return $reason !== null ? $base . ' reason:' . $reason : $base;
+    }
+
+    /** The login name as the sign-in line carries it: no line breaks, and no "name:" that a fail2ban filter could read as a field */
+    private static function logName(mixed $name): string
+    {
+        return str_replace(':', '%3A', (string)preg_replace('/[\x00-\x1F\x7F]/', '?', (string)$name));
     }
 }

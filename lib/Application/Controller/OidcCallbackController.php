@@ -105,7 +105,7 @@ class OidcCallbackController extends BaseController
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s operation:login_error auth_method:oidc error:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $error
+                self::logValue((string)$error)
             ));
             $this->logger->warning('OIDC provider returned error: {error} - {description}', [
                 'error' => $error,
@@ -129,5 +129,11 @@ class OidcCallbackController extends BaseController
                 $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown'
             ));
         }
+    }
+
+    /** The provider's error code as the audit line carries it: no line breaks, and no "name:" a fail2ban filter could read as a field */
+    private static function logValue(string $value): string
+    {
+        return str_replace(':', '%3A', (string)preg_replace('/[\x00-\x1F\x7F]/', '?', $value));
     }
 }
