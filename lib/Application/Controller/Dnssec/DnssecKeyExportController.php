@@ -56,6 +56,8 @@ class DnssecKeyExportController extends DnssecKeyController
             return;
         }
 
+        $this->services()->auditService()->logDnssecExportKey($zoneIdInt, $domainName, (int)$keyId);
+
         $filename = sprintf('%s-key-%s.private', $domainName, $keyId);
         if (!headers_sent()) {
             header('Content-Type: text/plain; charset=utf-8');

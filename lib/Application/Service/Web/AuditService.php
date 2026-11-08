@@ -28,6 +28,7 @@ use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Infrastructure\Logger\AuditLogWriter;
 use Poweradmin\Domain\Port\ActorInterface;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 /**
  * Writes the "client_ip:.. user:.. operation:.." audit lines. Every line
@@ -54,7 +55,7 @@ class AuditService implements AuditLoggerInterface
 
     private function contextFor(?string $username): string
     {
-        return sprintf('client_ip:%s user:%s', $this->client->ip, $username ?? 'unknown');
+        return sprintf('client_ip:%s user:%s', $this->client->ip, AuditLineValue::user($username ?? 'unknown'));
     }
 
     /**
@@ -93,7 +94,7 @@ class AuditService implements AuditLoggerInterface
         $parts = [$context, 'operation:' . $operation];
         foreach ($fields as $name => $value) {
             if ($value !== null) {
-                $parts[] = $name . ':' . $value;
+                $parts[] = $name . ':' . AuditLineValue::of((string)$value);
             }
         }
 
@@ -310,11 +311,11 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logApiInfo(sprintf(
             'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
             $operation,
-            $method,
-            $path,
+            AuditLineValue::of($method),
+            AuditLineValue::of($path),
             $status,
-            $keyId,
-            $user !== '' ? $user : '-',
+            AuditLineValue::of($keyId),
+            $user !== '' ? AuditLineValue::user($user) : '-',
             $clientIp !== '' ? $clientIp : '-'
         ));
     }
@@ -572,6 +573,12 @@ class AuditService implements AuditLoggerInterface
     public function logDnssecDeleteKey(int $zoneId, string $zoneName, int $keyId): void
     {
         $this->logger->logInfo($this->line('dnssec_delete_key', ['zone' => $zoneName, 'key_id' => $keyId]), $zoneId);
+    }
+
+    /** A private key left the server, so who took it is worth a line like the other key actions */
+    public function logDnssecExportKey(int $zoneId, string $zoneName, int $keyId): void
+    {
+        $this->logger->logInfo($this->line('dnssec_export_key', ['zone' => $zoneName, 'key_id' => $keyId]), $zoneId);
     }
 
     public function logDnssecToggleKey(int $zoneId, string $zoneName, int $keyId, string $action): void

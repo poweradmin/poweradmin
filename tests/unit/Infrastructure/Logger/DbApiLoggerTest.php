@@ -83,4 +83,14 @@ class DbApiLoggerTest extends TestCase
         // Pre-existing CRUD audit types must remain
         $this->assertContains('api_key_create', $types);
     }
+
+    /** The user: field stores colons as %3A, so the name filter must build the same form */
+    #[Test]
+    public function nameFilterMatchesAUsernameWithAColon(): void
+    {
+        $this->insertRow('operation:api_request method:GET path:/api/v2/zones status:200 key_id:4 user:urn%3Aann client_ip:192.0.2.1', date('Y-m-d H:i:s'));
+        $this->insertRow('operation:api_request method:GET path:/api/v2/zones status:200 key_id:5 user:bob client_ip:192.0.2.1', date('Y-m-d H:i:s'));
+
+        $this->assertSame(1, (new DbApiLogger($this->db))->countFilteredLogs(['name' => 'urn:ann']));
+    }
 }

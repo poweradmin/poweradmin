@@ -2147,6 +2147,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Database\\SeedRepository' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/SeedRepository.php',
         'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/SharedZoneIds.php',
         'Poweradmin\\Infrastructure\\Database\\SqlZoneNames' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/SqlZoneNames.php',
+        'Poweradmin\\Infrastructure\\Logger\\AuditLineValue' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/AuditLineValue.php',
         'Poweradmin\\Infrastructure\\Logger\\AuditLogWriter' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/AuditLogWriter.php',
         'Poweradmin\\Infrastructure\\Logger\\ClassContextLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/ClassContextLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbApiLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbApiLogger.php',

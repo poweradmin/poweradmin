@@ -237,6 +237,49 @@ class AuditServiceTest extends TestCase
         ], $this->lines);
     }
 
+    public function testDnssecKeyExportIsLoggedToTheZone(): void
+    {
+        $this->makeService()->logDnssecExportKey(4, 'example.com', 12);
+
+        $this->assertSame(['logInfo', 'client_ip:192.0.2.10 user:alice operation:dnssec_export_key zone:example.com key_id:12', 4], $this->lines[0]);
+    }
+
+    /** A posted username must not plant a client_ip or operation that the fail2ban filter would read */
+    public function testAPostedUsernameCannotPlantFieldsOrLines(): void
+    {
+        $this->makeService("x client_ip:203.0.113.9 operation:login_failed\nforged")->logLoginFailed(AuthMethod::SQL);
+
+        $line = $this->lines[0][1];
+        $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
+        $this->assertSame(1, substr_count($line, 'operation:'));
+        $this->assertStringNotContainsString("\n", $line);
+        $this->assertStringStartsWith('client_ip:192.0.2.10 user:x client_ip%3A203.0.113.9 operation%3Alogin_failed?forged operation:login_failed', $line);
+    }
+
+    public function testFieldValuesCannotPlantFieldsButKeepAddressesReadable(): void
+    {
+        $this->makeService()->logRecordEdit(
+            4,
+            ['type' => 'AAAA', 'name' => 'a.example.com', 'content' => '2001:db8::1', 'ttl' => 300, 'prio' => 0],
+            ['type' => 'TXT', 'name' => 'a.example.com', 'content' => 'v=x client_ip:203.0.113.9 operation:login_failed', 'ttl' => 300]
+        );
+
+        $line = $this->lines[0][1];
+        $this->assertStringContainsString('old_content:2001:db8::1 ', $line);
+        $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
+        $this->assertSame(1, substr_count($line, 'operation:'));
+    }
+
+    public function testApiRequestPathAndUserCannotPlantFields(): void
+    {
+        $this->makeService()->logApiRequest('api_violation', 'GET', "/api/v2/x client_ip:203.0.113.9\r\n", 401, '-', 'bob status:200');
+
+        $line = $this->lines[0][1];
+        $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
+        $this->assertSame(1, substr_count($line, 'status:'));
+        $this->assertStringNotContainsString("\r", $line);
+    }
+
     public function testLoginFailedCarriesTheAuthMethod(): void
     {
         $service = $this->makeService();

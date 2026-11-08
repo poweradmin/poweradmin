@@ -164,7 +164,7 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
     #[Test]
     public function theDistinctUserQueryUsesTheDriversConcatenation(): void
     {
-        foreach (['mysql' => "CONCAT('%user:', u.username, ' %')", 'pgsql' => "CONCAT('%user:', u.username, ' %')", 'sqlite' => "'%user:' || u.username || ' %'"] as $driver => $pattern) {
+        foreach (['mysql' => "CONCAT('%user:', REPLACE(u.username, ':', '%3A'), ' %')", 'pgsql' => "CONCAT('%user:', REPLACE(u.username, ':', '%3A'), ' %')", 'sqlite' => "'%user:' || REPLACE(u.username, ':', '%3A') || ' %'"] as $driver => $pattern) {
             $statement = $this->createMock(PDOStatement::class);
             $statement->method('execute')->willReturn(true);
             $statement->method('fetchAll')->willReturn([]);
@@ -233,5 +233,17 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
 
         $this->assertStringContainsString('INNER JOIN pdns.domains ON pdns.domains.id = log_zones.zone_id', $capturedSql);
         $this->assertStringContainsString('pdns.domains.name LIKE :search_by', $capturedSql);
+    }
+
+    /** The user: field stores colons as %3A, so a name with one still filters and lists */
+    #[Test]
+    public function aUsernameWithAColonStillFiltersAndAppearsInTheZoneUserList(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (40, 'urn:ann', 1)");
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:192.0.2.1 user:urn%3Aann operation:edit_record zone:alpha.example.com ', '2026-04-01 09:00:00', " . self::ALPHA . ")");
+
+        $this->assertSame([self::ALPHA], $this->loggedZoneIds(['user' => 'urn:ann'], null));
+        $this->assertContains('urn:ann', $this->logger()->getDistinctUsersForZones([self::ALPHA]));
     }
 }

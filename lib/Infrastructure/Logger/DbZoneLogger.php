@@ -70,6 +70,7 @@ class DbZoneLogger
             'delete_zone',
             'dnssec_add_key',
             'dnssec_delete_key',
+            'dnssec_export_key',
             'dnssec_sign_zone',
             'dnssec_toggle_key',
             'dnssec_unsign_zone',
@@ -113,7 +114,8 @@ class DbZoneLogger
         }
 
         $dbType = $this->config->get('database', 'type', 'mysql');
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", 'u.username', "' %'"]);
+        // The user: field stores colons as %3A (AuditLineValue::user)
+        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(u.username, ':', '%3A')", "' %'"]);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
@@ -211,7 +213,7 @@ class DbZoneLogger
 
         if (!empty($filters['user'])) {
             $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
-            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike($filters['user']) . " %", PDO::PARAM_STR];
+            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike(AuditLineValue::user($filters['user'])) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_from'])) {

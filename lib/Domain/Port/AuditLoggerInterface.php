@@ -77,6 +77,8 @@ interface AuditLoggerInterface
 
     public function logDnssecAddKey(int $zoneId, string $zoneName, string $keyType, string $bits, string $algorithm): void;
 
+    public function logDnssecExportKey(int $zoneId, string $zoneName, int $keyId): void;
+
     /**
      * @param string $action 'activate' or 'deactivate'
      */

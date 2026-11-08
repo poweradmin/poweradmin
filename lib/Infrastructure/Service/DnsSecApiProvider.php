@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Psr\Log\LoggerInterface;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 /**
  * DnssecProviderInterface that manages zone keys, DS/DNSKEY records and rectification through the PowerDNS API.
@@ -242,10 +243,12 @@ final class DnsSecApiProvider implements DnssecProviderInterface
     {
         $contextString = [];
         foreach ($context as $key => $value) {
-            $contextString[] = "$key:$value";
+            $contextString[] = $key . ':' . AuditLineValue::of((string)$value);
         }
         $formattedContext = implode(' ', $contextString);
+        $user = AuditLineValue::user($this->userLogin);
+        $zone = AuditLineValue::of($zoneName);
 
-        $this->logger->info("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
+        $this->logger->info("client_ip:$this->clientIp user:$user operation:$action zone:$zone $formattedContext");
     }
 }
