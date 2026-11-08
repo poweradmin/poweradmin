@@ -1494,4 +1494,39 @@ class ConfigValidatorTest extends TestCase
             $this->assertEmpty($validator->getWarnings(), $algorithm);
         }
     }
+
+    /** @return array<string, array{string, bool}> */
+    public static function pdnsApiUrls(): array
+    {
+        return [
+            'public hostname over http' => ['http://pdns.example.net:8081', true],
+            'public address over http' => ['http://203.0.113.5:8081', true],
+            'public hostname over https' => ['https://pdns.example.net', false],
+            'loopback' => ['http://127.0.0.1:8081', false],
+            'IPv6 loopback' => ['http://[::1]:8081', false],
+            'private address' => ['http://10.0.0.5:8081', false],
+            'container service name' => ['http://pdns:8081', false],
+            'localhost' => ['http://localhost:8081', false],
+            'localhost with a trailing dot' => ['http://localhost.:8081', false],
+            'public hostname with a trailing dot' => ['http://pdns.example.net.:8081', true],
+            'CGNAT address (Tailscale)' => ['http://100.64.0.1:8081', false],
+            'just outside CGNAT' => ['http://100.128.0.1:8081', true],
+            'IPv4-mapped private address' => ['http://[::ffff:10.0.0.1]:8081', false],
+            'Docker host name' => ['http://host.docker.internal:8081', false],
+        ];
+    }
+
+    /** The API key goes in a header, so plain http across a network sends it readable */
+    #[DataProvider('pdnsApiUrls')]
+    public function testPlainHttpToANonLocalPowerDnsApiWarns(string $url, bool $warns): void
+    {
+        $validator = new ConfigValidator([
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN,de_DE'],
+            'logging' => ['syslog_enabled' => false, 'syslog_identity' => 'poweradmin', 'syslog_facility' => LOG_USER],
+            'pdns_api' => ['url' => $url, 'key' => 'k'],
+        ]);
+
+        $this->assertTrue($validator->validate());
+        $this->assertSame($warns, array_key_exists('pdns_api.url', $validator->getWarnings()), $url);
+    }
 }

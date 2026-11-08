@@ -331,6 +331,34 @@ final class ConfigValidator
                 return;
             }
         }
+
+        if (strtolower($parsedUrl['scheme']) === 'http' && self::isRemoteHost($parsedUrl['host'])) {
+            $this->warnings['pdns_api.url'] = 'PowerDNS API URL uses plain http to ' . $parsedUrl['host']
+                . '; the API key is sent unencrypted. Use https, or reach the API over loopback or a private network';
+        }
+    }
+
+    /**
+     * A public address, or a dotted name; loopback, private and CGNAT addresses (Tailscale),
+     * single-label container service names, *.localhost and *.internal (host.docker.internal)
+     * are treated as local.
+     */
+    private static function isRemoteHost(string $host): bool
+    {
+        $host = rtrim(strtolower(trim($host, '[]')), '.');
+        if (str_starts_with($host, '::ffff:') && filter_var(substr($host, 7), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            $host = substr($host, 7);
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false && (ip2long($host) & 0xFFC00000) === ip2long('100.64.0.0')) {
+            return false;
+        }
+        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
+            return filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        }
+
+        return str_contains($host, '.') && $host !== 'localhost'
+            && !str_ends_with($host, '.localhost') && !str_ends_with($host, '.internal');
     }
 
     private function validatePdnsApiKey(): void
