@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -438,6 +439,11 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
             $type = strtoupper($type);
+
+            // Answer a bad primaries list with 400; the zone service would refuse it as a 500
+            if ($type === 'SLAVE' && $slaveMaster !== '' && !(new IPAddressValidator())->areMultipleValidIPs($slaveMaster)) {
+                return $this->returnApiError('Invalid master servers format', 400);
+            }
             $zoneTemplate = $this->inputTemplate($input);
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
                 return $this->returnApiError('Template must be a numeric ID', 400);

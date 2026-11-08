@@ -55,6 +55,23 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->assertSame(200, $this->updateZone(['type' => 'NATIVE'], meta: true));
     }
 
+    public function testCreateRefusesABadPrimariesListWithBadRequest(): void
+    {
+        // The zone service refuses it too, but only as a generic 500
+        $zoneManagementService = $this->createMock(ZoneManagementService::class);
+        $zoneManagementService->expects($this->never())->method('createZone');
+
+        $controller = (new ReflectionClass(ZonesController::class))->newInstanceWithoutConstructor();
+        $this->inject($controller, 'permissionService', $this->createMock(ApiPermissionService::class));
+        $this->inject($controller, 'zoneManagementService', $zoneManagementService);
+        $this->inject($controller, 'request', new Request([], [], [], [], [], [], json_encode(['name' => 'sec.example', 'type' => 'SLAVE', 'master' => 'not-an-ip'])));
+        $this->inject($controller, 'authenticatedUserId', self::USER_ID);
+
+        $response = (new ReflectionClass($controller))->getMethod('createZone')->invoke($controller);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
     /**
      * @param array<string, mixed> $body
      */

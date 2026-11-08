@@ -103,6 +103,12 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool
     {
+        // A bad primaries list must never reach the backend, whatever the caller checked
+        if ($type == "SLAVE" && $slave_master !== '' && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
+            $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
+            return false;
+        }
+
         $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
 
