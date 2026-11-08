@@ -237,9 +237,6 @@ final class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::forbidden(_("You do not have the permission to add a master zone."));
         }
 
-        // Keeps the original string for MASTER/NATIVE zones, which pass '' here, and for
-        // anything that fails validation - addDomain has never validated this argument.
-        $slave_master = $this->normalizeMasterList($slave_master) ?? $slave_master;
         $replicates = ZoneType::replicatesFromPrimary($type);
 
         // A replicating kind is inert without a primary, so require one rather
@@ -249,6 +246,15 @@ final class DomainManager implements DomainManagerInterface
             : (bool)($domain && $zone_template);
         if (!$hasRequiredArgs) {
             return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s'), "addDomain"));
+        }
+
+        // MASTER/NATIVE zones pass '' here and keep it.
+        if ($replicates) {
+            $normalized = $this->normalizeMasterList($slave_master);
+            if ($normalized === null) {
+                return ZoneWriteResult::failure(sprintf(_('Invalid argument(s) given to function %s %s'), "addDomain", "This is not a valid IPv4 or IPv6 address: $slave_master"));
+            }
+            $slave_master = $normalized;
         }
 
         // Create the zone before the outer transaction: in API mode
@@ -626,8 +632,7 @@ final class DomainManager implements DomainManagerInterface
      * The forms submit several masters as one comma-separated string, and the v2 API
      * normalizes its own copy the same way, so agreeing on one spelling here stops a zone
      * sync from rewriting the row purely over spacing. Returns null when the list does not
-     * validate, which lets addDomain() pass the original through - it does not validate its
-     * input today and must not start failing here.
+     * validate.
      */
     private function normalizeMasterList(string $masters): ?string
     {

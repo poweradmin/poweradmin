@@ -259,6 +259,18 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         );
     }
 
+    public function testSecondaryZoneWithAnInvalidMasterListIsRefusedBeforeTheBackendIsTouched(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->expects($this->never())->method('createZone');
+
+        $result = $this->manager([Permission::PERM_ZONE_SLAVE_ADD])
+            ->addDomain('new.example', self::CALLER_ID, 'SLAVE', '192.0.2.1,not-an-ip', self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('This is not a valid IPv4 or IPv6 address', $result->message);
+    }
+
     public function testTemplateRecordsAreMaterialisedLinkedAndMarkedSynced(): void
     {
         $this->seedTemplateRecords([
