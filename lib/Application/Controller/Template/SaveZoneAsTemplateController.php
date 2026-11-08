@@ -57,16 +57,14 @@ class SaveZoneAsTemplateController extends BaseController
         $userId = $this->getUserContextService()->getLoggedInUserId();
         $perm_zone_templ_add = $this->permissionService()->canAddZoneTemplates($userId);
         $perm_is_godlike = $this->permissionService()->isAdmin($userId);
-        $user_is_zone_owner = $this->isZoneOwner($zone_id);
 
         if (!($perm_zone_templ_add || $perm_is_godlike)) {
             $this->showError(_('You do not have permission to create zone templates.'));
             return;
         }
 
-        // Only zone owners or admins can save their zones as templates
-        $perm_view = $this->permissionService()->getViewPermissionLevel($userId);
-        if ($perm_view !== "all" && !$user_is_zone_owner) {
+        // Saving reads every record, so the caller needs the same view access the zone page requires
+        if (!$this->permissionService()->canViewZone($userId, $zone_id)) {
             $this->showError(_('You do not have permission to access this zone.'));
             return;
         }
