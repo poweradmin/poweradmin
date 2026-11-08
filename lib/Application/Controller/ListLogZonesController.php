@@ -147,7 +147,7 @@ class ListLogZonesController extends BaseController
         // Handle export
         $exportFormat = $this->httpRequest->getQueryParam('export');
         if (!empty($exportFormat) && in_array($exportFormat, ['csv', 'json'])) {
-            $this->exportLogs($filters, $exportFormat, $ownedZoneIds);
+            $this->exportLogs($filters, $exportFormat, $ownedZoneIds, $applyOwnerFilter);
             return;
         }
 
@@ -159,6 +159,9 @@ class ListLogZonesController extends BaseController
         }
         $offset = ($selected_page - 1) * $logs_per_page;
         $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset, $ownedZoneIds);
+        if ($applyOwnerFilter) {
+            $logs = $this->withoutClientIp($logs);
+        }
 
         $this->render('list_log_zones.html', [
             'number_of_logs' => $number_of_logs,
@@ -235,10 +238,10 @@ class ListLogZonesController extends BaseController
         return $presenter->present();
     }
 
-    private function exportLogs(array $filters, string $format, ?array $zoneIds): void
+    private function exportLogs(array $filters, string $format, ?array $zoneIds, bool $ownerView = false): void
     {
         $logs = $this->dbZoneLogger->getFilteredLogs($filters, 100000, 0, $zoneIds);
-        $parsed = $this->parseLogEvents($logs);
+        $parsed = $this->parseLogEvents($logs, $ownerView);
 
         if ($format === 'json') {
             header('Content-Type: application/json');
@@ -268,8 +271,24 @@ class ListLogZonesController extends BaseController
         exit;
     }
 
-    private function parseLogEvents(array $logs): array
+    /**
+     * Owners see who changed their zone but not the address the change came from.
+     */
+    private function withoutClientIp(array $logs): array
     {
+        foreach ($logs as $key => $log) {
+            $logs[$key]['event'] = trim((string)preg_replace('/(?:^|\s)client_ip:\S*/', '', (string)$log['event']));
+        }
+
+        return $logs;
+    }
+
+    private function parseLogEvents(array $logs, bool $ownerView = false): array
+    {
+        if ($ownerView) {
+            $logs = $this->withoutClientIp($logs);
+        }
+
         $result = [];
         foreach ($logs as $log) {
             $row = [
