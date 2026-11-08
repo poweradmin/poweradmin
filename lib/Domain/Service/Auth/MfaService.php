@@ -749,7 +749,7 @@ class MfaService
      */
     private function recoveryCodeBytes(): int
     {
-        $characters = max(10, (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10));
+        $characters = max(10, (int)$this->configManager->get('security', 'mfa.recovery_code_length', 20));
 
         return (int)ceil($characters / 2);
     }

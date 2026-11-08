@@ -457,6 +457,17 @@ class MfaServiceTest extends TestCase
         }
     }
 
+    public function testDefaultRecoveryCodesCarry80Bits(): void
+    {
+        // Stored as a plain SHA-256, so a short code would be cheap to brute-force from a leaked table
+        $this->configure(['security' => ['mfa.recovery_codes' => 2]]);
+        $this->userMfaRepository->method('findByUserId')->willReturn(UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', null, UserMfa::TYPE_APP));
+
+        foreach ($this->service->regenerateRecoveryCodes(1) as $code) {
+            $this->assertMatchesRegularExpression('/^[0-9a-f]{20}$/', $code);
+        }
+    }
+
     public function testConsumeRecoveryCodeAcceptsAPrintedCodeOnce(): void
     {
         $userId = 1;
