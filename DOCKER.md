@@ -309,7 +309,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_MFA_APP_ENABLED` | Enable authenticator app option | `true` | No |
 | `PA_MFA_EMAIL_ENABLED` | Enable email verification option | `true` | No |
 | `PA_MFA_RECOVERY_CODES` | Number of recovery codes to generate | `8` | No |
-| `PA_MFA_RECOVERY_CODE_LENGTH` | Length of recovery codes | `10` | No |
+| `PA_MFA_RECOVERY_CODE_LENGTH` | Length of recovery codes | `20` | No |
 | `PA_MFA_SKIP_FOR_EXTERNAL_AUTH` | Skip MFA enforcement for LDAP/OIDC/SAML logins, trusting the IdP to enforce it | `false` | No |
 | `PA_MFA_MAX_VERIFY_ATTEMPTS` | Failed second-factor guesses before the code is refused | `5` | No |
 | `PA_MFA_VERIFY_LOCKOUT_DURATION` | Minutes to refuse further attempts once the limit is hit | `15` | No |

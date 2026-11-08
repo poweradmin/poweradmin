@@ -1413,7 +1413,7 @@ return [
             'email_enabled' => ${mfa_email_enabled},
             'skip_for_external_auth' => ${mfa_skip_for_external_auth},
             'recovery_codes' => $(php_num PA_MFA_RECOVERY_CODES "${PA_MFA_RECOVERY_CODES:-8}" 8),
-            'recovery_code_length' => $(php_num PA_MFA_RECOVERY_CODE_LENGTH "${PA_MFA_RECOVERY_CODE_LENGTH:-10}" 10),
+            'recovery_code_length' => $(php_num PA_MFA_RECOVERY_CODE_LENGTH "${PA_MFA_RECOVERY_CODE_LENGTH:-20}" 20),
             'max_verify_attempts' => $(php_num PA_MFA_MAX_VERIFY_ATTEMPTS "${PA_MFA_MAX_VERIFY_ATTEMPTS:-5}" 5),
             'verify_lockout_duration' => $(php_num PA_MFA_VERIFY_LOCKOUT_DURATION "${PA_MFA_VERIFY_LOCKOUT_DURATION:-15}" 15),
         ],

@@ -444,7 +444,7 @@ class MfaServiceTest extends TestCase
         $this->assertMatchesRegularExpression('/^[A-Z2-7]{32}$/', $secret);
     }
 
-    public function testRecoveryCodesNeverGetShorterThanTheDefault(): void
+    public function testRecoveryCodesNeverGetShorterThanTheFloor(): void
     {
         $this->configure(['security' => ['mfa.recovery_codes' => 3, 'mfa.recovery_code_length' => 2]]);
         $this->userMfaRepository->method('findByUserId')->willReturn(UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', null, UserMfa::TYPE_APP));
