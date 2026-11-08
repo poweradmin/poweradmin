@@ -33,7 +33,8 @@ class UserMfa
 {
     public const TYPE_APP = 'app';
     public const TYPE_EMAIL = 'email';
-    private const RECOVERY_HASH_PREFIX = 'sha256:';
+    private const RECOVERY_SHA256_PREFIX = 'sha256:';
+    private const RECOVERY_BCRYPT_COST = 9;
 
     public function __construct(
         private readonly int $id,
@@ -230,33 +231,46 @@ class UserMfa
     /**
      * Check if a recovery code is valid and remove it from the list if it is
      *
-     * Codes saved before hashing was introduced are hashed here as they are met, so
-     * they keep working and stop sitting in the table in the clear.
+     * Every stored entry is checked. Bcrypt hashes, "sha256:" hashes and legacy plaintext
+     * codes are all accepted; plaintext entries are rewritten as bcrypt as they are met.
+     * SHA-256 entries cannot be converted without the code, so they stay until used.
      *
      * @param string $code The recovery code to validate
      * @return bool True if the code is valid, false otherwise
      */
     public function validateRecoveryCode(#[\SensitiveParameter] string $code): bool
     {
-        $codes = array_map(
-            fn($stored) => is_string($stored) && !str_starts_with($stored, self::RECOVERY_HASH_PREFIX)
-                ? self::hashRecoveryCode($stored)
-                : $stored,
-            $this->getRecoveryCodesAsArray()
-        );
-        $candidate = self::hashRecoveryCode($code);
+        $candidate = strtolower(trim($code));
+        $sha256 = self::RECOVERY_SHA256_PREFIX . hash('sha256', $candidate);
+        // crypt() stops at a NUL byte, which would let a prefix of a code match
+        $bcryptSafe = !str_contains($candidate, "\0");
 
+        $kept = [];
         $valid = false;
-        foreach ($codes as $key => $stored) {
-            if (is_string($stored) && hash_equals($stored, $candidate)) {
-                unset($codes[$key]);
-                $valid = true;
-                break;
+        foreach ($this->getRecoveryCodesAsArray() as $stored) {
+            if (!is_string($stored)) {
+                continue;
             }
+
+            $plaintext = false;
+            if (self::isBcryptHash($stored)) {
+                $match = $bcryptSafe && password_verify($candidate, $stored);
+            } elseif (self::isSha256Hash($stored)) {
+                $match = hash_equals($stored, $sha256);
+            } else {
+                $match = hash_equals(strtolower(trim($stored)), $candidate);
+                $plaintext = true;
+            }
+
+            if ($match && !$valid) {
+                $valid = true;
+                continue;
+            }
+            $kept[] = $plaintext ? self::hashRecoveryCode($stored) : $stored;
         }
 
         if ($this->recoveryCodes !== null) {
-            $this->setRecoveryCodes(array_values($codes));
+            $this->setRecoveryCodes($kept);
         }
 
         return $valid;
@@ -271,7 +285,7 @@ class UserMfa
      * @param int $length Length of each recovery code in bytes (before hex encoding)
      * @return array The generated recovery codes
      */
-    public function generateRecoveryCodes(int $count = 10, int $length = 10): array
+    public function generateRecoveryCodes(int $count = 10, int $length = 5): array
     {
         $codes = [];
 
@@ -285,12 +299,22 @@ class UserMfa
     }
 
     /**
-     * Codes carry 80 random bits, so an unsalted hash cannot be searched; the prefix
-     * keeps a hash apart from a legacy plaintext code of any configured length.
+     * Short look-up secrets are salted and stored with bcrypt. Cost 9 is about 27 ms
+     * per hash, so checking a full list of 10 codes stays near a quarter of a second.
      */
     private static function hashRecoveryCode(#[\SensitiveParameter] string $code): string
     {
-        return self::RECOVERY_HASH_PREFIX . hash('sha256', strtolower(trim($code)));
+        return password_hash(strtolower(trim($code)), PASSWORD_BCRYPT, ['cost' => self::RECOVERY_BCRYPT_COST]);
+    }
+
+    private static function isBcryptHash(string $stored): bool
+    {
+        return preg_match('/^\$2y\$\d{2}\$[.\/A-Za-z0-9]{53}$/', $stored) === 1;
+    }
+
+    private static function isSha256Hash(string $stored): bool
+    {
+        return preg_match('/^sha256:[0-9a-f]{64}$/', $stored) === 1;
     }
 
     /**
@@ -299,7 +323,7 @@ class UserMfa
      * @param int $length Length of the recovery code in bytes (before hex encoding)
      * @return string The generated recovery code
      */
-    private function generateRecoveryCode(int $length = 10): string
+    private function generateRecoveryCode(int $length = 5): string
     {
         return bin2hex(random_bytes($length));
     }

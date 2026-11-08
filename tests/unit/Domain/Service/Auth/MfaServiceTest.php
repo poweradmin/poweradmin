@@ -82,9 +82,9 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
-    public function testASuccessfulEmailCodeKeepsTheLegacyCodesHashed(): void
+    public function testAValidEmailCodeDoesNotSpendRecoveryCodeHashing(): void
     {
-        // verifyCode saved its own earlier copy after the recovery check migrated the codes
+        // Recovery codes are bcrypt hashes, so a valid factor code must not walk them
         $this->configure(['mail' => ['enabled' => true]]);
         $stored = json_encode(['aaaaaaaaaa', 'bbbbbbbbbb']);
         $verification = json_encode(['code' => '123456', 'generated_at' => time(), 'expires_at' => time() + 600, 'used' => false]);
@@ -101,9 +101,22 @@ class MfaServiceTest extends TestCase
         );
 
         $this->assertTrue($this->service->verifyCode(7, '123456'));
+        $this->assertSame(['aaaaaaaaaa', 'bbbbbbbbbb'], json_decode($stored, true));
 
-        foreach (json_decode($stored, true) as $code) {
-            $this->assertStringStartsWith('sha256:', $code);
+        // A wrong factor code still tries the recovery codes, which migrates them
+        $this->assertTrue($this->service->verifyCode(7, 'bbbbbbbbbb'));
+        $left = json_decode($stored, true);
+        $this->assertCount(1, $left);
+        $this->assertStringStartsWith('$2y$', $left[0]);
+    }
+
+    public function testRecoveryCodesStayWithinTheBcryptInputLimit(): void
+    {
+        $this->configure(['security' => ['mfa.recovery_codes' => 1, 'mfa.recovery_code_length' => 200]]);
+        $this->userMfaRepository->method('findByUserId')->willReturn(UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', null, UserMfa::TYPE_APP));
+
+        foreach ($this->service->regenerateRecoveryCodes(1) as $code) {
+            $this->assertSame(72, strlen($code));
         }
     }
 
@@ -457,14 +470,14 @@ class MfaServiceTest extends TestCase
         }
     }
 
-    public function testDefaultRecoveryCodesCarry80Bits(): void
+    public function testDefaultRecoveryCodesAreTenCharacters(): void
     {
-        // Stored as a plain SHA-256, so a short code would be cheap to brute-force from a leaked table
+        // 40 bits, stored salted with bcrypt; online guessing is rate-limited
         $this->configure(['security' => ['mfa.recovery_codes' => 2]]);
         $this->userMfaRepository->method('findByUserId')->willReturn(UserMfa::create(1, true, 'JBSWY3DPEHPK3PXP', null, UserMfa::TYPE_APP));
 
         foreach ($this->service->regenerateRecoveryCodes(1) as $code) {
-            $this->assertMatchesRegularExpression('/^[0-9a-f]{20}$/', $code);
+            $this->assertMatchesRegularExpression('/^[0-9a-f]{10}$/', $code);
         }
     }
 

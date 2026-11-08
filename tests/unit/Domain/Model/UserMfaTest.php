@@ -67,7 +67,84 @@ class UserMfaTest extends TestCase
         foreach ($codes as $code) {
             $this->assertStringNotContainsString($code, (string)$mfa->getRecoveryCodes());
         }
-        $this->assertSame('sha256:' . hash('sha256', $codes[0]), $mfa->getRecoveryCodesAsArray()[0]);
+        foreach ($mfa->getRecoveryCodesAsArray() as $i => $stored) {
+            $this->assertStringStartsWith('$2y$', $stored);
+            $this->assertStringNotContainsString('sha256:', $stored);
+            $this->assertTrue(password_verify($codes[$i], $stored));
+        }
+    }
+
+    #[Test]
+    public function testNewCodesAreTenCharactersAndSalted(): void
+    {
+        $mfa = $this->makeMfaWithCodes([]);
+        $codes = $mfa->generateRecoveryCodes(2);
+
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{10}$/', $codes[0]);
+        $this->assertNotSame($mfa->getRecoveryCodesAsArray()[0], password_hash($codes[0], PASSWORD_BCRYPT, ['cost' => 9]));
+    }
+
+    #[Test]
+    public function testSha256EntryFromTheEarlierFormatVerifiesOnceAndStaysUntilUsed(): void
+    {
+        $sha = fn(string $c) => 'sha256:' . hash('sha256', $c);
+        $mfa = $this->makeMfaWithCodes([$sha('aaaaaaaaaa'), $sha('bbbbbbbbbb')]);
+
+        $this->assertFalse($mfa->validateRecoveryCode('cccccccccc'));
+        $this->assertSame([$sha('aaaaaaaaaa'), $sha('bbbbbbbbbb')], $mfa->getRecoveryCodesAsArray());
+        $this->assertTrue($mfa->validateRecoveryCode(' BBBBBBBBBB '));
+        $this->assertFalse($mfa->validateRecoveryCode('bbbbbbbbbb'));
+        $this->assertSame([$sha('aaaaaaaaaa')], $mfa->getRecoveryCodesAsArray());
+    }
+
+    #[Test]
+    public function testAllThreeStoredFormsVerifyOnceAndAreConsumed(): void
+    {
+        $bcrypt = password_hash('cccccccccc', PASSWORD_BCRYPT, ['cost' => 4]);
+        $mfa = $this->makeMfaWithCodes(['aaaaaaaaaa', 'sha256:' . hash('sha256', 'bbbbbbbbbb'), $bcrypt]);
+
+        // The plaintext entry goes first, before any other attempt rewrites it as bcrypt
+        foreach (['aaaaaaaaaa', 'cccccccccc', 'bbbbbbbbbb'] as $code) {
+            $this->assertTrue($mfa->validateRecoveryCode($code), $code);
+            $this->assertFalse($mfa->validateRecoveryCode($code), $code);
+        }
+        $this->assertSame([], $mfa->getRecoveryCodesAsArray());
+    }
+
+    #[Test]
+    public function testADuplicatePlaintextEntryIsKeptAsBcrypt(): void
+    {
+        $mfa = $this->makeMfaWithCodes(['aaaaaaaaaa', 'aaaaaaaaaa']);
+
+        $this->assertTrue($mfa->validateRecoveryCode('aaaaaaaaaa'));
+
+        $left = $mfa->getRecoveryCodesAsArray();
+        $this->assertCount(1, $left);
+        $this->assertStringStartsWith('$2y$', $left[0]);
+    }
+
+    #[Test]
+    public function testPlaintextEntriesBecomeBcryptOnAFailedAttempt(): void
+    {
+        $mfa = $this->makeMfaWithCodes(['abcdef1234', 'fedcba9876']);
+
+        $this->assertFalse($mfa->validateRecoveryCode('wrongwrong'));
+
+        foreach ($mfa->getRecoveryCodesAsArray() as $stored) {
+            $this->assertStringStartsWith('$2y$', $stored);
+        }
+        $this->assertTrue($mfa->validateRecoveryCode('FEDCBA9876'));
+        $this->assertCount(1, $mfa->getRecoveryCodesAsArray());
+    }
+
+    #[Test]
+    public function testACodeWithANulByteDoesNotMatchItsPrefix(): void
+    {
+        $mfa = $this->makeMfaWithCodes([]);
+        $codes = $mfa->generateRecoveryCodes(1);
+
+        $this->assertFalse($mfa->validateRecoveryCode($codes[0] . "\0junk"));
+        $this->assertTrue($mfa->validateRecoveryCode($codes[0]));
     }
 
     #[Test]

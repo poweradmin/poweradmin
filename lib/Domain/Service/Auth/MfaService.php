@@ -295,19 +295,25 @@ class MfaService
 
         $this->logger->debug('Verifying code for user ID: {userId}, type: {type}', ['userId' => $userId, 'type' => $mfaType]);
 
-        // First, check if the code matches a recovery code
-        if ($this->consumeRecoveryCode($userId, $code)) {
+        // Recovery codes are bcrypt hashes, so they are tried only after the cheap factor check fails
+        if ($this->verifyFactorCode($userId, $userMfa, $mfaType, $code)) {
             return true;
         }
-        // The recovery check may have saved hashed codes; a later save of the old copy would restore plaintext
-        $userMfa = $this->userMfaRepository->findByUserId($userId) ?? $userMfa;
 
+        return $this->consumeRecoveryCode($userId, $code);
+    }
+
+    /**
+     * Check the TOTP or email code of the enrolled factor; recovery codes are not tried here.
+     */
+    private function verifyFactorCode(int $userId, UserMfa $userMfa, string $mfaType, #[\SensitiveParameter] string $code): bool
+    {
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {
             // Check if mail service is enabled before proceeding with email verification
             if (!$this->configManager->get('mail', 'enabled', false)) {
                 $this->logger->warning('Email verification attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
-                // Only proceed to recovery code check, which was already done above, or TOTP below
+                // Fall through to the TOTP check; recovery codes are tried by the caller
                 // Do not validate the email code if mail service is disabled
             } else {
                 $storedSecret = $userMfa->getSecret();
@@ -749,9 +755,10 @@ class MfaService
      */
     private function recoveryCodeBytes(): int
     {
-        $characters = max(10, (int)$this->configManager->get('security', 'mfa.recovery_code_length', 20));
+        $characters = max(10, (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10));
 
-        return (int)ceil($characters / 2);
+        // bcrypt reads only 72 bytes (PHP 8.5 refuses longer input), so codes stay at 72 characters or fewer
+        return min(36, (int)ceil($characters / 2));
     }
 
     /**
