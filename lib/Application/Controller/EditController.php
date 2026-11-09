@@ -26,7 +26,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -123,7 +123,7 @@ class EditController extends BaseController
         $new_type = htmlspecialchars($_POST['newtype'] ?? '');
         if (isset($_POST['type_change']) && in_array($new_type, $types) && $meta_edit) {
             $this->validateCsrfToken();
-            $dnsRecord->change_zone_type($new_type, $zone_id);
+            $this->changeZoneType($dnsRecord, $new_type, $zone_id);
         }
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
@@ -352,6 +352,20 @@ class EditController extends BaseController
         }
 
         return $sortDirection;
+    }
+
+    /**
+     * Converting a zone is equivalent to creating one of the target type.
+     */
+    public function changeZoneType(DnsRecord $dnsRecord, string $new_type, int $zone_id): void
+    {
+        $required = $new_type === ZoneType::SLAVE ? 'zone_slave_add' : 'zone_master_add';
+        if (!UserManager::verify_permission($this->db, $required)) {
+            $this->setMessage('edit', 'error', _('You do not have the permission to edit this zone.'));
+            return;
+        }
+
+        $dnsRecord->change_zone_type($new_type, $zone_id);
     }
 
     public function saveRecords(int $zone_id, string $zone_name): void
