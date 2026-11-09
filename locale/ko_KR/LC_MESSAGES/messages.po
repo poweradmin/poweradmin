@@ -3224,10 +3224,6 @@ msgstr ""
 "데이터베이스 오류: 사용자 인증을 확인할 수 없습니다. 데이터베이스 설정을 확인"
 "하세요."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "계정이 일시적으로 잠겼습니다. 나중에 다시 시도하세요."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "사용자 계정이 비활성화되었습니다."
@@ -16295,3 +16291,8 @@ msgstr "이 내용에는 백슬래시가 포함되어 있습니다. PowerDNS Aut
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "공유됨"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "파일의 레코드 수가 가져오기 1회당 허용되는 최대값(%d)을 초과합니다."

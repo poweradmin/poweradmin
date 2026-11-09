@@ -3158,10 +3158,6 @@ msgstr ""
 "ข้อผิดพลาดของฐานข้อมูล: ไม่สามารถตรวจสอบสิทธิ์ของผู้ใช้ได้ "
 "โปรดตรวจสอบการปรับแต่งฐานข้อมูลของคุณ"
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "บัญชีถูกปิดชั่วคราว กรุณาลองอีกครั้งในภายหลัง"
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "บัญชีผู้ใช้ถูกปิดการใช้งาน"
@@ -15795,3 +15791,8 @@ msgstr "เนื้อหานี้มีเครื่องหมายแ
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "แชร์แล้ว"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "ไฟล์มีระเบียนมากกว่าจำนวนสูงสุดที่อนุญาตต่อการนำเข้าหนึ่งครั้ง (%d)"

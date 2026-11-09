@@ -3096,10 +3096,6 @@ msgid ""
 "database configuration."
 msgstr ""
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr ""
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr ""
@@ -14803,4 +14799,9 @@ msgstr ""
 
 #: lib/Application/Service/User/PasswordPolicyService.php:95
 msgid "Password must contain at least one special character"
+msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
 msgstr ""

@@ -3382,10 +3382,6 @@ msgstr ""
 "Erreur de base de données : Impossible de vérifier l'authentification de "
 "l'utilisateur. Veuillez vérifier votre configuration de base de données."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Le compte est temporairement verrouillé. Veuillez réessayer plus tard."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Le compte utilisateur est désactivé."
@@ -17087,3 +17083,8 @@ msgstr "Ce contenu contient un antislash. PowerDNS Auth 5.1.x supprime un niveau
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "partagé"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Le fichier contient plus d'enregistrements que le maximum autorisé par importation (%d)."

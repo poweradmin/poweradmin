@@ -3282,10 +3282,6 @@ msgstr ""
 "خطأ في قاعدة البيانات: تعذر التحقق من مصادقة المستخدم. يرجى التحقق من "
 "إعدادات قاعدة البيانات الخاصة بك."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "الحساب مغلق مؤقتاً حاول مرة أخرى لاحقاً"
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "حساب المستخدم معطَّل"
@@ -16243,3 +16239,8 @@ msgstr "يحتوي هذا المحتوى على شرطة مائلة عكسية. 
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "مشتركة"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "يحتوي الملف على سجلات أكثر من الحد الأقصى المسموح به لكل عملية استيراد وهو %d."

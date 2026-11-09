@@ -3292,10 +3292,6 @@ msgstr ""
 "Kesalahan basis data: Tidak dapat memverifikasi autentikasi pengguna. "
 "Silakan periksa konfigurasi basis data Anda."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Akun dikunci sementara. Silakan coba lagi nanti."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Akun pengguna ini dinonaktifkan."
@@ -16664,3 +16660,8 @@ msgstr "Konten ini mengandung backslash. PowerDNS Auth 5.1.x menghapus satu ting
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "dibagikan"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Berkas berisi lebih banyak record daripada batas maksimum per impor (%d)."

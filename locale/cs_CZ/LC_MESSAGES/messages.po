@@ -3289,10 +3289,6 @@ msgstr ""
 "Chyba databáze: Nelze ověřit autentizaci uživatele. Zkontrolujte prosím "
 "konfiguraci databáze."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Účet je dočasně uzamčen. Zkuste to prosím později."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Uživatelský účet je zakázán."
@@ -16482,3 +16478,8 @@ msgstr "Tento obsah obsahuje zpětné lomítko. PowerDNS Auth 5.1.x odstraňuje 
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "sdíleno"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Soubor obsahuje více záznamů, než je povolené maximum pro jeden import (%d)."

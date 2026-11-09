@@ -3223,10 +3223,6 @@ msgstr ""
 "डेटाबेस त्रुटि: उपयोगकर्ता प्रमाणीकरण को सत्यापित करने में असमर्थ। कृपया अपने डेटाबेस "
 "विन्यास की जांच करें।"
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "खाता अस्थायी रूप से बंद है। बाद में फिर से प्रयास करें।"
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "उपयोगकर्ता खाता अक्षम है।"
@@ -16246,3 +16242,8 @@ msgstr "इस सामग्री में बैकस्लैश है�
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "साझा"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "फ़ाइल में प्रति आयात अनुमत अधिकतम (%d) से अधिक रिकॉर्ड हैं।"

@@ -3284,10 +3284,6 @@ msgstr ""
 "Greška baze podataka: nije moguće provjeriti autentifikaciju korisnika. "
 "Provjerite konfiguraciju baze podataka."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Račun je privremeno zaključan. Pokušajte kasnije."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Korisnički račun je onemogućen."
@@ -16427,3 +16423,8 @@ msgstr "Ovaj sadržaj sadrži obrnutu kosu crtu. PowerDNS Auth 5.1.x uklanja jed
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "dijeljeno"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Datoteka ima više zapisa od najvećeg dopuštenog broja po uvozu (%d)."

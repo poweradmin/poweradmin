@@ -3311,10 +3311,6 @@ msgstr ""
 "Ошибка базы данных: Невозможно проверить аутентификацию пользователя. "
 "Проверьте конфигурацию базы данных."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Учетная запись временно заблокирована. Пожалуйста, попробуйте позже."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Учетная запись пользователя отключена."
@@ -16681,3 +16677,8 @@ msgstr "Это содержимое содержит обратную косую
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "общий"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Файл содержит больше записей, чем допускается за один импорт (%d)."

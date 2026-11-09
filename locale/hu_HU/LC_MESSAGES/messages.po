@@ -3292,10 +3292,6 @@ msgstr ""
 "Adatbázishiba: a felhasználó hitelesítése nem ellenőrizhető. Ellenőrizze az "
 "adatbázis beállításait."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "A fiók ideiglenesen zárolva. Próbálja újra később."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "A felhasználói fiók le van tiltva."
@@ -16697,3 +16693,8 @@ msgstr "Ez a tartalom visszaperjelet tartalmaz. A PowerDNS Auth 5.1.x az API-já
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "megosztva"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "A fájl több rekordot tartalmaz, mint az importálásonként engedélyezett legnagyobb szám (%d)."

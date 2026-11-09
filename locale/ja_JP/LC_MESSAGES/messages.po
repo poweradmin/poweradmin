@@ -3248,10 +3248,6 @@ msgstr ""
 "データベースエラー: ユーザー認証を検証できません。データベース構成を確認して"
 "ください。"
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "アカウントが一時的にロックされています。後でもう一度お試しください。"
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "ユーザーアカウントが無効です。"
@@ -16505,3 +16501,8 @@ msgstr "この内容にはバックスラッシュが含まれています。Pow
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "共有"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "ファイルのレコード数が、1 回のインポートで許可されている上限 (%d) を超えています。"

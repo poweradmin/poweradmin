@@ -3334,10 +3334,6 @@ msgstr ""
 "Error de base de datos: No se puede verificar la autenticación del usuario. "
 "Por favor verifique su configuración de base de datos."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "La cuenta está temporalmente bloqueada. Inténtelo más tarde."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "La cuenta de usuario está deshabilitada."
@@ -16835,3 +16831,8 @@ msgstr "Este contenido contiene una barra invertida. PowerDNS Auth 5.1.x elimina
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "compartida"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "El archivo tiene más registros que el máximo permitido por importación (%d)."

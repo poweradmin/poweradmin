@@ -3323,10 +3323,6 @@ msgstr ""
 "Errore del database: impossibile verificare l'autenticazione utente. "
 "Controlla la configurazione del database."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "L'account è temporaneamente bloccato. Riprova più tardi."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "L'account utente è disabilitato."
@@ -16824,3 +16820,8 @@ msgstr "Questo contenuto contiene un backslash. PowerDNS Auth 5.1.x rimuove un l
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "condiviso"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Il file contiene più record del massimo consentito per importazione (%d)."

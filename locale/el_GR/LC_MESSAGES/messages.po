@@ -3357,12 +3357,6 @@ msgstr ""
 "Σφάλμα βάσης δεδομένων: Αδυναμία επαλήθευσης ταυτότητας χρήστη. Παρακαλώ "
 "ελέγξτε τις ρυθμίσεις της βάσης δεδομένων σας."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr ""
-"Ο λογαριασμός είναι προσωρινά κλειδωμένος. Παρακαλώ προσπαθήστε ξανά "
-"αργότερα."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Ο λογαριασμός χρήστη είναι απενεργοποιημένος."
@@ -17060,3 +17054,8 @@ msgstr "Αυτό το περιεχόμενο περιέχει ανάποδη κ�
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "κοινόχρηστο"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Το αρχείο περιέχει περισσότερες εγγραφές από το μέγιστο επιτρεπόμενο ανά εισαγωγή (%d)."

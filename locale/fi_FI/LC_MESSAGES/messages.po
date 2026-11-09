@@ -3245,10 +3245,6 @@ msgstr ""
 "Tietokantavirhe: Käyttäjän todennusta ei voida varmistaa. Tarkista "
 "tietokannan määritykset."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Tili on tilapäisesti lukittu. Yritä myöhemmin uudelleen."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Käyttäjätili on poistettu käytöstä."
@@ -16321,3 +16317,8 @@ msgstr "Tämä sisältö sisältää kenoviivan. PowerDNS Auth 5.1.x poistaa yhd
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "jaettu"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Tiedostossa on enemmän tietueita kuin yhdessä tuonnissa sallitaan (%d)."

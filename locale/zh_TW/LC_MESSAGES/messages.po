@@ -3136,10 +3136,6 @@ msgid ""
 "database configuration."
 msgstr "資料庫錯誤：無法驗證使用者身分。請檢查資料庫設定。"
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "帳號暫時鎖定。請稍後重試。"
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "使用者帳號已停用。"
@@ -15482,3 +15478,8 @@ msgstr "此內容包含反斜線。PowerDNS Auth 5.1.x 會從透過其 API 儲�
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "已分享"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "檔案中的記錄數超過每次匯入允許的最大值（%d）。"

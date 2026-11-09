@@ -3295,10 +3295,6 @@ msgstr ""
 "Помилка бази даних: не вдалося перевірити автентифікацію користувача. "
 "Перевірте конфігурацію бази даних."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Обліковий запис тимчасово заблоковано. Спробуйте пізніше."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Обліковий запис користувача вимкнено."
@@ -16621,3 +16617,8 @@ msgstr "Цей вміст містить зворотну косу риску. P
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "спільний"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Файл містить більше записів, ніж дозволено за один імпорт (%d)."

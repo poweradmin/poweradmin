@@ -3258,10 +3258,6 @@ msgid ""
 msgstr ""
 "Datubāzes kļūda: nevar pārbaudīt autentifikāciju. Pārbaudiet konfigurāciju."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Konts ir īslaicīgi bloķēts. Mēģiniet vēlāk."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Lietotāja konts ir atspējots."
@@ -16268,3 +16264,8 @@ msgstr "Šis saturs satur atpakaļvērsto slīpsvītru. PowerDNS Auth 5.1.x no i
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "koplietots"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Failā ir vairāk ierakstu, nekā atļauts vienā importā (%d)."

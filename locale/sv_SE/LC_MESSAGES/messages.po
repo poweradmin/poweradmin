@@ -3271,10 +3271,6 @@ msgstr ""
 "Databasfel: Kunde inte verifiera användarautentisering. Kontrollera din "
 "databaskonfiguration."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Kontot är tillfälligt låst. Försök igen senare."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Användarkontot är inaktiverat."
@@ -16512,3 +16508,8 @@ msgstr "Innehållet har ett backslash. PowerDNS Auth 5.1.x tar bort en nivå av 
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "delad"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Filen innehåller fler poster än det högsta tillåtna antalet per import (%d)."

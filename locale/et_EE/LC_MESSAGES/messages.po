@@ -3237,10 +3237,6 @@ msgstr ""
 "Andmebaasi viga: kasutaja autentimist ei saa kontrollida. Kontrollige "
 "seadistust."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Konto on ajutiselt lukustatud. Palun proovige hiljem."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Kasutajakonto on keelatud."
@@ -16210,3 +16206,8 @@ msgstr "See sisu sisaldab kaldkriipsu. PowerDNS Auth 5.1.x eemaldab oma API kaud
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "jagatud"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Failis on rohkem kirjeid, kui ühe impordi kohta on lubatud (%d)."

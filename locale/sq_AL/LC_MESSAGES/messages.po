@@ -3319,11 +3319,6 @@ msgstr ""
 "Gabim në databaza: I pamundur verifikimi i autentifikimit. Të lutem "
 "kontrollo konfigurimin e databazës."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr ""
-"Llogaria është bllokuar përkohësisht. Ju lutem provoni përsëri më vonë."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Profili i përdoruesit është çaktivuar."
@@ -16847,3 +16842,8 @@ msgstr "Kjo përmbajtje përmban një backslash. PowerDNS Auth 5.1.x heq një ni
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "ndarë"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Skedari ka më shumë regjistrime se maksimumi i lejuar për një importim (%d)."

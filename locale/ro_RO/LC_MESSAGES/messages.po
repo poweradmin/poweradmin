@@ -3358,10 +3358,6 @@ msgstr ""
 "Eroare de bază de date: nu s-a putut verifica autentificarea utilizatorului. "
 "Vă rugăm să verificați configurația bazei de date."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Contul este blocat temporar. Vă rugăm să încercați din nou mai târziu."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Contul utilizatorului este dezactivat."
@@ -17013,3 +17009,8 @@ msgstr "Acest conținut conține un backslash. PowerDNS Auth 5.1.x elimină un n
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "partajat"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Fișierul conține mai multe înregistrări decât maximul permis pentru un import (%d)."

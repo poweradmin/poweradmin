@@ -3251,10 +3251,6 @@ msgstr ""
 "خطای پایگاه داده: تأیید اعتبار کاربر امکان‌پذیر نیست. لطفا پیکربندی پایگاه "
 "داده خود را بررسی کنید."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "حساب به طور موقت قفل شده است. لطفا بعدا دوباره امتحان کنید."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "حساب کاربری غیرفعال است."
@@ -16393,3 +16389,8 @@ msgstr "این محتوا شامل یک بک‌اسلش است. PowerDNS Auth 5.
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "اشتراکی"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "تعداد رکوردهای فایل از حداکثر مجاز برای هر واردسازی (%d) بیشتر است."

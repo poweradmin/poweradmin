@@ -3371,10 +3371,6 @@ msgstr ""
 "Earráid Bunachar Sonraí: Ní féidir fíordheimhniú úsáideora a fhíorú. "
 "Seiceáil do chumraíocht bunachar sonraí."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Tá cuntas faoi ghlas go sealadach. Déan iarracht arís níos déanaí."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Tá an cuntas úsáideora díchumasaithe."
@@ -16957,3 +16953,8 @@ msgstr "Tá cúlslais san inneachar seo. Baineann PowerDNS Auth 5.1.x leibhéal 
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "roinnte"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Tá níos mó taifead sa chomhad ná an t-uasmhéid a cheadaítear in aghaidh an iompórtála (%d)."

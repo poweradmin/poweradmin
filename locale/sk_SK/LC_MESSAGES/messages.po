@@ -3279,10 +3279,6 @@ msgstr ""
 "Chyba databázy: nie je možné overiť prihlásenie používateľa. Skontrolujte "
 "konfiguráciu svojej databázy."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Účet je dočasne zamknutý. Skúste neskôr."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Používateľský účet je zakázaný."
@@ -16443,3 +16439,8 @@ msgstr "Tento obsah obsahuje spätnú lomku. PowerDNS Auth 5.1.x odstraňuje jed
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "zdieľané"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Súbor obsahuje viac záznamov, než je povolené maximum na jeden import (%d)."

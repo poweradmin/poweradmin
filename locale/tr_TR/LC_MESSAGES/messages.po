@@ -3271,10 +3271,6 @@ msgstr ""
 "Veritabanı hatası: Kullanıcı kimlik doğrulaması doğrulanamıyor. Lütfen "
 "veritabanı yapılandırmanızı kontrol edin."
 
-#: lib/Application/Service/Auth/LdapAuthenticator.php:105
-msgid "Account is temporarily locked. Please try again later."
-msgstr "Hesap geçici olarak kilitli. Lütfen daha sonra tekrar deneyin."
-
 #: lib/Application/Service/Auth/SqlAuthenticator.php:144
 msgid "The user account is disabled."
 msgstr "Kullanıcı hesabı devre dışı."
@@ -16554,3 +16550,8 @@ msgstr "Bu içerik bir ters eğik çizgi içeriyor. PowerDNS Auth 5.1.x, API'si 
 #: templates/default/list_zone_templ.html:82
 msgid "shared"
 msgstr "paylaşılan"
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:656
+#, php-format
+msgid "The file has more records than the maximum allowed per import of %d."
+msgstr "Dosyada, içe aktarma başına izin verilen en fazla sayıdan (%d) daha çok kayıt var."
