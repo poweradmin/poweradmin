@@ -81,7 +81,8 @@ perl dynamic_dns_client.pl
 
 #### Python Client
 ```bash
-python dynamic_dns_client.py --domain example.com --host myserver
+export POWERADMIN_DDNS_PASSWORD='secret'
+python dynamic_dns_client.py -l myuser -d host.example.com -u https://dns.example.com/poweradmin -v
 ```
 
 #### Bash Client
