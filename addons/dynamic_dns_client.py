@@ -12,27 +12,28 @@ login = "username"
 password = "password"
 dyndns = "mydynamicdns.example.com"
 url = "https://www.example.com/poweradmin"
-verbose = 1
+# 0 keeps unattended (cron) runs silent, as they were before -v was honoured
+verbose = 0
 
 parser = argparse.ArgumentParser(description='Client for Poweradmin dynamic DNS')
 parser.add_argument('-l', '--login', dest='login', help='Poweradmin user name')
 parser.add_argument('-p', '--password', dest='password', help='Poweradmin user password (visible in the process list; prefer the POWERADMIN_DDNS_PASSWORD environment variable)')
 parser.add_argument('-d', '--dyndns', dest='dyndns', help='Dynamic DNS name')
 parser.add_argument('-u', '--url', dest='url', help='Poweradmin URL')
-parser.add_argument('-v', '--verbose', dest='verbose', help='Output verbosity')
+parser.add_argument('-v', '--verbose', dest='verbose', type=int, help='Output verbosity (1 or 0)')
 args = parser.parse_args()
 
-if hasattr(args, "login"):
+if args.login is not None:
     login = args.login
 if args.password:
     password = args.password
 elif os.environ.get("POWERADMIN_DDNS_PASSWORD"):
     password = os.environ["POWERADMIN_DDNS_PASSWORD"]
-if hasattr(args, "dyndns"):
+if args.dyndns is not None:
     dyndns = args.dyndns
-if hasattr(args, "poweradmin"):
-    url = args.poweradmin
-if hasattr(args, "verbose"):
+if args.url is not None:
+    url = args.url.rstrip('/')
+if args.verbose is not None:
     verbose = args.verbose
 
 ip_lookup_url = url + "/addons/clientip.php"
