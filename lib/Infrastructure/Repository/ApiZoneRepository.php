@@ -769,7 +769,14 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         );
         $stmt->bindValue(':cid', $cid, PDO::PARAM_INT);
         $stmt->bindValue(':cid_e', $cid, PDO::PARAM_INT);
-        return $stmt->execute();
+        $deleted = $stmt->execute();
+
+        // Keep the history for admins but stop a later zone that reuses the id from inheriting it
+        $stmt = $this->db->prepare("UPDATE log_zones SET zone_id = NULL WHERE zone_id = :zone_id");
+        $stmt->bindValue(':zone_id', self::externalZoneId($canonical), PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $deleted;
     }
 
     public function updateZone(int $zoneId, array $updates): bool

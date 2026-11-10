@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
@@ -129,6 +130,7 @@ class DeleteDomainsController extends BaseController
         $delete_domains = $dnsRecord->deleteDomains($zone_ids);
 
         if ($delete_domains) {
+            $zoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
                     $this->auditLogger->logInfo(sprintf(
@@ -138,6 +140,8 @@ class DeleteDomainsController extends BaseController
                         $deleted_zone['name'],
                         $deleted_zone['type']
                     ), $deleted_zone['id']);
+                    // The delete entry is written after the zone is gone, so detach it too
+                    $zoneLogger->detachZone((int)$deleted_zone['id']);
                 }
             }
 

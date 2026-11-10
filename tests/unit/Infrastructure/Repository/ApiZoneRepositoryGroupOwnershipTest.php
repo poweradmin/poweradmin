@@ -55,6 +55,7 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
             zone_type TEXT, zone_master TEXT, comment TEXT, owner INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, zone_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'admin', 'Administrator'), (2, 'member', 'Group Member')");
 
@@ -154,12 +155,15 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
             VALUES (7, 4011, '1.168.192.in-addr.arpa', 'MASTER', '', '', 1, 0)");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (4011, 5)");
+        $this->db->exec("INSERT INTO log_zones (event, zone_id) VALUES ('operation:edit_record', 4011)");
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('deleteZone')->willReturn(true);
         $repository = new ApiZoneRepository($this->db, $backend, 'sqlite');
 
         $this->assertTrue($repository->deleteZone(4011));
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 4011")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id IS NULL")->fetchColumn());
     }
 
     #[Test]
