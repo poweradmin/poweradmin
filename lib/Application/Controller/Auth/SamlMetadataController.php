@@ -98,7 +98,11 @@ class SamlMetadataController extends BaseController
             echo $metadata;
         } catch (\Exception $e) {
             http_response_code(500);
-            echo 'Error generating SAML metadata: ' . $e->getMessage();
+            $this->logger->error('Error generating SAML metadata for {provider}: {error}', [
+                'provider' => $providerId,
+                'error' => $e->getMessage(),
+            ]);
+            echo 'Error generating SAML metadata';
         }
     }
 
