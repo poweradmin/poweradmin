@@ -383,9 +383,9 @@ class AuditService implements AuditLoggerInterface
         ]), $zoneId);
     }
 
-    public function logZoneDelete(int $zoneId, string $zoneName, string $zoneType): void
+    public function logZoneDelete(string $zoneName, string $zoneType): void
     {
-        $this->logger->logInfo($this->line('delete_zone', ['zone' => $zoneName, 'zone_type' => $zoneType]), $zoneId);
+        $this->logger->logDetachedZoneInfo($this->line('delete_zone', ['zone' => $zoneName, 'zone_type' => $zoneType]));
     }
 
     /**
@@ -407,9 +407,9 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('api_add_zone', ['zone_name' => $zoneName, 'zone_type' => $zoneType]), $zoneId);
     }
 
-    public function logApiZoneDelete(int $zoneId, string $zoneName): void
+    public function logApiZoneDelete(string $zoneName): void
     {
-        $this->logger->logInfo($this->line('api_delete_zone', ['zone_name' => $zoneName]), $zoneId);
+        $this->logger->logDetachedZoneInfo($this->line('api_delete_zone', ['zone_name' => $zoneName]));
     }
 
     // Records

@@ -57,6 +57,14 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
                 "CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)",
                 "CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, content TEXT)",
                 "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))",
+                "CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, zone_id INTEGER)",
+                "CREATE TABLE log_changesets (id INTEGER PRIMARY KEY, zone_id INTEGER)",
+                "CREATE TABLE log_record_changes (id INTEGER PRIMARY KEY, zone_id INTEGER)",
+                "CREATE TABLE zone_change_requests (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, status TEXT, error TEXT, reviewed_at TEXT)",
+                "INSERT INTO log_zones VALUES (1, 'a', 1), (2, 'b', 2)",
+                "INSERT INTO log_changesets VALUES (1, 1), (2, 2)",
+                "INSERT INTO log_record_changes VALUES (1, 1), (2, 2)",
+                "INSERT INTO zone_change_requests (id, zone_id, status) VALUES (1, 1, 'pending'), (2, 1, 'approved'), (3, 2, 'pending')",
                 "INSERT INTO domains VALUES (1, 'example.com', 'MASTER'), (2, 'other.com', 'MASTER')",
                 "INSERT INTO records VALUES (10, 1, 'www.example.com', 'A', '192.0.2.1'), (20, 2, 'www.other.com', 'A', '192.0.2.2')",
                 "INSERT INTO comments VALUES (100, 1, 'www.example.com', 'A', 'web'), (200, 2, 'www.other.com', 'A', 'other web')",
@@ -117,6 +125,35 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
 
         $this->assertSame(2, (int)$this->db->query("SELECT id FROM domains WHERE name = 'new.com'")->fetchColumn());
         $this->assertSame([0], $this->scopes(1));
+    }
+
+    public function testDeleteZoneDetachesItsHistoryFromTheReusableId(): void
+    {
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        foreach (['log_zones', 'log_changesets', 'log_record_changes'] as $table) {
+            $this->assertSame(0, $this->rows("$table WHERE zone_id = 1"), $table);
+            $this->assertSame(1, $this->rows("$table WHERE zone_id IS NULL"), $table);
+            $this->assertSame(1, $this->rows("$table WHERE zone_id = 2"), $table);
+        }
+        $this->assertSame(0, $this->rows('zone_change_requests WHERE zone_id = 1'));
+        $this->assertSame(2, $this->rows('zone_change_requests WHERE zone_id = 0'));
+        $this->assertSame(1, $this->rows("zone_change_requests WHERE zone_id = 0 AND status = 'cancelled'"));
+        $this->assertSame(1, $this->rows("zone_change_requests WHERE zone_id = 0 AND status = 'approved'"));
+        $this->assertSame(1, $this->rows("zone_change_requests WHERE zone_id = 2 AND status = 'pending'"));
+    }
+
+    public function testZoneCreatedOnTheReusedIdStartsWithoutTheDeletedZonesHistory(): void
+    {
+        $this->assertTrue($this->repository->deleteZone(2));
+        // SQLite hands the highest rowid to the next zone
+        $this->db->exec("INSERT INTO domains (name, type) VALUES ('new.example', 'MASTER')");
+        $newId = (int)$this->db->lastInsertId();
+        $this->assertSame(2, $newId);
+
+        foreach (['log_zones', 'log_changesets', 'log_record_changes', 'zone_change_requests'] as $table) {
+            $this->assertSame(0, $this->rows("$table WHERE zone_id = $newId"), $table);
+        }
     }
 
     /** @return int[] */

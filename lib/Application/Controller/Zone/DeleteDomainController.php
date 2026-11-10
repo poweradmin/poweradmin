@@ -116,7 +116,7 @@ class DeleteDomainController extends BaseController
         // The zone service deletes keys, comments, records and metadata with the zone, as the API does
         $deleted = $this->createZoneManagementService()->deleteZone($zone_id);
         if ($deleted['success']) {
-            $this->services()->auditService()->logZoneDelete($zone_id, (string)$zone_info['name'], (string)$zone_info['type']);
+            $this->services()->auditService()->logZoneDelete((string)$zone_info['name'], (string)$zone_info['type']);
 
             // Check if the zone is a reverse zone and redirect accordingly
             if (!empty($zone_info['name']) && DnsHelper::isReverseZoneName($zone_info['name'])) {

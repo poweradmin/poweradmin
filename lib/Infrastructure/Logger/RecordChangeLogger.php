@@ -207,9 +207,10 @@ class RecordChangeLogger implements RecordChangeWriterInterface
         $snapshot = $this->encodeZoneSnapshot($zoneData);
         $snapshot = $this->mergeRecordCount($snapshot, $recordCount);
 
+        // No zone id: SQLite hands it to the next zone, whose owner would then see this entry
         $this->insert(
             self::ACTION_ZONE_DELETE,
-            $zoneData['id'] ?? null,
+            null,
             null,
             $snapshot,
             null

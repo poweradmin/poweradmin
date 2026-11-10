@@ -103,7 +103,7 @@ class DeleteDomainsController extends BaseController
             $audit = $this->services()->auditService();
             foreach ($deleted_zones as $deleted_zone) {
                 if (!empty($deleted_zone['name'])) {
-                    $audit->logZoneDelete((int)$deleted_zone['id'], (string)$deleted_zone['name'], (string)$deleted_zone['type']);
+                    $audit->logZoneDelete((string)$deleted_zone['name'], (string)$deleted_zone['type']);
                 }
             }
 

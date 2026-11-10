@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Database;
 
+use PDO;
 use PDOException;
 
 /**
@@ -510,5 +511,22 @@ final class DbCompat
             || str_contains($message, "doesn't exist")
             || str_contains($message, 'does not exist')
             || str_contains($message, 'undefined table');
+    }
+
+    /**
+     * Whether the table exists, read from the catalog so a missing table never raises an error
+     * (which would abort an open PostgreSQL transaction). Covers MySQL, PostgreSQL and SQLite.
+     */
+    public static function tableExists(PDO $db, string $table): bool
+    {
+        $sql = match ($db->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            'mysql' => 'SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :t',
+            'pgsql' => 'SELECT 1 FROM information_schema.tables WHERE table_schema = ANY (current_schemas(false)) AND table_name = :t',
+            default => "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :t",
+        };
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':t' => $table]);
+
+        return $stmt->fetchColumn() !== false;
     }
 }

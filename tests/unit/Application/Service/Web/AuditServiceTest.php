@@ -43,7 +43,7 @@ class AuditServiceTest extends TestCase
     private function makeService(?string $loginUsername = 'alice'): AuditService
     {
         $logger = $this->createMock(AuditLogWriter::class);
-        foreach (['logInfo', 'logWarn', 'logNotice', 'logError', 'logGroupInfo', 'logGroupWarning', 'logApiInfo'] as $method) {
+        foreach (['logInfo', 'logDetachedZoneInfo', 'logWarn', 'logNotice', 'logError', 'logGroupInfo', 'logGroupWarning', 'logApiInfo'] as $method) {
             $logger->method($method)->willReturnCallback(function (string $message, ?int $id = null) use ($method): void {
                 $this->lines[] = [$method, $message, $id];
             });
@@ -65,6 +65,22 @@ class AuditServiceTest extends TestCase
         );
         $this->assertSame(
             ['logInfo', 'client_ip:192.0.2.10 user:alice operation:add_zone zone:example.net zone_type:SLAVE zone_master:192.0.2.1', 8],
+            $this->lines[1]
+        );
+    }
+
+    public function testZoneDeleteLinesCarryNoZoneId(): void
+    {
+        $service = $this->makeService();
+        $service->logZoneDelete('example.com', 'MASTER');
+        $service->logApiZoneDelete('example.net');
+
+        $this->assertSame(
+            ['logDetachedZoneInfo', 'client_ip:192.0.2.10 user:alice operation:delete_zone zone:example.com zone_type:MASTER', null],
+            $this->lines[0]
+        );
+        $this->assertSame(
+            ['logDetachedZoneInfo', 'client_ip:192.0.2.10 user:alice operation:api_delete_zone zone_name:example.net', null],
             $this->lines[1]
         );
     }

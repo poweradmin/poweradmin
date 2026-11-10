@@ -1047,6 +1047,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $this->queueOwnershipWriters($zoneId);
             // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+            SharedZoneIds::detachZoneHistory($this->db, $zoneId);
             foreach (
                 [
                     // Comment links are Poweradmin-native, so no cascade reaches them.

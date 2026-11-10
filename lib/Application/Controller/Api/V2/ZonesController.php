@@ -1000,7 +1000,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            $this->services()->auditService()->logApiZoneDelete($zoneId, $zoneName);
+            $this->services()->auditService()->logApiZoneDelete($zoneName);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

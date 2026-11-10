@@ -81,6 +81,15 @@ class AuditLogWriter
         $this->doLog($message, LOG_NOTICE);
     }
 
+    /**
+     * A zone log entry that belongs to no zone id, for a zone that was just deleted: SQLite
+     * reuses its id, and an entry keyed by it would show up for the next zone.
+     */
+    public function logDetachedZoneInfo(string $message): void
+    {
+        $this->write($message, LOG_INFO, fn() => (new DbZoneLogger($this->db, $this->config, $this->backendProvider))->doLog($message, null, LOG_INFO));
+    }
+
     public function logInfo(string $message, ?int $zone_id = null): void
     {
         $this->doLog($message, LOG_INFO, $zone_id);

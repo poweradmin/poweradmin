@@ -253,6 +253,28 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30]], $this->keyScopes());
     }
 
+    #[Test]
+    public function deletingAZoneOnAnUnsharedIdDetachesItsHistoryButASharedIdKeepsIt(): void
+    {
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, zone_id INTEGER)");
+        $this->db->exec("CREATE TABLE zone_change_requests (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, status TEXT, error TEXT, reviewed_at TEXT)");
+        $this->db->exec("INSERT INTO log_zones VALUES (1, 'a', 30), (2, 'b', 5)");
+        $this->db->exec("INSERT INTO zone_change_requests (id, zone_id, status) VALUES (1, 30, 'pending'), (2, 5, 'pending')");
+
+        $this->assertTrue($this->repository()->deleteZone(30));
+        $this->assertTrue($this->repository()->deleteZone(12));
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 30")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id IS NULL")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_change_requests WHERE zone_id = 30")->fetchColumn());
+        $this->assertSame('cancelled', $this->db->query("SELECT status FROM zone_change_requests WHERE zone_id = 0")->fetchColumn());
+        // Zone 5 still holds the shared id, so its history stays
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 5")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zone_change_requests WHERE zone_id = 5 AND status = 'pending'")->fetchColumn());
+    }
+
     /** @param string[] $values @return string[] */
     private static function sorted(array $values): array
     {

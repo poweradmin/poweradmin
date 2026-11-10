@@ -108,6 +108,18 @@ class DbCompatIntegrationTest extends TestCase
     }
 
     #[DataProvider('engines')]
+    public function testTableExistsNeverFailsAnOpenTransaction(string $engine): void
+    {
+        $conn = $this->useEngine($engine);
+        $conn->beginTransaction();
+        $this->assertTrue(DbCompat::tableExists($conn, 'test_dbcompat'), "existing table on $engine");
+        $this->assertFalse(DbCompat::tableExists($conn, 'test_dbcompat_missing'), "missing table on $engine");
+        // A failed query would have aborted the transaction on PostgreSQL
+        $this->assertSame('apple', $conn->query("SELECT label FROM test_dbcompat WHERE id = 1")->fetchColumn());
+        $conn->rollBack();
+    }
+
+    #[DataProvider('engines')]
     public function testRegexp(string $engine): void
     {
         // A literal pattern matches itself under REGEXP, ~, and GLOB.

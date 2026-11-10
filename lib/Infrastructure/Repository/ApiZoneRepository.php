@@ -1057,6 +1057,10 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
     private function deleteLocalZoneRows(int $cid, int $canonicalId, bool $shared): bool
     {
         SharedZoneIds::unscopeApiKeysFromOpenedRow($this->db, $canonicalId, $cid, $this->logger ?? new NullLogger());
+        if (!$shared) {
+            // A later zone can be given this id again (SQLite reuses the highest rowid); a shared id stays with the other zone
+            SharedZoneIds::detachZoneHistory($this->db, $canonicalId);
+        }
         if ($shared) {
             // Grants keyed by a shared id cannot be attributed, so they go too rather than
             // falling to the surviving zone; its template links stay, being data, not access

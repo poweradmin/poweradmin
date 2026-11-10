@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Database;
 
 use PDO;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
+use Poweradmin\Domain\Database\DbCompat;
 use Psr\Log\LoggerInterface;
 use WeakMap;
 
@@ -228,6 +229,37 @@ final class SharedZoneIds
         }
 
         return $scoped;
+    }
+
+    /**
+     * Keep the history of a deleted zone but cut it loose from the id, which SQLite hands to the next zone.
+     * Open change requests are cancelled; the requests table has no NULL zone id, so 0 stands for no zone.
+     * Tables are probed in the catalog, so a schema without them never aborts an open transaction.
+     */
+    public static function detachZoneHistory(PDO $db, int $zoneId): void
+    {
+        foreach (['log_zones', 'log_changesets', 'log_record_changes'] as $table) {
+            if (DbCompat::tableExists($db, $table)) {
+                $stmt = $db->prepare("UPDATE $table SET zone_id = NULL WHERE zone_id = :zone_id");
+                $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+        }
+
+        if (!DbCompat::tableExists($db, 'zone_change_requests')) {
+            return;
+        }
+
+        $stmt = $db->prepare(
+            "UPDATE zone_change_requests SET status = 'cancelled', error = 'The zone was deleted.', reviewed_at = CURRENT_TIMESTAMP
+             WHERE zone_id = :zone_id AND status IN ('pending', 'failed')"
+        );
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $stmt = $db->prepare("UPDATE zone_change_requests SET zone_id = 0 WHERE zone_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
