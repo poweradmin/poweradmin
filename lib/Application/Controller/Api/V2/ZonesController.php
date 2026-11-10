@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -862,6 +863,9 @@ class ZonesController extends PublicApiController
                 $this->getAuthenticatedUsername(),
                 $zoneName
             ), $zoneId);
+
+            // The delete entry is written after the zone is gone, so detach it too
+            (new DbZoneLogger($this->db, $this->createDnsBackendProvider()))->detachZone($zoneId);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {

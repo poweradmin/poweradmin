@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -124,6 +125,9 @@ class DeleteDomainController extends BaseController
                 $zone_info['name'],
                 $zone_info['type']
             ), $zone_id);
+
+            // The delete entry is written after the zone is gone, so detach it too
+            (new DbZoneLogger($this->db, $this->createDnsBackendProvider()))->detachZone($zone_id);
 
             // Delete associated comments - wrapped in try-catch to prevent
             // comment deletion failures from breaking zone deletion

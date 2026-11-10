@@ -49,6 +49,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
             zone_type TEXT, zone_master TEXT, comment TEXT, owner INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, zone_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES
             (1, 'primary', 'Primary Owner'), (2, 'extra', 'Extra Owner'), (3, 'stranger', 'Stranger')");
@@ -148,6 +149,7 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
         // zones_groups is keyed by the canonical zone id, so cleaning up by the
         // canonical row's own primary key would leave the row orphaned.
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2905, 9)");
+        $this->db->exec("INSERT INTO log_zones (event, zone_id) VALUES ('operation:edit_record', 2905)");
 
         $backend = $this->createMock(DnsBackendProvider::class);
         $backend->method('deleteZone')->willReturn(true);
@@ -160,6 +162,8 @@ class ApiZoneRepositoryPlaceholderOwnershipTest extends TestCase
 
         $this->assertTrue($repository->deleteZone(4));
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 2905")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id IS NULL")->fetchColumn());
     }
 
     #[Test]

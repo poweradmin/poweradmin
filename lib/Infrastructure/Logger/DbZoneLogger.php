@@ -67,6 +67,13 @@ class DbZoneLogger
         ]);
     }
 
+    /** Keeps the history for admins but stops a later zone that reuses the id from inheriting it. */
+    public function detachZone(int $zoneId): void
+    {
+        $stmt = $this->db->prepare('UPDATE log_zones SET zone_id = NULL WHERE zone_id = :zone_id');
+        $stmt->execute([':zone_id' => $zoneId]);
+    }
+
     public function countAllLogs()
     {
         $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_zones");
