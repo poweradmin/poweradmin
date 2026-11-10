@@ -46,6 +46,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class BulkRegistrationController extends BaseController
 {
+    public const MAX_LINES = 1000;
 
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
@@ -123,6 +124,11 @@ class BulkRegistrationController extends BaseController
 
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         $domains = DomainHelper::getDomains($_POST['domains']);
+        if (count($domains) > self::MAX_LINES) {
+            $this->setMessage('bulk_registration', 'error', sprintf(_('At most %d rows can be added at a time.'), self::MAX_LINES));
+            $this->showBulkRegistrationForm();
+            return;
+        }
         $dom_type = $_POST['dom_type'];
         // The form offers only these; without the check zone_master_add could create a SLAVE zone
         if (!in_array($dom_type, ['MASTER', 'NATIVE'], true)) {
