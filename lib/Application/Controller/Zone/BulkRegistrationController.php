@@ -38,6 +38,8 @@ class BulkRegistrationController extends BaseController
     /** Bulk creation only makes sense for locally served zones. */
     private const AVAILABLE_ZONE_TYPES = [ZoneType::MASTER, ZoneType::NATIVE];
 
+    public const MAX_LINES = 1000;
+
     public function run(): void
     {
         $this->checkPermission(Permission::PERM_ZONE_MASTER_ADD, _("You do not have the permission to add a master zone."));
@@ -82,6 +84,12 @@ class BulkRegistrationController extends BaseController
         }
 
         $domains = DomainHelper::getDomains($this->httpRequest->getPostParam('domains'));
+        if (count($domains) > self::MAX_LINES) {
+            $this->setMessage('bulk_registration', 'error', sprintf(_('At most %d rows can be added at a time.'), self::MAX_LINES));
+            $this->showBulkRegistrationForm();
+            return;
+        }
+
         $dom_type = $this->httpRequest->getPostParam('dom_type');
         $zone_template = $this->httpRequest->getPostParam('zone_template');
 

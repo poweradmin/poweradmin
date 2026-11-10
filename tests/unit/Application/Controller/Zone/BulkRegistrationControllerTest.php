@@ -165,4 +165,19 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $this->assertSame(['two.example'], $params['added_domains']);
         $this->assertSame([['logZoneAdd', 2, 'two.example', 'MASTER', '7', null]], $this->audited);
     }
+
+    public function testMoreDomainsThanTheCapAreRefusedBeforeAnythingIsCreated(): void
+    {
+        $lines = [];
+        for ($i = 0; $i <= BulkRegistrationController::MAX_LINES; $i++) {
+            $lines[] = "d{$i}.example";
+        }
+        $this->submit(['domains' => implode("\n", $lines)]);
+
+        $this->makeController()->run();
+
+        $this->assertSame([['error', 'At most 1000 rows can be added at a time.']], $this->messagesFor(self::PAGE));
+        $this->assertSame('bulk_registration.html', $this->output->rendered[0][0]);
+        $this->assertCount(0, $this->createCalls);
+    }
 }
