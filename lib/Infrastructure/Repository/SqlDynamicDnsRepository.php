@@ -163,6 +163,11 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
         return $records;
     }
 
+    public function hasCnameRecord(int $zoneId, HostnameValue $hostname): bool
+    {
+        return $this->getDnsRecords($zoneId, $hostname, 'CNAME') !== [];
+    }
+
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
     {
         $insert = $this->db->prepare("

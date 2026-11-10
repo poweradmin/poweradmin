@@ -64,4 +64,23 @@ final class DynamicDnsControllerHostnameTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('host.example.com', $this->decode($response)['data']['hostname']);
     }
+
+    public function testAHostnameHoldingACnameAnswersConflict(): void
+    {
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('userHasPermission')->willReturn(true);
+        $update = $this->createMock(DynamicDnsUpdateService::class);
+        $update->method('applyForUser')
+            ->willReturn(['status' => 'cname', 'zone_id' => 3, 'applied_ipv4' => [], 'applied_ipv6' => [], 'changed' => false]);
+
+        $controller = $this->bareController(DynamicDnsController::class);
+        $this->injectBaseCollaborators($controller, 'POST', ['hostname' => 'host.example.com', 'ipv4' => '192.0.2.1']);
+        $this->inject($controller, 'apiPermissionService', $permissions);
+        $this->inject($controller, 'updateService', $update);
+        $this->inject($controller, 'validationService', new DynamicDnsValidationService(new FakeConfiguration()));
+        $this->inject($controller, 'authenticatedUserId', 1);
+        $this->inject($controller, 'apiKeyScope', ApiKeyScope::unrestricted());
+
+        $this->assertSame(409, $this->callHandler($controller, 'updateRecord')->getStatusCode());
+    }
 }

@@ -165,6 +165,11 @@ final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInte
         return $records;
     }
 
+    public function hasCnameRecord(int $zoneId, HostnameValue $hostname): bool
+    {
+        return $this->getDnsRecords($zoneId, $hostname, 'CNAME') !== [];
+    }
+
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
     {
         $result = $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);

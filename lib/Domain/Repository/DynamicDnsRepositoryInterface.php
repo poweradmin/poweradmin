@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ interface DynamicDnsRepositoryInterface
     public function getZoneType(int $zoneId): ?string;
 
     public function getDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType): array;
+
+    /** True when the name holds a CNAME, which may not coexist with address records. */
+    public function hasCnameRecord(int $zoneId, HostnameValue $hostname): bool;
 
     public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void;
 
