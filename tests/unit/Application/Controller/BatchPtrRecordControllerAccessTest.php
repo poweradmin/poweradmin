@@ -103,6 +103,63 @@ class BatchPtrRecordControllerAccessTest extends SqliteIntegrationTestCase
         $this->assertSame(self::REFUSAL, $this->errorFor(self::FORWARD_ZONE_ID));
     }
 
+    #[RunInSeparateProcess]
+    public function testMatchingModeOnAForeignForwardZoneGetsThePermissionRefusal(): void
+    {
+        $this->grant('zone_content_edit_own');
+
+        $this->assertSame(self::REFUSAL, $this->postErrorFor('only_matching_records', 'foreign.example'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testForwardRecordCreationOnAMissingForwardZoneGetsTheSameRefusal(): void
+    {
+        $this->grant('zone_content_edit_own');
+
+        $this->assertSame(self::REFUSAL, $this->postErrorFor('create_forward_records', 'missing.example'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAnOwnerOfTheForwardZoneIsNotRefused(): void
+    {
+        $this->grant('zone_content_edit_own');
+        $this->own(self::FORWARD_ZONE_ID);
+
+        $this->assertNull($this->postErrorFor('only_matching_records', 'example.com'));
+    }
+
+    private function postErrorFor(string $flag, string $domain): ?string
+    {
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_GET = [];
+        $_POST = ['network_type' => 'ipv4', 'network_prefix' => '192.0.2.0/24', 'domain' => $domain, $flag => 'on'];
+
+        $controller = new class ([], $this->db, $this->primeConfig()) extends BatchPtrRecordController {
+            use ControllerTestStubs;
+        };
+
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getDomainIdByName')->willReturnCallback(static fn(string $name): ?int => match ($name) {
+            'example.com' => self::FORWARD_ZONE_ID,
+            'foreign.example' => 99,
+            default => null,
+        });
+        foreach (['dnsRecord' => $dnsRecord, 'userContextService' => new UserContextService()] as $name => $value) {
+            (new ReflectionProperty(BatchPtrRecordController::class, $name))->setValue($controller, $value);
+        }
+
+        try {
+            $controller->run();
+        } catch (RuntimeException $halt) {
+            return $halt->getMessage();
+        } catch (\Error) {
+            // Past the access check the unwired controller trips on its uninitialised services.
+            return null;
+        }
+
+        return null;
+    }
+
     private function grant(string $permission): void
     {
         $this->db->prepare("INSERT INTO perm_items (name) VALUES (?)")->execute([$permission]);
