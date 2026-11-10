@@ -64,6 +64,8 @@ class DbUserRepositoryDeleteUserTest extends TestCase
                 "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
+                "CREATE TABLE zone_change_requests (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, status TEXT, error TEXT, reviewed_at TEXT, requester_id INTEGER, reviewer_id INTEGER)",
+                "INSERT INTO zone_change_requests (id, zone_id, status, requester_id, reviewer_id) VALUES (1, 10, 'pending', 1, NULL), (2, 11, 'approved', 1, 2), (3, 11, 'approved', 2, 1), (4, 11, 'pending', 2, NULL)",
                 "INSERT INTO users VALUES (1, 'gone', 2, 'gone@example.com'), (2, 'stays', 2, 'stays@example.com')",
                 "INSERT INTO password_reset_tokens (email) VALUES ('Gone@Example.com'), ('stays@example.com')",
                 "INSERT INTO username_recovery_requests (email) VALUES ('gone@example.com'), ('stays@example.com')",
@@ -85,6 +87,17 @@ class DbUserRepositoryDeleteUserTest extends TestCase
 
         $config = new FakeConfiguration(['database' => ['type' => 'sqlite']]);
         $this->repository = new DbUserRepository($this->db, $config, false);
+    }
+
+    public function testDeleteUserCancelsAndDetachesTheirChangeRequests(): void
+    {
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        $rows = $this->db->query('SELECT id, status, requester_id, reviewer_id FROM zone_change_requests ORDER BY id')->fetchAll(PDO::FETCH_ASSOC);
+        $this->assertSame(['cancelled', null, null], [$rows[0]['status'], $rows[0]['requester_id'], $rows[0]['reviewer_id']]);
+        $this->assertSame(['approved', null, 2], [$rows[1]['status'], $rows[1]['requester_id'], $rows[1]['reviewer_id']]);
+        $this->assertSame(['approved', 2, null], [$rows[2]['status'], $rows[2]['requester_id'], $rows[2]['reviewer_id']]);
+        $this->assertSame(['pending', 2, null], [$rows[3]['status'], $rows[3]['requester_id'], $rows[3]['reviewer_id']]);
     }
 
     public function testDeleteUserRemovesEveryRowKeyedOnTheUser(): void

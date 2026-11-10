@@ -941,6 +941,9 @@ class DbUserRepository implements UserRepositoryInterface
                 $templates->handOverSharedTemplates($userId, $sharedTemplateHeir);
             }
             $templates->deleteZoneTemplatesOwnedBy($userId);
+            if (DbCompat::tableExists($this->db, 'zone_change_requests')) {
+                $this->detachChangeRequests($userId);
+            }
 
             $stmt = $this->db->prepare("SELECT DISTINCT domain_id FROM zones WHERE owner = :userId AND domain_id IS NOT NULL");
             $stmt->execute([':userId' => $userId]);
@@ -990,6 +993,23 @@ class DbUserRepository implements UserRepositoryInterface
                 $transaction->rollBack();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * Cancel the user's open change requests and cut the rest loose from the id, which SQLite hands to the next user.
+     */
+    private function detachChangeRequests(int $userId): void
+    {
+        $stmt = $this->db->prepare(
+            "UPDATE zone_change_requests SET status = 'cancelled', error = 'The requester was deleted.', reviewed_at = CURRENT_TIMESTAMP
+             WHERE requester_id = :userId AND status IN ('pending', 'failed')"
+        );
+        $stmt->execute([':userId' => $userId]);
+
+        foreach (['requester_id', 'reviewer_id'] as $column) {
+            $stmt = $this->db->prepare("UPDATE zone_change_requests SET $column = NULL WHERE $column = :userId");
+            $stmt->execute([':userId' => $userId]);
         }
     }
 
