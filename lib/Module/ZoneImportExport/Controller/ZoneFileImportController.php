@@ -292,6 +292,7 @@ class ZoneFileImportController extends BaseController
         if ($zoneName && DnsIdnService::isIdn($zoneName)) {
             $zoneName = DnsIdnService::toPunycode($zoneName);
         }
+        $zoneName = is_string($zoneName) ? strtolower($zoneName) : $zoneName;
 
         $userId = $this->userContextService->getLoggedInUserId();
         $userLogin = $this->userContextService->getLoggedInUsername();

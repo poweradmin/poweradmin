@@ -94,6 +94,9 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
         }
 
+        // The existence check below is case-sensitive on PostgreSQL
+        $domain = strtolower($domain);
+
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValid($domain)) {

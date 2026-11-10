@@ -142,7 +142,7 @@ class AddZoneSlaveController extends BaseController
             $raw_domain = $reverse_zone;
         }
 
-        $zone = DnsIdnService::toPunycode($raw_domain);
+        $zone = strtolower(DnsIdnService::toPunycode($raw_domain));
         $selected_groups = $ownershipMode->isGroupOwnerAllowed() && isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
 
