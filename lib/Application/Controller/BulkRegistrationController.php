@@ -52,6 +52,14 @@ class BulkRegistrationController extends BaseController
         $this->logger = new LegacyLogger($this->db);
     }
 
+    public const MAX_LINES = 1000;
+
+    public static function exceedsLineLimit(string $domains): bool
+    {
+        $lines = preg_split('/\r\n|\r|\n/', $domains);
+        return count(array_filter(array_map('trim', $lines), 'strlen')) > self::MAX_LINES;
+    }
+
     public function run(): void
     {
         $this->checkPermission('zone_master_add', _("You do not have the permission to add a master zone."));
@@ -74,6 +82,12 @@ class BulkRegistrationController extends BaseController
 
         if (!$v->validate()) {
             $this->showFirstError($v->errors());
+        }
+
+        if (!is_string($_POST['domains']) || self::exceedsLineLimit($_POST['domains'])) {
+            $this->setMessage('bulk_registration', 'error', _('Invalid or unexpected input given.'));
+            $this->showBulkRegistrationForm();
+            return;
         }
 
         $domains = DomainHelper::getDomains($_POST['domains']);
