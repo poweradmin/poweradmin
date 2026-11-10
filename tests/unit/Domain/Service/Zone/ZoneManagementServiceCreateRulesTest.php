@@ -206,6 +206,16 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         $this->assertSame('Domain already exists', $result['message']);
     }
 
+    public function testCreateZoneLooksUpAMixedCaseNameThatPunycodeConversionRejects(): void
+    {
+        $this->db->exec("INSERT INTO domains (name, type) VALUES ('ab--cd.com', 'MASTER')");
+
+        $result = $this->service()->createZone('AB--CD.COM', 'MASTER', self::ADMIN_USER_ID);
+
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertSame('Domain already exists', $result['message']);
+    }
+
     public function testCreateZoneRejectsDoubledTrailingDot(): void
     {
         $result = $this->service()->createZone('new.example..', 'MASTER', self::ADMIN_USER_ID);

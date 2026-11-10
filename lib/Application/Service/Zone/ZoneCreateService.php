@@ -101,7 +101,7 @@ class ZoneCreateService
             }
         }
 
-        return DnsIdnService::toPunycode($name);
+        return strtolower(DnsIdnService::toPunycode($name));
     }
 
     private function createOwned(ZoneCreateRequest $request, string $zoneName, ZoneOwnershipResolution $ownership): ZoneCreateOutcome

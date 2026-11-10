@@ -211,7 +211,7 @@ class ZoneManagementService
         }
 
         // Stored names are punycode, as the web form writes them.
-        $domain = DnsIdnService::toPunycode(trim($domain));
+        $domain = strtolower(DnsIdnService::toPunycode(trim($domain)));
 
         $this->hostnameValidator ??= new HostnameValidator(HostnamePolicy::fromConfig($this->config));
         if (!$this->hostnameValidator->isValid($domain)) {

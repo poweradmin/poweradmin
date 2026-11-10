@@ -105,6 +105,14 @@ class ZoneCreateServiceTest extends TestCase
         ]);
     }
 
+    public function testAMixedCaseNameThatPunycodeConversionRejectsIsStoredLowercase(): void
+    {
+        $outcome = $this->service()->create(self::request(['name' => 'AB--CD.COM']));
+
+        $this->assertSame('ab--cd.com', $outcome->zoneName);
+        $this->assertSame('ab--cd.com', $this->createCalls[0][0]);
+    }
+
     public function testTheNameIsTrimmedAndStoredAsPunycode(): void
     {
         $outcome = $this->service()->create(self::request(['name' => ' Bücher.example ']));
