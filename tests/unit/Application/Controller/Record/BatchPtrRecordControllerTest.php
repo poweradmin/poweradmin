@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Record;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Record\BatchPtrRecordController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
@@ -32,6 +33,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Dns\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -50,6 +52,8 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
     private string $zoneEditLevel = 'own_as_client';
     private string $zoneType = 'MASTER';
     private ?string $zoneName = 'example.com';
+    private ?int $forwardZoneId = null;
+    private BatchReverseRecordCreator&MockObject $creator;
 
     protected function setUp(): void
     {
@@ -64,6 +68,7 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
 
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->method('getDomainType')->willReturnCallback(fn(): string => $this->zoneType);
+        $domains->method('getDomainIdByName')->willReturnCallback(fn(): ?int => $this->forwardZoneId);
         $domains->method('getDomainNameById')->willReturnCallback(fn(): ?string => $this->zoneName);
 
         $zones = $this->createMock(ZoneRepositoryInterface::class);
@@ -79,6 +84,8 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
             fn(): ZoneChangeRequestRepositoryInterface => $this->createMock(ZoneChangeRequestRepositoryInterface::class)
         );
 
+        $this->creator = $this->createMock(BatchReverseRecordCreator::class);
+        $this->factory->method('batchReverseRecordCreator')->willReturn($this->creator);
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('domainRepository')->willReturn($domains);
         $this->factory->method('zoneRepository')->willReturn($zones);
@@ -192,5 +199,56 @@ class BatchPtrRecordControllerTest extends SeamControllerTestCase
         $halt = $this->haltOf($this->makeController(true, ['interface' => ['add_reverse_record' => false]]));
 
         $this->assertSame('Batch PTR record creation is not enabled.', $halt->target);
+    }
+
+    /** @return array<string, array{0: string, 1: ?int}> */
+    public static function forwardZonesTheCallerCannotUse(): array
+    {
+        return [
+            'matching, foreign zone' => ['only_matching_records', 99],
+            'matching, missing zone' => ['only_matching_records', null],
+            'forward records, foreign zone' => ['create_forward_records', 99],
+        ];
+    }
+
+    #[DataProvider('forwardZonesTheCallerCannotUse')]
+    public function testTheForwardZoneIsRefusedUnlessTheCallerCanEditIt(string $option, ?int $forwardZoneId): void
+    {
+        $this->granted = [Permission::PERM_ZONE_CONTENT_EDIT_OWN];
+        $this->zoneEditLevel = 'none';
+        $this->forwardZoneId = $forwardZoneId;
+        $this->creator->expects($this->never())->method('createIPv4Network');
+        $this->post([
+            'network_type' => 'ipv4',
+            'network_prefix' => '192.0.2.0/24',
+            'domain' => 'victim.example',
+            $option => 'on',
+        ]);
+
+        $this->makeController(false)->run();
+
+        $this->assertSame(
+            [['error', 'You do not have permission to add records to this zone.']],
+            $this->messagesFor('batch_ptr_record')
+        );
+    }
+
+    public function testAnEditableForwardZoneReachesTheCreator(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_CONTENT_EDIT_OWN];
+        $this->zoneEditLevel = 'own';
+        $this->forwardZoneId = 99;
+        $this->creator->expects($this->once())->method('createIPv4Network')
+            ->willReturn(['success' => true, 'type' => 'success', 'message' => 'ok']);
+        $this->post([
+            'network_type' => 'ipv4',
+            'network_prefix' => '192.0.2.0/24',
+            'domain' => 'mine.example',
+            'only_matching_records' => 'on',
+        ]);
+
+        $this->makeController(false)->run();
+
+        $this->assertSame([['success', 'ok']], $this->messagesFor('batch_ptr_record'));
     }
 }

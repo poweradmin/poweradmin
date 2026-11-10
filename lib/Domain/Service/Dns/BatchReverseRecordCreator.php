@@ -83,6 +83,7 @@ class BatchReverseRecordCreator
      * @param bool $onlyMatchingRecords Whether to create PTRs only for existing A records
      * @param int|null $forwardTtl Optional separate TTL for the auto-created forward A records; falls back to $ttl when null
      * @param int|null $matchingPtrTtl Optional override for the PTR TTL in matching-records mode; when null, the matched A record's TTL is used (historical behavior)
+     * @param \Closure|null $canEditZone Receives a reverse zone id and returns whether the caller may edit it; null skips the check
      *
      * @return array Result of the operation
      */
@@ -98,7 +99,8 @@ class BatchReverseRecordCreator
         bool $createForwardRecords = false,
         bool $onlyMatchingRecords = false,
         ?int $forwardTtl = null,
-        ?int $matchingPtrTtl = null
+        ?int $matchingPtrTtl = null,
+        ?\Closure $canEditZone = null
     ): array {
         if (!$this->reverseHandling) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
@@ -125,7 +127,7 @@ class BatchReverseRecordCreator
             }
 
             if ($onlyMatchingRecords) {
-                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, false, $tally);
+                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, false, $tally, $canEditZone);
             } else {
                 for ($i = 0; $i < $network->hostCount; $i++) {
                     // Skip network address (0) and broadcast address (last IP in range)
@@ -150,7 +152,8 @@ class BatchReverseRecordCreator
                         $createForwardRecords ? RecordType::A : null,
                         $domain,
                         $forwardTtl ?? $ttl,
-                        $tally
+                        $tally,
+                        $canEditZone
                     );
                 }
             }
@@ -177,6 +180,7 @@ class BatchReverseRecordCreator
      * @param int|null $forwardTtl Optional separate TTL for the auto-created forward AAAA records; falls back to $ttl when null
      * @param bool $onlyMatchingRecords Whether to create PTRs only for existing AAAA records
      * @param int|null $matchingPtrTtl Optional override for the PTR TTL in matching-records mode; when null, the matched AAAA record's TTL is used
+     * @param \Closure|null $canEditZone Receives a reverse zone id and returns whether the caller may edit it; null skips the check
      *
      * @return array Result of the operation
      */
@@ -193,7 +197,8 @@ class BatchReverseRecordCreator
         bool $createForwardRecords = false,
         ?int $forwardTtl = null,
         bool $onlyMatchingRecords = false,
-        ?int $matchingPtrTtl = null
+        ?int $matchingPtrTtl = null,
+        ?\Closure $canEditZone = null
     ): array {
         if (!$this->reverseHandling) {
             return $this->createErrorResponse('Reverse record creation is not allowed.');
@@ -221,7 +226,7 @@ class BatchReverseRecordCreator
             }
 
             if ($onlyMatchingRecords) {
-                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, true, $tally);
+                $this->createPtrsForMatchingRecords($matchingForwardRecords, $zone_id, $matchingPtrTtl, $comment, $account, true, $tally, $canEditZone);
             } else {
                 for ($i = 0; $i < $network->hostCount; $i++) {
                     // Skip 0 for IPv6 as well (equivalent to network address)
@@ -248,7 +253,8 @@ class BatchReverseRecordCreator
                         $createForwardRecords ? RecordType::AAAA : null,
                         $domain,
                         $forwardTtl ?? $ttl,
-                        $tally
+                        $tally,
+                        $canEditZone
                     );
                 }
             }
@@ -351,7 +357,8 @@ class BatchReverseRecordCreator
         string $comment,
         string $account,
         bool $ipv6,
-        array &$tally
+        array &$tally,
+        ?\Closure $canEditZone = null
     ): void {
         foreach ($forwardRecords as $record) {
             $ip = $record['ip'];
@@ -370,7 +377,8 @@ class BatchReverseRecordCreator
                 null,
                 '',
                 0,
-                $tally
+                $tally,
+                $canEditZone
             );
         }
     }
@@ -394,7 +402,8 @@ class BatchReverseRecordCreator
         ?string $forwardType,
         string $domain,
         int $forwardTtl,
-        array &$tally
+        array &$tally,
+        ?\Closure $canEditZone = null
     ): void {
         if ($zoneRevId === null) {
             // Subnet boundaries can cross reverse zone boundaries, so each host resolves its own zone
@@ -404,6 +413,13 @@ class BatchReverseRecordCreator
                 $tally['errors'][] = "No matching reverse zone found for $reverseDomain";
                 return;
             }
+        }
+
+        // Checked before the duplicate lookup so the skip count cannot reveal PTRs in zones the caller cannot edit
+        if ($canEditZone !== null && !$canEditZone($zoneRevId)) {
+            $tally['fail']++;
+            $tally['errors'][] = "Failed to create PTR record for $ip: You do not have permission to add records to this zone.";
+            return;
         }
 
         if ($this->config->get('dns', 'prevent_duplicate_ptr', true)) {

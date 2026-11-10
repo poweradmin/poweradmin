@@ -801,4 +801,20 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertEquals(0, $addCount);
         $this->assertStringContainsString('skipped', $result['message']);
     }
+
+    public function testAReverseZoneTheCallerCannotEditIsNeverProbedForExistingPtrs(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecordGetId');
+
+        $result = $this->createService($domainRepository, $recordManager, null, $recordRepo)
+            ->createIPv6Network('2001:db8:1:1', 'host-', 'example.com', '1', 3600, 0, '', '', 3, false, null, false, null, fn(int $zoneId): bool => false);
+
+        $this->assertStringContainsString('2 failed', $result['message']);
+        $this->assertStringContainsString('You do not have permission', $result['message']);
+    }
 }

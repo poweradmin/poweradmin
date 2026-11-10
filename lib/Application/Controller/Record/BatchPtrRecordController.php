@@ -166,6 +166,8 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $this->httpRequest->getPostParam('network_prefix', '');
         $hostPrefix = $this->httpRequest->getPostParam('host_prefix', '');
         $domain = $this->httpRequest->getPostParam('domain', '');
+        // Stored zone names are lowercase punycode; match that so an owner's zone typed in another case is found
+        $domain = is_string($domain) ? strtolower(DnsIdnService::toPunycode(trim($domain))) : '';
         $ttl = $this->reverseTtlResolver()->resolveTtlForType('PTR', true);
         // Forward A/AAAA records get their own per-type default (or dns.ttl).
         $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
@@ -184,6 +186,18 @@ class BatchPtrRecordController extends BaseController
         $createForwardRecords = $this->httpRequest->getPostParam('create_forward_records') === 'on';
         $onlyMatchingRecords = $this->httpRequest->getPostParam('only_matching_records') === 'on';
 
+        $userId = $this->getUserContextService()->getLoggedInUserId();
+        $permissions = $this->permissionService();
+        if ($createForwardRecords || $onlyMatchingRecords) {
+            // A missing and a foreign forward zone answer alike
+            $forwardZoneId = $this->domainRepository()->getDomainIdByName($domain);
+            if ($forwardZoneId === null || $permissions->getEditPermissionLevelForZone($userId, $forwardZoneId) === 'none') {
+                $this->setMessage('batch_ptr_record', 'error', _("You do not have permission to add records to this zone."));
+                return false;
+            }
+        }
+        $canEditZone = fn(int $reverseZoneId): bool => $permissions->getEditPermissionLevelForZone($userId, $reverseZoneId) !== 'none';
+
         try {
             if ($networkType === 'ipv4') {
                 $result = $this->batchReverseRecordCreator()->createIPv4Network(
@@ -198,7 +212,8 @@ class BatchPtrRecordController extends BaseController
                     $createForwardRecords,
                     $onlyMatchingRecords,
                     $forwardTtl,
-                    $matchingPtrTtl
+                    $matchingPtrTtl,
+                    $canEditZone
                 );
             } else { // IPv6
                 $result = $this->batchReverseRecordCreator()->createIPv6Network(
@@ -214,7 +229,8 @@ class BatchPtrRecordController extends BaseController
                     $createForwardRecords,
                     $forwardTtl,
                     $onlyMatchingRecords,
-                    $matchingPtrTtl
+                    $matchingPtrTtl,
+                    $canEditZone
                 );
             }
 
