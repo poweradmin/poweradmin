@@ -34,8 +34,8 @@ use Poweradmin\Infrastructure\Session\ArraySession;
 use TestHelpers\FakeConfiguration;
 
 /**
- * A password login for an account that signs in through an identity provider
- * answers exactly like a wrong password for an SQL account.
+ * A password login for an account that signs in through an identity provider, or
+ * through a disabled LDAP, answers exactly like a wrong password for an SQL account.
  */
 #[CoversClass(SessionAuthenticator::class)]
 final class SessionAuthenticatorMethodMismatchLoginTest extends TestCase
@@ -64,7 +64,7 @@ final class SessionAuthenticatorMethodMismatchLoginTest extends TestCase
      */
     public static function methods(): array
     {
-        return ['oidc' => ['oidc'], 'saml' => ['saml']];
+        return ['oidc' => ['oidc'], 'saml' => ['saml'], 'ldap while ldap is disabled' => ['ldap']];
     }
 
     #[DataProvider('methods')]
@@ -86,12 +86,20 @@ final class SessionAuthenticatorMethodMismatchLoginTest extends TestCase
         $this->assertGreaterThan(0.03, microtime(true) - $start);
     }
 
-    #[DataProvider('methods')]
+    #[DataProvider('ssoMethods')]
     public function testSsoAccountKeepsNoPostedPasswordInTheSession(string $method): void
     {
         $session = $this->postLogin($method);
 
         $this->assertFalse($session->has(SessionKeys::USERPWD));
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function ssoMethods(): array
+    {
+        return ['oidc' => ['oidc'], 'saml' => ['saml']];
     }
 
     private function postLogin(string $method, int $cost = 4): ArraySession

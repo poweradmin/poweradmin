@@ -309,8 +309,12 @@ final class SessionAuthenticator
                     $this->completeLogin($this->ldapAuthenticator()->authenticate($credentials));
                 } else {
                     $this->logger->warning('User {username} configured for LDAP but LDAP is disabled', ['username' => $this->session->get(SessionKeys::USERLOGIN)]);
-                    $sessionEntity = new FlashMessage(_('LDAP authentication is disabled'), 'danger');
-                    $this->authService->logout($sessionEntity);
+                    // Same answer as a wrong password, so the message does not reveal the account's method
+                    if ($isLogin) {
+                        $this->failLikeWrongPassword($credentials);
+                    } else {
+                        $this->authService->logout(new FlashMessage(_('Authentication failed!'), 'danger'));
+                    }
                 }
                 break;
             case 'sql':
