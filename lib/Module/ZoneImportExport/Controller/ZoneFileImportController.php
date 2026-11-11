@@ -65,6 +65,14 @@ class ZoneFileImportController extends BaseController
         }
     }
 
+    /** The zone types the import form offers; anything else (SLAVE, PRODUCER, junk) is refused. */
+    public static function offeredZoneType(mixed $submitted): ?string
+    {
+        $type = strtoupper((string)(is_scalar($submitted) ? $submitted : ''));
+
+        return in_array($type, ['MASTER', 'NATIVE'], true) ? $type : null;
+    }
+
     public function execute(): void
     {
         $this->checkImportPermission();
@@ -340,12 +348,23 @@ class ZoneFileImportController extends BaseController
                 return;
             }
 
+            // addDomain() does not validate, so an unconvertible name would be stored raw and never resolve
+            $hostnameValidator = new HostnameValidator($this->config);
+            if (!$hostnameValidator->isValid($zoneName)) {
+                $this->showError(_('This is an invalid zone name.'));
+                return;
+            }
+
             if ($dnsRecord->domainExists($zoneName)) {
                 $this->showError(_('A zone with this name already exists.'));
                 return;
             }
 
-            $zoneType = $_POST['zone_type'] ?? 'MASTER';
+            $zoneType = self::offeredZoneType($_POST['zone_type'] ?? 'MASTER');
+            if ($zoneType === null) {
+                $this->showError(_('Invalid zone type.'));
+                return;
+            }
             $ownershipMode = new ZoneOwnershipModeService($this->config);
             $noUserOwnerRequested = !empty($_POST['no_user_owner']);
             if (!$ownershipMode->isUserOwnerAllowed()) {

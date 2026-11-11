@@ -14040,3 +14040,6 @@ msgstr "tls-supported-groups 值必须是以逗号分隔的 0 到 65535 之间�
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "请使用参数名称，而不是 \"%s\"。"
+
+msgid "Invalid zone type."
+msgstr "区域类型无效。"

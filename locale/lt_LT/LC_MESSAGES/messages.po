@@ -15106,3 +15106,6 @@ msgstr "tls-supported-groups reikšmė turi būti kableliais atskirtas skaičių
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Vietoj \"%s\" naudokite parametro pavadinimą."
+
+msgid "Invalid zone type."
+msgstr "Netinkamas zonos tipas."

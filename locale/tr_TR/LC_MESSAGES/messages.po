@@ -15071,3 +15071,6 @@ msgstr "tls-supported-groups değeri, 0 ile 65535 arasındaki sayıların virgü
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "\"%s\" yerine parametre adını kullanın."
+
+msgid "Invalid zone type."
+msgstr "Geçersiz zon tipi."

@@ -13871,3 +13871,6 @@ msgstr "tls-supported-groups väärtus peab olema komadega eraldatud loend arvud
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Kasutage parameetri nime, mitte \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Vigane tsooni tüüp."

@@ -14961,3 +14961,6 @@ msgstr "Giá trị tls-supported-groups phải là danh sách các số từ 0 �
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Hãy dùng tên tham số thay cho \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Loại vùng không hợp lệ."

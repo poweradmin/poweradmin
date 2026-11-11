@@ -15166,3 +15166,6 @@ msgstr "Nilai tls-supported-groups harus berupa daftar angka antara 0 dan 65535 
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Gunakan nama parameter, bukan \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Tipe zona tidak valid."

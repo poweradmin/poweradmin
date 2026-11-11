@@ -13814,3 +13814,6 @@ msgstr "tls-supported-groups-arvon on oltava pilkuilla eroteltu luettelo lukuja 
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Käytä parametrin nimeä merkkijonon \"%s\" sijaan."
+
+msgid "Invalid zone type."
+msgstr "Virheellinen alueen tyyppi."

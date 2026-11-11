@@ -13845,3 +13845,6 @@ msgstr "Вредност tls-supported-groups мора бити листа бр�
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Користите назив параметра уместо \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Неважећи тип зоне."

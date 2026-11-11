@@ -14178,3 +14178,6 @@ msgstr "Vrijednost tls-supported-groups mora biti popis brojeva između 0 i 6553
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Koristite naziv parametra umjesto \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Nevažeća vrsta zone."

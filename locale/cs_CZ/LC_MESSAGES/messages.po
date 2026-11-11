@@ -15010,3 +15010,6 @@ msgstr "Hodnota tls-supported-groups musí být seznam čísel od 0 do 65535 odd
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Použijte název parametru místo \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Neplatný typ zóny."

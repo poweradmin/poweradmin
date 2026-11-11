@@ -13734,3 +13734,6 @@ msgstr "A tls-supported-groups értéknek 0 és 65535 közötti számok vesszőv
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Használja a paraméter nevét a(z) \"%s\" helyett."
+
+msgid "Invalid zone type."
+msgstr "Érvénytelen zónatípus."

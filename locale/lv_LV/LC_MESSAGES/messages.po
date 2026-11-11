@@ -13859,3 +13859,6 @@ msgstr "tls-supported-groups vērtībai jābūt ar komatiem atdalītam skaitļu 
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Izmantojiet parametra nosaukumu \"%s\" vietā."
+
+msgid "Invalid zone type."
+msgstr "Nederīgs zonas tips."

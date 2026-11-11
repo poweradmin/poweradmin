@@ -15051,3 +15051,6 @@ msgstr "tls-supported-groups の値は、0 から 65535 までの数値をカン
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "\"%s\" ではなくパラメーター名を使用してください。"
+
+msgid "Invalid zone type."
+msgstr "無効なゾーンタイプです。"

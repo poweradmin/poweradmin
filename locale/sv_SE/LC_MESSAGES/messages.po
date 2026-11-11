@@ -15024,3 +15024,6 @@ msgstr "Värdet för tls-supported-groups måste vara en kommaseparerad lista me
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Använd parameternamnet i stället för \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Ogiltig zontyp."

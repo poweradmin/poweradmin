@@ -13518,3 +13518,7 @@ msgstr ""
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr ""
+
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:365
+msgid "Invalid zone type."
+msgstr ""

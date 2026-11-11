@@ -15134,3 +15134,6 @@ msgstr "Значення tls-supported-groups має бути списком ч�
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Використовуйте назву параметра замість \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Недійсний тип зони."

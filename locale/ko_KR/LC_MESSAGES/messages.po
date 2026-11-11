@@ -14832,3 +14832,6 @@ msgstr "tls-supported-groups 값은 0에서 65535 사이의 숫자를 쉼표로 
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "\"%s\" 대신 매개변수 이름을 사용하세요."
+
+msgid "Invalid zone type."
+msgstr "유효하지 않은 존 유형입니다."

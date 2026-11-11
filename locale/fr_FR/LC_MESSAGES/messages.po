@@ -15575,3 +15575,6 @@ msgstr "La valeur tls-supported-groups doit être une liste de nombres compris e
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Utilisez le nom du paramètre au lieu de \"%s\"."
+
+msgid "Invalid zone type."
+msgstr "Type de zone non valide."
