@@ -185,6 +185,7 @@ class BasicAuthenticationMiddleware
         // The browser login already enforces account_lockout; Basic Auth must not bypass it
         $ipAddress = (new IpAddressRetriever($_SERVER))->getClientIp() ?: '0.0.0.0';
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            $this->spendDummyVerification($password);
             return 0;
         }
 
