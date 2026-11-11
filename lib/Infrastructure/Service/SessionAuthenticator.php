@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
@@ -227,11 +228,19 @@ class SessionAuthenticator extends LoggingService
             case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
+                if (isset($_POST['authenticate'])) {
+                    $this->failLoginGenerically('account uses OIDC');
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown']);
                 // SAML users are already authenticated, no need to verify password
+                if (isset($_POST['authenticate'])) {
+                    $this->failLoginGenerically('account uses SAML');
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
@@ -456,6 +465,29 @@ class SessionAuthenticator extends LoggingService
                 return;
             }
         }
+    }
+
+    /**
+     * Answers a password login for an account that cannot sign in with a password
+     * exactly like a wrong password on an SQL account: same hash cost, same flash,
+     * same redirect, and the posted password is not kept in the session.
+     */
+    private function failLoginGenerically(string $reason): void
+    {
+        $this->logWarning('Password login refused for user {username}: {reason}', [
+            'username' => $_SESSION[SessionKeys::USERLOGIN] ?? 'unknown',
+            'reason' => $reason,
+        ]);
+
+        $userAuthService = new UserAuthenticationService(
+            $this->configManager->get('security', 'password_encryption', 'bcrypt'),
+            $this->configManager->get('security', 'password_cost', 12)
+        );
+        $posted = is_string($_POST['password'] ?? null) ? $_POST['password'] : '';
+        $userAuthService->verifyPassword($posted, $userAuthService->dummyVerificationHash());
+
+        unset($_SESSION[SessionKeys::USERPWD], $_SESSION[SessionKeys::USERLOGIN]);
+        $this->authService->auth(new SessionEntity(_('Authentication failed!'), 'danger'));
     }
 
     private function getUserAuthMethod(): string
