@@ -17,7 +17,8 @@
     # serve real files such as config/settings.php.bak. Bootstrap assets stay allowed;
     # the path is matched relative to this directory so subfolder installs work too.
     RewriteRule ^vendor/twbs/(bootstrap|bootstrap-icons)/ - [L]
-    RewriteRule ^(config|lib|tests|vendor)/ - [F,L]
+    RewriteRule ^(config|lib|tests|vendor|bin|var)/ - [F,L]
+    RewriteRule ^(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$ - [F,L]
 
     # Disable rewriting for existing files and directories
     RewriteCond %{REQUEST_FILENAME} -f [OR]
@@ -54,6 +55,12 @@ AddDefaultCharset UTF-8
 
 # Security: Deny access to sensitive file types
 <Files ~ "\.(sql|sqlite|sqlite3|db|md|log|yaml|yml)$">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Security: Deny access to dev and manifest files
+<Files ~ "^(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$">
     Order Allow,Deny
     Deny from all
 </Files>
