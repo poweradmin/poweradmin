@@ -51,7 +51,7 @@
     encode gzip
 
     # Security: Deny access to sensitive directories
-    @denied path /config* /lib* /tests* /vendor*
+    @denied path /config* /lib* /tests* /vendor* /bin/* /var/*
     @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
 
     # Allow Bootstrap files (override general vendor blocking); versioned by the vendor path
@@ -67,7 +67,7 @@
     }
 
     # Security: Deny access to hidden files and sensitive file types
-    @hidden path /.* */.* *.sh *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml *.po *.pot *.dat *.example
+    @hidden path /.* */.* *.sh *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml *.po *.pot *.dat *.example *.json *.lock *.xml *.dist *.neon
     handle @hidden {
         respond "Forbidden" 403
     }
@@ -158,7 +158,7 @@
 #         uri strip_prefix /poweradmin
 #
 #         # Security: Deny access to sensitive directories
-#         @denied path /config* /lib* /tests* /vendor*
+#         @denied path /config* /lib* /tests* /vendor* /bin/* /var/*
 #         @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
 #
 #         handle @bootstrap {
@@ -172,7 +172,7 @@
 #         }
 #
 #         # Security: Deny access to hidden files and sensitive file types
-#         @hidden path /.* */.* *.sh *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml *.po *.pot *.dat *.example
+#         @hidden path /.* */.* *.sh *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml *.po *.pot *.dat *.example *.json *.lock *.xml *.dist *.neon
 #         handle @hidden {
 #             respond "Forbidden" 403
 #         }

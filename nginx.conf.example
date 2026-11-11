@@ -61,11 +61,11 @@ server {
         allow all;
     }
 
-    location ~ /(config|lib|tests|vendor)/ {
+    location ~ ^/(config|lib|tests|vendor|bin|var)/ {
         deny all;
     }
 
-    location ~ \.(sql|sqlite|sqlite3|db|md|log)$ {
+    location ~ \.(sql|sqlite|sqlite3|db|md|log|json|lock|xml|dist|neon)$ {
         deny all;
     }
 
@@ -152,11 +152,11 @@ server {
             allow all;
         }
 
-        location ~ ^/poweradmin/(config|lib|tests|vendor)/ {
+        location ~ ^/poweradmin/(config|lib|tests|vendor|bin|var)/ {
             deny all;
         }
 
-        location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log)$ {
+        location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log|json|lock|xml|dist|neon)$ {
             deny all;
         }
 
