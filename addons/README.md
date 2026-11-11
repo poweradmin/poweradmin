@@ -75,7 +75,8 @@ perl dynamic_dns_client.pl
 
 #### Python Client
 ```bash
-python dynamic_dns_client.py --domain example.com --host myserver
+export POWERADMIN_DDNS_PASSWORD='secret'
+python dynamic_dns_client.py -l myuser -d host.example.com -u https://dns.example.com/poweradmin
 ```
 
 #### Bash Client
@@ -90,7 +91,7 @@ python dynamic_dns_client.py --domain example.com --host myserver
 - `-l` / `--login`: Authentication username
 - `-p` / `--password`: Authentication password (visible in the process list; prefer the `POWERADMIN_DDNS_PASSWORD` environment variable)
 - `-u` / `--url`: Custom Poweradmin base URL
-- `-v` / `--verbose`: Enable detailed output
+- `-v` / `--verbose`: Output verbosity (`1` or `0`, default `0`)
 
 **Perl and Bash Clients** use hardcoded variables that need to be edited in the script:
 - `$login` / `login`: Authentication username
