@@ -71,8 +71,8 @@ readonly class DynamicDnsUpdateService
         $result = $this->applyForUser($user, $request->getUsername(), $hostname, $ipList, $request->isDualstackUpdate());
 
         if ($result['status'] !== 'good') {
-            // The dyndns2 text protocol has no read-only status; report it as not the client's.
-            return $result['status'] === 'readonly' ? '!yours' : $result['status'];
+            // The dyndns2 text protocol has no read-only or CNAME status; report those as not the client's.
+            return in_array($result['status'], ['readonly', 'cname'], true) ? '!yours' : $result['status'];
         }
 
         // dyndns2 clients expect "nochg <ip>" when the address already matched and
@@ -118,6 +118,10 @@ readonly class DynamicDnsUpdateService
         }
 
         try {
+            if ($this->repository->hasCnameRecord($zoneId, $hostname)) {
+                return $this->emptyResult('cname', $zoneId);
+            }
+
             $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);

@@ -89,4 +89,42 @@ class DynamicDnsControllerHostnameTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame('host.example.com', json_decode((string) $response->getContent(), true)['data']['hostname']);
     }
+
+    public function testAHostnameHoldingACnameAnswersConflict(): void
+    {
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('userHasPermission')->willReturn(true);
+        $update = $this->createMock(DynamicDnsUpdateService::class);
+        $update->method('applyForUser')
+            ->willReturn(['status' => 'cname', 'zone_id' => 3, 'applied_ipv4' => [], 'applied_ipv6' => [], 'changed' => false]);
+
+        $statement = $this->createMock(PDOStatement::class);
+        $statement->method('fetchColumn')->willReturn('admin');
+        $db = $this->createMock(PDO::class);
+        $db->method('prepare')->willReturn($statement);
+
+        $request = Request::create('/api/v2/dynamic-dns', 'POST', [], [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+            'hostname' => 'host.example.com',
+            'ipv4' => '192.0.2.1',
+        ]));
+
+        $controller = (new ReflectionClass(DynamicDnsController::class))->newInstanceWithoutConstructor();
+        $properties = [
+            'request' => $request,
+            'db' => $db,
+            'permissionService' => $permissions,
+            'updateService' => $update,
+            'validationService' => new DynamicDnsValidationService($this->createMock(ConfigurationManager::class)),
+            'authenticatedUserId' => 1,
+            'apiKeyScope' => ApiKeyScope::unrestricted(),
+        ];
+        foreach ($properties as $name => $value) {
+            (new ReflectionProperty(DynamicDnsController::class, $name))->setValue($controller, $value);
+        }
+
+        /** @var JsonResponse $response */
+        $response = (new ReflectionMethod(DynamicDnsController::class, 'updateRecord'))->invoke($controller);
+
+        $this->assertSame(409, $response->getStatusCode());
+    }
 }

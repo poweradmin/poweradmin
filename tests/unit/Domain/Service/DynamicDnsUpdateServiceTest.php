@@ -147,6 +147,40 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertFalse($result['changed']);
     }
 
+    public function testApplyForUserRefusesANameThatHoldsACname(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('hasCnameRecord')->with(1, $hostname)->willReturn(true);
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('deleteDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $result = $this->service->applyForUser($user, 'user', $hostname, $ipList, false);
+
+        $this->assertSame('cname', $result['status']);
+        $this->assertFalse($result['changed']);
+    }
+
+    public function testProcessUpdateReportsACnameNameAsNotTheClients(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'test.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn($user);
+        $this->validationService->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('hasCnameRecord')->willReturn(true);
+
+        $this->assertSame('!yours', $this->service->processUpdate($request));
+    }
+
     public function testApplyForUserWithoutRemovalLeavesTheNameUntouchedWhenDualstackWouldClearAaaa(): void
     {
         $user = new User(1, 'hashedpass', false);

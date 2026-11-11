@@ -192,6 +192,7 @@ class DynamicDnsController extends PublicApiController
             'forbidden' => $this->returnApiError('Forbidden: this API key does not have access to the requested zone', 403),
             'nohost' => $this->returnApiError('Hostname is not contained in any zone the user owns', 404),
             'readonly' => $this->returnApiError('Records in Secondary and Consumer zones are read-only; they replicate from a primary', 403),
+            'cname' => $this->returnApiError('The hostname holds a CNAME record, which cannot coexist with address records', 409),
             'nodelete' => $this->returnApiError('Forbidden: this API key is not permitted to perform the delete operation', 403),
             '!yours' => $this->returnApiError('Update did not produce any change and no matching records exist', 409),
             default => $this->returnApiError('Failed to apply dynamic DNS update', 500),
