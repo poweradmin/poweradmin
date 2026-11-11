@@ -146,4 +146,17 @@ class SecondaryZoneImportControllerTest extends ZoneCreateControllerTestCase
         $this->assertTrue($params['transfer_requested']);
         $this->assertSame([], $this->messagesFor(self::PAGE));
     }
+
+    public function testConvertingNeedsThePermissionToCreateAPrimaryZone(): void
+    {
+        $this->granted = [Permission::PERM_ZONE_SLAVE_ADD, Permission::PERM_ZONE_META_EDIT_OTHERS];
+        $this->permissions->method('canCreateZone')->with(self::USER_ID, 'NATIVE')->willReturn(false);
+        $this->domainManager->expects($this->never())->method('changeZoneType');
+        $this->post(['action' => 'convert', 'zone_id' => '1']);
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame([['error', 'You do not have permission to change this zone to that type.']], $this->messagesFor(self::PAGE));
+    }
 }

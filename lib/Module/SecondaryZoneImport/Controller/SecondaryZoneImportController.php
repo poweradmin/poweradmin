@@ -166,6 +166,13 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
+        // Converting is creating a primary zone, so it needs the same right as the add form
+        if (!$this->moduleServices()->permissionService()->canCreateZone((int)$this->getCurrentUserId(), 'NATIVE')) {
+            $this->setMessage('import', 'error', _('You do not have permission to change this zone to that type.'));
+            $this->showForm();
+            return;
+        }
+
         // Refuse to convert before the transfer has populated the zone: an empty
         // conversion would discard the secondary and stop PowerDNS retrying AXFR.
         if ($this->moduleServices()->dnsBackendProvider()->countZoneRecords($zoneId) === 0) {
@@ -174,7 +181,7 @@ class SecondaryZoneImportController extends BaseController
         }
 
         // changeZoneType() enforces the metadata-edit permission and ownership
-        // and writes its own audit entry, so no extra gating is needed here.
+        // and writes its own audit entry.
         $converted = $this->moduleServices()->domainManager()->changeZoneType('NATIVE', $zoneId);
         if (!$converted->success) {
             $this->setMessage('import', 'error', (string)$converted->message);
