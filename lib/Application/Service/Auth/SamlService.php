@@ -28,6 +28,7 @@ use OneLogin\Saml2\Utils;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Enum\LoginFailureReason;
+use Poweradmin\Domain\Utility\TokenFingerprint;
 use Poweradmin\Infrastructure\Session\FlashMessage;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
@@ -170,9 +171,9 @@ final class SamlService
 
             // Store provider ID for callback processing
             $this->setSessionValue('saml_provider', $providerId);
-            $this->logger->info('Stored provider ID in session: {provider_id}, Session ID: {session_id}', [
+            $this->logger->info('Stored provider ID in session: {provider_id}, Session: {session_fingerprint}', [
                 'provider_id' => $providerId,
-                'session_id' => $this->session->id()
+                'session_fingerprint' => TokenFingerprint::of($this->session->id())
             ]);
 
             // Initiate SSO and get the redirect URL (stay=true prevents immediate redirect and returns URL)
@@ -227,8 +228,8 @@ final class SamlService
         }
 
         if (empty($providerId)) {
-            $this->logger->warning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
-                'session_id' => $this->session->id()
+            $this->logger->warning('No provider ID in session or RelayState during SAML assertion. Session: {session_fingerprint}', [
+                'session_fingerprint' => TokenFingerprint::of($this->session->id())
             ]);
             $sessionEntity = new FlashMessage(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);

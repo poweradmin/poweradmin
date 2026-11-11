@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Psr\Log\AbstractLogger;
 use Psr\Log\NullLogger;
 use TestHelpers\FakeConfiguration;
 
@@ -148,5 +149,37 @@ final class SamlServiceSignInResetTest extends TestCase
         );
 
         return $service->handleAssertion();
+    }
+
+    public function testTheNoProviderFailureLogsNoSessionId(): void
+    {
+        $_COOKIE = [];
+        $session = new ArraySession();
+        $logger = new class extends AbstractLogger {
+            /** @var list<string> */
+            public array $lines = [];
+
+            public function log($level, string|\Stringable $message, array $context = []): void
+            {
+                $this->lines[] = $message . ' ' . json_encode($context);
+            }
+        };
+
+        $service = new SamlService(
+            new FakeConfiguration(['security' => ['session_key' => self::SESSION_KEY]]),
+            $this->createMock(SamlConfigurationService::class),
+            $this->createMock(UserProvisioningService::class),
+            $logger,
+            $this->createMock(AuthenticationService::class),
+            $this->createMock(AuditService::class),
+            $this->createMock(MfaService::class),
+            $session,
+            new Request([], ['SAMLResponse' => 'response'], ['REQUEST_METHOD' => 'POST']),
+            $this->createMock(Auth::class)
+        );
+
+        $this->assertNull($service->handleAssertion());
+        $this->assertStringNotContainsString($session->id(), implode("\n", $logger->lines));
+        $this->assertStringContainsString(substr(hash('sha256', $session->id()), 0, 12), implode("\n", $logger->lines));
     }
 }
