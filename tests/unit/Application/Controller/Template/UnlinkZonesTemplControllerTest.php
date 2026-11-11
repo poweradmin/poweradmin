@@ -29,6 +29,7 @@ use Poweradmin\Application\Controller\Template\UnlinkZonesTemplController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Template\ZoneTemplateAccessPolicy;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
@@ -43,6 +44,7 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
     private const FOREIGN_ZONE = 13;
 
     private bool $isUberuser = false;
+    private bool $canViewTemplate = true;
 
     /** @var ZoneTemplateService&MockObject */
     private ZoneTemplateService $templates;
@@ -64,6 +66,10 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
 
         $this->templates = $this->createMock(ZoneTemplateService::class);
 
+        $policy = $this->createMock(ZoneTemplateAccessPolicy::class);
+        $policy->method('canCurrentUserViewTemplate')->willReturnCallback(fn(): bool => $this->canViewTemplate);
+
+        $this->factory->method('zoneTemplateAccessPolicy')->willReturn($policy);
         $this->factory->method('permissionService')->willReturn($permissions);
         $this->factory->method('zoneTemplateRepository')->willReturn($repository);
         $this->factory->method('zoneTemplateService')->willReturn($this->templates);
@@ -105,5 +111,18 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
         $this->templates->expects($this->once())->method('getZonesByIds')->with([self::OWN_ZONE, self::FOREIGN_ZONE])->willReturn([]);
 
         $this->confirm([(string)self::OWN_ZONE, (string)self::FOREIGN_ZONE])->run();
+    }
+
+    public function testATemplateTheUserCannotViewAnswersLikeAMissingOne(): void
+    {
+        $this->canViewTemplate = false;
+        $this->templates->expects($this->never())->method('getZonesByIds');
+
+        try {
+            $this->confirm([(string)self::OWN_ZONE])->run();
+            $this->fail('Expected the request to end in an error page.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('Template not found.', $halt->target);
+        }
     }
 }

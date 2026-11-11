@@ -135,8 +135,10 @@ class UnlinkZonesTemplController extends BaseController
             return;
         }
 
-        // Get template information
-        $template_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($template_id) ?: [];
+        // A template the user may not see answers like a missing one
+        $template_details = $this->services()->zoneTemplateAccessPolicy()->canCurrentUserViewTemplate($template_id)
+            ? ($this->services()->zoneTemplateRepository()->getZoneTemplateDetails($template_id) ?: [])
+            : [];
 
         if (!$template_details) {
             $this->showError(_('Template not found.'));
