@@ -146,7 +146,13 @@ class UnlinkZonesTemplController extends BaseController
         // Get template information
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $template_id);
 
-        if (!$template_details) {
+        // Template list visibility, plus a template the caller's own selected zones are linked to
+        $visible = $template_details
+            && ($perm_godlike || (int)$template_details['owner'] === 0
+                || (new ZoneTemplate($this->db, $this->getConfig()))->isUserOwnerOfTemplate($template_id, (int)$_SESSION['userid'])
+                || $this->linksAnyZone($template_id, $valid_zone_ids));
+
+        if (!$visible) {
             $this->showError(_('Template not found.'));
             return;
         }
@@ -162,5 +168,17 @@ class UnlinkZonesTemplController extends BaseController
             'template_name' => $template_details['name'],
             'zone_count' => count($zones)
         ]);
+    }
+
+    /**
+     * @param int[] $zoneIds
+     */
+    private function linksAnyZone(int $templateId, array $zoneIds): bool
+    {
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+        $stmt = $this->db->prepare("SELECT 1 FROM zones WHERE zone_templ_id = ? AND domain_id IN ($placeholders)");
+        $stmt->execute(array_merge([$templateId], $zoneIds));
+
+        return $stmt->fetchColumn() !== false;
     }
 }
