@@ -55,6 +55,13 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->assertSame(200, $this->updateZone(['type' => 'NATIVE'], meta: true));
     }
 
+    public function testConvertingNeedsTheCreatePermissionOfTheTargetType(): void
+    {
+        // The web edit page refuses this too; the API must not be the way around it
+        $this->assertSame(403, $this->updateZone(['type' => 'SLAVE', 'master' => '192.0.2.1'], meta: true, create: false));
+        $this->assertSame(200, $this->updateZone(['type' => 'MASTER'], meta: true, create: false), 'resending the current type is not a conversion');
+    }
+
     public function testCreateRefusesABadPrimariesListWithBadRequest(): void
     {
         // The zone service refuses it too, but only as a generic 500
@@ -75,10 +82,11 @@ class ZoneMetadataPermissionTest extends TestCase
     /**
      * @param array<string, mixed> $body
      */
-    private function updateZone(array $body, bool $meta): int
+    private function updateZone(array $body, bool $meta, bool $create = true): int
     {
         $permissionService = $this->createMock(ApiPermissionService::class);
         $permissionService->method('canEditZoneMeta')->willReturn($meta);
+        $permissionService->method('canCreateZone')->willReturn($create);
         // The content permission the handler used to trust is granted throughout,
         // so a refusal can only come from the metadata gate.
         $permissionService->method('canEditZone')->willReturn(true);

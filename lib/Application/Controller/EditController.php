@@ -270,8 +270,7 @@ class EditController extends BaseController
             $new_type = htmlspecialchars($_POST['newtype'] ?? '');
             if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
                 $this->validateCsrfToken();
-                $this->dnsRecord->changeZoneType($new_type, $zone_id);
-                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+                $this->changeZoneType($new_type, $zone_id);
             }
 
             // Change slave master
@@ -587,6 +586,22 @@ class EditController extends BaseController
         }
 
         return $sortDirection;
+    }
+
+    /**
+     * Converting a zone is equivalent to creating one of the target type.
+     */
+    public function changeZoneType(string $new_type, int $zone_id): void
+    {
+        $userId = (int)$this->userContextService->getLoggedInUserId();
+        $required = $new_type === ZoneType::SLAVE ? 'zone_slave_add' : 'zone_master_add';
+        if (!$this->permissionService->hasPermission($userId, $required)) {
+            $this->setMessage('edit', 'error', _('You do not have the permission to edit this zone.'));
+            return;
+        }
+
+        $this->dnsRecord->changeZoneType($new_type, $zone_id);
+        $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
     }
 
     public function saveRecords(int $zone_id, string $zone_name): void
