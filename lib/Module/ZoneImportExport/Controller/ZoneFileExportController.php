@@ -84,7 +84,7 @@ class ZoneFileExportController extends BaseController
         header('Content-Disposition: attachment; filename=' . $sanitized_filename . '.zone');
         header('Pragma: no-cache');
         header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
         echo $content;
         exit();
