@@ -56,6 +56,7 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
         return [
             'oidc' => ['oidc', true],
             'saml' => ['saml', true],
+            'ldap while ldap is disabled' => ['ldap', false],
         ];
     }
 

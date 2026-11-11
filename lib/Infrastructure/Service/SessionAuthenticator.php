@@ -249,6 +249,10 @@ class SessionAuthenticator extends LoggingService
                     $this->ldapAuthenticator()->authenticate();
                 } else {
                     $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+                    if (isset($_POST['authenticate'])) {
+                        $this->failLoginGenerically('account uses LDAP but LDAP is disabled');
+                        break;
+                    }
                     $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
                     $this->authService->logout($sessionEntity);
                 }
