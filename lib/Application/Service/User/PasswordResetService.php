@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\User;
 
 use Poweradmin\Application\Http\ClientContext;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
@@ -144,7 +145,7 @@ class PasswordResetService
         // Clean up expired tokens before processing new request
         $this->cleanupExpiredTokens();
 
-        $ip = $this->client->ip;
+        $ip = LoginAttemptService::throttleKey($this->client->ip);
 
         // Check rate limits
         if (!$this->checkRateLimit($email, $ip)) {

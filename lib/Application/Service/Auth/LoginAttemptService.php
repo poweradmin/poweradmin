@@ -198,7 +198,7 @@ class LoginAttemptService implements LoginThrottleInterface
      * The address an attempt is stored and counted under: an IPv6 client by its
      * /64 network, an IPv4-mapped IPv6 client by its IPv4 address, anything else as given.
      */
-    private static function throttleKey(string $ipAddress): string
+    public static function throttleKey(string $ipAddress): string
     {
         $binary = @inet_pton($ipAddress);
         if ($binary === false || strlen($binary) !== 16) {

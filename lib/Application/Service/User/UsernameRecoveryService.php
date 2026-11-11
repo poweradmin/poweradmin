@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\User;
 
 use Poweradmin\Application\Http\ClientContext;
+use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
@@ -97,7 +98,7 @@ class UsernameRecoveryService
         // Clean up old requests before processing new request
         $this->cleanupOldRequests();
 
-        $ip = $this->client->ip;
+        $ip = LoginAttemptService::throttleKey($this->client->ip);
 
         // Check rate limits
         if (!$this->checkRateLimit($email, $ip)) {
@@ -126,12 +127,17 @@ class UsernameRecoveryService
             return true; // Return true to not reveal if email exists
         }
 
-        // Extract usernames from all user records
-        $usernames = array_column($users, 'username');
-        $fullname = $users[0]['fullname'] ?? '';
-
-        // Send recovery email with all usernames
-        $emailSent = $this->sendRecoveryEmail($email, $usernames, $fullname);
+        // Mail each stored address its own accounts: a collation-folded match must not
+        // send the typed address a username registered to someone else's spelling.
+        $byStoredEmail = [];
+        foreach ($users as $user) {
+            $byStoredEmail[(string)$user['email']][] = $user;
+        }
+        $emailSent = true;
+        foreach ($byStoredEmail as $storedEmail => $accounts) {
+            $sent = $this->sendRecoveryEmail((string)$storedEmail, array_column($accounts, 'username'), $accounts[0]['fullname'] ?? '');
+            $emailSent = $emailSent && $sent;
+        }
 
         // Record the recovery request
         $success = $this->recoveryRepository->create([
