@@ -202,6 +202,33 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $changed, self::ADMIN)->isOk());
     }
 
+    public function testDnsUpdateKindsAreOperatorOnlyAndStoredRowsAreKeptForOwners(): void
+    {
+        $this->store->method('load')->willReturn([['kind' => 'ALLOW-DNSUPDATE-FROM', 'content' => '192.0.2.1/32']]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
+        $service = $this->sqlService();
+
+        $unchanged = [['kind' => 'ALLOW-DNSUPDATE-FROM', 'content' => '192.0.2.1/32']];
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $unchanged, self::EDITOR)->isOk());
+
+        $added = [['kind' => 'TSIG-ALLOW-AXFR', 'content' => 'key']];
+        $this->assertSame(ZoneMetadataOutcome::OPERATOR_ONLY, $service->replaceAll(self::ZONE_ID, self::ZONE, $added, self::EDITOR)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::OPERATOR_ONLY, $service->replaceKind(self::ZONE_ID, self::ZONE, 'ALLOW-DNSUPDATE-FROM', ['0.0.0.0/0'], self::EDITOR)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::OPERATOR_ONLY, $service->deleteKind(self::ZONE_ID, self::ZONE, 'ALLOW-DNSUPDATE-FROM', self::EDITOR)->outcome);
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'ALLOW-DNSUPDATE-FROM', ['0.0.0.0/0'], self::ADMIN)->isOk());
+    }
+
+    public function testAStoredOperatorOnlyValueWithStrayWhitespaceDoesNotLockTheEditorOut(): void
+    {
+        $this->store->method('load')->willReturn([['kind' => 'ALLOW-DNSUPDATE-FROM', 'content' => ' 192.0.2.1/32 ']]);
+        $this->store->method('replaceAll')->willReturn(true);
+
+        // The editor posts the row back trimmed, which is not a change
+        $echoed = [['kind' => 'ALLOW-DNSUPDATE-FROM', 'content' => '192.0.2.1/32'], ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.53']];
+        $this->assertTrue($this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, $echoed, self::EDITOR)->isOk());
+    }
+
     public function testServerManagedKindsAreRefusedOnEveryBackend(): void
     {
         $this->store->method('load')->willReturn([]);

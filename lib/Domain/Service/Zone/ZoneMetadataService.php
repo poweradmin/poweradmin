@@ -100,7 +100,8 @@ class ZoneMetadataService
             foreach ($rows as $row) {
                 $kind = (string)($row['kind'] ?? '');
                 if ($kind !== '') {
-                    $byKind[$kind][] = (string)($row['content'] ?? '');
+                    // Submitted rows arrive trimmed; a stored value set out of band may not be
+                    $byKind[$kind][] = trim((string)($row['content'] ?? ''));
                 }
             }
             foreach ($byKind as $kind => $values) {

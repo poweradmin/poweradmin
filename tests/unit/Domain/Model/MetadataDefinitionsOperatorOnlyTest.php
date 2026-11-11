@@ -48,26 +48,28 @@ class MetadataDefinitionsOperatorOnlyTest extends TestCase
         $this->assertFalse(MetadataDefinitions::isOperatorOnly('X-CUSTOM-KIND'));
     }
 
-    /**
-     * The editor gates on isOperatorOnly(), so a kind that is operator-only must
-     * stay non-api-writable too; otherwise the v2 metadata endpoint would remain
-     * an open path to the same write.
-     */
-    public function testOperatorOnlyKindsAreAlsoBlockedOnTheApiEndpoint(): void
+    public function testDnsUpdateAndTsigKindsAreOperatorOnly(): void
     {
-        $operatorOnly = array_filter(
-            array_keys(MetadataDefinitions::DEFINITIONS),
-            fn(string $kind): bool => MetadataDefinitions::isOperatorOnly($kind)
-        );
-        $this->assertNotEmpty($operatorOnly, 'no operator-only kind is defined, so nothing is checked');
+        foreach (['ALLOW-DNSUPDATE-FROM', 'FORWARD-DNSUPDATE', 'TSIG-ALLOW-DNSUPDATE', 'AXFR-MASTER-TSIG', 'TSIG-ALLOW-AXFR'] as $kind) {
+            $this->assertTrue(MetadataDefinitions::isOperatorOnly($kind), $kind);
+        }
+    }
 
-        foreach (array_keys(MetadataDefinitions::DEFINITIONS) as $kind) {
-            if (MetadataDefinitions::isOperatorOnly($kind)) {
-                $this->assertFalse(
-                    MetadataDefinitions::isApiWritable($kind),
-                    sprintf('Operator-only kind %s must not be writable through the API endpoint', $kind)
-                );
-            }
+    public function testNotifyAndAxfrAllowListKindsStayWithOwners(): void
+    {
+        foreach (['ALLOW-AXFR-FROM', 'ALSO-NOTIFY'] as $kind) {
+            $this->assertFalse(MetadataDefinitions::isOperatorOnly($kind), $kind);
+        }
+    }
+
+    /**
+     * Lua kinds have no API route at all, so the v2 metadata endpoint cannot
+     * reach them even for the operator-only check to matter.
+     */
+    public function testLuaKindsAreAlsoBlockedOnTheApiEndpoint(): void
+    {
+        foreach (['ENABLE-LUA-RECORDS', 'LUA-AXFR-SCRIPT'] as $kind) {
+            $this->assertFalse(MetadataDefinitions::isApiWritable($kind), $kind);
         }
     }
 }

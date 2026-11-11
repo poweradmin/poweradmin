@@ -50,6 +50,7 @@ class MetadataDefinitions
             'help' => 'Allow dynamic updates from these IPs or networks. Add one value per row.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'operator_only' => true,
         ],
         'FORWARD-DNSUPDATE' => [
             'label' => 'FORWARD-DNSUPDATE',
@@ -58,6 +59,7 @@ class MetadataDefinitions
             'help' => 'Forward dynamic DNS updates for this zone.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'operator_only' => true,
         ],
         'ALSO-NOTIFY' => [
             'label' => 'ALSO-NOTIFY',
@@ -125,6 +127,7 @@ class MetadataDefinitions
             'help' => 'TSIG keys allowed for AXFR. Add one key name per row.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'operator_only' => true,
         ],
         'TSIG-ALLOW-DNSUPDATE' => [
             'label' => 'TSIG-ALLOW-DNSUPDATE',
@@ -133,6 +136,7 @@ class MetadataDefinitions
             'help' => 'TSIG keys allowed for DNS updates. Add one key name per row.',
             'api_write' => true,
             'min_version' => '4.0.0',
+            'operator_only' => true,
         ],
         'AXFR-MASTER-TSIG' => [
             'label' => 'AXFR-MASTER-TSIG',
@@ -140,6 +144,7 @@ class MetadataDefinitions
             'placeholder' => 'primary-key-name',
             'help' => 'TSIG key used to retrieve the zone from the primary.',
             'api_write' => false,
+            'operator_only' => true,
         ],
         'LUA-AXFR-SCRIPT' => [
             'label' => 'LUA-AXFR-SCRIPT',
@@ -271,8 +276,8 @@ class MetadataDefinitions
     /**
      * Check whether a metadata kind may only be set by a superuser.
      *
-     * These kinds make PowerDNS evaluate operator-supplied Lua, so a zone-level
-     * editor setting them would reach past the zone they administer.
+     * These kinds reach past the zone being edited: Lua evaluation, RFC 2136
+     * updates that bypass record validation, and server-wide TSIG key names.
      */
     public static function isOperatorOnly(string $kind): bool
     {
