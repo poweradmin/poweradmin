@@ -103,4 +103,17 @@ class BasicAuthenticationMiddlewareLockoutTest extends TestCase
         // A bcrypt cost-10 verify takes tens of milliseconds; the old early return took under one
         $this->assertGreaterThan(0.01, microtime(true) - $start);
     }
+
+    public function testLockedAccountCostsAPasswordHash(): void
+    {
+        $middleware = $this->middleware(true, 10);
+        for ($i = 0; $i < 3; $i++) {
+            $this->db->exec("INSERT INTO login_attempts (user_id, ip_address, timestamp, successful) VALUES (7, '192.0.2.10', " . time() . ", 0)");
+        }
+
+        $start = microtime(true);
+        $this->assertSame(0, $this->authenticate($middleware, 'right-password'));
+
+        $this->assertGreaterThan(0.01, microtime(true) - $start);
+    }
 }

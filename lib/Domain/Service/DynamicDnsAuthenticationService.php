@@ -56,6 +56,7 @@ class DynamicDnsAuthenticationService
         // The browser login already enforces account_lockout; dynamic updates must not bypass it
         $username = $request->getUsername();
         if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            $this->userAuthService->verifyPassword($request->getPassword(), $this->userAuthService->dummyVerificationHash());
             return null;
         }
 

@@ -87,6 +87,21 @@ class LdapAuthenticator extends LoggingService
         );
     }
 
+    /** A locked account must cost the hash time an unknown name does, or the lock shows it exists. */
+    private function spendDummyVerification(): void
+    {
+        $stored = $this->userContextService->getSessionData('userpwd');
+        $password = is_string($stored)
+            ? (new PasswordEncryptionService($this->configManager->get('security', 'session_key', '')))->decrypt($stored)
+            : '';
+
+        $userAuthService = new UserAuthenticationService(
+            $this->configManager->get('security', 'password_encryption', 'bcrypt'),
+            $this->configManager->get('security', 'password_cost', 12)
+        );
+        $userAuthService->verifyPassword($password, $userAuthService->dummyVerificationHash());
+    }
+
     public function authenticate(): void
     {
         $this->logInfo('Starting LDAP authentication process.');
@@ -99,6 +114,7 @@ class LdapAuthenticator extends LoggingService
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
+            $this->spendDummyVerification();
             // Same text as an unknown user gets, so the lock does not reveal the account exists.
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
