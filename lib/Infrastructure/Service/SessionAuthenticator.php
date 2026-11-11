@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
@@ -210,6 +211,12 @@ class SessionAuthenticator extends LoggingService
         $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
 
         $authMethod = $this->getUserAuthMethod();
+
+        $refusalReason = self::passwordLoginRefusal($authMethod, isset($_POST['authenticate']), (bool)$ldap_use);
+        if ($refusalReason !== null) {
+            $this->refusePasswordLogin($refusalReason);
+            return;
+        }
 
         switch ($authMethod) {
             case UserProvisioningService::AUTH_METHOD_OIDC:
@@ -411,6 +418,43 @@ class SessionAuthenticator extends LoggingService
         http_response_code(403);
         echo json_encode(['error' => true, 'message' => $message]);
         exit;
+    }
+
+    /**
+     * Why a login POST must fail like a wrong password, or null when it may proceed.
+     *
+     * SSO accounts cannot sign in with a password, but saying so would tell a caller
+     * which usernames exist. Non-login requests (existing SSO sessions) are untouched.
+     */
+    public static function passwordLoginRefusal(string $authMethod, bool $isLogin, bool $ldapEnabled): ?string
+    {
+        if (!$isLogin) {
+            return null;
+        }
+
+        return match ($authMethod) {
+            UserProvisioningService::AUTH_METHOD_OIDC => 'OIDC',
+            UserProvisioningService::AUTH_METHOD_SAML => 'SAML',
+            default => null,
+        };
+    }
+
+    private function refusePasswordLogin(string $reason): void
+    {
+        $this->logWarning('Password login refused for {username}: account uses {reason}', [
+            'username' => $_SESSION['userlogin'] ?? 'unknown',
+            'reason' => $reason,
+        ]);
+
+        // Spend the time a wrong SQL password costs, and do not keep the typed password
+        $authService = new UserAuthenticationService(
+            $this->configManager->get('security', 'password_encryption', 'bcrypt'),
+            $this->configManager->get('security', 'password_cost', 12)
+        );
+        $authService->verifyPassword((string)($_POST['password'] ?? ''), $authService->dummyVerificationHash());
+        unset($_SESSION['userpwd']);
+
+        $this->authService->auth(new SessionEntity(_('Authentication failed!'), 'danger'));
     }
 
     /**
