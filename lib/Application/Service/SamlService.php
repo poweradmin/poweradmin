@@ -235,7 +235,7 @@ class SamlService extends LoggingService
                     $this->logError('SAML error exception: {exception}', ['exception' => $lastErrorException->getMessage()]);
                 }
 
-                $sessionEntity = new SessionEntity(_('Authentication failed: ') . $errorMsg, 'danger');
+                $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
                 $this->authenticationService->auth($sessionEntity);
                 return;
             }
@@ -394,7 +394,7 @@ class SamlService extends LoggingService
             }
 
             $this->logError('SAML authentication error: {error}', ['error' => $e->getMessage()]);
-            $sessionEntity = new SessionEntity(_('Authentication failed: ') . $e->getMessage(), 'danger');
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
 
             // Clean up session data on exception

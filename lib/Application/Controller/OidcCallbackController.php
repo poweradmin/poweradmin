@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -83,10 +83,10 @@ class OidcCallbackController extends BaseController
         $error = $this->httpRequest->getQueryParam('error');
         if (!empty($error)) {
             $errorDescription = $this->httpRequest->getQueryParam('error_description', 'Unknown error');
-            $sessionEntity = new SessionEntity(
-                _('Authentication failed: ') . $errorDescription,
-                'danger'
-            );
+            error_log("[OidcCallbackController] OIDC provider returned error: $error - $errorDescription");
+
+            // The query string is unauthenticated, so none of it is shown to the user.
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
