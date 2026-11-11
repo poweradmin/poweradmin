@@ -239,8 +239,14 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
+        // Converting a zone is equivalent to creating one of the target type.
+        if (!$this->createPermissionService()->canCreateZone((int)$this->getCurrentUserId(), 'NATIVE')) {
+            $this->showError(_('You do not have permission to change this zone to that type.'));
+            return;
+        }
+
         // changeZoneType() enforces the metadata-edit permission and ownership
-        // and writes its own audit entry, so no extra gating is needed here.
+        // and writes its own audit entry.
         $domainManager = $this->createDomainManager();
         if (!$domainManager->changeZoneType('NATIVE', $zoneId)) {
             $this->showForm();
