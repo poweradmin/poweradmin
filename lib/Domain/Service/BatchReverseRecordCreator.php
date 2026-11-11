@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Closure;
 use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
@@ -49,6 +50,9 @@ class BatchReverseRecordCreator
     private RecordMatchingService $recordMatchingService;
     private IpAddressRetriever $ipAddressRetriever;
     private UserContextService $userContextService;
+    private ?Closure $zoneEditCheck;
+    /** @var array<int, bool> */
+    private array $zoneEditCache = [];
 
     public function __construct(
         PDO $db,
@@ -57,7 +61,8 @@ class BatchReverseRecordCreator
         DomainRepositoryInterface $domainRepository,
         RecordManagerInterface $recordManager,
         ?IPAddressValidator $ipValidator = null,
-        ?RecordRepositoryInterface $recordRepository = null
+        ?RecordRepositoryInterface $recordRepository = null,
+        ?Closure $zoneEditCheck = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -69,6 +74,17 @@ class BatchReverseRecordCreator
         $this->recordMatchingService = new RecordMatchingService($domainRepository, $this->recordRepository);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
         $this->userContextService = new UserContextService();
+        $this->zoneEditCheck = $zoneEditCheck;
+    }
+
+    /** Checked before any PTR lookup so skip counts cannot reveal PTRs in zones the caller cannot edit. */
+    private function canEditReverseZone(int $zoneId): bool
+    {
+        if ($this->zoneEditCheck === null) {
+            return true;
+        }
+
+        return $this->zoneEditCache[$zoneId] ??= (bool)($this->zoneEditCheck)($zoneId);
     }
 
     /**
@@ -204,6 +220,12 @@ class BatchReverseRecordCreator
                         continue;
                     }
 
+                    if (!$this->canEditReverseZone((int)$zone_rev_id)) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip: You do not have permission to add records to this zone.";
+                        continue;
+                    }
+
                     // Check if ANY PTR record already exists for this IP (if configured)
                     $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
                     if ($preventDuplicatePTR) {
@@ -274,6 +296,12 @@ class BatchReverseRecordCreator
                     if ($zone_rev_id === -1) {
                         $failCount++;
                         $errors[] = "No matching reverse zone found for $reverseDomain";
+                        continue;
+                    }
+
+                    if (!$this->canEditReverseZone((int)$zone_rev_id)) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip: You do not have permission to add records to this zone.";
                         continue;
                     }
 
@@ -456,6 +484,12 @@ class BatchReverseRecordCreator
                         continue;
                     }
 
+                    if (!$this->canEditReverseZone((int)$zone_rev_id)) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip: You do not have permission to add records to this zone.";
+                        continue;
+                    }
+
                     // Check if ANY PTR record already exists for this IP (if configured)
                     $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
                     if ($preventDuplicatePTR) {
@@ -512,6 +546,12 @@ class BatchReverseRecordCreator
 
                 // Convert IP to reverse notation with proper nibble expansion
                 $reverseDomain = DomainUtility::convertIPv6AddrToPtrRec($ip);
+
+                if (!$this->canEditReverseZone((int)$test_zone_rev_id)) {
+                    $failCount++;
+                    $errors[] = "Failed to create PTR record for $ip: You do not have permission to add records to this zone.";
+                    continue;
+                }
 
                 // Check if ANY PTR record already exists for this IP (if configured)
                 $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);

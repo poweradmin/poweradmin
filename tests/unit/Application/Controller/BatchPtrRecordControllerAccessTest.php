@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Application\Controller;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\BatchPtrRecordController;
 use Poweradmin\Application\Http\Request;
@@ -81,6 +82,81 @@ class BatchPtrRecordControllerAccessTest extends TestCase
     public function testAnEditorIsStillRefusedOnAReadOnlyZone(): void
     {
         $this->assertSame('You do not have permission to add records to this zone.', $this->errorFor(self::FORWARD_ZONE_ID, 'own'));
+    }
+
+    /** @return array<string, array{0: string, 1: string}> */
+    public static function forwardZonesTheCallerCannotUse(): array
+    {
+        return [
+            'matching, foreign zone' => ['only_matching_records', 'foreign.example'],
+            'matching, foreign zone typed in capitals' => ['only_matching_records', ' FOREIGN.example '],
+            'matching, missing zone' => ['only_matching_records', 'missing.example'],
+            'forward records, foreign zone' => ['create_forward_records', 'foreign.example'],
+        ];
+    }
+
+    #[DataProvider('forwardZonesTheCallerCannotUse')]
+    public function testTheForwardZoneIsRefusedUnlessTheCallerCanEditIt(string $flag, string $domain): void
+    {
+        $this->assertSame(
+            [['error', 'You do not have permission to add records to this zone.']],
+            $this->forwardZoneMessages($flag, $domain, 'none')
+        );
+    }
+
+    public function testAnEditorOfTheForwardZoneIsNotRefused(): void
+    {
+        $this->assertSame([], $this->forwardZoneMessages('only_matching_records', 'EXAMPLE.com', 'own'));
+    }
+
+    /** @return array<int, array{0: string, 1: string}> */
+    private function forwardZoneMessages(string $flag, string $domain, string $editLevel): array
+    {
+        $_POST = ['network_type' => 'ipv4', 'network_prefix' => '192.0.2.0/24', 'domain' => $domain, $flag => 'on'];
+
+        $controller = new class ([]) extends BatchPtrRecordController {
+            use ControllerTestStubs;
+
+            /** @var array<int, array{0: string, 1: string}> */
+            public array $messages = [];
+
+            public function setMessage(string $script, string $type, string $content): void
+            {
+                $this->messages[] = [$type, $content];
+            }
+        };
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $default);
+        $controller->setConfig($config);
+
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainIdByName')->willReturnCallback(static fn(string $name): ?int => match ($name) {
+            'example.com' => self::FORWARD_ZONE_ID,
+            'foreign.example' => 99,
+            default => null,
+        });
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('getEditPermissionLevelForZone')->willReturn($editLevel);
+        $userContext = $this->createMock(UserContextService::class);
+        $userContext->method('getLoggedInUserId')->willReturn(7);
+
+        $values = [
+            'request' => new Request(),
+            'domainRepository' => $domains,
+            'permissionService' => $permissions,
+            'userContextService' => $userContext,
+        ];
+        foreach ($values as $name => $value) {
+            (new ReflectionProperty(BatchPtrRecordController::class, $name))->setValue($controller, $value);
+        }
+
+        try {
+            (new \ReflectionMethod(BatchPtrRecordController::class, 'addBatchPtrRecords'))->invoke($controller);
+        } catch (\Throwable) {
+            // Past the access check the unwired controller trips on its missing services.
+        }
+
+        return $controller->messages;
     }
 
     private function errorFor(int $zoneId, string $editLevel): string

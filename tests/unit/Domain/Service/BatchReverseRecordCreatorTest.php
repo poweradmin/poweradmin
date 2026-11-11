@@ -18,7 +18,8 @@ class BatchReverseRecordCreatorTest extends TestCase
         ?DomainRepositoryInterface $domainRepository = null,
         ?RecordManagerInterface $recordManager = null,
         ?ConfigurationManager $config = null,
-        ?RecordRepositoryInterface $recordRepository = null
+        ?RecordRepositoryInterface $recordRepository = null,
+        ?\Closure $zoneEditCheck = null
     ): BatchReverseRecordCreator {
         $db = $this->createMock(PDO::class);
         $logger = $this->createMock(LegacyLogger::class);
@@ -46,7 +47,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $ipValidator = new IPAddressValidator();
 
-        return new BatchReverseRecordCreator($db, $config, $logger, $domainRepository, $recordManager, $ipValidator, $recordRepository);
+        return new BatchReverseRecordCreator($db, $config, $logger, $domainRepository, $recordManager, $ipValidator, $recordRepository, $zoneEditCheck);
     }
 
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void
@@ -409,5 +410,37 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertSame('warning', $result['type']);
         $this->assertStringContainsString('(1 failed)', $result['message']);
         $this->assertStringContainsString('You do not have the permission to add a record to this zone.', $result['message']);
+    }
+
+    public function testIPv4PtrLookupsSkipReverseZonesTheCallerCannotEdit(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecord');
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo, fn(int $zoneId): bool => false);
+
+        $result = $service->createIPv4Network('192.0.2.0/30', 'h', 'example.com', '1', 3600);
+
+        $this->assertStringContainsString('2 failed', $result['message'] ?? '');
+    }
+
+    public function testIPv6PtrLookupsSkipReverseZonesTheCallerCannotEdit(): void
+    {
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecord');
+
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo, fn(int $zoneId): bool => false);
+
+        $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 3);
     }
 }

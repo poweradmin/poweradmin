@@ -67,7 +67,8 @@ class BatchPtrRecordController extends BaseController
             $this->domainRepository,
             $recordManager,
             null,
-            $recordRepository
+            $recordRepository,
+            fn(int $zoneId): bool => $this->callerCanEditZone($zoneId)
         );
         $this->userContextService = new UserContextService();
         $this->reverseTtlResolver = $this->createReverseTtlResolver();
@@ -137,6 +138,14 @@ class BatchPtrRecordController extends BaseController
         $this->showForm($formData);
     }
 
+    private function callerCanEditZone(int $zoneId): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+
+        return $userId !== null
+            && $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zoneId) !== 'none';
+    }
+
     private function addBatchPtrRecords(): bool
     {
         $constraints = [
@@ -163,6 +172,20 @@ class BatchPtrRecordController extends BaseController
         $networkPrefix = $this->request->getPostParam('network_prefix', '');
         $hostPrefix = $this->request->getPostParam('host_prefix', '');
         $domain = $this->request->getPostParam('domain', '');
+        // Stored zone names are lowercase punycode; match that so an owner's zone typed in another case is found
+        $domain = is_string($domain) ? strtolower(DnsIdnService::toPunycode(trim($domain))) : '';
+        $createForwardRecords = $this->request->getPostParam('create_forward_records') === 'on';
+        $onlyMatchingRecords = $this->request->getPostParam('only_matching_records') === 'on';
+
+        if ($createForwardRecords || $onlyMatchingRecords) {
+            // A missing and a foreign forward zone answer alike
+            $forwardZoneId = $this->domainRepository->getDomainIdByName($domain);
+            if ($forwardZoneId === null || !$this->callerCanEditZone($forwardZoneId)) {
+                $this->setMessage('batch_ptr_record', 'error', _("You do not have permission to add records to this zone."));
+                return false;
+            }
+        }
+
         $ttl = $this->reverseTtlResolver->resolveTtlForType('PTR', true);
         // Forward A/AAAA records get their own per-type default (or dns.ttl).
         $forwardType = $networkType === 'ipv6' ? 'AAAA' : 'A';
@@ -178,8 +201,6 @@ class BatchPtrRecordController extends BaseController
         $zone_id = $id !== null ? (int)$id : 0; // Use 0 when no zone_id is provided
         $ipv6_count_param = $this->request->getPostParam('ipv6_count');
         $ipv6_count = $ipv6_count_param !== null ? (int)$ipv6_count_param : 256;
-        $createForwardRecords = $this->request->getPostParam('create_forward_records') === 'on';
-        $onlyMatchingRecords = $this->request->getPostParam('only_matching_records') === 'on';
 
         try {
             if ($networkType === 'ipv4') {
