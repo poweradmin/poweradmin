@@ -128,7 +128,7 @@ class AddGroupController extends BaseController
             $logMessage = sprintf(
                 "client_ip:%s user:%s operation:create_group group:%s group_id:%d perm_template:%s perm_template_id:%d",
                 $this->ipAddressRetriever->getClientIp(),
-                $actorUsername,
+                LegacyLogger::encodeUser($actorUsername),
                 str_replace(' ', '_', $name),
                 $group->getId(),
                 $templateName,

@@ -114,7 +114,7 @@ class OidcCallbackController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:oidc_login_success',
                 $this->ipAddressRetriever->getClientIp(),
-                $_SESSION['userlogin'] ?? 'unknown'
+                LegacyLogger::encodeUser($_SESSION['userlogin'] ?? 'unknown')
             ));
         }
     }

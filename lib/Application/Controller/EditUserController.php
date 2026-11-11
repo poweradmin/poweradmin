@@ -147,7 +147,7 @@ class EditUserController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                 $params['username'],
                 $params['perm_templ'],
                 $params['use_ldap'] ? 'ldap' : 'sql'
@@ -561,7 +561,7 @@ class EditUserController extends BaseController
                 $logMessage = sprintf(
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                     str_replace(' ', '_', $groupInfo['name']),
                     $groupInfo['id'],
                     $targetUsername

@@ -98,7 +98,7 @@ class AddPermTemplController extends BaseController
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:add_perm_template name:%s',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
             $this->getSafeRequestValue('templ_name')
         ));
 

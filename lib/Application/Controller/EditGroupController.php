@@ -174,7 +174,7 @@ class EditGroupController extends BaseController
                 $logMessage = sprintf(
                     "client_ip:%s user:%s operation:edit_group group:%s group_id:%d changes:%s",
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     str_replace(' ', '_', $name),
                     $groupId,
                     implode('; ', $changes)

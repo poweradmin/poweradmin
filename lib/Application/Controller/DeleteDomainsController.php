@@ -136,7 +136,7 @@ class DeleteDomainsController extends BaseController
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                         $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
+                        LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                         $deleted_zone['name'],
                         $deleted_zone['type']
                     ), $deleted_zone['id']);

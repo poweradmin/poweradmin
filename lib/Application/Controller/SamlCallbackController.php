@@ -112,7 +112,7 @@ class SamlCallbackController extends BaseController
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:saml_login_success',
                     $this->ipAddressRetriever->getClientIp(),
-                    $_SESSION['userlogin'] ?? 'unknown'
+                    LegacyLogger::encodeUser($_SESSION['userlogin'] ?? 'unknown')
                 ));
             }
         } catch (\Exception $e) {
@@ -138,7 +138,7 @@ class SamlCallbackController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:saml_logout',
                 $this->ipAddressRetriever->getClientIp(),
-                $username
+                LegacyLogger::encodeUser($username)
             ));
 
             // Clear the session and redirect to login

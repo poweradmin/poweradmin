@@ -154,7 +154,7 @@ class DeleteRecordController extends BaseController
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
+                        LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                         $record_info['type'],
                         $record_info['name'],
                         $record_info['content'],
@@ -165,7 +165,7 @@ class DeleteRecordController extends BaseController
                     $this->auditLogger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                         $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
+                        LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                         $record_info['type'],
                         $record_info['name'],
                         $record_info['content'],

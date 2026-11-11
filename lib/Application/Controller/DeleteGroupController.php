@@ -129,7 +129,7 @@ class DeleteGroupController extends BaseController
             $logMessage = sprintf(
                 "client_ip:%s user:%s operation:delete_group group:%s group_id:%d members_affected:%d zones_affected:%d",
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getUserContextService()->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                 str_replace(' ', '_', $groupName),
                 $groupId,
                 $memberCount,

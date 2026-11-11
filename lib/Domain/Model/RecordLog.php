@@ -127,7 +127,7 @@ class RecordLog
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
             $prior['type'] ?? '',
             $prior['name'] ?? '',
             $prior['content'] ?? '',

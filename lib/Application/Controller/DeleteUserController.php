@@ -131,7 +131,7 @@ class DeleteUserController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_user target_user:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                 $targetUsername
             ));
 

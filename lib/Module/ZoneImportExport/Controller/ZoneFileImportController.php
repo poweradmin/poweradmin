@@ -334,7 +334,7 @@ class ZoneFileImportController extends BaseController
             $logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:zone_import_records zone_name:%s',
                 $clientIp,
-                $userLogin,
+                LegacyLogger::encodeUser($userLogin),
                 $zoneName
             ), $zone_id);
         } else {
@@ -418,7 +418,7 @@ class ZoneFileImportController extends BaseController
             $logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:zone_import zone_name:%s',
                 $clientIp,
-                $userLogin,
+                LegacyLogger::encodeUser($userLogin),
                 $zoneName
             ), $zone_id);
 

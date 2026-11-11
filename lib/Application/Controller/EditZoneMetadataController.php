@@ -164,7 +164,7 @@ class EditZoneMetadataController extends BaseController
                 $auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
                     $ipRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $zone['name'],
                     implode(',', $kinds)
                 ), $zoneId);

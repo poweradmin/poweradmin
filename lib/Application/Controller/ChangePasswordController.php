@@ -175,7 +175,7 @@ class ChangePasswordController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:change_password',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? 'unknown'
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? 'unknown')
             ));
 
             $sessionEntity = new SessionEntity($message, 'success');

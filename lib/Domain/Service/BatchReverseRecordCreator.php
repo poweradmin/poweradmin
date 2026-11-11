@@ -675,7 +675,7 @@ class BatchReverseRecordCreator
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_batch_ptr_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                     $this->ipAddressRetriever->getClientIp() ?: 'unknown',
-                    $this->userContextService->getLoggedInUsername() ?? 'unknown',
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? 'unknown'),
                     $content_rev,
                     $fqdn_name,
                     $ttl,

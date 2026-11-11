@@ -202,7 +202,7 @@ class ManageGroupZonesController extends BaseController
                 $logMessage = sprintf(
                     "client_ip:%s user:%s operation:add_zones group:%s group_id:%d count:%d zones:%s",
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     str_replace(' ', '_', $groupName),
                     $groupId,
                     count($results['success']),
@@ -288,7 +288,7 @@ class ManageGroupZonesController extends BaseController
                 $logMessage = sprintf(
                     "client_ip:%s user:%s operation:remove_zones group:%s group_id:%d count:%d zones:%s",
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     str_replace(' ', '_', $groupName),
                     $groupId,
                     count($results['success']),

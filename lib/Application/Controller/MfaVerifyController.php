@@ -238,7 +238,7 @@ class MfaVerifyController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown',
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown'),
                 $this->mfaService->getMfaType($userId) ?? 'unknown'
             ));
 

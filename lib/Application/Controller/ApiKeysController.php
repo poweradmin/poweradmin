@@ -202,7 +202,7 @@ class ApiKeysController extends BaseController
                 $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_create key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $apiKey->getId(),
                     $apiKey->getName()
                 ));
@@ -269,7 +269,7 @@ class ApiKeysController extends BaseController
                 $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_edit key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
                     $apiKey->getName()
                 ));
@@ -310,7 +310,7 @@ class ApiKeysController extends BaseController
                 $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_delete key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
                     $keyName
                 ));
@@ -354,7 +354,7 @@ class ApiKeysController extends BaseController
                 $this->auditLogger->logApiInfo(sprintf(
                     'client_ip:%s user:%s operation:api_key_regenerate key_id:%d key_name:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->getUserContextService()->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
                     $apiKey->getName()
                 ));
@@ -402,7 +402,7 @@ class ApiKeysController extends BaseController
             $this->auditLogger->logApiInfo(sprintf(
                 'client_ip:%s user:%s operation:api_key_toggle key_id:%d key_name:%s status:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getUserContextService()->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                 $id,
                 $apiKey->getName(),
                 $status

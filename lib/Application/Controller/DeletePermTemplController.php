@@ -82,7 +82,7 @@ class DeletePermTemplController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_perm_template id:%s name:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                 $id,
                 $templDetails['name'] ?? 'unknown'
             ));

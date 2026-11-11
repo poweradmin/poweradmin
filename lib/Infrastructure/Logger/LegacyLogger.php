@@ -40,6 +40,24 @@ class LegacyLogger
         $this->backendProvider = $backendProvider;
     }
 
+    /** The login name as a `user:` log field carries it, so a space or colon cannot start another field. */
+    public static function encodeUser(?string $name): string
+    {
+        return str_replace([':', ' '], ['%3A', '%20'], (string)$name);
+    }
+
+    /** Same encoding as encodeUser(), as a SQL expression over a column. */
+    public static function encodeUserSql(string $column): string
+    {
+        return "REPLACE(REPLACE($column, ':', '%3A'), ' ', '%20')";
+    }
+
+    /** Escapes LIKE wildcards with `!`; the query must say ESCAPE '!'. */
+    public static function escapeLike(string $value): string
+    {
+        return str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value);
+    }
+
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
         $syslog_use = $this->config->get('logging', 'syslog_enabled');

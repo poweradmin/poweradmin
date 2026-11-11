@@ -112,7 +112,7 @@ class EditPermTemplController extends BaseController
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:edit_perm_template id:%s name:%s',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername(),
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
             $this->getSafeRequestValue('id'),
             $this->getSafeRequestValue('templ_name')
         ));

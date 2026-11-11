@@ -195,7 +195,7 @@ class AddUserController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_user username:%s email:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername(),
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                 $userParams['username'],
                 $userParams['email']
             ));
@@ -359,7 +359,7 @@ class AddUserController extends BaseController
                 $logMessage = sprintf(
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                     str_replace(' ', '_', $groupInfo['name']),
                     $groupInfo['id'],
                     $username

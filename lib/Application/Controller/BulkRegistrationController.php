@@ -218,7 +218,7 @@ class BulkRegistrationController extends BaseController
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                     $domain,
                     $dom_type,
                     $zone_template

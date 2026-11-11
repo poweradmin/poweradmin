@@ -170,7 +170,7 @@ class MfaSetupController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_enable mfa_type:app',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername()
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername())
             ));
 
             // Generate recovery codes if they don't exist
@@ -320,7 +320,7 @@ class MfaSetupController extends BaseController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:mfa_enable mfa_type:email',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->userContextService->getLoggedInUsername()
+                LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername())
             ));
 
             // Generate recovery codes
@@ -360,7 +360,7 @@ class MfaSetupController extends BaseController
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:mfa_disable',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername()
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername())
         ));
 
         $this->addSystemMessage('success', _('MFA has been disabled.'));
@@ -389,7 +389,7 @@ class MfaSetupController extends BaseController
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:mfa_regenerate_codes',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername()
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername())
         ));
 
         $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));

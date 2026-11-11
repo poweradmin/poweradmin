@@ -43,7 +43,7 @@ class AuditService
         return sprintf(
             'client_ip:%s user:%s',
             $this->ipRetriever->getClientIp(),
-            $username
+            LegacyLogger::encodeUser($username)
         );
     }
 

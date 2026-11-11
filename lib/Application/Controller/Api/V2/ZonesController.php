@@ -527,7 +527,7 @@ class ZonesController extends PublicApiController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_add_zone zone_name:%s zone_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 $domain,
                 $type
             ), $zoneId);
@@ -860,7 +860,7 @@ class ZonesController extends PublicApiController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_delete_zone zone_name:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 $zoneName
             ), $zoneId);
 

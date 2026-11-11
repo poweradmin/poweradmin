@@ -214,7 +214,7 @@ class AddZoneSlaveController extends BaseController
                 $this->auditLogger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $this->ipAddressRetriever->getClientIp(),
-                    $this->userContextService->getLoggedInUsername(),
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
                     $zone,
                     $master
                 ), $zone_id);

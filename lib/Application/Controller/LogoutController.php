@@ -63,7 +63,7 @@ class LogoutController extends BaseController
         $this->auditLogger->logInfo(sprintf(
             'client_ip:%s user:%s operation:logout',
             $this->ipAddressRetriever->getClientIp(),
-            $this->userContextService->getLoggedInUsername() ?? 'unknown'
+            LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? 'unknown')
         ));
 
         // Check if user was authenticated via external auth

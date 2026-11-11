@@ -610,7 +610,7 @@ class ZonesRecordsController extends PublicApiController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 $name,
                 $type,
                 $content
@@ -842,7 +842,7 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s old_name:%s old_type:%s old_content:%s'
                 . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 $formattedRecord['name'],
                 $formattedRecord['type'],
                 $formattedRecord['content'],
@@ -969,7 +969,7 @@ class ZonesRecordsController extends PublicApiController
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $this->getAuthenticatedUsername(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 $existingRecord['name'] ?? '',
                 $existingRecord['type'] ?? '',
                 $existingRecord['content'] ?? ''

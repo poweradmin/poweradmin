@@ -28,6 +28,7 @@ use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Domain\Utility\DnssecTransformer;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 
 class DnsSecApiProvider implements DnssecProvider
@@ -224,7 +225,8 @@ class DnsSecApiProvider implements DnssecProvider
             $contextString[] = "$key:$value";
         }
         $formattedContext = implode(' ', $contextString);
+        $userLogin = LegacyLogger::encodeUser($this->userLogin);
 
-        $this->logger->info("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
+        $this->logger->info("client_ip:$this->clientIp user:{$userLogin} operation:$action zone:$zoneName $formattedContext");
     }
 }
