@@ -167,6 +167,11 @@ class ZoneOwnershipController extends BaseController
         // Add owner
         if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
             $newOwnerId = (int)$_POST["newowner"];
+            // Same users the picker offers: self, or anyone for user_view_others and superusers
+            if ($newOwnerId !== $userId && !$this->permissionService->canViewOthersContent($userId)) {
+                $this->setMessage('zone_ownership', 'error', _('You do not have permission to modify this zone.'));
+                return;
+            }
             // zones.owner has no foreign key, so an unknown id would leave a zone nobody owns
             if (!UserManager::isValidUser($this->db, $newOwnerId)) {
                 $this->setMessage('zone_ownership', 'error', _('User does not exist.'));
