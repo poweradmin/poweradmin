@@ -43,4 +43,10 @@ class AuditLineValueTest extends TestCase
     {
         $this->assertSame('urn%3A1%3Aann?', AuditLineValue::user("urn:1:ann\t"));
     }
+
+    public function testAUsernameWithASpaceCannotPassForAnotherUser(): void
+    {
+        $this->assertSame('admin%20evil', AuditLineValue::user('admin evil'));
+        $this->assertSame('evil%20user%3Aadmin', AuditLineValue::user('evil user:admin'));
+    }
 }

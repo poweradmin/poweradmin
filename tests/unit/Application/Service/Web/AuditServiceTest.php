@@ -269,7 +269,7 @@ class AuditServiceTest extends TestCase
         $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
         $this->assertSame(1, substr_count($line, 'operation:'));
         $this->assertStringNotContainsString("\n", $line);
-        $this->assertStringStartsWith('client_ip:192.0.2.10 user:x client_ip%3A203.0.113.9 operation%3Alogin_failed?forged operation:login_failed', $line);
+        $this->assertStringStartsWith('client_ip:192.0.2.10 user:x%20client_ip%3A203.0.113.9%20operation%3Alogin_failed?forged operation:login_failed', $line);
     }
 
     public function testFieldValuesCannotPlantFieldsButKeepAddressesReadable(): void

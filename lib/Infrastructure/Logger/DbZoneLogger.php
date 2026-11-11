@@ -114,14 +114,14 @@ class DbZoneLogger
         }
 
         $dbType = $this->config->get('database', 'type', 'mysql');
-        // The user: field stores colons as %3A (AuditLineValue::user)
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(u.username, ':', '%3A')", "' %'"]);
+        // The user: field stores colons as %3A and spaces as %20 (AuditLineValue::user); the % they add must not act as a wildcard
+        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')", "' %'"]);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
                     WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
-                      AND lz.event LIKE " . $userPattern . "
+                      AND lz.event LIKE " . $userPattern . " ESCAPE '!'
                 )
                 ORDER BY u.username";
 

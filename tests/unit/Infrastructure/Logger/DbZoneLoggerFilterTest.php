@@ -164,7 +164,8 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
     #[Test]
     public function theDistinctUserQueryUsesTheDriversConcatenation(): void
     {
-        foreach (['mysql' => "CONCAT('%user:', REPLACE(u.username, ':', '%3A'), ' %')", 'pgsql' => "CONCAT('%user:', REPLACE(u.username, ':', '%3A'), ' %')", 'sqlite' => "'%user:' || REPLACE(u.username, ':', '%3A') || ' %'"] as $driver => $pattern) {
+        $replace = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')";
+        foreach (['mysql' => "CONCAT('%user:', {$replace}, ' %')", 'pgsql' => "CONCAT('%user:', {$replace}, ' %')", 'sqlite' => "'%user:' || {$replace} || ' %'"] as $driver => $pattern) {
             $statement = $this->createMock(PDOStatement::class);
             $statement->method('execute')->willReturn(true);
             $statement->method('fetchAll')->willReturn([]);
@@ -245,5 +246,29 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
 
         $this->assertSame([self::ALPHA], $this->loggedZoneIds(['user' => 'urn:ann'], null));
         $this->assertContains('urn:ann', $this->logger()->getDistinctUsersForZones([self::ALPHA]));
+    }
+
+    /** A name with a space is stored encoded, so a filter for the first word does not match it */
+    #[Test]
+    public function aUsernameWithASpaceIsNotMatchedByAFilterForItsFirstWord(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (41, 'admin evil', 1)");
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:192.0.2.1 user:admin%20evil operation:edit_record zone:beta.example.com ', '2026-04-02 09:00:00', " . self::BETA . ")");
+
+        $this->assertNotContains(self::BETA, $this->loggedZoneIds(['user' => 'admin'], null));
+        $this->assertContains(self::BETA, $this->loggedZoneIds(['user' => 'admin evil'], null));
+        $this->assertContains('admin evil', $this->logger()->getDistinctUsersForZones([self::BETA]));
+    }
+
+    /** The %20 in the rebuilt name must not act as a wildcard in the owner dropdown */
+    #[Test]
+    public function theOwnerDropdownDoesNotListANameWhoseEncodingOnlyMatchesAsAWildcard(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (41, 'admin evil', 1)");
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:192.0.2.1 user:admin operation:edit_record record:20evil x', '2026-04-02 09:00:00', " . self::BETA . ")");
+
+        $this->assertNotContains('admin evil', $this->logger()->getDistinctUsersForZones([self::BETA]));
     }
 }

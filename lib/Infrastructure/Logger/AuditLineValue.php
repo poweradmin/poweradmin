@@ -40,11 +40,11 @@ final class AuditLineValue
     }
 
     /**
-     * A username as the user: field stores it. Every colon is encoded, so the log filters can
-     * build the same form from a username, in PHP or with SQL REPLACE().
+     * A username as the user: field stores it. Every colon and space is encoded, so the log
+     * filters can build the same form from a username, in PHP or with SQL REPLACE().
      */
     public static function user(string $username): string
     {
-        return str_replace(':', '%3A', (string)preg_replace('/[\x00-\x1F\x7F]/', '?', $username));
+        return str_replace([':', ' '], ['%3A', '%20'], (string)preg_replace('/[\x00-\x1F\x7F]/', '?', $username));
     }
 }
