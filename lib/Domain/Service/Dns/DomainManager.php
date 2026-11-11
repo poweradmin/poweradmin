@@ -511,6 +511,7 @@ class DomainManager implements DomainManagerInterface
                     $syncService->cleanupZoneSyncRecords($zoneId);
                 }
 
+                $sharedId = DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, (int)$id);
                 $this->releaseIdsOpenedByRowsOf($id);
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
@@ -524,6 +525,10 @@ class DomainManager implements DomainManagerInterface
 
                 $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
                 $stmt->execute([':id' => $id]);
+
+                if (!$sharedId) {
+                    SharedZoneIds::detachZoneHistory($this->db, (int)$id);
+                }
 
                 $this->db->commit();
             } catch (\Exception $e) {
@@ -598,6 +603,7 @@ class DomainManager implements DomainManagerInterface
                         $syncService->cleanupZoneSyncRecords($zoneId);
                     }
 
+                    $sharedId = DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, (int)$id);
                     $this->releaseIdsOpenedByRowsOf($id);
                     // Clean up Poweradmin-internal tables (always SQL)
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
@@ -612,6 +618,10 @@ class DomainManager implements DomainManagerInterface
 
                     $stmt = $this->db->prepare("DELETE FROM records_zone_templ_api WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
+
+                    if (!$sharedId) {
+                        SharedZoneIds::detachZoneHistory($this->db, (int)$id);
+                    }
 
                     $this->db->commit();
 

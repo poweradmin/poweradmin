@@ -233,6 +233,21 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30]], $this->keyScopes());
     }
 
+    #[Test]
+    public function deletingAZoneOnAnUnsharedIdDetachesItsHistoryButASharedIdKeepsIt(): void
+    {
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, zone_id INTEGER)");
+        $this->db->exec("INSERT INTO log_zones VALUES (1, 'a', 30), (2, 'b', 5)");
+
+        $this->assertTrue($this->repository()->deleteZone(30));
+        $this->assertTrue($this->repository()->deleteZone(12));
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 30")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id IS NULL")->fetchColumn());
+        // Zone 5 still holds the shared id, so its history stays
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM log_zones WHERE zone_id = 5")->fetchColumn());
+    }
+
     /** @param string[] $values @return string[] */
     private static function sorted(array $values): array
     {

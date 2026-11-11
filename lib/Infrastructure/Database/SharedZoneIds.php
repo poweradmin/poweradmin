@@ -230,6 +230,21 @@ final class SharedZoneIds
     }
 
     /**
+     * Keep the history of a deleted zone but cut it loose from the id, which SQLite hands to the next zone.
+     * Tables are probed in the catalog, so a schema without them never aborts an open transaction.
+     */
+    public static function detachZoneHistory(PDO $db, int $zoneId): void
+    {
+        foreach (['log_zones', 'log_changesets', 'log_record_changes'] as $table) {
+            if (DbCompat::tableExists($db, $table)) {
+                $stmt = $db->prepare("UPDATE $table SET zone_id = NULL WHERE zone_id = :zone_id");
+                $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+                $stmt->execute();
+            }
+        }
+    }
+
+    /**
      * Whether the user is the direct owner of the zone a shared id resolves to.
      */
     public static function ownsResolvedZone(PDO $db, int $userId, int $zoneId): bool

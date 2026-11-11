@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
@@ -38,6 +39,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -115,6 +117,8 @@ class DeleteDomainController extends BaseController
             }
         }
 
+        // A shared id stays with the other zone, and so does the history keyed by it
+        $sharedId = DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $zone_id);
         if ($this->createDomainManager()->deleteDomain($zone_id)) {
             $this->auditLogger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
@@ -123,6 +127,11 @@ class DeleteDomainController extends BaseController
                 $zone_info['name'],
                 $zone_info['type']
             ), $zone_id);
+
+            // The entry is written after the zone is gone, so cut it loose from the reusable id
+            if (!$sharedId) {
+                SharedZoneIds::detachZoneHistory($this->db, (int)$zone_id);
+            }
 
             // Delete associated comments - wrapped in try-catch to prevent
             // comment deletion failures from breaking zone deletion

@@ -152,6 +152,7 @@ class RecordChangeLoggerTest extends TestCase
         $this->assertCount(3, $rows);
         $this->assertSame('zone_create', $rows[0]['action']);
         $this->assertSame('zone_delete', $rows[1]['action']);
+        $this->assertNull($rows[1]['zone_id']);
         $this->assertSame('zone_metadata_edit', $rows[2]['action']);
 
         $deleted = json_decode((string) $rows[1]['before_state'], true);

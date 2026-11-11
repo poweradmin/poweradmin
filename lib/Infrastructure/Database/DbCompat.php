@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Database;
 
+use PDO;
+
 /**
  * DbCompat class provides compatibility methods for different database types.
  */
@@ -432,5 +434,22 @@ final class DbCompat
             'mysql', 'mysqli' => "LOWER(CONVERT($column USING utf8mb4)) COLLATE utf8mb4_bin = LOWER($placeholder)",
             default => "$column = $placeholder",
         };
+    }
+
+    /**
+     * Whether the table exists, read from the catalog so a missing table never raises an error
+     * (which would abort an open PostgreSQL transaction). Covers MySQL, PostgreSQL and SQLite.
+     */
+    public static function tableExists(PDO $db, string $table): bool
+    {
+        $sql = match ($db->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            'mysql' => 'SELECT 1 FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = :t',
+            'pgsql' => 'SELECT 1 FROM information_schema.tables WHERE table_schema = ANY (current_schemas(false)) AND table_name = :t',
+            default => "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :t",
+        };
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':t' => $table]);
+
+        return $stmt->fetchColumn() !== false;
     }
 }

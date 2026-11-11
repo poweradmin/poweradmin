@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
@@ -39,6 +40,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -127,6 +129,11 @@ class DeleteDomainsController extends BaseController
             }
         }
 
+        // A shared id stays with the other zone, and so does the history keyed by it
+        $sharedIds = array_filter(
+            array_map('intval', array_column($deleted_zones, 'id')),
+            fn(int $id): bool => DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $id)
+        );
         $delete_domains = $this->createDomainManager()->deleteDomains($zone_ids);
 
         if ($delete_domains) {
@@ -139,6 +146,11 @@ class DeleteDomainsController extends BaseController
                         $deleted_zone['name'],
                         $deleted_zone['type']
                     ), $deleted_zone['id']);
+
+                    // The entry is written after the zone is gone, so cut it loose from the reusable id
+                    if (!in_array((int)$deleted_zone['id'], $sharedIds, true)) {
+                        SharedZoneIds::detachZoneHistory($this->db, (int)$deleted_zone['id']);
+                    }
                 }
             }
 

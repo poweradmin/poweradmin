@@ -844,6 +844,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
             $stmt->bindValue(':cid_e', $canonicalId, PDO::PARAM_INT);
             return $stmt->execute();
         }
+        // A later zone can be given this id again (SQLite reuses the highest rowid); a shared id stays with the other zone
+        SharedZoneIds::detachZoneHistory($this->db, $canonicalId);
         // Group ownership is keyed by the canonical zone id, like the extra ownership
         // rows below - matching on the row's own id leaves the rows behind.
         $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");

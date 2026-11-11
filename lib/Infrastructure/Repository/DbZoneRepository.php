@@ -1067,6 +1067,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         try {
             // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+            SharedZoneIds::detachZoneHistory($this->db, $zoneId);
             foreach (
                 [
                     "DELETE FROM $records_table WHERE domain_id = :domain_id",

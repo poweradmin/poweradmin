@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -997,6 +998,8 @@ class ZonesController extends PublicApiController
             $zoneName = $zone['name'] ?? 'unknown';
 
             // Use the zone management service to delete zone
+            // A shared id stays with the other zone, and so does the history keyed by it
+            $sharedId = DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, (int)$zoneId);
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
             if (!$result['success']) {
@@ -1010,6 +1013,11 @@ class ZonesController extends PublicApiController
                 $this->getAuthenticatedUsername(),
                 $zoneName
             ), $zoneId);
+
+            // The entry is written after the zone is gone, so cut it loose from the reusable id
+            if (!$sharedId) {
+                SharedZoneIds::detachZoneHistory($this->db, (int)$zoneId);
+            }
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (\Throwable $e) {
