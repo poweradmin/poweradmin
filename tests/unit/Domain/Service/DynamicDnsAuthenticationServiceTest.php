@@ -171,7 +171,9 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
             ->willReturn(true);
 
         $this->mockRepository->expects($this->never())->method('findUserByUsernameWithDynamicDnsPermissions');
-        $this->mockUserAuthService->expects($this->never())->method('verifyPassword');
+        // A locked account costs the same hash as an unknown name
+        $this->mockUserAuthService->method('dummyVerificationHash')->willReturn('dummy');
+        $this->mockUserAuthService->expects($this->once())->method('verifyPassword')->with('testpass', 'dummy');
         $loginAttempts->expects($this->never())->method('recordAttempt');
 
         $service = new DynamicDnsAuthenticationService(

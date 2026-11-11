@@ -53,11 +53,14 @@ readonly class DynamicDnsAuthenticationService
         $username = $request->getUsername();
 
         if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            $this->verifyAgainstDummyHash($request->getPassword());
             return null;
         }
 
         $user = $this->repository->findUserByUsernameWithDynamicDnsPermissions($username);
         if (!$user) {
+            // Answering without a hash check would tell the caller which usernames hold the permission.
+            $this->verifyAgainstDummyHash($request->getPassword());
             return null;
         }
 
@@ -68,6 +71,11 @@ readonly class DynamicDnsAuthenticationService
         $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
 
         return $passwordValid ? $user : null;
+    }
+
+    private function verifyAgainstDummyHash(#[\SensitiveParameter] string $password): void
+    {
+        $this->userAuthService->verifyPassword($password, $this->userAuthService->dummyVerificationHash());
     }
 
     public function getUserZones(User $user): array

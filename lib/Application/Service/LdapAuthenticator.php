@@ -95,6 +95,20 @@ class LdapAuthenticator extends LoggingService
         );
     }
 
+    private function spendDummyHash(): void
+    {
+        $userAuthService = new UserAuthenticationService(
+            $this->configManager->get('security', 'password_encryption', 'bcrypt'),
+            $this->configManager->get('security', 'password_cost', 12)
+        );
+        $password = '';
+        if ($this->userContextService->hasSessionData(SessionKeys::USERPWD)) {
+            $password = (new PasswordEncryptionService($this->configManager->get('security', 'session_key', '')))
+                ->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
+        }
+        $userAuthService->verifyPassword($password, $userAuthService->dummyVerificationHash());
+    }
+
     public function authenticate(): void
     {
         $this->logInfo('Starting LDAP authentication process.');
@@ -110,7 +124,8 @@ class LdapAuthenticator extends LoggingService
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->logLockout();
             }
-            // Same text as an unknown user gets, so the lock does not reveal the account exists.
+            // Same text and cost as an unknown user gets, so the lock does not reveal the account exists.
+            $this->spendDummyHash();
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;

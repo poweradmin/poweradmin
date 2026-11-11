@@ -46,6 +46,12 @@ final class BasicAuthenticationMiddlewareDummyHashTest extends TestCase
         $this->assertSame(0, $this->authenticate('nobody', false, 1));
     }
 
+    #[Test]
+    public function aLockedAccountRunsTheDummyHash(): void
+    {
+        $this->assertSame(0, $this->authenticate('locked-user', true, 1));
+    }
+
     private function authenticate(string $username, bool $locked, int $expectedHashes): int
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);

@@ -100,7 +100,8 @@ class SqlAuthenticator extends LoggingService
             if (isset($_POST['authenticate'])) {
                 $this->userEventLogger->logLockout();
             }
-            // Same text as an unknown user gets, so the lock does not reveal the account exists.
+            // Same text and cost as an unknown user gets, so the lock does not reveal the account exists.
+            $this->spendDummyHash();
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
@@ -250,6 +251,19 @@ class SqlAuthenticator extends LoggingService
         }
 
         $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION[SessionKeys::USERLOGIN]]);
+    }
+
+    private function spendDummyHash(): void
+    {
+        $userAuthService = new UserAuthenticationService(
+            $this->configManager->get('security', 'password_encryption', 'bcrypt'),
+            $this->configManager->get('security', 'password_cost', 12)
+        );
+        $password = '';
+        if (isset($_SESSION[SessionKeys::USERPWD])) {
+            $password = (new PasswordEncryptionService($this->configManager->get('security', 'session_key')))->decrypt($_SESSION[SessionKeys::USERPWD]);
+        }
+        $userAuthService->verifyPassword($password, $userAuthService->dummyVerificationHash());
     }
 
     private function handleFailedAuthentication(?LoginFailureReason $reason = null): void

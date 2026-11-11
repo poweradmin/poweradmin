@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 
@@ -93,7 +94,13 @@ class LockedAccountMessageTest extends TestCase
             $shown = $entity;
         });
 
+        // The locked path spends a dummy hash at the configured cost, which reads this setting
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->expects($this->atLeastOnce())->method('get')
+            ->willReturnCallback(static fn($section, $key, $default = null) => $key === 'password_cost' ? 4 : $default);
+
         $properties += [
+            'configManager' => $config,
             'loginAttemptService' => $attempts,
             $class === LdapAuthenticator::class ? 'authenticationService' : 'authService' => $auth,
         ];
