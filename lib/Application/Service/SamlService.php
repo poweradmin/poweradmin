@@ -181,9 +181,8 @@ class SamlService extends LoggingService
 
             // Store provider ID for callback processing
             $this->setSessionValue('saml_provider', $providerId);
-            $this->logInfo('Stored provider ID in session: {provider_id}, Session ID: {session_id}', [
+            $this->logInfo('Stored provider ID in session: {provider_id}', [
                 'provider_id' => $providerId,
-                'session_id' => session_id()
             ]);
 
             // Use RelayState to maintain provider ID across SAML flow
@@ -235,9 +234,7 @@ class SamlService extends LoggingService
         $requestId = ($flow !== null && $flow['provider'] === $providerId) ? $flow['request_id'] : null;
 
         if (empty($providerId)) {
-            $this->logWarning('No provider ID in session or RelayState during SAML assertion. Session ID: {session_id}', [
-                'session_id' => session_id()
-            ]);
+            $this->logWarning('No provider ID in session or RelayState during SAML assertion');
             $sessionEntity = new SessionEntity(_('Authentication failed: Invalid session'), 'danger');
             $this->authenticationService->auth($sessionEntity);
             return;
