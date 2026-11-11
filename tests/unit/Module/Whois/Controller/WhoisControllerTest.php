@@ -57,4 +57,24 @@ class WhoisControllerTest extends SeamControllerTestCase
 
         $this->assertSame('', $this->renderedParams()['domain']);
     }
+
+    /** A control character in the posted domain never reaches the WHOIS socket */
+    #[DataProvider('controlCharacterDomains')]
+    public function testADomainWithControlCharactersIsRefused(string $domain): void
+    {
+        $this->post(['domain' => $domain]);
+        $config = $this->configure(['whois' => ['restrict_to_admin' => false, 'default_server' => '127.0.0.1', 'socket_timeout' => 1]]);
+        $controller = new WhoisController($this->requestData(), true, $this->environment($config));
+        $controller->run();
+
+        $params = $this->renderedParams();
+        $this->assertSame('', $params['domain']);
+        $this->assertSame('Invalid domain format', $params['result']['error']);
+    }
+
+    /** @return array<string, array{string}> */
+    public static function controlCharacterDomains(): array
+    {
+        return ['crlf' => ["example.com\r\nextra"], 'tab' => ["exam\tple.com"], 'del' => ["exam\x7Fple.com"]];
+    }
 }

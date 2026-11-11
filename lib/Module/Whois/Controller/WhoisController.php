@@ -35,6 +35,7 @@ class WhoisController extends BaseController
 {
     private ?WhoisService $whoisService = null;
     private ?DomainRepositoryInterface $domainRepository = null;
+    private bool $invalidDomain = false;
 
     private function whoisService(): WhoisService
     {
@@ -68,6 +69,9 @@ class WhoisController extends BaseController
 
         $domain = $this->handleDomainInput();
         $result = $this->performWhoisLookup($domain);
+        if ($this->invalidDomain) {
+            $result['error'] = _('Invalid domain format');
+        }
 
         $this->render('@whois/whois.html', [
             'domain' => $domain,
@@ -83,6 +87,11 @@ class WhoisController extends BaseController
 
         if ($this->isPost() && isset($this->getRequest()['domain'])) {
             $domain = trim($this->getRequest()['domain']);
+
+            if (preg_match('/[\x00-\x1F\x7F]/', $domain)) {
+                $this->invalidDomain = true;
+                return '';
+            }
 
             if (preg_match('/[^\x20-\x7E]/', $domain)) {
                 $domain = DnsIdnService::toPunycode($domain);

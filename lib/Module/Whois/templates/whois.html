@@ -28,7 +28,7 @@
             </div>
         </form>
 
-        {% if domain %}
+        {% if domain or result.error %}
             <div class="mt-4">
                 <h6>{% trans %}WHOIS results for{% endtrans %} {{ utf8_domain ?: domain }}</h6>
                 {% if result.success %}
