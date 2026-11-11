@@ -337,6 +337,10 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Missing required field: values (array)', 400);
             }
 
+            if (array_filter($data['values'], static fn($value) => !is_scalar($value) && $value !== null) !== []) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+
             $values = array_map('strval', $data['values']);
 
             if (empty($values)) {

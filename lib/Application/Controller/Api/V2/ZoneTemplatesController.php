@@ -326,6 +326,7 @@ class ZoneTemplatesController extends PublicApiController
 
             if (
                 !$data || !isset($data['name']) || !isset($data['description']) ||
+                is_array($data['name']) || is_array($data['description']) ||
                 empty(trim($data['name'])) || empty(trim($data['description']))
             ) {
                 return $this->returnApiError('Missing required fields: name, description', 400);
@@ -446,6 +447,7 @@ class ZoneTemplatesController extends PublicApiController
 
             if (
                 !$data || !isset($data['name']) || !isset($data['description']) ||
+                is_array($data['name']) || is_array($data['description']) ||
                 empty(trim($data['name'])) || empty(trim($data['description']))
             ) {
                 return $this->returnApiError('Missing required fields: name, description', 400);
