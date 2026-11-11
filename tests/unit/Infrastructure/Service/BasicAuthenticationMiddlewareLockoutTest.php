@@ -38,11 +38,11 @@ class BasicAuthenticationMiddlewareLockoutTest extends TestCase
         $_SERVER = $this->serverBackup;
     }
 
-    private function middleware(bool $lockout): BasicAuthenticationMiddleware
+    private function middleware(bool $lockout, int $cost = 4): BasicAuthenticationMiddleware
     {
         $settings = [
             'security.password_encryption' => 'bcrypt',
-            'security.password_cost' => 4,
+            'security.password_cost' => $cost,
             'security.account_lockout.enable_lockout' => $lockout,
             'security.account_lockout.lockout_attempts' => 3,
             'security.account_lockout.lockout_duration' => 15,
@@ -61,10 +61,10 @@ class BasicAuthenticationMiddlewareLockoutTest extends TestCase
         return new BasicAuthenticationMiddleware($this->db, $config);
     }
 
-    private function authenticate(BasicAuthenticationMiddleware $middleware, string $password): int
+    private function authenticate(BasicAuthenticationMiddleware $middleware, string $password, string $username = 'alice'): int
     {
         return (new ReflectionMethod(BasicAuthenticationMiddleware::class, 'authenticateAndGetUserId'))
-            ->invoke($middleware, 'alice', $password);
+            ->invoke($middleware, $username, $password);
     }
 
     public function testCorrectPasswordIsRefusedOnceTheAccountIsLockedOut(): void
@@ -91,5 +91,16 @@ class BasicAuthenticationMiddlewareLockoutTest extends TestCase
 
         $this->assertSame(7, $this->authenticate($middleware, 'right-password'));
         $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM login_attempts')->fetchColumn());
+    }
+
+    public function testUnknownUsernameCostsAPasswordHash(): void
+    {
+        $middleware = $this->middleware(false, 10);
+
+        $start = microtime(true);
+        $this->assertSame(0, $this->authenticate($middleware, 'whatever', 'nobody'));
+
+        // A bcrypt cost-10 verify takes tens of milliseconds; the old early return took under one
+        $this->assertGreaterThan(0.01, microtime(true) - $start);
     }
 }
