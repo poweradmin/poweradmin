@@ -77,6 +77,18 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $this->assertFailure($outcome, 'Authentication failed!', endSession: false);
     }
 
+    public function testLockedAccountCostsAFullHashCheck(): void
+    {
+        $this->attempts->method('isAccountLocked')->willReturn(true);
+        $authenticator = $this->authenticator(userRow: null);
+
+        $start = microtime(true);
+        $authenticator->authenticate(new LoginCredentials('alice', 'secret'));
+
+        // A skipped hash answers in well under a millisecond; the default cost 12 takes ~200ms
+        $this->assertGreaterThan(0.05, microtime(true) - $start);
+    }
+
     public function testMissingSessionCredentialsFailWithoutAMessage(): void
     {
         $outcome = $this->authenticator(userRow: null)->authenticate();

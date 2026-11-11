@@ -102,7 +102,9 @@ final class LdapAuthenticator
             if ($isLogin) {
                 $this->auditService->logLoginLocked(AuthMethod::LDAP);
             }
-            // Same text as a bad password: lockout never applies to unknown names, so a distinct message would reveal real accounts.
+            // Same text and cost as a bad password: lockout never applies to unknown names, so a difference would reveal real accounts.
+            $dummyAuthService = UserAuthenticationService::fromConfig($this->configManager);
+            $dummyAuthService->verifyPassword($credentials !== null ? $credentials->password : '', $dummyAuthService->dummyVerificationHash());
             return AuthOutcome::failure(_('Authentication failed!'));
         }
 

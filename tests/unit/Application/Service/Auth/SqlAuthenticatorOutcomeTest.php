@@ -63,6 +63,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
     private MockObject&UserRepositoryInterface $users;
     private MockObject&CsrfTokenService $csrf;
     private bool $mfaEnabled = false;
+    private int $passwordCost = 4;
 
     protected function setUp(): void
     {
@@ -165,6 +166,19 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $this->assertFailure($outcome, 'Authentication failed!');
         $this->assertFalse($this->session->has(SessionKeys::USERID));
+    }
+
+    public function testLockedAccountCostsAFullHashCheck(): void
+    {
+        $this->passwordCost = 11;
+        $this->attempts->method('isAccountLocked')->willReturn(true);
+        $authenticator = $this->authenticator($this->userRow(), expectQuery: false);
+
+        $start = microtime(true);
+        $authenticator->authenticate($this->login('alice', self::PASSWORD));
+
+        // A skipped hash answers in well under a millisecond; cost 11 takes ~100ms
+        $this->assertGreaterThan(0.03, microtime(true) - $start);
     }
 
     public function testMissingSessionCredentialsFailWithoutAMessage(): void
@@ -273,7 +287,7 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
             'security.session_key' => self::SESSION_KEY,
             'security.password_encryption' => 'bcrypt',
-            'security.password_cost' => 4,
+            'security.password_cost' => $this->passwordCost,
             'security.mfa.enabled' => $this->mfaEnabled,
             default => $default,
         });

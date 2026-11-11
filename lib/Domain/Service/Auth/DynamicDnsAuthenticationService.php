@@ -56,6 +56,8 @@ readonly class DynamicDnsAuthenticationService
         $username = $request->getUsername();
 
         if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
+            // A locked real account must cost what an unknown name costs.
+            $this->verifyAgainstDummyHash($request->getPassword());
             return null;
         }
 

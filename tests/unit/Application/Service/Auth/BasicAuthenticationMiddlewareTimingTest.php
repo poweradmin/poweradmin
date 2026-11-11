@@ -33,11 +33,11 @@ class BasicAuthenticationMiddlewareTimingTest extends TestCase
 {
     private const DUMMY_HASH = '$2y$04$dummy';
 
-    private function middleware(UserAuthenticationService $authService, ?UserRepositoryInterface $repository = null): BasicAuthenticationMiddleware
+    private function middleware(UserAuthenticationService $authService, ?UserRepositoryInterface $repository = null, bool $locked = false): BasicAuthenticationMiddleware
     {
         $middleware = (new ReflectionClass(BasicAuthenticationMiddleware::class))->newInstanceWithoutConstructor();
         $attempts = $this->createMock(LoginAttemptService::class);
-        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->method('isAccountLocked')->willReturn($locked);
 
         foreach (
             [
@@ -79,6 +79,17 @@ class BasicAuthenticationMiddlewareTimingTest extends TestCase
         $middleware = $this->middleware($this->authServiceExpectingDummyCheck('guess'), $repository);
 
         $this->assertSame(0, $this->authenticate($middleware, 'nobody', 'guess'));
+    }
+
+    public function testLockedAccountRunsOneHashCheck(): void
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('findByUsername')->willReturn(new User(5, '$2y$04$stored', false));
+        $repository->expects($this->never())->method('findBasicAuthUser');
+
+        $middleware = $this->middleware($this->authServiceExpectingDummyCheck('guess'), $repository, locked: true);
+
+        $this->assertSame(0, $this->authenticate($middleware, 'locked', 'guess'));
     }
 
     public function testDisabledAccountRunsOneHashCheck(): void

@@ -141,6 +141,8 @@ class BasicAuthenticationMiddleware
         // enforces via SqlAuthenticator.
         $ipAddress = IpAddressRetriever::fromConfig($_SERVER, $this->config)->getClientIp() ?: '0.0.0.0';
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
+            // A locked real account must cost what an unknown name costs.
+            $this->verifyAgainstDummyHash($password);
             return 0;
         }
 
