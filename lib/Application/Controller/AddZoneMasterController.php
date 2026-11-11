@@ -183,7 +183,7 @@ class AddZoneMasterController extends BaseController
             $raw_domain = $reverse_zone;
         }
 
-        $zone_name = DnsIdnService::toPunycode($raw_domain);
+        $zone_name = strtolower(DnsIdnService::toPunycode($raw_domain));
         $dom_type = $this->request->getPostParam('dom_type', '');
 
         // The dropdown only populates the form; without this the submit path would

@@ -157,7 +157,7 @@ class SecondaryZoneImportController extends BaseController
             return;
         }
 
-        $zone = DnsIdnService::toPunycode($rawDomain);
+        $zone = strtolower(DnsIdnService::toPunycode($rawDomain));
         $ownershipMode = new ZoneOwnershipModeService($this->config);
         [$owner, $groups, $ownerError] = $this->resolveOwnership($ownershipMode);
         if ($ownerError !== null) {

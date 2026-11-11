@@ -132,8 +132,8 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'At least one user or group must be assigned as owner', 'status' => 400];
         }
 
-        // Stored names are punycode, as the web form writes them.
-        $domain = DnsIdnService::toPunycode(trim($domain));
+        // Stored names are punycode, as the web form writes them; the existence check is case-sensitive on PostgreSQL.
+        $domain = strtolower(DnsIdnService::toPunycode(trim($domain)));
 
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
