@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import requests
 import socket
 from unittest.mock import patch
@@ -10,12 +11,12 @@ from requests.auth import HTTPBasicAuth
 login = "username"
 password = "password"
 dyndns = "mydynamicdns.example.com"
-url = "http://www.example.com/poweradmin"
+url = "https://www.example.com/poweradmin"
 verbose = 1
 
 parser = argparse.ArgumentParser(description='Client for Poweradmin dynamic DNS')
 parser.add_argument('-l', '--login', dest='login', help='Poweradmin user name')
-parser.add_argument('-p', '--password', dest='password', help='Poweradmin user password')
+parser.add_argument('-p', '--password', dest='password', help='Poweradmin user password (visible in the process list; prefer the POWERADMIN_DDNS_PASSWORD environment variable)')
 parser.add_argument('-d', '--dyndns', dest='dyndns', help='Dynamic DNS name')
 parser.add_argument('-u', '--url', dest='url', help='Poweradmin URL')
 parser.add_argument('-v', '--verbose', dest='verbose', help='Output verbosity')
@@ -23,8 +24,10 @@ args = parser.parse_args()
 
 if hasattr(args, "login"):
     login = args.login
-if hasattr(args, "password"):
+if args.password:
     password = args.password
+elif os.environ.get("POWERADMIN_DDNS_PASSWORD"):
+    password = os.environ["POWERADMIN_DDNS_PASSWORD"]
 if hasattr(args, "dyndns"):
     dyndns = args.dyndns
 if hasattr(args, "poweradmin"):
