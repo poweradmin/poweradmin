@@ -45,6 +45,8 @@ use Poweradmin\Application\Service\Web\RedirectService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Http\RequestContext;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 
 /**
  * Per-request login pipeline: CSRF and reCAPTCHA on the form, session expiry, then the SQL or LDAP authenticator.
@@ -276,11 +278,19 @@ final class SessionAuthenticator
             case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logger->info('User {username} uses OIDC for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
                 // OIDC users are already authenticated, no need to verify password
+                if ($isLogin) {
+                    $this->refuseSsoAccountPasswordLogin($credentials);
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
                 // SAML users are already authenticated, no need to verify password
+                if ($isLogin) {
+                    $this->refuseSsoAccountPasswordLogin($credentials);
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_REMOTE_USER:
@@ -343,6 +353,25 @@ final class SessionAuthenticator
      * Turns the authenticator's decision into the response: a failure flashes its
      * message on the login page, a completed login leaves for the outcome's path.
      */
+    /**
+     * A password login for an account that signs in through an identity provider answers
+     * like a wrong password and keeps no trace of the posted password in the session.
+     */
+    private function refuseSsoAccountPasswordLogin(?LoginCredentials $credentials): void
+    {
+        $this->logger->warning('Password login refused for SSO account {username}', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+        $this->session->remove(SessionKeys::USERPWD);
+        $this->failLikeWrongPassword($credentials);
+    }
+
+    private function failLikeWrongPassword(?LoginCredentials $credentials): void
+    {
+        $userAuthService = UserAuthenticationService::fromConfig($this->configManager);
+        $userAuthService->verifyPassword($credentials !== null ? $credentials->password : '', $userAuthService->dummyVerificationHash());
+        $this->auditService()->logLoginFailed(AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD);
+        $this->completeLogin(AuthOutcome::failure(_('Authentication failed!')));
+    }
+
     private function completeLogin(AuthOutcome $outcome): void
     {
         if ($outcome->isFailure()) {
