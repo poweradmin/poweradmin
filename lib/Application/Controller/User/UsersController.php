@@ -107,7 +107,8 @@ class UsersController extends BaseController
         // The same address rule as the single-user form, for an address this save changes:
         // accounts an identity provider created may have none, and every row is posted
         $email = (string)($posted['email'] ?? '');
-        $storedEmail = (string)($this->services()->userRepository()->getUserById($targetId)['email'] ?? '');
+        $stored = $this->services()->userRepository()->getUserById($targetId) ?? [];
+        $storedEmail = (string)($stored['email'] ?? '');
         if ($email !== $storedEmail) {
             $this->setValidationConstraints(['email' => [new Assert\NotBlank(), new Assert\Email()]]);
             if (!$this->doValidateRequest(['email' => $email])) {
@@ -125,6 +126,14 @@ class UsersController extends BaseController
         // Auth-critical fields are not self-service (#1327), as on the single-user form
         if ($targetId === $callerId && !$this->hasPermission(Permission::PERM_USER_EDIT_OTHERS)) {
             $input = array_diff_key($input, array_flip(SelfEditFieldGuard::RESTRICTED_FIELDS));
+        }
+        // A new username or email is a way into the account, so it needs the same right as its password
+        if (
+            SelfEditFieldGuard::changesSignInIdentity($stored, $input)
+            && !$this->services()->apiPermissionService()->canEditUserPassword($callerId, $targetId)
+        ) {
+            $this->setMessage('users', 'error', _('Authentication settings can only be changed by an administrator'));
+            return false;
         }
         if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {
             $input['perm_templ'] = $posted['templ_id'];

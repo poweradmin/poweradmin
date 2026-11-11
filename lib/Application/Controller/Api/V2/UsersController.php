@@ -859,6 +859,15 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to change this user\'s sign-in method', 403);
             }
 
+            // A new username or email is a way into the account, so it needs the same right
+            if (
+                $currentUser !== null
+                && SelfEditFieldGuard::changesSignInIdentity($currentUser, $input)
+                && !$this->apiPermissionService->canEditUserPassword($currentUserId, $targetUserId)
+            ) {
+                return $this->returnApiError('You do not have permission to change this user\'s sign-in method', 403);
+            }
+
             $zoneLimit = $this->readZoneLimit($currentUserId, $input);
             if ($zoneLimit instanceof JsonResponse) {
                 return $zoneLimit;

@@ -257,4 +257,15 @@ class SelfEditFieldGuardTest extends PermissionServiceTestCase
         $this->assertStringContainsString('use_ldap', $error);
         $this->assertStringContainsString('active', $error);
     }
+
+    public function testChangesSignInIdentityComparesUsernameAndEmail(): void
+    {
+        $stored = ['username' => 'alice', 'email' => 'alice@example.com'];
+
+        $this->assertFalse(SelfEditFieldGuard::changesSignInIdentity($stored, ['fullname' => 'A']));
+        $this->assertFalse(SelfEditFieldGuard::changesSignInIdentity($stored, ['username' => 'alice', 'email' => 'alice@example.com']));
+        $this->assertTrue(SelfEditFieldGuard::changesSignInIdentity($stored, ['email' => 'other@example.com']));
+        $this->assertTrue(SelfEditFieldGuard::changesSignInIdentity($stored, ['username' => 'bob']));
+        $this->assertTrue(SelfEditFieldGuard::changesSignInIdentity($stored, ['email' => null]));
+    }
 }

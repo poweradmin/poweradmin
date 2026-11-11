@@ -95,6 +95,41 @@ class UsersControllerPasswordAuthTest extends TestCase
         $this->assertNotSame(403, $this->invokeUpdate($controller)->getStatusCode());
     }
 
+    public function testEmailOrUsernameChangeRejectedWithoutPasswordPermission(): void
+    {
+        foreach (['{"email": "mallory@example.com"}', '{"username": "mallory"}'] as $body) {
+            $permission = $this->createMock(ApiPermissionService::class);
+            $permission->method('canEditUser')->willReturn(true);
+            $permission->method('canEditUserPassword')->willReturn(false);
+
+            $userService = $this->createMock(UserManagementService::class);
+            $userService->expects($this->never())->method('updateUser');
+
+            $controller = $this->makeController(\Poweradmin\Application\Controller\Api\V2\UsersController::class, 100, 1, $permission, $userService);
+            $this->setStoredUser($controller, ['id' => 1, 'username' => 'alice', 'email' => 'alice@example.com', 'use_ldap' => 0]);
+            $this->setProperty($controller, 'request', Request::create('/', 'PUT', [], [], [], [], $body));
+
+            $this->assertSame(403, $this->invokeUpdate($controller)->getStatusCode(), $body);
+        }
+    }
+
+    public function testUnchangedEmailAndUsernamePassWithoutPasswordPermission(): void
+    {
+        $permission = $this->createMock(ApiPermissionService::class);
+        $permission->method('canEditUser')->willReturn(true);
+        $permission->method('canEditUserPassword')->willReturn(false);
+
+        $userService = $this->createMock(UserManagementService::class);
+        $userService->expects($this->once())->method('updateUser')
+            ->willReturn(['success' => true, 'message' => 'ok', 'user_id' => 1]);
+
+        $controller = $this->makeController(\Poweradmin\Application\Controller\Api\V2\UsersController::class, 100, 1, $permission, $userService);
+        $this->setStoredUser($controller, ['id' => 1, 'username' => 'alice', 'email' => 'alice@example.com', 'use_ldap' => 0]);
+        $this->setProperty($controller, 'request', Request::create('/', 'PUT', [], [], [], [], '{"username": "alice", "email": "alice@example.com", "fullname": "A"}'));
+
+        $this->assertNotSame(403, $this->invokeUpdate($controller)->getStatusCode());
+    }
+
     public function testMalformedSignInFlagIsLeftToTheValidator(): void
     {
         // "maybe" is not a change of sign-in method; the command factory answers it with 400

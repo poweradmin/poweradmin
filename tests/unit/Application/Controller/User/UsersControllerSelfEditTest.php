@@ -54,6 +54,7 @@ class UsersControllerSelfEditTest extends TestCase
 
         $apiPermissions = $this->createMock(ApiPermissionService::class);
         $apiPermissions->method('canEditUser')->willReturn(true);
+        $apiPermissions->method('canEditUserPassword')->willReturn(true);
 
         $captured = null;
         $users = $this->createMock(UserManagementService::class);

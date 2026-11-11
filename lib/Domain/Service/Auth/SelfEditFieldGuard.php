@@ -84,6 +84,28 @@ class SelfEditFieldGuard
         return null;
     }
 
+    /**
+     * Whether a submitted username or email differs from the stored one. Either
+     * one moves where a password reset mail goes or which name signs in, so the
+     * caller needs the right to set that account's password.
+     *
+     * @param array<string, mixed> $stored
+     * @param array<string, mixed> $submitted
+     */
+    public static function changesSignInIdentity(array $stored, array $submitted): bool
+    {
+        foreach (['username', 'email'] as $field) {
+            if (!array_key_exists($field, $submitted)) {
+                continue;
+            }
+            if (!is_scalar($submitted[$field]) || (string)$submitted[$field] !== (string)($stored[$field] ?? '')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static function differs(string $field, mixed $submitted, mixed $stored): bool
     {
         if ($field === 'username') {

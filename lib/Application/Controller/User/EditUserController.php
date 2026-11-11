@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\User\UserFormMessages;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Zone\ZoneLimitMessages;
@@ -95,6 +96,13 @@ class EditUserController extends BaseController
 
         $callerId = (int)$this->getCurrentUserId();
         $input = $this->prepareUserData($editId, $stored, $callerId);
+
+        // A new username or email is a way into the account, so it needs the same right as its password
+        if (SelfEditFieldGuard::changesSignInIdentity($stored, $input) && !$this->mayChangeSignInMethod($editId)) {
+            $this->setMessage('edit_user', 'error', _('Authentication settings can only be changed by an administrator'));
+            $this->showUserEditForm($editId, $policyConfig);
+            return;
+        }
 
         // Only a superuser's form carries the field; anyone else's post of it is ignored
         $zoneLimits = $this->services()->zoneOwnershipLimit();

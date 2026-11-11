@@ -35,7 +35,7 @@ use ReflectionMethod;
  */
 class UsersControllerEmailTest extends TestCase
 {
-    private function saveRow(string $storedEmail, string $postedEmail, bool &$validated): bool
+    private function saveRow(string $storedEmail, string $postedEmail, bool &$validated, bool $mayEditPasswords = true, string $storedUsername = 'alice'): bool
     {
         $controller = $this->getMockBuilder(UsersController::class)
             ->disableOriginalConstructor()
@@ -50,8 +50,9 @@ class UsersControllerEmailTest extends TestCase
 
         $apiPermissions = $this->createMock(ApiPermissionService::class);
         $apiPermissions->method('canEditUser')->willReturn(true);
+        $apiPermissions->method('canEditUserPassword')->willReturn($mayEditPasswords);
         $repository = $this->createMock(UserRepositoryInterface::class);
-        $repository->method('getUserById')->willReturn(['id' => 9, 'email' => $storedEmail]);
+        $repository->method('getUserById')->willReturn(['id' => 9, 'username' => $storedUsername, 'email' => $storedEmail]);
         $users = $this->createMock(UserManagementService::class);
         $users->method('updateUser')->willReturn(['success' => true]);
 
@@ -80,5 +81,20 @@ class UsersControllerEmailTest extends TestCase
 
         $this->assertFalse($this->saveRow('alice@example.com', 'not-an-address', $validated));
         $this->assertTrue($validated);
+    }
+
+    public function testANewEmailOrUsernameNeedsTheRightToSetThePassword(): void
+    {
+        $validated = false;
+
+        $this->assertFalse($this->saveRow('alice@example.com', 'mallory@example.com', $validated, false));
+        $this->assertFalse($this->saveRow('alice@example.com', 'alice@example.com', $validated, false, 'bob'));
+    }
+
+    public function testUnchangedEmailAndUsernameSaveWithoutThePasswordRight(): void
+    {
+        $validated = false;
+
+        $this->assertTrue($this->saveRow('alice@example.com', 'alice@example.com', $validated, false));
     }
 }

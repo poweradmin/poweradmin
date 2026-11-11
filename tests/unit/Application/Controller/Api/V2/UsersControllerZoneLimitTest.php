@@ -151,7 +151,7 @@ class UsersControllerZoneLimitTest extends V2ControllerTestCase
         $permissions->method('permissions')->willReturn($this->createMock(PermissionService::class));
 
         $lookup = $this->createMock(UserLookupInterface::class);
-        $lookup->method('getUserById')->willReturn(['id' => self::TARGET, 'username' => 'carol']);
+        $lookup->method('getUserById')->willReturn(['id' => self::TARGET, 'username' => 'carol', 'email' => 'carol@example.com']);
 
         $templates = $this->createMock(PermissionTemplateRepositoryInterface::class);
         $templates->method('getMinimalPermissionTemplateId')->willReturn(2);
