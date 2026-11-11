@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 class DocsController extends BaseController
 {
     /** swagger-ui-dist release copied into assets/swagger-ui/ (Apache-2.0, see its LICENSE). */
-    private const SWAGGER_UI_VERSION = '5.10.5';
+    private const SWAGGER_UI_VERSION = '5.34.0';
 
     /**
      * Constructor for DocsController
