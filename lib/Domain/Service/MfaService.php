@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -266,13 +266,16 @@ class MfaService
             return true;
         }
 
-        if ($this->isVerificationLocked($userId)) {
+        // Count first: parallel guesses must not all read the same failure total.
+        if (!$this->userMfaRepository->reserveVerificationAttempt($userId, self::MAX_VERIFY_ATTEMPTS, self::VERIFY_LOCKOUT_SECONDS)) {
             error_log("[MfaService] Verification refused - too many failed attempts for user ID: $userId");
             return false;
         }
 
         $isValid = $this->checkCode($userId, $code);
-        $this->recordVerificationOutcome($userId, $isValid);
+        if ($isValid) {
+            $this->recordVerificationOutcome($userId, true);
+        }
 
         return $isValid;
     }
@@ -293,7 +296,7 @@ class MfaService
     }
 
     /**
-     * Count the attempt and start refusing once the ceiling is reached.
+     * Clear the failure count and lockout after a successful verification.
      *
      * Re-reads the record because checkCode() saves its own changes (recovery
      * code consumed, code marked used); writing a stale copy would undo them.
@@ -302,31 +305,18 @@ class MfaService
     {
         $userMfa = $this->userMfaRepository->findByUserId($userId);
 
-        if (!$userMfa) {
+        if (!$userMfa || !$isValid) {
             return;
         }
 
         $metadata = $userMfa->getVerificationDataAsArray();
 
-        if ($isValid) {
-            // Nothing accrued, so skip the write a clean verification would add.
-            if (empty($metadata['failed_attempts']) && empty($metadata['locked_until'])) {
-                return;
-            }
-
-            unset($metadata['failed_attempts'], $metadata['locked_until']);
-        } else {
-            $failed = (int)($metadata['failed_attempts'] ?? 0) + 1;
-
-            if ($failed >= self::MAX_VERIFY_ATTEMPTS) {
-                $metadata['failed_attempts'] = 0;
-                $metadata['locked_until'] = time() + self::VERIFY_LOCKOUT_SECONDS;
-                error_log("[MfaService] Second factor locked after repeated failures for user ID: $userId");
-            } else {
-                $metadata['failed_attempts'] = $failed;
-            }
+        // Nothing accrued, so skip the write a clean verification would add.
+        if (empty($metadata['failed_attempts']) && empty($metadata['locked_until'])) {
+            return;
         }
 
+        unset($metadata['failed_attempts'], $metadata['locked_until']);
         $userMfa->setVerificationData($metadata);
         $this->userMfaRepository->save($userMfa);
     }

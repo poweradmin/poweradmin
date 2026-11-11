@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -57,6 +57,19 @@ interface UserMfaRepositoryInterface
      * @return bool True if the settings were deleted, false otherwise
      */
     public function delete(UserMfa $userMfa): bool;
+
+    /**
+     * Count one verification attempt and report whether it may proceed.
+     *
+     * The counter moves under a row lock so parallel attempts cannot all read the
+     * same value. Returns false while locked out or when this attempt reaches the
+     * limit on a locked record; a missing record returns true.
+     *
+     * @param int $userId The user ID
+     * @param int $maxAttempts Attempts allowed before the lockout starts
+     * @param int $lockSeconds Lockout length in seconds
+     */
+    public function reserveVerificationAttempt(int $userId, int $maxAttempts, int $lockSeconds): bool;
 
     /**
      * Get all users with MFA enabled

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -146,6 +146,59 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
         ");
 
         return $stmt->execute(['id' => $userMfa->getId()]);
+    }
+
+    public function reserveVerificationAttempt(int $userId, int $maxAttempts, int $lockSeconds): bool
+    {
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
+        }
+
+        try {
+            // A no-op UPDATE takes the row (SQLite: database) lock before the read on every engine.
+            $lock = $this->db->prepare("UPDATE user_mfa SET user_id = user_id WHERE user_id = :user_id");
+            $lock->execute(['user_id' => $userId]);
+
+            $select = $this->db->prepare("SELECT verification_data FROM user_mfa WHERE user_id = :user_id");
+            $select->execute(['user_id' => $userId]);
+            $row = $select->fetch(PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                $allowed = true;
+            } else {
+                $metadata = json_decode((string)($row['verification_data'] ?? ''), true);
+                $metadata = is_array($metadata) ? $metadata : [];
+
+                if ((int)($metadata['locked_until'] ?? 0) > time()) {
+                    $allowed = false;
+                } else {
+                    $failed = (int)($metadata['failed_attempts'] ?? 0) + 1;
+                    if ($failed >= $maxAttempts) {
+                        $metadata['failed_attempts'] = 0;
+                        $metadata['locked_until'] = time() + $lockSeconds;
+                    } else {
+                        $metadata['failed_attempts'] = $failed;
+                    }
+
+                    $update = $this->db->prepare("UPDATE user_mfa SET verification_data = :data WHERE user_id = :user_id");
+                    $update->execute(['data' => json_encode($metadata), 'user_id' => $userId]);
+                    $allowed = true;
+                }
+            }
+
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
+
+            return $allowed;
+        } catch (PDOException $e) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            error_log('DbUserMfaRepository::reserveVerificationAttempt failed: ' . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function findAllEnabled(): array
