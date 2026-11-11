@@ -749,9 +749,9 @@ class MfaService
             $userMfa = $this->userMfaRepository->findByUserId($userId);
             return $userMfa && $userMfa->isEnabled();
         } catch (PDOException $e) {
-            // If the table doesn't exist or there's another database error, assume MFA is disabled
+            // Assuming "disabled" here would let a login skip the second factor on a database error.
             error_log("MFA check failed: " . $e->getMessage());
-            return false;
+            throw $e;
         }
     }
 
