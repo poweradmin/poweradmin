@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,6 +78,16 @@ class ListTemplateZonesController extends BaseController
 
         // Get zones using this template with pagination
         $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, $_SESSION['userid']);
+
+        // Template list visibility, plus a template one of the caller's zones is linked to
+        $visible = UserManager::verifyPermission($this->db, 'user_is_ueberuser')
+            || (int)($template_details['owner'] ?? -1) === 0
+            || ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, (int)$_SESSION['userid'])
+            || $zones !== [];
+        if (!$visible) {
+            $this->showError(_('Template does not exist.'));
+            return;
+        }
 
         // Get total count of zones for pagination
         $totalZones = count($zones);
