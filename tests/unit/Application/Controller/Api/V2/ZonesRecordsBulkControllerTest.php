@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Controller\Api\V2;
 
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController;
@@ -166,6 +167,24 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame("Field 'operations' is required and must be an array", $this->messageOf($response));
+    }
+
+    #[DataProvider('malformedOperationProvider')]
+    public function testAMalformedOperationItemIs400(mixed $operation): void
+    {
+        $response = $this->bulk(['operations' => [$operation]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    /** @return array<string, array{mixed}> */
+    public static function malformedOperationProvider(): array
+    {
+        return [
+            'string item' => ['create'],
+            'number item' => [5],
+            'array action' => [['action' => ['create']]],
+        ];
     }
 
     public function testAnEmptyOperationsListIs400(): void

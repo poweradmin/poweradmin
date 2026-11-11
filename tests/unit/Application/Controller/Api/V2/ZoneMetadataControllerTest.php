@@ -121,6 +121,16 @@ class ZoneMetadataControllerTest extends TestCase
         }
     }
 
+    public function testNestedArraysInValuesAreRefusedInsteadOfStoredAsArray(): void
+    {
+        $service = $this->createMock(ZoneMetadataService::class);
+        $service->expects($this->never())->method('replaceKind');
+
+        $response = $this->call($service, 'updateMetadataKind', 'ALLOW-AXFR-FROM', ['values' => [['192.0.2.10']]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
     public function testASuccessfulPutPassesTheActingUserAndUppercasedKind(): void
     {
         $service = $this->createMock(ZoneMetadataService::class);

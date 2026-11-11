@@ -289,6 +289,9 @@ class ZonesRecordsBulkController extends PublicApiController
             // before mutating anything, so a create-only key cannot update or delete.
             $scope = $this->getApiKeyScope();
             foreach ($input['operations'] as $operation) {
+                if (!is_array($operation) || (isset($operation['action']) && !is_string($operation['action']))) {
+                    return $this->returnApiError('Invalid field types in request body', 400);
+                }
                 $action = strtolower($operation['action'] ?? '');
                 $operationType = match ($action) {
                     'create' => ApiKeyScope::OP_CREATE,

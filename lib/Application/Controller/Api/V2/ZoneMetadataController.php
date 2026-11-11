@@ -316,6 +316,10 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Missing required field: values (array)', 400);
             }
 
+            if (array_filter($data['values'], static fn($value) => !is_scalar($value) && $value !== null) !== []) {
+                return $this->returnApiError('Invalid field types in request body', 400);
+            }
+
             $result = $this->metadataService->replaceKind($zoneId, $zoneName, $kind, array_map('strval', $data['values']), $this->authenticatedUserId);
             if (!$result->isOk()) {
                 return $this->refusalResponse($result, 'Failed to update metadata');

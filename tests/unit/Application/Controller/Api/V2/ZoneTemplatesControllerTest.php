@@ -273,6 +273,27 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $this->assertSame('Zone template created successfully', $content['message']);
     }
 
+    #[DataProvider('nonStringFieldsProvider')]
+    public function testCreateZoneTemplateWithNonStringFieldsIs400(array $body): void
+    {
+        $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
+        $this->repository->expects($this->never())->method('createZoneTemplate');
+
+        $response = $this->invoke('createZoneTemplate', 'POST', $body);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Missing required fields: name, description', $this->messageOf($response));
+    }
+
+    /** @return array<string, array{array<string, mixed>}> */
+    public static function nonStringFieldsProvider(): array
+    {
+        return [
+            'array name' => [['name' => ['x'], 'description' => 'd']],
+            'array description' => [['name' => 'n', 'description' => ['x']]],
+        ];
+    }
+
     public function testCreateZoneTemplateMissingFields(): void
     {
         $this->permissions->method('canCreateZoneTemplate')->willReturn(true);
@@ -385,6 +406,21 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertTrue($this->decode($response)['success']);
         $this->assertSame('Zone template updated successfully', $this->messageOf($response));
+    }
+
+    #[DataProvider('nonStringFieldsProvider')]
+    public function testUpdateZoneTemplateWithNonStringFieldsIs400(array $body): void
+    {
+        $this->permissions->method('canEditZoneTemplate')->willReturn(true);
+        $this->ueberuser(true);
+        $this->repository->method('zoneTemplateExists')->willReturn(true);
+        $this->repository->method('getOwner')->willReturn(self::USER_ID);
+        $this->repository->expects($this->never())->method('updateZoneTemplate');
+
+        $response = $this->invoke('updateZoneTemplate', 'PUT', $body, ['id' => '1']);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Missing required fields: name, description', $this->messageOf($response));
     }
 
     public function testUpdateZoneTemplateNotFound(): void

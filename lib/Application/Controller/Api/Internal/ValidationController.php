@@ -94,11 +94,18 @@ class ValidationController extends InternalApiController
             return $this->returnErrorResponse('Invalid request data', 400);
         }
 
+        if (isset($jsonData['records']) && !is_array($jsonData['records'])) {
+            return $this->returnErrorResponse('Invalid request data', 400);
+        }
+
         // Extract record data with fallbacks for different input formats
         $zoneId = (int)($jsonData['zone_id'] ?? 0);
         $name = $jsonData['name'] ?? ($jsonData['records'][0]['name'] ?? '');
         $type = $jsonData['type'] ?? ($jsonData['records'][0]['type'] ?? '');
         $content = $jsonData['content'] ?? ($jsonData['records'][0]['content'] ?? '');
+        if (is_array($name) || is_array($type) || is_array($content)) {
+            return $this->returnErrorResponse('Invalid request data', 400);
+        }
         $ttl = $jsonData['ttl'] ?? ($jsonData['records'][0]['ttl'] ?? $this->getConfig()->get('dns', 'ttl', 3600));
         $prio = $jsonData['prio'] ?? ($jsonData['records'][0]['prio'] ?? 0);
 

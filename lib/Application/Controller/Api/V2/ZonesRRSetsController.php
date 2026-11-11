@@ -606,6 +606,9 @@ class ZonesRRSetsController extends PublicApiController
             // 'disabled' or 'priority' must be refused before the old set is gone (audit H5).
             $records = [];
             foreach ($input['records'] as $recordData) {
+                if (!is_array($recordData) || (isset($recordData['content']) && is_array($recordData['content']))) {
+                    return $this->returnApiError('Invalid field types in request body', 400);
+                }
                 if (!isset($recordData['content'])) {
                     continue;
                 }

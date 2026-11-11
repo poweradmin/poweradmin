@@ -368,6 +368,7 @@ class PermissionTemplatesController extends PublicApiController
 
             if (
                 !$data || !isset($data['name']) || !isset($data['descr']) ||
+                is_array($data['name']) || is_array($data['descr']) ||
                 empty(trim($data['name'])) || empty(trim($data['descr']))
             ) {
                 return $this->returnApiError('Missing required fields: name, descr', 400);
@@ -489,6 +490,7 @@ class PermissionTemplatesController extends PublicApiController
 
             if (
                 !$data || !isset($data['name']) || !isset($data['descr']) ||
+                is_array($data['name']) || is_array($data['descr']) ||
                 empty(trim($data['name'])) || empty(trim($data['descr']))
             ) {
                 return $this->returnApiError('Missing required fields: name, descr', 400);

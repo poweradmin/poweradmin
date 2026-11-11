@@ -248,6 +248,24 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->assertSame('Zone not found', $this->messageOf($response));
     }
 
+    #[DataProvider('malformedRecordItemProvider')]
+    public function testAMalformedRecordItemIs400(mixed $item): void
+    {
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [$item]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Invalid field types in request body', $this->messageOf($response));
+    }
+
+    /** @return array<string, array{mixed}> */
+    public static function malformedRecordItemProvider(): array
+    {
+        return [
+            'string item' => ['192.0.2.1'],
+            'array content' => [['content' => ['192.0.2.1']]],
+        ];
+    }
+
     public function testANonNumericTtlIs400(): void
     {
         $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 'soon', 'records' => [['content' => '192.0.2.1']]]);
