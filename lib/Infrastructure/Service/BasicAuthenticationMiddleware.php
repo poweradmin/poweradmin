@@ -45,6 +45,7 @@ class BasicAuthenticationMiddleware
     private PDO $db;
     private ConfigurationManager $config;
     private LoginAttemptService $loginAttemptService;
+    private ?UserAuthenticationService $authService = null;
 
     /**
      * Constructor
@@ -144,6 +145,8 @@ class BasicAuthenticationMiddleware
     {
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
+            // Answering without a hash check would tell the caller which usernames exist.
+            $this->verifyAgainstDummyHash($password);
             return 0;
         }
 
@@ -217,13 +220,21 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
-        $passwordCost = $this->config->get('security', 'password_cost', 12);
-
-        $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
-
         // Verify the password directly without going through the full authentication flow
-        return $authService->verifyPassword($password, $hashedPassword);
+        return $this->authService()->verifyPassword($password, $hashedPassword);
+    }
+
+    private function authService(): UserAuthenticationService
+    {
+        return $this->authService ??= new UserAuthenticationService(
+            $this->config->get('security', 'password_encryption', 'bcrypt'),
+            $this->config->get('security', 'password_cost', 12)
+        );
+    }
+
+    private function verifyAgainstDummyHash(#[\SensitiveParameter] string $password): void
+    {
+        $this->authService()->verifyPassword($password, $this->authService()->dummyVerificationHash());
     }
 
     /**
