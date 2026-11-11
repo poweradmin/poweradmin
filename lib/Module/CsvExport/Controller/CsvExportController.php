@@ -76,7 +76,7 @@ class CsvExportController extends BaseController
         header('Content-Disposition: attachment; filename=' . $sanitized_filename . '_records.csv');
         header('Pragma: no-cache');
         header('Expires: 0');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Content-Transfer-Encoding: binary');
 
         $output = fopen('php://output', 'w');
