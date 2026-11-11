@@ -178,6 +178,7 @@ class BasicAuthenticationMiddleware
     {
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
+            $this->spendDummyVerification($password);
             return 0;
         }
 
@@ -226,6 +227,19 @@ class BasicAuthenticationMiddleware
         // clear_attempts_on_success it would wipe an attacker's accumulating failures
         $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
         return 0;
+    }
+
+    /**
+     * Run the password hash an unknown name would otherwise skip, so the response
+     * time does not tell which usernames exist.
+     */
+    private function spendDummyVerification(string $password): void
+    {
+        $authService = new UserAuthenticationService(
+            $this->config->get('security', 'password_encryption', 'bcrypt'),
+            $this->config->get('security', 'password_cost', 12)
+        );
+        $authService->verifyPassword($password, $authService->dummyVerificationHash());
     }
 
     /**
