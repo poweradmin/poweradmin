@@ -908,6 +908,8 @@ class ZonesController extends PublicApiController
                     $statusCode = RefusalStatus::ofResult($result);
                     return $this->returnApiError($result['message'], $statusCode);
                 }
+
+                $this->auditZoneEdit($zoneId, $zone, $updates);
             }
 
             // Update description after main update succeeds (stored in zones table, not domains)
@@ -1006,6 +1008,27 @@ class ZonesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::deleteZone', 'Failed to delete zone');
         }
+    }
+
+    /**
+     * Audit a type or primaries change; other metadata edits are not audited here.
+     *
+     * @param array<string, mixed>|null $before Stored zone row before the update
+     * @param array<string, mixed> $updates
+     */
+    private function auditZoneEdit(int $zoneId, ?array $before, array $updates): void
+    {
+        $type = $updates['type'] ?? null;
+        $master = null;
+        if (isset($updates['master']) && $this->normalizeMasterList((string)$updates['master']) !== $this->normalizeMasterList((string)($before['master'] ?? ''))) {
+            $master = (string)$updates['master'];
+        }
+        if ($type === null && $master === null) {
+            return;
+        }
+
+        $zoneName = (string)($updates['name'] ?? $before['name'] ?? $zoneId);
+        $this->services()->auditService()->logApiZoneEdit($zoneId, $zoneName, $type, $master);
     }
 
     /**

@@ -302,6 +302,8 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError($assigned->message(), RefusalStatus::of(Refusal::CONFLICT));
             }
 
+            $this->services()->auditService()->logGroupZonesAdd($groupId, $this->groupName($groupId), [$this->zoneName($zoneId)]);
+
             return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
         } catch (GroupNotFoundException $e) {
             return $this->returnApiError($e->getMessage(), 404);
@@ -378,6 +380,7 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone not found', 404);
             }
 
+            $zoneName = $this->zoneName($zoneId);
             $result = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
             if ($result instanceof ZoneOwnershipRefusal) {
                 return $this->returnApiError(self::refusalMessage($result), 400);
@@ -386,6 +389,8 @@ class GroupZonesController extends PublicApiController
             if (!$result) {
                 return $this->returnApiError('Zone assignment not found', 404);
             }
+
+            $this->services()->auditService()->logGroupZonesRemove($groupId, $this->groupName($groupId), [$zoneName]);
 
             return $this->returnApiResponse(null, true, 'Zone unassigned successfully');
         } catch (GroupNotFoundException $e) {
@@ -410,5 +415,17 @@ class GroupZonesController extends PublicApiController
                 default => 'Add another group or a user owner first.',
             },
         };
+    }
+
+    private function groupName(int $groupId): string
+    {
+        $group = $this->services()->userGroupRepository()->findById($groupId);
+
+        return $group !== null ? $group->getName() : "ID: $groupId";
+    }
+
+    private function zoneName(int $zoneId): string
+    {
+        return $this->domainRepository->getDomainNameById($zoneId) ?? 'ID:' . $zoneId;
     }
 }

@@ -630,6 +630,8 @@ class UsersController extends PublicApiController
                 $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, (int)$result['user_id'], $zoneLimit['limit']);
             }
 
+            $this->services()->auditService()->logUserAdd((string)$input['username'], (string)($input['email'] ?? ''));
+
             $assignedGroups = $this->assignGroups((int)$result['user_id'], $input['username'], $groups);
 
             return $this->returnApiResponse(
@@ -893,6 +895,8 @@ class UsersController extends PublicApiController
                 $this->services()->zoneOwnershipLimit()->setUserLimit($currentUserId, $targetUserId, $zoneLimit['limit']);
             }
 
+            $this->auditUserEdit($targetUserId, $currentUser, $input);
+
             return $this->returnApiResponse(
                 ['user_id' => $result['user_id']],
                 true,
@@ -1011,6 +1015,8 @@ class UsersController extends PublicApiController
             $requestBody = $this->getValidatedJsonBody() ?? [];
             $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
 
+            $targetUsername = (string)($this->userRepository->getUserById($targetUserId)['username'] ?? "ID: $targetUserId");
+
             // Use the domain service to delete the user
             $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId, $currentUserId);
 
@@ -1018,6 +1024,8 @@ class UsersController extends PublicApiController
                 $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
             }
+
+            $this->services()->auditService()->logUserDelete($targetUsername);
 
             return $this->returnApiResponse(
                 [
@@ -1148,12 +1156,18 @@ class UsersController extends PublicApiController
                 return $templateGate;
             }
 
+            $stored = $this->userRepository->getUserById($targetUserId);
+
             // Use the domain service to assign permission template
             $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
             if (!$result['success']) {
                 $statusCode = RefusalStatus::ofResult($result);
                 return $this->returnApiError($result['message'], $statusCode);
+            }
+
+            if ($stored !== null) {
+                $this->services()->auditService()->logPermTemplateChange((string)$stored['username'], (int)($stored['perm_templ'] ?? 0), $permTemplId);
             }
 
             return $this->returnApiResponse(
@@ -1172,6 +1186,27 @@ class UsersController extends PublicApiController
             );
         } catch (\Throwable $e) {
             return $this->handleException($e, 'UsersController::assignPermissionTemplate', 'Failed to assign permission template');
+        }
+    }
+
+    /**
+     * @param array<string, mixed>|null $stored The user row as it was before the update
+     * @param array<string, mixed> $input
+     */
+    private function auditUserEdit(int $userId, ?array $stored, array $input): void
+    {
+        $after = $this->userRepository->getUserById($userId) ?? $stored ?? [];
+        $authType = (string)($after['auth_method'] ?? '');
+        if ($authType === '') {
+            $authType = !empty($after['use_ldap']) ? 'ldap' : 'sql';
+        }
+        $username = (string)($after['username'] ?? $input['username'] ?? "ID: $userId");
+        $permTempl = (int)($after['perm_templ'] ?? 0);
+
+        $audit = $this->services()->auditService();
+        $audit->logUserEdit($username, $permTempl, $authType);
+        if ($stored !== null && (int)($stored['perm_templ'] ?? 0) !== $permTempl) {
+            $audit->logPermTemplateChange($username, (int)$stored['perm_templ'], $permTempl);
         }
     }
 

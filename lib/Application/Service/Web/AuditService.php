@@ -407,6 +407,15 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('api_add_zone', ['zone_name' => $zoneName, 'zone_type' => $zoneType]), $zoneId);
     }
 
+    public function logApiZoneEdit(int $zoneId, string $zoneName, ?string $zoneType, ?string $zoneMaster): void
+    {
+        $this->logger->logInfo($this->line('api_edit_zone', [
+            'zone_name' => $zoneName,
+            'zone_type' => $zoneType,
+            'zone_master' => $zoneMaster,
+        ]), $zoneId);
+    }
+
     public function logApiZoneDelete(string $zoneName): void
     {
         $this->logger->logDetachedZoneInfo($this->line('api_delete_zone', ['zone_name' => $zoneName]));

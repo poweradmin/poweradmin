@@ -272,6 +272,7 @@ class GroupMembersController extends PublicApiController
             }
             $this->membershipService->addUserToGroup($groupId, $userId);
             $this->services()->permissionService()->forgetUser($userId);
+            $this->services()->auditService()->logApiGroupMemberAdd($groupId, $this->groupName($groupId), $this->memberName($userId));
 
             return $this->returnApiResponse(null, true, 'Member added successfully', 201);
         } catch (GroupNotFoundException $e) {
@@ -342,6 +343,8 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
 
+            $groupName = $this->groupName($groupId);
+            $username = $this->memberName($userId);
             $success = $this->membershipService->removeUserFromGroup($groupId, $userId);
 
             if (is_array($success)) {
@@ -351,6 +354,7 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Member not found in group', 404);
             }
             $this->services()->permissionService()->forgetUser($userId);
+            $this->services()->auditService()->logGroupMembersRemove($groupId, $groupName, [$username]);
 
             return $this->returnApiResponse(null, true, 'Member removed successfully');
         } catch (GroupNotFoundException $e) {
@@ -358,5 +362,19 @@ class GroupMembersController extends PublicApiController
         } catch (Exception $e) {
             return $this->handleException($e, 'GroupMembersController::removeMember', 'Failed to remove member');
         }
+    }
+
+    private function groupName(int $groupId): string
+    {
+        $group = $this->services()->userGroupRepository()->findById($groupId);
+
+        return $group !== null ? $group->getName() : "ID: $groupId";
+    }
+
+    private function memberName(int $userId): string
+    {
+        $user = $this->services()->userRepository()->getUserById($userId);
+
+        return $user !== null ? (string)$user['username'] : "ID: $userId";
     }
 }

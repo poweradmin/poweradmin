@@ -24,6 +24,8 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -170,6 +172,9 @@ class ZoneMetadataPermissionTest extends TestCase
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
         $this->inject($controller, 'ipAddressValidator', new IPAddressValidator());
         $this->inject($controller, 'config', new FakeConfiguration());
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $this->inject($controller, 'serviceFactory', $factory);
 
         $reflection = new ReflectionClass($controller);
         $response = $reflection->getMethod('updateZone')->invoke($controller);
@@ -179,6 +184,10 @@ class ZoneMetadataPermissionTest extends TestCase
 
     private function inject(object $controller, string $property, mixed $value): void
     {
-        (new ReflectionClass($controller))->getProperty($property)->setValue($controller, $value);
+        $class = new ReflectionClass($controller);
+        while (!$class->hasProperty($property) && $class->getParentClass() !== false) {
+            $class = $class->getParentClass();
+        }
+        $class->getProperty($property)->setValue($controller, $value);
     }
 }

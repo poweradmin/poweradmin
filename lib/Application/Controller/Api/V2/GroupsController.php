@@ -34,6 +34,7 @@ use Poweradmin\Application\Service\User\GroupMembershipService;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -460,6 +461,14 @@ class GroupsController extends PublicApiController
                 $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $group->getId(), $maxZones);
             }
 
+            $template = $permTemplateRepo->getPermissionTemplateDetails((int)$data['perm_templ_id']);
+            $this->services()->auditService()->logGroupCreate(
+                (int)$group->getId(),
+                $group->getName(),
+                is_array($template) ? (string)($template['name'] ?? 'Unknown') : 'Unknown',
+                (int)$data['perm_templ_id']
+            );
+
             return $this->returnApiResponse(['group' => [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
@@ -564,6 +573,7 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError(self::MAX_ZONES_INVALID, 400);
             }
 
+            $before = $this->groupService->getGroupDetails($groupId)['group'];
             $group = $this->groupService->updateGroup(
                 $groupId,
                 $data['name'] ?? null,
@@ -576,6 +586,11 @@ class GroupsController extends PublicApiController
 
             if ($setsLimit) {
                 $this->services()->zoneOwnershipLimit()->setGroupLimit($this->authenticatedUserId, $groupId, $zoneLimit['limit']);
+            }
+
+            $changes = $this->groupChanges($before, $group, $setsLimit ? $zoneLimit['limit'] : $before->getMaxZones());
+            if ($changes !== []) {
+                $this->services()->auditService()->logGroupEdit($groupId, $group->getName(), $changes);
             }
 
             return $this->returnApiResponse(['group' => [
@@ -660,6 +675,7 @@ class GroupsController extends PublicApiController
                 ), 409);
             }
 
+            $groupName = $details['group']->getName();
             $success = $this->groupService->deleteGroup($groupId);
 
             if (is_array($success)) {
@@ -668,6 +684,8 @@ class GroupsController extends PublicApiController
             if (!$success) {
                 return $this->returnApiError('Group not found or deletion failed', 404);
             }
+
+            $this->services()->auditService()->logGroupDelete($groupId, $groupName, $details['memberCount'], $details['zoneCount']);
 
             return $this->returnApiResponse(null, true, 'Group deleted successfully');
         } catch (LastZoneOwnerException $e) {
@@ -680,5 +698,27 @@ class GroupsController extends PublicApiController
         } catch (Exception $e) {
             return $this->handleException($e, 'GroupsController::deleteGroup', 'Failed to delete group');
         }
+    }
+
+    /**
+     * @return list<string> Human-readable "field: old -> new" entries for the audit line
+     */
+    private function groupChanges(UserGroup $before, UserGroup $after, ?int $newLimit): array
+    {
+        $changes = [];
+        if ($before->getName() !== $after->getName()) {
+            $changes[] = sprintf("name: '%s' -> '%s'", $before->getName(), $after->getName());
+        }
+        if ($before->getDescription() !== $after->getDescription()) {
+            $changes[] = 'description changed';
+        }
+        if ($before->getPermTemplId() !== $after->getPermTemplId()) {
+            $changes[] = sprintf('permission template: ID %d -> ID %d', $before->getPermTemplId(), $after->getPermTemplId());
+        }
+        if ($before->getMaxZones() !== $newLimit) {
+            $changes[] = sprintf("zone limit: '%s' -> '%s'", $before->getMaxZones() ?? 'default', $newLimit ?? 'default');
+        }
+
+        return $changes;
     }
 }

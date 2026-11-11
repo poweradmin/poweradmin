@@ -32,6 +32,7 @@ use Poweradmin\Application\Service\User\GroupService;
 use Poweradmin\Application\Service\User\PermissionTemplateWriteService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\UberuserChange;
+use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\UserPermissionReadInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -90,6 +91,7 @@ class LastSuperAdminConflictTest extends V2ControllerTestCase
     public function testMovingTheLastSuperAdminGroupToAnotherTemplateIsAConflict(): void
     {
         $groups = $this->createMock(GroupService::class);
+        $groups->method('getGroupDetails')->willReturn(['group' => new UserGroup(self::GROUP_ID, 'ops', null, 2), 'memberCount' => 0, 'zoneCount' => 0]);
         $groups->method('updateGroup')->with(self::GROUP_ID, null, null, self::TEMPLATE_ID)
             ->willReturn($this->refusalFor(UberuserChange::groupTemplateChanged(self::GROUP_ID, self::TEMPLATE_ID)));
 

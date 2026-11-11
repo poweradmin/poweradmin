@@ -57,6 +57,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
     private ZoneRepositoryInterface&MockObject $zones;
     private DomainRepositoryInterface&MockObject $domains;
     private ZoneManagementService&MockObject $zoneManagement;
+    private AuditService&MockObject $audit;
     private ApiKeyScope $scope;
     private int $zoneIdParameter = self::ZONE_ID;
     private ?FakeConfiguration $config = null;
@@ -67,6 +68,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);
         $this->domains = $this->createMock(DomainRepositoryInterface::class);
         $this->zoneManagement = $this->createMock(ZoneManagementService::class);
+        $this->audit = $this->createMock(AuditService::class);
         $this->scope = ApiKeyScope::unrestricted();
 
         $this->domains->method('zoneIdExists')->willReturn(true);
@@ -97,7 +99,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $resolver->method('resolve')->willReturn(ZoneOwnershipResolution::success(self::USER_ID, []));
 
         $factory = $this->createMock(ControllerServiceFactory::class);
-        $factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+        $factory->method('auditService')->willReturn($this->audit);
         $factory->method('userRepository')->willReturn($this->stubUsers());
         $factory->method('zoneCreateOwnershipResolver')->willReturn($resolver);
 
@@ -468,6 +470,44 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'MASTER', 'masters' => []]);
 
         $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testATypeAndPrimariesChangeIsAudited(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zoneManagement->method('updateZone')->willReturn(['success' => true]);
+        $this->audit->expects($this->once())->method('logApiZoneEdit')
+            ->with(self::ZONE_ID, 'example.com', 'SLAVE', '192.0.2.9');
+
+        $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'masters' => ['192.0.2.9']]);
+    }
+
+    public function testAPrimariesOnlyChangeIsAuditedWithoutAType(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE', 'master' => '192.0.2.1']);
+        $this->zoneManagement->method('updateZone')->willReturn(['success' => true]);
+        $this->audit->expects($this->once())->method('logApiZoneEdit')
+            ->with(self::ZONE_ID, 'example.com', null, '192.0.2.9');
+
+        $this->invokeHandler('updateZone', 'PUT', ['masters' => ['192.0.2.9']]);
+    }
+
+    public function testARefusedTypeChangeIsNotAudited(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zoneManagement->method('updateZone')->willReturn(['success' => false, 'message' => 'no', 'refusal' => Refusal::CONFLICT]);
+        $this->audit->expects($this->never())->method('logApiZoneEdit');
+
+        $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'masters' => ['192.0.2.9']]);
+    }
+
+    public function testARenameAloneIsNotAudited(): void
+    {
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zoneManagement->method('updateZone')->willReturn(['success' => true]);
+        $this->audit->expects($this->never())->method('logApiZoneEdit');
+
+        $this->invokeHandler('updateZone', 'PUT', ['name' => 'renamed.example.com']);
     }
 
     public function testMetadataChangesNeedTheMetadataPermissionNotJustContentEdit(): void

@@ -117,6 +117,12 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
         $this->setProperty($controller, 'pathParameters', ['id' => $targetId]);
         $this->setProperty($controller, 'apiPermissionService', $permission);
         $this->setProperty($controller, 'userManagementService', $userService);
+        $repo = $this->createMock(\Poweradmin\Domain\Repository\UserLookupInterface::class);
+        $repo->method('getUserById')->willReturn(['id' => $targetId, 'username' => 'carol', 'perm_templ' => 2]);
+        $this->setProperty($controller, 'userRepository', $repo);
+        $factory = $this->createMock(\Poweradmin\Application\Service\ControllerServiceFactory::class);
+        $factory->method('auditService')->willReturn($this->createMock(\Poweradmin\Application\Service\Web\AuditService::class));
+        $this->setProperty($controller, 'serviceFactory', $factory);
 
         return $controller;
     }
@@ -130,7 +136,11 @@ class UsersControllerAssignTemplateAuthTest extends TestCase
 
     private function setProperty(object $target, string $name, mixed $value): void
     {
-        $property = new ReflectionProperty($target, $name);
+        $class = new ReflectionClass($target);
+        while (!$class->hasProperty($name) && $class->getParentClass() !== false) {
+            $class = $class->getParentClass();
+        }
+        $property = new ReflectionProperty($class->getName(), $name);
         $property->setValue($target, $value);
     }
 }

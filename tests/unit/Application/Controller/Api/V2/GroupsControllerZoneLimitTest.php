@@ -123,6 +123,7 @@ class GroupsControllerZoneLimitTest extends V2ControllerTestCase
     public function testUpdateClearsTheLimitWithNull(): void
     {
         $groupService = $this->createMock(GroupService::class);
+        $groupService->method('getGroupDetails')->willReturn(['group' => new UserGroup(self::GROUP_ID, 'ops', null, 2, null, null, null, 5), 'memberCount' => 0, 'zoneCount' => 0]);
         $groupService->method('updateGroup')->willReturn(new UserGroup(self::GROUP_ID, 'ops', null, 2, null, null, null, 5));
         $this->limit->expects($this->once())->method('setGroupLimit')->with(1, self::GROUP_ID, null)->willReturn(['success' => true]);
 
@@ -135,6 +136,7 @@ class GroupsControllerZoneLimitTest extends V2ControllerTestCase
     public function testUpdateWithoutTheFieldKeepsTheStoredLimit(): void
     {
         $groupService = $this->createMock(GroupService::class);
+        $groupService->method('getGroupDetails')->willReturn(['group' => new UserGroup(self::GROUP_ID, 'ops', null, 2, null, null, null, 5), 'memberCount' => 0, 'zoneCount' => 0]);
         $groupService->method('updateGroup')->willReturn(new UserGroup(self::GROUP_ID, 'ops', null, 2, null, null, null, 5));
         $this->limit->expects($this->never())->method('setGroupLimit');
 

@@ -398,6 +398,8 @@ class PermissionTemplatesController extends PublicApiController
                 return $this->returnApiError($result['message'], $result['status']);
             }
 
+            $this->services()->auditService()->logPermTemplateAdd((string)$data['name']);
+
             return $this->returnApiResponse(['id' => $result['id'] ?? null], true, $result['message'], $result['status']);
         } catch (\Throwable $e) {
             return $this->handleException($e, 'PermissionTemplatesController::createTemplate', 'Failed to create permission template');
@@ -525,6 +527,8 @@ class PermissionTemplatesController extends PublicApiController
             if (!$result['success']) {
                 return $this->returnApiError($result['message'], RefusalStatus::ofResult($result, 500));
             }
+
+            $this->services()->auditService()->logPermTemplateEdit((int)$id, (string)$data['name']);
 
             return $this->returnApiResponse(null, true, $result['message'], $result['status'] ?? 200);
         } catch (\Throwable $e) {
