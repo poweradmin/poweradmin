@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Zone;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -49,6 +50,9 @@ class DeleteDomainsController extends BaseController
             $this->redirect($route);
             return;
         }
+
+        // A reviewed install deletes zones through the per-zone request flow only
+        $this->checkCondition($this->changeApproval()->reviewsEveryChange(), ChangeRequestMessages::requiresApproval());
 
         // Deleting a zone requires delete permission for every selected zone
         // (direct or group ownership); matches the single-zone delete controller.

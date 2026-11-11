@@ -111,4 +111,22 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
         $this->assertSame([['success', 'Zones have been deleted successfully.']], $this->messagesFor('list_reverse_zones'));
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
     }
+
+    public function testWhenEveryChangeIsReviewedTheBulkDeleteIsRefusedBeforeAnythingIsDeleted(): void
+    {
+        $this->audit->expects($this->never())->method('logZoneDelete');
+        $this->domains->expects($this->never())->method('getZoneInfoFromIds');
+
+        $this->post(['zone_id' => ['12', '13'], 'confirm' => '1']);
+        $config = $this->configure(['approval' => ['enabled' => true, 'require_review_for_all' => true]]);
+        $controller = new DeleteDomainsController($this->requestData(), true, $this->environment($config));
+
+        try {
+            $controller->run();
+            $this->fail('Expected the bulk delete to be refused.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame(RequestHalted::KIND_CONDITION, $halt->kind);
+        }
+        $this->assertSame([], $this->messagesFor('list_reverse_zones'));
+    }
 }

@@ -129,7 +129,7 @@ class ListForwardZonesController extends BaseController
         $perm_view = $permissionService->getViewPermissionLevel((int)$userId);
         $perm_edit = $permissionService->getEditPermissionLevel((int)$userId);
         $perm_delete = $permissionService->getDeletePermissionLevel((int)$userId);
-        $can_bulk_delete_zones = AccessScope::fromString($perm_delete)->grantsAnything();
+        $can_bulk_delete_zones = AccessScope::fromString($perm_delete)->grantsAnything() && !$this->changeApproval()->reviewsEveryChange();
         $dnsDataService = $this->services()->dnsDataService();
 
         $count_zones_view = $dnsDataService->countZones($perm_view);

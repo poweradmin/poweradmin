@@ -69,6 +69,14 @@ class ChangeApprovalContext
     /** @var array<string, bool> Whether a reviewer of every zone other than the requester exists, by user list and requester */
     private array $anyZoneReviewerOtherThan = [];
 
+    /**
+     * Whether approval is on and every zone change, editors and admins included, goes through review.
+     */
+    public function reviewsEveryChange(): bool
+    {
+        return $this->enabled() && $this->requireReviewForAll();
+    }
+
     private function requireReviewForAll(): bool
     {
         return (bool)$this->config->get('approval', 'require_review_for_all', false);

@@ -220,7 +220,7 @@ class SearchController extends BaseController
         $recordTypeService = new RecordTypeService($this->getConfig());
         $recordTypes = $recordTypeService->getAllTypes($this->getRecordTypeCapabilities());
 
-        $can_bulk_delete_zones = AccessScope::fromString($deletePermission)->grantsAnything();
+        $can_bulk_delete_zones = AccessScope::fromString($deletePermission)->grantsAnything() && !$this->changeApproval()->reviewsEveryChange();
         $can_bulk_delete_records = AccessScope::fromString($editPermission)->grantsAnything();
 
         $this->render('search.html', [

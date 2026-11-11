@@ -117,7 +117,7 @@ class BatchPtrRecordController extends BaseController
         } else {
             // Without a zone the PTR targets are only known at save time, so a reviewed install refuses upfront
             $this->checkCondition(
-                $this->changeApproval()->enabled() && (bool)$this->config->get('approval', 'require_review_for_all', false),
+                $this->changeApproval()->reviewsEveryChange(),
                 ChangeRequestMessages::requiresApproval()
             );
         }
