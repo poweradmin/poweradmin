@@ -38,6 +38,28 @@ server {
         try_files $uri $uri/ /index.php$is_args$args;
     }
 
+    # Security: Deny access to sensitive files and directories
+    location ~ /\. {
+        deny all;
+    }
+
+    # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
+    location ~ ^/vendor/twbs/(bootstrap|bootstrap-icons)/ {
+        allow all;
+    }
+
+    location ~ ^/(config|lib|tests|vendor|bin|var)/ {
+        deny all;
+    }
+
+    location ~ ^/(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$ {
+        deny all;
+    }
+
+    location ~ \.(sql|sqlite|sqlite3|db|md|log)$ {
+        deny all;
+    }
+
     # Handle PHP files
     location ~ \.php$ {
         # Adjust the fastcgi_pass directive based on your PHP-FPM configuration
@@ -51,24 +73,6 @@ server {
 
         # Ensure HTTP Authorization header is forwarded for API authentication
         fastcgi_param HTTP_AUTHORIZATION $http_authorization;
-    }
-
-    # Security: Deny access to sensitive files and directories
-    location ~ /\. {
-        deny all;
-    }
-
-    # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
-    location ~ ^/vendor/twbs/(bootstrap|bootstrap-icons)/ {
-        allow all;
-    }
-
-    location ~ /(config|lib|tests|vendor)/ {
-        deny all;
-    }
-
-    location ~ \.(sql|sqlite|sqlite3|db|md|log)$ {
-        deny all;
     }
 
     # Optional: Enable logging for debugging
@@ -116,6 +120,28 @@ server {
             try_files $uri $uri/ /poweradmin/index.php$is_args$args;
         }
 
+        # Security: Deny access to sensitive files and directories
+        location ~ ^/poweradmin/\. {
+            deny all;
+        }
+
+        # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
+        location ~ ^/poweradmin/vendor/twbs/(bootstrap|bootstrap-icons)/ {
+            allow all;
+        }
+
+        location ~ ^/poweradmin/(config|lib|tests|vendor|bin|var)/ {
+            deny all;
+        }
+
+        location ~ ^/poweradmin/(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$ {
+            deny all;
+        }
+
+        location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log)$ {
+            deny all;
+        }
+
         # Handle PHP files within the poweradmin subfolder
         location ~ ^/poweradmin/.*\.php$ {
             # Adjust the fastcgi_pass directive based on your PHP-FPM configuration
@@ -129,24 +155,6 @@ server {
 
             # Ensure HTTP Authorization header is forwarded for API authentication
             fastcgi_param HTTP_AUTHORIZATION $http_authorization;
-        }
-
-        # Security: Deny access to sensitive files and directories
-        location ~ ^/poweradmin/\. {
-            deny all;
-        }
-
-        # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
-        location ~ ^/poweradmin/vendor/twbs/(bootstrap|bootstrap-icons)/ {
-            allow all;
-        }
-
-        location ~ ^/poweradmin/(config|lib|tests|vendor)/ {
-            deny all;
-        }
-
-        location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log)$ {
-            deny all;
         }
     }
 
