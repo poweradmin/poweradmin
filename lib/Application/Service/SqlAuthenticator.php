@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,7 +84,8 @@ class SqlAuthenticator extends LoggingService
 
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             $this->logWarning('Account is locked for user {username}', ['username' => $username]);
-            $sessionEntity = new SessionEntity(_('Account is temporarily locked. Please try again later.'), 'danger');
+            // Same text as an unknown user gets, so the lock does not reveal the account exists.
+            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authService->auth($sessionEntity);
             return;
         }
