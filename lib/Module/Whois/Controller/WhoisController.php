@@ -78,6 +78,12 @@ class WhoisController extends BaseController
         if ($this->isPost() && isset($this->getRequest()['domain'])) {
             $domain = trim($this->getRequest()['domain']);
 
+            // A line break would put a second command on the WHOIS socket.
+            if (preg_match('/[\x00-\x1F\x7F]/', $domain)) {
+                $this->showError(_('Invalid or unexpected input given.'));
+                return '';
+            }
+
             if (preg_match('/[^\x20-\x7E]/', $domain)) {
                 $punycode = DnsIdnService::toPunycode($domain);
                 if ($punycode !== false) {
