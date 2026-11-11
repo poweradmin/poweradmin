@@ -172,19 +172,59 @@ class SelfEditFieldGuardTest extends PermissionServiceTestCase
         $this->assertNull($error);
     }
 
-    public function testStringTrueThatWouldPersistAsZeroIsRejected(): void
+    public function testStringTrueForLdapUserMatchesWhatIsStored(): void
     {
-        // (int)"true" persists as 0 - a disable attempt in disguise.
-        $error = SelfEditFieldGuard::apply(
+        // UserCommandFactory::useLdap() writes "true" as true, so it is unchanged for an LDAP user.
+        $this->assertNull(SelfEditFieldGuard::apply(
             $this->permissionService(),
             7,
             7,
             self::STORED_USER,
             ['use_ldap' => 'true']
+        ));
+    }
+
+    public function testStringTrueEnablingLdapOnALocalAccountIsRejected(): void
+    {
+        $error = SelfEditFieldGuard::apply(
+            $this->permissionService(),
+            7,
+            7,
+            ['use_ldap' => 0] + self::STORED_USER,
+            ['use_ldap' => 'true']
         );
 
         $this->assertNotNull($error);
         $this->assertStringContainsString('use_ldap', $error);
+    }
+
+    public function testStringFalseAndUnparseableLdapValuesAreRejected(): void
+    {
+        foreach (['false', 'off', 'maybe', ['x']] as $value) {
+            $error = SelfEditFieldGuard::apply(
+                $this->permissionService(),
+                7,
+                7,
+                self::STORED_USER,
+                ['use_ldap' => $value]
+            );
+
+            $this->assertNotNull($error, 'use_ldap=' . json_encode($value));
+        }
+    }
+
+    public function testStringTrueForActiveThatWouldPersistAsZeroIsRejected(): void
+    {
+        $error = SelfEditFieldGuard::apply(
+            $this->permissionService(),
+            7,
+            7,
+            self::STORED_USER,
+            ['active' => 'true']
+        );
+
+        $this->assertNotNull($error);
+        $this->assertStringContainsString('active', $error);
     }
 
     public function testNullValuesAreRejectedAsAttemptedChanges(): void

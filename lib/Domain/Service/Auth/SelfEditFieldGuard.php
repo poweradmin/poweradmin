@@ -90,8 +90,14 @@ class SelfEditFieldGuard
             return (string)$submitted !== (string)$stored;
         }
 
-        // Compare as the repository persists these fields - an (int) cast -
-        // so e.g. "true" (casts to 0) can't pass as unchanged.
+        if ($field === 'use_ldap') {
+            // Parsed as UserCommandFactory::useLdap() writes it; unparseable counts as a change
+            $parsed = filter_var($submitted, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
+            return $parsed === null || $parsed !== ((int)$stored !== 0);
+        }
+
+        // active is persisted by an (int) cast (UserCommandFactory::flag()), so "true" counts as 0
         return (int)$submitted !== (int)$stored;
     }
 }
