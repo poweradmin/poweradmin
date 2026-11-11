@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -113,6 +113,7 @@ class BatchPtrRecordController extends BaseController
         $formData = [];
         if ($this->isPost()) {
             $formData = $_POST;
+            $this->checkForwardZoneAccess();
             try {
                 $this->validateCsrfToken();
                 if ($this->addBatchPtrRecords()) {
@@ -126,6 +127,39 @@ class BatchPtrRecordController extends BaseController
         }
 
         $this->showForm($formData);
+    }
+
+    /**
+     * The forward zone is only read or written when either option is set, so only then
+     * must the caller be able to edit it. A missing zone answers like a foreign one.
+     */
+    private function checkForwardZoneAccess(): void
+    {
+        $usesForwardZone = ($_POST['create_forward_records'] ?? '') === 'on'
+            || ($_POST['only_matching_records'] ?? '') === 'on';
+        $domain = $_POST['domain'] ?? '';
+        if (!$usesForwardZone || !is_string($domain) || $domain === '') {
+            return;
+        }
+        $domain = self::normalizeForwardZoneName($domain);
+
+        $userId = (int)$this->userContextService->getLoggedInUserId();
+        $forwardZoneId = $this->dnsRecord->getDomainIdByName($domain);
+        $canEdit = $forwardZoneId !== null && (
+            UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+            || UserManager::canUserPerformZoneAction($this->db, $userId, $forwardZoneId, 'zone_content_edit_own')
+            || UserManager::canUserPerformZoneAction($this->db, $userId, $forwardZoneId, 'zone_content_edit_own_as_client')
+        );
+        $this->checkCondition(!$canEdit, _("You do not have the permission to add records to this zone."));
+    }
+
+    /**
+     * Zone names are stored as lowercase punycode; match that so an owner's own zone
+     * typed in another case is found.
+     */
+    private static function normalizeForwardZoneName(string $domain): string
+    {
+        return strtolower(DnsIdnService::toPunycode(trim($domain)));
     }
 
     private function addBatchPtrRecords(): bool
@@ -152,7 +186,7 @@ class BatchPtrRecordController extends BaseController
         $networkType = $_POST['network_type'] ?? '';
         $networkPrefix = $_POST['network_prefix'] ?? '';
         $hostPrefix = $_POST['host_prefix'] ?? '';
-        $domain = $_POST['domain'] ?? '';
+        $domain = is_string($_POST['domain'] ?? '') ? self::normalizeForwardZoneName($_POST['domain'] ?? '') : '';
         $ttl = $this->config->get('dns', 'ttl', 86400);
         $prio = 0;
         $comment = $_POST['comment'] ?? '';
