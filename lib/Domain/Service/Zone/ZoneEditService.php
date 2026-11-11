@@ -270,7 +270,7 @@ class ZoneEditService
     private function planRow(ZoneEditSubmission $submission, ZoneEditRow $row): array
     {
         $row = $this->repointVanishedSoa($submission, $row);
-        $refused = $this->refuseVanishedRecord($row);
+        $refused = $this->refuseVanishedRecord($row) ?? $this->refuseForeignRecord($submission, $row);
         $change = $refused === null ? $this->diffRow($submission, $this->keepCurrentSoaSerial($submission, $row)) : null;
 
         return [$row, $refused, $change];
@@ -340,6 +340,20 @@ class ZoneEditService
     private function refuseVanishedRecord(ZoneEditRow $row): ?RecordWriteResult
     {
         if (!RecordIdentifier::isEncoded($row->rid) || $this->records->getRecordById($row->rid) !== null) {
+            return null;
+        }
+
+        return RecordWriteResult::failure(
+            _('Someone else changed this zone after you opened it. Review the records and save again.'),
+            Refusal::CONFLICT
+        );
+    }
+
+    /** A posted record id that belongs to another zone is refused before anything is written. */
+    private function refuseForeignRecord(ZoneEditSubmission $submission, ZoneEditRow $row): ?RecordWriteResult
+    {
+        $stored = $this->records->getRecordFromId($row->rid);
+        if ($stored === null || !isset($stored['domain_id']) || (int)$stored['domain_id'] === $submission->zoneId) {
             return null;
         }
 

@@ -492,6 +492,20 @@ class ZoneEditServiceTest extends TestCase
         $this->assertSame(ZoneSaveOutcome::NO_CHANGES, $result->outcome);
     }
 
+    public function testARowWhoseRecordBelongsToAnotherZoneIsRefusedBeforeAnyWrite(): void
+    {
+        $foreign = $this->stored('5', 'www', '192.0.2.1');
+        $foreign['domain_id'] = self::ZONE_ID + 1;
+        $this->records->method('getRecordFromId')->willReturn($foreign);
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', '192.0.2.99')]));
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertCount(1, $result->errors);
+    }
+
     public function testRefusedRowReportsItsReasonAndSkipsTheSerialBump(): void
     {
         $this->records->method('getRecordFromId')->willReturn($this->stored('5', 'www', '192.0.2.1'));
