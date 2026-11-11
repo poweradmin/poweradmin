@@ -238,13 +238,14 @@ class DbZoneLogger
         }
 
         $dbType = $this->config->get('database', 'type', 'mysql');
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", 'u.username', "' %'"]);
+        // The user: field stores colon and space encoded (LegacyLogger::userField); the % they add must not act as a wildcard
+        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')", "' %'"]);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
                     WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
-                      AND lz.event LIKE " . $userPattern . "
+                      AND lz.event LIKE " . $userPattern . " ESCAPE '!'
                 )
                 ORDER BY u.username";
 
@@ -340,7 +341,7 @@ class DbZoneLogger
 
         if (!empty($filters['user'])) {
             $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
-            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike($filters['user']) . " %", PDO::PARAM_STR];
+            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['user'])) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_from'])) {

@@ -70,7 +70,7 @@ class DbUserLogger
                     FROM log_users
                     WHERE log_users.event LIKE :search_by ESCAPE '!'
         ");
-        $name = "%user:" . DbCompat::escapeLike($user) . " %";
+        $name = "%user:" . DbCompat::escapeLike(LegacyLogger::userField($user)) . " %";
         $stmt->execute(['search_by' => $name]);
         return $stmt->fetch()['number_of_logs'];
     }
@@ -104,7 +104,7 @@ class DbUserLogger
             LIMIT :limit
             OFFSET :offset");
 
-        $user = "%user:" . DbCompat::escapeLike($user) . " %";
+        $user = "%user:" . DbCompat::escapeLike(LegacyLogger::userField($user)) . " %";
         $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -218,7 +218,7 @@ class DbUserLogger
         if (!empty($filters['name'])) {
             // Producers emit a bare "user:<name> "; quoting the value matched nothing.
             $conditions[] = "log_users.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%user:" . DbCompat::escapeLike($filters['name']) . " %", PDO::PARAM_STR];
+            $params[':search_by'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {

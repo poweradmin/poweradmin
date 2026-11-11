@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\UserContextService;
 use PDO;
 
 class LegacyLogger
@@ -40,8 +41,42 @@ class LegacyLogger
         $this->backendProvider = $backendProvider;
     }
 
+    /**
+     * A username as the user: field stores it. Colon and space are encoded so a name cannot
+     * pass for another field or for a shorter name in the log filters (SQL builds the same
+     * form with REPLACE()); other names are unchanged.
+     */
+    public static function userField(string $username): string
+    {
+        return str_replace([':', ' '], ['%3A', '%20'], $username);
+    }
+
+    /**
+     * Encodes the signed-in user's name in the leading "[client_ip:.. ]user:<name> " field of a
+     * line, so the many call sites that pass the raw name need no change.
+     */
+    private function encodeActor(string $message): string
+    {
+        $actor = (new UserContextService())->getLoggedInUsername() ?? '';
+        if ($actor === '' || self::userField($actor) === $actor) {
+            return $message;
+        }
+
+        if (preg_match('/^(?:client_ip:\S* )?user:/', $message, $m) !== 1) {
+            return $message;
+        }
+
+        $prefix = $m[0];
+        if (!str_starts_with(substr($message, strlen($prefix)), $actor . ' ')) {
+            return $message;
+        }
+
+        return $prefix . self::userField($actor) . substr($message, strlen($prefix) + strlen($actor));
+    }
+
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
+        $message = $this->encodeActor($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -103,6 +138,7 @@ class LegacyLogger
 
     private function doLogWithApi(string $message, int $priority): void
     {
+        $message = $this->encodeActor($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -122,6 +158,7 @@ class LegacyLogger
 
     private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
     {
+        $message = $this->encodeActor($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');

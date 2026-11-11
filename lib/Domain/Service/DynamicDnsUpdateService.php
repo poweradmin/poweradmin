@@ -175,7 +175,7 @@ readonly class DynamicDnsUpdateService
         $message = sprintf(
             'client_ip:%s user:%s operation:dynamic_dns_update hostname:%s zone_id:%d ip:%s',
             $clientIp,
-            $username,
+            LegacyLogger::userField($username),
             $hostname->getValue(),
             $zoneId,
             $primaryIp

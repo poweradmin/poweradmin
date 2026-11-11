@@ -473,7 +473,7 @@ abstract class PublicApiController extends AbstractApiController
                 $path,
                 $status,
                 $keyId,
-                $user !== '' ? $user : '-',
+                $user !== '' ? LegacyLogger::userField($user) : '-',
                 $clientIp !== '' ? $clientIp : '-'
             );
 

@@ -22,6 +22,7 @@ namespace Poweradmin\Infrastructure\Service;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
@@ -263,6 +264,6 @@ class DnsSecApiProvider implements DnssecProvider
         }
         $formattedContext = implode(' ', $contextString);
 
-        $this->logger->info("client_ip:$this->clientIp user:$this->userLogin operation:$action zone:$zoneName $formattedContext");
+        $this->logger->info("client_ip:$this->clientIp user:" . LegacyLogger::userField($this->userLogin) . " operation:$action zone:$zoneName $formattedContext");
     }
 }

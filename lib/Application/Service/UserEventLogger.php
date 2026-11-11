@@ -71,6 +71,6 @@ class UserEventLogger
     /** The login name as the sign-in line carries it: no line breaks, and no "name:" that a fail2ban filter could read as a field */
     private static function logName(mixed $name): string
     {
-        return str_replace(':', '%3A', (string)preg_replace('/[\x00-\x1F\x7F]/', '?', (string)$name));
+        return str_replace([':', ' '], ['%3A', '%20'], (string)preg_replace('/[\x00-\x1F\x7F]/', '?', (string)$name));
     }
 }

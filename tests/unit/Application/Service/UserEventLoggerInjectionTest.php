@@ -76,7 +76,7 @@ class UserEventLoggerInjectionTest extends TestCase
         $this->assertStringContainsString('1.2.3.4', $line);
         $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
         $this->assertStringNotContainsString("\n", $line);
-        $this->assertStringContainsString('x client_ip%3A203.0.113.9 operation%3Alogin_failed?forged', $line);
+        $this->assertStringContainsString('x%20client_ip%3A203.0.113.9%20operation%3Alogin_failed?forged', $line);
     }
 
     /**

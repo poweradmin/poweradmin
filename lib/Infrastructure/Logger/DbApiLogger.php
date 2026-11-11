@@ -152,7 +152,7 @@ class DbApiLogger
         if (!empty($filters['name'])) {
             // Producers emit a bare "user:<name> "; quoting the value matched nothing.
             $conditions[] = "log_api.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%user:" . DbCompat::escapeLike($filters['name']) . " %", PDO::PARAM_STR];
+            $params[':search_by'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])) . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['event_type'])) {
