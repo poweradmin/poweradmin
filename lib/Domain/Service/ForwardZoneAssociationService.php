@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -58,6 +58,29 @@ class ForwardZoneAssociationService
         $ptrMatches = $this->zoneRepository->findForwardZonesByPtrRecords($reverseZoneIds);
 
         return $this->buildAssociationMap($reverseZoneIds, $ptrMatches);
+    }
+
+    /**
+     * Drop forward zones the caller does not own from an association map
+     *
+     * @param array $associated Map of reverse zone ID to forward zone info arrays
+     * @param callable(int): bool $isOwned Ownership check for a forward zone ID
+     * @return array
+     */
+    public function keepOwned(array $associated, callable $isOwned): array
+    {
+        $cache = [];
+        foreach ($associated as $reverseId => $forwardZones) {
+            $associated[$reverseId] = array_values(array_filter(
+                $forwardZones,
+                function ($zone) use ($isOwned, &$cache) {
+                    $id = (int)$zone['id'];
+                    return $cache[$id] ??= $isOwned($id);
+                }
+            ));
+        }
+
+        return $associated;
     }
 
     /**

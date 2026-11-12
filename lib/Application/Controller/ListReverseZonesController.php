@@ -195,6 +195,14 @@ class ListReverseZonesController extends BaseController
             ? $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones)
             : [];
 
+        // A viewer below "all" must not learn forward zones they do not own from PTR matches
+        if ($perm_view !== 'all') {
+            $associatedForwardZones = $this->forwardZoneAssociationService->keepOwned(
+                $associatedForwardZones,
+                fn(int $zoneId): bool => $this->isZoneOwner($zoneId)
+            );
+        }
+
         // Calculate pagination count based on current filter (using pre-computed counts)
         $pagination_count = match ($reverse_zone_type) {
             'ipv4' => $count_ipv4_zones,
