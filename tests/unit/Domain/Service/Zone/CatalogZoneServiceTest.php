@@ -299,4 +299,32 @@ class CatalogZoneServiceTest extends TestCase
         $this->assertTrue($members[1]['is_published']);
         $this->assertFalse($members[2]['is_published'], 'NATIVE members are stored but never served');
     }
+
+    #[Test]
+    public function membersTheViewerCannotOpenAreLeftOut(): void
+    {
+        $this->backend->method('getCatalogMembers')->willReturn([
+            ['id' => 1, 'name' => 'mine.example.com', 'kind' => 'MASTER'],
+            ['id' => 2, 'name' => 'theirs.example.com', 'kind' => 'MASTER'],
+        ]);
+        $this->permissions->method('canViewZone')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $userId === 5 && $zoneId === 1
+        );
+
+        $members = $this->service->getMembers('producer.example.com', 5);
+
+        $this->assertSame(['mine.example.com'], array_column($members, 'name'));
+    }
+
+    #[Test]
+    public function membersAreUnfilteredWithoutAViewer(): void
+    {
+        $this->backend->method('getCatalogMembers')->willReturn([
+            ['id' => 1, 'name' => 'mine.example.com', 'kind' => 'MASTER'],
+            ['id' => 2, 'name' => 'theirs.example.com', 'kind' => 'MASTER'],
+        ]);
+        $this->permissions->expects($this->never())->method('canViewZone');
+
+        $this->assertCount(2, $this->service->getMembers('producer.example.com'));
+    }
 }

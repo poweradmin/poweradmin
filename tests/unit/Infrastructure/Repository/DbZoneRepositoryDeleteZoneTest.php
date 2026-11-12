@@ -46,7 +46,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         foreach (
             [
-                "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
+                "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, catalog TEXT)",
                 "CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)",
                 "CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, comment TEXT)",
                 "CREATE TABLE record_comment_links (id INTEGER PRIMARY KEY, record_id INTEGER, comment_id INTEGER)",
@@ -65,7 +65,7 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
                 "INSERT INTO log_changesets VALUES (1, 1), (2, 2)",
                 "INSERT INTO log_record_changes VALUES (1, 1), (2, 2)",
                 "INSERT INTO zone_change_requests (id, zone_id, status) VALUES (1, 1, 'pending'), (2, 1, 'approved'), (3, 2, 'pending')",
-                "INSERT INTO domains VALUES (1, 'example.com', 'MASTER'), (2, 'other.com', 'MASTER')",
+                "INSERT INTO domains VALUES (1, 'example.com', 'MASTER', NULL), (2, 'other.com', 'MASTER', NULL)",
                 "INSERT INTO records VALUES (10, 1, 'www.example.com', 'A', '192.0.2.1'), (20, 2, 'www.other.com', 'A', '192.0.2.2')",
                 "INSERT INTO comments VALUES (100, 1, 'www.example.com', 'A', 'web'), (200, 2, 'www.other.com', 'A', 'other web')",
                 "INSERT INTO record_comment_links VALUES (1, 10, 100), (2, 20, 200)",
@@ -165,5 +165,24 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
     private function rows(string $fromWhere): int
     {
         return (int)$this->db->query("SELECT COUNT(*) FROM $fromWhere")->fetchColumn();
+    }
+
+    public function testDeletingAProducerEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->db->exec("UPDATE domains SET type = 'PRODUCER' WHERE id = 1");
+        $this->db->exec("UPDATE domains SET catalog = 'example.com' WHERE id = 2");
+
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame('', (string)$this->db->query("SELECT catalog FROM domains WHERE id = 2")->fetchColumn());
+    }
+
+    public function testDeletingAnotherKindLeavesCatalogsAlone(): void
+    {
+        $this->db->exec("UPDATE domains SET catalog = 'example.com' WHERE id = 2");
+
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame('example.com', $this->db->query("SELECT catalog FROM domains WHERE id = 2")->fetchColumn());
     }
 }

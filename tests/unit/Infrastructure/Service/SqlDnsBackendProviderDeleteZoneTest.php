@@ -32,7 +32,7 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
     protected function setUp(): void
     {
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT, catalog TEXT)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER)");
         $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
         $this->db->exec("CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)");
@@ -108,5 +108,69 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
         $this->assertSame(1, $this->rowCount('domains'));
         $this->assertSame(2, $this->rowCount('records'));
         $this->assertSame(1, $this->rowCount('domainmetadata'));
+    }
+
+    private function seedCatalog(string $producerType = 'PRODUCER'): void
+    {
+        $this->db->exec("UPDATE domains SET type = '$producerType' WHERE id = 1");
+        $this->db->exec("INSERT INTO domains (id, name, type, catalog) VALUES (2, 'member.example', 'MASTER', 'example.com'), (3, 'other.example', 'MASTER', 'elsewhere.example')");
+    }
+
+    private function catalogOf(int $id): string
+    {
+        return (string)$this->db->query("SELECT catalog FROM domains WHERE id = $id")->fetchColumn();
+    }
+
+    public function testDeletingAProducerEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->seedCatalog();
+
+        $this->assertTrue($this->provider()->deleteZone(1, 'example.com'));
+
+        $this->assertSame('', $this->catalogOf(2));
+        $this->assertSame('elsewhere.example', $this->catalogOf(3));
+    }
+
+    public function testDeletingAnotherKindLeavesCatalogsAlone(): void
+    {
+        $this->seedCatalog('MASTER');
+
+        $this->assertTrue($this->provider()->deleteZone(1, 'example.com'));
+
+        $this->assertSame('example.com', $this->catalogOf(2));
+    }
+
+    public function testChangingAProducerToAnotherKindEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->seedCatalog();
+
+        $this->assertTrue($this->provider()->updateZoneType(1, 'NATIVE'));
+
+        $this->assertSame('', $this->catalogOf(2));
+        $this->assertSame('elsewhere.example', $this->catalogOf(3));
+    }
+
+    public function testKeepingAProducerAProducerLeavesItsMembers(): void
+    {
+        $this->seedCatalog();
+
+        $this->assertTrue($this->provider()->updateZoneType(1, 'PRODUCER'));
+
+        $this->assertSame('example.com', $this->catalogOf(2));
+    }
+
+    public function testAFailedKindChangeLeavesTheMembersInTheCatalog(): void
+    {
+        $this->db->exec("INSERT INTO domains (id, name, type, catalog) VALUES (5, 'catalog.example', 'PRODUCER', NULL), (6, 'member.example', 'MASTER', 'catalog.example')");
+        $this->db->exec("CREATE TRIGGER refuse_kind BEFORE UPDATE OF type ON domains BEGIN SELECT RAISE(ABORT, 'refused'); END");
+
+        try {
+            $this->provider()->updateZoneType(5, 'NATIVE');
+            $this->fail('The kind change should have failed');
+        } catch (\PDOException) {
+            // expected
+        }
+
+        $this->assertSame('catalog.example', $this->db->query("SELECT catalog FROM domains WHERE id = 6")->fetchColumn());
     }
 }

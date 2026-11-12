@@ -96,7 +96,7 @@ class ZoneCatalogController extends BaseController
             $this->handleFormSubmission($zoneId, $userId, $mayEdit);
         }
 
-        $members = $this->catalogService()->getMembers($zoneName);
+        $members = $this->catalogService()->getMembers($zoneName, $userId);
         $memberIds = array_column($members, 'id');
 
         $available = array_values(array_filter(

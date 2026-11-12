@@ -279,8 +279,42 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         $apiName = self::ensureTrailingDot($zoneName);
         $zone = new Zone($apiName);
+        $wasProducer = $this->isProducer($apiName);
+        // Fail closed: deleting a zone whose kind is unknown could strand its members in a gone catalog
+        if ($wasProducer === null) {
+            return false;
+        }
 
-        return $this->client->deleteZone($zone);
+        $deleted = $this->client->deleteZone($zone);
+        if ($deleted && $wasProducer) {
+            $this->releaseCatalogMembers($zoneName);
+        }
+
+        return $deleted;
+    }
+
+    /** Null when PowerDNS could not report the zone. */
+    private function isProducer(string $apiName): ?bool
+    {
+        $zone = $this->client->getZone($apiName, false);
+        if ($zone === null) {
+            return null;
+        }
+
+        return strtoupper((string)($zone['kind'] ?? '')) === ZoneType::PRODUCER;
+    }
+
+    /**
+     * Empties the catalog of every member of a producer that is gone or no longer one,
+     * so a later zone reusing the name does not publish them.
+     */
+    private function releaseCatalogMembers(string $producerName): void
+    {
+        foreach ($this->getCatalogMembers(PowerdnsApiClient::canonicalZoneName($producerName)) as $member) {
+            if (!$this->client->updateZoneProperties(self::ensureTrailingDot($member['name']), ['catalog' => ''])) {
+                $this->logger->warning('Could not clear the catalog of {zone} after its producer changed', ['zone' => $member['name']]);
+            }
+        }
     }
 
     public function updateZoneType(int $domainId, string $type): bool
@@ -298,7 +332,21 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             $data['masters'] = [];
         }
 
+        $wasProducer = false;
+        if (strtoupper($type) !== ZoneType::PRODUCER) {
+            $producer = $this->isProducer($apiName);
+            // Fail closed, as deleteZone does: an unknown kind could strand members in a gone catalog
+            if ($producer === null) {
+                return false;
+            }
+            $wasProducer = $producer;
+        }
+
         $result = $this->client->updateZoneProperties($apiName, $data);
+
+        if ($result && $wasProducer) {
+            $this->releaseCatalogMembers($zone['zone_name']);
+        }
 
         if ($result) {
             // Keep the cached master in step with the masters PowerDNS was just told to drop

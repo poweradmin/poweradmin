@@ -381,8 +381,8 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteZoneDeletesAllRelatedTables(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        // The API key scope lookup, then the six deletes
-        $stmt->expects($this->exactly(7))->method('execute');
+        // The API key scope lookup, the producer check, then the six deletes
+        $stmt->expects($this->exactly(8))->method('execute');
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -394,13 +394,14 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testUpdateZoneTypeNonSlaveClearsMaster(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())
+        $stmt->expects($this->exactly(2))
             ->method('execute')
             ->with($this->callback(function ($params) {
-                return $params[':type'] === 'MASTER'
+                return !isset($params[':type']) || ($params[':type'] === 'MASTER'
                     && $params[':master'] === ''
-                    && $params[':id'] === 1;
-            }));
+                    && $params[':id'] === 1);
+            }))
+            ->willReturn(true);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -412,12 +413,13 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testUpdateZoneTypeSlaveDoesNotClearMaster(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())
+        $stmt->expects($this->exactly(2))
             ->method('execute')
             ->with($this->callback(function ($params) {
-                return $params[':type'] === 'SLAVE'
-                    && !array_key_exists(':master', $params);
-            }));
+                return !isset($params[':type']) || ($params[':type'] === 'SLAVE'
+                    && !array_key_exists(':master', $params));
+            }))
+            ->willReturn(true);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -429,12 +431,13 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testUpdateZoneTypeConsumerDoesNotClearMaster(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())
+        $stmt->expects($this->exactly(2))
             ->method('execute')
             ->with($this->callback(function ($params) {
-                return $params[':type'] === 'CONSUMER'
-                    && !array_key_exists(':master', $params);
-            }));
+                return !isset($params[':type']) || ($params[':type'] === 'CONSUMER'
+                    && !array_key_exists(':master', $params));
+            }))
+            ->willReturn(true);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -451,7 +454,8 @@ class SqlDnsBackendProviderTest extends TestCase
             ->with($this->callback(function ($params) {
                 return $params[':type'] === 'PRODUCER'
                     && $params[':master'] === '';
-            }));
+            }))
+            ->willReturn(true);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 

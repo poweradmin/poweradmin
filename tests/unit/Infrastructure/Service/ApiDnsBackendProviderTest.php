@@ -426,6 +426,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testDeleteZoneCallsApiWithTrailingDot(): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $this->mockClient->expects($this->once())
             ->method('deleteZone')
             ->willReturn(true);
@@ -437,6 +438,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeCallsApiWithCorrectData(): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
@@ -460,6 +462,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeSlaveKeepsMasters(): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
@@ -483,6 +486,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeConsumerKeepsMasters(): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute');
         $stmt->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'SLAVE']);
@@ -656,6 +660,7 @@ class ApiDnsBackendProviderTest extends TestCase
     #[DataProvider('cachedMasterOnTypeChangeProvider')]
     public function testUpdateZoneTypeClearsTheCachedMasterOnlyWhenPowerDnsDropsIt(string $type, bool $clears): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $updateSql = null;
         $update = $this->createMock(PDOStatement::class);
         $this->mockDb->method('prepare')->willReturnCallback(
@@ -749,6 +754,7 @@ class ApiDnsBackendProviderTest extends TestCase
 
     public function testUpdateZoneTypeCachesAgainstTheCanonicalRowNotThePassedId(): void
     {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Native']);
         $boundIds = [];
         $this->mockDb->method('prepare')->willReturnOnConsecutiveCalls(
             $this->stubCanonicalRowLookup(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']),
@@ -2766,5 +2772,119 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $this->assertSame('zones', $session->get('pdns_api_last_error')['context']['endpoint']);
         $this->assertSame([], $_SESSION);
+    }
+
+    // ---- members of a producer that goes away or changes kind ----
+
+    /**
+     * @param list<array<string, mixed>> $rowLookups rows returned by successive canonical zone lookups
+     */
+    private function stubProducerWithOneMember(array $rowLookups): void
+    {
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'member.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'producer.example.com'],
+            'producer.example.com.' => ['kind' => 'PRODUCER', 'masters' => [], 'catalog' => ''],
+        ]);
+
+        $ids = $this->createMock(PDOStatement::class);
+        $ids->method('fetch')->willReturnOnConsecutiveCalls(
+            ['id' => 4, 'domain_id' => 4, 'zone_name' => 'member.example.com'],
+            ['id' => 7, 'domain_id' => 7, 'zone_name' => 'producer.example.com'],
+            false
+        );
+        $this->mockDb->method('query')->willReturn($ids);
+
+        $lookup = $this->createMock(PDOStatement::class);
+        $lookup->method('fetch')->willReturnOnConsecutiveCalls(...$rowLookups);
+        $this->mockDb->method('prepare')->willReturn($lookup);
+    }
+
+    public function testDeletingAProducerEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Producer']);
+        $this->mockClient->method('deleteZone')->willReturn(true);
+        $this->stubProducerWithOneMember([['id' => 4, 'zone_name' => 'member.example.com', 'zone_type' => 'MASTER']]);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('member.example.com.', ['catalog' => ''])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->deleteZone(7, 'producer.example.com'));
+    }
+
+    public function testAMemberMissingFromTheLocalZonesTableIsStillReleasedByName(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Producer']);
+        $this->mockClient->method('deleteZone')->willReturn(true);
+        $this->mockClient->method('getAllZoneKinds')->willReturn([
+            'orphan.example.com.' => ['kind' => 'MASTER', 'masters' => [], 'catalog' => 'producer.example.com'],
+        ]);
+        $ids = $this->createMock(PDOStatement::class);
+        $ids->method('fetch')->willReturn(false);
+        $this->mockDb->method('query')->willReturn($ids);
+
+        $this->mockClient->expects($this->once())
+            ->method('updateZoneProperties')
+            ->with('orphan.example.com.', ['catalog' => ''])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->deleteZone(7, 'producer.example.com'));
+    }
+
+    public function testADeleteIsRefusedWhenTheZoneKindCannotBeRead(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(null);
+        $this->mockClient->expects($this->never())->method('deleteZone');
+
+        $this->assertFalse($this->provider->deleteZone(7, 'producer.example.com'));
+    }
+
+    public function testDeletingANonProducerLeavesCatalogsAlone(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Master']);
+        $this->mockClient->method('deleteZone')->willReturn(true);
+        $this->mockClient->expects($this->never())->method('updateZoneProperties');
+
+        $this->assertTrue($this->provider->deleteZone(7, 'plain.example.com'));
+    }
+
+    public function testChangingAProducerToAnotherKindEmptiesTheCatalogOfItsMembers(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Producer']);
+        $this->stubProducerWithOneMember([
+            ['id' => 7, 'zone_name' => 'producer.example.com', 'zone_type' => 'PRODUCER', 'zone_master' => ''],
+            ['id' => 4, 'zone_name' => 'member.example.com', 'zone_type' => 'MASTER', 'zone_master' => ''],
+        ]);
+
+        $calls = [];
+        $this->mockClient->method('updateZoneProperties')->willReturnCallback(
+            function (string $name, array $data) use (&$calls): bool {
+                $calls[] = [$name, $data];
+                return true;
+            }
+        );
+
+        $this->assertTrue($this->provider->updateZoneType(7, 'NATIVE'));
+        $this->assertContains(['member.example.com.', ['catalog' => '']], $calls);
+    }
+
+    public function testAKindChangeIsRefusedWhenTheZoneKindCannotBeRead(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(null);
+        $this->stubProducerWithOneMember([['id' => 7, 'zone_name' => 'producer.example.com', 'zone_type' => 'PRODUCER', 'zone_master' => '']]);
+        $this->mockClient->expects($this->never())->method('updateZoneProperties');
+
+        $this->assertFalse($this->provider->updateZoneType(7, 'NATIVE'));
+    }
+
+    public function testKeepingAProducerAProducerLeavesItsMembers(): void
+    {
+        $this->mockClient->method('getZone')->willReturn(['kind' => 'Producer']);
+        $this->stubProducerWithOneMember([['id' => 7, 'zone_name' => 'producer.example.com', 'zone_type' => 'PRODUCER', 'zone_master' => '']]);
+
+        $this->mockClient->expects($this->once())->method('updateZoneProperties')->willReturn(true);
+
+        $this->assertTrue($this->provider->updateZoneType(7, 'PRODUCER'));
     }
 }

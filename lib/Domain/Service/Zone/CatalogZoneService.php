@@ -169,9 +169,12 @@ class CatalogZoneService
     /**
      * Members of a producer, each flagged with whether PowerDNS will publish it.
      *
+     * With $viewerId, members that user may not view are left out, so a producer
+     * page does not list zone names the user cannot otherwise see.
+     *
      * @return array<int, array{id: int, name: string, kind: string, is_published: bool}>
      */
-    public function getMembers(string $producerName): array
+    public function getMembers(string $producerName, ?int $viewerId = null): array
     {
         $catalog = $this->normalizeName($producerName);
 
@@ -183,6 +186,9 @@ class CatalogZoneService
 
         $members = [];
         foreach ($this->backendProvider->getCatalogMembers($catalog) as $member) {
+            if ($viewerId !== null && !$this->permissionService->canViewZone($viewerId, $member['id'])) {
+                continue;
+            }
             $member['is_published'] = in_array($member['kind'], self::PUBLISHABLE_KINDS, true);
             $members[] = $member;
         }
