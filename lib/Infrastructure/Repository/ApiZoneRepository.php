@@ -572,7 +572,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
         // Look up forward zones in local zones table
         $suffixList = array_keys($domainSuffixes);
         $placeholders = implode(',', array_fill(0, count($suffixList), '?'));
-        $query = "SELECT id, zone_name as name FROM zones WHERE zone_name IN ($placeholders) AND zone_name NOT LIKE '%.arpa'";
+        // The canonical id is the one ownership checks and the zone edit link use
+        $query = "SELECT " . CanonicalZoneSql::canonicalIdColumn() . " AS id, zone_name as name FROM zones WHERE zone_name IN ($placeholders) AND zone_name NOT LIKE '%.arpa'";
         $stmt = $this->db->prepare($query);
         $paramIndex = 1;
         foreach ($suffixList as $suffix) {

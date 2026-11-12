@@ -25,12 +25,13 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
+use PDO;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnsDataService;
@@ -46,6 +47,7 @@ use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
 
@@ -167,6 +169,9 @@ class ListReverseZonesController extends BaseController
         $associatedForwardZones = $showForwardZoneAssociations
             ? $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones)
             : [];
+        if ($showForwardZoneAssociations && $perm_view !== 'all') {
+            $associatedForwardZones = $this->keepOwnedForwardZones($associatedForwardZones, (int)$loggedInUserId);
+        }
 
         // Calculate pagination count based on current filter (using pre-computed counts)
         $pagination_count = match ($reverse_zone_type) {
@@ -254,6 +259,52 @@ class ListReverseZonesController extends BaseController
             'associated_forward_zones' => $associatedForwardZones,
             'show_forward_zone_associations' => $showForwardZoneAssociations,
         ]);
+    }
+
+    /**
+     * Drop forward zones the viewer neither owns directly nor through a group, so the
+     * association column cannot confirm that someone else's zone exists.
+     *
+     * @param array<int, array<int, array{id: int|string}>> $associations Reverse zone id => forward zones
+     * @return array<int, array<int, array{id: int|string}>>
+     */
+    private function keepOwnedForwardZones(array $associations, int $userId): array
+    {
+        $ownedIds = $this->fetchOwnedZoneIds($userId);
+
+        foreach ($associations as $reverseId => $forwardZones) {
+            $associations[$reverseId] = array_values(array_filter(
+                $forwardZones,
+                fn(array $zone): bool => isset($ownedIds[(int)$zone['id']])
+            ));
+        }
+
+        return $associations;
+    }
+
+    /**
+     * @return array<int, true> Canonical zone ids the user owns directly or via a group
+     */
+    private function fetchOwnedZoneIds(int $userId): array
+    {
+        $idColumn = CanonicalZoneSql::canonicalIdColumn();
+        $stmt = $this->db->prepare(
+            "SELECT $idColumn AS zone_id FROM zones WHERE owner = :uid
+             UNION
+             SELECT zg.domain_id AS zone_id FROM zones_groups zg
+             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             WHERE ugm.user_id = :uid2"
+        );
+        $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':uid2', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $owned = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $zoneId) {
+            $owned[(int)$zoneId] = true;
+        }
+
+        return $owned;
     }
 
     private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
