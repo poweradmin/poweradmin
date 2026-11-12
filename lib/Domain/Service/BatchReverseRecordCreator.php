@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,9 +22,11 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Closure;
 use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
@@ -42,6 +44,10 @@ class BatchReverseRecordCreator
     private IPAddressValidator $ipValidator;
     private RecordRepository $recordRepository;
     private RecordMatchingService $recordMatchingService;
+    private UserContextService $userContextService;
+    private Closure $zoneEditCheck;
+    /** @var array<int, bool> */
+    private array $zoneEditCache = [];
 
     public function __construct(
         PDOCommon $db,
@@ -49,7 +55,8 @@ class BatchReverseRecordCreator
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
         ?IPAddressValidator $ipValidator = null,
-        ?RecordRepository $recordRepository = null
+        ?RecordRepository $recordRepository = null,
+        ?Closure $zoneEditCheck = null
     ) {
         $this->db = $db;
         $this->config = $config;
@@ -58,6 +65,26 @@ class BatchReverseRecordCreator
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
         $this->recordRepository = $recordRepository ?? new RecordRepository($db, $config);
         $this->recordMatchingService = new RecordMatchingService($dnsRecord, $this->recordRepository);
+        $this->userContextService = new UserContextService();
+        $this->zoneEditCheck = $zoneEditCheck ?? fn(int $zoneId): bool => $this->callerCanEditZone($zoneId);
+    }
+
+    private function callerCanEditZone(int $zoneId): bool
+    {
+        $userId = $this->userContextService->getLoggedInUserId();
+        if ($userId === null) {
+            return false;
+        }
+
+        return UserManager::verifyPermission($this->db, 'zone_content_edit_others')
+            || UserManager::canUserPerformZoneAction($this->db, $userId, $zoneId, 'zone_content_edit_own')
+            || UserManager::canUserPerformZoneAction($this->db, $userId, $zoneId, 'zone_content_edit_own_as_client');
+    }
+
+    /** Checked before any PTR lookup so skip counts cannot reveal PTRs in zones the caller cannot edit. */
+    private function canEditReverseZone(int $zoneId): bool
+    {
+        return $this->zoneEditCache[$zoneId] ??= (bool)($this->zoneEditCheck)($zoneId);
     }
 
     /**
@@ -189,6 +216,12 @@ class BatchReverseRecordCreator
                         continue;
                     }
 
+                    if (!$this->canEditReverseZone((int)$zone_rev_id)) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip";
+                        continue;
+                    }
+
                     // Check if ANY PTR record already exists for this IP (if configured)
                     $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
                     if ($preventDuplicatePTR) {
@@ -258,6 +291,12 @@ class BatchReverseRecordCreator
                     if ($zone_rev_id === -1) {
                         $failCount++;
                         $errors[] = "No matching reverse zone found for $reverseDomain";
+                        continue;
+                    }
+
+                    if (!$this->canEditReverseZone((int)$zone_rev_id)) {
+                        $failCount++;
+                        $errors[] = "Failed to create PTR record for $ip";
                         continue;
                     }
 
@@ -428,6 +467,12 @@ class BatchReverseRecordCreator
 
                 // Convert IP to reverse notation with proper nibble expansion
                 $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
+
+                if (!$this->canEditReverseZone((int)$test_zone_rev_id)) {
+                    $failCount++;
+                    $errors[] = "Failed to create PTR record for $ip";
+                    continue;
+                }
 
                 // Check if ANY PTR record already exists for this IP (if configured)
                 $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);

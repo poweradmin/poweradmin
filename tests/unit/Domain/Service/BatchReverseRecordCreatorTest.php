@@ -16,7 +16,8 @@ class BatchReverseRecordCreatorTest extends TestCase
     private function createService(
         ?DnsRecord $dnsRecord = null,
         ?ConfigurationManager $config = null,
-        ?RecordRepository $recordRepository = null
+        ?RecordRepository $recordRepository = null,
+        ?\Closure $zoneEditCheck = null
     ): BatchReverseRecordCreator {
         $db = $this->createMock(PDOCommon::class);
         $logger = $this->createMock(LegacyLogger::class);
@@ -40,7 +41,7 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $ipValidator = new IPAddressValidator();
 
-        return new BatchReverseRecordCreator($db, $config, $logger, $dnsRecord, $ipValidator, $recordRepository);
+        return new BatchReverseRecordCreator($db, $config, $logger, $dnsRecord, $ipValidator, $recordRepository, $zoneEditCheck ?? fn(int $zoneId): bool => true);
     }
 
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void
@@ -204,5 +205,35 @@ class BatchReverseRecordCreatorTest extends TestCase
         $this->assertTrue($result['success']);
         // Should be capped at 1000 minus 1 (skipped network address) = 999
         $this->assertEquals(999, $addCount);
+    }
+
+    public function testIPv4PtrLookupsSkipReverseZonesTheCallerCannotEdit(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->expects($this->never())->method('addRecord');
+
+        $recordRepo = $this->createMock(RecordRepository::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+
+        $service = $this->createService($dnsRecord, null, $recordRepo, fn(int $zoneId): bool => false);
+
+        $result = $service->createIPv4Network('192.0.2.0/30', 'h', 'example.com', '1', 3600);
+
+        $this->assertStringContainsString('2 failed', $result['message'] ?? '');
+    }
+
+    public function testIPv6PtrLookupsSkipReverseZonesTheCallerCannotEdit(): void
+    {
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturn(42);
+        $dnsRecord->expects($this->never())->method('addRecord');
+
+        $recordRepo = $this->createMock(RecordRepository::class);
+        $recordRepo->expects($this->never())->method('hasPtrRecord');
+
+        $service = $this->createService($dnsRecord, null, $recordRepo, fn(int $zoneId): bool => false);
+
+        $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 3);
     }
 }
