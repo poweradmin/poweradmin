@@ -98,7 +98,7 @@ class UserPreferencesController extends InternalApiController
     {
         $input = $this->getJsonInput();
 
-        if (!$input || !isset($input['key']) || !isset($input['value'])) {
+        if (!self::isValidUpdateInput($input)) {
             $response = $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
             $response->send();
             exit;
@@ -121,6 +121,12 @@ class UserPreferencesController extends InternalApiController
             $response->send();
             exit;
         }
+    }
+
+    private static function isValidUpdateInput(?array $input): bool
+    {
+        return $input && isset($input['key'], $input['value'])
+            && is_string($input['key']) && is_string($input['value']);
     }
 
     private function handleDelete(int $userId): void
