@@ -2128,4 +2128,43 @@ ZONE;
             'A' => false,
         ], $flags);
     }
+
+    public function testParenthesisInsideQuotedTxtDoesNotSwallowFollowingRecords(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "smile IN TXT \"smile :(\"\n"
+            . "www IN A 192.0.2.1\n"
+            . "mail IN A 192.0.2.2\n";
+
+        $result = $this->parser->parse($content);
+        $records = $result->getRecords();
+
+        $this->assertSame([], $result->getWarnings());
+        $this->assertSame(['smile.example.com', 'www.example.com', 'mail.example.com'], array_map(fn(ParsedRecord $r): string => $r->name, $records));
+        $this->assertSame('"smile :("', $records[0]->content);
+    }
+
+    public function testQuotedParenthesesDoNotCloseARealMultilineRecord(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "t IN TXT ( \"a)\"\n"
+            . "    \"b(\" )\n"
+            . "www IN A 192.0.2.1\n";
+
+        $records = $this->parser->parse($content)->getRecords();
+
+        $this->assertSame(['t.example.com', 'www.example.com'], array_map(fn(ParsedRecord $r): string => $r->name, $records));
+        $this->assertSame('"a)" "b("', $records[0]->content);
+    }
+
+    public function testEscapedBackslashBeforeQuoteEndsTheQuotedString(): void
+    {
+        $content = "\$ORIGIN example.com.\n"
+            . "t IN TXT \"a\\\\\" \"b;c\" ; trailing\n";
+
+        $records = $this->parser->parse($content)->getRecords();
+
+        $this->assertCount(1, $records);
+        $this->assertSame('"a\\\\" "b;c"', $records[0]->content);
+    }
 }
