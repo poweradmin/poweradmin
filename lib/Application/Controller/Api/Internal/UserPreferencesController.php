@@ -84,7 +84,7 @@ class UserPreferencesController extends InternalApiController
     private function handleUpdate(int $userId): JsonResponse
     {
         $input = $this->getJsonInput();
-        if (!$input || !isset($input['key']) || !isset($input['value'])) {
+        if (!$input || !isset($input['key'], $input['value']) || !is_string($input['key']) || !is_string($input['value'])) {
             return $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
         }
 

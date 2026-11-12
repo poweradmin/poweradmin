@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\Internal;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\Internal\UserPreferencesController;
@@ -132,6 +133,28 @@ class UserPreferencesControllerTest extends TestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame(['error' => 'Missing key or value'], $this->body($response));
+    }
+
+    #[DataProvider('nonStringPairProvider')]
+    public function testAnUpdateWithANonStringKeyOrValueIs400(mixed $key, mixed $value): void
+    {
+        $this->preferences->expects($this->never())->method('setPreference');
+
+        $response = $this->respond('POST', '/api/internal/user-preferences', ['key' => $key, 'value' => $value]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(['error' => 'Missing key or value'], $this->body($response));
+    }
+
+    /** @return array<string, array{0: mixed, 1: mixed}> */
+    public static function nonStringPairProvider(): array
+    {
+        return [
+            'array key' => [['rows_per_page'], '50'],
+            'array value' => ['rows_per_page', ['50']],
+            'integer value' => ['rows_per_page', 50],
+            'boolean value' => ['rows_per_page', true],
+        ];
     }
 
     public function testAnUpdateStoresThePreferenceAndEchoesIt(): void
