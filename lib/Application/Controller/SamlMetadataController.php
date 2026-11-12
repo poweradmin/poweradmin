@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -104,7 +104,8 @@ class SamlMetadataController extends BaseController
             echo $metadata;
         } catch (\Exception $e) {
             http_response_code(500);
-            echo 'Error generating SAML metadata: ' . $e->getMessage();
+            error_log('[SamlMetadataController] SAML metadata could not be generated: ' . $e->getMessage());
+            echo 'Error generating SAML metadata.';
         }
     }
 
