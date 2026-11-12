@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -325,12 +325,16 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         try {
             $createdAt = new DateTime($data['created_at']);
             $lastUsedAt = $data['last_used_at'] ? new DateTime($data['last_used_at']) : null;
-            $expiresAt = $data['expires_at'] ? new DateTime($data['expires_at']) : null;
         } catch (Exception $e) {
-            // Handle date parsing errors
             $createdAt = new DateTime();
             $lastUsedAt = null;
-            $expiresAt = null;
+        }
+
+        // An unreadable expiry must not turn a limited key into one that never expires
+        try {
+            $expiresAt = $data['expires_at'] ? new DateTime($data['expires_at']) : null;
+        } catch (Exception $e) {
+            $expiresAt = new DateTime('@0');
         }
 
         return new ApiKey(

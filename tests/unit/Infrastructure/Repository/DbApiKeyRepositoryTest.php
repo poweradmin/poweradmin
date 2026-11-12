@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -449,5 +449,23 @@ class DbApiKeyRepositoryTest extends TestCase
         $result = $this->repository->findById(1);
 
         $this->assertNull($result->getCreatedBy());
+    }
+
+    #[Test]
+    public function testFindByIdTreatsUnparseableExpiryAsExpired(): void
+    {
+        $dbRow = $this->createApiKeyDbRow(['expires_at' => 'not a date']);
+
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn($dbRow);
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->repository->findById(1);
+
+        $this->assertNotNull($result->getExpiresAt());
+        $this->assertTrue($result->hasExpired());
+        $this->assertFalse($result->isValid());
     }
 }
