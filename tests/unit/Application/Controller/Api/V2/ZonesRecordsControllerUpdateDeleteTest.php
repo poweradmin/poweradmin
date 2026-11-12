@@ -378,6 +378,32 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testStoredContentWithControlCharactersIsHealedWhenTheBodyOmitsContent(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord(['content' => "192.0.2.1\r"]));
+        $this->recordManager->expects($this->once())
+            ->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['content'] === '192.0.2.1' && $record['ttl'] === 300))
+            ->willReturn(RecordWriteResult::ok());
+
+        $response = $this->update(['ttl' => 300]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    public function testSubmittedContentIsTrimmedOnUpdate(): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord());
+        $this->recordManager->expects($this->once())
+            ->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['content'] === '192.0.2.9'))
+            ->willReturn(RecordWriteResult::ok());
+
+        $response = $this->update(['content' => "192.0.2.9\n"]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAFailedEditKeepsTheManagersStatusAndReason(): void
     {
         $this->records->method('getRecordById')->willReturn($this->existingRecord());

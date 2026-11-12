@@ -89,6 +89,34 @@ class DnsRecordValidationServiceTest extends TestCase
         $this->assertFalse($result->isValid());
     }
 
+    // ========== Control character tests ==========
+
+    public static function controlCharContentProvider(): array
+    {
+        return [
+            'newline in CSYNC' => ['CSYNC', "66 3 AAAA\n NS A"],
+            'tab in CAA' => ['CAA', "0 issue\t\"ca.example\""],
+            'carriage return' => ['AAAA', "2001:db8::1\r"],
+            'NUL byte' => ['A', "192.0.2.1\0"],
+            'DEL' => ['TXT', "\"a\x7Fb\""],
+            'newline in LUA' => ['LUA', "A \"ifportup(443)\n\""],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('controlCharContentProvider')]
+    public function testValidateRecordRefusesControlCharactersBeforeTypeValidation(string $type, string $content): void
+    {
+        $this->domainRepository->method('getDomainNameById')->willReturn('example.com');
+
+        $this->validatorRegistry->expects($this->never())->method('getValidator');
+
+        $result = $this->service->validateRecord(1, 1, $type, $content, 'test.example.com', null, 3600, 'hostmaster@example.com', 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid characters in content field.', $result->getErrors()[0]);
+    }
+
     // ========== A record validation tests ==========
 
     #[Test]

@@ -549,6 +549,20 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(200, $response->getStatusCode());
     }
 
+    public function testAnUpdateWithoutContentHealsLegacyControlCharacters(): void
+    {
+        $stored = array_merge($this->storedARecord(), ['type' => 'CAA', 'content' => "0 issue\t\"ca.example\""]);
+        $this->records->method('getRecordById')->willReturn($stored);
+        $this->records->method('getRecordFromId')->willReturn($stored);
+        $this->recordManager->expects($this->once())->method('editRecord')
+            ->with($this->callback(static fn(array $record): bool => $record['content'] === '0 issue "ca.example"'))
+            ->willReturn(RecordWriteResult::ok(3));
+
+        $response = $this->bulk(['operations' => [['action' => 'update', 'id' => 3, 'ttl' => 300]]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
     public function testAWhitespaceOnlyUpdateCommentClearsIt(): void
     {
         $this->records->method('getRecordById')->willReturn($this->storedARecord());

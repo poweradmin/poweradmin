@@ -108,6 +108,10 @@ final class ZoneTemplateRecordValidationService
         $resolvedName = $this->resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
         $resolvedContent = $this->resolvePlaceholders($content);
 
+        if (preg_match('/[\x00-\x1F\x7F]/', $resolvedContent) === 1) {
+            return ValidationResult::failure(_('Invalid characters in content field.'));
+        }
+
         // Zone creation completes short SOA rdata with the configured timers, so a
         // template carrying only the leading fields is legitimate.
         if ($type === RecordType::SOA) {
