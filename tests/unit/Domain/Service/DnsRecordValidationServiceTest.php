@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,6 +94,44 @@ class DnsRecordValidationServiceTest extends TestCase
         );
 
         $this->assertFalse($result->isValid());
+    }
+
+    // ========== Control character tests ==========
+
+    public static function controlCharContentProvider(): array
+    {
+        return [
+            'newline in CSYNC' => ['CSYNC', "66 3 AAAA\n NS A"],
+            'tab in CAA' => ['CAA', "0 issue\t\"ca.example\""],
+            'carriage return' => ['AAAA', "2001:db8::1\r"],
+            'NUL byte' => ['A', "192.0.2.1\0"],
+            'DEL' => ['TXT', "\"a\x7Fb\""],
+        ];
+    }
+
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('controlCharContentProvider')]
+    public function testValidateRecordRefusesControlCharactersBeforeTypeValidation(string $type, string $content): void
+    {
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+
+        $this->validatorRegistry->expects($this->never())->method('getValidator');
+
+        $result = $this->service->validateRecord(1, 1, $type, $content, 'test.example.com', null, 3600, 'hostmaster@example.com', 86400);
+
+        $this->assertFalse($result->isValid());
+        $this->assertSame('Invalid characters in content field.', $result->getErrors()[0]);
+    }
+
+    #[Test]
+    public function testValidateRecordRefusesLineBreaksInLuaContent(): void
+    {
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->validatorRegistry->expects($this->never())->method('getValidator');
+
+        $result = $this->service->validateRecord(1, 1, 'LUA', ";local a = 1\n return 'x'", 'test.example.com', null, 3600, 'hostmaster@example.com', 86400);
+
+        $this->assertSame('Invalid characters in content field.', $result->getErrors()[0]);
     }
 
     // ========== A record validation tests ==========

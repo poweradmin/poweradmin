@@ -40,7 +40,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
  *
  * @package Poweradmin
  * @copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright 2010-2025 Poweradmin Development Team
+ * @copyright 2010-2026 Poweradmin Development Team
  * @license https://opensource.org/licenses/GPL-3.0 GPL
  */
 class DnsRecordValidationService implements DnsRecordValidationServiceInterface
@@ -101,6 +101,11 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 
         if (!$this->validatorRegistry->isKnownType($type)) {
             return ValidationResult::failure(_('Invalid record type.'));
+        }
+
+        // Content is stored and exported untrimmed, so a raw line break would split a zone file line.
+        if (preg_match('/[\x00-\x1F\x7F]/', $content) === 1) {
+            return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
         // Get the appropriate validator for this record type

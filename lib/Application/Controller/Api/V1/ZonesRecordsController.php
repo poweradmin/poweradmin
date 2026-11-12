@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -646,6 +646,8 @@ class ZonesRecordsController extends PublicApiController
             if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            // Stored content may predate the control character check; heal it when it is the fallback
+            $content = $this->updatedContent($input, $content);
             $recordData = [
                 'rid' => $recordId,
                 'zid' => $zoneId,

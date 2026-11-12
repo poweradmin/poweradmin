@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -176,6 +176,19 @@ abstract class AbstractApiController extends BaseController
             return $default;
         }
         return is_string($input[$key]) ? $input[$key] : null;
+    }
+
+    /**
+     * Content to write on an update: submitted content is trimmed. Stored content used as
+     * the fallback may predate the control character check, so it is collapsed too.
+     */
+    protected function updatedContent(array $input, string $content): string
+    {
+        if (array_key_exists('content', $input)) {
+            return trim($content);
+        }
+
+        return trim((string)preg_replace('/[\x00-\x1F\x7F]+/', ' ', $content));
     }
 
     /**
