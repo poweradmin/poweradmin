@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -107,6 +107,12 @@ class UserPreferencesController extends InternalApiController
             exit;
         }
 
+        if (!$this->hasStringKeyAndValue($input)) {
+            $response = $this->returnJsonResponse(['error' => 'Preference key and value must be strings'], 400);
+            $response->send();
+            exit;
+        }
+
         $key = $input['key'];
         $value = $input['value'];
 
@@ -124,6 +130,14 @@ class UserPreferencesController extends InternalApiController
             $response->send();
             exit;
         }
+    }
+
+    /**
+     * The service takes typed strings, so a JSON array or number would otherwise end in a TypeError.
+     */
+    private function hasStringKeyAndValue(array $input): bool
+    {
+        return is_string($input['key'] ?? null) && is_string($input['value'] ?? null);
     }
 
     private function handleDelete(int $userId): void
