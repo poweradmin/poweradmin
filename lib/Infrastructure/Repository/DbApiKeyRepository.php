@@ -363,11 +363,16 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         try {
             $createdAt = new DateTime($data['created_at']);
             $lastUsedAt = $data['last_used_at'] ? new DateTime($data['last_used_at']) : null;
-            $expiresAt = $data['expires_at'] ? new DateTime($data['expires_at']) : null;
         } catch (Exception $e) {
             $createdAt = new DateTime();
             $lastUsedAt = null;
-            $expiresAt = null;
+        }
+
+        // An unparseable expiry must not turn into "never expires"
+        try {
+            $expiresAt = $data['expires_at'] ? new DateTime($data['expires_at']) : null;
+        } catch (Exception $e) {
+            $expiresAt = new DateTime('@0');
         }
 
         $apiKey = new ApiKey(
