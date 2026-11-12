@@ -93,6 +93,22 @@ class DbApiKeyRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function testFindByIdTreatsAnUnparseableExpiryAsExpired(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn($this->createApiKeyDbRow(['expires_at' => 'not a date']));
+
+        $this->db->method('prepare')->willReturn($stmt);
+
+        $result = $this->repository->findById(1);
+
+        $this->assertInstanceOf(ApiKey::class, $result);
+        $this->assertTrue($result->hasExpired());
+        $this->assertFalse($result->isValid());
+    }
+
+    #[Test]
     public function testFindByIdReturnsNullWhenNotFound(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
