@@ -191,14 +191,14 @@ class BindZoneFileParser
 
             if ($inParens) {
                 $buffer .= ' ' . trim($stripped);
-                if (strpos($stripped, ')') !== false) {
+                if ($this->hasParenOutsideQuotes($stripped, ')')) {
                     $inParens = false;
                     $buffer = $this->stripParensOutsideQuotes($buffer);
                     $result[] = $buffer;
                     $buffer = '';
                 }
             } else {
-                if (strpos($stripped, '(') !== false && strpos($stripped, ')') === false) {
+                if ($this->hasParenOutsideQuotes($stripped, '(') && !$this->hasParenOutsideQuotes($stripped, ')')) {
                     $inParens = true;
                     $buffer = $stripped;
                 } else {
@@ -224,13 +224,35 @@ class BindZoneFileParser
         $len = strlen($line);
         for ($i = 0; $i < $len; $i++) {
             $char = $line[$i];
-            if ($char === '"' && ($i === 0 || $line[$i - 1] !== '\\')) {
+            if ($char === '\\') {
+                $i++;
+            } elseif ($char === '"') {
                 $inQuote = !$inQuote;
             } elseif ($char === ';' && !$inQuote) {
                 return substr($line, 0, $i);
             }
         }
         return $line;
+    }
+
+    /**
+     * Whether the line holds the given parenthesis outside quoted strings.
+     */
+    private function hasParenOutsideQuotes(string $line, string $paren): bool
+    {
+        $inQuote = false;
+        $len = strlen($line);
+        for ($i = 0; $i < $len; $i++) {
+            $char = $line[$i];
+            if ($char === '\\') {
+                $i++;
+            } elseif ($char === '"') {
+                $inQuote = !$inQuote;
+            } elseif ($char === $paren && !$inQuote) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function parseRecordLine(string $line, ?string $origin, int $defaultTtl, ?string $previousName): ?ParsedRecord
@@ -489,7 +511,9 @@ class BindZoneFileParser
         $len = strlen($line);
         for ($i = 0; $i < $len; $i++) {
             $char = $line[$i];
-            if ($char === '"' && ($i === 0 || $line[$i - 1] !== '\\')) {
+            if ($char === '\\' && ($i + 1) < $len) {
+                $result .= $char . $line[++$i];
+            } elseif ($char === '"') {
                 $inQuote = !$inQuote;
                 $result .= $char;
             } elseif (($char === '(' || $char === ')') && !$inQuote) {
