@@ -48,6 +48,8 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
 
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)");
         $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
@@ -89,6 +91,39 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
         $stmt = $this->db->query("SELECT name FROM records WHERE domain_id = " . self::ZONE_ID . " ORDER BY name");
 
         $this->assertSame(['mail.example.com', 'www.example.com'], $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    #[RunInSeparateProcess]
+    public function testReplacingTheSoaDropsTheOldSoasCommentLink(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (77, " . self::ZONE_ID . ", 'example.com', 'SOA', 'ns1.example.com. h.example.com. 1 2 3 4 5', 300, 0)");
+        $this->db->exec("INSERT INTO comments (id, comment) VALUES (700, 'old soa')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('77', 700)");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (" . self::TEMPLATE_ID . ", '[ZONE]', 'SOA', 'ns1.example.com. h.example.com. 9 2 3 4 5', 300, 0)");
+
+        $this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM records WHERE id = 77")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM record_comment_links WHERE record_id = '77'")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM comments WHERE id = 700")->fetchColumn());
+    }
+
+    public function testReapplyingTheTemplateDropsTheCommentsOfTheRecordsItRemoves(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (50, " . self::ZONE_ID . ", 'www.example.com', 'A', '192.0.2.1', 300, 0)");
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (51, " . self::ZONE_ID . ", 'mail.example.com', 'A', '192.0.2.2', 300, 0)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (" . self::ZONE_ID . ", 50, " . self::TEMPLATE_ID . ")");
+        $this->db->exec("INSERT INTO comments (id, comment) VALUES (500, 'template www')");
+        $this->db->exec("INSERT INTO comments (id, comment) VALUES (510, 'own mail')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('50', 500)");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('51', 510)");
+
+        $this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM record_comment_links WHERE record_id = '50'")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM comments WHERE id = 500")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM record_comment_links WHERE record_id = '51'")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM comments WHERE id = 510")->fetchColumn());
     }
 
     private function makeDomainManager(): DomainManager

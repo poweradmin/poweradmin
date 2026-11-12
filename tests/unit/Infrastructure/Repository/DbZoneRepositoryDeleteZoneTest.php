@@ -46,6 +46,10 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
             [
                 "CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)",
                 "CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT)",
+                "CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)",
+                "CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)",
+                "INSERT INTO comments (id, comment) VALUES (100, 'c10'), (200, 'c20')",
+                "INSERT INTO record_comment_links VALUES ('10', 100), ('20', 200)",
                 "CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
                 "CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)",
@@ -85,6 +89,14 @@ class DbZoneRepositoryDeleteZoneTest extends TestCase
         $this->assertSame([0], $this->scopes(1));
         $this->assertSame([0, 2], $this->scopes(2));
         $this->assertSame([0], $this->scopes(3));
+    }
+
+    public function testDeleteZoneDropsTheCommentLinksOfItsRecordsOnly(): void
+    {
+        $this->assertTrue($this->repository->deleteZone(1));
+
+        $this->assertSame(['20'], $this->db->query("SELECT record_id FROM record_comment_links")->fetchAll(PDO::FETCH_COLUMN));
+        $this->assertSame(['c20'], $this->db->query("SELECT comment FROM comments")->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function testRecreatedZoneOnTheReusedIdIsNotInTheDeletedZonesKeyScope(): void

@@ -34,12 +34,16 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER)");
+        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)");
         $this->db->exec("CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER)");
         $this->db->exec("CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
 
         $this->db->exec("INSERT INTO domains (id, name) VALUES (1, 'example.com')");
         $this->db->exec("INSERT INTO records (domain_id) VALUES (1), (1)");
+        $this->db->exec("INSERT INTO comments (id, comment) VALUES (100, 'c1'), (101, 'c2'), (102, 'c3')");
+        $this->db->exec("INSERT INTO record_comment_links VALUES ('1', 100), ('2', 101), ('3', 102)");
         $this->db->exec("INSERT INTO domainmetadata (domain_id) VALUES (1)");
         $this->db->exec("INSERT INTO cryptokeys (domain_id) VALUES (1)");
     }
@@ -64,6 +68,16 @@ class SqlDnsBackendProviderDeleteZoneTest extends TestCase
         $this->assertSame(0, $this->rowCount('records'));
         $this->assertSame(0, $this->rowCount('domainmetadata'));
         $this->assertSame(0, $this->rowCount('cryptokeys'));
+    }
+
+    public function testDeleteZoneDropsTheCommentLinksOfItsRecords(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id) VALUES (3, 2)");
+
+        $this->assertTrue($this->provider()->deleteZone(1, 'example.com'));
+
+        $this->assertSame(['3'], $this->db->query("SELECT record_id FROM record_comment_links")->fetchAll(PDO::FETCH_COLUMN));
+        $this->assertSame(['c3'], $this->db->query("SELECT comment FROM comments")->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function testDeleteZoneKeepsKeysScopedToItRestrictedToNoZone(): void

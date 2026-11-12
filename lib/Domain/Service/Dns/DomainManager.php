@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -1129,6 +1130,8 @@ class DomainManager implements DomainManagerInterface
                     $mappingStmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
                     $mappingStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
 
+                    DbRecordCommentRepository::purgeForRecords($this->db, $tableNameService->getTable(PdnsTable::COMMENTS), array_column($templateRecordsRemoved, 'id'));
+
                     if ($templateRecordsRemoved !== []) {
                         $this->captureChange(function () use ($templateRecordsRemoved, $zone_id): void {
                             foreach ($templateRecordsRemoved as $removed) {
@@ -1171,6 +1174,8 @@ class DomainManager implements DomainManagerInterface
 
                                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                                 $stmt->execute([':zone_id' => $zone_id]);
+
+                                DbRecordCommentRepository::purgeForRecords($this->db, $tableNameService->getTable(PdnsTable::COMMENTS), array_column($existingSoaRecords, 'id'));
 
                                 if ($existingSoaRecords !== []) {
                                     $this->captureChange(function () use ($existingSoaRecords, $zone_id): void {

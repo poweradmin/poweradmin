@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -96,6 +97,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         try {
             // A later zone can be given this id again (SQLite reuses the highest rowid), and a scope left on it would cover that zone
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $domainId);
+            DbRecordCommentRepository::purgeForZone($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), $recordsTable, $domainId);
             foreach (
                 [
                     "DELETE FROM $recordsTable WHERE domain_id = :id",
@@ -366,6 +368,9 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
 
+        // The comment goes with the record: unlinked it would show on sibling records
+        DbRecordCommentRepository::purgeForRecords($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), [$recordId]);
+
         return true;
     }
 
@@ -373,6 +378,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        DbRecordCommentRepository::purgeForZone($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), $recordsTable, $domainId);
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
         $stmt->execute([':id' => $domainId]);
 

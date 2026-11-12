@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -194,6 +195,30 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ? $this->hydrateComment($result) : null;
+    }
+
+    /**
+     * Drop the comments linked to these records and then the links. A comment links to one record
+     * (comment_id is unique), so nothing shared is lost; SQLite reuses ids, so none may be left.
+     *
+     * @param array<int|string> $recordIds
+     */
+    public static function purgeForRecords(PDO $db, string $commentsTable, array $recordIds): void
+    {
+        foreach (array_chunk(array_map('strval', $recordIds), 500) as $chunk) {
+            $in = implode(',', array_fill(0, count($chunk), '?'));
+            $db->prepare("DELETE FROM $commentsTable WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id IN ($in))")->execute($chunk);
+            $db->prepare("DELETE FROM record_comment_links WHERE record_id IN ($in)")->execute($chunk);
+        }
+    }
+
+    /** Same as purgeForRecords for every record of a zone, in one statement per table. */
+    public static function purgeForZone(PDO $db, string $commentsTable, string $recordsTable, int $domainId): void
+    {
+        $id = DbCompat::castToString((string)$db->getAttribute(PDO::ATTR_DRIVER_NAME), 'id');
+        $ids = "SELECT $id FROM $recordsTable WHERE domain_id = :id";
+        $db->prepare("DELETE FROM $commentsTable WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id IN ($ids))")->execute([':id' => $domainId]);
+        $db->prepare("DELETE FROM record_comment_links WHERE record_id IN ($ids)")->execute([':id' => $domainId]);
     }
 
     public function deleteByRecordId(int|string $recordId): bool

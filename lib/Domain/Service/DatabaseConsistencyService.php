@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -660,6 +661,8 @@ class DatabaseConsistencyService
         try {
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
 
+            DbRecordCommentRepository::purgeForZone($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), $records_table, $zoneId);
+
             // Delete records
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
@@ -708,8 +711,19 @@ class DatabaseConsistencyService
         );
         $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
         $stmt->execute();
+        $deleted = $stmt->rowCount() > 0;
 
-        return $stmt->rowCount() > 0;
+        if ($deleted) {
+            $this->purgeComments([$recordId]);
+        }
+
+        return $deleted;
+    }
+
+    /** @param array<int|string> $recordIds */
+    private function purgeComments(array $recordIds): void
+    {
+        DbRecordCommentRepository::purgeForRecords($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), $recordIds);
     }
 
     /**
@@ -771,6 +785,7 @@ class DatabaseConsistencyService
             $placeholders = implode(',', array_fill(0, count($ids), '?'));
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
             $stmt->execute($ids);
+            $this->purgeComments($ids);
 
             $this->db->commit();
         } catch (Exception $e) {

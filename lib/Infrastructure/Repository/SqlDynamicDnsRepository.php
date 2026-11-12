@@ -37,7 +37,8 @@ readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
         private PDO $db,
         private SOARecordManagerInterface $soaRecordManager,
         private string $recordsTable,
-        private string $domainsTable
+        private string $domainsTable,
+        private string $commentsTable = 'comments'
     ) {
     }
 
@@ -185,6 +186,8 @@ readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
     {
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
+
+        DbRecordCommentRepository::purgeForRecords($this->db, $this->commentsTable, [$recordId]);
     }
 
     public function updateSOASerial(int $zoneId): void

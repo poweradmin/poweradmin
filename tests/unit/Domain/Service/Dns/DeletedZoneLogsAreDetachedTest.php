@@ -54,6 +54,8 @@ class DeletedZoneLogsAreDetachedTest extends SqliteIntegrationTestCase
                 'CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT NOT NULL, created_at TEXT, priority INTEGER, zone_id INTEGER)',
                 'CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT)',
                 'CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER)',
+                'CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)',
+                'CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)',
                 'CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER)',
                 'CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER)',
             ] as $sql

@@ -140,8 +140,8 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteZoneDeletesAllRelatedTables(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        // The API key scope lookup, then the four deletes
-        $stmt->expects($this->exactly(5))->method('execute');
+        // The API key scope lookup, the comment and link deletes, then the four deletes
+        $stmt->expects($this->exactly(7))->method('execute');
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -347,7 +347,10 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordDeletesById(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([5]);
+        // The record delete, then the linked comment and link deletes
+        $stmt->expects($this->exactly(3))->method('execute')->willReturnCallback(
+            static fn(array $params): bool => in_array($params, [[5], ['5']], true)
+        );
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -359,7 +362,8 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordsByDomainIdDeletesAll(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([':id' => 1]);
+        // The linked comment and link deletes, then the record delete
+        $stmt->expects($this->exactly(3))->method('execute')->with([':id' => 1]);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
