@@ -39,12 +39,15 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
     private PDO $db;
     private BackendCapabilitiesInterface $backend;
     private string $recordsTable;
+    private string $commentsTable;
 
     public function __construct(PDO $db, ConfigurationInterface $config, BackendCapabilitiesInterface $backend)
     {
         $this->db = $db;
         $this->backend = $backend;
-        $this->recordsTable = (new TableNameService($config))->getTable(PdnsTable::RECORDS);
+        $tableNameService = new TableNameService($config);
+        $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
+        $this->commentsTable = $tableNameService->getTable(PdnsTable::COMMENTS);
     }
 
     public function linkRecord(int $zoneId, int|string $recordId, int $templateId): void
@@ -116,9 +119,7 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
         $stmt->execute();
         $removed = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-        $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE domain_id = :zone_id AND type = 'SOA'");
-        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
+        $this->deleteRecordsByIds(array_map(static fn(array $row): int => (int) $row['id'], $removed));
 
         return $removed;
     }
@@ -162,5 +163,19 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
             $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
         }
         $stmt->execute();
+
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        foreach (
+            [
+                "DELETE FROM {$this->commentsTable} WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id IN ($placeholders))",
+                "DELETE FROM record_comment_links WHERE record_id IN ($placeholders)",
+            ] as $sql
+        ) {
+            $stmt = $this->db->prepare($sql);
+            foreach (array_values($ids) as $i => $id) {
+                $stmt->bindValue($i + 1, (string) $id);
+            }
+            $stmt->execute();
+        }
     }
 }

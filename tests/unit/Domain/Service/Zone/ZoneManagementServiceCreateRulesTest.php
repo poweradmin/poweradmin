@@ -388,6 +388,8 @@ class ZoneManagementServiceCreateRulesTest extends SqliteIntegrationTestCase
         // No pre-check here, so only the wired DomainManager's locked re-check can refuse
         $this->db->exec('UPDATE users SET max_zones = 0 WHERE id = ' . self::OTHER_USER);
         // The backend cleanup deletes from these too
+        $this->db->exec('CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)');
+        $this->db->exec('CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)');
         $this->db->exec('CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)');
         $this->db->exec('CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, active INTEGER, content TEXT)');
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (50, 'zone_master_add')");

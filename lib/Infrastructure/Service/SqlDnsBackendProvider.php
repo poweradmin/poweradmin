@@ -93,6 +93,7 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $commentsTable = $this->tableNameService->getTable(PdnsTable::COMMENTS);
 
         // Callers run this before opening their own transaction, so wrapping the
         // dependent deletes here makes the backend cleanup atomic: a mid-sequence
@@ -104,6 +105,8 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $domainId);
             foreach (
                 [
+                    "DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM $commentsTable WHERE domain_id = :id)",
+                    "DELETE FROM $commentsTable WHERE domain_id = :id",
                     "DELETE FROM $recordsTable WHERE domain_id = :id",
                     "DELETE FROM $domainmetadataTable WHERE domain_id = :id",
                     "DELETE FROM $cryptokeysTable WHERE domain_id = :id",
@@ -517,6 +520,18 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
 
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
+
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        $commentsTable = $this->tableNameService->getTable(PdnsTable::COMMENTS);
+        foreach (
+            [
+                "DELETE FROM $commentsTable WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id = ?)",
+                "DELETE FROM record_comment_links WHERE record_id = ?",
+            ] as $sql
+        ) {
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([(string)$recordId]);
+        }
 
         return true;
     }

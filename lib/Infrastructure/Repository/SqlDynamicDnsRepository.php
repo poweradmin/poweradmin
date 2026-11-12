@@ -38,7 +38,8 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
         private PDO $db,
         private SOARecordManagerInterface $soaRecordManager,
         private string $recordsTable,
-        private string $domainsTable
+        private string $domainsTable,
+        private string $commentsTable = 'comments'
     ) {
     }
 
@@ -186,6 +187,16 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
     {
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
+
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        foreach (
+            [
+                "DELETE FROM {$this->commentsTable} WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id = :id)",
+                "DELETE FROM record_comment_links WHERE record_id = :id",
+            ] as $sql
+        ) {
+            $this->db->prepare($sql)->execute([':id' => (string)$recordId]);
+        }
     }
 
     public function updateSOASerial(int $zoneId): void

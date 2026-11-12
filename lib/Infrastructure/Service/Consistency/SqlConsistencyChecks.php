@@ -541,6 +541,32 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     }
 
     /**
+     * SQLite reuses ids, so a link left behind would show the comment on the next record.
+     *
+     * @param array<int|string> $recordIds
+     */
+    private function deleteCommentLinks(array $recordIds): void
+    {
+        if ($recordIds === []) {
+            return;
+        }
+
+        $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
+        foreach (
+            [
+                "DELETE FROM {$this->commentsTable} WHERE id IN (SELECT comment_id FROM record_comment_links WHERE record_id IN ($placeholders))",
+                "DELETE FROM record_comment_links WHERE record_id IN ($placeholders)",
+            ] as $sql
+        ) {
+            $stmt = $this->db->prepare($sql);
+            foreach (array_values($recordIds) as $i => $id) {
+                $stmt->bindValue($i + 1, (string)$id);
+            }
+            $stmt->execute();
+        }
+    }
+
+    /**
      * Comments are keyed by zone, name and type, so they follow the record. Links point
      * at comment ids, so they stay valid.
      */
@@ -585,6 +611,16 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $this->transaction()->begin();
         try {
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+            foreach (
+                [
+                    "DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM {$this->commentsTable} WHERE domain_id = :domain_id)",
+                    "DELETE FROM {$this->commentsTable} WHERE domain_id = :domain_id",
+                ] as $sql
+            ) {
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(['domain_id' => $zoneId]);
+            }
+
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 
@@ -615,8 +651,13 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         );
         $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
         $stmt->execute();
+        $deleted = $stmt->rowCount() > 0;
 
-        return $stmt->rowCount() > 0;
+        if ($deleted) {
+            $this->deleteCommentLinks([$recordId]);
+        }
+
+        return $deleted;
     }
 
     public function fixDuplicateSOA(int $zoneId): bool
@@ -647,6 +688,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             $placeholders = implode(',', array_fill(0, count($ids), '?'));
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id IN ($placeholders)");
             $stmt->execute($ids);
+            $this->deleteCommentLinks($ids);
 
             $this->transaction()->commit();
         } catch (Exception $e) {

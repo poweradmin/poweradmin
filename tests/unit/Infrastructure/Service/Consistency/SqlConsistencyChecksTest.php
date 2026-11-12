@@ -57,6 +57,8 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT NULL)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS record_comment_links (record_id VARCHAR(4096) NOT NULL, comment_id INTEGER NOT NULL, PRIMARY KEY (record_id), UNIQUE (comment_id))");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, comment TEXT NULL, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
@@ -742,7 +744,7 @@ class SqlConsistencyChecksTest extends TestCase
 
     public function testTheRepairLowercasesTheRecordAndTheCommentsOnItsRrset(): void
     {
-        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
         $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (1, 1, 'WWW.example.com', 'A', 'web'), (2, 1, 'WWW.example.com', 'TXT', 'other type'), (3, 2, 'WWW.example.com', 'A', 'other zone')");
         $this->domain(1, 'example.com');
         $this->record(11, 1, 'WWW.example.com', 'A', '192.0.2.1');
@@ -764,8 +766,8 @@ class SqlConsistencyChecksTest extends TestCase
 
     private function commentTables(): void
     {
-        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
-        $this->db->exec("CREATE TABLE record_comment_links (record_id VARCHAR(4096) NOT NULL, comment_id INTEGER NOT NULL, PRIMARY KEY (record_id), UNIQUE (comment_id))");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS record_comment_links (record_id VARCHAR(4096) NOT NULL, comment_id INTEGER NOT NULL, PRIMARY KEY (record_id), UNIQUE (comment_id))");
         $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
     }
 

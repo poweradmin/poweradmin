@@ -139,7 +139,8 @@ class RepositoryFactory implements RepositoryFactoryInterface
             $this->db,
             $soaRecordManager,
             $tableNameService->getTable(PdnsTable::RECORDS),
-            $tableNameService->getTable(PdnsTable::DOMAINS)
+            $tableNameService->getTable(PdnsTable::DOMAINS),
+            $tableNameService->getTable(PdnsTable::COMMENTS)
         );
     }
 
