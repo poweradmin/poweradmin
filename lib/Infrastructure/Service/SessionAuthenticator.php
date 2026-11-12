@@ -373,8 +373,8 @@ class SessionAuthenticator extends LoggingService
     /**
      * Why a login POST must fail like a wrong password, or null when it may proceed.
      *
-     * SSO accounts cannot sign in with a password, but saying so would tell a caller
-     * which usernames exist. Non-login requests (existing SSO sessions) are untouched.
+     * SSO accounts, and LDAP accounts while LDAP is off, cannot sign in with a password,
+     * but saying so would tell a caller which usernames exist. Non-login requests (existing SSO sessions) are untouched.
      */
     public static function passwordLoginRefusal(string $authMethod, bool $isLogin, bool $ldapEnabled): ?string
     {
@@ -385,6 +385,7 @@ class SessionAuthenticator extends LoggingService
         return match ($authMethod) {
             UserProvisioningService::AUTH_METHOD_OIDC => 'OIDC',
             UserProvisioningService::AUTH_METHOD_SAML => 'SAML',
+            UserProvisioningService::AUTH_METHOD_LDAP => $ldapEnabled ? null : 'LDAP (disabled)',
             default => null,
         };
     }
@@ -396,13 +397,14 @@ class SessionAuthenticator extends LoggingService
             'reason' => $reason,
         ]);
 
-        // Spend the time a wrong SQL password costs, and do not keep the typed password
+        // Spend the time a wrong SQL password costs, and keep neither the typed password nor the name:
+        // a name left behind would reach the account-type branches on the next request
         $authService = new UserAuthenticationService(
             $this->configManager->get('security', 'password_encryption', 'bcrypt'),
             $this->configManager->get('security', 'password_cost', 12)
         );
         $authService->verifyPassword((string)($_POST['password'] ?? ''), $authService->dummyVerificationHash());
-        unset($_SESSION['userpwd']);
+        unset($_SESSION['userpwd'], $_SESSION['userlogin']);
 
         $this->authService->auth(new SessionEntity(_('Authentication failed!'), 'danger'));
     }

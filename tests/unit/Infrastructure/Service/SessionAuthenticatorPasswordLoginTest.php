@@ -47,6 +47,13 @@ final class SessionAuthenticatorPasswordLoginTest extends TestCase
     }
 
     #[Test]
+    public function ldapAccountFailsAPasswordLoginWhileLdapIsDisabled(): void
+    {
+        $this->assertNotNull(SessionAuthenticator::passwordLoginRefusal('ldap', true, false));
+        $this->assertNull(SessionAuthenticator::passwordLoginRefusal('ldap', false, false));
+    }
+
+    #[Test]
     public function existingSsoSessionsKeepWorking(): void
     {
         $this->assertNull(SessionAuthenticator::passwordLoginRefusal('oidc', false, true));
