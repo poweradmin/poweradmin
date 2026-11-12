@@ -184,6 +184,16 @@ class ListReverseZonesController extends BaseController
             ? $this->forwardZoneAssociationService()->getAssociatedForwardZones($reverse_zones)
             : [];
 
+        // A forward zone the viewer cannot see must not be named by a reverse zone they can
+        if ($perm_view !== 'all' && $associatedForwardZones !== []) {
+            $forwardIds = array_merge(...array_map(fn(array $forwards): array => array_column($forwards, 'id'), $associatedForwardZones));
+            $forwardOwnership = $this->services()->zoneListPermissionService()->index($loggedInUserId, $forwardIds);
+            $associatedForwardZones = array_map(
+                fn(array $forwards): array => array_values(array_filter($forwards, fn(array $forward): bool => $forwardOwnership->owns((int)$forward['id']))),
+                $associatedForwardZones
+            );
+        }
+
         // Calculate pagination count based on current filter (using pre-computed counts)
         $pagination_count = match ($reverse_zone_type) {
             'ipv4' => $count_ipv4_zones,

@@ -413,6 +413,34 @@ class ListReverseZonesControllerTest extends ZoneListControllerTestCase
         $this->assertSame([['id' => '9', 'name' => 'example.com', 'ptr_records' => 1]], $params['associated_forward_zones']['1']);
     }
 
+    public function testForwardZonesTheViewerDoesNotOwnAreNotNamedAtOwnViewLevel(): void
+    {
+        $this->viewLevel = 'own';
+        $this->zones = [['id' => '1', 'name' => '1.10.10.in-addr.arpa', 'owners' => [], 'full_names' => []]];
+        $this->ptrMatches = [
+            ['reverse_domain_id' => '1', 'forward_domain_id' => '9', 'forward_domain_name' => 'mine.example', 'ptr_content' => 'a.mine.example'],
+            ['reverse_domain_id' => '1', 'forward_domain_id' => '10', 'forward_domain_name' => 'theirs.example', 'ptr_content' => 'a.theirs.example'],
+        ];
+        $this->ownership = new ZoneOwnershipIndex(self::USER_ID, [], [9 => [self::USER_ID], 10 => [99]], []);
+
+        $this->runController();
+        $names = array_column($this->renderedParams()['associated_forward_zones']['1'], 'name');
+
+        $this->assertSame(['mine.example'], $names);
+    }
+
+    public function testAllViewLevelKeepsEveryAssociatedForwardZone(): void
+    {
+        $this->zones = [['id' => '1', 'name' => '1.10.10.in-addr.arpa', 'owners' => [], 'full_names' => []]];
+        $this->ptrMatches = [
+            ['reverse_domain_id' => '1', 'forward_domain_id' => '10', 'forward_domain_name' => 'theirs.example', 'ptr_content' => 'a.theirs.example'],
+        ];
+
+        $this->runController();
+
+        $this->assertCount(1, $this->renderedParams()['associated_forward_zones']['1']);
+    }
+
     private function rewireFactory(): void
     {
         $this->factory->method('permissionService')->willReturn($this->permissions);
