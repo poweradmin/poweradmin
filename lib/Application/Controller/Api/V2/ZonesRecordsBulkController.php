@@ -531,6 +531,10 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
+        // Stored content may predate the control character check; heal it when it is the fallback
+        $content = array_key_exists('content', $operation)
+            ? trim($content)
+            : $this->healStoredContent($content);
         $name = $this->normalizeV2RecordName($name, (string)$zoneName);
         // Format content the same way create does so TXT records round-trip
         // (GET strips the quotes V2 adds; an update echoing GET output must re-quote).

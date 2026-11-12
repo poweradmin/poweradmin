@@ -792,6 +792,10 @@ class ZonesRecordsController extends PublicApiController
             if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            // Stored content may predate the control character check; heal it when it is the fallback
+            $content = array_key_exists('content', $input)
+                ? trim($content)
+                : $this->healStoredContent($content);
             $name = $this->normalizeV2RecordName($name, (string)$zone['name']);
 
             $oldType = strtoupper((string)$existingRecord['type']);

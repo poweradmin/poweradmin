@@ -189,6 +189,15 @@ abstract class AbstractApiController extends BaseController
     }
 
     /**
+     * Stored content used because the request sent none may predate the control character
+     * check: collapse its control characters.
+     */
+    protected function healStoredContent(string $content): string
+    {
+        return trim((string)preg_replace('/[\x00-\x1F\x7F]+/', ' ', $content));
+    }
+
+    /**
      * Extract an integer value from input array.
      * Accepts integers and numeric strings. Returns default when key is absent;
      * returns null for present non-numeric values.

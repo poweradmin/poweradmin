@@ -56,6 +56,19 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         return $this->service->validate($name, $type, $content, $ttl, $prio, 3600)->isValid();
     }
 
+    public function testRefusesControlCharactersInContent(): void
+    {
+        $this->assertFalse($this->validate('[ZONE]', 'CSYNC', "66 3 AAAA\n NS A"));
+        $this->assertFalse($this->validate('www.example.com', 'A', "192.0.2.1\t"));
+        $this->assertTrue($this->validate('www.example.com', 'A', '192.0.2.1'));
+    }
+
+    public function testRefusesLineBreaksAndControlCharactersInLua(): void
+    {
+        $this->assertFalse($this->validate('www.example.com', 'LUA', "A \"ifportup(443, {'192.0.2.1'})\n\tor '192.0.2.2'\""));
+        $this->assertFalse($this->validate('www.example.com', 'LUA', "A \"return '192.0.2.1'\x01\""));
+    }
+
     public function testAcceptsApexMarkerAsName(): void
     {
         $this->assertTrue($this->validate('@', 'A', '192.0.2.1'));

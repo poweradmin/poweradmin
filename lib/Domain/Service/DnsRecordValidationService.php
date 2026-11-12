@@ -95,6 +95,11 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
             return ValidationResult::failure(_('Invalid record type.'));
         }
 
+        // Content is stored and exported untrimmed, so a raw line break would split a zone file line.
+        if (preg_match('/[\x00-\x1F\x7F]/', $content) === 1) {
+            return ValidationResult::failure(_('Invalid characters in content field.'));
+        }
+
         // Get the appropriate validator for this record type
         $validator = $this->validatorRegistry->getValidator($type);
 
