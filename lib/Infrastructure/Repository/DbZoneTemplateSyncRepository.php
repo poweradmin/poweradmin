@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\DbCompat;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateSyncRepositoryInterface;
 
 /**
@@ -34,11 +35,32 @@ final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryIn
 {
     private PDO $db;
     private ConfigurationInterface $config;
+    private ?DnsBackendProviderInterface $backendProvider;
 
-    public function __construct(PDO $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?DnsBackendProviderInterface $backendProvider = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->backendProvider = $backendProvider;
+    }
+
+    /**
+     * Sync rows narrowed to the zones one user owns, as a join condition on zone_template_sync.
+     *
+     * @return array{0: string, 1: array<string, int>} Condition (with leading AND) and its parameters
+     */
+    private function ownedSyncRows(?int $ownerId): array
+    {
+        if ($ownerId === null) {
+            return ['', []];
+        }
+        $canonical = $this->backendProvider !== null && $this->backendProvider->allocatesZoneIdsLocally();
+        $condition = DbZoneTemplateRepository::ownedZoneCondition('oz', $canonical, ':zowner', ':zowner_group');
+
+        return [
+            " AND zts.zone_id IN (SELECT oz.id FROM zones oz WHERE 1 = 1$condition)",
+            [':zowner' => $ownerId, ':zowner_group' => $ownerId],
+        ];
     }
 
     /**
@@ -209,16 +231,17 @@ final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryIn
     /**
      * Get count of zones needing sync for a template
      */
-    public function getUnsyncedZoneCount(int $templateId): int
+    public function getUnsyncedZoneCount(int $templateId, ?int $zoneOwnerId = null): int
     {
         $db_type = $this->config->get('database', 'type');
+        [$owned, $ownedParams] = $this->ownedSyncRows($zoneOwnerId);
         $query = "SELECT COUNT(*) as count
-                  FROM zone_template_sync
-                  WHERE zone_templ_id = :template_id
-                    AND needs_sync = " . DbCompat::boolTrue($db_type);
+                  FROM zone_template_sync zts
+                  WHERE zts.zone_templ_id = :template_id
+                    AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . $owned;
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute(['template_id' => $templateId]);
+        $stmt->execute([':template_id' => $templateId] + $ownedParams);
 
         return (int) $stmt->fetchColumn();
     }
@@ -226,16 +249,17 @@ final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryIn
     /**
      * Get sync status for all templates
      */
-    public function getTemplateSyncStatus(?int $userId = null): array
+    public function getTemplateSyncStatus(?int $userId = null, ?int $zoneOwnerId = null): array
     {
         $db_type = $this->config->get('database', 'type');
+        [$owned, $ownedParams] = $this->ownedSyncRows($zoneOwnerId);
         $query = "SELECT 
                     zt.id,
                     zt.name,
                     COUNT(zts.zone_id) as total_zones,
                     SUM(CASE WHEN zts.needs_sync = " . DbCompat::boolTrue($db_type) . " THEN 1 ELSE 0 END) as unsynced_zones
                   FROM zone_templ zt
-                  LEFT JOIN zone_template_sync zts ON zt.id = zts.zone_templ_id";
+                  LEFT JOIN zone_template_sync zts ON zt.id = zts.zone_templ_id" . $owned;
 
         if ($userId !== null) {
             $query .= " WHERE " . DbZoneTemplateRepository::visibleToUserSql('zt', ':user_id', ':user_id_group');
@@ -245,9 +269,9 @@ final class DbZoneTemplateSyncRepository implements ZoneTemplateSyncRepositoryIn
 
         $stmt = $this->db->prepare($query);
         if ($userId !== null) {
-            $stmt->execute([':user_id' => $userId, ':user_id_group' => $userId]);
+            $stmt->execute([':user_id' => $userId, ':user_id_group' => $userId] + $ownedParams);
         } else {
-            $stmt->execute();
+            $stmt->execute($ownedParams);
         }
 
         $results = [];

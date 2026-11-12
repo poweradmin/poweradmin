@@ -367,6 +367,22 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame(['global', 'mine', 'theirs'], array_column($all, 'name'));
     }
 
+    public function testListZoneTemplatesCountsOnlyTheViewersZonesWhenAnOwnerIsGiven(): void
+    {
+        $this->db->exec("CREATE TABLE IF NOT EXISTS zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $global = $this->repository->createZoneTemplate('global', '', 0, 1);
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES
+            (1, 11, 5, $global), (2, 12, 6, $global), (3, 13, 6, $global), (4, 14, 7, $global)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (5, 3)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (13, 3)");
+
+        $own = $this->repository->listZoneTemplates(5, false, 5);
+        $this->assertSame(2, (int)$own[0]['zones_linked'], 'direct and group-owned zones only');
+
+        $all = $this->repository->listZoneTemplates(5, false);
+        $this->assertSame(4, (int)$all[0]['zones_linked']);
+    }
+
     public function testListZoneTemplatesIncludesTemplatesSharedWithTheUsersGroups(): void
     {
         $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops'), (4, 'Billing')");

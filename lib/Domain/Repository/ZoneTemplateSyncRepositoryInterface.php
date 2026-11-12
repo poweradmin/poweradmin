@@ -62,13 +62,17 @@ interface ZoneTemplateSyncRepositoryInterface
 
     /**
      * Get count of zones needing sync for a template
+     *
+     * @param int|null $zoneOwnerId Count only the zones this user owns (null counts every zone)
      */
-    public function getUnsyncedZoneCount(int $templateId): int;
+    public function getUnsyncedZoneCount(int $templateId, ?int $zoneOwnerId = null): int;
 
     /**
      * Get sync status for all templates
      *
+     * @param int|null $userId Limit to the templates this user may see
+     * @param int|null $zoneOwnerId Count only the zones this user owns (null counts every zone)
      * @return array<int|string, array{name: string, total_zones: int, unsynced_zones: int, is_synced: bool}>
      */
-    public function getTemplateSyncStatus(?int $userId = null): array;
+    public function getTemplateSyncStatus(?int $userId = null, ?int $zoneOwnerId = null): array;
 }

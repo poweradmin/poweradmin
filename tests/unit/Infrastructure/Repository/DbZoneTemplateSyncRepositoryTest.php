@@ -132,6 +132,27 @@ class DbZoneTemplateSyncRepositoryTest extends SqliteIntegrationTestCase
         $this->assertSame([['zone_templ_id' => 5, 'needs_sync' => 0]], $this->syncRows(100));
     }
 
+    #[Test]
+    public function unsyncedCountsCoverOnlyTheOwnersZonesWhenAnOwnerIsGiven(): void
+    {
+        $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER DEFAULT 0)");
+        $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (4, 'shared', 0)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (1, 11, 5), (2, 12, 6), (3, 13, 6)");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (5, 3)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (13, 3)");
+        foreach ([1, 2, 3] as $zoneId) {
+            $this->repository->createSyncRecord($zoneId, 4);
+        }
+
+        $this->assertSame(3, $this->repository->getUnsyncedZoneCount(4));
+        $this->assertSame(2, $this->repository->getUnsyncedZoneCount(4, 5));
+
+        $this->assertSame(3, $this->repository->getTemplateSyncStatus()[4]['unsynced_zones']);
+        $status = $this->repository->getTemplateSyncStatus(null, 5)[4];
+        $this->assertSame(2, $status['unsynced_zones']);
+        $this->assertSame(2, $status['total_zones']);
+    }
+
     /**
      * MySQL reports zero affected rows for an UPDATE that matches a row without
      * changing a value; SQLite counts the match, so only a mocked PDO can put

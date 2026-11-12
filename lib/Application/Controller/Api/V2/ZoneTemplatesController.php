@@ -186,7 +186,9 @@ class ZoneTemplatesController extends PublicApiController
             }
             $isUeberuser = $this->apiPermissionService->userHasPermission($userId, Permission::PERM_USER_IS_UEBERUSER);
 
-            $templates = $this->repository->listZoneTemplates($userId, $isUeberuser);
+            $zoneOwnerId = $this->apiPermissionService->permissions()->getEditPermissionLevel($userId) !== 'all' ? $userId : null;
+
+            $templates = $this->repository->listZoneTemplates($userId, $isUeberuser, $zoneOwnerId);
 
             $formatted = array_map(function (array $template): array {
                 return [

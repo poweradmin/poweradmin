@@ -31,6 +31,7 @@ use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Template\ZoneTemplateGroupShares;
 use Poweradmin\Domain\Service\Template\ZoneTemplateWriteResult;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -103,7 +104,7 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $this->ueberuser(false);
         $this->repository->expects($this->once())
             ->method('listZoneTemplates')
-            ->with(self::USER_ID, false)
+            ->with(self::USER_ID, false, self::USER_ID)
             ->willReturn([
                 ['id' => 1, 'name' => 'Default', 'descr' => 'Default template', 'owner' => 0, 'zones_linked' => 3],
                 ['id' => 2, 'name' => 'Custom', 'descr' => 'Custom template', 'owner' => 1, 'zones_linked' => 1],
@@ -120,6 +121,36 @@ class ZoneTemplatesControllerTest extends V2ControllerTestCase
         $this->assertTrue($content['data']['templates'][0]['is_global']);
         $this->assertSame(3, $content['data']['templates'][0]['zones_linked']);
         $this->assertFalse($content['data']['templates'][1]['is_global']);
+    }
+
+    public function testListZoneTemplatesCountsOnlyOwnZonesBelowTheAllEditLevel(): void
+    {
+        $levels = $this->createMock(PermissionService::class);
+        $levels->method('getEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('permissions')->willReturn($levels);
+        $this->permissions->method('canViewZoneTemplates')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->expects($this->once())
+            ->method('listZoneTemplates')
+            ->with(self::USER_ID, false, self::USER_ID)
+            ->willReturn([]);
+
+        $this->assertSame(200, $this->invoke('listZoneTemplates')->getStatusCode());
+    }
+
+    public function testListZoneTemplatesKeepsInstanceWideCountsAtTheAllEditLevel(): void
+    {
+        $levels = $this->createMock(PermissionService::class);
+        $levels->method('getEditPermissionLevel')->willReturn('all');
+        $this->permissions->method('permissions')->willReturn($levels);
+        $this->permissions->method('canViewZoneTemplates')->willReturn(true);
+        $this->ueberuser(false);
+        $this->repository->expects($this->once())
+            ->method('listZoneTemplates')
+            ->with(self::USER_ID, false, null)
+            ->willReturn([]);
+
+        $this->assertSame(200, $this->invoke('listZoneTemplates')->getStatusCode());
     }
 
     public function testListZoneTemplatesFailureAnswers500WithoutLeakingTheException(): void

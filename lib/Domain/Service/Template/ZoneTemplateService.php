@@ -62,7 +62,8 @@ class ZoneTemplateService
     {
         return $this->repository->listZoneTemplates(
             $userid,
-            $this->access->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)
+            $this->access->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER),
+            $this->access->linkedZoneOwnerFilter($userid)
         );
     }
 

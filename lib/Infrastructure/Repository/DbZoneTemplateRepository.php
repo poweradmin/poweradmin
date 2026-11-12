@@ -161,15 +161,25 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      */
     private function ownedZoneFilter(): string
     {
-        // zones_groups is keyed by the canonical id, which API mode may take from zones.id
-        $canonicalId = CanonicalZoneSql::canonicalIdColumn('zones', $this->zonesTableIsCanonical());
-        // A shared id stays off the list: its rows cannot be told apart (see SharedZoneIds)
-        $unshared = $this->zonesTableIsCanonical() ? " AND $canonicalId NOT IN (" . SharedZoneIds::sharedIdsSql() . ")" : '';
+        return self::ownedZoneCondition('zones', $this->zonesTableIsCanonical(), ':userid', ':userid_group');
+    }
 
-        return " AND (zones.owner = :userid OR EXISTS (
+    /**
+     * AND-condition limiting a zones row (aliased $alias) to those the user owns directly
+     * or through a group. Takes two placeholders bound to the same user id, since native
+     * MySQL prepares cannot reuse one.
+     */
+    public static function ownedZoneCondition(string $alias, bool $canonical, string $userParam, string $groupUserParam): string
+    {
+        // zones_groups is keyed by the canonical id, which API mode may take from zones.id
+        $canonicalId = CanonicalZoneSql::canonicalIdColumn($alias, $canonical);
+        // A shared id stays off the list: its rows cannot be told apart (see SharedZoneIds)
+        $unshared = $canonical ? " AND $canonicalId NOT IN (" . SharedZoneIds::sharedIdsSql() . ")" : '';
+
+        return " AND ($alias.owner = $userParam OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = $canonicalId AND ugm.user_id = :userid_group))$unshared";
+                WHERE zg.domain_id = $canonicalId AND ugm.user_id = $groupUserParam))$unshared";
     }
 
     /**
@@ -192,9 +202,10 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
      *
      * @param int|null $userId User ID (null for all)
      * @param bool $isUeberuser Whether user is an ueberuser
+     * @param int|null $zoneOwnerId Count only the linked zones this user owns (null counts every zone)
      * @return array List of zone templates
      */
-    public function listZoneTemplates(?int $userId, bool $isUeberuser): array
+    public function listZoneTemplates(?int $userId, bool $isUeberuser, ?int $zoneOwnerId = null): array
     {
         $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by, zt.is_default,
                       owner_user.username as owner_username,
@@ -207,6 +218,12 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
                 LEFT JOIN users creator_user ON zt.created_by = creator_user.id
                 LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
+
+        if ($zoneOwnerId !== null) {
+            $query .= self::ownedZoneCondition('z', $this->zonesTableIsCanonical(), ':zowner', ':zowner_group');
+            $params[':zowner'] = $zoneOwnerId;
+            $params[':zowner_group'] = $zoneOwnerId;
+        }
 
         if (!$isUeberuser && $userId !== null) {
             $query .= " WHERE " . self::visibleToUserSql('zt', ':userid', ':userid_group');

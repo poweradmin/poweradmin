@@ -40,9 +40,10 @@ interface ZoneTemplateRepositoryInterface
      *
      * @param int|null $userId User ID (null together with $isUeberuser = true lists all)
      * @param bool $isUeberuser Whether the user may see every template
+     * @param int|null $zoneOwnerId Count only the linked zones this user owns (null counts every zone)
      * @return array List of zone templates
      */
-    public function listZoneTemplates(?int $userId, bool $isUeberuser): array;
+    public function listZoneTemplates(?int $userId, bool $isUeberuser, ?int $zoneOwnerId = null): array;
 
     /**
      * Get zone template details by ID.

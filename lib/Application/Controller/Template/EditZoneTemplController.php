@@ -119,7 +119,10 @@ class EditZoneTemplController extends BaseController
 
         // Get sync status
         $syncService = $this->services()->zoneTemplateSync();
-        $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
+        $unsynced_zones_count = $syncService->getUnsyncedZoneCount(
+            $zone_templ_id,
+            $this->services()->zoneTemplateAccessPolicy()->linkedZoneOwnerFilter($userId)
+        );
 
         $access = $this->services()->zoneTemplateAccessPolicy();
         $shares = $this->services()->zoneTemplateGroupShares();

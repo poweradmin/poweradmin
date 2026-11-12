@@ -58,7 +58,10 @@ class ListZoneTemplController extends BaseController
         // Get sync status for all templates
         $syncService = $this->services()->zoneTemplateSync();
         $isGodlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
-        $syncStatus = $syncService->getTemplateSyncStatus($isGodlike ? null : $userId);
+        $syncStatus = $syncService->getTemplateSyncStatus(
+            $isGodlike ? null : $userId,
+            $this->services()->zoneTemplateAccessPolicy()->linkedZoneOwnerFilter($userId)
+        );
 
         $effectiveDefaultId = $zone_templates->getDefaultTemplateId();
         $access = $this->services()->zoneTemplateAccessPolicy();

@@ -264,7 +264,7 @@ final class ZoneServices
 
     public function zoneTemplateSync(): ZoneTemplateSyncRepositoryInterface
     {
-        return $this->zoneTemplateSync ??= new DbZoneTemplateSyncRepository($this->db, $this->config);
+        return $this->zoneTemplateSync ??= new DbZoneTemplateSyncRepository($this->db, $this->config, $this->services->dnsBackendProvider());
     }
 
     public function templateRecordLinkRepository(): TemplateRecordLinkRepositoryInterface
