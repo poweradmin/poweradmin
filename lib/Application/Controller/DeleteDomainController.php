@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -121,6 +122,9 @@ class DeleteDomainController extends BaseController
                 $zone_info['name'],
                 $zone_info['type']
             ), $zone_id);
+
+            // The delete entry is written after the zone is gone, so detach it too
+            (new DbZoneLogger($this->db))->detachZone($zone_id);
 
             // Delete associated comments - wrapped in try-catch to prevent
             // comment deletion failures from breaking zone deletion

@@ -982,6 +982,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
 
+        // Keep the history for admins but stop a later zone that reuses the id from inheriting it
+        $stmt = $this->db->prepare("UPDATE log_zones SET zone_id = NULL WHERE zone_id = :zone_id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
         // Delete PowerDNS domain metadata
         $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $query = "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id";

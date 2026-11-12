@@ -282,6 +282,8 @@ class DomainManager implements DomainManagerInterface
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
+            $this->detachZoneLogs($id);
+
             $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
@@ -340,6 +342,8 @@ class DomainManager implements DomainManagerInterface
                     $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
 
+                    $this->detachZoneLogs($id);
+
                     $stmt = $this->db->prepare("DELETE FROM $domainmetadata_table WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
 
@@ -359,6 +363,12 @@ class DomainManager implements DomainManagerInterface
         $this->db->commit();
 
         return true;
+    }
+
+    /** Keeps the history for admins but stops a later zone that reuses the id from inheriting it. */
+    private function detachZoneLogs(int $zoneId): void
+    {
+        $this->db->prepare("UPDATE log_zones SET zone_id = NULL WHERE zone_id = :id")->execute([':id' => $zoneId]);
     }
 
     /**
