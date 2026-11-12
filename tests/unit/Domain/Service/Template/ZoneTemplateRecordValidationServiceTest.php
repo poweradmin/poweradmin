@@ -166,10 +166,19 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         $this->assertFalse($this->validate('www.[ZONE]', 'CNAME', 'not a hostname'));
     }
 
-    public function testAcceptsUnknownPlaceholderWithoutJudging(): void
+    public function testRejectsUnknownPlaceholderInAContent(): void
     {
-        // Nothing dependable to check, so the record is stored rather than guessed at
-        $this->assertTrue($this->validate('www.[ZONE]', 'A', '[CUSTOM_IP]'));
+        $this->assertFalse($this->validate('www.[ZONE]', 'A', '[CUSTOM_IP]'));
+    }
+
+    public function testRejectsUnknownPlaceholderInHostname(): void
+    {
+        $this->assertFalse($this->validate('[CUSTOM].[ZONE]', 'A', '192.0.2.1'));
+    }
+
+    public function testAcceptsLiteralBracketsInTxt(): void
+    {
+        $this->assertTrue($this->validate('[ZONE]', 'TXT', '"v=spf1 [CUSTOM] -all"'));
     }
 
     public function testRejectsInvalidTtl(): void

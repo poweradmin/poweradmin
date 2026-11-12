@@ -117,12 +117,6 @@ final class ZoneTemplateRecordValidationService
             }
         }
 
-        // An unknown placeholder leaves nothing dependable to check, so the record is
-        // stored as it stands rather than rejected on a guess.
-        if ($this->hasUnresolvedPlaceholder($resolvedName) || $this->hasUnresolvedPlaceholder($resolvedContent)) {
-            return ValidationResult::success(true);
-        }
-
         // Template content is applied as stored, and PowerDNS reads the NID preference from it
         if ($type === RecordType::NID && preg_match('/^\S+\s+\S+$/', trim($resolvedContent)) !== 1) {
             return ValidationResult::failure(_('NID record must contain preference and node identifier separated by space.'));
@@ -163,10 +157,5 @@ final class ZoneTemplateRecordValidationService
             array_values(self::PLACEHOLDER_SAMPLES),
             $value
         );
-    }
-
-    private function hasUnresolvedPlaceholder(string $value): bool
-    {
-        return preg_match('/\[[A-Za-z0-9_]+\]/', $value) === 1;
     }
 }
