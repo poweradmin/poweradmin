@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -119,15 +120,31 @@ class ZoneTemplateRecordValidationService
             }
         }
 
-        // An unknown placeholder leaves nothing dependable to check, so the record is
-        // stored as it stands rather than rejected on a guess.
+        // Unknown placeholder: content is not judged on a guess, but TTL and priority
+        // do not depend on placeholders so they are still checked.
         if ($this->hasUnresolvedPlaceholder($resolvedName) || $this->hasUnresolvedPlaceholder($resolvedContent)) {
-            return ValidationResult::success(true);
+            return $this->checkTtlAndPriority($type, $ttl, $prio, $defaultTtl);
         }
 
         $result = $this->runValidator($type, $resolvedName, $resolvedContent, $ttl, $prio, $defaultTtl);
 
         return $result->isValid() ? ValidationResult::success(true) : $result;
+    }
+
+    private function checkTtlAndPriority(string $type, mixed $ttl, mixed $prio, int $defaultTtl): ValidationResult
+    {
+        $ttlResult = (new TTLValidator())->validate($ttl, $defaultTtl);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+
+        if ($type === RecordType::MX || $type === RecordType::SRV) {
+            if ($prio !== null && $prio !== '' && !(is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
+                return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
+            }
+        }
+
+        return ValidationResult::success(true);
     }
 
     private function runValidator(

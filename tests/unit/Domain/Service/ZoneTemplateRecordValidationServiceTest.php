@@ -165,6 +165,13 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         $this->assertTrue($this->validate('www.[ZONE]', 'A', '[CUSTOM_IP]'));
     }
 
+    public function testUnknownPlaceholderStillChecksTtlAndPriority(): void
+    {
+        $this->assertFalse($this->validate('www.[ZONE]', 'A', '[CUSTOM_IP]', -5));
+        $this->assertFalse($this->validate('[ZONE]', 'MX', '[CUSTOM_HOST]', 3600, 70000));
+        $this->assertTrue($this->validate('[ZONE]', 'MX', '[CUSTOM_HOST]', 3600, 10));
+    }
+
     public function testRejectsInvalidTtl(): void
     {
         $this->assertFalse($this->validate('www.[ZONE]', 'A', '192.0.2.1', -5));
