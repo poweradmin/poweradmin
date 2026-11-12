@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -119,9 +120,18 @@ class ZoneTemplateRecordValidationService
             }
         }
 
-        // An unknown placeholder leaves nothing dependable to check, so the record is
-        // stored as it stands rather than rejected on a guess.
+        // An unknown placeholder leaves no name or content to judge, but TTL and
+        // priority do not depend on it and are still checked.
         if ($this->hasUnresolvedPlaceholder($resolvedName) || $this->hasUnresolvedPlaceholder($resolvedContent)) {
+            $ttlResult = (new TTLValidator())->validate($ttl, $defaultTtl);
+            if (!$ttlResult->isValid()) {
+                return $ttlResult;
+            }
+
+            if ($prio !== null && $prio !== '' && (!is_numeric($prio) || $prio < 0 || $prio > 65535)) {
+                return ValidationResult::failure(_('Invalid value for MX priority field. Must be between 0 and 65535.'));
+            }
+
             return ValidationResult::success(true);
         }
 
