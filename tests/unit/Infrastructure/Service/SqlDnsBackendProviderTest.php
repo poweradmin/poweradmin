@@ -72,7 +72,7 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteZoneDeletesAllRelatedTables(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->exactly(4))->method('execute');
+        $stmt->expects($this->exactly(6))->method('execute');
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -178,7 +178,9 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordDeletesById(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([5]);
+        $stmt->expects($this->exactly(3))->method('execute')->willReturnCallback(
+            static fn(array $params): bool => in_array($params, [[5], ['5']], true)
+        );
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 
@@ -190,7 +192,7 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordsByDomainIdDeletesAll(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())->method('execute')->with([':id' => 1]);
+        $stmt->expects($this->exactly(3))->method('execute')->with([':id' => 1]);
 
         $this->mockDb->method('prepare')->willReturn($stmt);
 

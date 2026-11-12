@@ -334,6 +334,24 @@ final class DbCompat
     }
 
     /**
+     * Delete the comment rows linked to the given records, then the link rows themselves.
+     * Each comment is linked to one record only, so no shared comment is lost.
+     *
+     * @param string $recordIdList SQL for the inside of IN (...): a string-valued subquery or placeholders
+     * @param array<int|string, mixed> $params Bindings for $recordIdList
+     */
+    public static function deleteRecordComments(\PDO $db, string $commentsTable, string $recordIdList, array $params): void
+    {
+        $stmt = $db->prepare("DELETE FROM $commentsTable WHERE id IN (
+            SELECT comment_id FROM record_comment_links WHERE record_id IN ($recordIdList)
+        )");
+        $stmt->execute($params);
+
+        $stmt = $db->prepare("DELETE FROM record_comment_links WHERE record_id IN ($recordIdList)");
+        $stmt->execute($params);
+    }
+
+    /**
      * Returns the expression to check if a column contains only digits (is numeric string).
      *
      * Used to distinguish between record IDs (numeric) and legacy usernames (non-numeric)

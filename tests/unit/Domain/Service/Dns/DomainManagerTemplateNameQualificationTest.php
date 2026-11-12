@@ -48,6 +48,8 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, comment TEXT)");
+        $this->db->exec("CREATE TABLE record_comment_links (record_id TEXT PRIMARY KEY, comment_id INTEGER UNIQUE)");
         $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, content TEXT NOT NULL, ttl INTEGER NOT NULL, prio INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, descr TEXT, owner INTEGER)");
@@ -73,6 +75,21 @@ class DomainManagerTemplateNameQualificationTest extends SqliteIntegrationTestCa
             ['ftp.example.com', 'CNAME'],
             ['example.com', 'TXT'],
         ], $written);
+    }
+
+    #[RunInSeparateProcess]
+    public function testReapplyingATemplateDropsTheCommentsOfTheRecordsItRemoves(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (1, " . self::ZONE_ID . ", 'old.example.com', 'A', '192.0.2.1', 300, 0)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (" . self::ZONE_ID . ", 1, " . self::TEMPLATE_ID . ")");
+        $this->db->exec("INSERT INTO comments (id, domain_id, name, type, comment) VALUES (100, 1, 'old.example.com', 'A', 'gone'), (101, 9, 'other', 'A', 'kept')");
+        $this->db->exec("INSERT INTO record_comment_links (record_id, comment_id) VALUES ('1', 100), ('9000', 101)");
+
+        $this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $links = $this->db->query("SELECT record_id FROM record_comment_links")->fetchAll(PDO::FETCH_COLUMN);
+        $this->assertSame(['9000'], $links);
+        $this->assertSame(['kept'], $this->db->query("SELECT comment FROM comments")->fetchAll(PDO::FETCH_COLUMN));
     }
 
     private function makeDomainManager(): DomainManager

@@ -27,6 +27,7 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
  * SQL-backend dynamic DNS repository.
@@ -36,12 +37,14 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
     private PDO $db;
     private DnsRecord $dnsRecord;
     private string $recordsTable;
+    private string $commentsTable;
 
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable)
+    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, string $commentsTable = 'comments')
     {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
         $this->recordsTable = $recordsTable;
+        $this->commentsTable = $commentsTable;
     }
 
     public function findUserByUsernameWithDynamicDnsPermissions(string $username): ?User
@@ -125,6 +128,9 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function deleteDnsRecord(int|string $recordId): void
     {
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        DbCompat::deleteRecordComments($this->db, $this->commentsTable, ':id', [':id' => (string)$recordId]);
+
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
     }

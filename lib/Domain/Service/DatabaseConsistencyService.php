@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -43,6 +44,11 @@ class DatabaseConsistencyService
         $this->config = $config;
         $this->tableNameService = new TableNameService($config);
         $this->backendProvider = $backendProvider;
+    }
+
+    private function dbType(): string
+    {
+        return (string)$this->config->get('database', 'type');
     }
 
     private function isApiBackend(): bool
@@ -408,6 +414,20 @@ class DatabaseConsistencyService
     }
 
     /**
+     * SQLite reuses ids, so a link left behind would show the comment on the next record.
+     * Runs before the record rows go, because the zone form selects ids from them.
+     */
+    private function deleteRecordComments(string $recordIdList, array $params): void
+    {
+        DbCompat::deleteRecordComments(
+            $this->db,
+            $this->tableNameService->getTable(PdnsTable::COMMENTS),
+            $recordIdList,
+            $params
+        );
+    }
+
+    /**
      * Delete a slave zone
      *
      * @param int $zoneId The zone ID to delete
@@ -445,6 +465,11 @@ class DatabaseConsistencyService
         $this->db->beginTransaction();
         try {
             // Delete records
+            $this->deleteRecordComments(
+                'SELECT ' . DbCompat::castToString($this->dbType(), 'id') . " FROM $records_table WHERE domain_id = :domain_id",
+                ['domain_id' => $zoneId]
+            );
+
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 
@@ -491,8 +516,13 @@ class DatabaseConsistencyService
         );
         $stmt->bindValue(':id', $recordId, PDO::PARAM_INT);
         $stmt->execute();
+        $deleted = $stmt->rowCount() > 0;
 
-        return $stmt->rowCount() > 0;
+        if ($deleted) {
+            $this->deleteRecordComments('?', [(string)$recordId]);
+        }
+
+        return $deleted;
     }
 
     /**
@@ -536,6 +566,7 @@ class DatabaseConsistencyService
             // Keep the first SOA record, delete the rest
             array_shift($soaRecords); // Remove the first ID from the array
             $placeholders = implode(',', array_fill(0, count($soaRecords), '?'));
+            $this->deleteRecordComments($placeholders, array_map('strval', $soaRecords));
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
             $stmt->execute($soaRecords);
 

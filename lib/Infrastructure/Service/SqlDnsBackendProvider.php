@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Service;
 use PDO;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Psr\Log\LoggerInterface;
@@ -82,6 +83,8 @@ class SqlDnsBackendProvider implements DnsBackendProvider
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domainmetadataTable = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
         $cryptokeysTable = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+
+        $this->deleteCommentsOfDomainRecords($domainId);
 
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
         $stmt->execute([':id' => $domainId]);
@@ -242,6 +245,14 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        DbCompat::deleteRecordComments(
+            $this->db,
+            $this->tableNameService->getTable(PdnsTable::COMMENTS),
+            '?',
+            [(string)$recordId]
+        );
+
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
 
@@ -252,10 +263,25 @@ class SqlDnsBackendProvider implements DnsBackendProvider
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        $this->deleteCommentsOfDomainRecords($domainId);
+
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE domain_id = :id");
         $stmt->execute([':id' => $domainId]);
 
         return true;
+    }
+
+    private function deleteCommentsOfDomainRecords(int $domainId): void
+    {
+        $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $dbType = (string)$this->config->get('database', 'type');
+
+        DbCompat::deleteRecordComments(
+            $this->db,
+            $this->tableNameService->getTable(PdnsTable::COMMENTS),
+            'SELECT ' . DbCompat::castToString($dbType, 'id') . " FROM $recordsTable WHERE domain_id = :id",
+            [':id' => $domainId]
+        );
     }
 
     // ---------------------------------------------------------------

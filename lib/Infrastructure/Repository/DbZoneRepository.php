@@ -1074,6 +1074,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
+        // SQLite reuses ids, so a left-over link would show this comment on the next record
+        DbCompat::deleteRecordComments(
+            $this->db,
+            $this->tableNameService->getTable(PdnsTable::COMMENTS),
+            'SELECT ' . DbCompat::castToString($this->db_type, 'id') . " FROM $records_table WHERE domain_id = :domain_id",
+            [':domain_id' => $zoneId]
+        );
+
         // Delete records first
         $query = "DELETE FROM $records_table WHERE domain_id = :domain_id";
         $stmt = $this->db->prepare($query);
