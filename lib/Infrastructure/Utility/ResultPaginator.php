@@ -33,6 +33,8 @@ use Poweradmin\Domain\Utility\DnsHelper;
  */
 final class ResultPaginator
 {
+    private const MAX_OFFSET = 2147483647;
+
     /**
      * Sort an array of associative arrays by a given key.
      *
@@ -199,6 +201,20 @@ final class ResultPaginator
         return array_values(array_filter($data, function ($item) use ($field, $value) {
             return strtolower((string)($item[$field] ?? '')) === $value;
         }));
+    }
+
+    /**
+     * Row offset of a 1-based page, kept an int so a huge page number reads past the end instead of overflowing.
+     */
+    public static function offset(int $page, int $rowAmount): int
+    {
+        $rowAmount = max(1, $rowAmount);
+        $zeroBased = max(0, $page - 1);
+        if ($zeroBased > intdiv(self::MAX_OFFSET, $rowAmount)) {
+            return self::MAX_OFFSET;
+        }
+
+        return $zeroBased * $rowAmount;
     }
 
     /**

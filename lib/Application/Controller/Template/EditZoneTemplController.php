@@ -29,6 +29,7 @@ use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Renders the zone template edit page and handles detail, record, save-as and linked-zone updates.
@@ -149,7 +150,7 @@ class EditZoneTemplController extends BaseController
         $start = filter_input(INPUT_GET, "start", FILTER_VALIDATE_INT);
 
         if ($start !== false && $start > 0) {
-            $row_start = max(0, ($start - 1) * $rowAmount);
+            $row_start = ResultPaginator::offset($start, $rowAmount);
         }
 
         return $row_start;

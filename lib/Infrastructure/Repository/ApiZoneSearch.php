@@ -133,7 +133,7 @@ final class ApiZoneSearch extends ApiSearchBase implements ZoneSearchInterface
 
         $zones = ResultPaginator::sort($zones, $apiSortBy, $sortDirection);
 
-        $offset = ($page - 1) * $rowAmount;
+        $offset = ResultPaginator::offset($page, $rowAmount);
         $zones = ResultPaginator::paginate($zones, $offset, $rowAmount);
 
         // After paging so the per-zone API calls scale with the page, not the

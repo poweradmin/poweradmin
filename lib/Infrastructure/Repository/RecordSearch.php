@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Port\RecordSearchInterface;
@@ -120,7 +121,7 @@ final class RecordSearch extends BaseSearch implements RecordSearchInterface
         bool $iface_record_comments,
         int $page
     ): array {
-        $offset = ($page - 1) * $iface_rowamount;
+        $offset = ResultPaginator::offset($page, $iface_rowamount);
 
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);

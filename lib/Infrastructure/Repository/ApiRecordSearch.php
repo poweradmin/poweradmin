@@ -162,7 +162,7 @@ final class ApiRecordSearch extends ApiSearchBase implements RecordSearchInterfa
 
         $records = ResultPaginator::sort($records, $sortBy, $sortDirection);
 
-        $offset = ($page - 1) * $rowAmount;
+        $offset = ResultPaginator::offset($page, $rowAmount);
         $records = ResultPaginator::paginate($records, $offset, $rowAmount);
 
         $result = [];

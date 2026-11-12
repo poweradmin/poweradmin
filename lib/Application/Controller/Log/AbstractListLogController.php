@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Controller\Log;
 
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Shared flow for the log listing pages (API, user, group and zone logs):
@@ -136,8 +137,8 @@ abstract class AbstractListLogController extends BaseController
     protected function clampToLastPage(int $selectedPage, int $numberOfLogs, int $logsPerPage): int
     {
         $numberOfPages = (int)ceil($numberOfLogs / $logsPerPage);
-        if ($numberOfPages > 0 && $selectedPage > $numberOfPages) {
-            return $numberOfPages;
+        if ($selectedPage > $numberOfPages) {
+            return max(1, $numberOfPages);
         }
         return $selectedPage;
     }
@@ -164,7 +165,7 @@ abstract class AbstractListLogController extends BaseController
 
         $number_of_logs = $this->countLogs($filters);
         $selected_page = $this->clampToLastPage($selected_page, $number_of_logs, $logs_per_page);
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->fetchLogs($filters, $logs_per_page, $offset);
 
         $this->render($this->getTemplateName(), array_merge([

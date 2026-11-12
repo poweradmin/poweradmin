@@ -166,6 +166,14 @@ class ZoneSearchPagingIntegrationTest extends TestCase
     }
 
     #[DataProvider('engines')]
+    public function testAHugePageNumberReturnsAnEmptyPage(string $engine): void
+    {
+        $this->createScratch($engine);
+
+        $this->assertSame([], $this->page($this->search(), PHP_INT_MAX));
+    }
+
+    #[DataProvider('engines')]
     public function testEveryOwnerOfAZoneIsListedOnItsRow(string $engine): void
     {
         $this->createScratch($engine);

@@ -327,4 +327,14 @@ class ResultPaginatorTest extends TestCase
         $page = ResultPaginator::paginate($sorted, 0, 3);
         $this->assertCount(3, $page);
     }
+
+    public function testOffsetIsAnIntForHugeAndNonPositivePages(): void
+    {
+        $this->assertSame(0, ResultPaginator::offset(1, 25));
+        $this->assertSame(50, ResultPaginator::offset(3, 25));
+        $this->assertSame(0, ResultPaginator::offset(0, 25));
+        $this->assertSame(0, ResultPaginator::offset(PHP_INT_MIN, 25));
+        $this->assertSame(2147483647, ResultPaginator::offset(PHP_INT_MAX, 25));
+        $this->assertSame(2147483647, ResultPaginator::offset(PHP_INT_MAX, PHP_INT_MAX));
+    }
 }

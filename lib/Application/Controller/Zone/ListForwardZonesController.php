@@ -33,6 +33,7 @@ use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Renders the forward zone list with pagination, letter filter and sorting; also handles the API sync action.
@@ -121,8 +122,7 @@ class ListForwardZonesController extends BaseController
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');
         if ($start_param !== null) {
-            $start = (int)$start_param;
-            $row_start = max(0, ($start - 1) * $iface_rowamount);
+            $row_start = ResultPaginator::offset((int)$start_param, $iface_rowamount);
         }
 
         $permissionService = $this->services()->permissionService();

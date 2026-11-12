@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Utility\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Database\PdnsTable;
 use Poweradmin\Domain\Port\ZoneSearchInterface;
@@ -132,7 +133,7 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
         bool $iface_zone_comments,
         int $page
     ): array {
-        $offset = ($page - 1) * $iface_rowamount;
+        $offset = ResultPaginator::offset($page, $iface_rowamount);
 
         $tableNameService = new TableNameService($this->config);
         $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);

@@ -198,6 +198,11 @@ class ListLogFiltersTest extends TestCase
         $this->assertSame(10, $controller->clampToLastPageForTest(11, 95, 10));
     }
 
+    public function testPageBeyondAnEmptyResultClampsToTheFirstPage(): void
+    {
+        $this->assertSame(1, $this->makeController()->clampToLastPageForTest(PHP_INT_MAX, 0, 10));
+    }
+
     public function testPagesWithinRangeAreUntouched(): void
     {
         $controller = $this->makeController();

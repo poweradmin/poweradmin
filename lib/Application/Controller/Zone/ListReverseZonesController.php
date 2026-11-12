@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Zone\ForwardZoneAssociationService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Application\Service\Zone\ZoneSortingService;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Renders the reverse zone list with pagination and sorting.
@@ -93,8 +94,7 @@ class ListReverseZonesController extends BaseController
         $row_start = 0;
         $start_param = $this->httpRequest->getQueryParam('start');
         if ($start_param !== null) {
-            $start = (int)$start_param;
-            $row_start = max(0, ($start - 1) * $iface_rowamount);
+            $row_start = ResultPaginator::offset((int)$start_param, $iface_rowamount);
         }
 
         $permissionService = $this->services()->permissionService();
