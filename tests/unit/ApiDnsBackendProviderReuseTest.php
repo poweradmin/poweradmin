@@ -38,6 +38,8 @@ class ApiDnsBackendProviderReuseTest extends TestCase
             . 'zone_name VARCHAR(255) DEFAULT NULL, zone_type VARCHAR(8) DEFAULT NULL, zone_master VARCHAR(255) DEFAULT NULL)'
         );
         $db->exec('CREATE TABLE zones_groups (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)');
+        $db->exec('CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)');
+        $db->exec('INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (5, 100, 1), (9, 101, 1)');
         $db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id, zone_name, zone_type) VALUES (5, 5, 2, 0, 'example.com', 'NATIVE')");
         $db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id, zone_name) VALUES (6, 5, 3, 0, NULL)");
         $db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id, zone_name) VALUES (7, 9, 3, 0, NULL)");
@@ -50,6 +52,8 @@ class ApiDnsBackendProviderReuseTest extends TestCase
         $this->assertSame(5, $provider->createZone('example.com', 'NATIVE'));
 
         $this->assertSame(0, (int)$db->query('SELECT COUNT(*) FROM zones_groups WHERE domain_id = 5')->fetchColumn());
+        $this->assertSame(0, (int)$db->query('SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = 5')->fetchColumn());
+        $this->assertSame(1, (int)$db->query('SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = 9')->fetchColumn());
         $this->assertSame(0, (int)$db->query('SELECT COUNT(*) FROM zones WHERE id = 6')->fetchColumn());
         $this->assertSame(1, (int)$db->query('SELECT COUNT(*) FROM zones_groups WHERE domain_id = 9')->fetchColumn());
         $this->assertSame(1, (int)$db->query('SELECT COUNT(*) FROM zones WHERE id = 7')->fetchColumn());

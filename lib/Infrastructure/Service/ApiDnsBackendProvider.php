@@ -101,6 +101,8 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             $canonicalId = (int)($stmt->fetchColumn() ?: $existingId);
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
             $stmt->execute([':id' => $canonicalId]);
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
             $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :id");
             $stmt->execute([':id' => $canonicalId]);
 

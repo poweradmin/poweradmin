@@ -161,6 +161,13 @@ class DomainManager implements DomainManagerInterface
 
                         $zone_id = $domain_id;
                     } else {
+                        // PowerDNS may reuse the id of a zone deleted outside Poweradmin; drop its leftover ownership
+                        foreach (['records_zone_templ', 'zones_groups', 'zones'] as $staleTable) {
+                            $stmt = $db->prepare("DELETE FROM $staleTable WHERE domain_id = :domain_id");
+                            $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                            $stmt->execute();
+                        }
+
                         $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                         $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                         $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
