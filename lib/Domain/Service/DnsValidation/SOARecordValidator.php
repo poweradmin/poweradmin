@@ -214,10 +214,11 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             }
 
             // Serial should be a 32-bit unsigned integer (0 to 4294967295)
-            if ($fields[2] < 0 || $fields[2] > 4294967295) {
+            if (!self::isUnsigned32($fields[2])) {
                 $errors[] = _('Serial number must be a 32-bit unsigned integer (0 to 4294967295).');
                 return ['isValid' => false, 'errors' => $errors];
             }
+            $fields[2] = self::canonicalDigits($fields[2]);
 
             // Recommended: Check if serial follows the YYYYMMDDnn format pattern
             // This is a common convention but not a strict requirement
@@ -267,10 +268,11 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             }
 
             // Ensure values are positive integers
-            if ((int)$fields[$i] < 0) {
+            if (!self::isUnsigned32($fields[$i])) {
                 $errors[] = sprintf(_('SOA %s field must be a positive integer.'), $field_name);
                 return ['isValid' => false, 'errors' => $errors];
             }
+            $fields[$i] = self::canonicalDigits($fields[$i]);
 
             // Check against RFC 2308 recommended minimum values - warnings only
             $recommended_min = $soa_field_mins[$field_name];
@@ -297,5 +299,24 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         }
 
         return ['isValid' => true, 'content' => $final_soa, 'errors' => $errors, 'warnings' => $warnings];
+    }
+
+    /**
+     * Plain digits only: PowerDNS cannot parse the exponent, sign or decimal forms is_numeric() accepts.
+     */
+    private static function isUnsigned32(string $value): bool
+    {
+        if (!ctype_digit($value)) {
+            return false;
+        }
+        // String comparison: an int cast saturates on 32-bit PHP
+        $digits = self::canonicalDigits($value);
+
+        return strlen($digits) < 10 || (strlen($digits) === 10 && $digits <= '4294967295');
+    }
+
+    private static function canonicalDigits(string $value): string
+    {
+        return ltrim($value, '0') ?: '0';
     }
 }

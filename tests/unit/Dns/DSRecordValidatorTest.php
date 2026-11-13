@@ -337,4 +337,12 @@ class DSRecordValidatorTest extends TestCase
         $result7 = $this->validator->validateDSRecordContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'); // Extra content
         $this->assertFalse($result7->isValid());
     }
+
+    public function testNumericFieldsAreStoredInCanonicalForm()
+    {
+        $result = $this->validator->validate('0003 08 02 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', '_443._tcp.www.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('3 8 2 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74', $result->getData()['content']);
+    }
 }

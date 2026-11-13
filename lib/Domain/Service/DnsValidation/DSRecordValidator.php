@@ -127,6 +127,10 @@ class DSRecordValidator implements DnsRecordValidatorInterface
             return $contentResult;
         }
 
+        // Store the numeric fields in canonical form
+        $dsFields = explode(' ', trim($content));
+        $content = (int)$dsFields[0] . ' ' . (int)$dsFields[1] . ' ' . (int)$dsFields[2] . ' ' . $dsFields[3];
+
         // Add any warnings from content validation
         if ($contentResult->hasWarnings()) {
             $warnings = array_merge($warnings, $contentResult->getWarnings());
@@ -178,7 +182,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         list($keyTag, $algorithm, $digestType, $digest) = $parts;
 
         // Validate key tag (1-65535)
-        if (!is_numeric($keyTag) || $keyTag < 1 || $keyTag > 65535) {
+        if (!ctype_digit($keyTag) || (int)$keyTag < 1 || (int)$keyTag > 65535) {
             return ValidationResult::failure(_('Key tag must be a number between 1 and 65535'));
         }
 
@@ -207,7 +211,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         ];
 
         // Basic algorithm validation
-        if (!is_numeric($algorithm) || !in_array($algorithmInt, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || !in_array($algorithmInt, $validAlgorithms)) {
             return ValidationResult::failure(_('Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16'));
         }
 
@@ -229,7 +233,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         $validDigestTypes = [1, 2, 4];
         $digestTypeInt = (int)$digestType;
 
-        if (!in_array($digestTypeInt, $validDigestTypes)) {
+        if (!ctype_digit($digestType) || !in_array($digestTypeInt, $validDigestTypes)) {
             return ValidationResult::failure(_('Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)'));
         }
 

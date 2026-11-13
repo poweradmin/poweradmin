@@ -249,4 +249,20 @@ class CAARecordValidatorTest extends TestCase
         $this->assertDoesNotMatchRegularExpression('/\ballow all\b/i', $label);
         $this->assertStringContainsStringIgnoringCase('disallow', $label);
     }
+
+    public function testFlagsMustBePlainDigits()
+    {
+        foreach (['1e1', '+1', '0.0', '256'] as $flags) {
+            $result = $this->validator->validate($flags . ' issue "letsencrypt.org"', 'example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $flags);
+        }
+    }
+
+    public function testFlagsAreStoredInCanonicalForm()
+    {
+        $result = $this->validator->validate('000 issue "letsencrypt.org"', 'example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('0 issue "letsencrypt.org"', $result->getData()['content']);
+    }
 }

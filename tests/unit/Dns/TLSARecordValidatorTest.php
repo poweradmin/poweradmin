@@ -243,4 +243,22 @@ class TLSARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testNumericFieldsMustBePlainDigits()
+    {
+        $hash = str_repeat('a', 64);
+        foreach (['+3 1 1', '3 1e0 1', '3 1 +1'] as $fields) {
+            $result = $this->validator->validate("$fields $hash", '_443._tcp.www.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $fields);
+        }
+    }
+
+    public function testNumericFieldsAreStoredInCanonicalForm()
+    {
+        $hash = str_repeat('a', 64);
+        $result = $this->validator->validate("03 01 01 $hash", '_443._tcp.www.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame("3 1 1 $hash", $result->getData()['content']);
+    }
 }

@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class SOARecordValidatorTest extends TestCase
@@ -206,5 +207,50 @@ class SOARecordValidatorTest extends TestCase
 
 
         $this->assertNotEmpty($result->getErrors());
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function nonPlainSoaNumbers(): array
+    {
+        return ['exponent' => ['1e3'], 'fraction' => ['0.5'], 'plus sign' => ['+5'], 'too big' => ['99999999999']];
+    }
+
+    #[DataProvider('nonPlainSoaNumbers')]
+    public function testSerialMustBePlainDigitsWithinThirtyTwoBits(string $serial)
+    {
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate("ns1.example.com hostmaster.example.com $serial 7200 1800 1209600 86400", 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    #[DataProvider('nonPlainSoaNumbers')]
+    public function testTimersMustBePlainDigitsWithinThirtyTwoBits(string $timer)
+    {
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate("ns1.example.com hostmaster.example.com 2023122801 $timer 1800 1209600 86400", 'example.com', 0, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public function testTheLargestValueIsStoredAsGiven()
+    {
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate('ns1.example.com hostmaster.example.com 4294967295 4294967295 1800 1209600 0', 'example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('ns1.example.com hostmaster.example.com 4294967295 4294967295 1800 1209600 0', $result->getData()['content']);
+        $this->assertFalse($this->validator->validate('ns1.example.com hostmaster.example.com 4294967296 7200 1800 1209600 86400', 'example.com', 0, 3600, 86400)->isValid());
+    }
+
+    public function testNumbersAreStoredInCanonicalForm()
+    {
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate('ns1.example.com hostmaster.example.com 0002023122801 07200 1800 1209600 4294967295', 'example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 4294967295', $result->getData()['content']);
     }
 }
