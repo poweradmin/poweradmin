@@ -541,6 +541,9 @@ class ZonesController extends PublicApiController
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            if ($description !== '' && !$this->zoneCommentsEnabled()) {
+                return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
+            }
             $type = strtoupper($type);
             $zoneTemplate = $this->inputTemplate($input);
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
@@ -638,6 +641,11 @@ class ZonesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }
+    }
+
+    private function zoneCommentsEnabled(): bool
+    {
+        return (bool)$this->config->get('interface', 'show_zone_comments', true);
     }
 
     /**
@@ -849,6 +857,13 @@ class ZonesController extends PublicApiController
             }
 
             $hasDescriptionUpdate = array_key_exists('description', $input);
+            // A description equal to the stored one is a round trip (Terraform resends it on every update)
+            if (
+                $hasDescriptionUpdate && !$this->zoneCommentsEnabled()
+                && (string)$input['description'] !== (string)$this->zoneRepository->getZoneComment($zoneId)
+            ) {
+                return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
+            }
 
             if (empty($updates) && !$hasDescriptionUpdate) {
                 return $this->returnApiError('No valid fields provided for update', 400);
