@@ -128,6 +128,40 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_ds("invalid"));
     }
 
+    public function testNumericFieldsAcceptOnlyPlainDigitsInRange()
+    {
+        $soa = fn(string $nums) => "example.com hostmaster.example.com " . $nums;
+        foreach (['1e3 7200 1209600 3600 86400', '0.5 7200 1209600 3600 86400', '+5 7200 1209600 3600 86400',
+                  '5 7200 1209600 3600 99999999999', '5 7200 1209600 3600 1e3', '5 -1 1209600 3600 86400'] as $nums) {
+            $content = $soa($nums);
+            $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, "hostmaster@example.com"), $nums);
+        }
+        $content = $soa('007 7200 1209600 3600 4294967295');
+        $this->assertTrue($this->dnsInstance->is_valid_rr_soa_content($content, "hostmaster@example.com"));
+        $this->assertSame('example.com hostmaster.example.com 7 7200 1209600 3600 4294967295', $content);
+
+        $content = $soa('3000000000 7200 1209600 3600 0000000000000000000000000086400');
+        $this->assertTrue($this->dnsInstance->is_valid_rr_soa_content($content, "hostmaster@example.com"));
+        $this->assertSame('example.com hostmaster.example.com 3000000000 7200 1209600 3600 86400', $content);
+
+        $srv = '1e1 5 target.example.com.';
+        ob_start();
+        $this->assertFalse($this->dnsInstance->is_valid_rr_srv_content($srv, 'x'));
+        ob_end_clean();
+        $srv = '010 5 target.example.com.';
+        $this->assertTrue($this->dnsInstance->is_valid_rr_srv_content($srv, 'x'));
+        $this->assertSame('10 5 target.example.com', $srv);
+
+        $this->assertFalse(Dns::is_valid_tlsa('3e0 1 1 abcd', false));
+        $this->assertFalse(Dns::is_valid_tlsa('3 1 256 abcd', false));
+        $this->assertTrue(Dns::is_valid_tlsa('3 1 1 abcd', false));
+
+        $this->assertFalse(Dns::is_valid_ds('65536 13 2 abcd'));
+        $this->assertFalse(Dns::is_valid_ds('1 256 2 abcd'));
+        $this->assertFalse(Dns::is_valid_ds('1 13 256 abcd'));
+        $this->assertTrue(Dns::is_valid_ds('65535 255 255 abcd'));
+    }
+
     public function testIsValidLocation()
     {
         $this->assertTrue(Dns::is_valid_loc('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m'));

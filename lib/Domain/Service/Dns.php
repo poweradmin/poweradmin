@@ -820,10 +820,10 @@ class Dns
             }
 
             if (isset($fields[2])) {
-                if (!is_numeric($fields[2])) {
+                if (!self::is_plain_uint($fields[2], 4294967295)) {
                     return false;
                 }
-                $final_soa .= " " . $fields[2];
+                $final_soa .= " " . (ltrim($fields[2], '0') ?: '0');
             } else {
                 $final_soa .= " 0";
             }
@@ -832,10 +832,10 @@ class Dns
                 return false;
             } else {
                 for ($i = 3; ($i < 7); $i++) {
-                    if (!is_numeric($fields[$i])) {
+                    if (!self::is_plain_uint($fields[$i], 4294967295)) {
                         return false;
                     } else {
-                        $final_soa .= " " . $fields[$i];
+                        $final_soa .= " " . (ltrim($fields[$i], '0') ?: '0');
                     }
                 }
             }
@@ -930,14 +930,14 @@ class Dns
     public function is_valid_rr_srv_content(mixed &$content, $name): bool
     {
         $fields = preg_split("/\s+/", trim($content), 3);
-        if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
+        if (!self::is_plain_uint($fields[0], 65535)) {
             $error = new ErrorMessage(_('Invalid value for the priority field of the SRV record.'), $name);
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
 
             return false;
         }
-        if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) {
+        if (!self::is_plain_uint($fields[1], 65535)) {
             $error = new ErrorMessage(_('Invalid value for the weight field of the SRV record.'), $name);
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
@@ -951,8 +951,16 @@ class Dns
 
             return false;
         }
+        $fields[0] = ltrim($fields[0], '0') ?: '0';
+        $fields[1] = ltrim($fields[1], '0') ?: '0';
         $content = join(' ', $fields);
         return true;
+    }
+
+    /** True when the value is plain decimal digits within 0..$max (no sign, exponent or fraction) */
+    private static function is_plain_uint(mixed $value, int|float $max): bool
+    {
+        return is_string($value) && ctype_digit($value) && strlen(ltrim($value, '0')) <= 20 && (float)$value <= $max;
     }
 
     /** Check if TTL is valid and within range
@@ -1017,7 +1025,12 @@ class Dns
 
     public static function is_valid_ds(string $content, bool $answer = true): bool
     {
-        if (preg_match("/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i", $content)) {
+        if (
+            preg_match("/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i", $content, $m)
+            && self::is_plain_uint($m[1], 65535)
+            && self::is_plain_uint($m[2], 255)
+            && self::is_plain_uint($m[3], 255)
+        ) {
             return true;
         } else {
             return false;
@@ -2288,7 +2301,7 @@ class Dns
         $certData = implode('', array_slice($fields, 3)); // Certificate data may be split across multiple fields
 
         // Validate usage (0-255)
-        if (!is_numeric($usage) || $usage < 0 || $usage > 255 || $usage != (int)$usage) {
+        if (!self::is_plain_uint($usage, 255)) {
             $error = new ErrorMessage(_('SMIMEA usage must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
@@ -2298,7 +2311,7 @@ class Dns
         }
 
         // Validate selector (0-255)
-        if (!is_numeric($selector) || $selector < 0 || $selector > 255 || $selector != (int)$selector) {
+        if (!self::is_plain_uint($selector, 255)) {
             $error = new ErrorMessage(_('SMIMEA selector must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
@@ -2308,7 +2321,7 @@ class Dns
         }
 
         // Validate matching type (0-255)
-        if (!is_numeric($matchingType) || $matchingType < 0 || $matchingType > 255 || $matchingType != (int)$matchingType) {
+        if (!self::is_plain_uint($matchingType, 255)) {
             $error = new ErrorMessage(_('SMIMEA matching type must be an integer between 0 and 255'));
             if ($answer) {
                 $errorPresenter = new ErrorPresenter();
