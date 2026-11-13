@@ -197,6 +197,10 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid value for priority field. TLSA records must have priority value of 0.'));
         }
 
+        // Stored canonical: plain integers for the three numeric fields
+        $p = preg_split('/\s+/', trim($content), 4);
+        $content = (int)$p[0] . ' ' . (int)$p[1] . ' ' . (int)$p[2] . ' ' . $p[3];
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -231,7 +235,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
         // 1 = PKIX-EE: Service certificate constraint
         // 2 = DANE-TA: Trust anchor assertion
         // 3 = DANE-EE: Domain-issued certificate
-        if (!is_numeric($usage) || !in_array((int)$usage, range(0, 3))) {
+        if (!ctype_digit($usage) || (int)$usage > 255 || !in_array((int)$usage, range(0, 3))) {
             return ValidationResult::failure(_('TLSA usage field must be a number between 0 and 3.'));
         }
 
@@ -255,7 +259,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
         // Validate selector field (0-1)
         // 0 = Full certificate
         // 1 = SubjectPublicKeyInfo
-        if (!is_numeric($selector) || !in_array((int)$selector, range(0, 1))) {
+        if (!ctype_digit($selector) || (int)$selector > 255 || !in_array((int)$selector, range(0, 1))) {
             return ValidationResult::failure(_('TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo).'));
         }
 
@@ -269,7 +273,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
         // 0 = Exact match
         // 1 = SHA-256 hash
         // 2 = SHA-512 hash
-        if (!is_numeric($matchingType) || !in_array((int)$matchingType, range(0, 2))) {
+        if (!ctype_digit($matchingType) || (int)$matchingType > 255 || !in_array((int)$matchingType, range(0, 2))) {
             return ValidationResult::failure(_('TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 (SHA-512).'));
         }
 

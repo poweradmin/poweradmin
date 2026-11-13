@@ -145,6 +145,10 @@ class DSRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field for DS records must be 0 or empty.'));
         }
 
+        // Stored canonical: plain integers for the numeric fields
+        $p = explode(' ', $content);
+        $content = (int)$p[0] . ' ' . (int)$p[1] . ' ' . (int)$p[2] . ' ' . $p[3];
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -178,7 +182,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         list($keyTag, $algorithm, $digestType, $digest) = $parts;
 
         // Validate key tag (1-65535)
-        if (!is_numeric($keyTag) || $keyTag < 1 || $keyTag > 65535) {
+        if (!ctype_digit($keyTag) || (int)$keyTag < 1 || (int)$keyTag > 65535) {
             return ValidationResult::failure(_('Key tag must be a number between 1 and 65535'));
         }
 
@@ -207,7 +211,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         ];
 
         // Basic algorithm validation
-        if (!is_numeric($algorithm) || !in_array($algorithmInt, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || $algorithmInt > 255 || !in_array($algorithmInt, $validAlgorithms)) {
             return ValidationResult::failure(_('Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16'));
         }
 

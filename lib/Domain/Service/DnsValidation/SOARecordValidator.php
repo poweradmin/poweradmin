@@ -225,7 +225,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             }
 
             // Serial should be a 32-bit unsigned integer (0 to 4294967295)
-            if ($fields[2] < 0 || $fields[2] > 4294967295) {
+            if (!ctype_digit($fields[2]) || $fields[2] > 4294967295) {
                 $errors[] = _('Serial number must be a 32-bit unsigned integer (0 to 4294967295).');
                 return ['isValid' => false, 'errors' => $errors];
             }
@@ -243,7 +243,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
                 }
             }
 
-            $final_soa .= " " . $fields[2];
+            $final_soa .= " " . (ltrim($fields[2], '0') ?: '0');
         } else {
             // Default to current date in YYYYMMDDnn format if no serial provided
             $today = new DateTime();
@@ -278,7 +278,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             }
 
             // Ensure values are positive integers
-            if ((int)$fields[$i] < 0) {
+            if (!ctype_digit($fields[$i]) || $fields[$i] > 4294967295) {
                 $errors[] = sprintf(_('SOA %s field must be a positive integer.'), $field_name);
                 return ['isValid' => false, 'errors' => $errors];
             }
@@ -299,7 +299,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
                 $warnings[] = _('SOA retry value should be less than refresh value according to RFC 2308. This is allowed but not recommended.');
             }
 
-            $final_soa .= " " . $fields[$i];
+            $final_soa .= " " . (ltrim($fields[$i], '0') ?: '0');
         }
 
         // Per RFC 2308, minimum field is now used as the negative caching TTL

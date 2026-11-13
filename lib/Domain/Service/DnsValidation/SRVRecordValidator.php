@@ -325,13 +325,13 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
 
 
         // Validate weight (0-65535)
-        if (!is_numeric($weight) || (int)$weight < 0 || (int)$weight > 65535) {
+        if (!ctype_digit($weight) || (int)$weight > 65535) {
             return ValidationResult::failure(_('Invalid value for the weight field of the SRV record. Must be 0-65535.'));
         }
 
         // Validate port (0-65535). RFC 2782 uses port 0 with target "." to say
         // the service is deliberately not available at this domain.
-        if (!is_numeric($port) || (int)$port < 0 || (int)$port > 65535) {
+        if (!ctype_digit($port) || (int)$port > 65535) {
             return ValidationResult::failure(_('Invalid value for the port field of the SRV record. Must be 0-65535.'));
         }
 
@@ -373,7 +373,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('When target is "." (no service), port and weight should both be 0.');
         }
 
-        return ValidationResult::success(['content' => join(' ', $fields),
+        return ValidationResult::success(['content' => (int)$weight . ' ' . (int)$port . ' ' . $target,
             'weight' => (int)$weight,
             'port' => (int)$port,
             'target' => $target], $warnings);
@@ -414,7 +414,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Priority must be a number between 0 and 65535
-        if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
+        if (ctype_digit((string)$prio) && (int)$prio <= 65535) {
             return ValidationResult::success((int)$prio);
         }
 
