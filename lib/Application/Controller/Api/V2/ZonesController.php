@@ -554,6 +554,9 @@ class ZonesController extends PublicApiController
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            if ($description !== '' && !$this->getConfig()->get('interface', 'show_zone_comments', true)) {
+                return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
+            }
             $type = strtoupper($type);
             $zoneTemplate = $this->inputTemplate($input);
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {

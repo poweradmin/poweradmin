@@ -585,6 +585,18 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertSame(403, $response->getStatusCode());
     }
 
+    public function testACreateWithADescriptionIsRefusedBeforeAnythingIsCreatedWhenZoneCommentsAreDisabled(): void
+    {
+        $this->config = new FakeConfiguration(['interface' => ['show_zone_comments' => false]]);
+        $this->zoneManagement->expects($this->never())->method('createZone');
+        $this->zones->expects($this->never())->method('updateZoneComment');
+
+        $response = $this->invokeHandler('createZone', 'POST', ['name' => 'example.com', 'description' => 'text']);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('Zone comments feature is disabled in configuration', $this->messageOf($response));
+    }
+
     public function testResendingTheStoredDescriptionOnAReadOnlyZoneIsAccepted(): void
     {
         $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'SLAVE']);
