@@ -251,7 +251,14 @@ class SamlRequestBindingTest extends TestCase
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(
-            fn(string $group, string $key, $default = null) => $group === 'security' && $key === 'session_key' ? self::SESSION_KEY : $default
+            fn(string $group, string $key, $default = null) => match (true) {
+                $group === 'security' && $key === 'session_key' => self::SESSION_KEY,
+                $group === 'saml' && $key === 'providers' => array_map(
+                    fn(array $p) => $p + ['entity_id' => 'https://idp.example.com', 'sso_url' => 'https://idp.example.com/sso'],
+                    $providers
+                ),
+                default => $default,
+            }
         );
 
         $samlConfig = $this->createMock(SamlConfigurationService::class);

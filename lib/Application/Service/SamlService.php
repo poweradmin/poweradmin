@@ -251,6 +251,12 @@ class SamlService extends LoggingService
                 $_SERVER['SERVER_PORT'] = '443';
             }
 
+            // The assertion endpoint must not accept a provider the sign-in page no longer offers
+            $providers = $this->configManager->get('saml', 'providers', []);
+            if (!is_array($providers[$providerId] ?? null) || !$this->isProviderEnabled($providerId, $providers[$providerId])) {
+                throw new \RuntimeException("Provider {$providerId} not found");
+            }
+
             $auth = $this->createAuth($providerId);
             if (!$auth) {
                 // Restore original values before throwing
