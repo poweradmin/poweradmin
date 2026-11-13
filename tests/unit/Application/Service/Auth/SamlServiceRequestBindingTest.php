@@ -178,7 +178,10 @@ final class SamlServiceRequestBindingTest extends TestCase
         }
 
         $service = new SamlService(
-            new FakeConfiguration(['security' => ['session_key' => self::SESSION_KEY]]),
+            new FakeConfiguration(['security' => ['session_key' => self::SESSION_KEY], 'saml' => ['providers' => array_map(
+                fn(array $config) => $config + ['entity_id' => 'https://idp.example.com', 'sso_url' => 'https://idp.example.com/sso'],
+                $providers
+            )]]),
             $samlConfig,
             $provisioning,
             new NullLogger(),

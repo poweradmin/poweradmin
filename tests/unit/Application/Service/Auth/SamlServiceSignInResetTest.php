@@ -48,6 +48,7 @@ final class SamlServiceSignInResetTest extends TestCase
 {
     private const USER_ID = 7;
     private const SESSION_KEY = 'test-session-key';
+    private const PROVIDER = ['entity_id' => 'https://idp.example.com', 'sso_url' => 'https://idp.example.com/sso'];
 
     /** @var array<string, mixed> */
     private array $server;
@@ -136,7 +137,7 @@ final class SamlServiceSignInResetTest extends TestCase
         $mfa->method('isMfaEnabled')->willReturn($mfaEnabled);
 
         $service = new SamlService(
-            new FakeConfiguration(['security' => ['mfa' => ['enabled' => true], 'session_key' => self::SESSION_KEY]]),
+            new FakeConfiguration(['security' => ['mfa' => ['enabled' => true], 'session_key' => self::SESSION_KEY], 'saml' => ['providers' => ['test' => self::PROVIDER]]]),
             $this->createMock(SamlConfigurationService::class),
             $provisioning,
             new NullLogger(),
@@ -149,6 +150,29 @@ final class SamlServiceSignInResetTest extends TestCase
         );
 
         return $service->handleAssertion();
+    }
+
+    public function testADisabledProviderIsRefusedBeforeTheAssertionIsProcessed(): void
+    {
+        $auth = $this->createMock(Auth::class);
+        $auth->expects($this->never())->method('processResponse');
+        $authentication = $this->createMock(AuthenticationService::class);
+        $authentication->expects($this->once())->method('auth');
+
+        $service = new SamlService(
+            new FakeConfiguration(['security' => ['session_key' => self::SESSION_KEY], 'saml' => ['providers' => ['test' => self::PROVIDER + ['enabled' => false]]]]),
+            $this->createMock(SamlConfigurationService::class),
+            $this->createMock(UserProvisioningService::class),
+            new NullLogger(),
+            $authentication,
+            $this->createMock(AuditService::class),
+            $this->createMock(MfaService::class),
+            new ArraySession([SessionKeys::SAML_PROVIDER => 'test']),
+            new Request([], ['SAMLResponse' => 'response'], ['REQUEST_METHOD' => 'POST']),
+            $auth
+        );
+
+        $this->assertNull($service->handleAssertion());
     }
 
     public function testTheNoProviderFailureLogsNoSessionId(): void

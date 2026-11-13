@@ -268,7 +268,9 @@ class SamlResponseValidationTest extends TestCase
 
     public function testAssertionIsCheckedWithThePathPrefixAProxyStripped(): void
     {
-        $this->mockConfig->method('get')->willReturn([]);
+        $this->mockConfig->method('get')->willReturnCallback(fn(string $group, string $key) => $key === 'providers'
+            ? ['idp' => ['entity_id' => 'https://idp.example.com', 'sso_url' => 'https://idp.example.com/sso']]
+            : []);
         $this->mockSamlConfig->method('getServiceProviderConfig')
             ->willReturn(['assertion_consumer_service_url' => 'https://dns.example.com/saml/saml/acs']);
         $this->mockSamlConfig->method('getProviderConfig')->willReturn(['allow_idp_initiated' => true]);

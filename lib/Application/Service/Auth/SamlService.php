@@ -236,6 +236,14 @@ final class SamlService
             return null;
         }
 
+        $providers = $this->configManager->get('saml', 'providers', []);
+        if (!is_string($providerId) || !isset($providers[$providerId]) || !$this->isProviderEnabled($providerId, $providers[$providerId])) {
+            $this->logger->warning('SAML assertion refused: provider {provider} is unknown or disabled', ['provider' => is_string($providerId) ? $providerId : '']);
+            $this->authenticationService->auth(new FlashMessage(_('Authentication failed!'), 'danger'));
+            $this->unsetSessionValue('saml_provider');
+            return null;
+        }
+
         try {
             return $this->withProxyServerVars(fn() => $this->processAssertion($providerId, $flow['request_id'] ?? null), $this->getAcsUrl());
         } catch (\Exception $e) {
