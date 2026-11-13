@@ -31,11 +31,13 @@ use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipGuard;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
+use TestHelpers\FakeConfiguration;
 
 /**
  * The group zones page consults the zone view gate before its two bulk zone
@@ -48,6 +50,7 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
     private const GROUP_ID = 3;
 
     private string $viewLevel = 'all';
+    private string $ownershipMode = 'both';
 
     /** @var DomainRepositoryInterface&MockObject */
     private DomainRepositoryInterface $domains;
@@ -86,6 +89,9 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
         $this->factory->method('zoneGroupService')->willReturn(new ZoneGroupService($zoneGroups, $groups, $this->createMock(ZoneOwnershipGuard::class)));
         $this->factory->method('repositoryFactory')->willReturn($repositories);
         $this->factory->method('auditService')->willReturn($this->audit);
+        $this->factory->method('zoneOwnershipModeService')->willReturnCallback(
+            fn(): ZoneOwnershipModeService => new ZoneOwnershipModeService(new FakeConfiguration(['dns' => ['zone_ownership_mode' => $this->ownershipMode]]))
+        );
     }
 
     private function makeController(): ManageGroupZonesController
@@ -127,5 +133,17 @@ class ManageGroupZonesControllerViewLevelTest extends SeamControllerTestCase
 
         $this->assertSame([['success', '1 zone added to group.']], $this->messagesFor('manage_group_zones'));
         $this->assertSame([['error', 'You do not have permission to view this zone.']], $this->messagesFor('system'));
+    }
+
+    public function testAddingZonesIsRefusedWhenTheOwnershipModeAllowsNoGroupOwners(): void
+    {
+        $this->ownershipMode = 'users_only';
+        $this->audit->expects($this->never())->method('logGroupZonesAdd');
+        $this->post(['action' => 'add', 'domain_ids' => '12']);
+
+        $controller = $this->makeController();
+        $controller->run();
+
+        $this->assertSame([['error', 'Group-ownership assignment is disabled by the current zone ownership mode.']], $this->messagesFor('manage_group_zones'));
     }
 }
