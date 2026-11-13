@@ -197,6 +197,16 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return null;
         }
 
+        // PowerDNS just created this zone, so grants and extra owner rows left on its id are stale
+        SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+        foreach (['zones_groups', 'records_zone_templ', 'records_zone_templ_api'] as $staleTable) {
+            $this->db->prepare("DELETE FROM $staleTable WHERE domain_id = :zone_id")->execute([':zone_id' => $zoneId]);
+        }
+        $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :zone_id AND id <> :id");
+        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':id', $rowId, PDO::PARAM_INT);
+        $stmt->execute();
+
         // domain_id too, so a row stranded without one is found by the caller's owner update
         $stmt = $this->db->prepare("UPDATE zones SET zone_type = :type, zone_master = :master, domain_id = :zone_id WHERE id = :id");
         $stmt->bindValue(':type', strtoupper($type));

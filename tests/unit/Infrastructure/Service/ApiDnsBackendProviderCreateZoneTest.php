@@ -57,6 +57,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
             )"
         );
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
     }
 
@@ -112,6 +114,24 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (7, 4011, 'example.com')");
 
         $this->assertSame(4011, $this->provider()->createZone('example.com', 'MASTER'));
+    }
+
+    public function testGrantsAndExtraOwnerRowsLeftOnAReusedRowAreCleared(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (7, 7, 5, 'example.com'), (8, 7, 6, NULL), (9, 9, 6, 'other.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (7, 3), (9, 3)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (7, 1, 1), (9, 2, 1)");
+        $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (7, 'a', 1), (9, 'b', 1)");
+
+        $this->assertSame(7, $this->provider()->createZone('example.com', 'MASTER'));
+
+        $this->assertSame('1', (string)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 7")->fetchColumn());
+        $this->assertSame('0', (string)$this->db->query("SELECT COUNT(*) FROM zones_groups WHERE domain_id = 7")->fetchColumn());
+        $this->assertSame('0', (string)$this->db->query("SELECT COUNT(*) FROM records_zone_templ WHERE domain_id = 7")->fetchColumn());
+        $this->assertSame('0', (string)$this->db->query("SELECT COUNT(*) FROM records_zone_templ_api WHERE domain_id = 7")->fetchColumn());
+        $this->assertSame('1', (string)$this->db->query("SELECT COUNT(*) FROM records_zone_templ_api WHERE domain_id = 9")->fetchColumn());
+        $this->assertSame('1', (string)$this->db->query("SELECT COUNT(*) FROM zones_groups WHERE domain_id = 9")->fetchColumn());
+        $this->assertSame('1', (string)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 9")->fetchColumn());
     }
 
     public function testNoZonesRowSurvivesAFailedBackfill(): void
@@ -245,13 +265,13 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->assertSame([1 => [4011], 2 => [0, 4011], 3 => [30]], $this->keyScopes());
     }
 
-    public function testApiKeysOnAReusedUnsharedRowAreKept(): void
+    public function testApiKeysScopedToAReusedUnsharedRowMatchNoZone(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name) VALUES (9, 9, 'example.com')");
         $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 9), (3, 30)");
 
         $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
-        $this->assertSame([1 => [9], 3 => [30]], $this->keyScopes());
+        $this->assertSame([1 => [0], 3 => [30]], $this->keyScopes());
     }
 
     public function testTheQueueRowIsCreatedAndMarkedWhenMissing(): void
