@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\RRSetReplaceService;
 use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use TestHelpers\FakeConfiguration;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -63,6 +64,7 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
     private ?string $zoneName = self::ZONE_NAME;
     private ApiKeyScope $scope;
     private int $zoneIdParameter = self::ZONE_ID;
+    private ?FakeConfiguration $config = null;
 
     protected function setUp(): void
     {
@@ -203,6 +205,27 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
             'a string' => ['192.0.2.1'],
             'an integer' => [5],
         ];
+    }
+
+    public function testMoreRecordsThanTheLimitAreRefusedBeforeAnythingIsReplaced(): void
+    {
+        $this->config = new FakeConfiguration(['api' => ['bulk_max_operations' => 2]]);
+        $this->replacer->expects($this->never())->method('replace');
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'records' => array_fill(0, 3, ['content' => '192.0.2.1'])]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Too many operations: at most 2 per request', $this->messageOf($response));
+    }
+
+    public function testTheDefaultRecordLimitIsAThousand(): void
+    {
+        $this->replacer->expects($this->never())->method('replace');
+
+        $response = $this->replace(['name' => 'www', 'type' => 'A', 'records' => array_fill(0, 1001, ['content' => '192.0.2.1'])]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Too many operations: at most 1000 per request', $this->messageOf($response));
     }
 
     #[DataProvider('unusableRecordsProvider')]
@@ -603,6 +626,9 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
     {
         $controller = $this->bareController(ZonesRRSetsController::class);
         $this->injectBaseCollaborators($controller, 'PUT');
+        if ($this->config !== null) {
+            $this->inject($controller, 'config', $this->config);
+        }
 
         // Re-inject the request with the raw body so malformed payloads survive.
         $request = \Symfony\Component\HttpFoundation\Request::create(

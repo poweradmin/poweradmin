@@ -482,6 +482,7 @@ class ZonesRRSetsController extends PublicApiController
             ]
         )
     )]
+    #[OA\Response(response: 400, description: 'Invalid request, or more records than api.bulk_max_operations')]
     #[OA\Response(response: 422, description: 'PowerDNS refused the write in API backend mode; the message carries its reason')]
     #[OA\Response(
         response: 200,
@@ -565,6 +566,12 @@ class ZonesRRSetsController extends PublicApiController
 
             if (!is_array($input['records']) || empty($input['records'])) {
                 return $this->returnApiError("Field 'records' must be a non-empty array", 400);
+            }
+
+            // The whole RRset is replaced in one transaction, so an unbounded list ties up the database
+            $maxOperations = (int)$this->getConfig()->get('api', 'bulk_max_operations', 1000);
+            if ($maxOperations > 0 && count($input['records']) > $maxOperations) {
+                return $this->returnApiError(sprintf('Too many operations: at most %d per request', $maxOperations), 400);
             }
 
             $nameRaw = $this->inputString($input, 'name', '');
