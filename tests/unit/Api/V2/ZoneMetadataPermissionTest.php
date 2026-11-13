@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\ZoneManagementService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
@@ -164,6 +165,9 @@ class ZoneMetadataPermissionTest extends TestCase
         $zoneManagementService->method('updateZone')->willReturn(['success' => true]);
 
         $controller = (new ReflectionClass(ZonesController::class))->newInstanceWithoutConstructor();
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('get')->willReturnCallback(static fn(string $group, string $key, mixed $default = null): mixed => $default);
+        $this->inject($controller, 'config', $config);
         $this->inject($controller, 'permissionService', $permissionService);
         $this->inject($controller, 'zoneRepository', $zoneRepository);
         $this->inject($controller, 'zoneManagementService', $zoneManagementService);

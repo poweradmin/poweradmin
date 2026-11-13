@@ -459,6 +459,9 @@ class ZonesController extends PublicApiController
             ) {
                 return $this->returnApiError('Invalid field types in request body', 400);
             }
+            if ($description !== '' && !$this->zoneCommentsEnabled()) {
+                return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
+            }
             $type = strtoupper($type);
             $zoneTemplate = $this->inputTemplate($input);
             if ($zoneTemplate !== 'none' && !is_numeric($zoneTemplate)) {
@@ -541,6 +544,11 @@ class ZonesController extends PublicApiController
         } catch (\Throwable $e) {
             return $this->handleException($e, 'ZonesController::createZone', 'Failed to create zone');
         }
+    }
+
+    private function zoneCommentsEnabled(): bool
+    {
+        return (bool)$this->getConfig()->get('interface', 'show_zone_comments', true);
     }
 
     /**
@@ -744,6 +752,14 @@ class ZonesController extends PublicApiController
 
             if ($hasDescriptionUpdate && !$mayEditContent) {
                 return $this->returnApiError('You do not have permission to edit this zone', 403);
+            }
+
+            // An unchanged description is a no-op, like the other fields above
+            if (
+                $hasDescriptionUpdate && !$this->zoneCommentsEnabled()
+                && (string)$input['description'] !== (string)$this->zoneRepository->getZoneComment($zoneId)
+            ) {
+                return $this->returnApiError('Zone comments feature is disabled in configuration', 403);
             }
 
             // Verify zone exists before making any changes
