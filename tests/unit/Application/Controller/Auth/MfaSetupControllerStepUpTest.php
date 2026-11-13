@@ -27,6 +27,11 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use Poweradmin\Domain\Port\MfaVerificationMailerInterface;
+use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
+use Poweradmin\Infrastructure\Auth\BaconQrCodeRenderer;
+use Poweradmin\Infrastructure\Auth\Google2FaTotp;
+use TestHelpers\FakeConfiguration;
 use Poweradmin\Application\Controller\Auth\MfaSetupController;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Http\ClientContext;
@@ -229,6 +234,30 @@ class MfaSetupControllerStepUpTest extends SeamControllerTestCase
         $this->mfa->expects($this->once())->method('invalidatePendingEmailCode')->with(self::USER_ID);
 
         $this->submit(['disable_mfa' => '1', 'mfa_code' => '000000']);
+    }
+
+    public function testNoStepUpCodeIsMailedWhenTheEmailMethodIsDisabled(): void
+    {
+        $this->enabledMfa(UserMfa::TYPE_EMAIL);
+        $mailer = $this->createMock(MfaVerificationMailerInterface::class);
+        $mailer->expects($this->never())->method('sendVerificationCode');
+        $real = new MfaService(
+            $this->createMock(UserMfaRepositoryInterface::class),
+            new FakeConfiguration(['mail' => ['enabled' => true], 'security' => ['mfa.email_enabled' => false]]),
+            $mailer,
+            new Google2FaTotp(),
+            new BaconQrCodeRenderer()
+        );
+        $this->mfa->method('refreshEmailVerificationCodeIfNeeded')
+            ->willReturnCallback(fn(int $userId, string $email): ?string => $real->refreshEmailVerificationCodeIfNeeded($userId, $email));
+        $this->mfa->expects($this->never())->method('disableMfa');
+
+        $this->submit(['disable_mfa' => '1']);
+
+        $this->assertSame([
+            ['warning', 'Could not send verification code to your email. Please use a recovery code instead.'],
+            ['error', 'Verification code is required.'],
+        ], $this->messagesFor('system'));
     }
 
     public function testAFailedEmailSendIsShownWithTheRecoveryCodeHint(): void

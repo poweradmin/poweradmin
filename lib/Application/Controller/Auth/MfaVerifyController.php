@@ -402,8 +402,12 @@ class MfaVerifyController extends BaseController
 
         // For email-based MFA, check if we need to refresh the code
         if ($mfaType === 'email' && !empty($email) && !$mfaLocked) {
-            // First check if mail service is enabled - only required for email verification
-            if (!$this->config->get('mail', 'enabled', false)) {
+            if (!$this->config->get('security', 'mfa.email_enabled', true)) {
+                // The administrator withdrew the email method: nothing is mailed, recovery codes remain
+                $message = _('Could not send verification code to your email. Please use a recovery code instead.');
+                $type = 'warning';
+                $this->logger->warning('[MfaVerifyController] Email verification unavailable - email method disabled for user ID: {user_id}', ['user_id' => $userId]);
+            } elseif (!$this->config->get('mail', 'enabled', false)) {
                 // Force user to use recovery codes since email is not available
                 $message = _('Email verification is not available because mail service is disabled. Please use a recovery code.');
                 $type = 'warning';

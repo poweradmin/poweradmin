@@ -587,6 +587,44 @@ class MfaServiceTest extends TestCase
     }
 
     #[Test]
+    public function testAnEmailCodeIsRefusedWhenTheEmailMethodIsDisabledButRecoveryCodesStillWork(): void
+    {
+        $metadata = json_encode(['expires_at' => time() + 600, 'used' => false]);
+        $userMfa = $this->createMock(UserMfa::class);
+        $userMfa->method('getSecret')->willReturn('123456');
+        $userMfa->method('getType')->willReturn(UserMfa::TYPE_EMAIL);
+        $userMfa->method('getVerificationData')->willReturn($metadata);
+        $userMfa->method('validateRecoveryCode')->willReturnCallback(fn(string $code): bool => $code === 'recovery123');
+
+        $this->configure(['mail' => ['enabled' => true], 'security' => ['mfa.email_enabled' => false]]);
+        $this->userMfaRepository->method('findByUserId')->willReturn($userMfa);
+        $this->userMfaRepository->method('save')->willReturn($userMfa);
+
+        $this->assertFalse($this->service->verifyCode(1, '123456'));
+        $this->assertTrue($this->service->verifyCode(1, 'recovery123'));
+    }
+
+    #[Test]
+    public function testNoCodeIsMailedWhenTheEmailMethodIsDisabled(): void
+    {
+        $this->configure(['mail' => ['enabled' => true], 'security' => ['mfa.email_enabled' => false]]);
+        $this->mailService->expects($this->never())->method('sendVerificationCode');
+
+        $sends = [
+            fn() => $this->service->sendEmailVerificationCode(1, 'test@example.com'),
+            fn() => $this->service->refreshEmailVerificationCodeIfNeeded(1, 'test@example.com'),
+        ];
+        foreach ($sends as $send) {
+            try {
+                $send();
+                $this->fail('A RuntimeException was expected');
+            } catch (RuntimeException $e) {
+                $this->assertSame('Email verification is not available because the email method is disabled.', $e->getMessage());
+            }
+        }
+    }
+
+    #[Test]
     public function testVerifyCodeReturnsFalseForExpiredEmailCode(): void
     {
         $userId = 1;

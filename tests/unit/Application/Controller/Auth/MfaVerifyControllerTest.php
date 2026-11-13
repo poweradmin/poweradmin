@@ -147,6 +147,23 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->assertSame('mfa_verify.html', $this->output->rendered[0][0]);
     }
 
+    public function testNoEmailCodeIsSentWhenTheEmailMethodIsDisabled(): void
+    {
+        $this->session->remove(SessionKeys::USERID);
+        $this->session->set(SessionKeys::PENDING_EMAIL, 'pending@example.com');
+        $mfa = $this->pendingLoginOf(self::VICTIM_ID);
+        $mfa->method('getMfaType')->willReturn('email');
+        $mfa->expects($this->never())->method('refreshEmailVerificationCodeIfNeeded');
+
+        $controller = new MfaVerifyController([], $this->environment($this->configure([
+            'security' => ['mfa' => ['enabled' => true, 'email_enabled' => false]],
+            'mail' => ['enabled' => true],
+        ])));
+        $controller->run();
+
+        $this->assertSame('Could not send verification code to your email. Please use a recovery code instead.', $this->output->rendered[0][1]['msg']);
+    }
+
     public function testAThrottledAccountRefusesRecoveryCodesLikeAnyOtherCode(): void
     {
         $this->session->remove(SessionKeys::USERID);

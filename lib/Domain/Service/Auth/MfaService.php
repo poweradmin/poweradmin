@@ -311,7 +311,10 @@ class MfaService
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {
             // Check if mail service is enabled before proceeding with email verification
-            if (!$this->configManager->get('mail', 'enabled', false)) {
+            if (!$this->configManager->get('security', 'mfa.email_enabled', true)) {
+                // Withdrawn by the administrator: only recovery codes, tried by the caller, still pass
+                $this->logger->warning('Email verification attempted but the email method is disabled for user ID: {userId}', ['userId' => $userId]);
+            } elseif (!$this->configManager->get('mail', 'enabled', false)) {
                 $this->logger->warning('Email verification attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
                 // Fall through to the TOTP check; recovery codes are tried by the caller
                 // Do not validate the email code if mail service is disabled
@@ -453,6 +456,11 @@ class MfaService
      */
     public function sendEmailVerificationCode(int $userId, string $email): string
     {
+        if (!$this->configManager->get('security', 'mfa.email_enabled', true)) {
+            $this->logger->warning('Email verification attempted but the email method is disabled for user ID: {userId}', ['userId' => $userId]);
+            throw new RuntimeException('Email verification is not available because the email method is disabled.');
+        }
+
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
             $this->logger->warning('Email verification attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
@@ -551,6 +559,11 @@ class MfaService
      */
     public function refreshEmailVerificationCodeIfNeeded(int $userId, string $email): ?string
     {
+        if (!$this->configManager->get('security', 'mfa.email_enabled', true)) {
+            $this->logger->warning('Email verification refresh attempted but the email method is disabled for user ID: {userId}', ['userId' => $userId]);
+            throw new RuntimeException('Email verification is not available because the email method is disabled.');
+        }
+
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
             $this->logger->warning('Email verification refresh attempted but mail service is disabled for user ID: {userId}', ['userId' => $userId]);
