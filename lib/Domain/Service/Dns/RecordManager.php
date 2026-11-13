@@ -659,7 +659,7 @@ class RecordManager implements RecordManagerInterface
             if ($count > 0) {
                 $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
             } else {
-                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, NULL, :comment, 0)";
             }
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
