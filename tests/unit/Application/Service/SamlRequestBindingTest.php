@@ -201,6 +201,25 @@ class SamlRequestBindingTest extends TestCase
         $this->assertStringContainsString(self::MISMATCH, implode(' ', $result['reasons']));
     }
 
+    public function testADisabledProviderIsRefusedBeforeAnyAssertionIsProcessed(): void
+    {
+        $result = $this->handle(['corp' => ['enabled' => false]], null, 'corp');
+
+        $this->assertSame([], $result['providers']);
+        $this->assertSame([], $result['reasons']);
+        $this->assertStringContainsString('Authentication failed', $result['message']);
+    }
+
+    public function testADisabledProviderNamedByTheFlowCookieIsRefused(): void
+    {
+        $this->setFlowCookie('corp', 'request-123');
+
+        $result = $this->handle(['corp' => ['enabled' => false]], 'request-123');
+
+        $this->assertSame([], $result['providers']);
+        $this->assertSame([], $result['reasons']);
+    }
+
     /**
      * @param array{message: string, reasons: array<int, string>, providers: array<int, string>} $result
      */
@@ -248,6 +267,10 @@ class SamlRequestBindingTest extends TestCase
     {
         $authProviders = [];
         $reasons = [];
+        $providers = array_map(
+            fn(array $p) => $p + ['entity_id' => 'https://idp.example.com', 'sso_url' => 'https://idp.example.com/sso'],
+            $providers
+        );
 
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('get')->willReturnCallback(

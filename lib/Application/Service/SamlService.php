@@ -245,7 +245,11 @@ class SamlService extends LoggingService
                 $_SERVER['SERVER_PORT'] = '443';
             }
 
-            $auth = $this->createAuth($providerId);
+            // A provider switched off in the configuration must not accept assertions either
+            $providerConfig = $this->samlConfigurationService->getProviderConfig($providerId);
+            $auth = ($providerConfig !== null && $this->isProviderEnabled($providerId, $providerConfig))
+                ? $this->createAuth($providerId)
+                : null;
             if (!$auth) {
                 // Restore original values before throwing
                 if ($originalHttps !== null) {
