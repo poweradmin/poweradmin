@@ -89,7 +89,7 @@ class ApiZoneRepositoryZoneShellTest extends TestCase
         $this->repository->saveZoneComment(77, 'first');
 
         $this->assertSame(
-            [['domain_id' => 77, 'owner' => 1, 'comment' => 'first', 'zone_templ_id' => 0]],
+            [['domain_id' => 77, 'owner' => null, 'comment' => 'first', 'zone_templ_id' => 0]],
             $this->rows('SELECT domain_id, owner, comment, zone_templ_id FROM zones')
         );
     }

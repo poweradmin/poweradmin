@@ -79,13 +79,13 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
         );
     }
 
-    public function testZoneWithoutARowGetsOneOwnedByTheFirstUser(): void
+    public function testZoneWithoutARowGetsOneWithoutAnOwner(): void
     {
         $result = $this->manager()->editZoneComment(self::ZONE_ID, 'first comment');
 
         $this->assertTrue($result->success);
         $this->assertSame(
-            [['id' => 1, 'domain_id' => self::ZONE_ID, 'owner' => 1, 'comment' => 'first comment', 'zone_templ_id' => 0]],
+            [['id' => 1, 'domain_id' => self::ZONE_ID, 'owner' => null, 'comment' => 'first comment', 'zone_templ_id' => 0]],
             $this->rows()
         );
     }
