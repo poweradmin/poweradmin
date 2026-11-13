@@ -411,7 +411,7 @@
                     </thead>
                     <tbody>
         {% for r in records %}
-        {% set record_locked = (r['type'] == "SOA" and perm_edit != "all") or ((r['type'] == "NS" or r['type'] == "LUA") and perm_edit == "own_as_client") %}
+        {% set record_locked = (r['type'] == "SOA" and perm_edit == "none") or ((r['type'] == "SOA" or r['type'] == "NS" or r['type'] == "LUA") and perm_edit == "own_as_client") %}
 
         {% if not record_locked %}
         <input type="hidden" name="record[{{ r['id'] }}][rid]" value="{{ r['id'] }}">
