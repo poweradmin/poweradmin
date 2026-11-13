@@ -45,6 +45,9 @@ class DbZoneRepositoryZoneShellTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, comment TEXT, zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)");
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, master TEXT, type TEXT NOT NULL DEFAULT 'NATIVE')");
+        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
 
         $config = $this->createMock(ConfigurationInterface::class);
@@ -65,6 +68,22 @@ class DbZoneRepositoryZoneShellTest extends TestCase
             [['id' => 6, 'domain_id' => 77, 'owner' => 7, 'zone_templ_id' => 9]],
             $this->rows('SELECT id, domain_id, owner, zone_templ_id FROM zones WHERE domain_id = 77')
         );
+    }
+
+    public function testCreateZoneShellDropsOwnersGroupsAndTemplateLinksLeftOnTheReusedId(): void
+    {
+        $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (77, 4, 2), (77, 5, 2), (78, 4, 2)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (77, 3), (78, 3)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (77, 1, 2), (78, 2, 2)");
+        $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (77, 1, 2), (78, 2, 2)");
+
+        $this->repository->createZoneShell(77, 7, 0);
+
+        $this->assertSame([['owner' => 7]], $this->rows('SELECT owner FROM zones WHERE domain_id = 77'));
+        $this->assertSame([['domain_id' => 78]], $this->rows('SELECT domain_id FROM zones_groups'));
+        $this->assertSame([['domain_id' => 78]], $this->rows('SELECT domain_id FROM records_zone_templ'));
+        $this->assertSame([['domain_id' => 78]], $this->rows('SELECT domain_id FROM records_zone_templ_api'));
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM zones WHERE domain_id = 78')->fetchColumn());
     }
 
     public function testCreateZoneShellStoresAnOwnerlessZoneAsNull(): void

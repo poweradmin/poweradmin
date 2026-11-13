@@ -60,6 +60,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
             )"
         );
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
     }
@@ -195,10 +197,14 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (9, 9, 1, 'example.com'), (30, 30, 1, 'c.example')");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (50, 9, 3, NULL), (51, 30, 3, NULL)");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (9, 7), (30, 8)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, zone_templ_id) VALUES (9, 2), (30, 2)");
+        $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (9, 'x', 2), (30, 'y', 2)");
 
         $this->assertSame(9, $this->provider()->createZone('example.com', 'MASTER'));
 
         $this->assertSame([30], $this->idsOf("SELECT domain_id FROM zones_groups"));
+        $this->assertSame([30], $this->idsOf("SELECT domain_id FROM records_zone_templ"));
+        $this->assertSame([30], $this->idsOf("SELECT domain_id FROM records_zone_templ_api"));
         $this->assertSame([51], $this->idsOf("SELECT id FROM zones WHERE zone_name IS NULL"));
     }
 
@@ -223,6 +229,8 @@ class ApiDnsBackendProviderCreateZoneTest extends TestCase
              zone_templ_id INTEGER NOT NULL DEFAULT 0, zone_name TEXT, zone_type TEXT, zone_master TEXT)"
         );
         $db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_templ_id INTEGER)");
+        $db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
         $db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)");
         $db->exec("CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT 'string')");
         $db->failUpdates = true;

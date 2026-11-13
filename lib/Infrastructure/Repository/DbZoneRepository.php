@@ -741,6 +741,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
         // PowerDNS may hand out the id of a zone deleted outside Poweradmin, whose key scopes must not carry over
         SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $domainId);
+        // The same id also carries that zone's owners, group grants and template links
+        foreach (['zones', 'zones_groups', 'records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $purge = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
+            $purge->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+            $purge->execute();
+        }
         $stmt = $this->db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
         $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $owner, $owner !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);

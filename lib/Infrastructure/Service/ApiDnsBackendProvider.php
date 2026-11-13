@@ -212,9 +212,11 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     {
         // Keys are pointed at no zone, not stripped of the row: a key with no scope is unrestricted
         SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
-        $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :zone_id");
-        $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-        $stmt->execute();
+        foreach (['zones_groups', 'records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $stmt = $this->db->prepare("DELETE FROM {$table} WHERE domain_id = :zone_id");
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
         $stmt = $this->db->prepare("DELETE FROM zones WHERE zone_name IS NULL AND domain_id = :zone_id");
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
