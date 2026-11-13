@@ -42,6 +42,11 @@ class DnssecKeyExportController extends BaseController
 {
     public function run(): void
     {
+        if (!$this->isDnssecSwitchedOn()) {
+            $this->showError(_('DNSSEC is not enabled on the server.'));
+            return;
+        }
+
         $zoneId = $this->getSafeRequestValue('zone_id');
         $keyId = $this->getSafeRequestValue('key_id');
         if (!$zoneId || !Validator::isNumber($zoneId) || !$keyId || !Validator::isNumber($keyId)) {

@@ -336,7 +336,7 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if DNSSEC is enabled on the server
-            if (!$dnssecProvider->isDnssecEnabled()) {
+            if (!$this->isDnssecSwitchedOn() || !$dnssecProvider->isDnssecEnabled()) {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
             } elseif ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 // Check if zone is already secured
@@ -384,7 +384,9 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+            if (!$this->isDnssecSwitchedOn()) {
+                $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
+            } elseif (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone

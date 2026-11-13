@@ -246,6 +246,14 @@ abstract class BaseController
     }
 
     /**
+     * The dnssec.enabled switch, for the web actions that change a zone's DNSSEC state.
+     */
+    protected function isDnssecSwitchedOn(): bool
+    {
+        return (bool)$this->config->get('dnssec', 'enabled', false);
+    }
+
+    /**
      * Checks if the current request is a POST request.
      *
      * @return bool True if the request method is POST, false otherwise.
