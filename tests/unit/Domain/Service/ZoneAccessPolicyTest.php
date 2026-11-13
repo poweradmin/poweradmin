@@ -82,7 +82,9 @@ class ZoneAccessPolicyTest extends TestCase
     {
         return [
             'read-only zone locks everything' => [true, 'A', 'all', false, true],
-            'SOA locked unless perm is all' => [false, 'SOA', 'own', false, true],
+            'SOA editable with own' => [false, 'SOA', 'own', false, false],
+            'SOA locked for client-level editors' => [false, 'SOA', 'own_as_client', false, true],
+            'SOA locked without edit right' => [false, 'SOA', 'none', false, true],
             'SOA editable with all' => [false, 'SOA', 'all', false, false],
             'NS lock propagates' => [false, 'NS', 'own_as_client', true, true],
             'plain record editable' => [false, 'A', 'own', false, false],
