@@ -156,6 +156,13 @@ class ManageGroupZonesController extends BaseController
             return;
         }
 
+        // Same refusal as the per-zone ownership page
+        if (!(new ZoneOwnershipModeService($this->config))->isGroupOwnerAllowed()) {
+            $this->setMessage('manage_group_zones', 'error', _('Group-ownership assignment is disabled by the current zone ownership mode.'));
+            $this->showManageZones($groupId);
+            return;
+        }
+
         try {
             // Get group details and zone names before adding
             $userContext = $this->getUserContextService();
