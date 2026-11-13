@@ -74,10 +74,10 @@ class RecordLockPresenterTest extends TestCase
         $this->assertTrue($this->decorateOne($this->record('A'), 'all', false, true)['record_locked']);
     }
 
-    public function testSoaLocksForAnyoneBelowFullEdit(): void
+    public function testSoaLocksOnlyForClientLevelEditors(): void
     {
         $this->assertFalse($this->decorateOne($this->record('SOA'), 'all')['record_locked']);
-        $this->assertTrue($this->decorateOne($this->record('SOA'), 'own')['record_locked']);
+        $this->assertFalse($this->decorateOne($this->record('SOA'), 'own')['record_locked']);
         $this->assertTrue($this->decorateOne($this->record('SOA'), 'own_as_client')['record_locked']);
     }
 
@@ -107,7 +107,7 @@ class RecordLockPresenterTest extends TestCase
         $rows = RecordLockPresenter::decorate(
             [$this->record('A', 'a.example.com'), $this->record('SOA', 'example.com')],
             'example.com',
-            'own',
+            'own_as_client',
             false,
             false
         );

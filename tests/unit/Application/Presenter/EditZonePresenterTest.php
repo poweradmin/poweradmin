@@ -379,7 +379,7 @@ class EditZonePresenterTest extends TestCase
 
     public function testRecordsAreDecoratedWithTheirLocks(): void
     {
-        $vars = $this->present(['permEdit' => 'own']);
+        $vars = $this->present(['permEdit' => 'own_as_client']);
 
         $this->assertTrue($vars['records'][0]['record_locked']);
         $this->assertFalse($vars['records'][1]['record_locked']);
