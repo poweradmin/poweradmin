@@ -296,4 +296,62 @@ class SOARecordValidatorTest extends TestCase
         $this->assertStringContainsString('template', strtolower($errors[0]));
         $this->assertStringContainsString('[HOSTMASTER]', $errors[0]);
     }
+
+    /**
+     * @dataProvider nonCanonicalSoaNumberProvider
+     */
+    public function testValidateRejectsNonDigitSoaNumbers(string $content): void
+    {
+        $result = $this->validator->validateSoa($content, 'example.com', 0, 3600, 86400, 'hostmaster@example.com', 'example.com');
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function nonCanonicalSoaNumberProvider(): array
+    {
+        return [
+            'serial exponent' => ['ns1.example.com hostmaster.example.com 1e3 7200 1800 1209600 86400'],
+            'serial fraction' => ['ns1.example.com hostmaster.example.com 0.5 7200 1800 1209600 86400'],
+            'serial sign' => ['ns1.example.com hostmaster.example.com +5 7200 1800 1209600 86400'],
+            'refresh exponent' => ['ns1.example.com hostmaster.example.com 2023122801 1e3 1800 1209600 86400'],
+            'refresh fraction' => ['ns1.example.com hostmaster.example.com 2023122801 -0.5 1800 1209600 86400'],
+            'expire over 32 bits' => ['ns1.example.com hostmaster.example.com 2023122801 7200 1800 99999999999 86400'],
+            'minimum infinite' => ['ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 1e1000'],
+        ];
+    }
+
+    public function testValidateKeepsValuesAboveTheSignedIntLimit(): void
+    {
+        $result = $this->validator->validateSoa(
+            'ns1.example.com hostmaster.example.com 4294967295 3000000000 1800 1209600 86400',
+            'example.com',
+            0,
+            3600,
+            86400,
+            'hostmaster@example.com',
+            'example.com'
+        );
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('ns1.example.com hostmaster.example.com 4294967295 3000000000 1800 1209600 86400', $result->getData()['content']);
+
+        $over = $this->validator->validateSoa('ns1.example.com hostmaster.example.com 4294967296 7200 1800 1209600 86400', 'example.com', 0, 3600, 86400, 'hostmaster@example.com', 'example.com');
+        $this->assertFalse($over->isValid());
+    }
+
+    public function testValidateStoresSoaNumbersAsCanonicalIntegers(): void
+    {
+        $result = $this->validator->validateSoa(
+            'ns1.example.com hostmaster.example.com 0002023122801 07200 01800 1209600 86400',
+            'example.com',
+            0,
+            3600,
+            86400,
+            'hostmaster@example.com',
+            'example.com'
+        );
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400', $result->getData()['content']);
+    }
 }

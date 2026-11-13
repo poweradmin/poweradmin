@@ -202,13 +202,13 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         // Process serial number according to RFC 1035 and RFC 1982
         if (isset($fields[2])) {
             // Serial must be numeric
-            if (!is_numeric($fields[2])) {
+            if (!ctype_digit($fields[2])) {
                 $errors[] = _('Serial number must be numeric.');
                 return ['isValid' => false, 'errors' => $errors];
             }
 
             // Serial should be a 32-bit unsigned integer (0 to 4294967295)
-            if ($fields[2] < 0 || $fields[2] > 4294967295) {
+            if (self::exceeds32Bits($fields[2])) {
                 $errors[] = _('Serial number must be a 32-bit unsigned integer (0 to 4294967295).');
                 return ['isValid' => false, 'errors' => $errors];
             }
@@ -226,7 +226,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
                 }
             }
 
-            $final_soa .= " " . $fields[2];
+            $final_soa .= " " . self::canonicalDigits($fields[2]);
         } else {
             // Default to current date in YYYYMMDDnn format if no serial provided
             $today = new DateTime();
@@ -255,13 +255,13 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             $field_name = $soa_field_names[$field_idx];
 
             // Basic validation - fields must be numeric
-            if (!is_numeric($fields[$i])) {
+            if (!ctype_digit($fields[$i])) {
                 $errors[] = sprintf(_('SOA %s field must be numeric.'), $field_name);
                 return ['isValid' => false, 'errors' => $errors];
             }
 
             // Ensure values are positive integers
-            if ((int)$fields[$i] < 0) {
+            if (self::exceeds32Bits($fields[$i])) {
                 $errors[] = sprintf(_('SOA %s field must be a positive integer.'), $field_name);
                 return ['isValid' => false, 'errors' => $errors];
             }
@@ -282,7 +282,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
                 $warnings[] = _('SOA retry value should be less than refresh value according to RFC 2308. This is allowed but not recommended.');
             }
 
-            $final_soa .= " " . $fields[$i];
+            $final_soa .= " " . self::canonicalDigits($fields[$i]);
         }
 
         // Per RFC 2308, minimum field is now used as the negative caching TTL
@@ -291,5 +291,18 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         }
 
         return ['isValid' => true, 'content' => $final_soa, 'errors' => $errors, 'warnings' => $warnings];
+    }
+
+    /** String-based so the 32-bit limit holds on 32-bit PHP builds too. */
+    private static function canonicalDigits(string $digits): string
+    {
+        return ltrim($digits, '0') ?: '0';
+    }
+
+    private static function exceeds32Bits(string $digits): bool
+    {
+        $canonical = self::canonicalDigits($digits);
+
+        return strlen($canonical) > 10 || (strlen($canonical) === 10 && strcmp($canonical, '4294967295') > 0);
     }
 }

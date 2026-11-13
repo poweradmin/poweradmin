@@ -141,6 +141,12 @@ class DSRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field for DS records must be 0 or empty.'));
         }
 
+        $content = preg_replace_callback(
+            '/^(\d+) (\d+) (\d+)/',
+            fn($m) => (int)$m[1] . ' ' . (int)$m[2] . ' ' . (int)$m[3],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -174,7 +180,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         list($keyTag, $algorithm, $digestType, $digest) = $parts;
 
         // Validate key tag (1-65535)
-        if (!is_numeric($keyTag) || $keyTag < 1 || $keyTag > 65535) {
+        if ((int)$keyTag < 1 || (int)$keyTag > 65535) {
             return ValidationResult::failure(_('Key tag must be a number between 1 and 65535'));
         }
 

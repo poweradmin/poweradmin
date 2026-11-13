@@ -242,4 +242,21 @@ class TLSARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testValidateRejectsNonDigitFields(): void
+    {
+        $hash = 'a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        foreach (["3e0 1 1 $hash", "3 1.0 1 $hash", "3 1 +1 $hash"] as $content) {
+            $this->assertFalse($this->validator->validate($content, '_443._tcp.www.example.com', 0, 3600, 86400)->isValid(), $content);
+        }
+    }
+
+    public function testValidateStoresCanonicalFields(): void
+    {
+        $hash = 'a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        $result = $this->validator->validate("03 01 01 $hash", '_443._tcp.www.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame("3 1 1 $hash", $result->getData()['content']);
+    }
 }

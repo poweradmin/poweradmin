@@ -479,4 +479,23 @@ class SRVRecordValidatorTest extends TestCase
         $invalidResult = $method->invoke($this->validator, '10 20 invalid', '_sip._tcp.example.com');
         $this->assertFalse($invalidResult->isValid());
     }
+
+    public function testValidateRejectsNonDigitNumericFields(): void
+    {
+        foreach (['1e1 5060 sip.example.com', '+5 5060 sip.example.com', '20 0.5 sip.example.com', '20 1e3 sip.example.com'] as $content) {
+            $this->assertFalse($this->validator->validate($content, '_sip._tcp.example.com', 10, 3600, 86400)->isValid(), $content);
+        }
+        foreach (['1e1', '+5', '0.5', '-1', 65536] as $prio) {
+            $this->assertFalse($this->validator->validate('20 5060 sip.example.com', '_sip._tcp.example.com', $prio, 3600, 86400)->isValid(), (string)$prio);
+        }
+    }
+
+    public function testValidateStoresCanonicalNumbers(): void
+    {
+        $result = $this->validator->validate('020 05060 sip.example.com', '_sip._tcp.example.com', '010', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('20 5060 sip.example.com', $result->getData()['content']);
+        $this->assertSame(10, $result->getData()['prio']);
+    }
 }

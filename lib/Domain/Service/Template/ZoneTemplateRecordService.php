@@ -187,7 +187,7 @@ class ZoneTemplateRecordService
             $record['type'],
             $record['content'],
             $record['ttl'],
-            $record['prio'] ?? 0
+            (int)($record['prio'] ?? 0)
         );
         if (!$validationResult->isValid()) {
             return ZoneTemplateWriteResult::failure((string)$validationResult->getFirstError());

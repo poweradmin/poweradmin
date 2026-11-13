@@ -282,4 +282,19 @@ class CAARecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }
+
+    public function testValidateRejectsNonDigitFlags(): void
+    {
+        foreach (['1e0 issue "ca.example.org"', '+1 issue "ca.example.org"', '0.0 issue "ca.example.org"', '256 issue "ca.example.org"'] as $content) {
+            $this->assertFalse($this->validator->validate($content, 'host.example.com', 0, 3600, 86400)->isValid(), $content);
+        }
+    }
+
+    public function testValidateStoresCanonicalFlags(): void
+    {
+        $result = $this->validator->validate('000 issue "ca.example.org"', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('0 issue "ca.example.org"', $result->getData()['content']);
+    }
 }

@@ -96,6 +96,8 @@ class CAARecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::errors($errors);
         }
 
+        $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -122,7 +124,7 @@ class CAARecordValidator implements DnsRecordValidatorInterface
         [$flags, $tag, $value] = $parts;
 
         // Validate flags (must be 0-255)
-        if (!is_numeric($flags) || (int)$flags < 0 || (int)$flags > 255) {
+        if (!ctype_digit($flags) || (int)$flags > 255) {
             return ValidationResult::failure(_('CAA flags must be a number between 0 and 255.'));
         }
 
