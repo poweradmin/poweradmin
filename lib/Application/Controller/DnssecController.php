@@ -59,6 +59,10 @@ class DnssecController extends BaseController
 
     public function run(): void
     {
+        if ($this->request->getPostParam('unsign_zone') !== null && !$this->requireDnssecEnabled()) {
+            return;
+        }
+
         $zone_id = $this->getSafeRequestValue('id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid or unexpected input given.'));

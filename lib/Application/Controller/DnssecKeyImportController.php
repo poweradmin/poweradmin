@@ -51,6 +51,10 @@ class DnssecKeyImportController extends BaseController
 
     public function run(): void
     {
+        if (!$this->requireDnssecEnabled()) {
+            return;
+        }
+
         $zoneId = $this->getSafeRequestValue('id');
         if (!$zoneId || !Validator::isNumber($zoneId)) {
             $this->showError(_('Invalid or unexpected input given.'));

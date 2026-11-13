@@ -339,7 +339,7 @@ class EditController extends BaseController
             }
 
             // Check if DNSSEC is enabled on the server
-            if (!$dnssecProvider->isDnssecEnabled()) {
+            if (!$this->config->get('dnssec', 'enabled', false) || !$dnssecProvider->isDnssecEnabled()) {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
             } elseif ($dnssecProvider->isZonePresigned($zone_name)) {
                 $this->setMessage('edit', 'error', _('This zone is presigned; DNSSEC keys are managed at the primary server.'));
@@ -388,6 +388,12 @@ class EditController extends BaseController
 
             if (!$can_manage_dnssec) {
                 $this->setMessage('edit', 'error', _('You do not have permission to manage DNSSEC for this zone.'));
+                $this->redirect('/zones/' . $zone_id . '/edit');
+                return;
+            }
+
+            if (!$this->config->get('dnssec', 'enabled', false)) {
+                $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
                 $this->redirect('/zones/' . $zone_id . '/edit');
                 return;
             }

@@ -40,6 +40,10 @@ class DnssecKeyExportController extends BaseController
 {
     public function run(): void
     {
+        if (!$this->requireDnssecEnabled()) {
+            return;
+        }
+
         $zoneId = $this->getSafeRequestValue('zone_id');
         $keyId = $this->getSafeRequestValue('key_id');
         if (!$zoneId || !Validator::isNumber($zoneId) || !$keyId || !Validator::isNumber($keyId)) {

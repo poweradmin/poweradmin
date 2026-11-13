@@ -206,6 +206,19 @@ abstract class BaseController
     }
 
     /**
+     * DNSSEC actions are off unless dnssec.enabled is set; refuses with the same message as the sign button.
+     */
+    protected function requireDnssecEnabled(): bool
+    {
+        if ($this->config->get('dnssec', 'enabled', false)) {
+            return true;
+        }
+
+        $this->showError(_('DNSSEC is not enabled on the server.'));
+        return false;
+    }
+
+    /**
      * Gets the application configuration.
      *
      * @return ConfigurationManager The application configuration.

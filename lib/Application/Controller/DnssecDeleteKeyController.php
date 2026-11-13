@@ -46,6 +46,10 @@ class DnssecDeleteKeyController extends BaseController
 
     public function run(): void
     {
+        if (!$this->requireDnssecEnabled()) {
+            return;
+        }
+
         $zone_id = $this->getSafeRequestValue('zone_id');
         if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid zone ID.'));
