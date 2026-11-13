@@ -68,6 +68,17 @@ class DnssecKeyServiceTest extends TestCase
         return new DnssecKeyService($this->dnssec, $this->audit);
     }
 
+    public function testKeyChangesAreRefusedWhileTheFlagIsOff(): void
+    {
+        $this->dnssec->method('fetchZoneKeys')->willReturn([self::key(1, true)]);
+        $this->dnssec->expects($this->never())->method('removeZoneKey');
+        $this->dnssec->expects($this->never())->method('deactivateZoneKey');
+        $service = new DnssecKeyService($this->dnssec, $this->audit, false);
+
+        $this->assertSame(DnssecKeyOutcome::SERVER_DISABLED, $service->removeKey(self::ZONE_ID, self::ZONE, 1)->outcome);
+        $this->assertSame(DnssecKeyOutcome::SERVER_DISABLED, $service->toggleKey(self::ZONE_ID, self::ZONE, 1)->outcome);
+    }
+
     private static function key(int $id, bool $active): CryptoKey
     {
         return new CryptoKey($id, 'zsk', 256, 'ECDSAP256SHA256', $active, '256 3 13 AAAA', []);

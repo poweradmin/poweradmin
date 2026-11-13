@@ -43,7 +43,8 @@ class DnssecKeyService
 
     public function __construct(
         private readonly ZoneKeyManagementInterface&ZoneSigningInterface $dnssec,
-        private readonly AuditLoggerInterface $audit
+        private readonly AuditLoggerInterface $audit,
+        private readonly bool $dnssecEnabled = true
     ) {
     }
 
@@ -269,6 +270,10 @@ class DnssecKeyService
      */
     private function writableKeys(string $zoneName): array|DnssecKeyResult
     {
+        if (!$this->dnssecEnabled) {
+            return new DnssecKeyResult(DnssecKeyOutcome::SERVER_DISABLED);
+        }
+
         // Asked first: the server-settings lookup below reads a failed request as "DNSSEC off"
         $keys = $this->dnssec->fetchZoneKeys($zoneName);
         if ($keys === null) {

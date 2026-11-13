@@ -42,12 +42,17 @@ class ZoneSigningService
         private readonly SOARecordManagerInterface $soaRecordManager,
         private readonly AuditLoggerInterface $audit,
         private readonly LoggerInterface $logger,
-        private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null
+        private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
+        private readonly bool $dnssecEnabled = true
     ) {
     }
 
     public function sign(int $zoneId, string $zoneName): ZoneSigningResult
     {
+        if (!$this->dnssecEnabled) {
+            return new ZoneSigningResult(ZoneSigningOutcome::SERVER_DISABLED);
+        }
+
         // Ask first: the server-settings and presigned lookups below read a failed request as "off"
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
@@ -101,6 +106,10 @@ class ZoneSigningService
 
     public function unsign(int $zoneId, string $zoneName): ZoneSigningResult
     {
+        if (!$this->dnssecEnabled) {
+            return new ZoneSigningResult(ZoneSigningOutcome::SERVER_DISABLED);
+        }
+
         // A failed lookup must not read as "not signed", which callers take for "nothing to do"
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {

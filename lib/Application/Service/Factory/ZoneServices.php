@@ -160,13 +160,19 @@ final class ZoneServices
             $this->services->soaRecordManager(),
             $this->services->auditService(),
             $this->logger,
-            $this->services->zoneCacheFlusher()
+            $this->services->zoneCacheFlusher(),
+            $this->dnssecEnabled()
         );
     }
 
     public function dnssecKeyService(): DnssecKeyService
     {
-        return new DnssecKeyService($this->services->dnssecProvider(), $this->services->auditService());
+        return new DnssecKeyService($this->services->dnssecProvider(), $this->services->auditService(), $this->dnssecEnabled());
+    }
+
+    private function dnssecEnabled(): bool
+    {
+        return (bool)$this->config->get('dnssec', 'enabled', false);
     }
 
     public function zoneOwnershipModeService(): ZoneOwnershipModeService

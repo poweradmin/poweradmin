@@ -38,12 +38,13 @@ class TestableZoneDnssecRectifyController extends ZoneDnssecRectifyController
         ApiPermissionService $apiPermissionService,
         DnssecProviderInterface $dnssecProvider,
         ?PowerdnsApiClient $apiClient,
-        array $pathParameters = ['id' => 1]
+        array $pathParameters = ['id' => 1],
+        bool $dnssecEnabled = true
     ) {
         $this->request = new Request();
         $this->pathParameters = $pathParameters;
         $this->authenticatedUserId = 1;
-        $this->config = new FakeConfiguration();
+        $this->config = new FakeConfiguration(['dnssec' => ['enabled' => $dnssecEnabled]]);
         $this->domainRepository = $domainRepository;
         $this->apiPermissionService = $apiPermissionService;
         $this->dnssecProvider = $dnssecProvider;

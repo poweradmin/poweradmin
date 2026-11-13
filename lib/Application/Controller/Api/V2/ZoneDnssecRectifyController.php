@@ -99,6 +99,7 @@ class ZoneDnssecRectifyController extends PublicApiController
             type: 'object'
         )
     )]
+    #[OA\Response(response: 400, description: 'DNSSEC is not enabled on the server')]
     #[OA\Response(response: 401, description: 'Unauthorized')]
     #[OA\Response(response: 403, description: 'Forbidden')]
     #[OA\Response(response: 404, description: 'Zone not found')]
@@ -121,6 +122,10 @@ class ZoneDnssecRectifyController extends PublicApiController
 
         if (!$this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId)) {
             return $this->returnApiError('You do not have permission to manage DNSSEC for this zone', 403);
+        }
+
+        if (!$this->getConfig()->get('dnssec', 'enabled', false)) {
+            return $this->returnApiError('DNSSEC is not enabled on the server', 400);
         }
 
         if ($this->apiClient === null) {

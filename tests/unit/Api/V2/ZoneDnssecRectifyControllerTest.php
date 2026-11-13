@@ -77,6 +77,22 @@ class ZoneDnssecRectifyControllerTest extends TestCase
         $this->assertSame(403, $controller->callRectify()->getStatusCode());
     }
 
+    public function testRectifyingIsRefusedWhileDnssecIsOffInTheConfiguration(): void
+    {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->willReturn('example.com');
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('canManageDnssec')->willReturn(true);
+        $provider = $this->createMock(DnssecProviderInterface::class);
+        $provider->expects($this->never())->method('rectifyZone');
+
+        $controller = new TestableZoneDnssecRectifyController($domains, $permissions, $provider, $this->reachableApiClient(), ['id' => 1], false);
+        $response = $controller->callRectify();
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('DNSSEC is not enabled on the server', json_decode((string)$response->getContent(), true)['message']);
+    }
+
     private function reachableApiClient(): PowerdnsApiClient
     {
         $client = $this->createMock(PowerdnsApiClient::class);

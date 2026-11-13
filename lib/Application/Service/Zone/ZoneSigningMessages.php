@@ -54,6 +54,7 @@ class ZoneSigningMessages
     {
         return match ($result->outcome) {
             ZoneSigningOutcome::UNSIGNED => ['success', _('Zone has been unsigned successfully.')],
+            ZoneSigningOutcome::SERVER_DISABLED => ['error', _('DNSSEC is not enabled on the server.')],
             ZoneSigningOutcome::PRESIGNED => ['error', _('This zone is presigned; DNSSEC keys are managed at the primary server.')],
             ZoneSigningOutcome::NOT_SIGNED => ['info', _('Zone is not currently signed with DNSSEC.')],
             ZoneSigningOutcome::VERIFY_FAILED, ZoneSigningOutcome::UNCONFIRMED => ['warning', _('Zone unsigning requested successfully, but verification failed.')],

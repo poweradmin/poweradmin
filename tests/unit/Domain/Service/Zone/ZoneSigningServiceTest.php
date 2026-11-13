@@ -157,7 +157,7 @@ class ZoneSigningServiceTest extends TestCase
         $this->assertSame(ZoneSigningOutcome::UNCONFIRMED, $this->service()->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
-    private function service(?ZoneCacheFlusherInterface $flusher = null): ZoneSigningService
+    private function service(?ZoneCacheFlusherInterface $flusher = null, bool $dnssecEnabled = true): ZoneSigningService
     {
         return new ZoneSigningService(
             $this->dnssec,
@@ -165,8 +165,20 @@ class ZoneSigningServiceTest extends TestCase
             $this->soa,
             $this->audit,
             new NullLogger(),
-            $flusher
+            $flusher,
+            $dnssecEnabled
         );
+    }
+
+    public function testNeitherSigningNorUnsigningTouchesPowerDnsWhileTheFlagIsOff(): void
+    {
+        $this->dnssec->method('fetchZoneSecured')->willReturn(true);
+        $this->dnssec->expects($this->never())->method('secureZone');
+        $this->dnssec->expects($this->never())->method('unsecureZone');
+        $service = $this->service(null, false);
+
+        $this->assertSame(ZoneSigningOutcome::SERVER_DISABLED, $service->sign(self::ZONE_ID, self::ZONE)->outcome);
+        $this->assertSame(ZoneSigningOutcome::SERVER_DISABLED, $service->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
     public function testSigningAndUnsigningTellPowerDnsOnceTheZoneChanged(): void
