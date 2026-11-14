@@ -1594,6 +1594,15 @@ class DbUserRepository implements UserRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
+    public function emailUsedByOtherUser(int $userId, string $email): bool
+    {
+        $match = $this->emailEquals('email', ':email');
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE $match AND id <> :id");
+        $stmt->execute([':email' => $email, ':id' => $userId]);
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
     /**
      * Email addresses match regardless of case but accent-exact, so User@x and
      * user@x are one account while a look-alike address cannot resolve to another.

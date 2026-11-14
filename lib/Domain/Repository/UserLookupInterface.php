@@ -77,6 +77,12 @@ interface UserLookupInterface
     public function countUsersByEmail(string $email): int;
 
     /**
+     * Whether any account other than the given one holds the email address,
+     * compared the way countUsersByEmail() does.
+     */
+    public function emailUsedByOtherUser(int $userId, string $email): bool;
+
+    /**
      * Id of the active user with exactly this email address, accent-exact so a
      * look-alike address from an identity provider cannot resolve to another account.
      */

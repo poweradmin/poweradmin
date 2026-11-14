@@ -250,6 +250,23 @@ class DbUserRepositoryTest extends TestCase
         $this->assertSame(2, $this->repository->countUsersByEmail('shared@example.com'));
     }
 
+    #[Test]
+    public function testEmailUsedByOtherUserExcludesTheUsersOwnRowWithTheSameCompare(): void
+    {
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->expects($this->once())->method('execute')->with([':email' => 'shared@example.com', ':id' => 7])->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(1);
+
+        $this->db->method('prepare')
+            ->with($this->logicalAnd(
+                $this->stringContains('LOWER(CONVERT(email USING utf8mb4)) COLLATE utf8mb4_bin = LOWER(:email)'),
+                $this->stringContains('AND id <> :id')
+            ))
+            ->willReturn($stmt);
+
+        $this->assertTrue($this->repository->emailUsedByOtherUser(7, 'shared@example.com'));
+    }
+
     // ========== updatePassword tests ==========
 
     #[Test]

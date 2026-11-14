@@ -360,6 +360,48 @@ class UserProvisioningService
     }
 
     /**
+     * A sign-in must not move an account onto an address another account holds, or one
+     * the provider has not verified when require_verified_email is on.
+     *
+     * @param array<string, mixed> $authConfig
+     */
+    private function mayCopyProviderEmail(int $userId, string $email, UserInfoInterface $userInfo, array $authConfig): bool
+    {
+        if (($authConfig['require_verified_email'] ?? false) && !$this->claimsEmailVerified($userInfo)) {
+            $this->logger->warning('Not syncing email {email} to user {userId}: require_verified_email is on and the provider did not confirm it', [
+                'email' => $email,
+                'userId' => $userId
+            ]);
+            return false;
+        }
+
+        if ($this->userRepository->emailUsedByOtherUser($userId, $email)) {
+            $this->logger->warning('Not syncing email {email} to user {userId}: another account already uses it', [
+                'email' => $email,
+                'userId' => $userId
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function claimsEmailVerified(UserInfoInterface $userInfo): bool
+    {
+        $claims = $userInfo->getRawData();
+        if (!array_key_exists('email_verified', $claims)) {
+            return false;
+        }
+
+        $verified = $claims['email_verified'];
+        if (is_array($verified)) {
+            $verified = $verified[0] ?? null;
+        }
+
+        return (filter_var($verified, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false) === true;
+    }
+
+    /**
      * Check whether an account carries user_is_ueberuser, directly or via a group.
      */
     private function userHoldsSuperuserPermission(int $userId): bool
@@ -489,7 +531,7 @@ class UserProvisioningService
                 }
 
                 $email = $userInfo->getEmail();
-                if (!empty($email) && $email !== ($current['email'] ?? null)) {
+                if (!empty($email) && $email !== ($current['email'] ?? null) && $this->mayCopyProviderEmail($userId, $email, $userInfo, $authConfig)) {
                     $updates['email'] = $email;
                 }
             }

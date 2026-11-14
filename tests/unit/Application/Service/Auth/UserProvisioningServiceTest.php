@@ -1068,6 +1068,58 @@ class UserProvisioningServiceTest extends TestCase
     }
 
     /**
+     * @param array<string, mixed> $authConfig
+     * @param array<string, mixed> $rawData
+     * @return array{0: UserProvisioningService, 1: array<string, mixed>} service and the captured updates
+     */
+    private function syncEmail(bool $heldByOther, array $authConfig, array $rawData): array
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn($authConfig + ['sync_user_info' => true]);
+        $config->method('get')->willReturnCallback(static fn($group, $key, $default = null) => $default);
+
+        $applied = [];
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getProvisioningProfile')->willReturn(['email' => 'old@example.com', 'fullname' => 'J', 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'oidc']);
+        $repository->method('emailUsedByOtherUser')->with(7, 'taken@example.com')->willReturn($heldByOther);
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('updateProvisionedUser')->willReturnCallback(function (int $id, array $updates) use (&$applied): void {
+            $applied = $updates;
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'taken@example.com', subject: 'sub-1', rawData: $rawData);
+        (new ReflectionClass(UserProvisioningService::class))->getMethod('updateExistingUser')->invoke($service, 7, $userInfo, 'oidc');
+
+        return [$service, $applied];
+    }
+
+    public function testSyncDoesNotMoveAnAccountOntoAnAddressAnotherAccountHolds(): void
+    {
+        [, $applied] = $this->syncEmail(true, [], ['email_verified' => true]);
+
+        $this->assertArrayNotHasKey('email', $applied);
+    }
+
+    public function testSyncCopiesAFreeAddress(): void
+    {
+        [, $applied] = $this->syncEmail(false, [], ['email_verified' => true]);
+
+        $this->assertSame('taken@example.com', $applied['email'] ?? null);
+    }
+
+    public function testSyncSkipsAnUnconfirmedAddressWhenVerifiedEmailIsRequired(): void
+    {
+        [, $absent] = $this->syncEmail(false, ['require_verified_email' => true], []);
+        [, $false] = $this->syncEmail(false, ['require_verified_email' => true], ['email_verified' => 'false']);
+        [, $true] = $this->syncEmail(false, ['require_verified_email' => true], ['email_verified' => true]);
+
+        $this->assertArrayNotHasKey('email', $absent);
+        $this->assertArrayNotHasKey('email', $false);
+        $this->assertSame('taken@example.com', $true['email'] ?? null);
+    }
+
+    /**
      * @param array<string, int> $templates name => id known to the repository
      */
     private function templateRepository(array $templates): UserRepositoryInterface
