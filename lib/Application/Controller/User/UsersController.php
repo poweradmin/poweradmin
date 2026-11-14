@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\User;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\User\UserFormMessages;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
@@ -133,6 +134,15 @@ class UsersController extends BaseController
             && !$this->services()->apiPermissionService()->canEditUserPassword($callerId, $targetId)
         ) {
             $this->setMessage('users', 'error', _('Authentication settings can only be changed by an administrator'));
+            return false;
+        }
+        // This list has no current-password field, so your own sign-in identity changes on the edit form
+        if (
+            $targetId === $callerId
+            && SelfEditFieldGuard::changesSignInIdentity($stored, $input)
+            && AuthMethod::fromDb($stored['auth_method'] ?? null)->allowsLocalPassword()
+        ) {
+            $this->setMessage('users', 'error', _('You did not enter the correct current password.'));
             return false;
         }
         if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {

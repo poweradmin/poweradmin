@@ -40,7 +40,7 @@ class UsersControllerSelfEditTest extends TestCase
     private const CALLER_ID = 7;
 
     /** The command handed to UserManagementService::updateUser() */
-    private function updateRow(int $targetId, bool $editOthers): UpdateUserCommand
+    private function updateRow(int $targetId, bool $editOthers, string $authMethod = 'sql', string $storedUsername = 'renamed'): ?UpdateUserCommand
     {
         $controller = $this->getMockBuilder(UsersController::class)
             ->disableOriginalConstructor()
@@ -63,7 +63,11 @@ class UsersControllerSelfEditTest extends TestCase
             return ['success' => true];
         });
 
+        $repository = $this->createMock(\Poweradmin\Domain\Repository\UserRepositoryInterface::class);
+        $repository->method('getUserById')->willReturn(['username' => $storedUsername, 'fullname' => 'Name', 'email' => 'a@example.com', 'auth_method' => $authMethod]);
+
         $services = $this->createMock(ControllerServiceFactory::class);
+        $services->method('userRepository')->willReturn($repository);
         $services->method('apiPermissionService')->willReturn($apiPermissions);
         $services->method('userManagementService')->willReturn($users);
         $controller->method('services')->willReturn($services);
@@ -85,7 +89,13 @@ class UsersControllerSelfEditTest extends TestCase
 
     public function testEditOthersGrantWritesEveryField(): void
     {
-        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true)->username);
-        $this->assertSame('renamed', $this->updateRow(9, false)->username);
+        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true, 'ldap', 'old')->username);
+        $this->assertSame('renamed', $this->updateRow(9, false, 'sql', 'old')->username);
+    }
+
+    /** The list has no current-password field, so a local account cannot rename or re-mail itself here */
+    public function testOwnUsernameOrEmailChangeOfALocalAccountIsRefused(): void
+    {
+        $this->assertNull($this->updateRow(self::CALLER_ID, true, 'sql', 'old'));
     }
 }

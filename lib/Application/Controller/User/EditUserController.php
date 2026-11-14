@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\GroupMembershipService;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordChangeService;
 use Poweradmin\Application\Service\User\PasswordPolicyService;
 use Poweradmin\Application\Service\User\UserCommandFactory;
 use Poweradmin\Application\Service\User\UserFormMessages;
@@ -45,6 +47,7 @@ class EditUserController extends BaseController
     private ?PasswordPolicyService $policyService = null;
     private ?PermissionTemplateRepositoryInterface $permissionTemplateRepository = null;
     private ?AuditService $auditService = null;
+    private ?PasswordChangeService $passwordChangeService = null;
 
     private function policyService(): PasswordPolicyService
     {
@@ -54,6 +57,17 @@ class EditUserController extends BaseController
     private function permissionTemplateRepository(): PermissionTemplateRepositoryInterface
     {
         return $this->permissionTemplateRepository ??= $this->services()->permissionTemplateRepository();
+    }
+
+    private function passwordChangeService(): PasswordChangeService
+    {
+        return $this->passwordChangeService ??= new PasswordChangeService(
+            $this->services()->userRepository(),
+            UserAuthenticationService::fromConfig($this->config),
+            $this->getUserContextService(),
+            $this->services()->loginAttemptService(),
+            $this->services()->clientContext()->ip
+        );
     }
 
     private function auditService(): AuditService
@@ -102,6 +116,20 @@ class EditUserController extends BaseController
             $this->setMessage('edit_user', 'error', _('Authentication settings can only be changed by an administrator'));
             $this->showUserEditForm($editId, $policyConfig);
             return;
+        }
+
+        // A borrowed session must not redirect the account's mail or rename it without the password
+        if (
+            $editId === $callerId
+            && SelfEditFieldGuard::changesSignInIdentity($stored, $input)
+            && AuthMethod::fromDb($stored['auth_type'] ?? null)->allowsLocalPassword()
+        ) {
+            [$confirmed, $error] = $this->passwordChangeService()->confirmCurrentPassword((string)$this->httpRequest->getPostParam('current_password', ''));
+            if (!$confirmed) {
+                $this->setMessage('edit_user', 'error', $error);
+                $this->showUserEditForm($editId, $policyConfig);
+                return;
+            }
         }
 
         // Only a superuser's form carries the field; anyone else's post of it is ignored

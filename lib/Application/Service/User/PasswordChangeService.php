@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\User;
 
+use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserCredentialWriterInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Service\Auth\UserContextService;
@@ -49,32 +50,24 @@ readonly class PasswordChangeService
     ) {
     }
 
+    /**
+     * Proves the signed-in user knows their current password, counted on the reauth
+     * stage; for changes to the account that must not ride on a borrowed session.
+     *
+     * @return array{0: bool, 1: string} success flag and, on failure, the message to show
+     */
+    public function confirmCurrentPassword(#[\SensitiveParameter] string $password): array
+    {
+        [$user, $error] = $this->reauthenticate($password);
+
+        return $user === null ? [false, (string)$error] : [true, ''];
+    }
+
     public function changePassword(#[\SensitiveParameter] string $oldPassword, #[\SensitiveParameter] string $newPassword): array
     {
-        // The signed-in account, not the login name: a session past the password but still
-        // waiting for its second factor carries the name without a user id
-        $userId = $this->userContextService->getLoggedInUserId();
-        $username = $this->userContextService->getLoggedInUsername();
-        $user = $userId !== null && $username !== null ? $this->userRepository->findByUsername($username) : null;
-
-        if ($user === null || $user->getId() !== $userId) {
-            return [false, _(self::ERROR_MESSAGES['user_not_found'])];
-        }
-
-        if ($user->isLdapUser()) {
-            return [false, _(self::ERROR_MESSAGES['ldap_user'])];
-        }
-
-        // Counted apart from login, so a borrowed session cannot guess the password unthrottled
-        $stage = LoginAttemptService::STAGE_REAUTH;
-        if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp, $stage, $userId)) {
-            return [false, _('Too many failed attempts. Please try again later.')];
-        }
-
-        $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
-        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches, $stage, $userId);
-        if (!$matches) {
-            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+        [$user, $error] = $this->reauthenticate($oldPassword);
+        if ($user === null) {
+            return [false, (string)$error];
         }
 
         $hashedPassword = $this->authService->hashPassword($newPassword);
@@ -83,5 +76,39 @@ readonly class PasswordChangeService
         return $updated
             ? [true, _(self::ERROR_MESSAGES['password_changed'])]
             : [false, _('Failed to update password')];
+    }
+
+    /**
+     * @return array{0: ?User, 1: ?string} the verified account, or null with the message to show
+     */
+    private function reauthenticate(#[\SensitiveParameter] string $password): array
+    {
+        // The signed-in account, not the login name: a session past the password but still
+        // waiting for its second factor carries the name without a user id
+        $userId = $this->userContextService->getLoggedInUserId();
+        $username = $this->userContextService->getLoggedInUsername();
+        $user = $userId !== null && $username !== null ? $this->userRepository->findByUsername($username) : null;
+
+        if ($user === null || $user->getId() !== $userId) {
+            return [null, _(self::ERROR_MESSAGES['user_not_found'])];
+        }
+
+        if ($user->isLdapUser()) {
+            return [null, _(self::ERROR_MESSAGES['ldap_user'])];
+        }
+
+        // Counted apart from login, so a borrowed session cannot guess the password unthrottled
+        $stage = LoginAttemptService::STAGE_REAUTH;
+        if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp, $stage, $userId)) {
+            return [null, _('Too many failed attempts. Please try again later.')];
+        }
+
+        $matches = $this->authService->verifyPassword($password, $user->getPassword());
+        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches, $stage, $userId);
+        if (!$matches) {
+            return [null, _(self::ERROR_MESSAGES['invalid_password'])];
+        }
+
+        return [$user, null];
     }
 }

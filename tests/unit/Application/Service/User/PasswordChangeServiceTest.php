@@ -109,6 +109,21 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertSame('Too many failed attempts. Please try again later.', $message);
     }
 
+    public function testConfirmingTheCurrentPasswordCountsOnTheReauthStageAndWritesNothing(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->exactly(2))->method('recordAttempt');
+        $this->users->expects($this->never())->method('updatePassword');
+        $session = [SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'];
+
+        [$wrong] = $this->service($session, false, $attempts)->confirmCurrentPassword('guess');
+        [$right] = $this->service($session, true, $attempts)->confirmCurrentPassword('old');
+
+        $this->assertFalse($wrong);
+        $this->assertTrue($right);
+    }
+
     /** @param array<string, mixed> $session */
     private function service(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): PasswordChangeService
     {
