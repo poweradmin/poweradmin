@@ -20,7 +20,11 @@ debug_log() {
 to_php_bool() {
     case "$(echo "${1}" | tr '[:upper:]' '[:lower:]')" in
         true | 1 | yes | on) echo "true" ;;
-        *) echo "false" ;;
+        false | 0 | no | off | "") echo "false" ;;
+        *)
+            log "WARNING: '${1}' is not a boolean (true/false, 1/0, yes/no, on/off), treating it as false" >&2
+            echo "false"
+            ;;
     esac
 }
 
@@ -47,6 +51,18 @@ php_num() {
         printf '%s' "${value}"
     else
         log "WARNING: ${name}='${value}' is not a number, using default ${default}" >&2
+        printf '%s' "${default}"
+    fi
+}
+
+# Like php_num, but whole non-negative integers only (no sign, fraction or leading zero,
+# which PHP would read as octal); anything else warns and falls back to the default
+php_uint() {
+    local name="$1" value="$2" default="$3"
+    if [[ "${value}" =~ ^(0|[1-9][0-9]{0,8})$ ]] || { [ "${default}" = "null" ] && [ "${value}" = "null" ]; }; then
+        printf '%s' "${value}"
+    else
+        log "WARNING: ${name}='${value}' is not a whole non-negative number, using default ${default}" >&2
         printf '%s' "${default}"
     fi
 }
@@ -1363,8 +1379,8 @@ return [
         'sync_zone_owner_to_account' => ${dns_sync_zone_owner_to_account},
         'adopt_zone_owner_from_account' => ${dns_adopt_zone_owner_from_account},
         'parent_zone_ownership_check' => ${dns_parent_zone_ownership_check},
-        'default_max_zones_per_user' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_USER "${PA_DNS_DEFAULT_MAX_ZONES_PER_USER:-null}" null),
-        'default_max_zones_per_group' => $(php_num PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP "${PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP:-null}" null),
+        'default_max_zones_per_user' => $(php_uint PA_DNS_DEFAULT_MAX_ZONES_PER_USER "${PA_DNS_DEFAULT_MAX_ZONES_PER_USER:-null}" null),
+        'default_max_zones_per_group' => $(php_uint PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP "${PA_DNS_DEFAULT_MAX_ZONES_PER_GROUP:-null}" null),
         'strict_tld_check' => ${dns_strict_tld_check},
         'top_level_tld_check' => ${dns_top_level_tld_check},
         'third_level_check' => ${dns_third_level_check},
