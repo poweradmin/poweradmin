@@ -397,7 +397,8 @@ class PermissionTemplatesController extends PublicApiController
             $details = [
                 'templ_id' => $id,
                 'templ_name' => $data['name'],
-                'templ_descr' => $data['descr']
+                'templ_descr' => $data['descr'],
+                'template_type' => $existing['template_type'] ?? 'user'
             ];
 
             if (isset($data['permissions']) && is_array($data['permissions'])) {
