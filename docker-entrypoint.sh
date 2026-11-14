@@ -18,9 +18,15 @@ debug_log() {
 # the raw value (e.g. PA_DNSSEC_ENABLED=yes) as a bare token produced an undefined
 # constant fatal in the generated config; anything not truthy becomes false.
 to_php_bool() {
-    case "$(echo "${1}" | tr '[:upper:]' '[:lower:]')" in
+    local value
+    value="$(echo "${1}" | tr '[:upper:]' '[:lower:]')"
+    case "${value}" in
         true | 1 | yes | on) echo "true" ;;
-        *) echo "false" ;;
+        false | 0 | no | off | "") echo "false" ;;
+        *)
+            echo "WARNING: '${1}' is not a boolean (true/1/yes/on or false/0/no/off); treating it as false" >&2
+            echo "false"
+            ;;
     esac
 }
 

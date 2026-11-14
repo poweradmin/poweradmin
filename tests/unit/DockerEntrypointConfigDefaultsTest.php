@@ -173,4 +173,57 @@ class DockerEntrypointConfigDefaultsTest extends TestCase
             'oidc' => ['validate_oidc_config', ['PA_APPLICATION_URL']],
         ];
     }
+
+    /**
+     * @return array{0: string, 1: string} stdout and stderr of to_php_bool
+     */
+    private function runToPhpBool(string $value): array
+    {
+        $entrypoint = file_get_contents(dirname(__DIR__, 2) . '/docker-entrypoint.sh');
+        $this->assertNotFalse($entrypoint);
+        $this->assertSame(1, preg_match('/^to_php_bool\(\) \{\n.*?^\}\n/ms', $entrypoint, $m));
+
+        $process = proc_open(
+            ['bash', '-c', $m[0] . 'to_php_bool "$1"', 'bash', $value],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes
+        );
+        $this->assertIsResource($process);
+        $out = (string) stream_get_contents($pipes[1]);
+        $err = (string) stream_get_contents($pipes[2]);
+        proc_close($process);
+
+        return [trim($out), trim($err)];
+    }
+
+    public function testToPhpBoolWarnsOnAnUnknownWordAndKeepsFalse(): void
+    {
+        [$out, $err] = $this->runToPhpBool('y');
+
+        $this->assertSame('false', $out);
+        $this->assertStringContainsString('WARNING', $err);
+    }
+
+    /**
+     * @dataProvider booleanWordProvider
+     */
+    public function testToPhpBoolIsQuietOnKnownWords(string $value, string $expected): void
+    {
+        [$out, $err] = $this->runToPhpBool($value);
+
+        $this->assertSame($expected, $out);
+        $this->assertSame('', $err);
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function booleanWordProvider(): array
+    {
+        return [
+            'true' => ['true', 'true'], 'one' => ['1', 'true'], 'YES' => ['YES', 'true'], 'on' => ['on', 'true'],
+            'false' => ['false', 'false'], 'zero' => ['0', 'false'], 'No' => ['No', 'false'], 'off' => ['off', 'false'],
+            'empty' => ['', 'false'],
+        ];
+    }
 }
