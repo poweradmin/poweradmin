@@ -119,6 +119,17 @@ class PowerdnsApiClient
     }
 
     /**
+     * A write succeeded on any 2xx answer. PowerDNS answers 204 today, but a write
+     * that normalized the submitted content may answer 200 with warnings (pdns#17739).
+     */
+    private static function isWriteSuccess(array $response): bool
+    {
+        $code = $response['responseCode'] ?? 0;
+
+        return is_int($code) && $code >= 200 && $code < 300;
+    }
+
+    /**
      * Read the zone list, reusing the response within this request. Callers
      * differ in whether they need DNSSEC state, and that choice changes the
      * URL, so responses are kept per endpoint - at most two entries.
@@ -191,7 +202,7 @@ class PowerdnsApiClient
             $data = ['dnssec' => true];
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to secure zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -211,7 +222,7 @@ class PowerdnsApiClient
             $data = ['dnssec' => false];
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to unsecure zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -393,7 +404,7 @@ class PowerdnsApiClient
             ];
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to update zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -412,7 +423,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zone->getName());
             $response = $this->request('DELETE', $endpoint);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete zone {zone}: {error}', ['zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -597,7 +608,7 @@ class PowerdnsApiClient
             $data = ['active' => true];
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to activate key {keyId} for zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -618,7 +629,7 @@ class PowerdnsApiClient
             $data = ['active' => false];
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to deactivate key {keyId} for zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -638,7 +649,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/cryptokeys/{$key->getId()}");
             $response = $this->request('DELETE', $endpoint);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to remove key {keyId} from zone {zone}: {error}', ['keyId' => $key->getId(), 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -744,7 +755,7 @@ class PowerdnsApiClient
             ];
             $response = $this->request('POST', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to create metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -789,7 +800,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zone->getName(), "/metadata/" . rawurlencode($kind));
             $response = $this->request('DELETE', $endpoint);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete metadata kind {kind} for zone {zone}: {error}', ['kind' => $kind, 'zone' => $zone->getName(), 'error' => $e->getMessage()]);
             return false;
@@ -1119,7 +1130,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildZoneEndpoint($zoneName);
             $response = $this->request('PUT', $endpoint, $data);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to update zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             return false;
@@ -1189,7 +1200,7 @@ class PowerdnsApiClient
             $response = $this->request('PATCH', $endpoint, $data);
             $this->logger->debug('patchZoneRRsets: response={response}', ['response' => json_encode($response)]);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to patch RRsets for zone {zone}: {error}', ['zone' => $zoneName, 'error' => $e->getMessage()]);
             $this->lastWriteRejection = self::rejectionReason($e);
@@ -1312,7 +1323,7 @@ class PowerdnsApiClient
             ];
             $response = $this->request('POST', $endpoint, $data);
 
-            return $response && ($response['responseCode'] === 201 || $response['responseCode'] === 204);
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to add autoprimary: {error}', ['error' => $e->getMessage()]);
             return false;
@@ -1332,7 +1343,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildEndpoint("/autoprimaries/" . rawurlencode($ip) . "/" . rawurlencode($nameserver));
             $response = $this->request('DELETE', $endpoint);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete autoprimary: {error}', ['error' => $e->getMessage()]);
             return false;
@@ -1409,7 +1420,7 @@ class PowerdnsApiClient
             $endpoint = $this->buildEndpoint("/tsigkeys/" . rawurlencode($keyId));
             $response = $this->request('DELETE', $endpoint);
 
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete TSIG key: {error}', ['error' => $e->getMessage()]);
             return false;
@@ -1488,7 +1499,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view));
             $response = $this->request('POST', $endpoint, ['name' => $zoneName]);
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to add zone {zone} to view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
             return false;
@@ -1500,7 +1511,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildEndpoint('/views/' . rawurlencode($view) . '/' . DnsHelper::powerdnsZoneId($zoneName));
             $response = $this->request('DELETE', $endpoint);
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to remove zone {zone} from view {view}: {error}', ['zone' => $zoneName, 'view' => $view, 'error' => $e->getMessage()]);
             return false;
@@ -1551,7 +1562,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildEndpoint('/networks/' . $cidr);
             $response = $this->request('PUT', $endpoint, ['view' => $view]);
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to set network {cidr} -> view {view}: {error}', ['cidr' => $cidr, 'view' => $view, 'error' => $e->getMessage()]);
             return false;
@@ -1563,7 +1574,7 @@ class PowerdnsApiClient
         try {
             $endpoint = $this->buildEndpoint('/networks/' . $cidr);
             $response = $this->request('DELETE', $endpoint);
-            return $response && $response['responseCode'] === 204;
+            return self::isWriteSuccess($response);
         } catch (ApiErrorException $e) {
             $this->logger->error('Failed to delete network {cidr}: {error}', ['cidr' => $cidr, 'error' => $e->getMessage()]);
             return false;
