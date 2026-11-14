@@ -115,6 +115,48 @@ class CatalogZoneServiceTest extends TestCase
         $this->assertFalse($this->service->canManageZone(1, 99));
     }
 
+    // ---- assign out of a stored catalog ----
+
+    #[Test]
+    public function assignRefusesToMoveAMemberOutOfACatalogTheUserCannotManage(): void
+    {
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturnCallback(fn(int $u, int $zoneId): bool => $zoneId !== 6);
+        $this->producers([
+            ['id' => 5, 'name' => 'mine.example.com', 'catalog' => ''],
+            ['id' => 6, 'name' => 'theirs.example.com', 'catalog' => ''],
+        ]);
+        $this->backend->method('getZoneCatalog')->with(7)->willReturn('theirs.example.com');
+        $this->backend->expects($this->never())->method('updateZoneCatalog');
+
+        $this->assertFalse($this->service->assign(1, 7, 5));
+    }
+
+    #[Test]
+    public function assignRefusesToMoveAMemberOutOfAnUnownedCatalogWithoutAllLevel(): void
+    {
+        $this->withMetaEditLevel('own', true);
+        $this->producers([['id' => 5, 'name' => 'mine.example.com', 'catalog' => '']]);
+        $this->backend->method('getZoneCatalog')->with(7)->willReturn('foreign.example.net');
+        $this->backend->expects($this->never())->method('updateZoneCatalog');
+
+        $this->assertFalse($this->service->assign(1, 7, 5));
+    }
+
+    #[Test]
+    public function assignAllowsMovingAMemberBetweenCatalogsTheUserManages(): void
+    {
+        $this->withMetaEditLevel('own', true);
+        $this->producers([
+            ['id' => 5, 'name' => 'mine.example.com', 'catalog' => ''],
+            ['id' => 6, 'name' => 'other.example.com', 'catalog' => ''],
+        ]);
+        $this->backend->method('getZoneCatalog')->with(7)->willReturn('other.example.com');
+        $this->backend->expects($this->once())->method('updateZoneCatalog')->with(7, 'mine.example.com')->willReturn(true);
+
+        $this->assertTrue($this->service->assign(1, 7, 5));
+    }
+
     // ---- assign ----
 
     #[Test]
