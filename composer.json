@@ -71,7 +71,7 @@
     "phpunit/phpunit": "^11.5",
     "squizlabs/php_codesniffer": "^4.0.1",
     "phpstan/phpstan": "^2.1",
-    "vimeo/psalm": "^6.15",
+    "vimeo/psalm": "^7.0",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "tomasvotruba/cognitive-complexity": "^1.1",
     "spaze/phpstan-disallowed-calls": "^4.13"
