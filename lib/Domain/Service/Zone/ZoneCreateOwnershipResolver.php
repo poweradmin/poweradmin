@@ -108,11 +108,13 @@ class ZoneCreateOwnershipResolver
 
     /**
      * Whether the caller may give a new zone to somebody else; the owner pickers
-     * offer other users only when this holds.
+     * offer other users only when this holds. Naming a user also needs user_view_others,
+     * else the unknown-user answer would reveal which ids exist.
      */
     public function canAssignOtherOwners(int $callerUserId): bool
     {
-        return $this->permissions->hasPermission($callerUserId, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS);
+        return $this->permissions->hasPermission($callerUserId, Permission::PERM_ZONE_CONTENT_EDIT_OTHERS)
+            && $this->permissions->hasPermission($callerUserId, Permission::PERM_USER_VIEW_OTHERS);
     }
 
     /**

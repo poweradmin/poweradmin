@@ -185,7 +185,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     #[Test]
     public function allowsAssigningAnExistingUserWithPermission(): void
     {
-        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true], existingUsers: [99]);
+        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true, Permission::PERM_USER_VIEW_OTHERS => true], existingUsers: [99]);
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(99), self::CALLER_ID);
 
@@ -196,7 +196,7 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     #[Test]
     public function rejectsAnUnknownOwnerSoNoZoneEndsUpOrphaned(): void
     {
-        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true]);
+        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true, Permission::PERM_USER_VIEW_OTHERS => true]);
 
         $result = $resolver->resolve(ZoneOwnershipInput::owner(42), self::CALLER_ID);
 
@@ -221,8 +221,20 @@ class ZoneCreateOwnershipResolverTest extends PermissionServiceTestCase
     public function canAssignOtherOwnersFollowsTheCreateRule(): void
     {
         $this->assertFalse($this->buildResolver('both')->canAssignOtherOwners(self::CALLER_ID));
-        $this->assertTrue($this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true])->canAssignOtherOwners(self::CALLER_ID));
+        $this->assertFalse($this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true])->canAssignOtherOwners(self::CALLER_ID));
+        $this->assertFalse($this->buildResolver('both', [Permission::PERM_USER_VIEW_OTHERS => true])->canAssignOtherOwners(self::CALLER_ID));
+        $this->assertTrue($this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true, Permission::PERM_USER_VIEW_OTHERS => true])->canAssignOtherOwners(self::CALLER_ID));
         $this->assertTrue($this->buildResolver('both', [Permission::PERM_USER_IS_UEBERUSER => true])->canAssignOtherOwners(self::CALLER_ID));
+    }
+
+    #[Test]
+    public function aCallerWhoCannotViewUsersCannotNameAnotherOwner(): void
+    {
+        $resolver = $this->buildResolver('both', [Permission::PERM_ZONE_CONTENT_EDIT_OTHERS => true], existingUsers: [99]);
+
+        $result = $resolver->resolve(ZoneOwnershipInput::owner(99), self::CALLER_ID);
+
+        $this->assertSame(ZoneOwnershipResolution::OTHER_OWNER_FORBIDDEN, $result->code);
     }
 
     #[Test]
