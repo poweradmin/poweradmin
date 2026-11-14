@@ -108,6 +108,24 @@ class LoginAttemptServiceThrottleTest extends TestCase
         $this->assertTrue($service->isAccountLocked('alice', '10.0.0.1'));
     }
 
+    #[\PHPUnit\Framework\Attributes\DataProvider('nonPositiveDurations')]
+    public function testNonPositiveLockoutDurationDoesNotDisableTheLockout(int $duration): void
+    {
+        $service = $this->service($this->lockoutConfig(['lockout_duration' => $duration]));
+
+        for ($i = 0; $i < 3; $i++) {
+            $service->recordAttempt('alice', '10.0.0.1', false);
+        }
+
+        $this->assertTrue($service->isAccountLocked('alice', '10.0.0.1'));
+    }
+
+    /** @return array<string, array{int}> */
+    public static function nonPositiveDurations(): array
+    {
+        return ['zero' => [0], 'negative' => [-5]];
+    }
+
     public function testFailuresOlderThanTheWindowDoNotCount(): void
     {
         $service = $this->service($this->lockoutConfig());

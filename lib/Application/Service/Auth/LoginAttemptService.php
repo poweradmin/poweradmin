@@ -391,7 +391,8 @@ class LoginAttemptService implements LoginThrottleInterface
 
         return [
             'attempts' => (int)$this->configManager->get('security', 'account_lockout.lockout_attempts', 5),
-            'duration' => (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15) * 60,
+            // A zero or negative window would count no failures, switching the lockout off
+            'duration' => max(1, (int)$this->configManager->get('security', 'account_lockout.lockout_duration', 15)) * 60,
         ];
     }
 }
