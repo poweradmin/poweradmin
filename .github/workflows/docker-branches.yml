@@ -40,6 +40,9 @@ on:
   schedule:
     - cron: '30 4 * * 1'
 
+permissions:
+  contents: read
+
 jobs:
   plan:
     # head_branch is only a name: a fork can call its branch master or release/4.4.x, so a
@@ -87,6 +90,10 @@ jobs:
 
   publish:
     needs: plan
+    # The caller's grant caps the reusable workflow's job-level permissions.
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix:
