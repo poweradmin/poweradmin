@@ -71,7 +71,32 @@ class DbUserRepository implements UserRepository
     public function updatePassword(int $userId, string $hashedPassword): bool
     {
         $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
-        return $stmt->execute([$hashedPassword, $userId]);
+        $written = $stmt->execute([$hashedPassword, $userId]);
+        if ($written) {
+            $this->expireResetTokensForUser($userId);
+        }
+
+        return $written;
+    }
+
+    /**
+     * Spends outstanding reset links once a password is set, so a link requested
+     * earlier stops working. The rows stay. A shared address is left alone.
+     */
+    public function expireResetTokensForUser(int $userId): void
+    {
+        $stmt = $this->db->prepare('SELECT email FROM users WHERE id = :id');
+        $stmt->execute([':id' => $userId]);
+        $email = $stmt->fetchColumn();
+        if (!is_string($email) || $email === '' || $this->countUsersByEmail($email) > 1) {
+            return;
+        }
+
+        $dbType = (string)$this->config->get('database', 'type');
+        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $stmt = $this->db->prepare('UPDATE password_reset_tokens SET used = ' . DbCompat::boolTrue($dbType)
+            . ' WHERE used = ' . DbCompat::boolFalse($dbType) . " AND $match");
+        $stmt->execute([':email' => $email]);
     }
 
     /**
@@ -556,7 +581,12 @@ class DbUserRepository implements UserRepository
         $query = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
         $stmt = $this->db->prepare($query);
 
-        return $stmt->execute($params);
+        $updated = $stmt->execute($params);
+        if ($updated && array_key_exists(':password', $params)) {
+            $this->expireResetTokensForUser($userId);
+        }
+
+        return $updated;
     }
 
     /**
