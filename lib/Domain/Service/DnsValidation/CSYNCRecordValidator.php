@@ -143,12 +143,27 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
+        // Serial and flags are stored as plain digits, as the validation read them
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)/',
+            fn($m) => (ltrim($m[1], '0') ?: '0') . $m[2] . (ltrim($m[3], '0') ?: '0'),
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0,
             'ttl' => $validatedTtl
         ], $warnings);
+    }
+
+    /** Compares as text: a 32-bit PHP cannot hold 4294967295 as an int. */
+    private static function exceedsUint32(string $digits): bool
+    {
+        $digits = ltrim($digits, '0');
+
+        return strlen($digits) > 10 || (strlen($digits) === 10 && strcmp($digits, '4294967295') > 0);
     }
 
     /**
@@ -188,16 +203,16 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
         $fields = preg_split("/\s+/", trim($content));
 
         // Validate SOA Serial (first field)
-        if (!isset($fields[0]) || !is_numeric($fields[0]) || (int)$fields[0] < 0 || (int)$fields[0] > 4294967295) {
+        if (!isset($fields[0]) || !ctype_digit($fields[0]) || self::exceedsUint32($fields[0])) {
             return ValidationResult::failure(_('Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer (0-4294967295).'));
         }
 
         // Validate Flags (second field)
-        if (!isset($fields[1]) || !is_numeric($fields[1])) {
+        if (!isset($fields[1]) || !ctype_digit($fields[1])) {
             return ValidationResult::failure(_('Invalid Flags in CSYNC record. Flags must be a numeric value.'));
         }
 
-        $flagsValue = (int)$fields[1];
+        $flagsValue = strlen(ltrim($fields[1], '0')) > 9 ? PHP_INT_MAX : (int)$fields[1];
 
         // The Flags field is a 16-bit field, so values must be 0-65535
         if ($flagsValue < 0 || $flagsValue > 65535) {

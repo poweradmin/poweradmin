@@ -94,6 +94,10 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field should not be used for HTTPS records as priority is part of the content.'));
         }
 
+        // Priority and port are stored as plain digits, as the validation read them
+        $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
+        $content = preg_replace('/(\s)port=0+(?=\d)/', '$1port=', $content);
+
         return ValidationResult::success([
             'content' => DnsFormatter::quoteEch('HTTPS', $content),
             'name' => $name,
@@ -126,7 +130,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         [$priority, $target] = $parts;
 
         // Validate priority (must be a number between 0 and 65535)
-        if (!is_numeric($priority) || (int)$priority < 0 || (int)$priority > 65535) {
+        if (!ctype_digit($priority) || (int)$priority > 65535) {
             return ValidationResult::failure(_('HTTPS record priority must be a number between 0 and 65535.'));
         }
 
@@ -242,7 +246,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
 
                 case 'port':
                     // Must be a valid port number (1-65535)
-                    if (!is_numeric($value) || (int)$value < 1 || (int)$value > 65535) {
+                    if (!ctype_digit($value) || (int)$value < 1 || (int)$value > 65535) {
                         return ValidationResult::failure(_('Port value must be a number between 1 and 65535.'));
                     }
                     break;

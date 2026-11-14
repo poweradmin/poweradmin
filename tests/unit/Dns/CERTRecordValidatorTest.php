@@ -310,4 +310,25 @@ class CERTRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '1e0 12345 1 MIIC+zCCAeOgAwIBAgIJAJl8',
+            '1 1e4 1 MIIC+zCCAeOgAwIBAgIJAJl8',
+            '1 12345 1e0 MIIC+zCCAeOgAwIBAgIJAJl8',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('0001 012345 001 MIIC+zCCAeOgAwIBAgIJAJl8', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('1 12345 1 MIIC+zCCAeOgAwIBAgIJAJl8', $result->getData()['content']);
+    }
 }

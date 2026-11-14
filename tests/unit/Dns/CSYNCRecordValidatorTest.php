@@ -339,4 +339,26 @@ class CSYNCRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Invalid Type', $result->getFirstError());
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '1e3 1 A NS',
+            '1234567890 1.0 A NS',
+            '4294967296 1 A NS',
+            '1234567890 1e0 A NS',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('0000000012 01 A NS', 'example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('12 1 A NS', $result->getData()['content']);
+    }
 }

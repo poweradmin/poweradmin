@@ -337,4 +337,25 @@ class KEYRecordValidatorTest extends TestCase
         $warningText = implode(' ', $warnings);
         $this->assertStringContainsString('Unusual protocol value', $warningText);
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '256e0 3 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==',
+            '256 3.0 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==',
+            '256 3 5e0 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('0256 03 05 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('256 3 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==', $result->getData()['content']);
+    }
 }

@@ -143,6 +143,13 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
         // Add warnings from content validation
         $warnings = array_merge($warnings, $contentWarnings);
 
+        // Leading numbers are stored as plain digits, as the validation read them
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -180,7 +187,7 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate flags (0-65535) - 16-bit unsigned integer per RFC 2535
-        if (!is_numeric($flags) || (int)$flags < 0 || (int)$flags > 65535) {
+        if (!ctype_digit($flags) || (int)$flags > 65535) {
             return ValidationResult::failure(_('KEY flags must be a number between 0 and 65535.'));
         }
 
@@ -192,7 +199,7 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate protocol (0-255) - 8-bit unsigned integer per RFC 2535
-        if (!is_numeric($protocol) || (int)$protocol < 0 || (int)$protocol > 255) {
+        if (!ctype_digit($protocol) || (int)$protocol > 255) {
             return ValidationResult::failure(_('KEY protocol must be a number between 0 and 255.'));
         }
 
@@ -203,7 +210,7 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate algorithm (0-255) - 8-bit unsigned integer per RFC 2535 and updates
-        if (!is_numeric($algorithm) || (int)$algorithm < 0 || (int)$algorithm > 255) {
+        if (!ctype_digit($algorithm) || (int)$algorithm > 255) {
             return ValidationResult::failure(_('KEY algorithm must be a number between 0 and 255.'));
         }
 

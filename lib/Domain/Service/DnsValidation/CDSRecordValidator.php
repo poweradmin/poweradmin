@@ -116,6 +116,13 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
         // In RFC 8078, parent zone operators should check for stability of CDS records
         $warnings[] = _('According to RFC 8078, CDS records should be stable for some time before parent zones accept them.');
 
+        // Leading numbers are stored as plain digits, as the validation read them
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -159,13 +166,13 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate key tag (must be a number between 0 and 65535)
-        if (!is_numeric($keyTag) || (int)$keyTag < 0 || (int)$keyTag > 65535) {
+        if (!ctype_digit($keyTag) || (int)$keyTag > 65535) {
             return ValidationResult::failure(_('CDS key tag must be a number between 0 and 65535.'));
         }
 
         // Validate algorithm (must be a number between 1 and 16)
         $validAlgorithms = range(1, 16);
-        if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
             return ValidationResult::failure(_('CDS algorithm must be a number between 1 and 16.'));
         }
 
@@ -201,7 +208,7 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
 
         // Validate digest type (must be 1, 2, or 4)
         $validDigestTypes = [1, 2, 4];
-        if (!is_numeric($digestType) || !in_array((int)$digestType, $validDigestTypes)) {
+        if (!ctype_digit($digestType) || !in_array((int)$digestType, $validDigestTypes)) {
             return ValidationResult::failure(_('CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384).'));
         }
 

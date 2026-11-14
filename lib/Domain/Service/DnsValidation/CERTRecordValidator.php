@@ -105,6 +105,13 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('This CERT record content is quite large (' . strlen($content) . ' characters). Consider alternatives if DNS transmission issues occur.');
         }
 
+        // The key tag and any numeric type or algorithm are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\S+)(\s+)(\S+)(\s+)(\S+)/',
+            fn($m) => (ctype_digit($m[1]) ? (int)$m[1] : $m[1]) . $m[2] . (int)$m[3] . $m[4] . (ctype_digit($m[5]) ? (int)$m[5] : $m[5]),
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -158,7 +165,7 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
         $typeValue = 0;
         $isUrlType = false;
 
-        if (is_numeric($type)) {
+        if (ctype_digit($type)) {
             $typeValue = (int)$type;
             if ($typeValue < 0 || $typeValue > 65535) {
                 return ValidationResult::failure(_('CERT type must be a number between 0 and 65535 or a valid mnemonic.'));
@@ -187,7 +194,7 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate key tag (must be a number between 0 and 65535)
-        if (!is_numeric($keyTag) || (int)$keyTag < 0 || (int)$keyTag > 65535) {
+        if (!ctype_digit($keyTag) || (int)$keyTag > 65535) {
             return ValidationResult::failure(_('CERT key tag must be a number between 0 and 65535.'));
         }
 
@@ -209,7 +216,7 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
 
         $algorithmValue = 0;
 
-        if (is_numeric($algorithm)) {
+        if (ctype_digit($algorithm)) {
             $algorithmValue = (int)$algorithm;
             if ($algorithmValue < 0 || $algorithmValue > 255) {
                 return ValidationResult::failure(_('CERT algorithm must be a number between 0 and 255 or a valid mnemonic.'));

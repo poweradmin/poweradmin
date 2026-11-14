@@ -364,4 +364,25 @@ class DNSKEYRecordValidatorTest extends TestCase
         // Should warn about RSA key length
         $this->assertStringContainsString('RSA key size is less than 2048 bits', $warningsText);
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '256e0 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==',
+            '257 3 1.3e1 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==',
+            '257 3e0 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('0257 03 013 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==', $result->getData()['content']);
+    }
 }

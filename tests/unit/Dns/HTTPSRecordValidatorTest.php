@@ -514,4 +514,24 @@ class HTTPSRecordValidatorTest extends TestCase
             'ech quoted' => ['1 svc.example.com ech="AEj+DQBEAQAgACAdd+scUi0IYFsXnUIU7ko2Nd9+F8M26pAGZVpz/KrWPgAEAAEAAWQVZWNoLXNpdGVzLmV4YW1wbGUubmV0AAA="'],
         ];
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '1e0 example.org',
+            '1 example.org port=44e1',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'host.example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('001 example.org port=0443', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('1 example.org port=443', $result->getData()['content']);
+    }
 }

@@ -327,4 +327,25 @@ class CDSRecordValidatorTest extends TestCase
         }
         $this->assertTrue($apexWarningFound, 'Should warn about non-apex placement');
     }
+
+    public function testNumericFieldsAcceptOnlyPlainDigits(): void
+    {
+        $contents = [
+            '1e4 13 1 1234567890123456789012345678901234567890',
+            '12345 13.0 1 1234567890123456789012345678901234567890',
+            '12345 13 1e0 1234567890123456789012345678901234567890',
+        ];
+        foreach ($contents as $content) {
+            $result = $this->validator->validate($content, 'example.com', 0, 3600, 86400);
+            $this->assertFalse($result->isValid(), $content);
+        }
+    }
+
+    public function testNumericFieldsAreStoredCanonical(): void
+    {
+        $result = $this->validator->validate('012345 013 01 1234567890123456789012345678901234567890', 'example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('12345 13 1 1234567890123456789012345678901234567890', $result->getData()['content']);
+    }
 }

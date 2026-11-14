@@ -116,6 +116,13 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field for DNSKEY records must be 0 or empty.'));
         }
 
+        // Leading numbers are stored as plain digits, as the validation read them
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -144,7 +151,7 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
         [$flags, $protocol, $algorithm, $publicKey] = $parts;
 
         // Validate flags (must be 0, 256, or 257)
-        if (!is_numeric($flags) || !in_array((int)$flags, [0, 256, 257])) {
+        if (!ctype_digit($flags) || !in_array((int)$flags, [0, 256, 257])) {
             return ValidationResult::failure(_('DNSKEY flags must be 0, 256, or 257.'));
         }
 
@@ -159,13 +166,13 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate protocol (must be 3)
-        if (!is_numeric($protocol) || (int)$protocol !== 3) {
+        if (!ctype_digit($protocol) || (int)$protocol !== 3) {
             return ValidationResult::failure(_('DNSKEY protocol must be 3.'));
         }
 
         // Validate algorithm (must be a number between 1 and 16)
         $validAlgorithms = range(1, 16);
-        if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
             return ValidationResult::failure(_('DNSKEY algorithm must be a number between 1 and 16.'));
         }
 

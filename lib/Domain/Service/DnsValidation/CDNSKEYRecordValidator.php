@@ -118,6 +118,13 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
         // Add RFC 7344 recommendation for CDS records
         $warnings[] = _('RFC 7344 recommends that if you publish a CDNSKEY record, you should also publish a corresponding CDS record.');
 
+        // Leading numbers are stored as plain digits, as the validation read them
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         $result = [
             'content' => $content,
             'name' => $name,
@@ -169,7 +176,7 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
         [$flags, $protocol, $algorithm, $publicKey] = $parts;
 
         // Validate flags (must be 0, 256, or 257)
-        if (!is_numeric($flags) || !in_array((int)$flags, [0, 256, 257])) {
+        if (!ctype_digit($flags) || !in_array((int)$flags, [0, 256, 257])) {
             return ValidationResult::failure(_('CDNSKEY flags must be 0, 256, or 257.'));
         }
 
@@ -179,13 +186,13 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate protocol (must be 3)
-        if (!is_numeric($protocol) || (int)$protocol !== 3) {
+        if (!ctype_digit($protocol) || (int)$protocol !== 3) {
             return ValidationResult::failure(_('CDNSKEY protocol must be 3.'));
         }
 
         // Validate algorithm (must be a number between 1 and 16)
         $validAlgorithms = range(1, 16);
-        if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
             return ValidationResult::failure(_('CDNSKEY algorithm must be a number between 1 and 16.'));
         }
 
