@@ -436,6 +436,15 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    private function emailHeldByAnotherUser(string $email, int $userId): bool
+    {
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE $match AND id <> ?");
+        $stmt->execute([$email, $userId]);
+
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
     private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
     {
         try {
@@ -451,8 +460,12 @@ class UserProvisioningService extends LoggingService
                 }
 
                 if (!empty($userInfo->getEmail())) {
-                    $updateFields[] = 'email = ?';
-                    $updateValues[] = $userInfo->getEmail();
+                    if ($this->emailHeldByAnotherUser($userInfo->getEmail(), $userId)) {
+                        $this->logWarning('Skipping email sync for user {userId}: another account already holds the address', ['userId' => $userId]);
+                    } else {
+                        $updateFields[] = 'email = ?';
+                        $updateValues[] = $userInfo->getEmail();
+                    }
                 }
             }
 
