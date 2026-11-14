@@ -25,6 +25,14 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Api\Internal;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\Internal\ValidationController;
+use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\Auth\ApiPermissionService;
+use Poweradmin\Domain\Service\Auth\UserContextService;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
+use TestHelpers\FakeConfiguration;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -58,5 +66,38 @@ class ValidationControllerInputTypesTest extends TestCase
         $response = (new ReflectionMethod($controller, 'validateRecord'))->invoke($controller);
 
         $this->assertSame(400, $response->getStatusCode());
+    }
+
+    public function testARelativeNameIsValidatedInsideTheAuthorisedZone(): void
+    {
+        $controller = (new ReflectionClass(ValidationController::class))->newInstanceWithoutConstructor();
+        $request = Request::create('/api/internal/validation', 'POST', [], [], [], ['CONTENT_TYPE' => 'application/json'], (string)json_encode(['zone_id' => 7, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.1']));
+
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->with(7)->willReturn('example.com');
+        $factory = $this->createMock(ControllerServiceFactory::class);
+        $factory->method('domainRepository')->willReturn($domains);
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('canViewZone')->willReturn(true);
+        $user = $this->createMock(UserContextService::class);
+        $user->method('getLoggedInUserId')->willReturn(1);
+        $validation = $this->createMock(DnsRecordValidationService::class);
+        $validation->expects($this->once())->method('validateRecord')
+            ->with(0, 7, 'A', '192.0.2.1', 'www.example.com')
+            ->willReturn(ValidationResult::success([]));
+
+        $set = static function (string $class, string $property, mixed $value) use ($controller): void {
+            (new ReflectionProperty($class, $property))->setValue($controller, $value);
+        };
+        $set(ValidationController::class, 'request', $request);
+        $set(BaseController::class, 'serviceFactory', $factory);
+        $set(BaseController::class, 'config', new FakeConfiguration([]));
+        $set(ValidationController::class, 'validationService', $validation);
+        $set(ValidationController::class, 'apiPermissionService', $permissions);
+        $set(ValidationController::class, 'userContextService', $user);
+
+        $response = (new ReflectionMethod($controller, 'validateRecord'))->invoke($controller);
+
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

@@ -29,6 +29,8 @@ use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -117,6 +119,13 @@ class ValidationController extends InternalApiController
             $userId = $this->userContextService->getLoggedInUserId() ?? 0;
             if (!$this->apiPermissionService->canViewZone($userId, $zoneId)) {
                 return $this->returnErrorResponse('You do not have permission to validate against this zone', 403);
+            }
+
+            // Same as every write path: a name outside the zone is placed inside it, so the
+            // CNAME probe never looks at another zone's records.
+            $zoneName = $this->services()->domainRepository()->getDomainNameById($zoneId);
+            if ($zoneName !== null) {
+                $name = (new HostnameValidator(HostnamePolicy::fromConfig($this->getConfig())))->normalizeRecordName((string)$name, $zoneName);
             }
         }
 
