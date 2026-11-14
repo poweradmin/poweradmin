@@ -648,6 +648,10 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
             }
 
+            if (!empty($updates['master']) && (!is_string($updates['master']) || !(new IPAddressValidator())->areMultipleValidIPs($updates['master']))) {
+                return $this->returnApiError('Invalid master servers format', 400);
+            }
+
             if (empty($updates)) {
                 return $this->returnApiError('No valid fields provided for update', 400);
             }
