@@ -127,6 +127,12 @@ class UsernameRecoveryService
             return true; // Return true to not reveal if email exists
         }
 
+        // Recorded before any mail goes out, so a parallel request already sees it
+        $success = $this->recoveryRepository->create([
+            'email' => $email,
+            'ip_address' => $ip
+        ]);
+
         // Mail each stored address its own accounts: a collation-folded match must not
         // send the typed address a username registered to someone else's spelling.
         $byStoredEmail = [];
@@ -138,12 +144,6 @@ class UsernameRecoveryService
             $sent = $this->sendRecoveryEmail((string)$storedEmail, array_column($accounts, 'username'), $accounts[0]['fullname'] ?? '');
             $emailSent = $emailSent && $sent;
         }
-
-        // Record the recovery request
-        $success = $this->recoveryRepository->create([
-            'email' => $email,
-            'ip_address' => $ip
-        ]);
 
         if ($success) {
             $this->logger->info('Username recovery request processed', [

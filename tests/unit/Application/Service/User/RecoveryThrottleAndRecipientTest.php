@@ -116,6 +116,33 @@ class RecoveryThrottleAndRecipientTest extends TestCase
         $this->assertSame(['Alice@Example.test', 'ALICE@example.test'], $recipients);
     }
 
+    public function testUsernameRecoveryRecordsTheRequestBeforeSendingMail(): void
+    {
+        $order = [];
+        $recovery = $this->createMock(UsernameRecoveryRepositoryInterface::class);
+        $recovery->method('countRecentAttempts')->willReturn(0);
+        $recovery->method('countRecentAttemptsByIp')->willReturn(0);
+        $recovery->method('create')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'create';
+            return true;
+        });
+
+        $users = $this->createMock(UserLookupInterface::class);
+        $users->method('findActiveUsersByEmail')->willReturn([
+            ['id' => 1, 'username' => 'alice', 'fullname' => 'Alice', 'email' => 'alice@example.test', 'auth_method' => 'sql', 'active' => 1],
+        ]);
+
+        $mail = $this->createMock(MailService::class);
+        $mail->method('sendMail')->willReturnCallback(function () use (&$order): bool {
+            $order[] = 'send';
+            return true;
+        });
+
+        $this->recoveryService($recovery, $users, $mail)->createRecoveryRequest('alice@example.test');
+
+        $this->assertSame(['create', 'send'], $order);
+    }
+
     private function recoveryService(
         UsernameRecoveryRepositoryInterface $recovery,
         UserLookupInterface $users,
