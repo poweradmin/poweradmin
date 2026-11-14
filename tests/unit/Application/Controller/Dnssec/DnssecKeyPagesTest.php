@@ -29,6 +29,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Controller\Dnssec\DnssecAddKeyController;
 use Poweradmin\Application\Controller\Dnssec\DnssecDeleteKeyController;
 use Poweradmin\Application\Controller\Dnssec\DnssecEditKeyController;
+use Poweradmin\Application\Controller\Dnssec\DnssecKeyExportController;
 use Poweradmin\Application\Controller\Dnssec\DnssecKeyImportController;
 use Poweradmin\Application\Controller\Dnssec\DnssecToggleKeyController;
 use Poweradmin\Application\Controller\RequestHalted;
@@ -66,6 +67,8 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
 
     private bool $enabled = true;
 
+    private bool $configEnabled = true;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -100,7 +103,7 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
             ? ['id' => (string)self::ZONE_ID]
             : ['zone_id' => (string)self::ZONE_ID, 'key_id' => (string)self::KEY_ID];
 
-        return new $class($params + $this->requestData(), true, $this->environment($this->configure()));
+        return new $class($params + $this->requestData(), true, $this->environment($this->configure(['dnssec' => ['enabled' => $this->configEnabled]])));
     }
 
     private function haltOf(BaseController $controller): RequestHalted
@@ -388,6 +391,18 @@ class DnssecKeyPagesTest extends SeamControllerTestCase
 
         $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
         $this->assertSame(self::OUTAGE, $halt->target);
+    }
+
+    public function testExportRefusesWhenDnssecIsOffInTheConfiguration(): void
+    {
+        $this->configEnabled = false;
+        $this->dnssec->expects($this->never())->method('exportZonePrivateKey');
+        $this->audit->expects($this->never())->method($this->anything());
+
+        $halt = $this->haltOf($this->page(DnssecKeyExportController::class));
+
+        $this->assertSame(RequestHalted::KIND_ERROR, $halt->kind);
+        $this->assertSame('DNSSEC is not enabled on the server.', $halt->target);
     }
 
     // ---------------------------------------------------------------- PowerDNS out of reach

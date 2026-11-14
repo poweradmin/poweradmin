@@ -43,6 +43,10 @@ abstract class DnssecKeyController extends BaseController
     {
         $this->requireZoneView($zoneId);
 
+        if (!$this->config->get('dnssec', 'enabled', false)) {
+            $this->showError(_('DNSSEC is not enabled on the server.'));
+        }
+
         $domainRepository = $this->services()->domainRepository();
         if (!$domainRepository->zoneIdExists($zoneId)) {
             $this->showError(_('There is no zone with this ID.'));
