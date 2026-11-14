@@ -20,7 +20,12 @@ debug_log() {
 to_php_bool() {
     case "$(echo "${1}" | tr '[:upper:]' '[:lower:]')" in
         true | 1 | yes | on) echo "true" ;;
-        *) echo "false" ;;
+        false | 0 | no | off | "") echo "false" ;;
+        *)
+            # stderr, so the warning is not captured by $(to_php_bool ...)
+            log "WARNING: unrecognised boolean value '${1}' (use true/false/1/0/yes/no/on/off), treating as false" >&2
+            echo "false"
+            ;;
     esac
 }
 
