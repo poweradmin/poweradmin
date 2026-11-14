@@ -48,6 +48,8 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -60,6 +62,8 @@ class ZonesRecordsController extends PublicApiController
     private ApiPermissionService $permissionService;
     private RecordCommentService $recordCommentService;
     private DnsBackendProvider $backendProvider;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -70,6 +74,8 @@ class ZonesRecordsController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
         $recordCommentRepository = $repositoryFactory->createRecordCommentRepository();
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
@@ -517,6 +523,15 @@ class ZonesRecordsController extends PublicApiController
                 'disabled' => $disabled
             ];
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
+                $name,
+                $type,
+                $content
+            ), $zoneId);
+
             return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
@@ -682,6 +697,23 @@ class ZonesRecordsController extends PublicApiController
             }
             $this->rectifyZoneAfterWrite($zoneId);
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_edit_record name:%s type:%s content:%s old_name:%s old_type:%s old_content:%s'
+                . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
+                $recordData['name'],
+                $recordData['type'],
+                $recordData['content'],
+                $existingRecord['name'],
+                $existingRecord['type'],
+                $existingRecord['content'],
+                $recordData['ttl'],
+                $recordData['prio'],
+                $existingRecord['ttl'],
+                $existingRecord['prio'] ?? 0
+            ), $zoneId);
+
             return $this->returnApiResponse(null, true, 'Record updated successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to update record: ' . $e->getMessage(), 500);
@@ -793,6 +825,15 @@ class ZonesRecordsController extends PublicApiController
                 $this->updateSOASerial($zoneId);
             }
             $this->rectifyZoneAfterWrite($zoneId);
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
+                $existingRecord['name'] ?? '',
+                $existingRecord['type'] ?? '',
+                $existingRecord['content'] ?? ''
+            ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (Exception $e) {

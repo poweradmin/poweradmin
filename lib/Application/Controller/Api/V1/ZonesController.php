@@ -44,6 +44,9 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Domain\Service\ZoneOwnershipModeService;
+use Poweradmin\Infrastructure\Logger\DbZoneLogger;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -54,6 +57,8 @@ class ZonesController extends PublicApiController
     private RecordManagerInterface $recordManager;
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $permissionService;
+    private LegacyLogger $auditLogger;
+    private IpAddressRetriever $ipAddressRetriever;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -64,6 +69,8 @@ class ZonesController extends PublicApiController
         $this->zoneRepository = $this->createZoneRepository();
         $this->recordRepository = $repositoryFactory->createRecordRepository();
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->auditLogger = new LegacyLogger($this->db);
+        $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig(), $backendProvider);
@@ -503,6 +510,14 @@ class ZonesController extends PublicApiController
                 ]);
             }
 
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_add_zone zone_name:%s zone_type:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
+                $domain,
+                $type
+            ), (int)$result['zone_id']);
+
             return $this->returnApiResponse(
                 ['zone_id' => $result['zone_id']],
                 true,
@@ -728,6 +743,8 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError('You do not have permission to delete this zone', 403);
             }
 
+            $zoneName = $this->zoneRepository->getZoneById($zoneId)['name'] ?? 'unknown';
+
             // Use the zone management service to delete zone
             $result = $this->zoneManagementService->deleteZone($zoneId);
 
@@ -735,6 +752,16 @@ class ZonesController extends PublicApiController
                 $statusCode = $result['status'] ?? 400;
                 return $this->returnApiError($result['message'], $statusCode);
             }
+
+            $this->auditLogger->logInfo(sprintf(
+                'client_ip:%s user:%s operation:api_delete_zone zone_name:%s',
+                $this->ipAddressRetriever->getClientIp(),
+                LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
+                $zoneName
+            ), $zoneId);
+
+            // The delete entry is written after the zone is gone, so detach it too
+            (new DbZoneLogger($this->db, $this->createDnsBackendProvider()))->detachZone($zoneId);
 
             return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (Exception $e) {
