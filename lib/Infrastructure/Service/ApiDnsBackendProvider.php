@@ -626,8 +626,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             return null;
         }
 
-        // The listing encodes ids from the stored spelling, so the new id must match it
-        return RecordIdentifier::encode($zoneName, rtrim($rrsetData['name'], '.'), $type, $content, $prio);
+        // The gsql backends lowercase every name they write, so the REPLACE leaves the whole RRset lowercase
+        return RecordIdentifier::encode($zoneName, strtolower($name), $type, $content, $prio);
     }
 
     public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
@@ -1810,8 +1810,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     /**
      * Get the current records for an RRset directly from the PowerDNS API.
      *
-     * The name is the RRset's stored spelling, which writes must reuse: a case-sensitive
-     * backend would otherwise keep the old rows next to the rewritten ones.
+     * The name is the RRset's spelling as PowerDNS returned it; writes reuse it, though the
+     * gsql backends lowercase every name they store, so it does not change which rows are hit.
      *
      * @return array{records: array, ttl: int, name: string}|null null on API failure
      */

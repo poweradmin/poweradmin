@@ -1378,6 +1378,36 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($this->provider->editRecord($encodedId, 'www.example.com', 'A', '192.0.2.9', 3600, 0, 0));
     }
 
+    public function testEditRecordRenamedOntoAMixedCaseRrsetJoinsIt(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'foo.example.com', 'A', '192.0.2.5', 0);
+
+        $this->mockClient->method('getZoneRrset')->willReturnCallback(
+            fn(string $zone, string $name): array => ['rrsets' => [$name === 'foo.example.com.'
+                ? ['name' => 'foo.example.com.', 'type' => 'A', 'ttl' => 3600, 'records' => [['content' => '192.0.2.5', 'disabled' => false]]]
+                : ['name' => 'WWW2.example.com.', 'type' => 'A', 'ttl' => 3600, 'records' => [['content' => '192.0.2.1', 'disabled' => false]]]]]
+        );
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', [
+                ['name' => 'foo.example.com.', 'type' => 'A', 'changetype' => 'DELETE'],
+                [
+                    'name' => 'WWW2.example.com.',
+                    'type' => 'A',
+                    'ttl' => 3600,
+                    'changetype' => 'REPLACE',
+                    'records' => [
+                        ['content' => '192.0.2.1', 'disabled' => false],
+                        ['content' => '192.0.2.5', 'disabled' => false],
+                    ],
+                ],
+            ])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->editRecord($encodedId, 'www2.example.com', 'A', '192.0.2.5', 3600, 0, 0));
+    }
+
     public function testEditRecordReturnsFalseForNonEncodedId(): void
     {
         $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
@@ -1762,8 +1792,8 @@ class ApiDnsBackendProviderTest extends TestCase
 
         $id = $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.0.2.3', 3600, 0);
         $this->assertNotNull($id);
-        // The listing encodes the stored spelling; the returned id has to match it
-        $this->assertSame('WWW.example.com', RecordIdentifier::decode($id)['name']);
+        // PowerDNS rewrites the RRset in lowercase, which is the spelling the listing then encodes
+        $this->assertSame('www.example.com', RecordIdentifier::decode($id)['name']);
     }
 
     public function testAddRecordGetIdReturnsNullWhenAddRecordFails(): void
