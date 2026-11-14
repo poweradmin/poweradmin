@@ -41,6 +41,9 @@ final class BindZoneFileParser
         'SVCB', 'TKEY', 'TLSA', 'TSIG', 'TXT', 'URI', 'ZONEMD',
     ];
 
+    // Fits the comments.comment column on every supported database
+    private const MAX_COMMENT_BYTES = 65535;
+
     private int $autoTtlValue;
 
     public function __construct(int $autoTtlValue = 300)
@@ -114,7 +117,9 @@ final class BindZoneFileParser
                 continue;
             }
 
-            if ($pendingComment !== null && preg_match('//u', $pendingComment) !== 1) {
+            if ($pendingComment !== null && strlen($pendingComment) > self::MAX_COMMENT_BYTES) {
+                $warnings[] = sprintf('Line %d: Poweradmin comment is too long, skipped', $lineNum + 1);
+            } elseif ($pendingComment !== null && preg_match('//u', $pendingComment) !== 1) {
                 $warnings[] = sprintf('Line %d: Poweradmin comment is not valid UTF-8, skipped', $lineNum + 1);
             } elseif ($pendingComment !== null) {
                 $parsed->comment = $pendingComment;

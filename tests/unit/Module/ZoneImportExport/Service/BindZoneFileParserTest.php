@@ -2225,6 +2225,18 @@ ZONE;
         $this->assertSame(['Line 3: Poweradmin comment is not valid UTF-8, skipped'], $result->getWarnings());
     }
 
+    public function testOverlongCommentIsDroppedWithOneWarning(): void
+    {
+        $content = "\$ORIGIN example.com.\n; poweradmin-comment: " . str_repeat('a', 40000)
+            . "\n; poweradmin-comment: " . str_repeat('b', 40000) . "\nwww 3600 IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertCount(1, $result->getRecords());
+        $this->assertSame('', $result->getRecords()[0]->comment);
+        $this->assertSame(['Line 4: Poweradmin comment is too long, skipped'], $result->getWarnings());
+    }
+
     public function testCommentAtTheEndOfAFileWithoutATrailingNewlineIsDroppedWithAWarning(): void
     {
         $result = $this->parser->parse("www.example.com. 3600 IN A 192.0.2.1\n; poweradmin-comment: last");
