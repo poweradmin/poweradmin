@@ -113,4 +113,40 @@ class UserProvisioningServiceRelinkTest extends TestCase
         $this->assertSame(1, $this->service->provisionUser($userInfo, 'google'));
         $this->assertSame('sub-owner', $this->db->query("SELECT oidc_subject FROM oidc_user_links WHERE provider_id = 'okta'")->fetchColumn());
     }
+
+    private function syncService(bool $requireVerified): UserProvisioningService
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['sync_user_info' => true, 'require_verified_email' => $requireVerified]);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $default);
+
+        return new UserProvisioningService($this->db, $config, $this->createMock(Logger::class));
+    }
+
+    public function testSyncDoesNotCopyAnEmailHeldByAnotherAccount(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'john', email: 'jane@example.org', providerId: 'okta', subject: 'sub-owner', rawData: ['email_verified' => true]);
+
+        $this->syncService(false)->syncExistingUser(1, $userInfo);
+
+        $this->assertSame('john@example.org', $this->db->query("SELECT email FROM users WHERE id = 1")->fetchColumn());
+    }
+
+    public function testSyncStillCopiesAFreeEmail(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john.new@example.org', providerId: 'okta', subject: 'sub-owner', rawData: ['email_verified' => true]);
+
+        $this->syncService(false)->syncExistingUser(1, $userInfo);
+
+        $this->assertSame('john.new@example.org', $this->db->query("SELECT email FROM users WHERE id = 1")->fetchColumn());
+    }
+
+    public function testSyncSkipsAnUnverifiedEmailWhenVerifiedEmailIsRequired(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john.new@example.org', providerId: 'okta', subject: 'sub-owner', rawData: []);
+
+        $this->syncService(true)->syncExistingUser(1, $userInfo);
+
+        $this->assertSame('john@example.org', $this->db->query("SELECT email FROM users WHERE id = 1")->fetchColumn());
+    }
 }

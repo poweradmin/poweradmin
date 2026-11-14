@@ -507,6 +507,32 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    /**
+     * Whether the provider's email may overwrite the stored one: no other account
+     * may hold it, and require_verified_email must be satisfied when it is on.
+     *
+     * @param array<string, mixed> $authConfig
+     */
+    private function emailSyncAllowed(int $userId, string $email, UserInfoInterface $userInfo, array $authConfig): bool
+    {
+        if (($authConfig['require_verified_email'] ?? false) && !$this->emailClaimIsLinkable($userInfo, $authConfig)) {
+            return false;
+        }
+
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE $match AND id <> ?");
+        $stmt->execute([$email, $userId]);
+        if ((int)$stmt->fetchColumn() > 0) {
+            $this->logWarning('Skipping email sync for user {userId}: {email} is held by another account', [
+                'userId' => $userId,
+                'email' => $email,
+            ]);
+            return false;
+        }
+
+        return true;
+    }
+
     private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
     {
         try {
@@ -527,7 +553,7 @@ class UserProvisioningService extends LoggingService
                 }
 
                 $email = $userInfo->getEmail();
-                if (!empty($email) && $email !== ($current['email'] ?? null)) {
+                if (!empty($email) && $email !== ($current['email'] ?? null) && $this->emailSyncAllowed($userId, $email, $userInfo, $authConfig)) {
                     $updateFields[] = 'email = ?';
                     $updateValues[] = $email;
                 }
