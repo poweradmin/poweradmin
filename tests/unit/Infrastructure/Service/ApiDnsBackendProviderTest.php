@@ -1347,6 +1347,37 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testEditRecordOfAMixedCaseRrsetSwapsTheRecordInPlace(): void
+    {
+        $encodedId = RecordIdentifier::encode('example.com', 'WWW.example.com', 'A', '192.0.2.1', 0);
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [[
+            'name' => 'WWW.example.com.',
+            'type' => 'A',
+            'ttl' => 3600,
+            'records' => [
+                ['content' => '192.0.2.1', 'disabled' => false],
+                ['content' => '192.0.2.2', 'disabled' => false],
+            ],
+        ]]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', [[
+                'name' => 'WWW.example.com.',
+                'type' => 'A',
+                'ttl' => 3600,
+                'changetype' => 'REPLACE',
+                'records' => [
+                    ['content' => '192.0.2.9', 'disabled' => false],
+                    ['content' => '192.0.2.2', 'disabled' => false],
+                ],
+            ]])
+            ->willReturn(true);
+
+        $this->assertTrue($this->provider->editRecord($encodedId, 'www.example.com', 'A', '192.0.2.9', 3600, 0, 0));
+    }
+
     public function testEditRecordReturnsFalseForNonEncodedId(): void
     {
         $result = $this->provider->editRecord(5, 'www.example.com', 'A', '10.0.0.1', 7200, 0, 0);
@@ -1699,6 +1730,40 @@ class ApiDnsBackendProviderTest extends TestCase
         $this->assertEquals('A', $decoded['type']);
         $this->assertEquals('192.168.1.1', $decoded['content']);
         $this->assertEquals(0, $decoded['prio']);
+    }
+
+    // A MySQL backend matches the rrset filter case-insensitively and returns the stored case
+    public function testAddRecordKeepsSiblingsOfAMixedCaseRrset(): void
+    {
+        $stmtZone = $this->createMock(PDOStatement::class);
+        $stmtZone->method('execute');
+        $stmtZone->method('fetch')->willReturn(['id' => 1, 'zone_name' => 'example.com', 'zone_type' => 'MASTER']);
+        $stmtZone->method('bindValue');
+        $this->mockDb->method('prepare')->willReturn($stmtZone);
+
+        $this->mockClient->method('getZoneRrset')->willReturn(['rrsets' => [[
+            'name' => 'WWW.example.com.',
+            'type' => 'A',
+            'ttl' => 3600,
+            'records' => [
+                ['content' => '192.0.2.1', 'disabled' => false],
+                ['content' => '192.0.2.2', 'disabled' => false],
+            ],
+        ]]]);
+
+        $this->mockClient->expects($this->once())
+            ->method('patchZoneRRsets')
+            ->with('example.com.', $this->callback(function (array $rrsets): bool {
+                $contents = array_column($rrsets[0]['records'], 'content');
+                return $rrsets[0]['name'] === 'WWW.example.com.'
+                    && $contents === ['192.0.2.1', '192.0.2.2', '192.0.2.3'];
+            }))
+            ->willReturn(true);
+
+        $id = $this->provider->addRecordGetId(1, 'www.example.com', 'A', '192.0.2.3', 3600, 0);
+        $this->assertNotNull($id);
+        // The listing encodes the stored spelling; the returned id has to match it
+        $this->assertSame('WWW.example.com', RecordIdentifier::decode($id)['name']);
     }
 
     public function testAddRecordGetIdReturnsNullWhenAddRecordFails(): void

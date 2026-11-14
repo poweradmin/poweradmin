@@ -606,7 +606,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         $records = $type === 'SOA' ? [$newRecord] : [...$rrsetData['records'], $newRecord];
 
         $rrset = [
-            'name' => $apiRecordName,
+            'name' => $rrsetData['name'],
             'type' => $type,
             'ttl' => $ttl,
             'changetype' => 'REPLACE',
@@ -624,7 +624,8 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             return null;
         }
 
-        return RecordIdentifier::encode($zoneName, $name, $type, $content, $prio);
+        // The listing encodes ids from the stored spelling, so the new id must match it
+        return RecordIdentifier::encode($zoneName, rtrim($rrsetData['name'], '.'), $type, $content, $prio);
     }
 
     public function editRecord(int|string $recordId, string $name, string $type, string $content, int $ttl, int $prio, int $disabled, ?array $comment = null): bool
@@ -644,7 +645,10 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         $rrsets = [];
 
         // If name or type changed, we need to remove from old RRset and add to new RRset
-        if ($old['name'] !== $name || $old['type'] !== $type) {
+        $targetName = self::ensureTrailingDot($name);
+
+        // Ids carry the stored case and forms submit lowercase, so a case-only difference is the same RRset
+        if (strcasecmp($old['name'], $name) !== 0 || $old['type'] !== $type) {
             // Remove from old RRset
             $oldRRsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($old['name']), $old['type']);
             if ($oldRRsetData === null) {
@@ -673,13 +677,13 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
             if (empty($remainingRecords)) {
                 $rrsets[] = [
-                    'name' => self::ensureTrailingDot($old['name']),
+                    'name' => $oldRRsetData['name'],
                     'type' => $old['type'],
                     'changetype' => 'DELETE',
                 ];
             } else {
                 $rrsets[] = [
-                    'name' => self::ensureTrailingDot($old['name']),
+                    'name' => $oldRRsetData['name'],
                     'type' => $old['type'],
                     'ttl' => $oldRRsetData['ttl'],
                     'changetype' => 'REPLACE',
@@ -696,6 +700,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
                 return false;
             }
 
+            $targetName = $newRRsetData['name'];
             $newRecords = $newRRsetData['records'];
             $newRecords[] = [
                 'content' => $this->formatRecordContent($type, $content, $prio),
@@ -705,7 +710,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             $targetRecords = $newRecords;
         } else {
             // Same name+type: rebuild the RRset with the modified record
-            $rrsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($name), $type);
+            $rrsetData = $this->getRRsetFromApi($apiZoneName, self::ensureTrailingDot($old['name']), $type);
             if ($rrsetData === null) {
                 $this->logger->error("Failed to fetch RRset for '{name} {type}' from API", [
                     'name' => $name, 'type' => $type,
@@ -713,6 +718,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
                 return false;
             }
 
+            $targetName = $rrsetData['name'];
             $records = [];
             $found = false;
             foreach ($rrsetData['records'] as $r) {
@@ -738,7 +744,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         }
 
         $target = [
-            'name' => self::ensureTrailingDot($name),
+            'name' => $targetName,
             'type' => $type,
             'ttl' => $ttl,
             'changetype' => 'REPLACE',
@@ -830,13 +836,13 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
 
         if (empty($remainingRecords)) {
             $rrset = [
-                'name' => $apiRecordName,
+                'name' => $rrsetData['name'],
                 'type' => $record['type'],
                 'changetype' => 'DELETE',
             ];
         } else {
             $rrset = [
-                'name' => $apiRecordName,
+                'name' => $rrsetData['name'],
                 'type' => $record['type'],
                 'ttl' => $rrsetData['ttl'],
                 'changetype' => 'REPLACE',
@@ -1029,7 +1035,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         }
         $records = $this->getZoneRecords($domainId, $zoneName);
         foreach ($records as $r) {
-            if ($r['name'] === $name && $r['type'] === $type && $r['content'] === $content) {
+            if (strcasecmp($r['name'], $name) === 0 && $r['type'] === $type && $r['content'] === $content) {
                 return true;
             }
         }
@@ -1802,7 +1808,10 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     /**
      * Get the current records for an RRset directly from the PowerDNS API.
      *
-     * @return array{records: array, ttl: int}|null null on API failure
+     * The name is the RRset's stored spelling, which writes must reuse: a case-sensitive
+     * backend would otherwise keep the old rows next to the rewritten ones.
+     *
+     * @return array{records: array, ttl: int, name: string}|null null on API failure
      */
     private function getRRsetFromApi(string $apiZoneName, string $apiRecordName, string $type): ?array
     {
@@ -1811,22 +1820,22 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
             return null;
         }
 
-        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
-            if ($rrset['name'] === $apiRecordName && $rrset['type'] === $type) {
-                $records = [];
-                foreach ($rrset['records'] ?? [] as $record) {
-                    $records[] = [
-                        'content' => $record['content'],
-                        'disabled' => $record['disabled'] ?? false,
-                    ];
-                }
-                return [
-                    'records' => $records,
-                    'ttl' => $rrset['ttl'] ?? 3600,
-                ];
-            }
+        $rrset = PowerdnsApiClient::findRrset($zoneData, $apiRecordName, $type);
+        if ($rrset === null) {
+            return ['records' => [], 'ttl' => 3600, 'name' => $apiRecordName];
         }
 
-        return ['records' => [], 'ttl' => 3600];
+        $records = [];
+        foreach ($rrset['records'] ?? [] as $record) {
+            $records[] = [
+                'content' => $record['content'],
+                'disabled' => $record['disabled'] ?? false,
+            ];
+        }
+        return [
+            'records' => $records,
+            'ttl' => $rrset['ttl'] ?? 3600,
+            'name' => (string)$rrset['name'],
+        ];
     }
 }

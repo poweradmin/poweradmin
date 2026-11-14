@@ -905,6 +905,28 @@ class PowerdnsApiClient
     }
 
     /**
+     * Pick an RRset out of a zone answer. PowerDNS returns names in their stored case,
+     * so an exact match wins and a case-insensitive one is the fallback.
+     */
+    public static function findRrset(array $zoneData, string $name, string $type): ?array
+    {
+        $fallback = null;
+        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
+            if (($rrset['type'] ?? null) !== $type) {
+                continue;
+            }
+            if (($rrset['name'] ?? '') === $name) {
+                return $rrset;
+            }
+            if ($fallback === null && strcasecmp((string)($rrset['name'] ?? ''), $name) === 0) {
+                $fallback = $rrset;
+            }
+        }
+
+        return $fallback;
+    }
+
+    /**
      * PowerDNS 4.7 and 4.8 have catalog zones but leave the catalog field of the
      * zone list empty; only a single zone read reports it.
      */

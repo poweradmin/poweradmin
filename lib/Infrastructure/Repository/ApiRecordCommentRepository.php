@@ -191,14 +191,8 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
             return null;
         }
 
-        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
-            if ($rrset['name'] === $apiRecordName && $rrset['type'] === $type) {
-                $comments = $rrset['comments'] ?? [];
-                return !empty($comments) ? $comments[0] : null;
-            }
-        }
-
-        return null;
+        $comments = PowerdnsApiClient::findRrset($zoneData, $apiRecordName, $type)['comments'] ?? [];
+        return !empty($comments) ? $comments[0] : null;
     }
 
     /**
@@ -215,13 +209,7 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
             return false;
         }
 
-        $current = null;
-        foreach ($zoneData['rrsets'] ?? [] as $rrset) {
-            if ($rrset['name'] === $apiRecordName && $rrset['type'] === $type) {
-                $current = $rrset;
-                break;
-            }
-        }
+        $current = PowerdnsApiClient::findRrset($zoneData, $apiRecordName, $type);
 
         // If no records exist for this RRset, we can't attach comments
         if (empty($current['records'])) {
@@ -237,7 +225,7 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
 
         return $this->apiClient->patchZoneRRsets($apiZoneName, [
             [
-                'name' => $apiRecordName,
+                'name' => $current['name'],
                 'type' => $type,
                 'ttl' => $current['ttl'] ?? 3600,
                 'changetype' => 'REPLACE',

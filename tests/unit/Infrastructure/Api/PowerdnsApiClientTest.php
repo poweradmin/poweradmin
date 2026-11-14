@@ -626,6 +626,17 @@ class PowerdnsApiClientTest extends TestCase
         $this->apiClient->getZone('example.com.');
     }
 
+    public function testFindRrsetPrefersTheExactNameAndFallsBackToAnyCase(): void
+    {
+        $lower = ['name' => 'www.example.com.', 'type' => 'A', 'records' => [['content' => '192.0.2.1']]];
+        $upper = ['name' => 'WWW.example.com.', 'type' => 'A', 'records' => [['content' => '192.0.2.2']]];
+        $txt = ['name' => 'www.example.com.', 'type' => 'TXT', 'records' => []];
+
+        $this->assertSame($lower, PowerdnsApiClient::findRrset(['rrsets' => [$upper, $lower]], 'www.example.com.', 'A'));
+        $this->assertSame($upper, PowerdnsApiClient::findRrset(['rrsets' => [$txt, $upper]], 'www.example.com.', 'A'));
+        $this->assertNull(PowerdnsApiClient::findRrset(['rrsets' => [$txt]], 'www.example.com.', 'A'));
+    }
+
     public function testGetZoneCanNarrowToASingleRrset(): void
     {
         // Lets the SOA-health probe read one RRset instead of downloading the

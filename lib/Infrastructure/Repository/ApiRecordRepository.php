@@ -129,7 +129,7 @@ final class ApiRecordRepository implements RecordRepositoryInterface
     {
         $records = $this->backendProvider->getRecordsByZoneId($domain_id, $type);
         foreach ($records as $r) {
-            if ($r['name'] === $name && ($r['id'] ?? 0) != $record_id) {
+            if (strcasecmp($r['name'], $name) === 0 && ($r['id'] ?? 0) != $record_id) {
                 return true;
             }
         }
@@ -145,7 +145,7 @@ final class ApiRecordRepository implements RecordRepositoryInterface
     {
         $records = $this->backendProvider->getRecordsByZoneId($domain_id, 'PTR');
         foreach ($records as $r) {
-            if ($r['name'] === $name) {
+            if (strcasecmp($r['name'], $name) === 0) {
                 return true;
             }
         }
