@@ -25,13 +25,14 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -77,9 +78,15 @@ class ChangePasswordController extends BaseController
         );
         $userRepository = $this->createUserRepository();
         $this->userContextService = new UserContextService();
-        $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->passwordService = new PasswordChangeService(
+            $userRepository,
+            $userAuthService,
+            $this->userContextService,
+            new LoginAttemptService($this->db, $this->config),
+            $this->ipAddressRetriever->getClientIp()
+        );
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void

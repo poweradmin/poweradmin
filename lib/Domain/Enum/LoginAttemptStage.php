@@ -34,6 +34,8 @@ enum LoginAttemptStage: string
     case MFA = 'mfa';
     /** A signed-in user proving the second factor again before changing it, counted apart from login. */
     case MFA_STEP_UP = 'mfa_step_up';
+    /** A signed-in user proving the current password before changing it. */
+    case REAUTH = 'reauth';
 
     /**
      * Whether a string names a known stage.

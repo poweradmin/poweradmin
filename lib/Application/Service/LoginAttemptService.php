@@ -33,6 +33,7 @@ class LoginAttemptService
     public const STAGE_PASSWORD = 'password';
     public const STAGE_MFA = 'mfa';
     public const STAGE_MFA_STEP_UP = 'mfa_step_up';
+    public const STAGE_REAUTH = 'reauth';
 
     private ConfigurationManager $configManager;
     private PDO $connection;
@@ -321,7 +322,7 @@ class LoginAttemptService
      */
     private static function isSecondFactorStage(string $attemptType): bool
     {
-        return $attemptType === self::STAGE_MFA || $attemptType === self::STAGE_MFA_STEP_UP;
+        return in_array($attemptType, [self::STAGE_MFA, self::STAGE_MFA_STEP_UP, self::STAGE_REAUTH], true);
     }
 
     private static function isIpv4Mapped(string $binaryIp): bool
@@ -414,7 +415,7 @@ class LoginAttemptService
         // default this method has always fallen through to.
         $stage = LoginAttemptStage::tryFrom($attemptType) ?? LoginAttemptStage::PASSWORD;
 
-        if ($stage === LoginAttemptStage::MFA || $stage === LoginAttemptStage::MFA_STEP_UP) {
+        if ($stage === LoginAttemptStage::MFA || $stage === LoginAttemptStage::MFA_STEP_UP || $stage === LoginAttemptStage::REAUTH) {
             // Floors, not "off" switches. A misconfigured 0 must not read as
             // "unlimited guesses" on the one control standing between a known
             // password and the account.
