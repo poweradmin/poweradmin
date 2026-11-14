@@ -428,6 +428,9 @@ class UserManager
             }
 
             $stmt->execute();
+            if ($passwordHash !== null) {
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$id);
+            }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
             return false;
@@ -582,6 +585,9 @@ class UserManager
             $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
 
             $stmt->execute();
+            if ($hashedPassword !== null) {
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$details['uid']);
+            }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
 

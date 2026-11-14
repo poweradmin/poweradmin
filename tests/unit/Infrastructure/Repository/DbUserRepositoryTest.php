@@ -238,9 +238,7 @@ class DbUserRepositoryTest extends TestCase
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
 
-        $this->db->method('prepare')
-            ->with($this->stringContains('UPDATE users SET password'))
-            ->willReturn($stmt);
+        $this->db->method('prepare')->willReturn($stmt);
 
         $result = $this->repository->updatePassword(1, 'new_hashed_password');
 
@@ -789,7 +787,10 @@ class DbUserRepositoryTest extends TestCase
         });
 
         $this->db->method('prepare')->willReturnCallback(function ($prepared) use (&$query, $stmt) {
-            $query = $prepared;
+            // A password write also prepares the reset token lookup; keep the UPDATE
+            if (str_starts_with($prepared, 'UPDATE users SET')) {
+                $query = $prepared;
+            }
             return $stmt;
         });
 
