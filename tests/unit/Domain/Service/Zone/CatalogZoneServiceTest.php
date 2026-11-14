@@ -158,6 +158,53 @@ class CatalogZoneServiceTest extends TestCase
         $this->assertFalse($this->service->assign(1, 7, 5));
     }
 
+    #[Test]
+    public function assignRefusesToMoveAMemberOutOfACatalogTheCallerCannotEdit(): void
+    {
+        // The caller owns the member and the target producer 5, not the current producer 6
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $zoneId !== 6
+        );
+        $this->producers([
+            ['id' => 5, 'name' => 'producer.example.com', 'catalog' => ''],
+            ['id' => 6, 'name' => 'other.example.com', 'catalog' => ''],
+        ]);
+        $this->backend->method('getZoneCatalog')->willReturn('other.example.com');
+
+        $this->backend->expects($this->never())->method('updateZoneCatalog');
+
+        $this->assertFalse($this->service->assign(1, 7, 5));
+    }
+
+    #[Test]
+    public function assignRefusesToMoveAMemberOutOfACatalogWithNoLocalProducer(): void
+    {
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturn(true);
+        $this->producers([['id' => 5, 'name' => 'producer.example.com', 'catalog' => '']]);
+        $this->backend->method('getZoneCatalog')->willReturn('gone.example.com');
+
+        $this->backend->expects($this->never())->method('updateZoneCatalog');
+
+        $this->assertFalse($this->service->assign(1, 7, 5));
+    }
+
+    #[Test]
+    public function assignMovesAMemberBetweenCatalogsTheCallerCanEdit(): void
+    {
+        $this->withMetaEditLevel('own', true);
+        $this->producers([
+            ['id' => 5, 'name' => 'producer.example.com', 'catalog' => ''],
+            ['id' => 6, 'name' => 'other.example.com', 'catalog' => ''],
+        ]);
+        $this->backend->method('getZoneCatalog')->willReturn('other.example.com');
+
+        $this->backend->expects($this->once())->method('updateZoneCatalog')->with(7, 'producer.example.com')->willReturn(true);
+
+        $this->assertTrue($this->service->assign(1, 7, 5));
+    }
+
     // ---- clear ----
 
     #[Test]

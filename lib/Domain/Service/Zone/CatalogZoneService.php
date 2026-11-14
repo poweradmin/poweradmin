@@ -218,6 +218,12 @@ class CatalogZoneService
             return false;
         }
 
+        // Moving a member out of its current catalog needs the same rights as clearing it
+        $current = $this->backendProvider->getZoneCatalog($memberZoneId);
+        if ($current !== '' && $current !== $this->normalizeName($producer['name']) && !$this->mayLeaveCatalog($userId, $current)) {
+            return false;
+        }
+
         if (!$this->backendProvider->updateZoneCatalog($memberZoneId, $producer['name'])) {
             return false;
         }
@@ -244,15 +250,7 @@ class CatalogZoneService
             return true;
         }
 
-        $producer = $this->findProducer(fn(array $p): bool => $this->normalizeName($p['name']) === $current);
-
-        // A catalog this install does not own the producer for can only be cleared
-        // by someone who may edit any zone.
-        if ($producer === null) {
-            if ($this->permissionService->getZoneMetaEditPermissionLevel($userId) !== 'all') {
-                return false;
-            }
-        } elseif (!$this->canManageZone($userId, $producer['id'])) {
+        if (!$this->mayLeaveCatalog($userId, $current)) {
             return false;
         }
 
@@ -263,6 +261,23 @@ class CatalogZoneService
         $this->auditService?->logZoneCatalogClear($memberZoneId, $this->zoneName($memberZoneId), $current);
 
         return true;
+    }
+
+    /**
+     * Whether $userId may take a member out of the stored catalog $current.
+     *
+     * A catalog this install does not own the producer for can only be left by
+     * someone who may edit any zone.
+     */
+    private function mayLeaveCatalog(int $userId, string $current): bool
+    {
+        $producer = $this->findProducer(fn(array $p): bool => $this->normalizeName($p['name']) === $current);
+
+        if ($producer === null) {
+            return $this->permissionService->getZoneMetaEditPermissionLevel($userId) === 'all';
+        }
+
+        return $this->canManageZone($userId, $producer['id']);
     }
 
     /**
