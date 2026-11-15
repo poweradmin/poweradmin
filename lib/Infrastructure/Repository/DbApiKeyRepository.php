@@ -412,7 +412,11 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void
     {
         $unique = array_values(array_unique(array_map('intval', $zoneIds)));
-        $this->transaction()->begin();
+        // An outer transaction (key creation under the owner's lock) owns the commit
+        $owned = !$this->transaction()->inTransaction();
+        if ($owned) {
+            $this->transaction()->begin();
+        }
         try {
             $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
             $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
@@ -427,9 +431,13 @@ final class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 }
             }
 
-            $this->transaction()->commit();
+            if ($owned) {
+                $this->transaction()->commit();
+            }
         } catch (Exception $e) {
-            $this->transaction()->rollBack();
+            if ($owned) {
+                $this->transaction()->rollBack();
+            }
             throw $e;
         }
 

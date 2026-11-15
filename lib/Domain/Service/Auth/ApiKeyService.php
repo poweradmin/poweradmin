@@ -28,11 +28,14 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Port\ActorInterface;
+use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Repository\UserAdminInterface;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\UserLookupInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -46,6 +49,8 @@ class ApiKeyService
     private LoggerInterface $logger;
     private ActorInterface $actor;
     private PermissionService $permissionService;
+    private ?TransactionInterface $transaction;
+    private ?UserAdminInterface $userLocks;
 
     /**
      * ApiKeyService constructor
@@ -55,6 +60,8 @@ class ApiKeyService
      * @param ConfigurationInterface $config The configuration manager
      * @param PermissionService $permissionService Decides who may see and manage other users' keys
      * @param ActorInterface $actor The user the owner checks are about
+     * @param TransactionInterface|null $transaction With $userLocks, makes the key limit check and the insert one locked step
+     * @param UserAdminInterface|null $userLocks Locks the owner's users row for that step
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
@@ -62,7 +69,9 @@ class ApiKeyService
         ConfigurationInterface $config,
         PermissionService $permissionService,
         ActorInterface $actor,
-        ?LoggerInterface $logger = null
+        ?LoggerInterface $logger = null,
+        ?TransactionInterface $transaction = null,
+        ?UserAdminInterface $userLocks = null
     ) {
         $this->apiKeyRepository = $apiKeyRepository;
         $this->users = $users;
@@ -70,6 +79,8 @@ class ApiKeyService
         $this->permissionService = $permissionService;
         $this->logger = $logger ?? new NullLogger();
         $this->actor = $actor;
+        $this->transaction = $transaction;
+        $this->userLocks = $userLocks;
     }
 
     /**
@@ -154,32 +165,62 @@ class ApiKeyService
             return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_FORBIDDEN, _('You do not have permission to create API keys.'), Refusal::FORBIDDEN);
         }
 
-        $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
-            return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), Refusal::CONFLICT);
-        }
-
         if ($zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
             return $this->zoneScopesNotReady();
         }
 
-        $apiKey = new ApiKey(
-            $name,
-            ApiKey::generateSecretKey(),
-            $userId,
-            new DateTime(),
-            null,
-            false,
-            $expiresAt
-        );
-        $apiKey->setIsReadonly($isReadonly);
-        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
+        $create = function () use ($userId, $name, $expiresAt, $isReadonly, $allowedOperations, $zoneIds): ApiKeyWriteResult {
+            $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
+            if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission(Permission::PERM_USER_IS_UEBERUSER)) {
+                return ApiKeyWriteResult::refused(ApiKeyWriteResult::ERR_LIMIT, _('You have reached the maximum number of API keys allowed.'), Refusal::CONFLICT);
+            }
 
-        $saved = $this->apiKeyRepository->save($apiKey);
-        $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
-        $saved->setZoneIds($zoneIds);
+            $apiKey = new ApiKey(
+                $name,
+                ApiKey::generateSecretKey(),
+                $userId,
+                new DateTime(),
+                null,
+                false,
+                $expiresAt
+            );
+            $apiKey->setIsReadonly($isReadonly);
+            $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
 
-        return ApiKeyWriteResult::ok($saved);
+            $saved = $this->apiKeyRepository->save($apiKey);
+            $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
+            $saved->setZoneIds($zoneIds);
+
+            return ApiKeyWriteResult::ok($saved);
+        };
+
+        if ($this->transaction === null || $this->userLocks === null) {
+            return $create();
+        }
+
+        // The owner's users row serialises parallel creates so the count cannot be read stale.
+        $owned = !$this->transaction->inTransaction();
+        if ($owned) {
+            $this->transaction->begin();
+        }
+        try {
+            $this->userLocks->lockForZoneLimit($userId);
+            $result = $create();
+            if ($owned) {
+                if ($result->success) {
+                    $this->transaction->commit();
+                } else {
+                    $this->transaction->rollBack();
+                }
+            }
+
+            return $result;
+        } catch (Throwable $e) {
+            if ($owned && $this->transaction->inTransaction()) {
+                $this->transaction->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**

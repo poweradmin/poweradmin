@@ -210,7 +210,10 @@ final class AuthServices
             $this->services->userRepository(),
             $this->config,
             $this->services->permissionService(),
-            $this->services->actor()
+            $this->services->actor(),
+            null,
+            $this->services->transaction(),
+            $this->services->userRepository()
         );
     }
 

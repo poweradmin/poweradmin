@@ -596,4 +596,19 @@ class DbApiKeyRepositoryTest extends TestCase
 
         $this->assertNull($result->getCreatedBy());
     }
+
+    #[Test]
+    public function testSaveZoneIdsJoinsAnOpenTransactionAndLeavesTheCommitToIt(): void
+    {
+        $pdo = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $pdo->exec('CREATE TABLE api_key_zones (api_key_id INTEGER, zone_id INTEGER)');
+        $repository = new DbApiKeyRepository($pdo, $this->config, null, true, true);
+
+        $pdo->beginTransaction();
+        $repository->saveZoneIds(1, [4, 5]);
+        $this->assertTrue($pdo->inTransaction());
+        $pdo->rollBack();
+
+        $this->assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM api_key_zones')->fetchColumn());
+    }
 }
