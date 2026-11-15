@@ -186,14 +186,7 @@ class ApiKeyService
             return null;
         }
 
-        // Check maximum number of API keys per user
-        $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
-            $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
-            return null;
-        }
-
-        // Create and save the new API key
+        // Create the new API key
         $apiKey = new ApiKey(
             $name,
             ApiKey::generateSecretKey(),
@@ -204,7 +197,40 @@ class ApiKeyService
             $expiresAt
         );
 
-        return $this->apiKeyRepository->save($apiKey);
+        if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            return $this->apiKeyRepository->save($apiKey);
+        }
+
+        // The cap check and the insert share one transaction holding the owner's row lock
+        $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
+        $this->db->beginTransaction();
+        try {
+            $driver = (string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+            if ($driver === 'sqlite') {
+                // Take the write lock first: a read-then-write upgrade fails at once instead of waiting
+                $this->db->exec('UPDATE users SET id = id WHERE 0');
+            }
+
+            $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id' . DbCompat::rowLock($driver));
+            $stmt->execute([':id' => $userId]);
+            $stmt->fetchAll();
+
+            if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser) {
+                $this->db->rollBack();
+                $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
+                return null;
+            }
+
+            $saved = $this->apiKeyRepository->save($apiKey);
+            $this->db->commit();
+
+            return $saved;
+        } catch (\Throwable $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**
