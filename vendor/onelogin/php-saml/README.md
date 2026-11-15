@@ -1,4 +1,4 @@
-# SAML PHP Toolkit Compatible with PHP 7.3,7.4 & 8.X
+# SAML PHP Toolkit Compatible with PHP 8.X
 
 [![php-saml 4.x-dev package](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml/badge.svg?branch=4.x-dev)](https://github.com/SAML-Toolkits/php-saml/actions/workflows/php-package.yml) [![Coverage Status](https://coveralls.io/repos/github/SAML-Toolkits/php-saml/badge.svg?branch=4.x-dev)](https://coveralls.io/github/SAML-Toolkits/php-saml?branch=4.x-dev) ![Packagist Dependency Version (specify version)](https://img.shields.io/packagist/dependency-v/onelogin/php-saml/php?version=4.0.0) [![License](https://poser.pugx.org/onelogin/php-saml/license.png)](https://packagist.org/packages/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dm/onelogin/php-saml) ![Packagist Downloads](https://img.shields.io/packagist/dt/onelogin/php-saml?label=Total%20downloads)
 
@@ -8,11 +8,13 @@ Add SAML support to your PHP software using this library.
 Warning
 -------
 
+Version 4.4.0 updates xmlseclibs to 4.0.1 due several vulnerabilities discovered. xmlseclibs 4.X uses phpseclib.
+
 Version 4.3.2 updates xmlseclibs to 3.1.5 due [CVE-2026-32313](https://github.com/robrichards/xmlseclibs/security/advisories/GHSA-4v26-v6cg-g6f9)
 
 Version 4.3.1 updates xmlseclibs to 3.1.4 due [CVE-2025-66475](https://github.com/advisories/GHSA-c4cc-x928-vjw9)
 
-This version is compatible with PHP >=7.3 and 8.X and does not include xmlseclibs (you will need to install it via composer, dependency described in composer.json)
+This version is compatible with PHP 8.X and does not include xmlseclibs (you will need to install it via composer, dependency described in composer.json)
 
 Security Guidelines
 -------------------
@@ -114,7 +116,7 @@ In order to import the saml toolkit to your current php project, execute
 composer require onelogin/php-saml
 ```
 
-Remember to select the 3.X.X branch
+Remember to select the 4.X.X branch
 
 After installation has completed you will find at the `vendor/` folder a new folder named `onelogin` and inside the `php-saml`. Make sure you are including the autoloader provided by composer. It can be found at `vendor/autoload.php`.
 
@@ -126,9 +128,9 @@ Your settings are at risk of being deleted when updating packages using `compose
 Compatibility
 -------------
 
-This 4.X.X supports PHP >=7.3 .
+This 4.X.X supports PHP >=8.0 .
 
-It is not compatible with PHP5.6 or PHP7.0, PHP7.1 or PHP7.2
+It is not compatible with PHP 7.X or older
 
 Namespaces
 ----------
@@ -147,6 +149,8 @@ In production, the `strict` parameter **MUST** be set as `"true"` and the
 `signatureAlgorithm` and `digestAlgorithm` under `security` must be set to
 something other than SHA1 (see https://shattered.io/ ). Otherwise your
 environment is not secure and will be exposed to attacks.
+
+In strict mode, the signature of a <samlp:Response> that contains an EncryptedAssertion is verified before decrypting it, and an EncryptedID of a <samlp:LogoutRequest> is decrypted after its signature is verified, so tampered ciphertexts are rejected without being processed.
 
 In production also we highly recommended to register on the settings the IdP certificate instead of using the fingerprint method. The fingerprint, is a hash, so at the end is open to a collision attack that can end on a signature validation bypass. Other SAML toolkits deprecated that mechanism, we maintain it for compatibility and also to be used on test environment.
 
@@ -551,6 +555,17 @@ $advancedSettings = array(
         // Notice that aes-cbc are not consider secure anymore so should not be used
         'encryption_algorithm' => 'http://www.w3.org/2009/xmlenc11#aes128-gcm',
 
+        // Allow RSA-1.5 key transport when decrypting encrypted assertions/NameIDs from
+        // legacy IdPs. xmlseclibs 4 denies RSA-1.5 by default (Bleichenbacher risk).
+        // Enable only for IdPs that still use RSA-1.5; prefer RSA-OAEP where possible.
+        'allowRSA15KeyTransport' => false,
+
+        // Allow CBC data encryption (aes*-cbc, tripledes-cbc) when decrypting encrypted
+        // assertions/NameIDs. CBC is not authenticated and is exposed to padding oracle
+        // attacks. Set it to false to only accept AES-GCM if your IdP supports it
+        // (xmlseclibs 4 still accepts CBC by default).
+        'allowCBCEncryption' => true,
+
         // ADFS URL-Encodes SAML data as lowercase, and the toolkit by default uses
         // uppercase. Turn it True for ADFS compatibility on signature verification
         'lowercaseUrlencoding' => false,
@@ -642,9 +657,10 @@ require_once(TOOLKIT_PATH . '_toolkit_loader.php');
 After that line we will be able to use the classes (and their methods) of the
 toolkit (because the external and the Saml2 libraries files are loaded).
 
-That toolkit depends on [xmlseclibs](https://github.com/robrichards/xmlseclibs) 3.X.X branch,
-you will need to get its code and place on your project and reuse the _toolkit_loader.php
-file to include xmlseclibs as well.
+That toolkit depends on [xmlseclibs](https://github.com/robrichards/xmlseclibs) 4.X.X branch,
+which depends on [phpseclib](https://github.com/phpseclib/phpseclib) 3.X.X. Installing
+via composer is recommended; otherwise you will need to get their code, place it on your
+project and register an autoloader for both libraries before including _toolkit_loader.php.
 
 
 #### Initiate SSO ####
@@ -1193,6 +1209,71 @@ Is possible that asserting request URL and Destination attribute of SAML respons
 You should be able to workaround this by configuring your server so that it is aware of the proxy and returns the original url when requested.
 
 Or by using the method described on the previous section.
+
+
+### Working behind a reverse proxy that strips a path prefix (X-Forwarded-Prefix) ###
+
+Some reverse-proxy strip a path prefix before forwarding the request to the application backend. A typical deployment is:
+
+| Layer        | URL the layer sees                                                |
+| ------------ | ------------------------------------------------------------------|
+| User browser | `https://domain.com/portal/connect/azure/check`                   |
+| IdP signs    | `https://domain.com/portal/connect/azure/check` as `@Destination` |
+| Proxy        | strips `/portal`                                                  |
+| Application  | sees `REQUEST_URI = /connect/azure/check`, no `HTTPS`, plus       |
+|              |  `X-Forwarded-Proto`: `https` and `X-Forwarded-Prefix`: `/portal` |
+
+In this scenario two pieces of the original URL are missing from the
+application server's `$_SERVER`: the HTTPs scheme and the path prefix.
+`setProxyVars(true)` covers the scheme (and the port) via
+`X-Forwarded-Proto` / `X-Forwarded-Port`, but the toolkit does **not**
+read `X-Forwarded-Prefix`. As a result `Utils::getSelfRoutedURLNoQuery()`
+returns `https://domain.com/connect/azure/check` (after `setProxyVars(true)`),
+which does not match the IdP-signed `@Destination`
+`https://domain.com/portal/connect/azure/check`, and validation fails
+with `The response was received at X instead of Y`.
+
+No code changes to the toolkit are required to make this work.
+Two equivalent approaches using only the public `Utils` API:
+
+**Option A**
+
+```php
+use OneLogin\Saml2\Utils;
+
+Utils::setProxyVars(true);
+Utils::setBaseURL('https://domain.com/portal/');  // scheme + host + prefix
+$auth->processResponse();
+```
+
+`setBaseURL` parses its argument into protocol, host, port and
+`baseURLPath`, then `getSelfRoutedURLNoQuery()` prepends the
+`baseURLPath` to the proxy-stripped `REQUEST_URI`, producing the
+original full URL the IdP signed.
+
+> **Important:** pass `setBaseURL` the URL *up to and including the
+> stripped prefix*, with a trailing slash — e.g.
+> `'https://domain.com/portal/'`. Do **not** pass the full ACS URL
+> (e.g. `'https://domain.com/portal/connect/azure/check'`); doing so
+> causes `buildWithBaseURLPath` to append `REQUEST_URI` to a
+> `baseURLPath` that already contains it, producing a doubled path
+> like `/portal/connect/azure/check/connect/azure/check`.
+
+**Option B**
+
+Use this form if the application already reads `X-Forwarded-*` headers
+through a framework abstraction and wants to feed each component to the
+toolkit explicitly:
+
+```php
+use OneLogin\Saml2\Utils;
+
+Utils::setSelfProtocol('https');
+Utils::setSelfHost('domain.com');
+Utils::setSelfPort(443);
+Utils::setBaseURLPath('/portal');
+$auth->processResponse();
+```
 
 
 ### SP Key rollover ###
