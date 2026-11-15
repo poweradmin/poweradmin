@@ -18,8 +18,8 @@ if [ ! -f "$PDNS_DB" ]; then
     sqlite3 "$PDNS_DB" < /schema.sqlite3.sql
     # Add Poweradmin tables
     sqlite3 "$PDNS_DB" < /poweradmin-schema.sql
-    # Set admin password to 'poweradmin123'
-    sqlite3 "$PDNS_DB" "UPDATE users SET password = '\$2y\$12\$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi' WHERE username = 'admin';"
+    # Create admin user with password 'poweradmin123'
+    sqlite3 "$PDNS_DB" "INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (1, 'admin', '\$2y\$12\$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Administrator', 'admin@example.net', 'Administrator with full rights.', 1, 1, 0);"
     chmod 666 "$PDNS_DB"
     echo "Combined database created successfully."
 else

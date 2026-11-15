@@ -14,9 +14,9 @@ EOSQL
 echo "Importing poweradmin schema..."
 mysql -u root -p"${MYSQL_ROOT_PASSWORD}" poweradmin < /docker-entrypoint-initdb.d/poweradmin-schema.sql
 
-echo "Setting admin password to 'poweradmin123'..."
+echo "Creating admin user with password 'poweradmin123'..."
 mysql -u root -p"${MYSQL_ROOT_PASSWORD}" poweradmin <<-EOSQL
-    UPDATE users SET password = '\$2y\$12\$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi' WHERE username = 'admin';
+    INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (1, 'admin', '\$2y\$12\$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Administrator', 'admin@example.net', 'Administrator with full rights.', 1, 1, 0);
 EOSQL
 
 echo "Poweradmin database initialized successfully."

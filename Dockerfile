@@ -40,6 +40,7 @@ COPY . .
 RUN mkdir -p /db /app/inc \
     && sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql \
     && sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql \
+    && php -r '$d=new PDO("sqlite:/db/pdns.db"); $d->prepare("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (1, ?, ?, ?, ?, ?, 1, 1, 0)")->execute(["admin", password_hash("testadmin", PASSWORD_DEFAULT), "Administrator", "admin@example.net", "Administrator with full rights."]);' \
     && rm -rf /app/sql \
     && echo '<?php' > /app/inc/config.inc.php \
     && echo '$db_type="sqlite";' >> /app/inc/config.inc.php \
