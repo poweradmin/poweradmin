@@ -264,6 +264,16 @@ class CatalogZoneService
     }
 
     /**
+     * Whether $userId may take the zone out of the catalog it is in now; true when it is in none.
+     */
+    public function mayLeaveCurrentCatalog(int $userId, int $memberZoneId): bool
+    {
+        $current = $this->backendProvider->getZoneCatalog($memberZoneId);
+
+        return $current === '' || $this->mayLeaveCatalog($userId, $current);
+    }
+
+    /**
      * Whether $userId may take a member out of the stored catalog $current.
      *
      * A catalog this install does not own the producer for can only be left by

@@ -262,6 +262,7 @@ class EditController extends BaseController
         $catalog_service = $this->services()->catalogZoneService();
         $catalog_name = $catalog_selector_view ? $catalog_service->getCatalog($zone_id) : '';
         $catalog_producer = $catalog_name !== '' ? $catalog_service->getCatalogProducer($zone_id) : null;
+        $catalog_locked = $catalog_name !== '' && !$catalog_service->mayLeaveCurrentCatalog($userId, $zone_id);
         $catalog_producers = $catalog_selector_view && $meta_edit ? $catalog_service->getManageableProducers($userId) : [];
 
         $zone_template_id = $this->services()->zoneTemplateRepository()->getTemplateIdForZone($zone_id);
@@ -389,6 +390,7 @@ class EditController extends BaseController
             dnsWizardActions: $this->moduleCapabilityData(ModuleInterface::CAP_DNS_WIZARD, ['zone_id' => $zone_id]),
             exportFormats: $this->moduleCapabilityData(ModuleInterface::CAP_ZONE_EXPORT, ['zone_id' => $zone_id]),
             importEnabled: $this->moduleProvides(ModuleInterface::CAP_ZONE_IMPORT),
+            catalogLocked: $catalog_locked,
         );
 
         $this->render('edit.html', $presenter->toTemplateVariables() + [

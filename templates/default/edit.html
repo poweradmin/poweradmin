@@ -992,11 +992,12 @@
                             <div class="input-group input-group-sm">
                                 <select class="form-select form-select-sm" name="new_catalog" data-testid="zone-catalog-select">
                                     <option value="">none</option>
-                                    {% if catalog_name and not catalog_producer_id %}
+                                    {% set catalog_keep = catalog_name and (catalog_locked or not catalog_producer_id) %}
+                                    {% if catalog_keep %}
                                     <option value="keep" selected>{{ catalog_name }} ({% trans %}not managed here{% endtrans %})</option>
                                     {% endif %}
                                     {% for producer in catalog_producers %}
-                                    <option value="{{ producer['id'] }}" {% if producer['id'] == catalog_producer_id %}selected{% endif %}>{{ producer['name'] }}</option>
+                                    <option value="{{ producer['id'] }}" {% if producer['id'] == catalog_producer_id and not catalog_keep %}selected{% endif %}>{{ producer['name'] }}</option>
                                     {% endfor %}
                                 </select>
                                 <button class="btn btn-outline-secondary btn-sm" type="submit" name="catalog_change">

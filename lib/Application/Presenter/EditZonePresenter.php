@@ -131,6 +131,7 @@ final class EditZonePresenter
         private readonly array $dnsWizardActions,
         private readonly array $exportFormats,
         private readonly bool $importEnabled,
+        private readonly bool $catalogLocked = false,
     ) {
     }
 
@@ -205,6 +206,8 @@ final class EditZonePresenter
             // Non-empty with a null producer id means the zone is in a catalog whose
             // producer this install does not manage. Shown so it is not silently lost.
             'catalog_name' => $this->catalogName,
+            // The user may not leave the zone's current catalog, so the selector can only keep it
+            'catalog_locked' => $this->catalogLocked,
             'zone_templates' => $this->zoneTemplates,
             'zone_template_id' => $this->zoneTemplateId,
             'zone_template_details' => $this->zoneTemplateDetails,

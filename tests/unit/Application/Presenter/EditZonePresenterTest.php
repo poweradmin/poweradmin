@@ -233,6 +233,12 @@ class EditZonePresenterTest extends TestCase
         $this->assertFalse($this->present(['domainType' => 'PRODUCER'])['zone_type_change_allowed']);
     }
 
+    public function testCatalogSelectorIsLockedOnlyWhenTheControllerSaysTheCurrentCatalogCannotBeLeft(): void
+    {
+        $this->assertFalse($this->present(['catalogName' => 'cat.example'])['catalog_locked']);
+        $this->assertTrue($this->present(['catalogName' => 'cat.example', 'catalogLocked' => true])['catalog_locked']);
+    }
+
     public function testCatalogMembersViewNeedsAProducerMetadataViewAndServerSupport(): void
     {
         $producer = ['domainType' => 'PRODUCER', 'permMetadataView' => 'all'];
@@ -402,7 +408,7 @@ class EditZonePresenterTest extends TestCase
             'zone_id', 'zone_name', 'zone_name_to_display', 'idn_zone_name', 'zone_display_name', 'zone_comment',
             'zone_comment_conflict', 'zone_comment_restored', 'stored_zone_comment', 'domain_type', 'slave_master', 'zone_types',
             'zone_replicates_from_primary', 'can_notify_zone', 'can_retrieve_zone', 'zone_type_change_allowed', 'catalog_members_view',
-            'catalog_selector_view', 'catalog_producers', 'catalog_producer_id', 'catalog_name', 'zone_templates',
+            'catalog_selector_view', 'catalog_producers', 'catalog_producer_id', 'catalog_name', 'catalog_locked', 'zone_templates',
             'zone_template_id', 'zone_template_details', 'record_count', 'filtered_record_count', 'records',
             'records_have_timestamps', 'stale_form_dropped', 'perm_view', 'perm_edit', 'perm_edit_ns_subzone', 'perm_meta_edit', 'meta_edit',
             'metadata_view', 'ownership_view', 'zone_is_read_only', 'user_can_edit_zone', 'zone_is_editable',

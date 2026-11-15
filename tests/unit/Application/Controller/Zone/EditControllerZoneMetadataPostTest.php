@@ -23,6 +23,7 @@ use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Auth\PermissionService;
+use Poweradmin\Domain\Service\Zone\CatalogZoneService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -83,6 +84,20 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('updateZoneRecords');
 
         $this->invokeHandler($domainManager, 42);
+    }
+
+    /** The selector's only choice for a catalog the user may not leave must write nothing */
+    public function testCatalogKeepChoiceWritesNothingToTheCatalog(): void
+    {
+        $_POST = ['catalog_change' => '1', 'new_catalog' => 'keep'];
+
+        $catalog = $this->createMock(CatalogZoneService::class);
+        $catalog->expects($this->never())->method('assign');
+        $catalog->expects($this->never())->method('clear');
+
+        $messages = $this->invokeHandler($this->createMock(DomainManagerInterface::class), 42, catalogService: $catalog);
+
+        $this->assertSame([], $messages);
     }
 
     public function testTypeChangeNeedsTheCreateGrantForTheTargetType(): void
@@ -300,7 +315,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         array $configOverrides = [],
         bool $canCreateZone = true,
         ?ZoneManagementService $zoneService = null,
-        bool $sqlApiClient = false
+        bool $sqlApiClient = false,
+        ?CatalogZoneService $catalogService = null
     ): array {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
@@ -315,6 +331,9 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
         $factory->method('domainManager')->willReturn($domainManager);
+        if ($catalogService !== null) {
+            $factory->method('catalogZoneService')->willReturn($catalogService);
+        }
         $config = $this->primeConfig($configOverrides);
         $factory->method('dnsBackendProvider')->willReturn($config->get('dns', 'backend') === 'api'
             ? new ApiDnsBackendProvider($this->createMock(PowerdnsApiClient::class), $this->createMock(PDO::class), $config, new ApiStatusService(new ArraySession()), new NullLogger())

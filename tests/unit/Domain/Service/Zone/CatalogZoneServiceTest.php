@@ -261,6 +261,20 @@ class CatalogZoneServiceTest extends TestCase
         $this->assertFalse($this->service->clear(1, 7));
     }
 
+    #[Test]
+    public function mayLeaveCurrentCatalogFollowsTheRuleClearApplies(): void
+    {
+        $this->permissions->method('getZoneMetaEditPermissionLevel')->willReturn('own');
+        $this->permissions->method('userOwnsZone')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $zoneId === 7
+        );
+        $this->producers([['id' => 5, 'name' => 'producer.example.com', 'catalog' => '']]);
+        $this->backend->method('getZoneCatalog')->willReturnMap([[7, 'producer.example.com'], [8, '']]);
+
+        $this->assertFalse($this->service->mayLeaveCurrentCatalog(1, 7));
+        $this->assertTrue($this->service->mayLeaveCurrentCatalog(1, 8));
+    }
+
     // ---- listings ----
 
     #[Test]
