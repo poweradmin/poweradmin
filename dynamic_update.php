@@ -60,7 +60,7 @@ $dnsRecord = new DnsRecord($db, $config);
 $backendProvider = DnsBackendProviderFactory::create($db, $config);
 $repository = $backendProvider->isApiBackend()
     ? new ApiDynamicDnsRepository($db, $dnsRecord, $backendProvider)
-    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table, $tableNameService->getTable(PdnsTable::COMMENTS));
+    : new SqlDynamicDnsRepository($db, $dnsRecord, $records_table, $tableNameService->getTable(PdnsTable::COMMENTS), $tableNameService->getTable(PdnsTable::DOMAINS));
 
 $validationService = new DynamicDnsValidationService($config);
 

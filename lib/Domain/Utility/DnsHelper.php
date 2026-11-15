@@ -89,6 +89,27 @@ class DnsHelper
     }
 
     /**
+     * Tell whether a record name falls within a zone: the zone apex itself or any
+     * name under it. Comparison is case-insensitive and anchored on a label
+     * boundary, so "testexample.com" is not treated as inside "example.com".
+     *
+     * Names are compared as given (no trailing-dot normalization); callers that
+     * accept FQDN-dotted input must normalize it before matching.
+     */
+    public static function isWithinZone(string $name, string $zoneName): bool
+    {
+        // A view variant holds its records under its apex name; keep the caller's dot form
+        if (self::isViewVariant($zoneName)) {
+            $zoneName = self::zoneApexName($zoneName) . (str_ends_with($zoneName, '.') ? '.' : '');
+        }
+
+        $name = strtolower($name);
+        $zoneName = strtolower($zoneName);
+
+        return $name === $zoneName || str_ends_with($name, '.' . $zoneName);
+    }
+
+    /**
      * Resolve user input on a reverse-zone form to a reverse zone name.
      *
      * Passes an already-valid reverse zone name through unchanged and converts

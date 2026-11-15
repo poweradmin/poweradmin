@@ -86,9 +86,14 @@ class ApiDynamicDnsRepository implements DynamicDnsRepositoryInterface
         $query = $this->db->prepare("SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn() . " AS domain_id FROM zones WHERE owner = :user_id");
         $query->execute([':user_id' => $user->getId()]);
 
+        // SQL stays inside Poweradmin-native tables; zone names come from the API
         $zones = [];
         while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+            $zoneId = (int)$zone['domain_id'];
+            $name = $this->backendProvider->getZoneNameById($zoneId);
+            if ($name !== null) {
+                $zones[$zoneId] = $name;
+            }
         }
 
         return $zones;

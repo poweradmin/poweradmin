@@ -74,7 +74,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->once())
             ->method('getDnsRecords')
@@ -134,7 +134,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->once())
             ->method('getDnsRecords')
@@ -195,7 +195,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->exactly(2))
             ->method('getDnsRecords')
@@ -271,7 +271,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1]);
+            ->willReturn([1 => 'example.com']);
 
         $this->repository->expects($this->never())
             ->method('getDnsRecords');
@@ -387,7 +387,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
         $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
-        $this->authService->method('getUserZones')->willReturn([1]);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
         $this->validationService->expects($this->once())
             ->method('createValidatedHostname')
             ->with('test.example.com')
@@ -409,7 +409,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
         $this->validationService->method('createValidatedHostname')->willReturn($hostname);
         $this->validationService->method('createValidatedIpList')->willReturn($ipList);
-        $this->authService->method('getUserZones')->willReturn([7]);
+        $this->authService->method('getUserZones')->willReturn([7 => 'example.com']);
         $this->repository->method('getDnsRecords')
             ->willReturnOnConsecutiveCalls([], ['192.168.1.1' => 123]);
 
@@ -426,5 +426,52 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertSame('good', $service->processUpdate($request));
         $this->assertSame('nochg', $service->processUpdate($request));
         $this->assertSame([7], $rectified);
+    }
+
+    public function testAHostnameIsWrittenOnlyIntoTheOwnedZoneItBelongsTo(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'www.victim.example', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $hostname = new HostnameValue('www.victim.example');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
+        $this->validationService->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'mine.example', 2 => 'victim.example', 3 => 'notvictim.example']);
+        $this->repository->method('getDnsRecords')->willReturn([]);
+        $this->repository->expects($this->once())->method('insertDnsRecord')->with(2, $hostname, 'A', '192.168.1.1');
+
+        $this->assertSame('good', $this->service->processUpdate($request));
+    }
+
+    public function testTheMostSpecificOwnedZoneWins(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'h.sub.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $hostname = new HostnameValue('h.sub.example.com');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
+        $this->validationService->method('createValidatedHostname')->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com', 2 => 'sub.example.com']);
+        $this->repository->method('getDnsRecords')->willReturn([]);
+        $this->repository->expects($this->once())->method('insertDnsRecord')->with(2, $hostname, 'A', '192.168.1.1');
+
+        $this->assertSame('good', $this->service->processUpdate($request));
+    }
+
+    public function testAHostnameOutsideEveryOwnedZoneAnswersNohost(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'www.victim.example', '192.168.1.1', '', false, 'TestAgent/1.0');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
+        $this->validationService->method('createValidatedHostname')->willReturn(new HostnameValue('www.victim.example'));
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'mine.example', 3 => 'notvictim.example']);
+        $this->repository->expects($this->never())->method('insertDnsRecord');
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $this->assertSame('nohost', $this->service->processUpdate($request));
     }
 }

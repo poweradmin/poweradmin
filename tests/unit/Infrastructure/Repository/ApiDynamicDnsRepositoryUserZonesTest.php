@@ -44,10 +44,15 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, owner INTEGER)");
 
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('getZoneNameById')->willReturnCallback(
+            static fn(int $id): ?string => ['30' => 'shared.example.com', '55' => 'stranded.example.com', '56' => 'nulled.example.com', '201' => 'migrated.example.com', '40' => 'mine.example.com'][$id] ?? null
+        );
+
         $this->repository = new ApiDynamicDnsRepository(
             $this->db,
             $this->createMock(DnsRecord::class),
-            $this->createMock(DnsBackendProvider::class)
+            $provider
         );
     }
 
@@ -64,7 +69,7 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
     private function zonesFor(int $userId): array
     {
         $zones = $this->repository->getUserZones(new User($userId, 'hash', false));
-        sort($zones);
+        ksort($zones);
 
         return $zones;
     }
@@ -76,28 +81,28 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->seed(30, 30, 'shared.example.com', 1);
         $this->seed(31, 30, null, 2);
 
-        $this->assertSame([30], $this->zonesFor(2));
+        $this->assertSame([30 => 'shared.example.com'], $this->zonesFor(2));
     }
 
     public function testStrandedZoneResolvesToItsOwnId(): void
     {
         $this->seed(55, 0, 'stranded.example.com', 1);
 
-        $this->assertSame([55], $this->zonesFor(1));
+        $this->assertSame([55 => 'stranded.example.com'], $this->zonesFor(1));
     }
 
     public function testNullDomainIdZoneResolvesToItsOwnId(): void
     {
         $this->seed(56, null, 'nulled.example.com', 1);
 
-        $this->assertSame([56], $this->zonesFor(1));
+        $this->assertSame([56 => 'nulled.example.com'], $this->zonesFor(1));
     }
 
     public function testMigratedZoneResolvesByDomainId(): void
     {
         $this->seed(7, 201, 'migrated.example.com', 1);
 
-        $this->assertSame([201], $this->zonesFor(1));
+        $this->assertSame([201 => 'migrated.example.com'], $this->zonesFor(1));
     }
 
     public function testAnotherUsersZoneIsNotListed(): void
@@ -112,6 +117,6 @@ class ApiDynamicDnsRepositoryUserZonesTest extends TestCase
         $this->seed(40, 40, 'mine.example.com', 1);
         $this->seed(41, 40, null, 1);
 
-        $this->assertSame([40], $this->zonesFor(1));
+        $this->assertSame([40 => 'mine.example.com'], $this->zonesFor(1));
     }
 }

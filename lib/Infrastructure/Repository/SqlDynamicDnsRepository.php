@@ -38,9 +38,11 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
     private DnsRecord $dnsRecord;
     private string $recordsTable;
     private string $commentsTable;
+    private string $domainsTable;
 
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, string $commentsTable = 'comments')
+    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, string $commentsTable = 'comments', string $domainsTable = 'domains')
     {
+        $this->domainsTable = $domainsTable;
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
         $this->recordsTable = $recordsTable;
@@ -80,12 +82,18 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
 
     public function getUserZones(User $user): array
     {
-        $query = $this->db->prepare('SELECT domain_id FROM zones WHERE owner = :user_id');
+        // Names are needed to match the submitted hostname against the zone it belongs to
+        $query = $this->db->prepare("
+            SELECT DISTINCT d.id AS domain_id, d.name AS name
+            FROM zones z
+            INNER JOIN {$this->domainsTable} d ON d.id = z.domain_id
+            WHERE z.owner = :user_id
+        ");
         $query->execute([':user_id' => $user->getId()]);
 
         $zones = [];
         while ($zone = $query->fetch(PDO::FETCH_ASSOC)) {
-            $zones[] = (int)$zone['domain_id'];
+            $zones[(int)$zone['domain_id']] = (string)$zone['name'];
         }
 
         return $zones;

@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Domain\ValueObject\IpAddressList;
@@ -80,6 +81,10 @@ class DynamicDnsUpdateService
             }
 
             // Records already matched the supplied addresses - dyndns2 expects 'nochg', not 'good'.
+            if ($updateResult['noHost'] ?? false) {
+                return 'nohost';
+            }
+
             return $updateResult['hasValidRecords'] ? 'nochg' : '!yours';
         } catch (\Exception $e) {
             return 'dnserr';
@@ -88,43 +93,45 @@ class DynamicDnsUpdateService
 
     private function updateUserZones(User $user, HostnameValue $hostname, IpAddressList $ipList, bool $dualstackUpdate): array
     {
-        $userZones = $this->authService->getUserZones($user);
+        // Only the zone the hostname belongs to is written, never every owned zone
+        $zoneId = $this->findOwningZone($user, $hostname);
+        if ($zoneId === null) {
+            return ['wasUpdated' => false, 'hasValidRecords' => false, 'noHost' => true];
+        }
+
         $wasUpdated = false;
         $hasValidRecords = false;
+        $zoneUpdated = false;
 
-        foreach ($userZones as $zoneId) {
-            $zoneUpdated = false;
-
-            // For dualstack updates, always process both record types (even if no IPs provided)
-            // This allows clearing records when switching from dual-stack to single-stack
-            if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
-                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
-                if ($syncResult['wasUpdated']) {
-                    $zoneUpdated = true;
-                    $wasUpdated = true;
-                }
-                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
-                    $hasValidRecords = true;
-                }
+        // For dualstack updates, always process both record types (even if no IPs provided)
+        // This allows clearing records when switching from dual-stack to single-stack
+        if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
+            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
+            if ($syncResult['wasUpdated']) {
+                $zoneUpdated = true;
+                $wasUpdated = true;
             }
-
-            if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
-                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
-                if ($syncResult['wasUpdated']) {
-                    $zoneUpdated = true;
-                    $wasUpdated = true;
-                }
-                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
-                    $hasValidRecords = true;
-                }
+            if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                $hasValidRecords = true;
             }
+        }
 
-            if ($zoneUpdated) {
-                $this->repository->updateSOASerial($zoneId);
-                // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
-                if ($this->rectifyZone !== null) {
-                    ($this->rectifyZone)($zoneId);
-                }
+        if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
+            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
+            if ($syncResult['wasUpdated']) {
+                $zoneUpdated = true;
+                $wasUpdated = true;
+            }
+            if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                $hasValidRecords = true;
+            }
+        }
+
+        if ($zoneUpdated) {
+            $this->repository->updateSOASerial($zoneId);
+            // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
+            if ($this->rectifyZone !== null) {
+                ($this->rectifyZone)($zoneId);
             }
         }
 
@@ -132,6 +139,33 @@ class DynamicDnsUpdateService
             'wasUpdated' => $wasUpdated,
             'hasValidRecords' => $hasValidRecords
         ];
+    }
+
+    /**
+     * The most specific owned zone containing the hostname, matched on a label boundary.
+     */
+    private function findOwningZone(User $user, HostnameValue $hostname): ?int
+    {
+        $fqdn = strtolower($hostname->getValue());
+
+        $bestZoneId = null;
+        $bestZoneName = null;
+        $bestLength = -1;
+        foreach ($this->authService->getUserZones($user) as $zoneId => $zoneName) {
+            $zone = strtolower($zoneName);
+            $apexLength = strlen(DnsHelper::zoneApexName($zone));
+            // On an equal apex the base zone wins over its view variant (DDNS has no view context)
+            $beatsBest = $apexLength > $bestLength
+                || ($apexLength === $bestLength && $bestZoneName !== null
+                    && DnsHelper::isViewVariant($bestZoneName) && !DnsHelper::isViewVariant($zone));
+            if (DnsHelper::isWithinZone($fqdn, $zone) && $beatsBest) {
+                $bestZoneId = $zoneId;
+                $bestZoneName = $zone;
+                $bestLength = $apexLength;
+            }
+        }
+
+        return $bestZoneId;
     }
 
     private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps): array

@@ -311,4 +311,12 @@ class DnsHelperTest extends TestCase
         $this->assertSame('www.example.com', DnsHelper::restoreZoneSuffix('www', 'example.com..internal'));
         $this->assertSame('example.com', DnsHelper::restoreZoneSuffix('@', 'example.com..internal'));
     }
+
+    public function testIsWithinZoneAnchorsOnTheLabelBoundary(): void
+    {
+        $this->assertTrue(DnsHelper::isWithinZone('example.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isWithinZone('WWW.Example.com', 'example.com'));
+        $this->assertFalse(DnsHelper::isWithinZone('testexample.com', 'example.com'));
+        $this->assertTrue(DnsHelper::isWithinZone('www.example.com', 'example.com..internal'));
+    }
 }

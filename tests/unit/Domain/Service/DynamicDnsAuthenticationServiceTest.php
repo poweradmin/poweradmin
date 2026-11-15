@@ -129,10 +129,10 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->mockRepository->expects($this->once())
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1, 2]);
+            ->willReturn([1 => 'a.example', 2 => 'b.example']);
 
         $zones = $this->authService->getUserZones($user);
-        $this->assertEquals([1, 2], $zones);
+        $this->assertEquals([1 => 'a.example', 2 => 'b.example'], $zones);
     }
 
     public function testGetUserZonesEmpty(): void
@@ -155,7 +155,7 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->mockRepository->expects($this->exactly(3))
             ->method('getUserZones')
             ->with($user)
-            ->willReturn([1, 2]);
+            ->willReturn([1 => 'a.example', 2 => 'b.example']);
 
         $this->assertTrue($this->authService->userCanUpdateZone($user, 1));
         $this->assertTrue($this->authService->userCanUpdateZone($user, 2));

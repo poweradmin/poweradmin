@@ -83,6 +83,6 @@ class DynamicDnsAuthenticationService
     public function userCanUpdateZone(User $user, int $zoneId): bool
     {
         $userZones = $this->getUserZones($user);
-        return in_array($zoneId, $userZones, true);
+        return array_key_exists($zoneId, $userZones);
     }
 }
