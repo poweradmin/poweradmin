@@ -347,7 +347,12 @@ class ZoneFileImportController extends BaseController
             // This path calls addDomain() directly, which does not validate, so an
             // unconvertible name would otherwise be stored raw and never resolve.
             $hostnameValidator = new HostnameValidator($this->config);
-            if (!$hostnameValidator->isValid($zoneName)) {
+            // Zones are stored without the trailing dot, so strip it before any check or lookup
+            $zoneNameValid = $hostnameValidator->isValid($zoneName);
+            if ($zoneNameValid && $zoneName !== '.') {
+                $zoneName = preg_replace('/\.$/D', '', $zoneName);
+            }
+            if (!$zoneNameValid) {
                 $this->showError(_('This is an invalid zone name.'));
                 return;
             }

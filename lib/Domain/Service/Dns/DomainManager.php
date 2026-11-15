@@ -181,6 +181,11 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = [], ?string $soaEditApi = null): bool
     {
+        // Zones are stored without the trailing dot, as ZoneManagementService does
+        if ($domain !== '.') {
+            $domain = preg_replace('/\.$/D', '', $domain);
+        }
+
         // Last-resort guard: not every caller whitelists the kind, and an unknown
         // string would otherwise be written straight into the zone type.
         if (!in_array(strtoupper($type), ZoneType::getAllTypes(), true)) {

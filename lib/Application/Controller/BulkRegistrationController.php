@@ -218,7 +218,12 @@ class BulkRegistrationController extends BaseController
         $domainManager = $this->createDomainManager();
         $hostnameValidator = new HostnameValidator($this->config);
         foreach ($domains as $domain) {
-            if (!$hostnameValidator->isValid($domain)) {
+            // Zones are stored without the trailing dot, so strip it before any check or lookup
+            $zoneNameValid = $hostnameValidator->isValid($domain);
+            if ($zoneNameValid && $domain !== '.') {
+                $domain = preg_replace('/\.$/D', '', $domain);
+            }
+            if (!$zoneNameValid) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('Invalid hostname.')];
             } elseif ($domainRepository->domainExists($domain)) {
                 $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];

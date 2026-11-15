@@ -274,7 +274,12 @@ class AddZoneMasterController extends BaseController
         $domainRepository = $this->createDomainRepository();
         $recordRepository = $this->createRecordRepository();
         $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($zone_name)) {
+        // Zones are stored without the trailing dot, so strip it before any check or lookup
+        $zoneNameValid = $hostnameValidator->isValid($zone_name);
+        if ($zoneNameValid && $zone_name !== '.') {
+            $zone_name = preg_replace('/\.$/D', '', $zone_name);
+        }
+        if (!$zoneNameValid) {
             // Don't add a generic error as the validation method already sets a specific one
             $this->showForm();
         } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone_name) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone_name))) {

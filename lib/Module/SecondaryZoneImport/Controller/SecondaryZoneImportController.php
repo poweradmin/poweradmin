@@ -171,7 +171,12 @@ class SecondaryZoneImportController extends BaseController
         $domainManager = $this->createDomainManager();
         $hostnameValidator = new HostnameValidator($this->config);
 
-        if (!$hostnameValidator->isValid($zone)) {
+        // Zones are stored without the trailing dot, so strip it before any check or lookup
+        $zoneNameValid = $hostnameValidator->isValid($zone);
+        if ($zoneNameValid && $zone !== '.') {
+            $zone = preg_replace('/\.$/D', '', $zone);
+        }
+        if (!$zoneNameValid) {
             $this->setMessage('import', 'error', _('Invalid hostname.'));
             $this->showForm();
             return;
