@@ -68,7 +68,7 @@ function copyApiKey() {
     
     const button = document.getElementById('copy-button');
     const originalHTML = button.innerHTML;
-    button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i> {% trans %}Copied!{% endtrans %}';
+    button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i> {{ 'Copied!'|trans|e('js') }}';
     button.classList.remove('btn-outline-secondary');
     button.classList.add('btn-success');
     

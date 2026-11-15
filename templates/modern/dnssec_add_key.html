@@ -125,7 +125,7 @@
                             // Show recommendation for the selected algorithm
                             const validBits = algorithmBitsMap[selectedAlgorithm] || [];
                             if (validBits.length > 0) {
-                                algorithmHelp.textContent = `{% trans %}Recommended bits for{% endtrans %} ${algorithmNames[selectedAlgorithm]}: ${validBits.join(' or ')}`;
+                                algorithmHelp.textContent = `{{ 'Recommended bits for'|trans|e('js') }} ${algorithmNames[selectedAlgorithm]}: ${validBits.join(' or ')}`;
                             } else {
                                 algorithmHelp.textContent = '';
                             }
@@ -133,7 +133,7 @@
                             // Check if current bits are valid for the selected algorithm
                             const selectedBits = bitsSelect.value;
                             if (selectedBits && selectedAlgorithm && validBits.indexOf(selectedBits) === -1) {
-                                bitWarning.textContent = `{% trans %}Warning:{% endtrans %} ${selectedBits} {% trans %}bits is not recommended for{% endtrans %} ${algorithmNames[selectedAlgorithm]}`;
+                                bitWarning.textContent = `{{ 'Warning:'|trans|e('js') }} ${selectedBits} {{ 'bits is not recommended for'|trans|e('js') }} ${algorithmNames[selectedAlgorithm]}`;
                                 
                                 // Disable submit if the combination is completely invalid
                                 if (

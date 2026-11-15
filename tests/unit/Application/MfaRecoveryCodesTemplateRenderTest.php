@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
+use Symfony\Component\Translation\Loader\ArrayLoader;
 use Symfony\Component\Translation\Translator;
 use Twig\Environment;
 use Twig\Extra\Intl\IntlExtension;
@@ -54,10 +55,26 @@ class MfaRecoveryCodesTemplateRenderTest extends TestCase
         $this->assertStringContainsString('name="mfa_code"', $form[0]);
     }
 
-    private function render(string $theme): string
+    #[DataProvider('themeProvider')]
+    public function testScriptSurvivesApostropheInTranslation(string $theme): void
+    {
+        $msgid = 'Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.';
+        $translator = new Translator('fr');
+        $translator->addLoader('array', new ArrayLoader());
+        $translator->addResource('array', [$msgid => "Gardez-les, l'acc\u{00e8}s"], 'fr');
+
+        $html = $this->render($theme, $translator);
+
+        preg_match('~<script>(.*?)</script>~s', $html, $script);
+        $this->assertNotEmpty($script);
+        $this->assertStringNotContainsString("l'acc", $script[1]);
+        $this->assertStringContainsString('l\\u0027acc', $script[1]);
+    }
+
+    private function render(string $theme, ?Translator $translator = null): string
     {
         $twig = new Environment(new FilesystemLoader(dirname(__DIR__, 3) . '/templates/' . $theme));
-        $twig->addExtension(new TranslationExtension(new Translator('en')));
+        $twig->addExtension(new TranslationExtension($translator ?? new Translator('en')));
         $twig->addExtension(new IntlExtension());
         $twig->addGlobal('base_url_prefix', '');
         $twig->addGlobal('csrf_token', 'token');

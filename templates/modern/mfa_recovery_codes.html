@@ -98,8 +98,8 @@
     
     document.body.innerHTML = 
       '<div style="padding: 20px;">' +
-      '<h2>{% trans %}Poweradmin MFA Recovery Codes{% endtrans %}</h2>' +
-      '<p>{% trans %}Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.{% endtrans %}</p>' +
+      '<h2>{{ 'Poweradmin MFA Recovery Codes'|trans|e('js') }}</h2>' +
+      '<p>{{ 'Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.'|trans|e('js') }}</p>' +
       '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: monospace; font-size: 14px;">' + 
       printContents + 
       '</div>' +
@@ -112,7 +112,7 @@
   function downloadCodes() {
     var codes = [{% for code in recovery_codes %}"{{ code }}"{% if not loop.last %}, {% endif %}{% endfor %}];
     var text = "Poweradmin MFA Recovery Codes\n\n";
-    text += "{% trans %}Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.{% endtrans %}\n\n";
+    text += "{{ 'Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.'|trans|e('js') }}\n\n";
     
     codes.forEach(function(code) {
       text += code + "\n";
