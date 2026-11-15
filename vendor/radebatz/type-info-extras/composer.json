@@ -21,7 +21,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "1.x-dev"
+      "dev-main": "1.x-dev"
     }
   },
   "require": {
@@ -43,21 +43,24 @@
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.70",
     "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^11.0"
+    "phpunit/phpunit": "^11.0",
+    "rector/rector": "^2.0"
   },
   "scripts-descriptions": {
     "cs": "Fix all codestyle issues",
-    "lint": "Test codestyle",
-    "test": "Run all PHP, codestyle  tests",
+    "rector": "Apply the rector rules",
+    "lint": "Test codestyle and rector rules",
+    "test": "Run the tests",
     "analyse": "Run static analysis (phpstan)"
   },
   "scripts": {
     "cs": "export XDEBUG_MODE=off && php-cs-fixer fix --allow-risky=yes",
-    "lint": "@cs --dry-run",
-    "test": [
-      "export XDEBUG_MODE=off && phpunit",
-      "@lint"
+    "rector": "rector process src tests",
+    "lint": [
+      "@cs --dry-run",
+      "@rector --dry-run"
     ],
+    "test": "export XDEBUG_MODE=off && phpunit",
     "analyse": [
       "export XDEBUG_MODE=off && phpstan analyse --memory-limit=2G"
     ]

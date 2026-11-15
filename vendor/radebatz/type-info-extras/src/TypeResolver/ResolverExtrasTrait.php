@@ -18,7 +18,7 @@ trait ResolverExtrasTrait
 {
     protected function resolveIntRange(GenericTypeNode $node): IntRangeType
     {
-        $getBoundaryFromNode = function (TypeNode $node) {
+        $getBoundaryFromNode = function (TypeNode $node): int {
             if ($node instanceof IdentifierTypeNode) {
                 return match ($node->name) {
                     'min' => \PHP_INT_MIN,
@@ -31,7 +31,7 @@ trait ResolverExtrasTrait
                 return (int) $node->constExpr->value;
             }
 
-            throw new \DomainException(\sprintf('Invalid int range expression "%s".', \get_class($node)));
+            throw new \DomainException(\sprintf('Invalid int range expression "%s".', $node::class));
         };
 
         $boundaries = array_map(fn (TypeNode $t): int => $getBoundaryFromNode($t), $node->genericTypes);
