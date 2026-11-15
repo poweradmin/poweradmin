@@ -113,13 +113,22 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
         $this->assertSame([], $this->loggedOut);
     }
 
+    #[Test]
+    public function anSsoSessionIsEndedWhenAnotherUserReusedTheId(): void
+    {
+        $messages = [];
+        $this->attempt('oidc', true, false, $messages, true, 'own', 'former-user');
+
+        $this->assertCount(1, $this->loggedOut);
+    }
+
     /** @var list<string> */
     private array $loggedOut = [];
 
     /**
      * @param list<string> $messages flash messages passed to AuthenticationService::auth()
      */
-    private function attempt(string $method, bool $ldapEnabled, bool $isLogin, array &$messages, bool $bound = false, mixed $fingerprint = 'own'): void
+    private function attempt(string $method, bool $ldapEnabled, bool $isLogin, array &$messages, bool $bound = false, mixed $fingerprint = 'own', string $sessionLogin = 'sso-user'): void
     {
         $this->loggedOut = [];
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -165,7 +174,7 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
         }
         $reflection->getParentClass()->getProperty('logger')->setValue($authenticator, $this->createMock(Logger::class));
 
-        $_SESSION = [SessionKeys::USERLOGIN => 'sso-user'];
+        $_SESSION = [SessionKeys::USERLOGIN => $sessionLogin, SessionKeys::AUTH_METHOD_USED => $method];
         if ($bound) {
             $_SESSION[SessionKeys::USERID] = 1;
             // /logout skips the agreement and MFA gates that are not under test.
