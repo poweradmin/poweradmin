@@ -60,6 +60,24 @@ class UserProvisioningService extends LoggingService
     /** Database driver name, used to build identity-match predicates. */
     private string $dbType = '';
 
+    /**
+     * Identifies this installation so an SSO session made by another one that
+     * shares the PHP session store is not accepted here.
+     */
+    public static function instanceFingerprint(ConfigurationManager $config): string
+    {
+        $parts = [
+            (string)$config->get('database', 'host', ''),
+            (string)$config->get('database', 'port', ''),
+            (string)$config->get('database', 'name', ''),
+            (string)$config->get('database', 'type', ''),
+            (string)$config->get('database', 'file', ''),
+            (string)$config->get('interface', 'base_url_prefix', ''),
+        ];
+
+        return hash_hmac('sha256', implode('|', $parts), (string)$config->get('security', 'session_key', ''));
+    }
+
     public function __construct(
         PDO $connection,
         ConfigurationManager $configManager,

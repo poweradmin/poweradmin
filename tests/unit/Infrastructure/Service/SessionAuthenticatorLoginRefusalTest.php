@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -49,6 +50,7 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
     {
         $_SESSION = [];
         $_POST = [];
+        unset($_SERVER['REQUEST_URI']);
     }
 
     public static function passwordlessMethods(): array
@@ -76,16 +78,50 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
     public function anExistingSsoSessionKeepsWorking(): void
     {
         $messages = [];
-        $this->attempt('oidc', true, false, $messages);
+        $this->attempt('oidc', true, false, $messages, true);
 
         $this->assertSame([], $messages);
+        $this->assertSame([], $this->loggedOut);
     }
+
+    public static function foreignFingerprints(): array
+    {
+        return [
+            'none' => [null],
+            'another instance' => [str_repeat('0', 64)],
+            'not a string' => [['x']],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('foreignFingerprints')]
+    public function anSsoSessionFromAnotherInstanceIsEnded(mixed $fingerprint): void
+    {
+        $messages = [];
+        foreach (['oidc', 'saml'] as $method) {
+            $this->attempt($method, true, false, $messages, true, $fingerprint);
+            $this->assertCount(1, $this->loggedOut, $method);
+        }
+    }
+
+    #[Test]
+    public function aSessionThatOnlyHoldsAUsernameIsLeftAlone(): void
+    {
+        $messages = [];
+        $this->attempt('oidc', true, false, $messages);
+
+        $this->assertSame([], $this->loggedOut);
+    }
+
+    /** @var list<string> */
+    private array $loggedOut = [];
 
     /**
      * @param list<string> $messages flash messages passed to AuthenticationService::auth()
      */
-    private function attempt(string $method, bool $ldapEnabled, bool $isLogin, array &$messages): void
+    private function attempt(string $method, bool $ldapEnabled, bool $isLogin, array &$messages, bool $bound = false, mixed $fingerprint = 'own'): void
     {
+        $this->loggedOut = [];
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec('CREATE TABLE users (id INTEGER, username TEXT, auth_method TEXT, active INTEGER)');
         $db->exec("INSERT INTO users VALUES (1, 'sso-user', '" . $method . "', 1)");
@@ -106,6 +142,9 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
         $recaptcha->method('isEnabled')->willReturn(false);
 
         $authService = $this->createMock(AuthenticationService::class);
+        $authService->method('logout')->willReturnCallback(function (SessionEntity $entity) {
+            $this->loggedOut[] = $entity->getMessage();
+        });
         $authService->method('auth')->willReturnCallback(function (SessionEntity $entity) use (&$messages) {
             $messages[] = $entity->getMessage();
         });
@@ -127,6 +166,17 @@ final class SessionAuthenticatorLoginRefusalTest extends TestCase
         $reflection->getParentClass()->getProperty('logger')->setValue($authenticator, $this->createMock(Logger::class));
 
         $_SESSION = [SessionKeys::USERLOGIN => 'sso-user'];
+        if ($bound) {
+            $_SESSION[SessionKeys::USERID] = 1;
+            // /logout skips the agreement and MFA gates that are not under test.
+            $_SERVER['REQUEST_URI'] = '/logout';
+            $_SESSION[SessionKeys::SSO_INSTANCE] = $fingerprint === 'own'
+                ? UserProvisioningService::instanceFingerprint($config)
+                : $fingerprint;
+            if ($fingerprint === null) {
+                unset($_SESSION[SessionKeys::SSO_INSTANCE]);
+            }
+        }
         $_POST = [];
         if ($isLogin) {
             $_POST = ['authenticate' => '1', 'username' => 'sso-user', 'password' => 'secret'];

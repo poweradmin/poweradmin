@@ -232,6 +232,9 @@ class SessionAuthenticator extends LoggingService
                     $this->failLoginGenerically('account uses OIDC');
                     break;
                 }
+                if ($this->endSessionOfOtherInstance()) {
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
@@ -239,6 +242,9 @@ class SessionAuthenticator extends LoggingService
                 // SAML users are already authenticated, no need to verify password
                 if (isset($_POST['authenticate'])) {
                     $this->failLoginGenerically('account uses SAML');
+                    break;
+                }
+                if ($this->endSessionOfOtherInstance()) {
                     break;
                 }
                 $this->endSessionOfDisabledAccount();
@@ -445,6 +451,28 @@ class SessionAuthenticator extends LoggingService
         }
         echo json_encode(['error' => true, 'message' => $message]);
         exit;
+    }
+
+    /**
+     * An SSO session carries no secret of this installation, so it must carry its
+     * fingerprint; one made elsewhere on a shared session store ends here.
+     */
+    private function endSessionOfOtherInstance(): bool
+    {
+        // A login that only left a username (a refused account) holds no identity to bind.
+        if (!isset($_SESSION[SessionKeys::USERID]) && !isset($_SESSION[SessionKeys::PENDING_USERID])) {
+            return false;
+        }
+
+        $stored = $_SESSION[SessionKeys::SSO_INSTANCE] ?? null;
+        $expected = UserProvisioningService::instanceFingerprint($this->configManager);
+        if (is_string($stored) && hash_equals($expected, $stored)) {
+            return false;
+        }
+
+        $this->logWarning('Ending SSO session that does not belong to this instance');
+        $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+        return true;
     }
 
     /**

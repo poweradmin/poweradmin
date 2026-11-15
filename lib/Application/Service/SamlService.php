@@ -385,6 +385,7 @@ class SamlService extends LoggingService
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('pending_auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+                    $this->setSessionValue('sso_instance', UserProvisioningService::instanceFingerprint($this->configManager));
 
                     // Store SAML-specific data as pending
                     $this->setSessionValue('pending_saml_provider', $providerId);
@@ -409,6 +410,7 @@ class SamlService extends LoggingService
                     $this->setSessionValue('useremail', $userInfo->getEmail());
                     $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+                    $this->setSessionValue('sso_instance', UserProvisioningService::instanceFingerprint($this->configManager));
                     $this->setSessionValue('authenticated', true);
                     // Clears any stale pending state from an abandoned MFA login,
                     // which would otherwise bounce this session back to /mfa/verify.

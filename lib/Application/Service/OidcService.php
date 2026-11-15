@@ -373,6 +373,7 @@ class OidcService extends LoggingService
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', 'oidc');
                     $this->setSessionValue('pending_auth_method_used', 'oidc');
+                    $this->setSessionValue('sso_instance', UserProvisioningService::instanceFingerprint($this->configManager));
 
                     // Store OIDC-specific data as pending
                     $this->setSessionValue('pending_oidc_provider', $providerId);
@@ -408,6 +409,7 @@ class OidcService extends LoggingService
                     $this->setSessionValue('useremail', $userInfo->getEmail());
                     $this->setSessionValue('auth_used', 'oidc');
                     $this->setSessionValue('auth_method_used', 'oidc');
+                    $this->setSessionValue('sso_instance', UserProvisioningService::instanceFingerprint($this->configManager));
                     $this->setSessionValue('authenticated', true);
                     // Clears any stale pending state from an abandoned MFA login,
                     // which would otherwise bounce this session back to /mfa/verify.

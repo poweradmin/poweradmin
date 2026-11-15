@@ -43,6 +43,7 @@ final class SessionKeys
     public const AUTHENTICATED = 'authenticated';
     public const AUTH_USED = 'auth_used';
     public const AUTH_METHOD_USED = 'auth_method_used';
+    public const SSO_INSTANCE = 'sso_instance';
     public const USER_ID = 'user_id';
     public const USERID = 'userid';
     public const USERLOGIN = 'userlogin';
