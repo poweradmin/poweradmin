@@ -55,4 +55,27 @@ class TrustedProxyListTest extends TestCase
 
         $this->assertFalse($list->matches('10.0.0.1'));
     }
+
+    public function testAMappedEntryMatchesTheIpv4Address(): void
+    {
+        $this->assertTrue((new TrustedProxyList(['::FFFF:203.0.113.7']))->matches('203.0.113.7'));
+        $this->assertFalse((new TrustedProxyList(['::ffff:203.0.113.7']))->matches('203.0.113.8'));
+    }
+
+    public function testAMappedRangeMatchesTheIpv4Address(): void
+    {
+        $list = new TrustedProxyList(['::ffff:203.0.113.0/120']);
+
+        $this->assertTrue($list->matches('203.0.113.5'));
+        $this->assertFalse($list->matches('203.0.114.5'));
+        $this->assertFalse((new TrustedProxyList(['::ffff:203.0.113.0/64']))->matches('203.0.113.5'));
+    }
+
+    public function testAMappedWildcardMatchesTheIpv4Address(): void
+    {
+        $list = new TrustedProxyList(['::FFFF:203.0.113.*']);
+
+        $this->assertTrue($list->matches('203.0.113.5'));
+        $this->assertFalse($list->matches('203.0.114.5'));
+    }
 }

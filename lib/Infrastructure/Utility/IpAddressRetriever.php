@@ -82,7 +82,7 @@ class IpAddressRetriever
      */
     public function getClientIp(): string
     {
-        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+        $remoteAddr = self::unmapIpv4(trim((string) ($this->server['REMOTE_ADDR'] ?? '')));
 
         if ($remoteAddr !== '' && $this->isTrustedPeer($remoteAddr)) {
             // No Client-IP: proxies rarely set it but pass a client's own through
@@ -130,7 +130,7 @@ class IpAddressRetriever
     private function resolveForwardedClientIp(string $headerValue, string $remoteAddr): string|false|null
     {
         $entries = array_values(array_filter(
-            array_map(fn(string $ip): string => self::withoutPort(trim($ip)), explode(',', $headerValue)),
+            array_map(fn(string $ip): string => self::unmapIpv4(self::withoutPort(trim($ip))), explode(',', $headerValue)),
             fn(string $ip): bool => $ip !== '' && $ip !== $remoteAddr
         ));
 
@@ -148,6 +148,19 @@ class IpAddressRetriever
         }
 
         return $originator;
+    }
+
+    /**
+     * The IPv4 form of an IPv4-mapped IPv6 address (::ffff:a.b.c.d, any case), which dual-stack
+     * servers such as nginx report; any other value unchanged.
+     */
+    private static function unmapIpv4(string $ip): string
+    {
+        if (preg_match('/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i', $ip, $m) === 1 && filter_var($m[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return $m[1];
+        }
+
+        return $ip;
     }
 
     /**

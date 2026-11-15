@@ -251,6 +251,10 @@ class LoginAttemptService implements LoginThrottleInterface
             if ($listItem === $ipAddress || ($listBinary !== false && $listBinary === $binaryIp)) {
                 return true;
             }
+            // An entry written in the mapped form matches the IPv4 address
+            if ($listBinary !== false && self::isIpv4Mapped($listBinary) && substr($listBinary, 12) === $binaryIp) {
+                return true;
+            }
 
             // CIDR notation (e.g., 192.168.1.0/24 or 2001:db8::/32)
             if (str_contains($listItem, '/') && $this->ipMatchesCidr($binaryIp, $listItem)) {
@@ -278,14 +282,18 @@ class LoginAttemptService implements LoginThrottleInterface
         [$subnet, $bits] = explode('/', $cidr, 2);
 
         $binarySubnet = @inet_pton($subnet);
-        if ($binarySubnet === false || strlen($binaryIp) !== strlen($binarySubnet)) {
-            return false;
-        }
-
-        if (!ctype_digit($bits)) {
+        if ($binarySubnet === false || !ctype_digit($bits)) {
             return false;
         }
         $prefixBits = (int)$bits;
+        // A range written in the mapped form applies to the IPv4 address; shorter prefixes never match
+        if (strlen($binaryIp) === 4 && self::isIpv4Mapped($binarySubnet) && $prefixBits >= 96) {
+            $binarySubnet = substr($binarySubnet, 12);
+            $prefixBits -= 96;
+        }
+        if (strlen($binaryIp) !== strlen($binarySubnet)) {
+            return false;
+        }
         if ($prefixBits > strlen($binaryIp) * 8) {
             return false;
         }
@@ -309,6 +317,7 @@ class LoginAttemptService implements LoginThrottleInterface
      */
     private function ipMatchesWildcard(string $ipAddress, string $pattern): bool
     {
+        $pattern = (string)preg_replace('/^::ffff:/i', '', $pattern);
         $regex = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $pattern) . '$/';
         return (bool)preg_match($regex, $ipAddress);
     }

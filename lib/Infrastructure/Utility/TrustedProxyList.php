@@ -58,6 +58,8 @@ final class TrustedProxyList
             }
 
             if (str_contains($entry, '*')) {
+                // A wildcard copied from logs in the ::ffff: form must match the unmapped IPv4 peer
+                $entry = (string)preg_replace('/^::ffff:/i', '', $entry);
                 $pattern = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $entry) . '$/';
                 if (preg_match($pattern, $ip) === 1) {
                     return true;
@@ -80,7 +82,17 @@ final class TrustedProxyList
 
         $aBin = @inet_pton($a);
         $bBin = @inet_pton($b);
-        return $aBin !== false && $bBin !== false && $aBin === $bBin;
+        if ($aBin === false || $bBin === false) {
+            return false;
+        }
+
+        return self::unmapped($aBin) === self::unmapped($bBin);
+    }
+
+    /** The 4-byte form of an IPv4-mapped IPv6 address; other packed addresses unchanged. */
+    private static function unmapped(string $binary): string
+    {
+        return strlen($binary) === 16 && str_starts_with($binary, str_repeat("\0", 10) . "\xff\xff") ? substr($binary, 12) : $binary;
     }
 
     private function ipMatchesCidr(string $ip, string $cidr): bool
@@ -92,11 +104,19 @@ final class TrustedProxyList
 
         $ipBin = @inet_pton($ip);
         $netBin = @inet_pton($network);
-        if ($ipBin === false || $netBin === false || strlen($ipBin) !== strlen($netBin)) {
+        if ($ipBin === false || $netBin === false) {
             return false;
         }
 
         $prefix = (int) $prefix;
+        // A range written in the mapped form applies to the IPv4 address; shorter prefixes never match
+        if (strlen($ipBin) === 4 && strlen($netBin) === 16 && self::unmapped($netBin) !== $netBin && $prefix >= 96) {
+            $netBin = substr($netBin, 12);
+            $prefix -= 96;
+        }
+        if (strlen($ipBin) !== strlen($netBin)) {
+            return false;
+        }
         $maxBits = strlen($ipBin) * 8;
         if ($prefix < 0 || $prefix > $maxBits) {
             return false;

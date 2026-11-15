@@ -149,7 +149,7 @@ class IpAddressRetrieverTest extends TestCase
             'HTTP_X_REAL_IP' => '9.9.9.9',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('::ffff:203.0.113.7', $ipRetriever->getClientIp());
+        $this->assertEquals('203.0.113.7', $ipRetriever->getClientIp());
     }
 
     public function testGetClientIpWithNoIp()
@@ -452,5 +452,24 @@ class IpAddressRetrieverTest extends TestCase
         $server = ['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '203.0.113.7', 'HTTP_X_REAL_IP' => '198.51.100.20'];
 
         $this->assertEquals('198.51.100.20', IpAddressRetriever::fromConfig($server, $config)->getClientIp());
+    }
+
+    public function testAnIpv4MappedPeerResolvesToItsIpv4Form()
+    {
+        $this->assertEquals('203.0.113.9', (new IpAddressRetriever(['REMOTE_ADDR' => '::ffff:203.0.113.9']))->getClientIp());
+    }
+
+    public function testAnIpv4MappedLoopbackPeerStillTrustsForwardedHeaders()
+    {
+        $server = ['REMOTE_ADDR' => '::FFFF:127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '203.0.113.5'];
+
+        $this->assertEquals('203.0.113.5', (new IpAddressRetriever($server))->getClientIp());
+    }
+
+    public function testAnIpv4MappedForwardedEntryResolvesToItsIpv4Form()
+    {
+        $server = ['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '::ffff:198.51.100.4'];
+
+        $this->assertEquals('198.51.100.4', (new IpAddressRetriever($server))->getClientIp());
     }
 }

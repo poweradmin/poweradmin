@@ -206,4 +206,21 @@ class IpListMatchingTest extends TestCase
         $this->assertFalse($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.1.1', ['10.0.0.0/24']));
         $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.0.1', ['::ffff:10.0.0.0/120']));
     }
+
+    public function testAMappedListEntryMatchesTheIpv4Address()
+    {
+        $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '203.0.113.7', ['::ffff:203.0.113.7']));
+        $this->assertFalse($this->isIpInListMethod->invoke($this->loginAttemptService, '203.0.113.8', ['::ffff:203.0.113.7']));
+    }
+
+    public function testAMappedRangeOrWildcardMatchesTheIpv4Address()
+    {
+        $in = fn(string $ip, string $entry): bool => $this->isIpInListMethod->invoke($this->loginAttemptService, $ip, [$entry]);
+
+        $this->assertTrue($in('203.0.113.5', '::ffff:203.0.113.0/120'));
+        $this->assertFalse($in('203.0.114.5', '::ffff:203.0.113.0/120'));
+        $this->assertFalse($in('203.0.113.5', '::ffff:203.0.113.0/64'));
+        $this->assertTrue($in('203.0.113.5', '::FFFF:203.0.113.*'));
+        $this->assertFalse($in('203.0.114.5', '::ffff:203.0.113.*'));
+    }
 }
