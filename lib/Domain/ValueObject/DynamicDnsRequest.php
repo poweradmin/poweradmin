@@ -50,7 +50,8 @@ readonly class DynamicDnsRequest
 
     public function getHostname(): string
     {
-        return $this->hostname;
+        // A fully qualified name ends in a dot; zone matching works on the bare name
+        return str_ends_with($this->hostname, '.') ? substr($this->hostname, 0, -1) : $this->hostname;
     }
 
     public function getIpv4(): string

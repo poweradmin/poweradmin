@@ -25,6 +25,13 @@ class DynamicDnsRequestTest extends TestCase
         $this->assertFalse($request->hasUserAgent());
     }
 
+    public function testHostnameLosesOneTrailingDot(): void
+    {
+        $request = new DynamicDnsRequest('u', 'p', 'www.example.com.', '192.0.2.1', '', false, 'UA');
+
+        $this->assertSame('www.example.com', $request->getHostname());
+    }
+
     public function testHasHostname(): void
     {
         $request = new DynamicDnsRequest('user', 'pass', 'host.example.com', '', '', false, 'agent');

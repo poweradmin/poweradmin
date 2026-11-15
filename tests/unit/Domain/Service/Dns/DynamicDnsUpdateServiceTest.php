@@ -100,6 +100,26 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->assertEquals('good 192.168.1.1', $result);
     }
 
+    public function testProcessUpdateMatchesAHostnameSentWithATrailingDot(): void
+    {
+        $request = new DynamicDnsRequest('user', 'pass', 'test.example.com.', '192.168.1.1', '', false, 'TestAgent/1.0');
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('test.example.com');
+
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn($user);
+        $this->validationService->expects($this->once())
+            ->method('createValidatedHostname')
+            ->with('test.example.com')
+            ->willReturn($hostname);
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList(['192.168.1.1'], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getDnsRecords')->willReturn([]);
+        $this->repository->expects($this->once())->method('insertDnsRecord')->with(1, $hostname, 'A', '192.168.1.1');
+
+        $this->assertStringStartsWith('good', $this->service->processUpdate($request));
+    }
+
     public function testProcessUpdateRejectsReadOnlyZone(): void
     {
         $request = new DynamicDnsRequest(
