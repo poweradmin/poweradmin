@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -483,7 +484,7 @@ class DbUserRepository implements UserRepository
         $result = $stmt->execute([
             ':username' => $userData['username'],
             ':password' => $userData['password'],
-            ':fullname' => $userData['fullname'] ?? '',
+            ':fullname' => UserManager::cleanFullname((string)($userData['fullname'] ?? '')),
             ':email' => $userData['email'] ?? '',
             ':description' => $userData['description'] ?? '',
             ':active' => (int)($userData['active'] ?? 1),
@@ -552,6 +553,8 @@ class DbUserRepository implements UserRepository
                 // Handle type casting for specific fields
                 if ($field === 'active' || $field === 'perm_templ' || $field === 'use_ldap') {
                     $params[":{$field}"] = (int)$userData[$field];
+                } elseif ($field === 'fullname') {
+                    $params[":{$field}"] = UserManager::cleanFullname((string)$userData[$field]);
                 } else {
                     $params[":{$field}"] = $userData[$field];
                 }

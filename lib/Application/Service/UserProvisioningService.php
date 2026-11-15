@@ -391,7 +391,7 @@ class UserProvisioningService extends LoggingService
             $success = $stmt->execute([
                 $username,
                 '', // No password for external auth users
-                $userInfo->getDisplayName() ?: $userInfo->getFullName(),
+                UserManager::cleanFullname((string)($userInfo->getDisplayName() ?: $userInfo->getFullName())),
                 $userInfo->getEmail(),
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
@@ -456,7 +456,7 @@ class UserProvisioningService extends LoggingService
             if ($authConfig['sync_user_info'] ?? true) {
                 if (!empty($userInfo->getDisplayName())) {
                     $updateFields[] = 'fullname = ?';
-                    $updateValues[] = $userInfo->getDisplayName();
+                    $updateValues[] = UserManager::cleanFullname((string)$userInfo->getDisplayName());
                 }
 
                 if (!empty($userInfo->getEmail())) {

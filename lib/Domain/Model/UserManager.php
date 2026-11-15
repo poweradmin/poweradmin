@@ -582,7 +582,7 @@ class UserManager
             $stmt = $this->db->prepare($query);
 
             $stmt->bindValue(':username', $user, PDO::PARAM_STR);
-            $stmt->bindValue(':fullname', $fullname, PDO::PARAM_STR);
+            $stmt->bindValue(':fullname', self::cleanFullname($fullname), PDO::PARAM_STR);
             $stmt->bindValue(':email', $email, PDO::PARAM_STR);
             $stmt->bindValue(':description', $description, PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
@@ -1100,6 +1100,14 @@ class UserManager
         return (int)$stmt->fetchColumn() > 0;
     }
 
+    /**
+     * Drops control characters and invisible or bidi-override marks from a display name; joiners stay.
+     */
+    public static function cleanFullname(string $fullname): string
+    {
+        return preg_replace('/[\p{Cc}\x{200B}\x{200E}\x{200F}\x{202A}-\x{202E}\x{2060}\x{2066}-\x{2069}\x{FEFF}]/u', '', $fullname) ?? preg_replace('/[\x00-\x1f\x7f]/', '', $fullname);
+    }
+
     public function updateUserDetails(array $details): bool
     {
         $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
@@ -1213,7 +1221,7 @@ class UserManager
             $stmt = $this->db->prepare($query);
 
             $stmt->bindValue(':username', $details['username'], PDO::PARAM_STR);
-            $stmt->bindValue(':fullname', $details['fullname'], PDO::PARAM_STR);
+            $stmt->bindValue(':fullname', self::cleanFullname((string)$details['fullname']), PDO::PARAM_STR);
             $stmt->bindValue(':email', $details['email'], PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
 
@@ -1310,7 +1318,7 @@ class UserManager
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':username', $details['username']);
         $stmt->bindValue(':password', $password_hash);
-        $stmt->bindValue(':fullname', $details['fullname'] ?? '');
+        $stmt->bindValue(':fullname', self::cleanFullname((string)($details['fullname'] ?? '')));
         $stmt->bindValue(':email', $details['email']);
         $stmt->bindValue(':description', $details['descr'] ?? '');
 
