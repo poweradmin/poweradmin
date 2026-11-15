@@ -43,6 +43,8 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Session\ArraySession;
 use Poweradmin\Infrastructure\Session\PhpSession;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * The one place a process is booted: index.php, dynamic_update.php,
@@ -84,6 +86,11 @@ final class Kernel
 
         if ($options->guardsConfiguration()) {
             self::assertConfigurationUsable($config);
+            // Once per PHP process, so a long-lived worker does not repeat it on every request
+            static $warned = false;
+            if (!$warned && !RequestContext::isHealthProbeRequest((string) $config->get('interface', 'base_url_prefix', ''))) {
+                $warned = self::warnOnPlaceholderSessionKey($config, $logger);
+            }
         }
 
         $registry = new ModuleRegistry($config);
@@ -158,6 +165,28 @@ final class Kernel
         return !$config->get('interface', 'web_enabled', true)
             || RequestContext::isPublicApiRequest()
             || RequestContext::isHealthProbeRequest((string) $config->get('interface', 'base_url_prefix', ''));
+    }
+
+    /**
+     * Logs a warning when security.session_key is empty or still a shipped placeholder; boot continues.
+     *
+     * @return bool whether a warning was logged
+     */
+    public static function warnOnPlaceholderSessionKey(ConfigurationInterface $config, LoggerInterface $logger): bool
+    {
+        $key = $config->get('security', 'session_key', '');
+        if (is_string($key) && $key !== '' && !in_array($key, ['p0w3r4dm1n', 'change_this_key'], true)) {
+            return false;
+        }
+
+        $message = 'security.session_key is empty or still the default placeholder. Set a unique random value in the configuration.';
+        // The default logging type discards everything, so this one message goes to the PHP error log instead
+        if ($logger instanceof NullLogger) {
+            error_log('Poweradmin: ' . $message);
+        } else {
+            $logger->warning($message);
+        }
+        return true;
     }
 
     /**

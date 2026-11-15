@@ -8,6 +8,6 @@ declare(strict_types=1);
 
 return [
     'database' => ['type' => 'sqlite', 'file' => ':memory:'],
-    'security' => ['password_reset' => ['enabled' => false]],
+    'security' => ['session_key' => 'functional-test-session-key', 'password_reset' => ['enabled' => false]],
     'logging' => ['type' => 'null'],
 ];

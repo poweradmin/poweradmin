@@ -28,7 +28,10 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Boot\BootOptions;
 use Poweradmin\Application\Boot\Kernel;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use RuntimeException;
+use TestHelpers\FakeConfiguration;
 
 class KernelTest extends TestCase
 {
@@ -44,6 +47,40 @@ class KernelTest extends TestCase
     {
         putenv($this->previousConfigPath === false ? 'PA_CONFIG_PATH' : 'PA_CONFIG_PATH=' . $this->previousConfigPath);
         parent::tearDown();
+    }
+
+    public function testPlaceholderAndEmptySessionKeysLogAWarning(): void
+    {
+        foreach (['change_this_key', 'p0w3r4dm1n', ''] as $key) {
+            $logger = $this->createMock(LoggerInterface::class);
+            $logger->expects($this->once())->method('warning');
+
+            $this->assertTrue(Kernel::warnOnPlaceholderSessionKey(new FakeConfiguration(['security' => ['session_key' => $key]]), $logger));
+        }
+    }
+
+    public function testAPlaceholderKeyReachesTheErrorLogWhenLoggingIsOff(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pa-errlog');
+        $previous = ini_set('error_log', $file);
+        try {
+            $warned = Kernel::warnOnPlaceholderSessionKey(new FakeConfiguration(['security' => ['session_key' => 'change_this_key']]), new NullLogger());
+            $written = (string) file_get_contents($file);
+        } finally {
+            ini_set('error_log', (string) $previous);
+            unlink($file);
+        }
+
+        $this->assertTrue($warned);
+        $this->assertStringContainsString('security.session_key', $written);
+    }
+
+    public function testAUniqueSessionKeyLogsNothing(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->never())->method('warning');
+
+        $this->assertFalse(Kernel::warnOnPlaceholderSessionKey(new FakeConfiguration(['security' => ['session_key' => 'x9Kq2mVb7Lw0Zt4R']]), $logger));
     }
 
     public function testConfigurationFileDefaultsToTheSettingsFileUnderTheWorkingDirectory(): void
@@ -113,6 +150,8 @@ class KernelTest extends TestCase
     public function testAPublicApiRequestBootsWithoutACookieSession(): void
     {
         $_SERVER['REQUEST_URI'] = '/api/v2/zones';
+        // The shipped placeholder key makes boot write to the error log; keep it out of the test output
+        ini_set('error_log', '/dev/null');
 
         $context = Kernel::boot(BootOptions::Web);
 

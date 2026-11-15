@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 return [
     'database' => ['type' => 'sqlite', 'file' => ':memory:'],
+    'security' => ['session_key' => 'functional-test-session-key'],
     'api' => ['enabled' => true],
     'interface' => ['frame_ancestors' => ['https://portal.example.com']],
     'logging' => ['type' => 'null'],
