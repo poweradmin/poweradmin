@@ -89,7 +89,7 @@ class UsersControllerSelfEditTest extends TestCase
 
     public function testEditOthersGrantWritesEveryField(): void
     {
-        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true, 'ldap', 'old')->username);
+        $this->assertSame('renamed', $this->updateRow(self::CALLER_ID, true, 'ldap', 'renamed')->username);
         $this->assertSame('renamed', $this->updateRow(9, false, 'sql', 'old')->username);
     }
 
@@ -97,5 +97,13 @@ class UsersControllerSelfEditTest extends TestCase
     public function testOwnUsernameOrEmailChangeOfALocalAccountIsRefused(): void
     {
         $this->assertNull($this->updateRow(self::CALLER_ID, true, 'sql', 'old'));
+    }
+
+    /** An LDAP or web server account cannot rename or re-mail itself, here or on the edit form */
+    public function testOwnUsernameChangeOfAnExternalAccountIsRefused(): void
+    {
+        $this->assertNull($this->updateRow(self::CALLER_ID, true, 'ldap', 'old'));
+        $this->assertNull($this->updateRow(self::CALLER_ID, true, 'remote_user', 'old'));
+        $this->assertNotNull($this->updateRow(self::CALLER_ID, true, 'oidc', 'old'));
     }
 }

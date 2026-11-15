@@ -118,14 +118,18 @@ class EditUserController extends BaseController
             return;
         }
 
-        // A borrowed session must not redirect the account's mail or rename it without the password
-        if (
-            $editId === $callerId
-            && SelfEditFieldGuard::changesSignInIdentity($stored, $input)
-            && AuthMethod::fromDb($stored['auth_type'] ?? null)->allowsLocalPassword()
-        ) {
-            [$confirmed, $error] = $this->passwordChangeService()->confirmCurrentPassword((string)$this->httpRequest->getPostParam('current_password', ''));
-            if (!$confirmed) {
+        // A borrowed session must not redirect the account's mail or rename it without the password;
+        // an LDAP or web server account cannot change either itself
+        if ($editId === $callerId && SelfEditFieldGuard::changesSignInIdentity($stored, $input)) {
+            $method = AuthMethod::fromDb($stored['auth_type'] ?? null);
+            $error = null;
+            if ($method === AuthMethod::LDAP || $method === AuthMethod::REMOTE_USER) {
+                $error = _('Authentication settings can only be changed by an administrator');
+            } elseif ($method->allowsLocalPassword()) {
+                [$confirmed, $message] = $this->passwordChangeService()->confirmCurrentPassword((string)$this->httpRequest->getPostParam('current_password', ''));
+                $error = $confirmed ? null : $message;
+            }
+            if ($error !== null) {
                 $this->setMessage('edit_user', 'error', $error);
                 $this->showUserEditForm($editId, $policyConfig);
                 return;
@@ -219,7 +223,11 @@ class EditUserController extends BaseController
         // anyway and requiring it would block all edits when the IdP supplied none.
         // A user being converted to a local account (LDAP unchecked) is no longer
         // managed, so the email requirement applies again.
-        if (!self::isIdpManaged($stored['auth_type'] ?? null, $this->identitySyncedAfterEdit($editId, $stored))) {
+        // The same goes for your own LDAP or web server row: its email input is read-only and
+        // a change is refused, so validating it would only reject the stored (maybe empty) value.
+        $method = AuthMethod::fromDb($stored['auth_type'] ?? null);
+        $ownExternal = $editId === (int)$this->getCurrentUserId() && ($method === AuthMethod::LDAP || $method === AuthMethod::REMOTE_USER);
+        if (!$ownExternal && !self::isIdpManaged($stored['auth_type'] ?? null, $this->identitySyncedAfterEdit($editId, $stored))) {
             $constraints['email'] = [
                 new Assert\NotBlank(),
                 new Assert\Email()

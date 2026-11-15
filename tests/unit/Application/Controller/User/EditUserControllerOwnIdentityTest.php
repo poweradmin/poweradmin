@@ -50,7 +50,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
     private LoginAttemptService&MockObject $attempts;
 
     /** @param array<string, mixed> $fields */
-    private function submit(int $editId, array $fields, string $authType = 'sql'): EditUserController
+    private function submit(int $editId, array $fields, string $authType = 'sql', string $storedEmail = 'jane@example.org'): EditUserController
     {
         $apiPermissions = $this->createMock(ApiPermissionService::class);
         $apiPermissions->method('canEditUserPassword')->willReturn(true);
@@ -65,7 +65,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
         $hash = password_hash(self::PASSWORD, PASSWORD_BCRYPT, ['cost' => 4]);
         $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserDetailList')->willReturn([[
-            'username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'auth_type' => $authType, 'use_ldap' => 0, 'tpl_id' => 1,
+            'username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'auth_type' => $authType, 'use_ldap' => 0, 'tpl_id' => 1,
         ]]);
         $repository->method('findByUsername')->with(self::USERNAME)->willReturn(new User(self::USER_ID, $hash, false));
         $this->factory->method('userRepository')->willReturn($repository);
@@ -76,7 +76,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
         $this->factory->method('loginAttemptService')->willReturn($this->attempts);
         $this->factory->method('clientContext')->willReturn(new ClientContext('203.0.113.5', 'phpunit', 'Unknown', false));
 
-        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'description' => '']);
+        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'description' => '']);
 
         return $this->getMockBuilder(EditUserController::class)
             ->setConstructorArgs([$this->requestData(), true, $this->environment($this->configure())])
@@ -163,11 +163,47 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
         $this->assertSame([], $this->messagesFor('edit_user'));
     }
 
-    /** An LDAP account has no local password to ask for, as on the change password page */
-    public function testAnExternallyAuthenticatedAccountIsNotAskedForAPassword(): void
+    /** There is no local password to ask for, so the change is refused outright */
+    public function testAnExternallyAuthenticatedAccountCannotChangeItsOwnEmailOrUsername(): void
     {
-        $controller = $this->submit(self::USER_ID, ['email' => 'new@example.org'], 'ldap');
+        foreach (['ldap', 'remote_user'] as $authType) {
+            foreach ([['email' => 'new@example.org'], ['username' => 'mallory']] as $fields) {
+                $controller = $this->submit(self::USER_ID, $fields, $authType);
+                $this->attempts->expects($this->never())->method('recordAttempt');
+                $this->users->expects($this->never())->method('updateUser');
+                $controller->expects($this->once())->method('showUserEditForm');
+
+                $this->update($controller, self::USER_ID);
+            }
+        }
+        $this->assertSame([['error', 'Authentication settings can only be changed by an administrator']], $this->messagesFor('edit_user'));
+    }
+
+    public function testAnIdentityProviderAccountIsNotAffectedByTheSelfEditRefusal(): void
+    {
+        $controller = $this->submit(self::USER_ID, ['username' => 'mallory'], 'oidc');
         $this->attempts->expects($this->never())->method('recordAttempt');
+        $this->users->expects($this->once())->method('updateUser')->willReturn(['success' => true]);
+
+        $this->update($controller, self::USER_ID);
+
+        $this->assertSame([], $this->messagesFor('edit_user'));
+    }
+
+    /** The read-only email posts the stored value, which is empty when the web server supplies none */
+    public function testAnOwnWebServerRowWithAnEmptyEmailStillSaves(): void
+    {
+        $controller = $this->submit(self::USER_ID, ['fullname' => 'Jane Q'], 'remote_user', '');
+        $this->users->expects($this->once())->method('updateUser')->willReturn(['success' => true]);
+
+        $this->update($controller, self::USER_ID);
+
+        $this->assertSame([], $this->messagesFor('edit_user'));
+    }
+
+    public function testAnExternallyAuthenticatedAccountStillSavesOtherFields(): void
+    {
+        $controller = $this->submit(self::USER_ID, ['fullname' => 'Jane Q'], 'ldap');
         $this->users->expects($this->once())->method('updateUser')->willReturn(['success' => true]);
 
         $this->update($controller, self::USER_ID);

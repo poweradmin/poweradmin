@@ -136,14 +136,16 @@ class UsersController extends BaseController
             $this->setMessage('users', 'error', _('Authentication settings can only be changed by an administrator'));
             return false;
         }
-        // This list has no current-password field, so your own sign-in identity changes on the edit form
-        if (
-            $targetId === $callerId
-            && SelfEditFieldGuard::changesSignInIdentity($stored, $input)
-            && AuthMethod::fromDb($stored['auth_method'] ?? null)->allowsLocalPassword()
-        ) {
-            $this->setMessage('users', 'error', _('You did not enter the correct current password.'));
-            return false;
+        // This list has no current-password field, so a local account changes its own sign-in
+        // identity on the edit form; an LDAP or web server one cannot change it at all
+        if ($targetId === $callerId && SelfEditFieldGuard::changesSignInIdentity($stored, $input)) {
+            $method = AuthMethod::fromDb($stored['auth_method'] ?? null);
+            if ($method->allowsLocalPassword() || $method === AuthMethod::LDAP || $method === AuthMethod::REMOTE_USER) {
+                $this->setMessage('users', 'error', $method->allowsLocalPassword()
+                    ? _('You did not enter the correct current password.')
+                    : _('Authentication settings can only be changed by an administrator'));
+                return false;
+            }
         }
         if ($this->hasPermission(Permission::PERM_USER_EDIT_TEMPL_PERM) && isset($posted['templ_id'])) {
             $input['perm_templ'] = $posted['templ_id'];

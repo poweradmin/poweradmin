@@ -90,12 +90,13 @@
                     {% endif %}
 
                     {% set user_uid = user['uid'] %}
+                    {% set own_external_row = user_uid == session_userid and user['auth_type'] in ['ldap', 'remote_user'] %}
 
                     {% if user['can_edit'] %}
                     <tr>
-                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"{% if user_uid == session_userid and not permissions['user_edit_others'] %} readonly{% endif %}></td>
+                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"{% if (user_uid == session_userid and not permissions['user_edit_others']) or own_external_row %} readonly{% endif %}></td>
                         <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
-                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
+                        <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"{% if own_external_row %} readonly{% endif %}></td>
                         {% if show_user_access_templates %}
                         <td>
                             {% if user['can_change_template'] %}
