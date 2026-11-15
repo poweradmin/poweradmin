@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\User\CreateUserCommand;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\FakeConfiguration;
@@ -176,5 +177,54 @@ class DbUserRepositoryProvisioningTest extends TestCase
     {
         $this->assertSame(5, $this->repository->findPermissionTemplateIdByName('Guest'));
         $this->assertNull($this->repository->findPermissionTemplateIdByName('Guests'));
+    }
+
+    private const DIRTY_NAME = "Jane\r\nBcc: x@example.org\u{200B}\u{202E} Doe\t";
+
+    private function fullnameOf(int $id): string
+    {
+        return (string)$this->db->query("SELECT fullname FROM users WHERE id = {$id}")->fetchColumn();
+    }
+
+    public function testCreateUserStoresTheNameWithoutControlOrFormatCharacters(): void
+    {
+        $id = $this->repository->createUser(new CreateUserCommand('jane', 'h', self::DIRTY_NAME, 'jane@example.org', '', true, 5));
+
+        $this->assertSame('JaneBcc: x@example.org Doe', $this->fullnameOf((int)$id));
+    }
+
+    public function testUpdateUserStoresTheNameWithoutControlOrFormatCharacters(): void
+    {
+        $this->repository->updateUser(1, new UpdateUserCommand(fullname: self::DIRTY_NAME));
+
+        $this->assertSame('JaneBcc: x@example.org Doe', $this->fullnameOf(1));
+    }
+
+    public function testProvisioningStoresTheNameWithoutControlOrFormatCharacters(): void
+    {
+        $id = $this->repository->createProvisionedUser([
+            'username' => 'sso', 'fullname' => self::DIRTY_NAME, 'email' => 's@example.org', 'description' => '',
+            'perm_templ' => 5, 'perm_templ_source' => 'oidc', 'use_ldap' => 0, 'auth_method' => 'oidc',
+        ]);
+        $this->assertSame('JaneBcc: x@example.org Doe', $this->fullnameOf($id));
+
+        $this->repository->updateProvisionedUser(1, ['fullname' => "Zo\u{00EB}\nX"]);
+        $this->assertSame('ZoëX', $this->fullnameOf(1));
+    }
+
+    public function testJoinersAndSoftHyphenOfRealNamesSurvive(): void
+    {
+        foreach (["\u{0639}\u{0644}\u{06CC}\u{200C}\u{0631}\u{0636}\u{0627}", "\u{0DC1}\u{0DCA}\u{200D}\u{0DBB}\u{0DD3}", "Ein\u{00AD}stein"] as $name) {
+            $this->repository->updateUser(1, new UpdateUserCommand(fullname: $name));
+
+            $this->assertSame($name, $this->fullnameOf(1));
+        }
+    }
+
+    public function testOrdinaryNamesAreStoredUnchanged(): void
+    {
+        $this->repository->updateUser(1, new UpdateUserCommand(fullname: ' Dr. Zoë O\'Neil-Łukasz 山田 '));
+
+        $this->assertSame(' Dr. Zoë O\'Neil-Łukasz 山田 ', $this->fullnameOf(1));
     }
 }

@@ -2069,6 +2069,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateWriteResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateWriteResult.php',
         'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateWriteService' => __DIR__ . '/../..' . '/lib/Domain/Service/Template/ZoneTemplateWriteService.php',
         'Poweradmin\\Domain\\Service\\User\\CreateUserCommand' => __DIR__ . '/../..' . '/lib/Domain/Service/User/CreateUserCommand.php',
+        'Poweradmin\\Domain\\Service\\User\\FullName' => __DIR__ . '/../..' . '/lib/Domain/Service/User/FullName.php',
         'Poweradmin\\Domain\\Service\\User\\GroupReferenceResolver' => __DIR__ . '/../..' . '/lib/Domain/Service/User/GroupReferenceResolver.php',
         'Poweradmin\\Domain\\Service\\User\\LastSuperAdminGuard' => __DIR__ . '/../..' . '/lib/Domain/Service/User/LastSuperAdminGuard.php',
         'Poweradmin\\Domain\\Service\\User\\PermissionTemplateDeleteResult' => __DIR__ . '/../..' . '/lib/Domain/Service/User/PermissionTemplateDeleteResult.php',

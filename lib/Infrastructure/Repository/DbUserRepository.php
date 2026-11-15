@@ -40,6 +40,7 @@ use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Enum\PermissionTemplateType;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\User\CreateUserCommand;
+use Poweradmin\Domain\Service\User\FullName;
 use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Psr\Log\LoggerInterface;
@@ -1440,7 +1441,7 @@ class DbUserRepository implements UserRepositoryInterface
         $result = $stmt->execute([
             ':username' => $user->username,
             ':password' => $user->password,
-            ':fullname' => $user->fullname,
+            ':fullname' => FullName::plain($user->fullname),
             ':email' => $user->email,
             ':description' => $user->description,
             ':active' => (int)$user->active,
@@ -1466,7 +1467,7 @@ class DbUserRepository implements UserRepositoryInterface
         $success = $stmt->execute([
             $userData['username'],
             '', // No password for external auth users
-            $userData['fullname'],
+            FullName::plain((string)$userData['fullname']),
             $userData['email'],
             $userData['description'],
             1, // Active
@@ -1493,7 +1494,7 @@ class DbUserRepository implements UserRepositoryInterface
                 throw new \InvalidArgumentException("Column $column is not owned by provisioning");
             }
             $setFields[] = "$column = ?";
-            $values[] = $value;
+            $values[] = $column === 'fullname' ? FullName::plain((string)$value) : $value;
         }
         if ($setFields === []) {
             return;
@@ -1623,7 +1624,7 @@ class DbUserRepository implements UserRepositoryInterface
         $columns = [
             'username' => $changes->username,
             'password' => $changes->passwordGiven() ? $changes->password : null,
-            'fullname' => $changes->fullname,
+            'fullname' => $changes->fullname === null ? null : FullName::plain($changes->fullname),
             'email' => $changes->email,
             'description' => $changes->description,
             'active' => $changes->active,

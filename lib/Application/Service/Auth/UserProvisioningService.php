@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\UberuserChange;
+use Poweradmin\Domain\Service\User\FullName;
 use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
 
 /**
@@ -525,8 +526,8 @@ class UserProvisioningService
             // Update user information if configured to sync, skipping unchanged values
             $authConfig = $this->getAuthMethodConfig($authMethod);
             if ($authConfig['sync_user_info'] ?? true) {
-                $displayName = $userInfo->getDisplayName();
-                if (!empty($displayName) && $displayName !== ($current['fullname'] ?? null)) {
+                $displayName = FullName::plain((string)$userInfo->getDisplayName());
+                if ($displayName !== '' && $displayName !== ($current['fullname'] ?? null)) {
                     $updates['fullname'] = $displayName;
                 }
 

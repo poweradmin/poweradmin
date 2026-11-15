@@ -1645,6 +1645,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateWriteResult' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateWriteResult.php',
     'Poweradmin\\Domain\\Service\\Template\\ZoneTemplateWriteService' => $baseDir . '/lib/Domain/Service/Template/ZoneTemplateWriteService.php',
     'Poweradmin\\Domain\\Service\\User\\CreateUserCommand' => $baseDir . '/lib/Domain/Service/User/CreateUserCommand.php',
+    'Poweradmin\\Domain\\Service\\User\\FullName' => $baseDir . '/lib/Domain/Service/User/FullName.php',
     'Poweradmin\\Domain\\Service\\User\\GroupReferenceResolver' => $baseDir . '/lib/Domain/Service/User/GroupReferenceResolver.php',
     'Poweradmin\\Domain\\Service\\User\\LastSuperAdminGuard' => $baseDir . '/lib/Domain/Service/User/LastSuperAdminGuard.php',
     'Poweradmin\\Domain\\Service\\User\\PermissionTemplateDeleteResult' => $baseDir . '/lib/Domain/Service/User/PermissionTemplateDeleteResult.php',

@@ -1094,6 +1094,32 @@ class UserProvisioningServiceTest extends TestCase
         return [$service, $applied];
     }
 
+    public function testSyncOfADirtyProviderNameRewritesNothingOnceTheCleanNameIsStored(): void
+    {
+        $config = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['sync_user_info' => true]);
+        $config->method('get')->willReturnCallback(static fn($group, $key, $default = null) => $default);
+
+        $stored = 'Jane Doe';
+        $writes = 0;
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getProvisioningProfile')->willReturnCallback(function () use (&$stored): array {
+            return ['email' => 'jane@example.com', 'fullname' => $stored, 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'oidc'];
+        });
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('updateProvisionedUser')->willReturnCallback(function (int $id, array $updates) use (&$writes): void {
+            $writes++;
+        });
+
+        $service = $this->createServiceWithMocks($config, $repository);
+        $userInfo = new OidcUserInfo(username: 'jane', email: 'jane@example.com', displayName: "Jane\u{200B} Doe\t", subject: 'sub-1');
+        $update = (new ReflectionClass(UserProvisioningService::class))->getMethod('updateExistingUser');
+        $update->invoke($service, 7, $userInfo, 'oidc');
+        $update->invoke($service, 7, $userInfo, 'oidc');
+
+        $this->assertSame(0, $writes);
+    }
+
     public function testSyncDoesNotMoveAnAccountOntoAnAddressAnotherAccountHolds(): void
     {
         [, $applied] = $this->syncEmail(true, [], ['email_verified' => true]);
