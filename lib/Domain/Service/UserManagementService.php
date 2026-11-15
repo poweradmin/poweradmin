@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 
@@ -411,65 +412,71 @@ class UserManagementService
             $userData['perm_templ'] = $permTemplId;
         }
 
-        // Same guard as assignPermissionTemplate(): API PUT must not move the last
-        // super admin to a template without the super admin permission. Opt-in
-        // through security.protect_last_admin_on_edit, so existing installs keep
-        // today's behaviour until they turn it on.
-        if (
-            $this->protectLastAdminOnEdit
-            && array_key_exists('perm_templ', $userData)
-            && $this->userRepository->isUberuser($userId)
-            && $this->userRepository->countUberusers() <= 1
-            && !$this->userRepository->templateGrantsUberuser((int)$userData['perm_templ'])
-        ) {
-            return [
-                'success' => false,
-                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
-                'status' => 409
-            ];
-        }
+        $needsLock = $this->userRepository->isUberuser($userId)
+            && (($this->protectLastAdminOnEdit && array_key_exists('perm_templ', $userData))
+                || (array_key_exists('active', $userData) && !$userData['active']));
 
-        // Check if trying to disable the last remaining uberuser
-        if (array_key_exists('active', $userData) && !$userData['active']) {
-            if ($this->userRepository->isUberuser($userId)) {
-                $uberuserCount = $this->userRepository->countUberusers();
-                if ($uberuserCount <= 1) {
-                    return [
-                        'success' => false,
-                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                        'status' => 409
-                    ];
-                }
-            }
-        }
-
-        try {
-            if ($passwordGiven) {
-                $userData['password'] = $this->authService->hashPassword((string)$userData['password']);
-            }
-
-            $success = $this->userRepository->updateUser($userId, $userData);
-
-            if (!$success) {
+        return $this->underUberuserLock($needsLock, function () use ($userId, $userData, $passwordGiven): array {
+            // Same guard as assignPermissionTemplate(): API PUT must not move the last
+            // super admin to a template without the super admin permission. Opt-in
+            // through security.protect_last_admin_on_edit, so existing installs keep
+            // today's behaviour until they turn it on.
+            if (
+                $this->protectLastAdminOnEdit
+                && array_key_exists('perm_templ', $userData)
+                && $this->userRepository->isUberuser($userId)
+                && $this->userRepository->countUberusers() <= 1
+                && !$this->userRepository->templateGrantsUberuser((int)$userData['perm_templ'])
+            ) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to update user',
-                    'status' => 500
+                    'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                    'status' => 409
                 ];
             }
 
-            return [
-                'success' => true,
-                'message' => 'User updated successfully',
-                'user_id' => $userId
-            ];
-        } catch (Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Failed to update user: ' . $e->getMessage(),
-                'status' => 500
-            ];
-        }
+            // Check if trying to disable the last remaining uberuser
+            if (array_key_exists('active', $userData) && !$userData['active']) {
+                if ($this->userRepository->isUberuser($userId)) {
+                    $uberuserCount = $this->userRepository->countUberusers();
+                    if ($uberuserCount <= 1) {
+                        return [
+                            'success' => false,
+                            'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
+                            'status' => 409
+                        ];
+                    }
+                }
+            }
+
+            try {
+                if ($passwordGiven) {
+                    $userData['password'] = $this->authService->hashPassword((string)$userData['password']);
+                }
+
+                $success = $this->userRepository->updateUser($userId, $userData);
+
+                if (!$success) {
+                    return [
+                        'success' => false,
+                        'message' => 'Failed to update user',
+                        'status' => 500
+                    ];
+                }
+
+                return [
+                    'success' => true,
+                    'message' => 'User updated successfully',
+                    'user_id' => $userId
+                ];
+            } catch (Exception $e) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to update user: ' . $e->getMessage(),
+                    'status' => 500
+                ];
+            }
+        });
     }
 
     /**
@@ -491,104 +498,106 @@ class UserManagementService
             ];
         }
 
-        // Check if this is the last uberuser - prevent deletion to avoid system lockout
-        if ($this->userRepository->isUberuser($userId)) {
-            $uberuserCount = $this->userRepository->countUberusers();
-            if ($uberuserCount <= 1) {
-                return [
-                    'success' => false,
-                    'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
-                    'status' => 409
-                ];
+        return $this->underUberuserLock($this->userRepository->isUberuser($userId), function () use ($userId, $transferToUserId, $actingUserId): array {
+            // Check if this is the last uberuser - prevent deletion to avoid system lockout
+            if ($this->userRepository->isUberuser($userId)) {
+                $uberuserCount = $this->userRepository->countUberusers();
+                if ($uberuserCount <= 1) {
+                    return [
+                        'success' => false,
+                        'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
+                        'status' => 409
+                    ];
+                }
             }
-        }
 
-        // Get user's zones
-        $userZones = $this->userRepository->getUserZones($userId);
-        $zoneCount = count($userZones);
+            // Get user's zones
+            $userZones = $this->userRepository->getUserZones($userId);
+            $zoneCount = count($userZones);
 
-        try {
-            // Handle zones owned by the user
-            if ($zoneCount > 0) {
-                if (!$transferToUserId) {
-                    return [
-                        'success' => false,
-                        'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.',
-                        'status' => 400
-                    ];
-                }
+            try {
+                // Handle zones owned by the user
+                if ($zoneCount > 0) {
+                    if (!$transferToUserId) {
+                        return [
+                            'success' => false,
+                            'message' => 'User owns zones. Please specify transfer_to_user_id to transfer zones to another user.',
+                            'status' => 400
+                        ];
+                    }
 
-                // The target must differ from the user being deleted, otherwise the
-                // zones are transferred to an account that is deleted moments later
-                // and left orphaned (there is no FK from zones.owner to users.id).
-                if ($transferToUserId === $userId) {
-                    return [
-                        'success' => false,
-                        'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
-                        'status' => 400
-                    ];
-                }
+                    // The target must differ from the user being deleted, otherwise the
+                    // zones are transferred to an account that is deleted moments later
+                    // and left orphaned (there is no FK from zones.owner to users.id).
+                    if ($transferToUserId === $userId) {
+                        return [
+                            'success' => false,
+                            'message' => 'Cannot transfer zones to the user being deleted. Specify a different transfer_to_user_id.',
+                            'status' => 400
+                        ];
+                    }
 
-                // Check if transfer target user exists
-                if (!$this->userExists($transferToUserId)) {
-                    return [
-                        'success' => false,
-                        'message' => 'Transfer target user not found',
-                        'status' => 404
-                    ];
-                }
+                    // Check if transfer target user exists
+                    if (!$this->userExists($transferToUserId)) {
+                        return [
+                            'success' => false,
+                            'message' => 'Transfer target user not found',
+                            'status' => 404
+                        ];
+                    }
 
-                // Giving away a zone is a meta edit; a user manager without that right must not gain zones this way.
-                if ($actingUserId !== null) {
-                    $metaEditLevel = $this->permissionService->getZoneMetaEditPermissionLevel($actingUserId);
-                    foreach ($userZones as $zone) {
-                        $mayReassign = $metaEditLevel === 'all'
-                            || ($metaEditLevel === 'own' && $this->permissionService->userOwnsZone($actingUserId, (int)$zone['domain_id']));
-                        if (!$mayReassign) {
-                            return [
-                                'success' => false,
-                                'message' => 'You do not have permission to reassign zone ' . (int)$zone['domain_id'],
-                                'status' => 403
-                            ];
+                    // Giving away a zone is a meta edit; a user manager without that right must not gain zones this way.
+                    if ($actingUserId !== null) {
+                        $metaEditLevel = $this->permissionService->getZoneMetaEditPermissionLevel($actingUserId);
+                        foreach ($userZones as $zone) {
+                            $mayReassign = $metaEditLevel === 'all'
+                                || ($metaEditLevel === 'own' && $this->permissionService->userOwnsZone($actingUserId, (int)$zone['domain_id']));
+                            if (!$mayReassign) {
+                                return [
+                                    'success' => false,
+                                    'message' => 'You do not have permission to reassign zone ' . (int)$zone['domain_id'],
+                                    'status' => 403
+                                ];
+                            }
                         }
+                    }
+
+                    // Transfer zones to the specified user
+                    if (!$this->userRepository->transferUserZones($userId, $transferToUserId)) {
+                        return [
+                            'success' => false,
+                            'message' => 'Failed to transfer zones to target user',
+                            'status' => 500
+                        ];
                     }
                 }
 
-                // Transfer zones to the specified user
-                if (!$this->userRepository->transferUserZones($userId, $transferToUserId)) {
+                // Delete the user
+                if (!$this->userRepository->deleteUser($userId)) {
                     return [
                         'success' => false,
-                        'message' => 'Failed to transfer zones to target user',
+                        'message' => 'Failed to delete user',
                         'status' => 500
                     ];
                 }
-            }
 
-            // Delete the user
-            if (!$this->userRepository->deleteUser($userId)) {
+                $message = $zoneCount > 0
+                    ? "User deleted successfully. {$zoneCount} zones transferred"
+                    : 'User deleted successfully';
+
+                return [
+                    'success' => true,
+                    'message' => $message,
+                    'zones_affected' => $zoneCount
+                ];
+            } catch (Exception $e) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to delete user',
+                    'message' => 'Failed to delete user: ' . $e->getMessage(),
                     'status' => 500
                 ];
             }
-
-            $message = $zoneCount > 0
-                ? "User deleted successfully. {$zoneCount} zones transferred"
-                : 'User deleted successfully';
-
-            return [
-                'success' => true,
-                'message' => $message,
-                'zones_affected' => $zoneCount
-            ];
-        } catch (Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Failed to delete user: ' . $e->getMessage(),
-                'status' => 500
-            ];
-        }
+        });
     }
 
     /**
@@ -618,41 +627,67 @@ class UserManagementService
             ];
         }
 
-        // Guard against demoting the last active super admin: if this user is the
-        // only remaining ueberuser and the new template drops that permission, the
-        // system would be left with zero super admins.
-        if (
-            $this->userRepository->isUberuser($userId)
-            && $this->userRepository->countUberusers() <= 1
-            && !$this->userRepository->templateGrantsUberuser($permTemplId)
-        ) {
-            return [
-                'success' => false,
-                'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
-                'status' => 409
-            ];
-        }
-
-        try {
-            // Assign permission template
-            if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
+        return $this->underUberuserLock($this->userRepository->isUberuser($userId), function () use ($userId, $permTemplId): array {
+            // Guard against demoting the last active super admin: if this user is the
+            // only remaining ueberuser and the new template drops that permission, the
+            // system would be left with zero super admins.
+            if (
+                $this->userRepository->isUberuser($userId)
+                && $this->userRepository->countUberusers() <= 1
+                && !$this->userRepository->templateGrantsUberuser($permTemplId)
+            ) {
                 return [
                     'success' => false,
-                    'message' => 'Failed to assign permission template',
-                    'status' => 500
+                    'message' => 'Cannot remove super admin from the last remaining super admin user. At least one active super admin must exist in the system.',
+                    'status' => 409
                 ];
             }
 
-            return [
-                'success' => true,
-                'message' => 'Permission template assigned successfully'
-            ];
-        } catch (Exception $e) {
-            return [
-                'success' => false,
-                'message' => 'Failed to assign permission template: ' . $e->getMessage(),
-                'status' => 500
-            ];
+            try {
+                // Assign permission template
+                if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
+                    return [
+                        'success' => false,
+                        'message' => 'Failed to assign permission template',
+                        'status' => 500
+                    ];
+                }
+
+                return [
+                    'success' => true,
+                    'message' => 'Permission template assigned successfully'
+                ];
+            } catch (Exception $e) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to assign permission template: ' . $e->getMessage(),
+                    'status' => 500
+                ];
+            }
+        });
+    }
+
+    /**
+     * Runs a last-admin check together with the write it protects while the active super
+     * admin rows are locked. A refusal or failure rolls back, a success commits.
+     *
+     * @param callable(): array $work
+     */
+    private function underUberuserLock(bool $needed, callable $work): array
+    {
+        $repository = $this->userRepository;
+        if (!$needed || !$repository instanceof DbUserRepository) {
+            return $work();
+        }
+
+        $owned = $repository->beginUberuserLock();
+        $result = [];
+        try {
+            $result = $work();
+
+            return $result;
+        } finally {
+            $repository->endUberuserLock($owned, ($result['success'] ?? false) === true);
         }
     }
 

@@ -628,9 +628,12 @@ class DbUserRepository implements UserRepository
      */
     public function deleteUser(int $userId): bool
     {
+        // Start transaction to ensure atomicity; join one the caller holds
+        $ownsTransaction = !$this->db->inTransaction();
         try {
-            // Start transaction to ensure atomicity
-            $this->db->beginTransaction();
+            if ($ownsTransaction) {
+                $this->db->beginTransaction();
+            }
 
             $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :userId");
             $stmt->execute([':userId' => $userId]);
@@ -660,14 +663,20 @@ class DbUserRepository implements UserRepository
             }
 
             if ($result) {
-                $this->db->commit();
+                if ($ownsTransaction) {
+                    $this->db->commit();
+                }
                 return true;
             } else {
-                $this->db->rollback();
+                if ($ownsTransaction) {
+                    $this->db->rollback();
+                }
                 return false;
             }
         } catch (\Exception $e) {
-            $this->db->rollback();
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $this->db->rollback();
+            }
             throw $e;
         }
     }
@@ -776,6 +785,51 @@ class DbUserRepository implements UserRepository
 
         $stmt = $this->db->query($query);
         return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Opens a transaction that holds the active super admin rows, so a last-admin check
+     * and the write it protects cannot interleave with another one.
+     *
+     * @return bool True when this call opened the transaction and endUberuserLock() must close it
+     */
+    public function beginUberuserLock(): bool
+    {
+        $owned = !$this->db->inTransaction();
+        $driver = (string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($owned) {
+            $this->db->beginTransaction();
+            if ($driver === 'sqlite') {
+                // A write statement takes SQLite's write lock now, even when it matches no row
+                $this->db->exec('UPDATE users SET active = active WHERE id = -1');
+            }
+        }
+
+        $stmt = $this->db->query(
+            "SELECT users.id FROM users
+             WHERE users.active = 1
+             AND users.perm_templ IN (
+                 SELECT perm_templ_items.templ_id
+                 FROM perm_templ_items
+                 JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                 WHERE perm_items.name = 'user_is_ueberuser')
+             ORDER BY users.id" . DbCompat::rowLock($driver)
+        );
+        $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+        return $owned;
+    }
+
+    /**
+     * Closes the transaction opened by beginUberuserLock(); a no-op when that call joined an outer one.
+     */
+    public function endUberuserLock(bool $owned, bool $commit): void
+    {
+        if (!$owned || !$this->db->inTransaction()) {
+            return;
+        }
+
+        $commit ? $this->db->commit() : $this->db->rollBack();
     }
 
     /**

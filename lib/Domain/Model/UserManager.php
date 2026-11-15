@@ -276,25 +276,42 @@ class UserManager
                 }
             }
 
-            if (DnsBackendProviderFactory::isApiBackend($this->config)) {
-                // The user's named rows carry zones in API mode; an id one opens may open another zone once it goes
-                $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :uid AND zone_name IS NOT NULL");
+            // Checked again under the lock; the zone work above cannot share the transaction
+            $lock = $this->userRepository instanceof DbUserRepository ? $this->userRepository : null;
+            $lockOwned = false;
+            $removed = false;
+            $email = null;
+            try {
+                $lockOwned = $lock?->beginUberuserLock() ?? false;
+                if ($this->userRepository->isUberuser($uid) && $this->userRepository->countUberusers() <= 1) {
+                    $this->messageService->addSystemError(_('Cannot delete the last remaining super admin user.'));
+
+                    return false;
+                }
+
+                if (DnsBackendProviderFactory::isApiBackend($this->config)) {
+                    // The user's named rows carry zones in API mode; an id one opens may open another zone once it goes
+                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE owner = :uid AND zone_name IS NOT NULL");
+                    $stmt->execute([':uid' => $uid]);
+                    SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+                }
+                $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
                 $stmt->execute([':uid' => $uid]);
-                SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+
+                // Clean up external authentication links
+                $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
+                $stmt->execute([':uid' => $uid]);
+
+                $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :uid");
+                $stmt->execute([':uid' => $uid]);
+                $email = $stmt->fetchColumn();
+
+                $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
+                $stmt->execute([':uid' => $uid]);
+                $removed = true;
+            } finally {
+                $lock?->endUberuserLock($lockOwned, $removed);
             }
-            $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
-            $stmt->execute([':uid' => $uid]);
-
-            // Clean up external authentication links
-            $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
-            $stmt->execute([':uid' => $uid]);
-
-            $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :uid");
-            $stmt->execute([':uid' => $uid]);
-            $email = $stmt->fetchColumn();
-
-            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
-            $stmt->execute([':uid' => $uid]);
 
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTemplUserId($uid);
@@ -386,62 +403,76 @@ class UserManager
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
             $mayAssignTemplate = $this->hasPermission('user_edit_templ_perm');
-            if ($mayAssignTemplate) {
-                if ($this->templateAssignmentRejected((int)$usercheck['perm_templ'], (int)$perm_templ, $id)) {
-                    return false;
-                }
 
-                if ($this->lastAdminDemotionRejected($id, (int)$perm_templ)) {
-                    return false;
-                }
-
-                $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
+            $lock = null;
+            $lockOwned = false;
+            if ($mayAssignTemplate && $this->config->get('security', 'protect_last_admin_on_edit', false)) {
+                $this->userRepository ??= new DbUserRepository($this->db, $this->config);
+                $lock = $this->userRepository instanceof DbUserRepository ? $this->userRepository : null;
+                $lockOwned = $lock?->beginUberuserLock() ?? false;
             }
-
-            $query .= ", description = :description, active = :active, use_ldap = :use_ldap, auth_method = :auth_method";
-
-            $edit_own_perm = $this->hasPermission('user_edit_own');
-            $passwd_edit_others_perm = $this->hasPermission('user_passwd_edit_others');
-            // Changing another user's password requires user_passwd_edit_others;
-            // without it the posted password is ignored and the other fields still save.
-            $may_set_password = $id == $_SESSION[SessionKeys::USERID] ? ($edit_own_perm || $passwd_edit_others_perm) : $passwd_edit_others_perm;
-
+            $saved = false;
             $passwordHash = null;
-            if ($user_password != "" && $may_set_password) {
-                $config = ConfigurationManager::getInstance();
-                $config->initialize();
-                $userAuthService = new UserAuthenticationService(
-                    $config->get('security', 'password_encryption', 'bcrypt'),
-                    $config->get('security', 'password_cost', 12)
-                );
+            try {
+                if ($mayAssignTemplate) {
+                    if ($this->templateAssignmentRejected((int)$usercheck['perm_templ'], (int)$perm_templ, $id)) {
+                        return false;
+                    }
 
-                $passwordHash = $useLdap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
-                $query .= ", password = :password";
+                    if ($this->lastAdminDemotionRejected($id, (int)$perm_templ)) {
+                        return false;
+                    }
+
+                    $query .= ", perm_templ = :perm_templ, perm_templ_source = 'admin'";
+                }
+
+                $query .= ", description = :description, active = :active, use_ldap = :use_ldap, auth_method = :auth_method";
+
+                $edit_own_perm = $this->hasPermission('user_edit_own');
+                $passwd_edit_others_perm = $this->hasPermission('user_passwd_edit_others');
+                // Changing another user's password requires user_passwd_edit_others;
+                // without it the posted password is ignored and the other fields still save.
+                $may_set_password = $id == $_SESSION[SessionKeys::USERID] ? ($edit_own_perm || $passwd_edit_others_perm) : $passwd_edit_others_perm;
+
+                if ($user_password != "" && $may_set_password) {
+                    $config = ConfigurationManager::getInstance();
+                    $config->initialize();
+                    $userAuthService = new UserAuthenticationService(
+                        $config->get('security', 'password_encryption', 'bcrypt'),
+                        $config->get('security', 'password_cost', 12)
+                    );
+
+                    $passwordHash = $useLdap ? 'LDAP_USER' : $userAuthService->hashPassword($user_password);
+                    $query .= ", password = :password";
+                }
+
+                $query .= " WHERE id = :id";
+
+                $stmt = $this->db->prepare($query);
+
+                $stmt->bindValue(':username', $user, PDO::PARAM_STR);
+                $stmt->bindValue(':fullname', self::cleanFullname($fullname), PDO::PARAM_STR);
+                $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+                $stmt->bindValue(':description', $description, PDO::PARAM_STR);
+                $stmt->bindValue(':active', $active, PDO::PARAM_INT);
+                $stmt->bindValue(':use_ldap', $useLdap ?: 0, PDO::PARAM_INT);
+
+                $stmt->bindValue(':auth_method', $newAuthMethod, PDO::PARAM_STR);
+                $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+                if ($mayAssignTemplate) {
+                    $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
+                }
+
+                if ($passwordHash !== null) {
+                    $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
+                }
+
+                $stmt->execute();
+                $saved = true;
+            } finally {
+                $lock?->endUberuserLock($lockOwned, $saved);
             }
-
-            $query .= " WHERE id = :id";
-
-            $stmt = $this->db->prepare($query);
-
-            $stmt->bindValue(':username', $user, PDO::PARAM_STR);
-            $stmt->bindValue(':fullname', self::cleanFullname($fullname), PDO::PARAM_STR);
-            $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-            $stmt->bindValue(':description', $description, PDO::PARAM_STR);
-            $stmt->bindValue(':active', $active, PDO::PARAM_INT);
-            $stmt->bindValue(':use_ldap', $useLdap ?: 0, PDO::PARAM_INT);
-
-            $stmt->bindValue(':auth_method', $newAuthMethod, PDO::PARAM_STR);
-            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-
-            if ($mayAssignTemplate) {
-                $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
-            }
-
-            if ($passwordHash !== null) {
-                $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
-            }
-
-            $stmt->execute();
             if ($passwordHash !== null) {
                 (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$id);
             }

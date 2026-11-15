@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * The web edit form refuses to move the last active super admin to a template
@@ -116,6 +117,35 @@ class UserManagerLastAdminGuardTest extends TestCase
 
         $this->assertTrue($this->editAdmin(self::PLAIN_TEMPLATE, false));
         $this->assertSame(self::PLAIN_TEMPLATE, $this->storedTemplate());
+    }
+
+    #[Test]
+    public function testEditFormChecksAndWritesUnderTheSuperAdminLock(): void
+    {
+        $this->useLockingRepository();
+        $this->userRepository->expects($this->once())->method('beginUberuserLock')->willReturn(true);
+        $this->userRepository->expects($this->once())->method('endUberuserLock')->with(true, true);
+
+        $this->assertTrue($this->editAdmin(self::ADMIN_TEMPLATE, true));
+    }
+
+    #[Test]
+    public function testEditFormReleasesTheLockWhenItRefuses(): void
+    {
+        $this->useLockingRepository();
+        $this->userRepository->expects($this->once())->method('beginUberuserLock')->willReturn(true);
+        $this->userRepository->expects($this->once())->method('endUberuserLock')->with(true, false);
+
+        $this->assertFalse($this->editAdmin(self::PLAIN_TEMPLATE, true));
+    }
+
+    private function useLockingRepository(): void
+    {
+        $this->userRepository = $this->createMock(DbUserRepository::class);
+        $this->userRepository->method('isUberuser')->willReturn(true);
+        $this->userRepository->method('countUberusers')->willReturn(1);
+        $this->userRepository->method('templateGrantsUberuser')
+            ->willReturnCallback(fn (int $templId): bool => $templId === self::ADMIN_TEMPLATE);
     }
 
     private function editAdmin(int $permTempl, bool $guardOn): bool
