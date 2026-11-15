@@ -138,7 +138,7 @@ class IpAddressRetrieverTest extends TestCase
             'HTTP_X_REAL_IP' => '9.9.9.9',
         ];
         $ipRetriever = new IpAddressRetriever($server);
-        $this->assertEquals('::ffff:203.0.113.7', $ipRetriever->getClientIp());
+        $this->assertEquals('203.0.113.7', $ipRetriever->getClientIp());
     }
 
     public function testAPortedEntryBeyondATrustedProxyResolvesTheRealClient()
@@ -367,5 +367,38 @@ class IpAddressRetrieverTest extends TestCase
         ];
         $ipRetriever = new IpAddressRetriever($server);
         $this->assertEquals('10.5.6.7', $ipRetriever->getClientIp());
+    }
+
+    public function testIpv4MappedPeerIsReportedAsIpv4(): void
+    {
+        foreach (['::ffff:203.0.113.9', '::FFFF:203.0.113.9'] as $peer) {
+            $this->assertSame('203.0.113.9', (new IpAddressRetriever(['REMOTE_ADDR' => $peer], null, []))->getClientIp());
+        }
+    }
+
+    public function testIpv4MappedLoopbackPeerStillTrustsForwardedHeaders(): void
+    {
+        $server = ['REMOTE_ADDR' => '::FFFF:127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '198.51.100.7'];
+        $this->assertSame('198.51.100.7', (new IpAddressRetriever($server, null, []))->getClientIp());
+    }
+
+    public function testIpv4MappedForwardedEntryIsReportedAsIpv4(): void
+    {
+        $server = ['REMOTE_ADDR' => '127.0.0.1', 'HTTP_X_FORWARDED_FOR' => '::ffff:198.51.100.7'];
+        $this->assertSame('198.51.100.7', (new IpAddressRetriever($server, null, []))->getClientIp());
+    }
+
+    public function testMappedFormTrustedProxyEntriesMatchTheIpv4Peer(): void
+    {
+        foreach (['::ffff:203.0.113.7', '::ffff:203.0.113.0/120'] as $entry) {
+            $server = ['REMOTE_ADDR' => '203.0.113.7', 'HTTP_X_FORWARDED_FOR' => '198.51.100.7'];
+            $this->assertSame('198.51.100.7', (new IpAddressRetriever($server, null, [$entry]))->getClientIp());
+        }
+    }
+
+    public function testMappedPeerMatchesAMappedFormTrustedProxyEntry(): void
+    {
+        $server = ['REMOTE_ADDR' => '::ffff:203.0.113.5', 'HTTP_X_FORWARDED_FOR' => '198.51.100.7'];
+        $this->assertSame('198.51.100.7', (new IpAddressRetriever($server, null, ['::ffff:203.0.113.5']))->getClientIp());
     }
 }

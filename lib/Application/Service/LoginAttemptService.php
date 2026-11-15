@@ -257,6 +257,9 @@ class LoginAttemptService
             // Exact match - compare packed forms so equivalent IPv6 spellings still
             // match (e.g. 2001:db8::1 vs 2001:0db8:0000:0000:0000:0000:0000:0001).
             $listBinary = @inet_pton($listItem);
+            if ($listBinary !== false && self::isIpv4Mapped($listBinary)) {
+                $listBinary = substr($listBinary, 12);
+            }
             if ($listItem === $ipAddress || ($listBinary !== false && $listBinary === $binaryIp)) {
                 return true;
             }
@@ -287,14 +290,17 @@ class LoginAttemptService
         [$subnet, $bits] = explode('/', $cidr, 2);
 
         $binarySubnet = @inet_pton($subnet);
-        if ($binarySubnet === false || strlen($binaryIp) !== strlen($binarySubnet)) {
-            return false;
-        }
-
-        if (!ctype_digit($bits)) {
+        if ($binarySubnet === false || !ctype_digit($bits)) {
             return false;
         }
         $prefixBits = (int)$bits;
+        if (strlen($binarySubnet) === 16 && strlen($binaryIp) === 4 && self::isIpv4Mapped($binarySubnet) && $prefixBits >= 96) {
+            $binarySubnet = substr($binarySubnet, 12);
+            $prefixBits -= 96;
+        }
+        if (strlen($binaryIp) !== strlen($binarySubnet)) {
+            return false;
+        }
         if ($prefixBits > strlen($binaryIp) * 8) {
             return false;
         }

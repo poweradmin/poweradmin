@@ -26,6 +26,7 @@ use InvalidArgumentException;
 use PDO;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 
 class RecordChangeLogger
 {
@@ -315,11 +316,10 @@ class RecordChangeLogger
 
     private function getClientIp(): ?string
     {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
-        if (!is_string($ip) || $ip === '') {
-            return null;
-        }
-        return substr($ip, 0, 64);
+        $config = $this->config ?? ConfigurationManager::getInstance();
+        $trusted = $config->get('security', 'trusted_proxies', []);
+        $ip = (new IpAddressRetriever($_SERVER, null, is_array($trusted) ? $trusted : []))->getClientIp();
+        return $ip === '' ? null : substr($ip, 0, 64);
     }
 
     private function isDatabaseLoggingEnabled(): bool

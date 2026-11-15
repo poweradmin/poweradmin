@@ -207,4 +207,12 @@ class IpListMatchingTest extends TestCase
         $this->assertFalse($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.1.1', ['10.0.0.0/24']));
         $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '::ffff:10.0.0.1', ['::ffff:10.0.0.0/120']));
     }
+
+    public function testIpv4ClientMatchesMappedFormEntries()
+    {
+        foreach ([['::ffff:203.0.113.7'], ['::FFFF:203.0.113.0/120']] as $list) {
+            $this->assertTrue($this->isIpInListMethod->invoke($this->loginAttemptService, '203.0.113.7', $list));
+        }
+        $this->assertFalse($this->isIpInListMethod->invoke($this->loginAttemptService, '203.0.114.7', ['::ffff:203.0.113.0/120']));
+    }
 }

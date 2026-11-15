@@ -52,7 +52,7 @@ class IpAddressRetriever
      */
     public function getClientIp(): string
     {
-        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+        $remoteAddr = self::withoutIpv4Mapping((string) ($this->server['REMOTE_ADDR'] ?? ''));
 
         if ($remoteAddr !== '' && $this->isTrustedPeer($remoteAddr)) {
             // No Client-IP: proxies rarely set it but pass a client's own through
@@ -105,7 +105,7 @@ class IpAddressRetriever
     private function resolveForwardedClientIp(string $headerValue, string $remoteAddr): string|false|null
     {
         $entries = array_values(array_filter(
-            array_map(fn(string $ip): string => self::withoutPort(trim($ip)), explode(',', $headerValue)),
+            array_map(fn(string $ip): string => self::withoutIpv4Mapping(self::withoutPort(trim($ip))), explode(',', $headerValue)),
             fn(string $ip): bool => $ip !== '' && $ip !== $remoteAddr
         ));
 
@@ -123,6 +123,25 @@ class IpAddressRetriever
         }
 
         return $originator;
+    }
+
+    /**
+     * Dual-stack listeners report an IPv4 client as "::ffff:a.b.c.d" (any case); the
+     * trust checks and validators only understand the plain IPv4 form.
+     */
+    private static function withoutIpv4Mapping(string $ip): string
+    {
+        if (preg_match('/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i', $ip, $m) === 1 && filter_var($m[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return $m[1];
+        }
+
+        return $ip;
+    }
+
+    /** Packed ::ffff:a.b.c.d reduced to its 4-byte IPv4 form; anything else unchanged. */
+    private static function unmapped(string $bin): string
+    {
+        return strlen($bin) === 16 && str_starts_with($bin, str_repeat("\0", 10) . "\xff\xff") ? substr($bin, 12) : $bin;
     }
 
     /**
@@ -207,7 +226,7 @@ class IpAddressRetriever
 
         $aBin = @inet_pton($a);
         $bBin = @inet_pton($b);
-        return $aBin !== false && $bBin !== false && $aBin === $bBin;
+        return $aBin !== false && $bBin !== false && self::unmapped($aBin) === self::unmapped($bBin);
     }
 
     private function ipMatchesCidr(string $ip, string $cidr): bool
@@ -219,11 +238,18 @@ class IpAddressRetriever
 
         $ipBin = @inet_pton($ip);
         $netBin = @inet_pton($network);
-        if ($ipBin === false || $netBin === false || strlen($ipBin) !== strlen($netBin)) {
+        if ($ipBin === false || $netBin === false) {
             return false;
         }
 
         $prefix = (int) $prefix;
+        if (strlen($netBin) === 16 && strlen($ipBin) === 4 && self::unmapped($netBin) !== $netBin && $prefix >= 96) {
+            $netBin = self::unmapped($netBin);
+            $prefix -= 96;
+        }
+        if (strlen($ipBin) !== strlen($netBin)) {
+            return false;
+        }
         $maxBits = strlen($ipBin) * 8;
         if ($prefix < 0 || $prefix > $maxBits) {
             return false;

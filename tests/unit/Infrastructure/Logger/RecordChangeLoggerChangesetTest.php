@@ -128,6 +128,21 @@ class RecordChangeLoggerChangesetTest extends TestCase
         $this->assertSame('alice', $row['username']);
     }
 
+    public function testClientIpIsTheRetrieversAddressForAMappedPeer(): void
+    {
+        $saved = $_SERVER;
+        $_SERVER['REMOTE_ADDR'] = '::FFFF:203.0.113.9';
+        try {
+            RecordChangeLogger::beginChangeset(10, 'ip');
+            $this->logger->logRecordCreate($this->record(1, 'www.example.com', '192.0.2.1'), 10);
+            RecordChangeLogger::endChangeset();
+        } finally {
+            $_SERVER = $saved;
+        }
+
+        $this->assertSame('203.0.113.9', $this->db->query("SELECT client_ip FROM log_changesets")->fetchColumn());
+    }
+
     public function testEmptyCommentIsStoredAsNull(): void
     {
         RecordChangeLogger::beginChangeset(10, '   ');
