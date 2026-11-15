@@ -49,9 +49,10 @@ interface AuthUserLookupInterface
 
     /**
      * Whether the account still exists and is active, re-checked on every request
-     * for sessions an identity provider established.
+     * for sessions an identity provider established. With a username, the id must
+     * still belong to that account, so a reused id does not carry the session over.
      */
-    public function isActiveUser(int $userId): bool;
+    public function isActiveUser(int $userId, ?string $username = null): bool;
 
     /**
      * The HTTP Basic row: id, password, use_ldap, for active accounts only.

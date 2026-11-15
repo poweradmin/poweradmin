@@ -74,9 +74,11 @@ final class ExternalSessionGuard
     public function accountIsActive(): bool
     {
         // Both can be set when a signed-in user starts another login that needs MFA
+        $login = $this->session->get(SessionKeys::USERLOGIN);
         foreach ([SessionKeys::USERID, SessionKeys::PENDING_USERID] as $key) {
             $userId = $this->session->get($key);
-            if (is_numeric($userId) && (int)$userId > 0 && !$this->userLookup->isActiveUser((int)$userId)) {
+            $name = is_string($login) && $login !== '' ? $login : null;
+            if (is_numeric($userId) && (int)$userId > 0 && !$this->userLookup->isActiveUser((int)$userId, $name)) {
                 return false;
             }
         }

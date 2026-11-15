@@ -54,6 +54,30 @@ class ExternalSessionGuardTest extends TestCase
         $this->assertTrue((new ExternalSessionGuard($lookup, $session))->accountIsActive());
     }
 
+    public function testSignedInAccountIsCheckedAgainstTheSessionUsername(): void
+    {
+        $session = new ArraySession();
+        $session->set(SessionKeys::USERID, 7);
+        $session->set(SessionKeys::USERLOGIN, 'alice');
+
+        $lookup = $this->createMock(AuthUserLookupInterface::class);
+        $lookup->expects($this->once())->method('isActiveUser')->with(7, 'alice')->willReturn(false);
+
+        $this->assertFalse((new ExternalSessionGuard($lookup, $session))->accountIsActive());
+    }
+
+    public function testPendingAccountIsCheckedAgainstTheSessionUsernameToo(): void
+    {
+        $session = new ArraySession();
+        $session->set(SessionKeys::PENDING_USERID, 9);
+        $session->set(SessionKeys::USERLOGIN, 'name');
+
+        $lookup = $this->createMock(AuthUserLookupInterface::class);
+        $lookup->expects($this->once())->method('isActiveUser')->with(9, 'name')->willReturn(false);
+
+        $this->assertFalse((new ExternalSessionGuard($lookup, $session))->accountIsActive());
+    }
+
     public function testAccountAwaitingMfaIsCheckedToo(): void
     {
         $session = new ArraySession();

@@ -174,10 +174,13 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$rowObj;
     }
 
-    public function isActiveUser(int $userId): bool
+    public function isActiveUser(int $userId, ?string $username = null): bool
     {
-        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id AND active = 1");
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE id = :id AND active = 1" . ($username !== null ? " AND username = :username" : ""));
         $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        if ($username !== null) {
+            $stmt->bindValue(':username', $username);
+        }
         $stmt->execute();
 
         return (bool)$stmt->fetch(PDO::FETCH_ASSOC);

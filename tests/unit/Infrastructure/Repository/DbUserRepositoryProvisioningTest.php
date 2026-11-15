@@ -137,6 +137,14 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->assertFalse($this->repository->isActiveUser(99));
     }
 
+    public function testIsActiveUserWithAUsernameRequiresTheIdToStillBelongToIt(): void
+    {
+        $row = $this->db->query("SELECT username FROM users WHERE id = 1")->fetchColumn();
+
+        $this->assertTrue($this->repository->isActiveUser(1, (string)$row));
+        $this->assertFalse($this->repository->isActiveUser(1, 'someone-else'));
+    }
+
     public function testUpdateProvisionedUserChangesOnlyTheGivenColumns(): void
     {
         $this->repository->updateProvisionedUser(1, ['fullname' => 'Renamed', 'perm_templ' => 1, 'perm_templ_source' => 'saml']);
