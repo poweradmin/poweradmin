@@ -15,7 +15,10 @@
     }
   },
   "require": {
-    "php": ">= 5.4",
-    "ext-openssl": "*"
+    "php": ">= 8.0",
+    "phpseclib/phpseclib": "^3.0.57"
+  },
+  "suggest": {
+    "ext-openssl": "Improves phpseclib performance when available"
   }
 }

@@ -1,7 +1,8 @@
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/6.5/phpunit.xsd">
-	<filter>
-		<whitelist addUncoveredFilesFromWhitelist="false">
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd">
+	<coverage includeUncoveredFiles="false">
+		<include>
 			<directory suffix=".php">src</directory>
-		</whitelist>
-	</filter>
+		</include>
+	</coverage>
 </phpunit>
