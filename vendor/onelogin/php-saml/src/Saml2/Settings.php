@@ -390,6 +390,11 @@ class Settings
             $this->_security['relaxDestinationValidation'] = false;
         }
 
+        // Require Destination attribute on incoming SAML Responses
+        if (!isset($this->_security['requireDestination'])) {
+            $this->_security['requireDestination'] = false;
+        }
+
         // Strict Destination match validation
         if (!isset($this->_security['destinationStrictlyMatches'])) {
             $this->_security['destinationStrictlyMatches'] = false;
@@ -431,6 +436,16 @@ class Settings
         // EncryptionAlgorithm
         if (!isset($this->_security['encryption_algorithm'])) {
             $this->_security['encryption_algorithm'] = XMLSecurityKey::AES128_CBC;
+        }
+
+        // RSA-1.5 key transport (legacy SAML interop; denied by default in xmlseclibs 4)
+        if (!isset($this->_security['allowRSA15KeyTransport'])) {
+            $this->_security['allowRSA15KeyTransport'] = false;
+        }
+
+        // CBC data encryption (unauthenticated, padding oracle; accepted by default by xmlseclibs 4)
+        if (!isset($this->_security['allowCBCEncryption'])) {
+            $this->_security['allowCBCEncryption'] = true;
         }
 
         if (!isset($this->_security['lowercaseUrlencoding'])) {
@@ -863,7 +878,7 @@ class Settings
      */
     public function getIdPSLOResponseUrl()
     {
-        if (isset($this->_idp['singleLogoutService']) && isset($this->_idp['singleLogoutService']['responseUrl'])) {
+        if (isset($this->_idp['singleLogoutService']) && !empty($this->_idp['singleLogoutService']['responseUrl'])) {
             return $this->_idp['singleLogoutService']['responseUrl'];
         }
         return $this->getIdPSLOUrl();

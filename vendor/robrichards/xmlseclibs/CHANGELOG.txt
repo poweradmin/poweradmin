@@ -1,6 +1,153 @@
 xmlseclibs.php
 |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
-12, Dec 2026, 3.1.5
+19, Oct 2026, 4.0.1
+Security Improvements:
+- Harden HMAC key loading so asymmetric material cannot be used as an HMAC
+  secret. The same check applies when signing or verifying. Ordinary HMAC
+  secrets still load.
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+22, Aug 2026, 4.0.0
+Features:
+- Add reference option omit_uri to skip adding a URI attribute on Reference
+  (also skips Id assignment on the referenced element, which exists only to
+  support the URI fragment)
+- Change selected XMLSecurityDSig private properties and methods to protected
+  so the class can be extended (gdespirito). refs #152
+- Add XMLSecurityDSig::ENVELOPED constant for the enveloped-signature Transform
+  URI; deprecate empty appendCert() stub (use add509Cert())
+
+Security Improvements:
+- Harden add509Cert() URL fetching against SSRF: only http/https by default
+  (file:// requires options['allow_file_scheme']); resolve the host and reject
+  loopback/private/link-local/reserved/CGNAT addresses; disable HTTP redirects
+- Reject IPv4-mapped / IPv4-compatible IPv6 certificate URL hosts (e.g.
+  ::ffff:127.0.0.1, ::ffff:169.254.169.254): unwrap the embedded IPv4 and apply
+  the same private/reserved/CGNAT checks (PHP's FILTER_FLAG_NO_* treats mapped
+  addresses as public)
+- Fail closed on unknown Reference Transform algorithms; recognize
+  enveloped-signature explicitly. validateReference() no longer always detaches
+  the Signature from the caller DOM (that broke C14N of ds:Object targets and
+  left half-mutated trees on failure); enveloped-signature removes Signature
+  only when it is a proper descendant of the node being digested
+- Tighten same-document Reference URIs to empty URI and "#id" only (reject
+  "?query", bare "#", and external URIs); share parsing between processRefNode()
+  and getRefNodeID(). Same-document refs always omit comments
+- Reject hostile idKeys attribute names (no whitespace / XPath operators) via
+  Utils\XPath::filterAttrName; invalid names throw
+- Reject duplicate CanonicalizationMethod / SignatureMethod under SignedInfo and
+  duplicate DigestMethod / DigestValue / SignatureValue during verify
+- Reset the cached DOMXPath in locateSignature() so instance reuse across
+  documents cannot fatal with "Node from wrong document"
+- verifyDocument() no longer permanently overwrites instance algorithm
+  allowlists (restored in finally)
+- addReference() / addReferenceList() / sign() / add509Cert() throw instead of
+  silently no-oping when SignedInfo / signature context is missing; sign()
+  requires setCanonicalMethod() and a SignatureMethod element
+- Require correct namespace URIs for InclusiveNamespaces (exc-c14n) and XPath
+  transform children (not localName alone)
+- Reject a DOCTYPE in decrypted XML (defense against entity-expansion / XXE in
+  attacker-crafted encrypted content)
+- Reject a DOCTYPE in documents being signature-verified (locateSignature). Closes
+  the entity-reference signature bypass where an Id="&e;" attribute is resolved by
+  getAttribute() but invisible to the XPath reference lookup (libxml2
+  xmlXPathNodeValHash bug, the CVE-2025-23369 root cause), letting verify()
+  validate a different node than the application reads. Opt out with
+  XMLSecurityDSig::$forbidDoctype = false
+- Deny RSA-1.5 (PKCS#1 v1.5) key transport on decryption by default
+  (Bleichenbacher / XML-Encryption backward-compatibility attack); opt in via
+  XMLSecEnc::$allowRSA15KeyTransport. Add optional key-transport / data
+  algorithm allowlists ($allowedKeyAlgorithms / $allowedDataAlgorithms, with
+  DEFAULT_KEY_ALGORITHMS / DEFAULT_DATA_ALGORITHMS presets)
+- Use a single generic "Failure decrypting Data" error for all decryption
+  failures (bad padding, cipher error, failed RSA unwrap) so callers cannot
+  build a CBC padding oracle from distinguishable errors. Catch and normalize
+  phpseclib throws (LengthException, BadDecryptionException, RuntimeException,
+  etc.) on symmetric and RSA decrypt paths so exception type/message cannot
+  form a ciphertext-validity oracle either.
+- Add verifyDocument(): safe-by-default signature verification that requires a
+  caller-pinned key (never trusts KeyInfo), enforces a SignatureMethod/DigestMethod
+  algorithm allowlist, fails closed on unvalidated references, and returns the
+  validated node set. New $allowedSignatureAlgorithms / $allowedDigestAlgorithms
+  properties (default strong: SHA-256+ digests, RSA-SHA-256+/PSS signatures);
+  the low-level verify()/validateReference() primitives remain unrestricted for
+  backward compatibility unless these properties are set (except the
+  SignatureMethod/key-algorithm binding, which is always enforced -- see below).
+- Reject asymmetric key material (X.509 certificate / PEM public key) being
+  loaded as an HMAC key; prevents signature key/algorithm confusion forgery
+- verify() now always binds the document's SignatureMethod to the algorithm of
+  the supplied key (previously only when $allowedSignatureAlgorithms was set),
+  so a mismatch is rejected even on the low-level path. Blocks algorithm
+  substitution / key confusion (e.g. downgrading an RSA signature to hmac-sha1
+  so a public key is used as the HMAC secret)
+- Bound EncryptedKey / RetrievalMethod resolution depth (prevents recursive
+  key-reference DoS / memory exhaustion)
+- Reject XPath (REC-xpath-19991116) Transforms during verification by default.
+  The transform evaluates a document-supplied XPath expression in 
+  validateReference()  before any crypto runs, so a crafted expression is a 
+  pre-auth CPU denial-of-service; the expression is arbitrary XPath by design 
+  and cannot be sanitized. SAML / WS-Security do not use XPath transforms. Opt in
+  with XMLSecurityDSig::$allowXPathTransforms = true. Signing is unaffected
+- Cap XPath transforms (max 5) and namespaces per XPath transform (max 20);
+  overridable via $maxXPathTransforms / $maxXPathNamespaces
+- Fail closed on unresolved, external, and duplicate-Id Reference URIs
+- Reject unknown CanonicalizationMethod algorithms
+- Use hash_equals for digest and HMAC compares; HMAC verify returns 1/0
+- Validate ISO 10126 pad length on CBC decrypt
+- Harden decrypted XML parsing (LIBXML_NONET); restrict certificate URL fetches
+- Use random_bytes for GUID generation
+
+Features:
+- Remove support for PHP < 8.0
+- add support for RSA PSS (Julius Türich and joonlabs)
+- use phpseclib for encrypting rsa-oaep and rsa-oaep-mgf1p 
+  (Julius Türich and joonlabs)
+- use phpseclib for all crypto (symmetric, RSA-1.5, RSA signatures,
+  X.509); OpenSSL extension is now optional
+- Add XMLSecurityDSig::setSignatureId() to set an Id on the Signature element
+  without mutating sigNode directly
+- Add enableLegacyMode() on XMLSecurityDSig and XMLSecEnc: one call restores
+  pre-4.0 interoperability defaults (accept DOCTYPE, allow XPath transforms
+  without count caps, allow RSA-1.5 key transport). Does not undo always-on
+  cryptographic hardening (algorithm/key binding, uniform decrypt errors,
+  hash_equals, decrypted-XML DOCTYPE rejection, etc.). Temporary migration aid.
+- Make transforms element configurable with options array, default true
+- Add optional $options constructor argument on XMLSecurityDSig; pass
+  'stripWhitespace' => true (default false) to build signatures from a
+  compact template with no whitespace between elements (BASE_TEMPLATE_NOWS)
+- Add optional $options constructor argument on XMLSecEnc; pass
+  'stripWhitespace' => true (default false) to build EncryptedData from a
+  compact template with no whitespace between elements (template_NOWS)
+
+Notes:
+- Prefer RSA-OAEP and AES-GCM for new deployments; RSA-1.5 and CBC remain
+  for legacy XML Encryption interoperability
+- Always check verify() === 1; use getValidatedNodes() for SAML/WS-Security
+- Do not trust KeyInfo certificates alone — pin or validate against a trust store
+- Prefer secure defaults; use enableLegacyMode() only while migrating peers
+
+Improvements:
+- Fix deprecation notice in makeAsnSegment() under PHP 8.5
+- Update parameter type in XMLSecurityDSig::addReference() and addRefInternal()
+- Tighten XMLSecEnc PHPDoc types for algorithm allowlists, references, and
+  encrypt/decrypt return values
+- Harden XMLSecurityDSig DOM handling for static analysis: require DOMElement
+  before attribute access on XPath results, correct locateSignature /
+  reference / staticAdd509Cert PHPDocs, guard failed XPath queries and missing
+  SignatureMethod nodes, and remove dead null comparisons
+
+Bug Fixes:
+- Compact signature template (XMLSecurityDSig 'stripWhitespace' option) removes
+  inter-element whitespace that caused signature mismatch with C# SignedXml and
+  Python signxml.
+- Compact encryption template (XMLSecEnc 'stripWhitespace' option) removes
+  inter-element whitespace from EncryptedData for peers that reject significant
+  whitespace between elements.
+- Guard XMLSecEnc encrypt/decrypt and EncryptedKey construction against null
+  DOM nodes, uninitialized templates, and non-string crypto results that could
+  fatal under PHP 8; prefer getAlgorithm() when writing EncryptionMethod
+
+12, Dec 2025, 3.1.5
 Security:
 - Validate AES-GCM Authentication Tag (Sideni)
 
@@ -161,7 +308,7 @@ Improvements:
 Features:
 - Add param to append sig to node when signing. Fixes a problem when using 
   inclusive canonicalization to append a signature within a namespaced subtree.
-  ex. $objDSig->sign($objKey, $appendToNode); 
+  ex. $objDSig->sign($objKey, $appendToNode);
 - Add ability to encrypt by reference
 - Add support for refences within an encrypted key
 - Add thumbprint generation capability (XMLSecurityKey->getX509Thumbprint() and 
@@ -237,7 +384,7 @@ Features:
 - Add addObject method for enveloping signatures.
 - Add staticGet509XCerts method. Chained certificates within a PEM file can
   now be added within the X509Data node.
-- Add xpath support within transformations
+- Add xpath support within transformations.
 - Add InclusiveNamespaces prefix list support within exclusive transformations.
 
 Bug Fixes:
