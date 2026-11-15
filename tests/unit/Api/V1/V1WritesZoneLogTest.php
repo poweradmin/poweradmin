@@ -19,6 +19,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Psr\Log\NullLogger;
 use ReflectionClass;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,6 +46,9 @@ class V1WritesZoneLogTest extends TestCase
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $db->exec('CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)');
         $db->exec("INSERT INTO users VALUES (7, 'apiuser')");
+        $db->exec('CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)');
+        $db->exec("INSERT INTO domains VALUES (3, 'a.example', 'MASTER')");
+        $db->exec('CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER, disabled INTEGER, ordername TEXT, auth INTEGER)');
         $db->exec('CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER, event TEXT, priority INTEGER)');
 
         return $db;
@@ -53,7 +57,11 @@ class V1WritesZoneLogTest extends TestCase
     private function config(): ConfigurationManager
     {
         $config = $this->createMock(ConfigurationManager::class);
-        $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => $default);
+        $config->method('get')->willReturnCallback(fn($group, $key, $default = null) => [
+            'database.type' => 'sqlite',
+            'dns.hostmaster' => 'hostmaster.a.example',
+            'dns.ttl' => 3600,
+        ]["$group.$key"] ?? $default);
 
         return $config;
     }
@@ -147,6 +155,17 @@ class V1WritesZoneLogTest extends TestCase
         $this->assertLogged('api_delete_zone', 3);
     }
 
+    public function testCreateRecordIsLogged(): void
+    {
+        $controller = $this->recordsController(
+            ['name' => 'www', 'type' => 'A', 'content' => '192.0.2.9'],
+            [],
+        );
+
+        $this->assertSame(201, $this->call($controller, 'createRecord'));
+        $this->assertLogged('api_add_record', 3);
+    }
+
     public function testUpdateRecordIsLogged(): void
     {
         $controller = $this->recordsController(
@@ -188,7 +207,13 @@ class V1WritesZoneLogTest extends TestCase
         $manager->method('editRecord')->willReturn(true);
         $manager->method('deleteRecord')->willReturn(true);
 
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('isApiBackend')->willReturn(false);
+        $provider->method('createRecordAtomic')->willReturn(99);
+
         return $this->build(ZonesRecordsController::class, [
+            'backendProvider' => $provider,
+            'logger' => new NullLogger(),
             'permissionService' => $permissions,
             'zoneRepository' => $zones,
             'recordRepository' => $records,
