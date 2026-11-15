@@ -36,6 +36,8 @@ class DbUserRepositoryFullnameTest extends TestCase
         $this->assertSame("\u{0639}\u{0644}\u{06CC}\u{200C}\u{0631}\u{0636}\u{0627}", UserManager::cleanFullname("\u{0639}\u{0644}\u{06CC}\u{200C}\u{0631}\u{0636}\u{0627}"));
         $this->assertSame("\u{0DC1}\u{0DCA}\u{200D}\u{0DBB}\u{0DD3}", UserManager::cleanFullname("\u{0DC1}\u{0DCA}\u{200D}\u{0DBB}\u{0DD3}"));
         $this->assertSame('AB', UserManager::cleanFullname("A\u{FEFF}\u{2066}B"));
+        $this->assertSame('AB', UserManager::cleanFullname("A\u{061C}B"));
+        $this->assertSame('AB', UserManager::cleanFullname("A\u{E0041}\u{E007F}B"));
         $this->assertSame('Renée Müller-Łukasz 山田', UserManager::cleanFullname('Renée Müller-Łukasz 山田'));
     }
 
