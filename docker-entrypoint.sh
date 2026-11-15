@@ -731,6 +731,12 @@ validate_oidc_config() {
 }
 
 # Create initial admin user if specified
+# SQL counting the rows that make create_admin_user skip: the requested username, or any
+# active superuser (administrator template or a template holding user_is_ueberuser)
+admin_exists_sql() {
+    printf "SELECT COUNT(*) FROM users WHERE username='%s' OR (active = 1 AND (perm_templ = 1 OR perm_templ IN (SELECT pti.templ_id FROM perm_templ_items pti INNER JOIN perm_items pi ON pi.id = pti.perm_id WHERE pi.name = 'user_is_ueberuser')));" "$(escape_sql "$1")"
+}
+
 create_admin_user() {
     local create_admin
     create_admin=$(to_php_bool "${PA_CREATE_ADMIN:-false}")
@@ -775,10 +781,10 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(sqlite3 "${db_file}" "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
+            user_exists=$(sqlite3 "${db_file}" "$(admin_exists_sql "${admin_username}")")
 
             if [ "${user_exists}" -gt 0 ]; then
-                log "Admin user '${admin_username}' already exists, skipping creation"
+                log "Admin user '${admin_username}' or another active superuser already exists, skipping creation"
                 return 0
             fi
 
@@ -793,11 +799,11 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql_client -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(mysql_client -sNe "$(admin_exists_sql "${admin_username}")") \
                 || { log "ERROR: Cannot query the users table in MySQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
-                log "Admin user '${admin_username}' already exists, skipping creation"
+                log "Admin user '${admin_username}' or another active superuser already exists, skipping creation"
                 return 0
             fi
 
@@ -812,11 +818,11 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(psql_client -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';") \
+            user_exists=$(psql_client -tAc "$(admin_exists_sql "${admin_username}")") \
                 || { log "ERROR: Cannot query the users table in PostgreSQL database '${DB_NAME}' to create the admin user"; exit 1; }
 
             if [ "${user_exists}" -gt 0 ]; then
-                log "Admin user '${admin_username}' already exists, skipping creation"
+                log "Admin user '${admin_username}' or another active superuser already exists, skipping creation"
                 return 0
             fi
 
