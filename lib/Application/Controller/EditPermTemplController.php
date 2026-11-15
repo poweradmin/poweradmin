@@ -100,6 +100,14 @@ class EditPermTemplController extends BaseController
             return;
         }
 
+        // The request rules let an absent field through, and the repository would
+        // then file the template as a user template.
+        if (!in_array($this->getRequest()['template_type'] ?? null, PermissionTemplateType::values(), true)) {
+            $this->setMessage('list_perm_templ', 'error', $this->translateWriteError(''));
+            $this->showForm();
+            return;
+        }
+
         // Ensure perm_id is always a list so an all-unchecked form clears the
         // permission list rather than leaving it untouched or iterating a scalar.
         $request = $this->getRequest();

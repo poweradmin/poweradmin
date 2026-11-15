@@ -103,6 +103,48 @@ class EditPermTemplControllerTargetTest extends TestCase
         $this->assertSame(['7', '9'], $details['perm_id']);
     }
 
+    public static function missingOrInvalidTypes(): array
+    {
+        return [
+            'missing' => [[]],
+            'empty' => [['template_type' => '']],
+            'unknown' => [['template_type' => 'admin']],
+            'array' => [['template_type' => ['user']]],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $type
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('missingOrInvalidTypes')]
+    public function testMissingOrInvalidTemplateTypeIsRefusedBeforeAnyWrite(array $type): void
+    {
+        $repository = $this->createMock(DbPermissionTemplateRepository::class);
+        $repository->expects($this->never())->method('updatePermissionTemplateDetails');
+
+        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository->method('hasAdminPermission')->willReturn(true);
+
+        $messages = new MessageService();
+        $controller = $this->reflection->newInstanceWithoutConstructor();
+        $this->setProperty($controller, 'permissionTemplate', $repository);
+        $this->setProperty(
+            $controller,
+            'permissionTemplateWriteService',
+            new PermissionTemplateWriteService($repository, $userRepository)
+        );
+        $this->setProperty($controller, 'userContextService', new UserContextService());
+        $this->setBaseProperty($controller, 'config', $this->primeConfig());
+        $this->setBaseProperty($controller, 'messageService', $messages);
+        $this->setBaseProperty($controller, 'requestData', ['id' => '5', 'templ_name' => 'Ordinary'] + $type);
+
+        try {
+            $this->reflection->getMethod('handleFormSubmission')->invoke($controller);
+        } catch (\Throwable) {
+            // showForm() needs a rendering stack; refusing before it is what matters here.
+        }
+    }
+
     /**
      * Invoke handleFormSubmission() and return the payload the repository was handed.
      * The repository throws so the method stops before redirect(), which would exit().
