@@ -507,6 +507,19 @@ class SessionAuthenticator extends LoggingService
         return is_string($stored) && hash_equals($expected, $stored);
     }
 
+    /**
+     * The username is part of the check because SQLite can hand a deleted user's id to a new account.
+     */
+    public static function isActiveAccount(PDO $db, int $userId, string $login): bool
+    {
+        $stmt = $db->prepare('SELECT id FROM users WHERE id = :id AND username = :login AND active = 1');
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':login', $login);
+        $stmt->execute();
+
+        return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     private function endSessionOfDisabledAccount(): void
     {
         if (self::isForeignSsoSession($_SESSION, self::instanceFingerprint($this->configManager))) {
@@ -521,10 +534,7 @@ class SessionAuthenticator extends LoggingService
                 continue;
             }
 
-            $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id AND active = 1');
-            $stmt->bindValue(':id', (int)$userId, PDO::PARAM_INT);
-            $stmt->execute();
-            if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (!self::isActiveAccount($this->db, (int)$userId, (string)($_SESSION['userlogin'] ?? ''))) {
                 $this->logWarning('Ending session of disabled account {userId}', ['userId' => (int)$userId]);
                 $this->authService->logout(new SessionEntity(_('The user account is disabled.'), 'danger'));
                 return;
