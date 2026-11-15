@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Domain\Model\Pagination;
 
 /**
@@ -389,21 +390,24 @@ class UserManagementService
             $userData['perm_templ'] = $permTemplId;
         }
 
-        // Check if trying to disable the last remaining uberuser
-        if (array_key_exists('active', $userData) && !$userData['active']) {
-            if ($this->userRepository->isUberuser($userId)) {
-                $uberuserCount = $this->userRepository->countUberusers();
-                if ($uberuserCount <= 1) {
-                    return [
-                        'success' => false,
-                        'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
-                        'status' => 409
-                    ];
-                }
-            }
-        }
-
+        // The check and the write share one transaction with the uberuser rows locked
+        $disabling = array_key_exists('active', $userData) && !$userData['active'];
+        $repo = $this->userRepository;
+        $guarded = $disabling && $repo instanceof DbUserRepository;
+        $committed = false;
         try {
+            if ($guarded) {
+                $repo->beginTransaction();
+                $repo->lockActiveUberusers();
+            }
+            if ($disabling && $this->userRepository->isUberuser($userId) && $this->userRepository->countUberusers() <= 1) {
+                return [
+                    'success' => false,
+                    'message' => 'Cannot disable the last remaining super admin user. At least one active super admin must exist in the system.',
+                    'status' => 409
+                ];
+            }
+
             // Check if attempting to set password for external auth user
             if (!empty($userData['password'])) {
                 $user = $this->userRepository->getUserById($userId);
@@ -436,6 +440,11 @@ class UserManagementService
                 ];
             }
 
+            if ($guarded) {
+                $repo->commit();
+                $committed = true;
+            }
+
             return [
                 'success' => true,
                 'message' => 'User updated successfully',
@@ -447,6 +456,10 @@ class UserManagementService
                 'message' => 'Failed to update user: ' . $e->getMessage(),
                 'status' => 500
             ];
+        } finally {
+            if ($guarded && !$committed) {
+                $repo->rollBack();
+            }
         }
     }
 
@@ -468,23 +481,26 @@ class UserManagementService
             ];
         }
 
-        // Check if this is the last uberuser - prevent deletion to avoid system lockout
-        if ($this->userRepository->isUberuser($userId)) {
-            $uberuserCount = $this->userRepository->countUberusers();
-            if ($uberuserCount <= 1) {
+        // The check and the delete share one transaction with the uberuser rows locked
+        $repo = $this->userRepository instanceof DbUserRepository ? $this->userRepository : null;
+        $committed = false;
+        try {
+            if ($repo !== null) {
+                $repo->beginTransaction();
+                $repo->lockActiveUberusers();
+            }
+            if ($this->userRepository->isUberuser($userId) && $this->userRepository->countUberusers() <= 1) {
                 return [
                     'success' => false,
                     'message' => 'Cannot delete the last remaining super admin user. At least one super admin must exist in the system.',
                     'status' => 409
                 ];
             }
-        }
 
-        // Get user's zones
-        $userZones = $this->userRepository->getUserZones($userId);
-        $zoneCount = count($userZones);
+            // Get user's zones
+            $userZones = $this->userRepository->getUserZones($userId);
+            $zoneCount = count($userZones);
 
-        try {
             // Handle zones owned by the user
             if ($zoneCount > 0) {
                 if (!$transferToUserId) {
@@ -523,6 +539,9 @@ class UserManagementService
                 ];
             }
 
+            $repo?->commit();
+            $committed = true;
+
             $message = $zoneCount > 0
                 ? "User deleted successfully. {$zoneCount} zones transferred"
                 : 'User deleted successfully';
@@ -538,6 +557,10 @@ class UserManagementService
                 'message' => 'Failed to delete user: ' . $e->getMessage(),
                 'status' => 500
             ];
+        } finally {
+            if ($repo !== null && !$committed) {
+                $repo->rollBack();
+            }
         }
     }
 

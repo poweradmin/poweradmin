@@ -280,9 +280,12 @@ class DbUserRepository implements UserRepository
      */
     public function deleteUser(int $userId): bool
     {
+        // A caller that already holds the transaction (last-super-admin guard) commits it
+        $ownsTransaction = !$this->db->inTransaction();
         try {
-            // Start transaction to ensure atomicity
-            $this->db->beginTransaction();
+            if ($ownsTransaction) {
+                $this->db->beginTransaction();
+            }
 
             $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :userId");
             $stmt->execute([':userId' => $userId]);
@@ -312,16 +315,66 @@ class DbUserRepository implements UserRepository
             }
 
             if ($result) {
-                $this->db->commit();
+                if ($ownsTransaction) {
+                    $this->db->commit();
+                }
                 return true;
             } else {
-                $this->db->rollback();
+                if ($ownsTransaction) {
+                    $this->db->rollback();
+                }
                 return false;
             }
         } catch (\Exception $e) {
-            $this->db->rollback();
+            if ($ownsTransaction) {
+                $this->db->rollback();
+            }
             throw $e;
         }
+    }
+
+    public function beginTransaction(): void
+    {
+        if ($this->db->inTransaction()) {
+            return;
+        }
+
+        $this->db->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        if ($this->db->inTransaction()) {
+            $this->db->commit();
+        }
+    }
+
+    public function rollBack(): void
+    {
+        if ($this->db->inTransaction()) {
+            $this->db->rollBack();
+        }
+    }
+
+    public function lockActiveUberusers(): void
+    {
+        $driver = (string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        if ($driver === 'sqlite') {
+            // A matchless write takes SQLite's write lock, the closest it has to a row lock
+            $this->db->exec('UPDATE users SET id = id WHERE 0');
+        }
+
+        $lock = DbCompat::rowLock($driver);
+        $this->db->query(
+            "SELECT users.id FROM users
+             WHERE users.active = 1
+             AND users.perm_templ IN (
+                 SELECT perm_templ_items.templ_id
+                 FROM perm_templ_items
+                 JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                 WHERE perm_items.name = 'user_is_ueberuser')
+             ORDER BY users.id" . $lock
+        )->fetchAll();
     }
 
     /**

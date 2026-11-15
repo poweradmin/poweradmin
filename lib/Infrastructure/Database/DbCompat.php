@@ -137,6 +137,17 @@ final class DbCompat
     }
 
     /**
+     * Row-locking suffix for a SELECT inside a transaction; SQLite has no row locks
+     * (its writes already serialize on the database lock).
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "pgsql", "sqlite")
+     */
+    public static function rowLock(string $db_type): string
+    {
+        return $db_type === 'sqlite' ? '' : ' FOR UPDATE';
+    }
+
+    /**
      * Returns the appropriate boolean true value for the given database type.
      *
      * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
