@@ -64,6 +64,9 @@
             <div>
               <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="d-inline-block me-2">
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="text" class="form-control form-control-sm d-inline-block w-auto" name="mfa_code" autocomplete="one-time-code" maxlength="64"
+                       placeholder="{{ 'Enter verification code'|trans }}" aria-label="{{ 'Enter verification code'|trans }}"
+                       data-testid="disable-mfa-code"{% if mfa_type == 'app' %} required{% endif %}>
                 <button type="submit" name="disable_mfa" class="btn btn-sm btn-outline-danger">
                   {% trans %}Disable MFA{% endtrans %}
                 </button>
