@@ -91,6 +91,11 @@ class LoginAttemptService implements LoginThrottleInterface
         $this->cleanupOldAttempts();
     }
 
+    public function userIdFor(string $username): ?int
+    {
+        return $this->attempts->findUserIdByUsername($username);
+    }
+
     /**
      * Whether the address is on the configured lockout blacklist.
      */

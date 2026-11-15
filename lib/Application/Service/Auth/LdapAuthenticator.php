@@ -83,6 +83,18 @@ final class LdapAuthenticator
     }
 
 
+    private function refuseLockedAccount(string $username, ?LoginCredentials $credentials): AuthOutcome
+    {
+        $this->logger->warning('Account is locked for LDAP user {username}', ['username' => $username]);
+        if ($credentials !== null) {
+            $this->auditService->logLoginLocked(AuthMethod::LDAP);
+        }
+        // Same text and cost as a bad password: lockout never applies to unknown names, so a difference would reveal real accounts.
+        $dummyAuthService = UserAuthenticationService::fromConfig($this->configManager);
+        $dummyAuthService->verifyPassword($credentials !== null ? $credentials->password : '', $dummyAuthService->dummyVerificationHash());
+        return AuthOutcome::failure(_('Authentication failed!'));
+    }
+
     /**
      * Verifies the session's stored credentials, or the just-posted $credentials on
      * the login request, against the directory and records the result in the session.
@@ -98,14 +110,7 @@ final class LdapAuthenticator
 
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
-            $this->logger->warning('Account is locked for LDAP user {username}', ['username' => $username]);
-            if ($isLogin) {
-                $this->auditService->logLoginLocked(AuthMethod::LDAP);
-            }
-            // Same text and cost as a bad password: lockout never applies to unknown names, so a difference would reveal real accounts.
-            $dummyAuthService = UserAuthenticationService::fromConfig($this->configManager);
-            $dummyAuthService->verifyPassword($credentials !== null ? $credentials->password : '', $dummyAuthService->dummyVerificationHash());
-            return AuthOutcome::failure(_('Authentication failed!'));
+            return $this->refuseLockedAccount($username, $credentials);
         }
 
         // Check if LDAP authentication is cached and still valid
@@ -220,6 +225,13 @@ final class LdapAuthenticator
         }
         $user_dn = $entries[0]["dn"];
 
+        // Count under the row the posted name resolves to; the directory's spelling only stands in when it does not
+        $userId = $this->loginAttemptService->userIdFor($username)
+            ?? $this->loginAttemptService->userIdFor((string)($entries[0][strtolower($ldap_user_attribute)][0] ?? $username));
+        if ($userId !== null && $this->loginAttemptService->isAccountLocked($username, $ipAddress, userId: $userId)) {
+            return $this->refuseLockedAccount($username, $credentials);
+        }
+
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $credentials !== null
             ? $credentials->password
@@ -228,13 +240,13 @@ final class LdapAuthenticator
             $this->logger->warning('LDAP authentication failed for user {username}', ['username' => $username]);
             if ($isLogin) {
                 $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::WRONG_PASSWORD);
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false, userId: $userId);
             }
             $this->logger->info('LDAP authentication process ended due to incorrect password.');
             return AuthOutcome::failure(_('Authentication failed!'));
         }
 
-        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
 
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
 
@@ -298,7 +310,7 @@ final class LdapAuthenticator
                 return AuthOutcome::mfaRequired();
             }
 
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+            $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
             $this->auditService->logLoginSuccess(AuthMethod::LDAP);
             $this->logger->info('LdapAuthenticator: Redirecting to MFA verification page');
             return AuthOutcome::mfaRequired('/mfa/verify');
@@ -322,7 +334,7 @@ final class LdapAuthenticator
             return AuthOutcome::success();
         }
 
-        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
         $this->auditService->logLoginSuccess(AuthMethod::LDAP);
         return AuthOutcome::success('/');
     }
