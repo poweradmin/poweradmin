@@ -38,6 +38,8 @@ class PasswordChangeService
         private readonly UserRepository $userRepository,
         private readonly UserAuthenticationService $authService,
         private readonly UserContextService $userContextService,
+        private readonly ?LoginAttemptService $loginAttempts = null,
+        private readonly string $clientIp = '',
     ) {
     }
 
@@ -57,7 +59,14 @@ class PasswordChangeService
             return [false, _(self::ERROR_MESSAGES['ldap_user'])];
         }
 
-        if (!$this->authService->verifyPassword($oldPassword, $user->getPassword())) {
+        // Counted with sign-in, so a borrowed session cannot guess the password unthrottled
+        if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp)) {
+            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+        }
+
+        $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
+        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches);
+        if (!$matches) {
             return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
 

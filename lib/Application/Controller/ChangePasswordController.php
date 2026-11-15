@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
@@ -76,9 +77,15 @@ class ChangePasswordController extends BaseController
         );
         $userRepository = new DbUserRepository($this->db, $this->config);
         $this->userContextService = new UserContextService();
-        $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $this->userContextService);
-        $this->auditLogger = new LegacyLogger($this->db);
         $this->ipAddressRetriever = new IpAddressRetriever($_SERVER);
+        $this->passwordService = new PasswordChangeService(
+            $userRepository,
+            $userAuthService,
+            $this->userContextService,
+            new LoginAttemptService($this->db, $this->config),
+            $this->ipAddressRetriever->getClientIp() ?: '0.0.0.0'
+        );
+        $this->auditLogger = new LegacyLogger($this->db);
     }
 
     public function run(): void

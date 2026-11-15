@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\User;
@@ -82,13 +83,47 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertFalse($changed);
     }
 
-    private function changePassword(array $session): array
+    public function testAWrongCurrentPasswordIsRecordedAsAFailedSignIn(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->once())->method('recordAttempt')->with('victim', '203.0.113.9', false);
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], false, $attempts);
+
+        $this->assertFalse($changed);
+    }
+
+    public function testARightCurrentPasswordIsRecordedAsASuccessfulSignIn(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->once())->method('recordAttempt')->with('victim', '203.0.113.9', true);
+        $this->users->method('updatePassword')->willReturn(true);
+
+        [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
+
+        $this->assertTrue($changed);
+    }
+
+    public function testALockedAccountIsRefusedEvenWithTheRightPassword(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->with('victim', '203.0.113.9')->willReturn(true);
+        $attempts->expects($this->never())->method('recordAttempt');
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
+
+        $this->assertFalse($changed);
+    }
+
+    private function changePassword(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): array
     {
         $_SESSION = $session;
         $auth = $this->createMock(UserAuthenticationService::class);
-        $auth->method('verifyPassword')->willReturn(true);
+        $auth->method('verifyPassword')->willReturn($passwordMatches);
         $auth->method('hashPassword')->willReturn('new-hash');
 
-        return (new PasswordChangeService($this->users, $auth, new UserContextService()))->changePassword('old', 'new');
+        return (new PasswordChangeService($this->users, $auth, new UserContextService(), $attempts, '203.0.113.9'))->changePassword('old', 'new');
     }
 }
