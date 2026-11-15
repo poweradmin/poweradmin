@@ -1,5 +1,7 @@
 {% import '_macros.html' as macros %}
 {% set can_edit_keys = can_manage_dnssec and not is_presigned %}
+{# The key pages refuse while DNSSEC is off, so their links are not offered #}
+{% set can_manage_keys = can_edit_keys and pdnssec_use %}
 
 <!-- Unsign Zone Confirmation Modal -->
 <div class="modal fade" id="unsignZoneModal" tabindex="-1" aria-labelledby="unsignZoneModalLabel" aria-hidden="true">
@@ -56,7 +58,7 @@
             {% endif %}
         </strong>
         <div>
-            {% if can_edit_keys %}
+            {% if can_manage_keys %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add new key{% endtrans %}
             </a>
@@ -64,7 +66,7 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/ds-dnskey" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
-            {% if can_edit_keys %}
+            {% if can_manage_keys %}
             <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#unsignZoneModal">
                 <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
             </button>
@@ -116,7 +118,7 @@
                         </td>
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if can_edit_keys %}
+                                {% if can_manage_keys %}
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
@@ -138,7 +140,7 @@
     </div>
 </div>
 
-{% if can_edit_keys and pdns_caps and pdns_caps.supportsPrivateKeyImport %}
+{% if can_manage_keys and pdns_caps and pdns_caps.supportsPrivateKeyImport %}
 <div class="card shadow-sm mb-4">
     {{ macros.card_header('bi-upload', 'Import key'|trans) }}
     <div class="card-body">
