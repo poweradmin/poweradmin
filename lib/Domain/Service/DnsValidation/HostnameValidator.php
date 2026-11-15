@@ -219,7 +219,7 @@ class HostnameValidator
             }
         }
 
-        if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
+        if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($normalizedHostname)) {
             $customTlds = $this->config->get('dns', 'custom_tlds', []);
             $tld = strtolower($hostname_labels[$label_count - 1]);
             if (!is_array($customTlds) || !in_array($tld, array_map('strtolower', $customTlds), true)) {
