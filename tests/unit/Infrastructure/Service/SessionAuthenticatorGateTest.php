@@ -90,4 +90,24 @@ final class SessionAuthenticatorGateTest extends TestCase
     {
         $this->assertSame($expected, SessionAuthenticator::gateAction($path, self::MFA_SKIP_PATHS));
     }
+
+    public static function postedLanguages(): array
+    {
+        return [
+            'locale' => ['fr_FR', 'fr_FR'],
+            'missing' => [null, null],
+            'array' => [['x'], null],
+            'traversal' => ['../../etc', null],
+            'digits' => ['en1', null],
+            'trailing newline' => ["en_EN\n", null],
+            'empty' => ['', null],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('postedLanguages')]
+    public function postedLanguageIsKeptOnlyWhenLocaleShaped(mixed $posted, ?string $expected): void
+    {
+        $this->assertSame($expected, SessionAuthenticator::postedLanguage($posted));
+    }
 }
