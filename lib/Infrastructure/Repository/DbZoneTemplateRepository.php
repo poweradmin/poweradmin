@@ -179,6 +179,7 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
         return " AND ($alias.owner = $userParam OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = $canonicalId AND ugm.user_id = $groupUserParam))$unshared";
     }
 

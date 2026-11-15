@@ -708,6 +708,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
              SELECT DISTINCT zg.domain_id AS zone_id
              FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             INNER JOIN user_groups ugo ON ugo.id = zg.group_id
              WHERE ugm.user_id = :uid2"
         );
         $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
@@ -1176,6 +1177,7 @@ final readonly class ApiZoneRepository implements ZoneRepositoryInterface
                 OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                     WHERE zg.domain_id = " . $this->canonicalId('z') . " AND ugm.user_id = :user_id_group
                 ))";
             $params[':user_id'] = $userId;

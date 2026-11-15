@@ -101,6 +101,7 @@ class ZoneSearchPagingIntegrationTest extends TestCase
         $this->db->exec('CREATE TABLE users (id INT PRIMARY KEY, username VARCHAR(64) NOT NULL, fullname VARCHAR(255) NOT NULL)');
         $this->db->exec('CREATE TABLE zones_groups (id INT PRIMARY KEY, domain_id INT NOT NULL, group_id INT NOT NULL)');
         $this->db->exec('CREATE TABLE user_group_members (id INT PRIMARY KEY, user_id INT NOT NULL, group_id INT NOT NULL)');
+        $this->db->exec('CREATE TABLE user_groups (id INT PRIMARY KEY, name VARCHAR(255) NOT NULL)');
 
         $this->db->exec("INSERT INTO users (id, username, fullname) VALUES (1, 'admin', 'Alice'), (2, 'manager', 'Bob'), (3, 'client', 'Carol')");
         $zoneRow = 1;

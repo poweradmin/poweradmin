@@ -63,7 +63,7 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function findByDomainId(int $domainId): array
     {
-        $query = "SELECT * FROM zones_groups WHERE domain_id = :domain_id ORDER BY created_at DESC";
+        $query = "SELECT zg.* FROM zones_groups zg INNER JOIN user_groups ug ON ug.id = zg.group_id WHERE zg.domain_id = :domain_id ORDER BY zg.created_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':domain_id' => $domainId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -78,7 +78,7 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         }
 
         $placeholders = implode(',', array_fill(0, count($domainIds), '?'));
-        $stmt = $this->db->prepare("SELECT domain_id, group_id FROM zones_groups WHERE domain_id IN ($placeholders)");
+        $stmt = $this->db->prepare("SELECT zg.domain_id, zg.group_id FROM zones_groups zg INNER JOIN user_groups ug ON ug.id = zg.group_id WHERE zg.domain_id IN ($placeholders)");
         foreach (array_values($domainIds) as $i => $domainId) {
             $stmt->bindValue($i + 1, (int)$domainId, PDO::PARAM_INT);
         }
@@ -100,7 +100,7 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function countGrantedZones(int $groupId): int
     {
-        $stmt = $this->db->prepare('SELECT DISTINCT domain_id FROM zones_groups WHERE group_id = :group_id');
+        $stmt = $this->db->prepare('SELECT DISTINCT zg.domain_id FROM zones_groups zg INNER JOIN user_groups ug ON ug.id = zg.group_id WHERE zg.group_id = :group_id');
         $stmt->bindValue(':group_id', $groupId, PDO::PARAM_INT);
         $stmt->execute();
         $zoneIds = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
@@ -117,12 +117,14 @@ final class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $query = "SELECT zg.*, d.name as zone_name, d.type as zone_type
                       FROM zones_groups zg
+                      INNER JOIN user_groups ug ON ug.id = zg.group_id
                       LEFT JOIN $domainsTable d ON zg.domain_id = d.id
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.created_at DESC";
         } else {
             $query = "SELECT zg.*, z.zone_name, z.zone_type
                       FROM zones_groups zg
+                      INNER JOIN user_groups ug ON ug.id = zg.group_id
                       LEFT JOIN zones z ON zg.domain_id = " . CanonicalZoneSql::canonicalIdColumn('z', $this->isApiBackend) . "
                         AND z.zone_name IS NOT NULL
                         AND z.id = (SELECT MIN(z2.id) FROM zones z2 WHERE " . CanonicalZoneSql::canonicalIdColumn('z2', $this->isApiBackend) . " = zg.domain_id AND z2.zone_name IS NOT NULL)

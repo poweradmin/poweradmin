@@ -40,6 +40,8 @@ class DbZoneGroupRepositoryCanonicalZoneTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, zone_type TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER, created_at TEXT DEFAULT '')");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
 
         // A stranded zone (domain_id 0) and a migrated one (id 7 / domain_id 201).
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, owner) VALUES

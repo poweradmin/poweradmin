@@ -373,6 +373,7 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $global = $this->repository->createZoneTemplate('global', '', 0, 1);
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES
             (1, 11, 5, $global), (2, 12, 6, $global), (3, 13, 6, $global), (4, 14, 7, $global)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (5, 3)");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (13, 3)");
 

@@ -85,7 +85,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
                 WHERE z.domain_id = d.id AND z.owner IS NOT NULL AND z.owner <> 0
             )
               AND NOT EXISTS (
-                SELECT 1 FROM zones_groups zg WHERE zg.domain_id = d.id
+                SELECT 1 FROM zones_groups zg INNER JOIN user_groups ug ON ug.id = zg.group_id WHERE zg.domain_id = d.id
             )
         ");
 

@@ -55,6 +55,7 @@ class DnsDataServiceSearchShapeTest extends TestCase
                 "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)",
+                "CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)",
                 "INSERT INTO users (id, username, fullname) VALUES (7, 'alice', 'Alice'), (8, 'bob', '')",
                 "INSERT INTO domains (id, name, type) VALUES (1, 'example.com', 'MASTER'), (2, 'example.net', 'NATIVE')",
                 "INSERT INTO zones (id, domain_id, owner, comment, zone_name) VALUES (11, 1, 7, 'first', 'example.com'), (12, 2, 8, 'second', 'example.net')",

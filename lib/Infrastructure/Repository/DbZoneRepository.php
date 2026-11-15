@@ -94,6 +94,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $where = " WHERE (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
             ))"
                 . " AND $domains_table.name NOT LIKE '%.in-addr.arpa'"
@@ -198,6 +199,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $query .= " AND (zones.owner = :userId OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                     WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
                 ))";
                 $params[':userId'] = $userId;
@@ -257,6 +259,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $query .= " AND (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
             ))";
             $params[':userId'] = $userId;
@@ -386,6 +389,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $conditions[] = "(zones.owner = ? OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = ?
             ))";
             $params[] = (string)$userId;
@@ -461,6 +465,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $query .= " AND (z.owner = :user_id OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
             ))";
         }
@@ -523,6 +528,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $query .= " AND (zones.owner = :userId OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userId_group
             ))";
             $params[':userId'] = $userId;
@@ -872,6 +878,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
              SELECT DISTINCT zg.domain_id AS zone_id
              FROM zones_groups zg
              INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+             INNER JOIN user_groups ugo ON ugo.id = zg.group_id
              WHERE ugm.user_id = :uid2"
         );
         $stmt->bindValue(':uid', $userId, PDO::PARAM_INT);
@@ -1251,6 +1258,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $conditions[] = "(z.owner = :user_id OR EXISTS (
                           SELECT 1 FROM zones_groups zg
                           INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                          INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                           WHERE zg.domain_id = d.id AND ugm.user_id = :user_id_group
                       ))";
             $params[':user_id'] = $userId;

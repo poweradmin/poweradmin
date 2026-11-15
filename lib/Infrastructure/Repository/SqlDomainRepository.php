@@ -238,6 +238,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                 $sql_add = " AND (zones.owner = :userid OR EXISTS (
                     SELECT 1 FROM zones_groups zg
                     INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                     WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
                 ))";
                 $params[':userid'] = $userid;
@@ -284,6 +285,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND (zones.owner = :userid OR EXISTS (
                         SELECT 1 FROM zones_groups zg
                         INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                         WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
                     ))";
                     if (!isset($params[':userid_group'])) {
@@ -328,6 +330,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND (zones.owner = :userid OR EXISTS (
                         SELECT 1 FROM zones_groups zg
                         INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                         WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
                     ))";
                     if (!isset($params[':userid_group'])) {

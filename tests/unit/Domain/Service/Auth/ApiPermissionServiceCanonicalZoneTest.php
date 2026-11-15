@@ -113,6 +113,7 @@ class ApiPermissionServiceCanonicalZoneTest extends TestCase
     public function testGroupOwnershipStillResolves(): void
     {
         $this->seedZone(60, 60, 99);
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (5, 'g5')");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (60, 5)");
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (1, 5)");
 

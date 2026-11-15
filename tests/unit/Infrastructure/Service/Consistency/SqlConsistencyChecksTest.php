@@ -61,6 +61,7 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, comment TEXT NULL, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT)");
     }
@@ -112,11 +113,24 @@ class SqlConsistencyChecksTest extends TestCase
         $this->zoneRow(1, 5);
         $this->domain(2, 'grouped.example.com');
         $this->zoneRow(2, null);
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2, 3)");
 
         $result = $this->checker()->checkZonesHaveOwners();
 
         $this->assertSame(['status' => 'success', 'message' => 'All zones have owners', 'data' => []], $result);
+    }
+
+    public function testAGrantToAGroupThatNoLongerExistsDoesNotCountAsAnOwner(): void
+    {
+        $this->domain(2, 'grouped.example.com');
+        $this->zoneRow(2, null);
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2, 99)");
+
+        $result = $this->checker()->checkZonesHaveOwners();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame('grouped.example.com', $result['data'][0]['name']);
     }
 
     public function testZonesHaveOwnersFlagsDomainsWithNoOwnerRowAndOwnerZeroRows(): void

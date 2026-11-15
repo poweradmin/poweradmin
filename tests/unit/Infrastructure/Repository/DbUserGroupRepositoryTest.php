@@ -27,6 +27,7 @@ use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use TestHelpers\SqliteIntegrationTestCase;
 
 #[CoversClass(DbUserGroupRepository::class)]
@@ -48,6 +49,37 @@ class DbUserGroupRepositoryTest extends SqliteIntegrationTestCase
             (8, 'Operators', NULL, " . self::ADMIN_PERM_TEMPL_ID . ")");
 
         $this->repository = new DbUserGroupRepository($this->db);
+    }
+
+    #[Test]
+    public function deletingAGroupRemovesItsMembershipsAndZoneGrants(): void
+    {
+        $this->createZoneTables();
+        $this->db->exec("CREATE TABLE zone_templ_groups (id INTEGER PRIMARY KEY, zone_templ_id INTEGER, group_id INTEGER)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (21, 'member', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (21, 3)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (40, 3)");
+        $users = new DbUserRepository($this->db, $this->config, false);
+        $this->assertTrue($users->userOwnsZone(21, 40));
+
+        $this->assertTrue($this->repository->delete(3));
+
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM user_group_members WHERE group_id = 3")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones_groups WHERE group_id = 3")->fetchColumn());
+        $this->assertFalse($users->userOwnsZone(21, 40));
+    }
+
+    #[Test]
+    public function rowsOfAGroupThatNoLongerExistsGrantNoOwnership(): void
+    {
+        $this->createZoneTables();
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (22, 'former', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (22, 99)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (41, 99)");
+        $users = new DbUserRepository($this->db, $this->config, false);
+
+        $this->assertFalse($users->userOwnsZone(22, 41));
+        $this->assertSame([], $users->getUserOwnedZoneIds(22));
     }
 
     #[Test]

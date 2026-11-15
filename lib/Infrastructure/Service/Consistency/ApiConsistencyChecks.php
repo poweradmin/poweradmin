@@ -406,6 +406,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
                  WHERE (z.id = c.id OR z.domain_id = $canonicalId)
                    AND z.owner IS NOT NULL AND z.owner <> 0) AS owner_count,
                 (SELECT COUNT(*) FROM zones_groups zg
+                 INNER JOIN user_groups ug ON ug.id = zg.group_id
                  WHERE zg.domain_id = $canonicalId) AS group_count
              FROM zones c
              WHERE c.zone_name = ? AND c.zone_name IS NOT NULL

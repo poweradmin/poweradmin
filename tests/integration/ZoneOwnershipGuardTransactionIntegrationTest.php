@@ -107,6 +107,20 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
     }
 
     #[DataProvider('engines')]
+    public function testAGrantToADeletedGroupDoesNotLetTheLastUserOwnerGo(string $engine): void
+    {
+        $db = $this->useEngine($engine);
+        $this->seedOwners($db, [5]);
+        $db->exec("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (" . self::ZONE_ID . ", 99, CURRENT_TIMESTAMP)");
+        $guard = $this->guard($db, $engine, 'both');
+
+        $refusal = $guard->removeUserOwner(self::ZONE_ID, 5);
+
+        $this->assertInstanceOf(ZoneOwnershipRefusal::class, $refusal, $engine);
+        $this->assertSame([5], $this->ownerIds($db), $engine);
+    }
+
+    #[DataProvider('engines')]
     public function testTheSecondGroupRemovalIsRefused(string $engine): void
     {
         $db = $this->useEngine($engine);
@@ -189,11 +203,13 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
         $db->exec('DROP TABLE IF EXISTS domains');
         $db->exec('DROP TABLE IF EXISTS api_key_zones');
         $db->exec('DROP TABLE IF EXISTS zones_groups');
+        $db->exec('DROP TABLE IF EXISTS user_groups');
         $db->exec('DROP TABLE IF EXISTS users');
         $db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username VARCHAR(64), fullname VARCHAR(64))");
         $db->exec("CREATE TABLE zones (id $serial, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER DEFAULT 0, zone_name VARCHAR(255), zone_type VARCHAR(8), zone_master VARCHAR(255))");
         $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name VARCHAR(255) NOT NULL, master VARCHAR(128), type VARCHAR(8) NOT NULL DEFAULT 'NATIVE')");
         $db->exec("CREATE TABLE zones_groups (id $serial, domain_id INTEGER, group_id INTEGER, created_at TIMESTAMP)");
+        $db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name VARCHAR(255))");
         $db->exec("CREATE TABLE api_key_zones (id $serial, api_key_id INTEGER, zone_id INTEGER)");
     }
 
@@ -214,6 +230,7 @@ class ZoneOwnershipGuardTransactionIntegrationTest extends TestCase
     private function seedGroups(PDO $db, array $groupIds): void
     {
         foreach ($groupIds as $groupId) {
+            $db->exec("INSERT INTO user_groups (id, name) VALUES ($groupId, 'group$groupId')");
             $db->exec("INSERT INTO zones_groups (domain_id, group_id, created_at) VALUES (" . self::ZONE_ID . ", $groupId, CURRENT_TIMESTAMP)");
         }
     }

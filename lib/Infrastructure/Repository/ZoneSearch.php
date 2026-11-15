@@ -296,6 +296,7 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
             $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_group
             ))';
             $params[':user_id'] = $userId;
@@ -340,6 +341,7 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
             $whereConditions .= ' AND (z.owner = :user_id_count OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                INNER JOIN user_groups ugo ON ugo.id = zg.group_id
                 WHERE zg.domain_id = ' . $domains_table . '.id AND ugm.user_id = :user_id_count_group
             ))';
             $params[':user_id_count'] = $userId;

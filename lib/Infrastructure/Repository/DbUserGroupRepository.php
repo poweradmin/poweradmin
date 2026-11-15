@@ -164,7 +164,9 @@ final class DbUserGroupRepository implements UserGroupRepositoryInterface
     public function delete(int $id): bool
     {
         // The installer adds no foreign keys on SQLite, so the cascade cannot be relied on
-        $this->db->prepare("DELETE FROM zone_templ_groups WHERE group_id = :id")->execute([':id' => $id]);
+        foreach (['zone_templ_groups', 'user_group_members', 'zones_groups'] as $table) {
+            $this->db->prepare("DELETE FROM $table WHERE group_id = :id")->execute([':id' => $id]);
+        }
 
         $query = "DELETE FROM user_groups WHERE id = :id";
         $stmt = $this->db->prepare($query);

@@ -32,6 +32,9 @@ class DbZoneRepositoryCountZonesTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        // Ownership joins user_groups, so every group id a test uses needs a row
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (1, 'g1'), (2, 'g2'), (3, 'g3'), (4, 'g4'), (5, 'g5'), (6, 'g6'), (7, 'g7'), (8, 'g8'), (9, 'g9')");
         $this->db->exec("INSERT INTO domains (id, name, type) VALUES
             (1, 'alpha.example', 'MASTER'),
             (2, 'beta.example', 'MASTER'),

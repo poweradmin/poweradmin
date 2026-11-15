@@ -60,6 +60,9 @@ class ApiZoneRepositorySharedZoneIdTest extends TestCase
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        // Ownership joins user_groups, so every group id a test uses needs a row
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (1, 'g1'), (2, 'g2'), (3, 'g3'), (4, 'g4'), (5, 'g5'), (6, 'g6'), (7, 'g7'), (8, 'g8'), (9, 'g9')");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
         // Key 1 is restricted to the zone id 5 opens, key 2 already holds an unmapped 0, key 3 is unrelated

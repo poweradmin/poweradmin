@@ -138,6 +138,7 @@ class DbZoneTemplateSyncRepositoryTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER DEFAULT 0)");
         $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (4, 'shared', 0)");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (1, 11, 5), (2, 12, 6), (3, 13, 6)");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES (3, 'Ops', 1)");
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (5, 3)");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (13, 3)");
         foreach ([1, 2, 3] as $zoneId) {

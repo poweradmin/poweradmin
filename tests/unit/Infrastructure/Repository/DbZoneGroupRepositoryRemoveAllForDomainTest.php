@@ -51,4 +51,16 @@ class DbZoneGroupRepositoryRemoveAllForDomainTest extends TestCase
             $this->db->query('SELECT domain_id, group_id FROM zones_groups')->fetchAll(PDO::FETCH_ASSOC)
         );
     }
+
+    public function testGrantsOfAGroupThatNoLongerExistsAreNotListed(): void
+    {
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
+        $repository = new DbZoneGroupRepository($this->db);
+
+        $this->assertCount(1, $repository->findByDomainId(77));
+        $this->assertSame([77 => [3], 78 => [3]], $repository->findGroupIdsByDomainIds([77, 78]));
+        $this->assertSame(0, $repository->countGrantedZones(4));
+        $this->assertSame(2, $repository->countGrantedZones(3));
+    }
 }

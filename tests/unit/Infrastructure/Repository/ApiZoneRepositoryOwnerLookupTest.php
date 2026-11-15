@@ -46,6 +46,9 @@ class ApiZoneRepositoryOwnerLookupTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, zone_name TEXT, owner INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)");
+        // Ownership joins user_groups, so every group id a test uses needs a row
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (1, 'g1'), (2, 'g2'), (3, 'g3'), (4, 'g4'), (5, 'g5'), (6, 'g6'), (7, 'g7'), (8, 'g8'), (9, 'g9')");
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, owner) VALUES
             (1, 100, 'migrated.example.com', 10),
             (55, 0, 'stranded.example.com', 20),

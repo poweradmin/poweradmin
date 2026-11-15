@@ -132,11 +132,24 @@ class ApiConsistencyChecksTest extends TestCase
         ]);
         $this->zoneRow(1, 1, 5, 'owned.example.com');
         $this->zoneRow(2, 2, null, 'grouped.example.com');
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (3, 'Ops')");
         $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2, 3)");
 
         $result = $this->checker()->checkZonesHaveOwners();
 
         $this->assertSame(['status' => 'success', 'message' => 'All zones have owners', 'data' => []], $result);
+    }
+
+    public function testAGrantToAGroupThatNoLongerExistsDoesNotCountAsAnOwner(): void
+    {
+        $this->zones([['id' => 2, 'name' => 'grouped.example.com.', 'type' => 'NATIVE']]);
+        $this->zoneRow(2, 2, null, 'grouped.example.com');
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (2, 99)");
+
+        $result = $this->checker()->checkZonesHaveOwners();
+
+        $this->assertSame('warning', $result['status']);
+        $this->assertSame('grouped.example.com', $result['data'][0]['name']);
     }
 
     public function testZonesHaveOwnersFlagsZonesWithNoOwnerRowOrOnlyOwnerZeroRows(): void

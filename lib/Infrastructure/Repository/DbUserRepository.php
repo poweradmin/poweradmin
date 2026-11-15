@@ -333,6 +333,7 @@ class DbUserRepository implements UserRepositoryInterface
             SELECT zg.id
             FROM zones_groups zg
             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            INNER JOIN user_groups ugo ON ugo.id = zg.group_id
             WHERE ugm.user_id = :userid AND zg.domain_id = :zoneid
         ");
         $stmt->execute([
@@ -367,6 +368,7 @@ class DbUserRepository implements UserRepositoryInterface
             UNION
             SELECT zg.domain_id FROM zones_groups zg
             INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            INNER JOIN user_groups ugo ON ugo.id = zg.group_id
             WHERE ugm.user_id = :user_id2
         ");
         $stmt->execute([':user_id' => $userId, ':user_id2' => $userId]);
