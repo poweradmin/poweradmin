@@ -33,4 +33,11 @@ class TestableDocsController extends DocsController
         $method = $reflection->getMethod('getDocsBaseUrl');
         return $method->invoke($this);
     }
+
+    public function generateSwaggerUIPublic(): string
+    {
+        $reflection = new ReflectionClass(parent::class);
+        $method = $reflection->getMethod('generateSwaggerUI');
+        return $method->invoke($this);
+    }
 }
