@@ -80,6 +80,11 @@ class EditPermTemplController extends BaseController
     {
         $this->validateCsrfToken();
 
+        if (!PermissionTemplateContentGuard::isValidTemplateType($this->getRequest()['template_type'] ?? null)) {
+            $this->showError(_('Please select a template type'));
+            return;
+        }
+
         if (!$this->validateSubmitRequest()) {
             $this->showFirstValidationError();
             return;

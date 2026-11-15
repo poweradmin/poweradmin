@@ -38,6 +38,14 @@ class PermissionTemplateContentGuard
     public const EDIT_SUPERUSER_DENIED = 'edit_superuser_denied';
 
     /**
+     * The request validator drops its rules for a key that is absent, so the type is checked here.
+     */
+    public static function isValidTemplateType(mixed $type): bool
+    {
+        return $type === 'user' || $type === 'group';
+    }
+
+    /**
      * @param array<int, array<string, mixed>> $allPermissions Every row of perm_items
      * @param array<int, array<string, mixed>> $currentPermissions Rows the template holds now; empty when creating
      * @param ?array<mixed> $submittedPermIds Ids the write would persist; null leaves contents untouched
