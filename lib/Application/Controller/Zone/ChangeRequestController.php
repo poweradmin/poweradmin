@@ -67,7 +67,7 @@ class ChangeRequestController extends BaseController
             return;
         }
         // The snapshot is the whole zone, so requesting rights alone do not open it
-        $canSeeSnapshot = $canReview || $isRequester || $this->services()->permissionService()->canViewZone($userId, $request->zoneId);
+        $canSeeSnapshot = $canReview || $this->services()->permissionService()->canViewZone($userId, $request->zoneId);
         if ($this->httpRequest->getQueryParam('snapshot') !== null) {
             if (!$canSeeSnapshot) {
                 $this->showError(_('You do not have permission to view this zone.'));

@@ -287,7 +287,7 @@ class ChangeRequestsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to view this change request', 403);
             }
             // The snapshot is the whole zone, so requesting rights alone do not open it
-            $canSeeSnapshot = $isRequester || $canReview || $this->apiPermissionService->canViewZone($userId, $request->zoneId);
+            $canSeeSnapshot = $canReview || $this->apiPermissionService->canViewZone($userId, $request->zoneId);
 
             return $this->returnApiResponse([
                 'change_request' => $this->serialize($request),

@@ -82,6 +82,18 @@ class ChangeRequestControllerTest extends ChangeRequestControllerTestCase
         $controller->run();
     }
 
+    public function testRequesterWithoutZoneAccessCannotDownloadTheSnapshot(): void
+    {
+        $this->storeRequest($this->pendingRequest(requesterId: self::USER_ID, snapshot: 'zone file'));
+        $this->reviewer(false);
+        $this->query(['snapshot' => '1']);
+        $controller = $this->makeController(true);
+
+        $this->expectException(RequestHalted::class);
+        $this->expectExceptionMessage('You do not have permission to view this zone.');
+        $controller->run();
+    }
+
     public function testReviewerApproveCallsTheServiceAndRedirectsBack(): void
     {
         $this->storeRequest($this->pendingRequest(requesterId: 3));

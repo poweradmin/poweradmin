@@ -139,7 +139,7 @@ abstract class ChangeRequestControllerTestCase extends TestCase
         $this->queryParams = $params;
     }
 
-    protected function pendingRequest(int $id = 5, int $zoneId = 42, int $requesterId = 3, string $status = ZoneChangeRequest::STATUS_PENDING): ZoneChangeRequest
+    protected function pendingRequest(int $id = 5, int $zoneId = 42, int $requesterId = 3, string $status = ZoneChangeRequest::STATUS_PENDING, ?string $snapshot = null): ZoneChangeRequest
     {
         return new ZoneChangeRequest(
             $id,
@@ -164,7 +164,8 @@ abstract class ChangeRequestControllerTestCase extends TestCase
             '2026-01-01 10:00:00',
             null,
             null,
-            null
+            null,
+            $snapshot
         );
     }
 

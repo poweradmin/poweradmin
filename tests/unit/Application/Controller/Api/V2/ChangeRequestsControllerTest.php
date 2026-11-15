@@ -205,7 +205,32 @@ class ChangeRequestsControllerTest extends TestCase
         $this->assertSame(403, $response->getStatusCode());
     }
 
-    private function request(int $id, int $zoneId, int $requesterId = self::USER_ID, string $status = ZoneChangeRequest::STATUS_PENDING, string $createdAt = '2026-09-20 10:00:00'): ZoneChangeRequest
+    public function testTheRequesterWithoutZoneAccessDoesNotGetTheSnapshot(): void
+    {
+        $request = $this->request(12, self::OWNED_ZONE, snapshot: 'example.com. 3600 IN SOA ns. host. 1 2 3 4 5');
+        $this->requests->method('find')->with(12)->willReturn($request);
+        $this->permissions->method('canReviewChangeRequests')->willReturn(false);
+        $this->permissions->method('canViewZone')->willReturn(false);
+        $this->permissions->method('getChangeApprovalMode')->willReturn('required');
+
+        $body = $this->body($this->call('getChangeRequest', id: 12));
+
+        $this->assertNull($body['data']['snapshot']);
+    }
+
+    public function testAZoneViewerGetsTheSnapshot(): void
+    {
+        $request = $this->request(12, self::OWNED_ZONE, snapshot: 'zone file');
+        $this->requests->method('find')->with(12)->willReturn($request);
+        $this->permissions->method('canReviewChangeRequests')->willReturn(false);
+        $this->permissions->method('canViewZone')->willReturn(true);
+
+        $body = $this->body($this->call('getChangeRequest', id: 12));
+
+        $this->assertSame('zone file', $body['data']['snapshot']);
+    }
+
+    private function request(int $id, int $zoneId, int $requesterId = self::USER_ID, string $status = ZoneChangeRequest::STATUS_PENDING, string $createdAt = '2026-09-20 10:00:00', ?string $snapshot = null): ZoneChangeRequest
     {
         return new ZoneChangeRequest(
             $id,
@@ -225,7 +250,8 @@ class ChangeRequestsControllerTest extends TestCase
             $createdAt,
             null,
             null,
-            null
+            null,
+            $snapshot
         );
     }
 
