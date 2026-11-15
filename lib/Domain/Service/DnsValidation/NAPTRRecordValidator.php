@@ -144,6 +144,13 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
         // Add RFC version warning
         $warnings[] = _('This record follows RFC 3403. Be aware that some DNS servers may not fully support all NAPTR features.');
 
+        // Order and preference are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3],
+            $content
+        );
+
         // Include parsed flag for test compatibility
         return ValidationResult::success([
             'content' => $content,
@@ -198,12 +205,12 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
         [$order, $preference, $flags, $service, $regexp, $replacement] = $parts;
 
         // Validate order (must be a number between 0 and 65535)
-        if (!is_numeric($order) || (int)$order < 0 || (int)$order > 65535) {
+        if (!ctype_digit($order) || (int)$order > 65535) {
             return ValidationResult::failure(_('NAPTR record order must be a number between 0 and 65535.'));
         }
 
         // Validate preference (must be a number between 0 and 65535)
-        if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
+        if (!ctype_digit($preference) || (int)$preference > 65535) {
             return ValidationResult::failure(_('NAPTR record preference must be a number between 0 and 65535.'));
         }
 

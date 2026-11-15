@@ -121,13 +121,20 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
         $parts = preg_split('/\s+/', trim($content));
         $gatewayType = $parts[1] ?? '';
 
-        if ($gatewayType === '3') {
+        if (ctype_digit($gatewayType) && (int)$gatewayType === 3) {
             // Domain name gateway
             $warnings[] = _('When using domain name gateways, ensure both forward and reverse DNS records exist and are properly secured with DNSSEC.');
         }
 
         // Add any warnings from the content validation
         $warnings = array_merge($warnings, $contentWarnings);
+
+        // Precedence, gateway type and algorithm are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
 
         return ValidationResult::success([
             'content' => $content,
@@ -165,21 +172,24 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
         $warnings = [];
 
         // Validate precedence (0-255) - RFC 4025 Section 2.1
-        if (!is_numeric($precedence) || (int)$precedence < 0 || (int)$precedence > 255) {
+        if (!ctype_digit($precedence) || (int)$precedence > 255) {
             return ValidationResult::failure(_('IPSECKEY precedence must be a number between 0 and 255.'));
         }
 
         // Validate gateway type (0-3) - RFC 4025 Section 2.2
         // 0 = No gateway, 1 = IPv4, 2 = IPv6, 3 = Domain name
-        if (!in_array($gatewayType, ['0', '1', '2', '3'])) {
+        if (!ctype_digit($gatewayType) || (int)$gatewayType > 3) {
             return ValidationResult::failure(_('IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 (Domain name)'));
         }
 
         // Validate algorithm (0-4) - RFC 4025 Section 2.4
         // 0 = No key, 1 = RSA (RFC 3110), 2 = DSA (RFC 2536), 3 = ECDSA, 4 = Ed25519
-        if (!in_array($algorithm, ['0', '1', '2', '3', '4'])) {
+        if (!ctype_digit($algorithm) || (int)$algorithm > 4) {
             return ValidationResult::failure(_('IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 (Ed25519).'));
         }
+
+        $gatewayType = (string)(int)$gatewayType;
+        $algorithm = (string)(int)$algorithm;
 
         // Validate gateway based on gateway type
         switch ($gatewayType) {

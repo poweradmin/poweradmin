@@ -129,12 +129,27 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
+        // Serial, scheme and hash algorithm are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (ltrim($m[1], '0') ?: '0') . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0,
             'ttl' => $validatedTtl
         ], $warnings);
+    }
+
+    /** Compares as text: a 32-bit PHP cannot hold 4294967295 as an int. */
+    private static function exceedsUint32(string $digits): bool
+    {
+        $digits = ltrim($digits, '0');
+
+        return strlen($digits) > 10 || (strlen($digits) === 10 && strcmp($digits, '4294967295') > 0);
     }
 
     /**
@@ -158,7 +173,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         [$serial, $scheme, $hashAlgorithm, $digest] = $parts;
 
         // Validate serial (must be a valid zone serial number between 0 and 4294967295)
-        if (!is_numeric($serial) || (int)$serial < 0 || (int)$serial > 4294967295) {
+        if (!ctype_digit($serial) || self::exceedsUint32($serial)) {
             $errors[] = _('ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned integer).');
             return ['isValid' => false, 'errors' => $errors];
         }
@@ -169,7 +184,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 1 = Simple ZONEMD scheme
         // 2-239 = Unassigned
         // 240-255 = Reserved for Private Use
-        if (!is_numeric($scheme) || (int)$scheme < 0 || (int)$scheme > 255) {
+        if (!ctype_digit($scheme) || (int)$scheme > 255) {
             $errors[] = _('ZONEMD scheme must be a number between 0 and 255.');
             return ['isValid' => false, 'errors' => $errors];
         }
@@ -182,7 +197,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         }
 
         // For regular validation, reserved schemes should be rejected
-        if ($scheme === '0') {
+        if ((int)$scheme === 0) {
             $errors[] = _('ZONEMD scheme 0 is reserved and not for standard use.');
             return ['isValid' => false, 'errors' => $errors];
         }
@@ -194,14 +209,14 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 2 = SHA-512
         // 3-239 = Unassigned
         // 240-255 = Reserved for Private Use
-        if (!is_numeric($hashAlgorithm) || (int)$hashAlgorithm < 0 || (int)$hashAlgorithm > 255) {
+        if (!ctype_digit($hashAlgorithm) || (int)$hashAlgorithm > 255) {
             $errors[] = _('ZONEMD hash algorithm must be a number between 0 and 255.');
             return ['isValid' => false, 'errors' => $errors];
         }
 
         // Check if the hash algorithm is a supported algorithm
         // For now, we'll allow all values except 0
-        if ($hashAlgorithm === '0') {
+        if ((int)$hashAlgorithm === 0) {
             $errors[] = _('ZONEMD hash algorithm 0 is reserved and not for standard use.');
             return ['isValid' => false, 'errors' => $errors];
         }

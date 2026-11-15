@@ -124,6 +124,9 @@ class L64RecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('L64 records for subnetworks (using wildcard DNS entries) are typically used when the named subnetwork is, was, or might become mobile (RFC 6742 Section 3.2).');
         }
 
+        // The preference is stored as plain digits
+        $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -151,7 +154,7 @@ class L64RecordValidator implements DnsRecordValidatorInterface
         [$preference, $locator64] = $parts;
 
         // Validate preference (0-65535)
-        if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
+        if (!ctype_digit($preference) || (int)$preference > 65535) {
             return ValidationResult::failure(_('L64 preference must be a number between 0 and 65535.'));
         }
 

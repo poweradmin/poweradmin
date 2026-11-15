@@ -142,6 +142,13 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('NSEC3PARAM records indicate to authoritative servers which parameters to use for NSEC3-based authenticated denial of existence.');
         $warnings[] = _('When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-generated with the same parameters.');
 
+        // Algorithm, flags and iterations are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3] . $m[4] . (int)$m[5],
+            $content
+        );
+
         return ValidationResult::success(['content' => $content,
             'name' => $name,
             'ttl' => $validatedTtl,
@@ -177,13 +184,13 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
 
         // Validate hash algorithm (should be 1 for SHA-1)
         $algorithm = (int)$parts[0];
-        if ($algorithm !== 1) {
+        if (!ctype_digit($parts[0]) || $algorithm !== 1) {
             return ValidationResult::failure(_('NSEC3PARAM hash algorithm must be 1 (SHA-1).'));
         }
 
         // Validate flags (0-255, typically 0 or 1)
         $flags = (int)$parts[1];
-        if ($flags < 0 || $flags > 255) {
+        if (!ctype_digit($parts[1]) || $flags > 255) {
             return ValidationResult::failure(_('NSEC3PARAM flags must be between 0 and 255.'));
         }
 
@@ -197,7 +204,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
 
         // Validate iterations (0-2500, RFC 9276 recommends 0)
         $iterations = (int)$parts[2];
-        if ($iterations < 0 || $iterations > 2500) {
+        if (!ctype_digit($parts[2]) || $iterations > 2500) {
             return ValidationResult::failure(_('NSEC3PARAM iterations must be between 0 and 2500.'));
         }
 

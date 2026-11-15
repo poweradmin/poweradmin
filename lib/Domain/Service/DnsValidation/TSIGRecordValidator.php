@@ -110,7 +110,7 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check timestamp (parts[1]) if available
-        if (count($parts) >= 2 && is_numeric($parts[1])) {
+        if (count($parts) >= 2 && ctype_digit($parts[1])) {
             $timestamp = (int)$parts[1];
             $currentTime = time();
 
@@ -149,6 +149,14 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('TSIG provides transaction authentication but not data integrity. Consider using DNSSEC in addition to TSIG.');
         $warnings[] = _('Accurate system clocks are required on both client and server for TSIG to work correctly.');
 
+        // Timestamp, fudge, original ID, error and other-len are stored as plain digits
+        $content = preg_replace_callback(
+            '/^(\s*\S+\s+)(\d+)(\s+)(\d+)(\s+\S+\s+)(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => $m[1] . (ltrim($m[2], '0') ?: '0') . $m[3] . (ltrim($m[4], '0') ?: '0') . $m[5]
+                . (ltrim($m[6], '0') ?: '0') . $m[7] . (ltrim($m[8], '0') ?: '0') . $m[9] . (ltrim($m[10], '0') ?: '0'),
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -185,13 +193,13 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate timestamp (must be a positive integer)
-        if (!is_numeric($timestamp) || (int)$timestamp < 0) {
+        if (!ctype_digit($timestamp)) {
             $errors[] = _('TSIG timestamp must be a non-negative integer.');
             return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate fudge (must be a positive integer, usually small like 300)
-        if (!is_numeric($fudge) || (int)$fudge < 0) {
+        if (!ctype_digit($fudge)) {
             $errors[] = _('TSIG fudge must be a non-negative integer.');
             return ['isValid' => false, 'errors' => $errors];
         }
@@ -227,13 +235,13 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate original ID (must be a positive integer between 0 and 65535)
-        if (!is_numeric($originalId) || (int)$originalId < 0 || (int)$originalId > 65535) {
+        if (!ctype_digit($originalId) || (int)$originalId > 65535) {
             $errors[] = _('TSIG original ID must be a number between 0 and 65535.');
             return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate error (must be a valid DNS RCODE number per RFC 8945)
-        if (!is_numeric($error) || (int)$error < 0 || (int)$error > 23) {
+        if (!ctype_digit($error) || (int)$error > 23) {
             $errors[] = _('TSIG error must be a valid DNS RCODE number between 0 and 23.');
             return ['isValid' => false, 'errors' => $errors];
         }
@@ -255,7 +263,7 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate other-len (must be a positive integer)
-        if (!is_numeric($otherLen) || (int)$otherLen < 0) {
+        if (!ctype_digit($otherLen)) {
             $errors[] = _('TSIG other-len must be a non-negative integer.');
             return ['isValid' => false, 'errors' => $errors];
         }

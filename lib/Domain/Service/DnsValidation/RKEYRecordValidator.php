@@ -138,6 +138,13 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         // Add general RKEY record usage warning
         $warnings[] = _('RKEY records should be used with caution as they are not widely supported by DNS servers and resolvers.');
 
+        // Flags, protocol and algorithm are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => (ltrim($m[1], '0') ?: '0') . $m[2] . (ltrim($m[3], '0') ?: '0') . $m[4] . (ltrim($m[5], '0') ?: '0'),
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -171,12 +178,12 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         [$flags, $protocol, $algorithm, $publicKey] = [$parts[0], $parts[1], $parts[2], implode(' ', array_slice($parts, 3))];
 
         // Validate flags field (must be a number)
-        if (!is_numeric($flags)) {
+        if (!ctype_digit($flags)) {
             return ValidationResult::failure(_('RKEY flags field must be a numeric value.'));
         }
 
         // Check flags value and provide warnings
-        $flagsValue = (int)$flags;
+        $flagsValue = strlen(ltrim($flags, '0')) > 9 ? PHP_INT_MAX : (int)$flags;
 
         // Common flag values are 256 (bit 7 set - Zone Key) and 257 (bits 7 and 0 set - Zone Key + SEP)
         if ($flagsValue !== 0 && $flagsValue !== 256 && $flagsValue !== 257) {
@@ -193,22 +200,22 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate protocol field (must be a number and should be 3)
-        if (!is_numeric($protocol)) {
+        if (!ctype_digit($protocol)) {
             return ValidationResult::failure(_('RKEY protocol field must be a numeric value.'));
         }
 
-        $protocolValue = (int)$protocol;
+        $protocolValue = strlen(ltrim($protocol, '0')) > 9 ? PHP_INT_MAX : (int)$protocol;
         if ($protocolValue !== 3) {
             $warnings[] = _('Protocol field should be 3 for compliance with standards based on DNSKEY format.');
         }
 
         // Validate algorithm field (must be a number)
-        if (!is_numeric($algorithm)) {
+        if (!ctype_digit($algorithm)) {
             return ValidationResult::failure(_('RKEY algorithm field must be a numeric value.'));
         }
 
         // Check algorithm value and provide warnings
-        $algorithmValue = (int)$algorithm;
+        $algorithmValue = strlen(ltrim($algorithm, '0')) > 9 ? PHP_INT_MAX : (int)$algorithm;
         if ($algorithmValue < 0 || $algorithmValue > 16) {
             return ValidationResult::failure(_('RKEY algorithm field must be a valid DNSSEC algorithm number (0-16).'));
         }

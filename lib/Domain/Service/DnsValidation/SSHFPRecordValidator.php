@@ -126,6 +126,13 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
         // Add security best practice for multiple fingerprint types
         $warnings[] = _('For maximum security, publish both SHA-1 and SHA-256 fingerprints for compatibility, but prefer SHA-256 in clients.');
 
+        // Algorithm and fingerprint type are stored as plain digits
+        $content = preg_replace_callback(
+            '/^\s*(\d+)(\s+)(\d+)/',
+            fn($m) => (int)$m[1] . $m[2] . (int)$m[3],
+            $content
+        );
+
         return ValidationResult::success(['content' => $content,
             'name' => $name,
             'prio' => 0, // SSHFP records don't use priority
@@ -169,7 +176,7 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
 
         // Validate algorithm (must be 1-4 or 6)
         $validAlgorithms = [1, 2, 3, 4, 6];
-        if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
+        if (!ctype_digit($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
             return ValidationResult::failure(_('SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 (Ed448).'));
         }
 
@@ -186,7 +193,7 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate fingerprint type (must be 1 or 2)
-        if (!is_numeric($fpType) || !in_array((int)$fpType, [1, 2])) {
+        if (!ctype_digit($fpType) || !in_array((int)$fpType, [1, 2])) {
             return ValidationResult::failure(_('SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256).'));
         }
 

@@ -135,6 +135,13 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         // Add additional security warnings
         $warnings[] = _('TKEY records are not for DNS data authentication, they are for key establishment between DNS servers/resolvers.');
 
+        // Mode and error are stored as plain digits
+        $content = preg_replace_callback(
+            '/^(\s*\S+\s+\S+\s+\S+\s+)(\d+)(\s+)(\d+)/',
+            fn($m) => $m[1] . (int)$m[2] . $m[3] . (int)$m[4],
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -190,7 +197,7 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate mode (must be a number between 1 and 5)
-        if (!is_numeric($mode) || !in_array((int)$mode, range(1, 5))) {
+        if (!ctype_digit($mode) || !in_array((int)$mode, range(1, 5))) {
             return ValidationResult::failure(_('TKEY mode must be a number between 1 and 5 (1: Server assignment, 2: Diffie-Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key deletion).'));
         }
 
@@ -214,7 +221,7 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate error (must be a valid DNS RCODE number between 0 and 23)
-        if (!is_numeric($error) || (int)$error < 0 || (int)$error > 23) {
+        if (!ctype_digit($error) || (int)$error > 23) {
             return ValidationResult::failure(_('TKEY error must be a valid DNS RCODE number between 0 and 23.'));
         }
 
@@ -315,7 +322,7 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
     private function isValidTime(string $time): bool
     {
         // Check if it's a valid Unix timestamp (all digits)
-        if (is_numeric($time) && $time >= 0) {
+        if (ctype_digit($time)) {
             return true;
         }
 

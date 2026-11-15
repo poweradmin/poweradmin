@@ -139,6 +139,13 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('RRSIG records should only be created by your DNS server when signing a zone. Manual manipulation is not recommended.');
         $warnings[] = _('Regular key rollovers are recommended security practice: ZSK every 1-3 months, KSK every 1-2 years.');
 
+        // Algorithm, labels, original TTL and key tag are stored as plain digits
+        $content = preg_replace_callback(
+            '/^(\s*\S+\s+)(\d+)(\s+)(\d+)(\s+)(\d+)(\s+\S+\s+\S+\s+)(\d+)/',
+            fn($m) => $m[1] . (ltrim($m[2], '0') ?: '0') . $m[3] . (ltrim($m[4], '0') ?: '0') . $m[5] . (ltrim($m[6], '0') ?: '0') . $m[7] . (ltrim($m[8], '0') ?: '0'),
+            $content
+        );
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -183,7 +190,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate algorithm (must be numeric)
-        if (!is_numeric($algorithm)) {
+        if (!ctype_digit($algorithm)) {
             return ValidationResult::failure(_('RRSIG algorithm field must be a numeric value.'));
         }
 
@@ -218,7 +225,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate labels (must be numeric)
-        if (!is_numeric($labels)) {
+        if (!ctype_digit($labels)) {
             return ValidationResult::failure(_('RRSIG labels field must be a numeric value.'));
         }
 
@@ -229,7 +236,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate original TTL (must be numeric)
-        if (!is_numeric($origTtl)) {
+        if (!ctype_digit($origTtl)) {
             return ValidationResult::failure(_('RRSIG original TTL field must be a numeric value.'));
         }
 
@@ -292,7 +299,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate key tag (must be numeric)
-        if (!is_numeric($keyTag)) {
+        if (!ctype_digit($keyTag)) {
             return ValidationResult::failure(_('RRSIG key tag field must be a numeric value.'));
         }
 

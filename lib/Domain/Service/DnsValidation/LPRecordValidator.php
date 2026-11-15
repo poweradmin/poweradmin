@@ -128,6 +128,9 @@ class LPRecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('Consider using longer TTL values for LP records. Unlike L32/L64 records, LP records are stable and benefit from longer cache times (RFC 6742).');
         }
 
+        // The preference is stored as plain digits
+        $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -155,7 +158,7 @@ class LPRecordValidator implements DnsRecordValidatorInterface
         [$preference, $fqdn] = $parts;
 
         // Validate preference (0-65535)
-        if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
+        if (!ctype_digit($preference) || (int)$preference > 65535) {
             return ValidationResult::failure(_('LP preference must be a number between 0 and 65535.'));
         }
 

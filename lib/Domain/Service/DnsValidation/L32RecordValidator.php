@@ -127,6 +127,9 @@ class L32RecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('RFC 6742 recommends very low TTL values for L32 records of mobile or multihomed nodes, as locator values might change frequently.');
         }
 
+        // The preference is stored as plain digits
+        $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
@@ -154,7 +157,7 @@ class L32RecordValidator implements DnsRecordValidatorInterface
         [$preference, $locator] = $parts;
 
         // Validate preference (0-65535)
-        if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
+        if (!ctype_digit($preference) || (int)$preference > 65535) {
             return ValidationResult::failure(_('L32 preference must be a number between 0 and 65535.'));
         }
 
