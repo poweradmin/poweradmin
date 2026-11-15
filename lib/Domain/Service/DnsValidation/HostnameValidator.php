@@ -219,7 +219,7 @@ class HostnameValidator
             }
         }
 
-        if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
+        if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($normalizedHostname)) {
             return ValidationResult::failure(_('You are using an invalid top level domain.'));
         }
 
