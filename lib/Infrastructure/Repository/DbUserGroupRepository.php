@@ -149,11 +149,30 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
 
     public function delete(int $id): bool
     {
-        $query = "DELETE FROM user_groups WHERE id = :id";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute([':id' => $id]);
+        // Explicit deletes: installs without FK cascade would keep orphan grants.
+        $own = !$this->db->inTransaction();
+        if ($own) {
+            $this->db->beginTransaction();
+        }
+        try {
+            foreach (['user_group_members', 'zones_groups'] as $table) {
+                $stmt = $this->db->prepare("DELETE FROM $table WHERE group_id = :id");
+                $stmt->execute([':id' => $id]);
+            }
+            $stmt = $this->db->prepare("DELETE FROM user_groups WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $deleted = $stmt->rowCount() > 0;
+        } catch (\Throwable $e) {
+            if ($own) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+        if ($own) {
+            $this->db->commit();
+        }
 
-        return $stmt->rowCount() > 0;
+        return $deleted;
     }
 
     public function countAll(): int

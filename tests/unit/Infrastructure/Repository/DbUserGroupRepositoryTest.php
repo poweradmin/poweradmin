@@ -111,4 +111,24 @@ class DbUserGroupRepositoryTest extends TestCase
 
         $this->assertSame([], $this->repo->findExistingIds([1, 2]));
     }
+
+    #[Test]
+    public function deleteRemovesMembershipAndZoneGrantRowsWithoutForeignKeys(): void
+    {
+        $pdo = new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->exec('CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)');
+        $pdo->exec('CREATE TABLE user_group_members (group_id INTEGER, user_id INTEGER)');
+        $pdo->exec('CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)');
+        $pdo->exec("INSERT INTO user_groups VALUES (1, 'a'), (2, 'b')");
+        $pdo->exec('INSERT INTO user_group_members VALUES (1, 10), (2, 11)');
+        $pdo->exec('INSERT INTO zones_groups VALUES (5, 1), (6, 2)');
+
+        $this->assertTrue((new DbUserGroupRepository($pdo))->delete(1));
+
+        $this->assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM user_group_members WHERE group_id = 1')->fetchColumn());
+        $this->assertSame(0, (int)$pdo->query('SELECT COUNT(*) FROM zones_groups WHERE group_id = 1')->fetchColumn());
+        $this->assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM user_group_members WHERE group_id = 2')->fetchColumn());
+        $this->assertSame(1, (int)$pdo->query('SELECT COUNT(*) FROM zones_groups WHERE group_id = 2')->fetchColumn());
+    }
 }
