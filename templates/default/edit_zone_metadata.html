@@ -139,10 +139,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const addButton = document.getElementById('add-metadata-row');
     const template = document.getElementById('metadata-row-template');
     const definitions = {};
-    const defaultValueLabel = '{% trans %}Value{% endtrans %}';
-    const customMetadataHelp = '{% trans %}Custom metadata kind stored directly in the PowerDNS domainmetadata table.{% endtrans %}';
-    const customBadgeLabel = '{% trans %}Custom{% endtrans %}';
-    const readOnlyBadge = '<span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">{% trans %}Read-only{% endtrans %}</span>';
+    const defaultValueLabel = '{{ 'Value'|trans|e('js') }}';
+    const customMetadataHelp = '{{ 'Custom metadata kind stored directly in the PowerDNS domainmetadata table.'|trans|e('js') }}';
+    const customBadgeLabel = '{{ 'Custom'|trans|e('js') }}';
+    const readOnlyBadge = '<span class="badge bg-secondary-subtle text-secondary-emphasis border border-secondary-subtle">{{ 'Read-only'|trans|e('js') }}</span>';
     const serverManagedKinds = {{ server_managed_kinds|json_encode|raw }};
 
     {% for definition in metadata_definitions %}

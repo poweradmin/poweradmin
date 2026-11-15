@@ -80,7 +80,7 @@
     function flash(button) {
         const originalHTML = button.innerHTML;
         const wasSecondary = button.classList.contains('btn-secondary');
-        button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i>{% trans %}Copied{% endtrans %}';
+        button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i>{{ 'Copied'|trans|e('js') }}';
         if (wasSecondary) {
             button.classList.remove('btn-secondary');
             button.classList.add('btn-success');
