@@ -282,7 +282,7 @@ final class SessionAuthenticator
                     $this->refuseSsoAccountPasswordLogin($credentials);
                     break;
                 }
-                $this->endSessionOfDisabledAccount();
+                $this->endSessionOfForeignOrDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
@@ -291,7 +291,7 @@ final class SessionAuthenticator
                     $this->refuseSsoAccountPasswordLogin($credentials);
                     break;
                 }
-                $this->endSessionOfDisabledAccount();
+                $this->endSessionOfForeignOrDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_REMOTE_USER:
                 if ($this->startedByWebServer()) {
@@ -591,6 +591,19 @@ final class SessionAuthenticator
         $maxLifetime = (int)$this->configManager->get('interface', 'session_max_lifetime', 0);
 
         return $maxLifetime > 0 && time() - $signedInAt > $maxLifetime;
+    }
+
+    private function endSessionOfForeignOrDisabledAccount(): void
+    {
+        $guard = new ExternalSessionGuard($this->services->userRepository(), $this->session);
+        $holdsAccount = $this->session->has(SessionKeys::USERID) || $this->session->has(SessionKeys::PENDING_USERID);
+        if ($holdsAccount && !$guard->belongsToInstance(ExternalSessionGuard::instanceFingerprint($this->configManager))) {
+            $this->logger->warning('Ending SSO session not established by this instance for {username}', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+            $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
+            return;
+        }
+
+        $this->endSessionOfDisabledAccount();
     }
 
     private function endSessionOfDisabledAccount(): void

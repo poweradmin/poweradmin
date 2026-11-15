@@ -87,6 +87,7 @@ final class SamlServiceSignInResetTest extends TestCase
         $this->assertSame(self::USER_ID, $session->get(SessionKeys::PENDING_USERID));
         $this->assertSame('bob@example.com', $session->get(SessionKeys::PENDING_EMAIL));
         $this->assertSame('bob', $session->get(SessionKeys::USERLOGIN));
+        $this->assertIsString($session->get(SessionKeys::SSO_INSTANCE));
     }
 
     public function testACompletedSignInKeepsNoPendingLoginOfTheEarlierUser(): void
@@ -100,6 +101,7 @@ final class SamlServiceSignInResetTest extends TestCase
         $this->assertSame(self::USER_ID, $session->get(SessionKeys::USERID));
         $this->assertSame('bob@example.com', $session->get(SessionKeys::EMAIL));
         $this->assertSame('bob', $session->get(SessionKeys::USERLOGIN));
+        $this->assertIsString($session->get(SessionKeys::SSO_INSTANCE));
         $this->assertTrue($session->get(SessionKeys::SAML_AUTHENTICATED));
     }
 

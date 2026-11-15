@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service\Auth;
 
+use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -36,6 +37,34 @@ final class ExternalSessionGuard
         private readonly AuthUserLookupInterface $userLookup,
         private readonly SessionInterface $session
     ) {
+    }
+
+    /**
+     * Identifies this installation, so a session id minted by another one that shares
+     * the session store cannot sign in here.
+     */
+    public static function instanceFingerprint(ConfigurationInterface $config): string
+    {
+        $parts = [
+            $config->get('database', 'host', ''),
+            $config->get('database', 'port', ''),
+            $config->get('database', 'name', ''),
+            $config->get('database', 'type', ''),
+            $config->get('database', 'file', ''),
+            $config->get('interface', 'base_url_prefix', ''),
+        ];
+
+        return hash_hmac('sha256', implode('|', array_map('strval', $parts)), (string)$config->get('security', 'session_key', ''));
+    }
+
+    /**
+     * False when the session was not established by this installation's sign-in.
+     */
+    public function belongsToInstance(string $fingerprint): bool
+    {
+        $stored = $this->session->get(SessionKeys::SSO_INSTANCE);
+
+        return is_string($stored) && hash_equals($fingerprint, $stored);
     }
 
     /**
