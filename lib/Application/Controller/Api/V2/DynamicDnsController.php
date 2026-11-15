@@ -161,7 +161,7 @@ class DynamicDnsController extends PublicApiController
 
         try {
             // Lowercased like the legacy dynamic_update.php path, so a differently cased update finds the existing records
-            $hostname = $this->validationService->createValidatedHostname(strtolower($rawHostname));
+            $hostname = $this->validationService->createValidatedHostname(strtolower(str_ends_with($rawHostname, '.') ? substr($rawHostname, 0, -1) : $rawHostname));
             $ipList = $this->validationService->createValidatedIpList($rawIpv4, $rawIpv6);
         } catch (\InvalidArgumentException $e) {
             return $this->returnApiError($e->getMessage(), 400);
