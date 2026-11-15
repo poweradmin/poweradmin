@@ -769,7 +769,8 @@ final class DomainManager implements DomainManagerInterface
             || $this->userHasPermission(Permission::PERM_ZONE_SLAVE_ADD);
 
         $result = $this->templateApplier->applyTemplate($zone_id, $zone_template_id, $dns_ttl, $canAddZones);
-        $zoneName = $result->success ? $this->domainRepository->getDomainNameById($zone_id) : null;
+        // A partial API-mode apply has already written to the backend, so it still needs the rectify
+        $zoneName = $result->success || $result->refusal !== Refusal::FORBIDDEN ? $this->domainRepository->getDomainNameById($zone_id) : null;
         if (is_string($zoneName)) {
             $this->zoneRectifier?->rectify($zoneName);
             $this->zoneCacheFlusher?->flushZone($zoneName);

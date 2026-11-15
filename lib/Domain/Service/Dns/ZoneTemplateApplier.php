@@ -108,15 +108,20 @@ class ZoneTemplateApplier
     {
         $this->transaction->begin();
         try {
+            $refused = [];
             if ($templateId !== 0) {
-                $this->removeTemplateRecords($zoneId, $templateId);
+                $refused = $this->removeTemplateRecords($zoneId, $templateId);
                 if ($writeRecords) {
-                    $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl);
+                    $refused = array_merge($refused, $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl));
                 }
             }
 
-            $this->relinkZoneTemplate($zoneId, $templateId);
+            $this->relinkZoneTemplate($zoneId, $templateId, $refused === []);
             $this->finishTransaction(true);
+
+            if ($refused !== []) {
+                return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), implode(', ', $refused)));
+            }
 
             return ZoneWriteResult::ok($zoneId);
         } catch (\Exception $e) {
@@ -143,19 +148,21 @@ class ZoneTemplateApplier
 
     /**
      * Remove the records an earlier application of this template wrote.
+     *
+     * @return list<string> API backend records PowerDNS refused to delete
      */
-    private function removeTemplateRecords(int $zoneId, int $templateId): void
+    private function removeTemplateRecords(int $zoneId, int $templateId): array
     {
         if ($this->backendProvider->recordIdsAreNumeric()) {
             $this->logDeletes($this->recordLinks->removeLinkedRecords($zoneId, $templateId), $zoneId);
-            return;
+            return [];
         }
 
         // Pre-existing API zones from before records_zone_templ_api have no links,
         // so their template records are left in place rather than matched fuzzily.
         $links = $this->recordLinks->listEncodedLinks($zoneId, $templateId);
         if ($links === []) {
-            return;
+            return [];
         }
 
         // Records removed out-of-band are unlinked but not deleted or logged.
@@ -167,31 +174,45 @@ class ZoneTemplateApplier
         }
 
         $removed = [];
+        $refused = [];
+        $unlink = [];
         foreach ($links as $link) {
             $record = $recordsByEncodedId[(string) $link['record_id']] ?? null;
-            if ($record !== null && $this->backendProvider->deleteRecord((string) $link['record_id'])) {
-                $removed[] = [
-                    'id' => $record['id'] ?? null,
-                    'name' => $record['name'] ?? null,
-                    'type' => $record['type'] ?? null,
-                    'content' => $record['content'] ?? null,
-                    'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
-                    'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
-                    'disabled' => $record['disabled'] ?? null,
-                ];
+            if ($record === null) {
+                $unlink[] = (int) $link['id'];
+                continue;
             }
+            if (!$this->backendProvider->deleteRecord((string) $link['record_id'])) {
+                $refused[] = (string) $link['record_id'];
+                continue;
+            }
+            $unlink[] = (int) $link['id'];
+            $removed[] = [
+                'id' => $record['id'] ?? null,
+                'name' => $record['name'] ?? null,
+                'type' => $record['type'] ?? null,
+                'content' => $record['content'] ?? null,
+                'ttl' => isset($record['ttl']) ? (int) $record['ttl'] : null,
+                'prio' => isset($record['prio']) ? (int) $record['prio'] : null,
+                'disabled' => $record['disabled'] ?? null,
+            ];
         }
         $this->logDeletes($removed, $zoneId);
 
-        $this->recordLinks->removeEncodedLinks(array_map(static fn(array $link): int => (int) $link['id'], $links));
+        $this->recordLinks->removeEncodedLinks($unlink);
+
+        return $refused;
     }
 
     /**
      * Write the template's records with placeholders resolved and link each one
      * back to the template. Records the zone already holds are skipped.
+     *
+     * @return list<string> API backend records PowerDNS refused to add
      */
-    private function writeTemplateRecords(int $zoneId, int $templateId, int $defaultTtl): void
+    private function writeTemplateRecords(int $zoneId, int $templateId, int $defaultTtl): array
     {
+        $refused = [];
         $domain = (string) $this->domainRepository->getDomainNameById($zoneId);
         $soaRecord = $this->soaRecordManager->getSOARecord($zoneId);
         $templateRecords = $this->zoneTemplateRepository->getZoneTemplateRecords($templateId);
@@ -233,6 +254,10 @@ class ZoneTemplateApplier
 
             $recordId = $this->backendProvider->addRecordGetId($zoneId, $name, $type, $content, $ttl, $prio);
             if ($recordId === null) {
+                // A refused add only fails the apply on the API backend; SQL keeps skipping it
+                if (!$this->backendProvider->recordIdsAreNumeric()) {
+                    $refused[] = $name . ' ' . $type;
+                }
                 continue;
             }
 
@@ -248,6 +273,8 @@ class ZoneTemplateApplier
                 ], $zoneId);
             });
         }
+
+        return $refused;
     }
 
     /**
@@ -272,7 +299,7 @@ class ZoneTemplateApplier
      * rows for a previous template stop reporting the zone as out of sync. A zone
      * shared by several owners has one zones row per owner, so handle every one.
      */
-    private function relinkZoneTemplate(int $zoneId, int $templateId): void
+    private function relinkZoneTemplate(int $zoneId, int $templateId, bool $inSync = true): void
     {
         $this->zoneTemplateRepository->assignTemplateToZone($zoneId, $templateId);
 
@@ -280,7 +307,9 @@ class ZoneTemplateApplier
             $this->syncService->removeStaleSyncRecords($zonesId, $templateId);
             if ($templateId !== 0) {
                 $this->syncService->createSyncRecord($zonesId, $templateId);
-                $this->syncService->markZoneAsSynced($zonesId, $templateId);
+                if ($inSync) {
+                    $this->syncService->markZoneAsSynced($zonesId, $templateId);
+                }
             }
         }
     }

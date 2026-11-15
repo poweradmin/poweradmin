@@ -77,6 +77,24 @@ class ApiRecordCommentRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function addReturnsNullWhenPowerDnsRefusesThePatch(): void
+    {
+        $this->stubZoneData();
+        $this->apiClient->method('patchZoneRRsets')->willReturn(false);
+
+        $this->assertNull($this->repo->add($this->makeComment()));
+    }
+
+    #[Test]
+    public function updateReturnsNullWhenPowerDnsRefusesThePatch(): void
+    {
+        $this->stubZoneData();
+        $this->apiClient->method('patchZoneRRsets')->willReturn(false);
+
+        $this->assertNull($this->repo->update(self::DOMAIN_ID, 'www.example.com', 'A', $this->makeComment()));
+    }
+
+    #[Test]
     public function updateWritesCommentToApi(): void
     {
         $this->stubZoneData();

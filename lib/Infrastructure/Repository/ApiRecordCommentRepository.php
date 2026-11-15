@@ -45,7 +45,7 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
         $this->backendProvider = $backendProvider;
     }
 
-    public function add(RecordComment $comment): RecordComment
+    public function add(RecordComment $comment): ?RecordComment
     {
         return $this->writeRRsetComment($comment);
     }
@@ -128,6 +128,9 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
         }
 
         $result = $this->writeRRsetComment($comment);
+        if ($result === null) {
+            return null;
+        }
 
         // Clear old RRset comment if name/type changed
         if ($oldName !== $comment->getName() || $oldType !== $comment->getType()) {
@@ -153,19 +156,24 @@ final class ApiRecordCommentRepository implements RecordCommentRepositoryInterfa
     }
 
     /**
-     * Write an RRset-level comment to the PowerDNS API.
+     * Write an RRset-level comment to the PowerDNS API; null when PowerDNS did not store it.
      */
-    private function writeRRsetComment(RecordComment $comment): RecordComment
+    private function writeRRsetComment(RecordComment $comment): ?RecordComment
     {
         $zoneName = $this->backendProvider->getZoneNameById($comment->getDomainId());
-        if ($zoneName !== null) {
-            $this->patchRRsetComments($zoneName, $comment->getName(), $comment->getType(), [
-                [
-                    'content' => $comment->getComment(),
-                    'account' => $comment->getAccount() ?? '',
-                    'modified_at' => $comment->getModifiedAt(),
-                ]
-            ]);
+        if ($zoneName === null) {
+            return null;
+        }
+
+        $stored = $this->patchRRsetComments($zoneName, $comment->getName(), $comment->getType(), [
+            [
+                'content' => $comment->getComment(),
+                'account' => $comment->getAccount() ?? '',
+                'modified_at' => $comment->getModifiedAt(),
+            ]
+        ]);
+        if (!$stored) {
+            return null;
         }
 
         return new RecordComment(

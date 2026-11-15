@@ -34,9 +34,9 @@ interface RecordCommentRepositoryInterface
      * Add a new comment to the database.
      *
      * @param RecordComment $comment The comment to add
-     * @return RecordComment The added comment with ID
+     * @return RecordComment|null The added comment with ID, or null when the backend did not store it
      */
-    public function add(RecordComment $comment): RecordComment;
+    public function add(RecordComment $comment): ?RecordComment;
 
     /**
      * Delete all comments for an RRset (domain_id, name, type).

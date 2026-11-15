@@ -427,6 +427,41 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
     }
 
+    public function testApiBackendRefusingAnAddFailsTheApplicationAndLeavesTheZoneUnsynced(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([['www.[ZONE]', 'A', '192.0.2.10', 300, 0]]);
+        $this->backend = $this->apiBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->method('addRecordGetId')->willReturn(null);
+        $this->zoneRectifier = $this->rectifierExpecting($this->once(), 'dnssec');
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('www.old.example A', (string) $result->message);
+        $this->assertSame([['needs_sync' => 1]], $this->rows('SELECT needs_sync FROM zone_template_sync'));
+    }
+
+    public function testApiBackendKeepsTheLinkOfARecordPowerDnsRefusedToDelete(): void
+    {
+        $this->seedZone(self::TEMPLATE_ID);
+        $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (" . self::ZONE_ID . ", 'old.example./A/192.0.2.1', " . self::TEMPLATE_ID . ")");
+        $this->seedTemplateRecords([]);
+        $this->backend = $this->apiBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 'old.example./A/192.0.2.1', 'name' => 'old.example', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0, 'disabled' => 0],
+        ]);
+        $this->backend->method('deleteRecord')->willReturn(false);
+        $this->backend->method('recordExists')->willReturn(false);
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame([['record_id' => 'old.example./A/192.0.2.1']], $this->rows('SELECT record_id FROM records_zone_templ_api'));
+        $this->assertSame([], $this->loggedDeletes);
+    }
+
     public function testApiBackendWithoutMappingsLeavesExistingRecordsAlone(): void
     {
         $this->seedZone(self::OLD_TEMPLATE_ID);
