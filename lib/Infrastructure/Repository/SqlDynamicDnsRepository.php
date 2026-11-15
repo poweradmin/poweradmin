@@ -89,10 +89,9 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
     {
         // Domain names come from the PowerDNS-owned `domains` table; needed by the service
         // to longest-suffix-match the supplied hostname against the user's editable zones.
-        // Edit permission is source-specific (matching the web permission model): a zone is
-        // only returned when the template of the owner (the user for direct ownership, or the
-        // owning group) grants zone_content_edit_*. Owning a zone via a group whose template
-        // lacks edit does not make it updatable.
+        // Edit permission is source-specific, stricter than the web (which unions the user's
+        // and groups' templates): a zone is only returned when the template of the owner (the
+        // user, or the owning group) grants zone_content_edit_*.
         $query = $this->db->prepare("
             SELECT d.id AS domain_id, d.name AS name
             FROM {$this->domainsTable} d

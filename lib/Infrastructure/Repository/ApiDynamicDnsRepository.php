@@ -92,9 +92,9 @@ final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInte
     public function getUserZones(User $user): array
     {
         // SQL stays inside Poweradmin-native tables; zone names come from the API.
-        // Edit permission is source-specific (matching the web permission model): a zone is
-        // only returned when the owner's template (the user's for direct ownership, or the
-        // owning group's) grants zone_content_edit_*.
+        // Edit permission is source-specific, stricter than the web (which unions the user's
+        // and groups' templates): a zone is only returned when the template of the owner (the
+        // user, or the owning group) grants zone_content_edit_*.
         $query = $this->db->prepare("
             SELECT DISTINCT " . CanonicalZoneSql::canonicalIdColumn('z', $this->backendProvider->allocatesZoneIdsLocally()) . " AS domain_id, 'user' AS source
             FROM zones z
