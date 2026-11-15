@@ -64,6 +64,9 @@ class ZoneChangeRequestService
     /** Same ceiling as the change log's snapshot column */
     public const MAX_PAYLOAD_BYTES = 60000;
 
+    /** Characters of a request or review comment */
+    public const MAX_COMMENT_LENGTH = 2000;
+
     private readonly DnsFormatter $formatter;
 
     /**
@@ -248,6 +251,10 @@ class ZoneChangeRequestService
      */
     public function approve(int $requestId, int $reviewerId, string $reviewerName, ?string $comment = null): ZoneChangeRequestResult
     {
+        $comment = $this->normalisedComment($comment);
+        if ($tooLong = $this->refuseLongComment($comment)) {
+            return $tooLong;
+        }
         $request = $this->pending($requestId, allowFailed: true);
         if ($request instanceof ZoneChangeRequestResult) {
             return $request;
@@ -284,6 +291,10 @@ class ZoneChangeRequestService
 
     public function reject(int $requestId, int $reviewerId, string $reviewerName, ?string $comment = null): ZoneChangeRequestResult
     {
+        $comment = $this->normalisedComment($comment);
+        if ($tooLong = $this->refuseLongComment($comment)) {
+            return $tooLong;
+        }
         $request = $this->pending($requestId);
         if ($request instanceof ZoneChangeRequestResult) {
             return $request;
@@ -730,12 +741,31 @@ class ZoneChangeRequestService
         return null;
     }
 
+    private function normalisedComment(?string $comment): ?string
+    {
+        return $comment !== null && trim($comment) !== '' ? trim($comment) : null;
+    }
+
+    /** The comment is mailed to reviewers and the SOA contact, so its size is bounded. */
+    private function refuseLongComment(?string $comment): ?ZoneChangeRequestResult
+    {
+        if ($comment === null || mb_strlen($comment) <= self::MAX_COMMENT_LENGTH) {
+            return null;
+        }
+
+        $error = sprintf(_('The %s field must be at most %d characters.'), 'comment', self::MAX_COMMENT_LENGTH);
+        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
+    }
+
     /**
      * @param list<array<string, mixed>> $actions
      */
     private function store(int $zoneId, string $zoneName, string $kind, int $userId, string $username, ?string $comment, ?string $baseSerial, array $actions, ?string $zoneComment): ZoneChangeRequestResult
     {
-        $comment = $comment !== null && trim($comment) !== '' ? trim($comment) : null;
+        $comment = $this->normalisedComment($comment);
+        if ($tooLong = $this->refuseLongComment($comment)) {
+            return $tooLong;
+        }
         // The same rule the change log applies to direct bulk edits, checked before the request exists
         if ($comment === null && $this->config->get('logging', 'require_change_comment', false)) {
             $error = 'A reason for this change is required.';

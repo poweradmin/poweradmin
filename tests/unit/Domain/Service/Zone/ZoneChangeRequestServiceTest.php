@@ -289,6 +289,57 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(0, $this->repository->count([]));
     }
 
+    public function testARequestCommentOverTheCapIsRefusedOnEveryFilingPath(): void
+    {
+        $long = str_repeat('é', ZoneChangeRequestService::MAX_COMMENT_LENGTH + 1);
+        $service = $this->makeService();
+
+        $result = $service->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice', $long);
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $result->code);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
+        $this->assertSame('The comment field must be at most 2000 characters.', $result->message);
+
+        $record = ['name' => 'big', 'type' => 'TXT', 'content' => 'x', 'ttl' => 300, 'prio' => 0];
+        $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $service->fileRecordAdd(self::ZONE_ID, self::ZONE, $record, self::REQUESTER, 'alice', $long)->code);
+        $this->assertSame(0, $this->repository->count([]));
+    }
+
+    public function testARequestCommentAtTheCapIsFiled(): void
+    {
+        $comment = str_repeat('é', ZoneChangeRequestService::MAX_COMMENT_LENGTH);
+
+        $result = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice', $comment);
+
+        $this->assertTrue($result->success);
+        $this->assertSame($comment, $this->repository->find($result->requestId)->requestComment);
+    }
+
+    public function testAPaddedReviewCommentIsStoredTrimmedAndMeasuredTrimmed(): void
+    {
+        $padded = str_repeat("\n", 3000) . str_repeat('x', ZoneChangeRequestService::MAX_COMMENT_LENGTH) . '  ';
+        $id = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
+
+        $result = $this->makeService()->reject($id, self::REVIEWER, 'bob', $padded);
+
+        $this->assertTrue($result->success);
+        $this->assertSame(str_repeat('x', ZoneChangeRequestService::MAX_COMMENT_LENGTH), $this->repository->find($id)->reviewComment);
+    }
+
+    public function testAReviewCommentOverTheCapIsRefusedAndTheRequestStaysPending(): void
+    {
+        $id = $this->makeService()->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice')->requestId;
+        $long = str_repeat('x', ZoneChangeRequestService::MAX_COMMENT_LENGTH + 1);
+
+        foreach (['approve', 'reject'] as $decision) {
+            $result = $this->makeService()->{$decision}($id, self::REVIEWER, 'bob', $long);
+
+            $this->assertFalse($result->success, $decision);
+            $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $result->code, $decision);
+        }
+        $this->assertSame(ZoneChangeRequest::STATUS_PENDING, $this->repository->find($id)->status);
+    }
+
     public function testFilingAnAddRestoresTheZoneSuffixAndRefusesDuplicates(): void
     {
         $result = $this->makeService()->fileRecordAdd(self::ZONE_ID, self::ZONE, ['name' => 'new', 'type' => 'A', 'content' => '192.0.2.5', 'ttl' => '300', 'prio' => '0', 'comment' => 'why'], self::REQUESTER, 'alice');
