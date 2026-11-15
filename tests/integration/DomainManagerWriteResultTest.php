@@ -155,8 +155,12 @@ class DomainManagerWriteResultTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (" . self::NEW_DOMAIN_ID . ", " . self::ADMIN_USER_ID . ", 9)");
         $manager = $this->makeDomainManager($this->dnsBackendStub(false));
 
-        $this->assertTrue($manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID)->success);
-        $this->assertTrue($manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID)->success);
+        $first = $manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
+        $second = $manager->addOwnerToZone(self::NEW_DOMAIN_ID, self::CLIENT_USER_ID);
+        $this->assertTrue($first->success);
+        $this->assertFalse($first->unchanged);
+        $this->assertTrue($second->success);
+        $this->assertTrue($second->unchanged);
         $this->assertSame(
             [[self::ADMIN_USER_ID, 9], [self::CLIENT_USER_ID, 9]],
             array_map(fn(array $row): array => [(int)$row[0], (int)$row[1]], $this->db->query('SELECT owner, zone_templ_id FROM zones WHERE domain_id = ' . self::NEW_DOMAIN_ID . ' ORDER BY owner')->fetchAll(\PDO::FETCH_NUM))

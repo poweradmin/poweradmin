@@ -179,7 +179,7 @@ class ZoneOwnershipController extends BaseController
             $result = $this->services()->domainManager()->addOwnerToZone($zone_id, (int)$newowner);
             $this->reportZoneWrite('zone-ownership', $result, _('Owner has been added successfully.'));
 
-            if ($result->success) {
+            if ($result->success && !$result->unchanged) {
                 $this->permissionService()->forgetZone($zone_id);
                 $auditService->logZoneOwnerAdd($zone_id, $zone_name, (int)$newowner);
 

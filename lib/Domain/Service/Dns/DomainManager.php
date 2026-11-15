@@ -729,7 +729,7 @@ final class DomainManager implements DomainManagerInterface
             return ZoneWriteResult::failure(_('Owners cannot be added to this zone: its ID is shared with another zone. Ask an administrator to separate them.'), Refusal::CONFLICT);
         }
         if ($zoneRepository->isUserZoneOwner($zone_id, $user_id)) {
-            return ZoneWriteResult::ok($zone_id);
+            return ZoneWriteResult::unchanged($zone_id);
         }
         // Checked again under the limit's lock, where a concurrent request may have added the owner
         $write = fn(): bool => $zoneRepository->isUserZoneOwner($zone_id, $user_id) || $zoneRepository->addOwnerToZone($zone_id, $user_id);

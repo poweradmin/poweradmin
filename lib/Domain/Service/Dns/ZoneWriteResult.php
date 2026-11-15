@@ -37,13 +37,20 @@ final readonly class ZoneWriteResult
         public ?string $message,
         public ?Refusal $refusal,
         public ?int $zoneId,
-        public ?ZoneLimitBreach $limitBreach = null
+        public ?ZoneLimitBreach $limitBreach = null,
+        public bool $unchanged = false
     ) {
     }
 
     public static function ok(int $zoneId): self
     {
         return new self(true, null, null, $zoneId);
+    }
+
+    /** The write succeeded but found the state already as requested, so nothing was changed. */
+    public static function unchanged(int $zoneId): self
+    {
+        return new self(true, null, null, $zoneId, null, true);
     }
 
     public static function failure(string $message, Refusal $refusal = Refusal::INVALID_INPUT): self
