@@ -470,8 +470,51 @@ class SessionAuthenticator extends LoggingService
      * sessions would not, so a disabled or deleted account ends here. Both ids are
      * checked, as a signed-in user may start another login that needs MFA.
      */
+    public const SSO_INSTANCE_KEY = 'sso_instance';
+
+    /**
+     * Ties an SSO session to this installation, so a session id issued by another
+     * instance sharing the session store does not authenticate here.
+     */
+    public static function instanceFingerprint(ConfigurationManager $config): string
+    {
+        $parts = [
+            (string)$config->get('database', 'host', ''),
+            (string)$config->get('database', 'port', ''),
+            (string)$config->get('database', 'name', ''),
+            (string)$config->get('database', 'file', ''),
+            (string)$config->get('database', 'type', ''),
+            (string)$config->get('interface', 'base_url_prefix', ''),
+        ];
+
+        return hash_hmac('sha256', implode('|', $parts), (string)$config->get('security', 'session_key', ''));
+    }
+
+    /**
+     * Only a session that holds a user id is judged; a leftover login name alone is not.
+     */
+    public static function isForeignSsoSession(array $session, string $expected): bool
+    {
+        if (!isset($session['userid']) && !isset($session['pending_userid'])) {
+            return false;
+        }
+
+        return !self::sessionBelongsToInstance($session[self::SSO_INSTANCE_KEY] ?? null, $expected);
+    }
+
+    public static function sessionBelongsToInstance(mixed $stored, string $expected): bool
+    {
+        return is_string($stored) && hash_equals($expected, $stored);
+    }
+
     private function endSessionOfDisabledAccount(): void
     {
+        if (self::isForeignSsoSession($_SESSION, self::instanceFingerprint($this->configManager))) {
+            $this->logWarning('Ending SSO session that was not issued by this instance');
+            $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+            return;
+        }
+
         foreach (['userid', 'pending_userid'] as $key) {
             $userId = $_SESSION[$key] ?? null;
             if (!is_numeric($userId) || (int)$userId <= 0) {

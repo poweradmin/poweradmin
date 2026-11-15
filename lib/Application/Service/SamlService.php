@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -376,6 +377,7 @@ class SamlService extends LoggingService
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('pending_auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+                    $this->setSessionValue(SessionAuthenticator::SSO_INSTANCE_KEY, SessionAuthenticator::instanceFingerprint($this->configManager));
 
                     // Store SAML-specific data as pending
                     $this->setSessionValue('pending_saml_provider', $providerId);
@@ -400,6 +402,7 @@ class SamlService extends LoggingService
                     $this->setSessionValue('useremail', $userInfo->getEmail());
                     $this->setSessionValue('auth_used', UserProvisioningService::AUTH_METHOD_SAML);
                     $this->setSessionValue('auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
+                    $this->setSessionValue(SessionAuthenticator::SSO_INSTANCE_KEY, SessionAuthenticator::instanceFingerprint($this->configManager));
                     $this->setSessionValue('authenticated', true);
                     $this->setSessionValue('mfa_required', false);
 

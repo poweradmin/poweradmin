@@ -35,6 +35,7 @@ use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\Service\UserTimezoneService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use PDO;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -349,6 +350,7 @@ class OidcService extends LoggingService
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', 'oidc');
                     $this->setSessionValue('pending_auth_method_used', 'oidc');
+                    $this->setSessionValue(SessionAuthenticator::SSO_INSTANCE_KEY, SessionAuthenticator::instanceFingerprint($this->configManager));
 
                     // Store OIDC-specific data as pending
                     $this->setSessionValue('pending_oidc_provider', $providerId);
@@ -384,6 +386,7 @@ class OidcService extends LoggingService
                     $this->setSessionValue('useremail', $userInfo->getEmail());
                     $this->setSessionValue('auth_used', 'oidc');
                     $this->setSessionValue('auth_method_used', 'oidc');
+                    $this->setSessionValue(SessionAuthenticator::SSO_INSTANCE_KEY, SessionAuthenticator::instanceFingerprint($this->configManager));
                     $this->setSessionValue('authenticated', true);
                     $this->setSessionValue('mfa_required', false);
 
