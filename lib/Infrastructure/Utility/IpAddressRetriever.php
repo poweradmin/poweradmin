@@ -48,7 +48,7 @@ class IpAddressRetriever
      */
     public function getClientIp(): string
     {
-        $remoteAddr = $this->server['REMOTE_ADDR'] ?? '';
+        $remoteAddr = self::unmapIpv4($this->server['REMOTE_ADDR'] ?? '');
 
         if ($remoteAddr !== '' && $this->isPrivateOrReserved($remoteAddr)) {
             // No Client-IP: proxies rarely set it but pass a client's own through
@@ -60,7 +60,7 @@ class IpAddressRetriever
             foreach ($proxyHeaders as $header) {
                 if (!empty($this->server[$header])) {
                     $entries = array_values(array_filter(
-                        array_map(fn(string $ip): string => self::withoutPort(trim($ip)), explode(',', $this->server[$header])),
+                        array_map(fn(string $ip): string => self::unmapIpv4(self::withoutPort(trim($ip))), explode(',', $this->server[$header])),
                         fn(string $ip): bool => $ip !== '' && $ip !== $remoteAddr
                     ));
                     $last = $entries === [] ? null : $entries[count($entries) - 1];
@@ -83,6 +83,18 @@ class IpAddressRetriever
         }
 
         return '';
+    }
+
+    /**
+     * "::ffff:a.b.c.d" in any case as "a.b.c.d"; some servers report IPv4 peers on a dual-stack socket this way.
+     */
+    private static function unmapIpv4(string $ip): string
+    {
+        if (preg_match('/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i', $ip, $m) === 1 && filter_var($m[1], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return $m[1];
+        }
+
+        return $ip;
     }
 
     /**

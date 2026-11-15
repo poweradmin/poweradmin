@@ -149,6 +149,9 @@ class LoginAttemptService
             // Exact match - compare packed forms so equivalent IPv6 spellings still
             // match (e.g. 2001:db8::1 vs 2001:0db8:0000:0000:0000:0000:0000:0001).
             $listBinary = @inet_pton($listItem);
+            if ($listBinary !== false && self::isIpv4Mapped($listBinary)) {
+                $listBinary = substr($listBinary, 12);
+            }
             if ($listItem === $ipAddress || ($listBinary !== false && $listBinary === $binaryIp)) {
                 return true;
             }
