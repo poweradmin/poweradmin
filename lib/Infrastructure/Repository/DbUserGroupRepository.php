@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -90,6 +90,12 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
 
     public function delete(int $id): bool
     {
+        // Explicit deletes: installs created without FK cascade would keep orphan grants
+        foreach (['user_group_members', 'zones_groups'] as $table) {
+            $child = $this->db->prepare("DELETE FROM $table WHERE group_id = :id");
+            $child->execute([':id' => $id]);
+        }
+
         $query = "DELETE FROM user_groups WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':id' => $id]);
