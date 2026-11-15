@@ -99,7 +99,12 @@ class ZoneManagementService
 
         // Validate domain name
         $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($domain)) {
+        // Zones are stored without the trailing dot, so strip it before any check or lookup
+        $zoneNameValid = $hostnameValidator->isValid($domain);
+        if ($zoneNameValid && $domain !== '.') {
+            $domain = preg_replace('/\.$/D', '', $domain);
+        }
+        if (!$zoneNameValid) {
             return ['success' => false, 'message' => 'Invalid domain name', 'status' => 400];
         }
 

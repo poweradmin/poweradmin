@@ -104,6 +104,11 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template, array $groupIds = []): bool
     {
+        // Zones are stored without the trailing dot, as ZoneManagementService does
+        if ($domain !== '.') {
+            $domain = preg_replace('/\.$/D', '', $domain);
+        }
+
         // A bad primaries list must never reach the backend, whatever the caller checked
         if ($type == "SLAVE" && $slave_master !== '' && !$this->ipAddressValidator->areMultipleValidIPs($slave_master)) {
             $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));

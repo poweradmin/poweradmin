@@ -100,6 +100,11 @@ class ApiDomainRepository implements DomainRepositoryInterface
             $this->messageService->addSystemError(_('This is an invalid zone name.'));
             return false;
         }
+
+        // Stored zone names carry no trailing dot
+        if ($domain !== '.') {
+            $domain = preg_replace('/\.$/D', '', $domain);
+        }
         return $this->backendProvider->zoneExists($domain);
     }
 

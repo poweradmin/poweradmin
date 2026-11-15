@@ -143,6 +143,11 @@ class SqlDomainRepository implements DomainRepositoryInterface
             return false;
         }
 
+        // Stored zone names carry no trailing dot
+        if ($domain !== '.') {
+            $domain = preg_replace('/\.$/D', '', $domain);
+        }
+
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
         $stmt->execute([':name' => $domain]);

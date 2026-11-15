@@ -191,7 +191,12 @@ class AddZoneSlaveController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
-        if (!$hostnameValidator->isValid($zone)) {
+        // Zones are stored without the trailing dot, so strip it before any check or lookup
+        $zoneNameValid = $hostnameValidator->isValid($zone);
+        if ($zoneNameValid && $zone !== '.') {
+            $zone = preg_replace('/\.$/D', '', $zone);
+        }
+        if (!$zoneNameValid) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
         } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone))) {
