@@ -65,6 +65,23 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
         parent::__construct($ownerRepair, $defaultSoa, $accountOwners, $changeRequests, $logger);
     }
 
+    protected function nativeDb(): PDO
+    {
+        return $this->db;
+    }
+
+    /** The API backend keeps no domains table; the zones sync stores each zone's name in zones.zone_name. */
+    protected function zoneNames(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+        $stmt = $this->db->prepare("SELECT domain_id, zone_name FROM zones WHERE zone_name IS NOT NULL AND zone_name <> '' AND domain_id IN (" . implode(',', array_fill(0, count($zoneIds), '?')) . ")");
+        $stmt->execute($zoneIds);
+
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'zone_name', 'domain_id');
+    }
+
     /**
      * Read from the PowerDNS zone list once per run, since "fix all" repairs zone after zone.
      */
@@ -224,6 +241,7 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'api_key_scopes_name_zones' => $this->checkApiKeyScopesNameZones(),
+            'group_rows_of_deleted_groups' => $this->checkGroupRowsOfDeletedGroups(),
             'zone_names_differing_in_case' => $this->caseReport($zones),
             'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->masterReport($zones),

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Service\Consistency;
 
+use PDO;
 use Poweradmin\Domain\Repository\ZoneChangeRequestRepositoryInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyCheckerInterface;
 use Poweradmin\Domain\Service\Consistency\ConsistencyReport;
@@ -82,6 +83,93 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
         );
     }
 
+    /** The Poweradmin-native connection that holds user_groups, zones_groups and user_group_members. */
+    abstract protected function nativeDb(): PDO;
+
+    /**
+     * Zone names by domains.id for the zones a finding lists; an id the backend cannot name is left out.
+     *
+     * @param list<int> $zoneIds
+     * @return array<int, string>
+     */
+    abstract protected function zoneNames(array $zoneIds): array;
+
+    public function checkGroupRowsOfDeletedGroups(): array
+    {
+        $db = $this->nativeDb();
+        $zones = [];
+        $stmt = $db->query(
+            "SELECT g.group_id, g.domain_id FROM zones_groups g
+             WHERE NOT EXISTS (SELECT 1 FROM user_groups ug WHERE ug.id = g.group_id)
+             ORDER BY g.group_id, g.domain_id"
+        );
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $zones[(int)$row['group_id']][] = (int)$row['domain_id'];
+        }
+
+        $users = [];
+        $stmt = $db->query(
+            "SELECT m.group_id, m.user_id, u.username FROM user_group_members m
+             LEFT JOIN users u ON u.id = m.user_id
+             WHERE NOT EXISTS (SELECT 1 FROM user_groups ug WHERE ug.id = m.group_id)
+             ORDER BY m.group_id, m.user_id"
+        );
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $users[(int)$row['group_id']][] = $row['username'] !== null ? (string)$row['username'] : '#' . $row['user_id'];
+        }
+
+        $names = $this->zoneNames(array_values(array_unique(array_merge([], ...array_values($zones)))));
+        $groupIds = array_unique(array_merge(array_keys($zones), array_keys($users)));
+        sort($groupIds);
+
+        $findings = [];
+        foreach ($groupIds as $groupId) {
+            $findings[] = [
+                'id' => $groupId,
+                'zones' => implode(', ', array_map(static fn(int $id): string => $names[$id] ?? '#' . $id, $zones[$groupId] ?? [])),
+                'users' => implode(', ', $users[$groupId] ?? []),
+            ];
+        }
+
+        return ConsistencyReport::build(
+            $findings,
+            _('No group assignments or memberships belong to a deleted group'),
+            'warning',
+            _('%d deleted groups still have zone assignments or members')
+        );
+    }
+
+    public function fixGroupRowsOfDeletedGroup(int $groupId): bool
+    {
+        $db = $this->nativeDb();
+        // Re-read so a group that exists again keeps its assignments and members
+        $stmt = $db->prepare("SELECT 1 FROM user_groups WHERE id = :id");
+        $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+        $stmt->execute();
+        if ($stmt->fetchColumn() !== false) {
+            return false;
+        }
+
+        foreach (['zones_groups', 'user_group_members'] as $table) {
+            $stmt = $db->prepare(
+                "DELETE FROM $table WHERE group_id = :id AND NOT EXISTS (SELECT 1 FROM user_groups WHERE user_groups.id = $table.group_id)"
+            );
+            $stmt->bindValue(':id', $groupId, PDO::PARAM_INT);
+            $stmt->execute();
+        }
+
+        return true;
+    }
+
+    public function fixAllGroupRowsOfDeletedGroups(): array
+    {
+        return ConsistencyReport::repairEach(
+            ConsistencyReport::findingIds($this->checkGroupRowsOfDeletedGroups()),
+            fn(int $groupId): bool => $this->fixGroupRowsOfDeletedGroup($groupId),
+            'fixed'
+        );
+    }
+
     public function fixOne(string $type, int $id, int $currentUserId): array
     {
         [$repaired, $done, $failed] = match ($type) {
@@ -89,6 +177,7 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
             'zones_without_canonical_ids' => [$this->fixZoneCanonicalId($id), _('Zone canonical ID repaired'), _('Failed to repair zone canonical ID')],
             'zones_without_names' => [$this->fixZoneName($id), _('Zone name stored'), _('Failed to store the zone name')],
             'api_key_scopes_on_missing_zones' => [$this->fixApiKeyScopesOnMissingZone($id), _('API key restriction no longer names the deleted zone'), _('Failed to repair the API key restriction')],
+            'group_rows_of_deleted_groups' => [$this->fixGroupRowsOfDeletedGroup($id), _('Group assignments and memberships of the deleted group removed'), _('Failed to remove the group assignments and memberships')],
             'records_with_uppercase_names' => [$this->fixRecordNameCase($id), _('Record name lowercased'), _('Failed to lowercase the record name')],
             'slave_zones_without_masters' => [$this->deleteSlaveZoneWithRequests($id), _('Slave zone deleted successfully'), _('Failed to delete slave zone')],
             'orphaned_records' => [$this->deleteOrphanedRecord($id), _('Orphaned record deleted successfully'), _('Failed to delete orphaned record')],
@@ -145,6 +234,13 @@ abstract class AbstractConsistencyChecks implements ConsistencyCheckerInterface
                 _('No API key restrictions on deleted zones to repair'),
                 _('Repaired the API key restrictions on %d deleted zones'),
                 _('Repaired %d deleted zones; %d failed')
+            ),
+            'group_rows_of_deleted_groups' => ConsistencyReport::tally(
+                $this->fixAllGroupRowsOfDeletedGroups(),
+                'fixed',
+                _('No group assignments or memberships of deleted groups to remove'),
+                _('Removed the assignments and memberships of %d deleted groups'),
+                _('Removed those of %d deleted groups; %d failed')
             ),
             'records_with_uppercase_names' => ConsistencyReport::tally(
                 $this->fixAllRecordNamesCase(),

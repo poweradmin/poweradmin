@@ -427,6 +427,64 @@
             </div>
         </div>
 
+        <!-- Check: group assignments and memberships of deleted groups -->
+        <div class="card mb-3">
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Assignments And Memberships Of Deleted Groups{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.group_rows_of_deleted_groups.status == 'success' %}alert-success{% elseif results.group_rows_of_deleted_groups.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
+                    {{ results.group_rows_of_deleted_groups.message }}
+                </div>
+                {% if results.group_rows_of_deleted_groups.data is not empty %}
+                    <p class="small text-muted mt-3 mb-0">{% trans %}These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows.{% endtrans %}</p>
+                    <div class="mt-3">
+                        <form method="post" action="{{ base_url_prefix }}/tools/database-consistency"
+                              onsubmit="return confirm('{{ 'Remove the leftover assignments and memberships of all listed groups?'|trans|e('js') }}');">
+                            {{ macros.csrf_field() }}
+                            <input type="hidden" name="check_type" value="group_rows_of_deleted_groups">
+                            <input type="hidden" name="action" value="fix_all">
+                            <button type="submit" class="btn btn-sm btn-success">
+                                <i class="bi bi-check2-all text-white"></i> {% trans %}Repair all{% endtrans %}
+                            </button>
+                        </form>
+                    </div>
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Group{% endtrans %}</th>
+                                    <th>{% trans %}Zones{% endtrans %}</th>
+                                    <th>{% trans %}Users{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for group in results.group_rows_of_deleted_groups.data %}
+                                    <tr>
+                                        <td>{{ group.id }}</td>
+                                        <td>{{ group.zones }}</td>
+                                        <td>{{ group.users }}</td>
+                                        <td>
+                                            <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
+                                                {{ macros.csrf_field() }}
+                                                <input type="hidden" name="check_type" value="group_rows_of_deleted_groups">
+                                                <input type="hidden" name="action" value="fix">
+                                                <input type="hidden" name="item_id" value="{{ group.id }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="{% trans %}Remove{% endtrans %}">
+                                                    <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
         <!-- Check 2: Slave zones without master IPs -->
         <div class="card mb-3">
             <div class="card-header py-2">

@@ -68,6 +68,14 @@ interface ConsistencyCheckerInterface
     public function checkApiKeyScopesNameZones(): array;
 
     /**
+     * Zone assignments and group memberships whose group no longer exists, left behind by a
+     * group delete on a database without foreign key cascade. One finding per deleted group.
+     *
+     * @return array{status: string, message: string, data: array}
+     */
+    public function checkGroupRowsOfDeletedGroups(): array;
+
+    /**
      * Zone names that exist more than once in different letter case, such as Example.com and
      * example.com, which PowerDNS treats as the same name. Report only.
      *
@@ -126,6 +134,12 @@ interface ConsistencyCheckerInterface
 
     /** @return array{fixed: int, failed: int} */
     public function fixAllApiKeyScopesOnMissingZones(): array;
+
+    /** Delete the zone assignments and memberships of group $groupId, which no longer exists. */
+    public function fixGroupRowsOfDeletedGroup(int $groupId): bool;
+
+    /** @return array{fixed: int, failed: int} */
+    public function fixAllGroupRowsOfDeletedGroups(): array;
 
     /** Lowercase the record's name, and the name of the comments on its RRset. */
     public function fixRecordNameCase(int $recordId): bool;

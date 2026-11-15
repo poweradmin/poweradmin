@@ -62,6 +62,8 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, comment TEXT NULL, zone_name TEXT NULL, zone_type TEXT NULL, zone_master TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, group_id INTEGER, user_id INTEGER)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT)");
     }
@@ -292,6 +294,7 @@ class SqlConsistencyChecksTest extends TestCase
             'shared_zone_ids',
             'group_grants_on_row_ids',
             'api_key_scopes_name_zones',
+            'group_rows_of_deleted_groups',
             'zone_names_differing_in_case',
             'record_names_in_lowercase',
             'slave_zones_have_masters',
@@ -335,6 +338,46 @@ class SqlConsistencyChecksTest extends TestCase
 
         $this->assertSame('error', $this->checker()->fixOne('api_key_scopes_on_missing_zones', 7, 0)['status']);
         $this->assertSame([7], array_map('intval', $this->db->query("SELECT zone_id FROM api_key_zones")->fetchAll(PDO::FETCH_COLUMN)));
+    }
+
+    public function testGroupRowsOfDeletedGroupsAreReportedAndOnlyThoseAreRemoved(): void
+    {
+        $this->domain(10, 'a.example');
+        $this->db->exec("INSERT INTO users (id, username) VALUES (1, 'alice'), (2, 'bob')");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (1, 'live')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (10, 1), (10, 5), (11, 5), (12, 6)");
+        $this->db->exec("INSERT INTO user_group_members (group_id, user_id) VALUES (1, 1), (5, 1), (5, 2), (7, 2)");
+        $checker = $this->checker();
+
+        $report = $checker->checkGroupRowsOfDeletedGroups();
+        $this->assertSame('warning', $report['status']);
+        $this->assertSame(
+            [
+                ['id' => 5, 'zones' => 'a.example, #11', 'users' => 'alice, bob'],
+                ['id' => 6, 'zones' => '#12', 'users' => ''],
+                ['id' => 7, 'zones' => '', 'users' => 'bob'],
+            ],
+            $report['data']
+        );
+
+        $this->assertSame('success', $checker->fixOne('group_rows_of_deleted_groups', 5, 0)['status']);
+        $this->assertSame(['fixed' => 2, 'failed' => 0], $checker->fixAllGroupRowsOfDeletedGroups());
+        $this->assertSame('success', $checker->checkGroupRowsOfDeletedGroups()['status']);
+        $this->assertSame(1, $this->rows('zones_groups'));
+        $this->assertSame(1, $this->rows('zones_groups', 'group_id = 1 AND domain_id = 10'));
+        $this->assertSame(1, $this->rows('user_group_members'));
+        $this->assertSame(1, $this->rows('user_group_members', 'group_id = 1 AND user_id = 1'));
+    }
+
+    public function testTheGroupRowRepairLeavesAGroupThatExistsAgainAlone(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (5, 'back')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (10, 5)");
+        $this->db->exec("INSERT INTO user_group_members (group_id, user_id) VALUES (5, 1)");
+
+        $this->assertSame('error', $this->checker()->fixOne('group_rows_of_deleted_groups', 5, 0)['status']);
+        $this->assertSame(1, $this->rows('zones_groups'));
+        $this->assertSame(1, $this->rows('user_group_members'));
     }
 
     public function testZonesWithoutANamedRowAreReportedAndNamedByTheFix(): void
@@ -682,7 +725,7 @@ class SqlConsistencyChecksTest extends TestCase
     public function testTheOwnerRepairPrefersTheUserTheZoneAccountNames(): void
     {
         $this->db->exec("ALTER TABLE domains ADD COLUMN account TEXT NULL");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
         $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice'), (2, 'other.example', 'SLAVE', 'bob')");
         $checker = new SqlConsistencyChecks($this->db, $this->tableNames(), new ZoneOwnerRepair($this->db), $this->soaBuilder(), new AccountOwnerLookup($this->db));
@@ -697,7 +740,7 @@ class SqlConsistencyChecksTest extends TestCase
     public function testTheOwnerRepairFallsBackToTheActingUserWhenTheAccountUserIsAtTheLimit(): void
     {
         $this->db->exec("ALTER TABLE domains ADD COLUMN account TEXT NULL");
-        $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("INSERT INTO users (id, username) VALUES (4, 'alice')");
         $this->db->exec("INSERT INTO domains (id, name, type, account) VALUES (1, 'auto.example', 'SLAVE', 'alice')");
         $limits = $this->createMock(ZoneOwnershipLimit::class);

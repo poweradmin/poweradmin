@@ -65,6 +65,22 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $this->commentsTable = $tableNameService->getTable(PdnsTable::COMMENTS);
     }
 
+    protected function nativeDb(): PDO
+    {
+        return $this->db;
+    }
+
+    protected function zoneNames(array $zoneIds): array
+    {
+        if ($zoneIds === []) {
+            return [];
+        }
+        $stmt = $this->db->prepare("SELECT id, name FROM $this->domainsTable WHERE id IN (" . implode(',', array_fill(0, count($zoneIds), '?')) . ")");
+        $stmt->execute($zoneIds);
+
+        return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'name', 'id');
+    }
+
     protected function zoneAccount(int $zoneId): ?string
     {
         $stmt = $this->db->prepare("SELECT account FROM {$this->domainsTable} WHERE id = :id");
@@ -317,6 +333,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             'shared_zone_ids' => $this->checkSharedZoneIds(),
             'group_grants_on_row_ids' => $this->checkGroupGrantsOnRowIds(),
             'api_key_scopes_name_zones' => $this->checkApiKeyScopesNameZones(),
+            'group_rows_of_deleted_groups' => $this->checkGroupRowsOfDeletedGroups(),
             'zone_names_differing_in_case' => $this->checkZoneNamesDifferingInCase(),
             'record_names_in_lowercase' => $this->checkRecordNamesInLowercase(),
             'slave_zones_have_masters' => $this->checkSlaveZonesHaveMasters(),
