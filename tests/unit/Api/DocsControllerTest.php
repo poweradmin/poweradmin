@@ -65,4 +65,18 @@ class DocsControllerTest extends TestCase
 
         $this->assertEquals('/poweradmin', $this->controller->getDocsBaseUrlPublic());
     }
+
+    public function testSwaggerAssetsFromTheCdnCarryIntegrityHashes(): void
+    {
+        $this->withConfig('');
+
+        $html = $this->controller->generateSwaggerUiPublic();
+
+        preg_match_all('/<(?:link|script)\b[^>]*unpkg\.com[^>]*>/', $html, $tags);
+        $this->assertCount(3, $tags[0]);
+        foreach ($tags[0] as $tag) {
+            $this->assertMatchesRegularExpression('/integrity="sha384-[A-Za-z0-9+\/]{64}"/', $tag);
+            $this->assertStringContainsString('crossorigin="anonymous"', $tag);
+        }
+    }
 }
