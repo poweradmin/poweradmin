@@ -90,7 +90,8 @@ BEGIN
 END $$;
 
 -- The same lagging sequences made the 4.1.0 update drop the Zone Manager template and the
--- DNS Editor (now Editor) grants (#1673). Restore both, but only where they are still missing.
+-- DNS Editor (now Editor) grants (#1673). Restore both, but only where they are still missing:
+-- stock description, no grants, and no user or group assigned (not a deliberate lock-down).
 INSERT INTO perm_templ (name, descr, template_type)
 SELECT 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.', 'user'
 WHERE NOT EXISTS (SELECT 1 FROM perm_templ WHERE name = 'Zone Manager' AND template_type = 'user');
@@ -111,7 +112,12 @@ FROM (VALUES
 ) AS g(templ, perm)
 JOIN perm_templ pt ON pt.name = g.templ AND pt.template_type = 'user'
 JOIN perm_items pi ON pi.name = g.perm
-WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id);
+WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id)
+  AND pt.descr = CASE pt.name
+        WHEN 'Zone Manager' THEN 'Full management of own zones including creation, editing, deletion, and templates.'
+        ELSE 'Edit own zone records but cannot modify SOA and NS records.' END
+  AND NOT EXISTS (SELECT 1 FROM users u WHERE u.perm_templ = pt.id)
+  AND NOT EXISTS (SELECT 1 FROM user_groups ug WHERE ug.perm_templ = pt.id);
 
 -- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never ran the 4.0.5
 -- update (records_zone_templ primary key, #906), and no update added the zones indexes.
