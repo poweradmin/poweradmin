@@ -37,6 +37,9 @@ updates:
       # 7.0 deprecates OpenApi\Attributes; migrating is planned for 4.7.0
       - dependency-name: "zircote/swagger-php"
         versions: [">=7.0"]
+      # 7.0 breaks analyse:taint (MissingOverrideAttribute); moving is planned for 4.7.0
+      - dependency-name: "vimeo/psalm"
+        versions: [">=7.0"]
 
   - package-ecosystem: "github-actions"
     directory: "/"
