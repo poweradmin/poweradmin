@@ -203,7 +203,7 @@
                 navigator.clipboard.writeText(logRawText).then(function() {
                     var btn = document.querySelector('#apiLogModal .btn-outline-secondary');
                     var origHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{% trans %}Copied{% endtrans %}';
+                    btn.innerHTML = '<i class="bi bi-check me-1 text-success"></i>{{ 'Copied'|trans|e('js') }}';
                     setTimeout(function() { btn.innerHTML = origHtml; }, 1500);
                 });
             }

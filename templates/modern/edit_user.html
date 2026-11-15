@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const addGroupsBtn = document.getElementById('addGroupsBtn');
 
         if (countBadge) {
-            countBadge.textContent = selectedCount + ' {% trans %}selected{% endtrans %}';
+            countBadge.textContent = selectedCount + ' {{ 'selected'|trans|e('js') }}';
         }
 
         if (addGroupsBtn) {

@@ -136,7 +136,7 @@
                         console.error('reCAPTCHA error:', error);
                         isSubmitting = false;
                         submitButton.disabled = false;
-                        alert('{% trans %}reCAPTCHA verification failed. Please try again.{% endtrans %}');
+                        alert('{{ 'reCAPTCHA verification failed. Please try again.'|trans|e('js') }}');
                     });
                 });
             });

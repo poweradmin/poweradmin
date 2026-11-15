@@ -159,7 +159,7 @@ function toggleRemoveButton() {
     const count = document.querySelectorAll('.owned-checkbox:checked').length;
     if (removeBtn) removeBtn.disabled = count === 0;
     const countBadge = document.getElementById('zone-remove-count');
-    if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
+    if (countBadge) countBadge.textContent = count + ' {{ 'selected'|trans|e('js') }}';
 }
 
 function toggleAddButton() {
@@ -167,7 +167,7 @@ function toggleAddButton() {
     const count = document.querySelectorAll('.available-checkbox:checked').length;
     if (addBtn) addBtn.disabled = count === 0;
     const countBadge = document.getElementById('zone-add-count');
-    if (countBadge) countBadge.textContent = count + ' {% trans %}selected{% endtrans %}';
+    if (countBadge) countBadge.textContent = count + ' {{ 'selected'|trans|e('js') }}';
 }
 
 document.getElementById('add-form')?.addEventListener('submit', function() {

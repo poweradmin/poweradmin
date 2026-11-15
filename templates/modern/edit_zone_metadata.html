@@ -151,9 +151,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const addButton = document.getElementById('add-metadata-row');
     const template = document.getElementById('metadata-row-template');
     const definitions = {};
-    const defaultValueLabel = '{% trans %}Value{% endtrans %}';
-    const customMetadataHelp = '{% trans %}Custom metadata kind stored directly in the PowerDNS domainmetadata table.{% endtrans %}';
-    const customBadgeLabel = '{% trans %}Custom{% endtrans %}';
+    const defaultValueLabel = '{{ 'Value'|trans|e('js') }}';
+    const customMetadataHelp = '{{ 'Custom metadata kind stored directly in the PowerDNS domainmetadata table.'|trans|e('js') }}';
+    const customBadgeLabel = '{{ 'Custom'|trans|e('js') }}';
 
     {% for definition in metadata_definitions %}
     definitions['{{ definition.kind }}'] = {

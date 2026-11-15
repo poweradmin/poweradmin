@@ -382,7 +382,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const countBadge = document.getElementById('selected_groups_count');
 
         if (countBadge) {
-            countBadge.textContent = selectedCount + ' {% trans %}selected{% endtrans %}';
+            countBadge.textContent = selectedCount + ' {{ 'selected'|trans|e('js') }}';
         }
     }
 
