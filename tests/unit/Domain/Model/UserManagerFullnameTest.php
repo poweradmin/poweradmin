@@ -86,6 +86,12 @@ class UserManagerFullnameTest extends TestCase
         $this->assertSame("a\u{00AD}b", UserManager::cleanFullname("a\u{00AD}b"));
     }
 
+    public function testCleanFullnameDropsArabicLetterMarkAndTagCharacters(): void
+    {
+        $this->assertSame('AB', UserManager::cleanFullname("A\u{061C}B"));
+        $this->assertSame('AB', UserManager::cleanFullname("A\u{E0041}\u{E007F}B"));
+    }
+
     public function testCleanFullnameDoesNotBlankInvalidUtf8(): void
     {
         $this->assertNotSame('', UserManager::cleanFullname("caf\xe9"));

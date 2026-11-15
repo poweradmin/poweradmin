@@ -183,7 +183,7 @@ class UserManager
     public static function cleanFullname(string $fullname): string
     {
         $clean = preg_replace(
-            '/[\p{Cc}\x{200B}\x{200E}\x{200F}\x{202A}-\x{202E}\x{2060}\x{2066}-\x{2069}\x{FEFF}]/u',
+            '/[\p{Cc}\x{200B}\x{200E}\x{200F}\x{202A}-\x{202E}\x{2060}\x{2066}-\x{2069}\x{FEFF}\x{061C}\x{E0000}-\x{E007F}]/u',
             '',
             mb_scrub($fullname, 'UTF-8')
         );
