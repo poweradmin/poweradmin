@@ -109,6 +109,18 @@ class LdapAuthenticator extends LoggingService
         $userAuthService->verifyPassword($password, $userAuthService->dummyVerificationHash());
     }
 
+    private function refuseLockedAccount(string $username): void
+    {
+        $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
+        if (isset($_POST["authenticate"])) {
+            $this->ldapUserEventLogger->logLockout();
+        }
+        // Same text and cost as an unknown user gets, so the lock does not reveal the account exists.
+        $this->spendDummyHash();
+        $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
+        $this->authenticationService->auth($sessionEntity);
+    }
+
     public function authenticate(): void
     {
         $this->logInfo('Starting LDAP authentication process.');
@@ -120,14 +132,7 @@ class LdapAuthenticator extends LoggingService
 
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
-            $this->logWarning('Account is locked for LDAP user {username}', ['username' => $username]);
-            if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logLockout();
-            }
-            // Same text and cost as an unknown user gets, so the lock does not reveal the account exists.
-            $this->spendDummyHash();
-            $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
-            $this->authenticationService->auth($sessionEntity);
+            $this->refuseLockedAccount($username);
             return;
         }
 
@@ -256,6 +261,14 @@ class LdapAuthenticator extends LoggingService
         }
         $user_dn = $entries[0]["dn"];
 
+        // Count under the row the posted name resolves to; the directory's spelling only stands in when it does not
+        $userId = $this->loginAttemptService->userIdFor($username)
+            ?? $this->loginAttemptService->userIdFor((string)($entries[0][strtolower($ldap_user_attribute)][0] ?? $username));
+        if ($userId !== null && $this->loginAttemptService->isAccountLocked($username, $ipAddress, userId: $userId)) {
+            $this->refuseLockedAccount($username);
+            return;
+        }
+
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
         $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData(SessionKeys::USERPWD));
         // A zero-length credential would be an unauthenticated bind, which some directories accept
@@ -263,7 +276,7 @@ class LdapAuthenticator extends LoggingService
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->logFailedIncorrectPass();
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false, userId: $userId);
             }
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -271,7 +284,7 @@ class LdapAuthenticator extends LoggingService
             return;
         }
 
-        $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+        $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
 
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
         $provisioningService = new UserProvisioningService($this->db, $this->configManager, $this->logger);
@@ -340,7 +353,7 @@ class LdapAuthenticator extends LoggingService
             MfaSessionManager::setMfaRequired($rowObj['id']);
 
             if (isset($_POST['authenticate'])) {
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
                 $this->ldapUserEventLogger->logSuccessAuth();
 
                 // Log before redirect
@@ -371,7 +384,7 @@ class LdapAuthenticator extends LoggingService
             $this->updateAuthenticationCache($ipAddress);
 
             if (isset($_POST['authenticate'])) {
-                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true, userId: $userId);
                 $this->ldapUserEventLogger->logSuccessAuth();
                 session_write_close();
                 $this->authenticationService->redirectToIndex();

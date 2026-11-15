@@ -105,6 +105,11 @@ class LoginAttemptService
         $this->cleanupOldAttempts();
     }
 
+    public function userIdFor(string $username): ?int
+    {
+        return $this->getUserId($username);
+    }
+
     /**
      * Whether the address is on the configured lockout blacklist.
      */
