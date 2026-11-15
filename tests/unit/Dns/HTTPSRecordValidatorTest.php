@@ -534,4 +534,12 @@ class HTTPSRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame('1 example.org port=443', $result->getData()['content']);
     }
+
+    public function testPortIsStoredCanonicalWhateverTheKeyCase(): void
+    {
+        $result = $this->validator->validate('1 example.org PORT=0443', 'host.example.com', 0, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('1 example.org PORT=443', $result->getData()['content']);
+    }
 }

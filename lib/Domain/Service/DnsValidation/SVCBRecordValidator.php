@@ -101,6 +101,9 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         // Use the provided priority if available, otherwise extract from the content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
 
+        // The port is stored as plain digits, as the validation read it
+        $content = preg_replace('/(\s)(port)=0+(?=\d)/i', '$1$2=', $content);
+
         return ValidationResult::success([
             'content' => DnsFormatter::quoteEch('SVCB', $content),
             'name' => $name,
@@ -249,7 +252,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
 
                 case 'port':
                     // Must be a valid port number (1-65535)
-                    if (!is_numeric($value) || (int)$value < 1 || (int)$value > 65535) {
+                    if (!ctype_digit($value) || (int)$value < 1 || (int)$value > 65535) {
                         $errors[] = _('Port value must be a number between 1 and 65535.');
                     }
                     break;

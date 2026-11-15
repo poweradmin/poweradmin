@@ -230,4 +230,19 @@ class SVCBRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame('_8443._https.example.com', $result->getData()['name']);
     }
+
+    public function testPortAcceptsOnlyPlainDigits(): void
+    {
+        foreach (['1 example.com port=8e1', '1 example.com port=+443', '1 example.com port=44.0'] as $content) {
+            $this->assertFalse($this->validator->validate($content, 'host.example.com', '', 3600, 86400)->isValid(), $content);
+        }
+    }
+
+    public function testPortIsStoredCanonical(): void
+    {
+        $result = $this->validator->validate('1 example.com Port=0443', 'host.example.com', '', 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame('1 example.com Port=443', $result->getData()['content']);
+    }
 }

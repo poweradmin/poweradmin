@@ -96,7 +96,7 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
 
         // Priority and port are stored as plain digits, as the validation read them
         $content = preg_replace_callback('/^\s*(\d+)/', fn($m) => (string)(int)$m[1], $content);
-        $content = preg_replace('/(\s)port=0+(?=\d)/', '$1port=', $content);
+        $content = preg_replace('/(\s)(port)=0+(?=\d)/i', '$1$2=', $content);
 
         return ValidationResult::success([
             'content' => DnsFormatter::quoteEch('HTTPS', $content),
