@@ -93,20 +93,23 @@ FROM domains d
 CROSS JOIN (VALUES ('ns1.perf.test'), ('ns2.perf.test')) AS n(ns)
 WHERE d.name LIKE '%.perf.test';
 
--- Filler cycles A, AAAA, TXT, CNAME and MX on unique names hN.<zone>
+-- Filler cycles A, AAAA, TXT, CNAME, SRV, LOC and MX on unique names hN.<zone>
+-- (SRV records sit on _sip._tcp.hN.<zone>)
 INSERT INTO records (domain_id, name, type, content, ttl, prio)
 SELECT d.id,
-       'h' || s || '.' || d.name,
-       CASE s % 5 WHEN 1 THEN 'A' WHEN 2 THEN 'AAAA' WHEN 3 THEN 'TXT' WHEN 4 THEN 'CNAME' ELSE 'MX' END,
-       CASE s % 5
+       CASE WHEN s % 7 = 5 THEN '_sip._tcp.' ELSE '' END || 'h' || s || '.' || d.name,
+       CASE s % 7 WHEN 1 THEN 'A' WHEN 2 THEN 'AAAA' WHEN 3 THEN 'TXT' WHEN 4 THEN 'CNAME' WHEN 5 THEN 'SRV' WHEN 6 THEN 'LOC' ELSE 'MX' END,
+       CASE s % 7
            WHEN 1 THEN '10.' || (s / 65536) % 256 || '.' || (s / 256) % 256 || '.' || s % 256
            WHEN 2 THEN '2001:db8::' || to_hex(s / 65536) || ':' || to_hex(s % 65536)
            WHEN 3 THEN '"perf record ' || s || '"'
            WHEN 4 THEN 'h1.' || d.name
+           WHEN 5 THEN '5 5060 h1.' || d.name
+           WHEN 6 THEN '52 22 23.000 N 4 53 32.000 E -2.00m 1.00m 10000m 10m'
            ELSE 'mail.' || d.name
        END,
        3600,
-       CASE WHEN s % 5 = 0 THEN 10 ELSE 0 END
+       CASE WHEN s % 7 IN (0, 5) THEN 10 ELSE 0 END
 FROM domains d
 CROSS JOIN LATERAL generate_series(1, CASE WHEN d.name = 'big.perf.test' THEN __PERF_BIG__ ELSE __PERF_RECORDS__ END) s
 WHERE d.name LIKE 'o%.perf.test' OR d.name = 'big.perf.test';

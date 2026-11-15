@@ -90,20 +90,23 @@ FROM pdns.`domains` d
 CROSS JOIN (SELECT 'ns1.perf.test' AS `ns` UNION ALL SELECT 'ns2.perf.test') n
 WHERE d.`name` LIKE '%.perf.test';
 
--- Filler cycles A, AAAA, TXT, CNAME and MX on unique names hN.<zone>
+-- Filler cycles A, AAAA, TXT, CNAME, SRV, LOC and MX on unique names hN.<zone>
+-- (SRV records sit on _sip._tcp.hN.<zone>)
 INSERT INTO pdns.`records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`,
-       CONCAT('h', s.`seq`, '.', d.`name`),
-       CASE s.`seq` % 5 WHEN 1 THEN 'A' WHEN 2 THEN 'AAAA' WHEN 3 THEN 'TXT' WHEN 4 THEN 'CNAME' ELSE 'MX' END,
-       CASE s.`seq` % 5
+       CONCAT(CASE WHEN s.`seq` % 7 = 5 THEN '_sip._tcp.' ELSE '' END, 'h', s.`seq`, '.', d.`name`),
+       CASE s.`seq` % 7 WHEN 1 THEN 'A' WHEN 2 THEN 'AAAA' WHEN 3 THEN 'TXT' WHEN 4 THEN 'CNAME' WHEN 5 THEN 'SRV' WHEN 6 THEN 'LOC' ELSE 'MX' END,
+       CASE s.`seq` % 7
            WHEN 1 THEN CONCAT('10.', (s.`seq` DIV 65536) % 256, '.', (s.`seq` DIV 256) % 256, '.', s.`seq` % 256)
            WHEN 2 THEN CONCAT('2001:db8::', LOWER(HEX(s.`seq` DIV 65536)), ':', LOWER(HEX(s.`seq` % 65536)))
            WHEN 3 THEN CONCAT('"perf record ', s.`seq`, '"')
            WHEN 4 THEN CONCAT('h1.', d.`name`)
+           WHEN 5 THEN CONCAT('5 5060 h1.', d.`name`)
+           WHEN 6 THEN '52 22 23.000 N 4 53 32.000 E -2.00m 1.00m 10000m 10m'
            ELSE CONCAT('mail.', d.`name`)
        END,
        3600,
-       CASE WHEN s.`seq` % 5 = 0 THEN 10 ELSE 0 END
+       CASE WHEN s.`seq` % 7 IN (0, 5) THEN 10 ELSE 0 END
 FROM pdns.`domains` d
 JOIN seq_1_to_1000000 s ON s.`seq` <= CASE WHEN d.`name` = 'big.perf.test' THEN __PERF_BIG__ ELSE __PERF_RECORDS__ END
 WHERE d.`name` LIKE 'o%.perf.test' OR d.`name` = 'big.perf.test';
