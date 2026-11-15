@@ -178,7 +178,7 @@ class SessionAuthenticator extends LoggingService
                 $_SESSION["userlogin"] = $_POST["username"];
                 $this->logDebug('User login set for user {username}', ['username' => $_POST["username"]]);
 
-                $_SESSION["userlang"] = $_POST["userlang"] ?? $this->configManager->get('interface', 'language', 'en_EN');
+                $_SESSION["userlang"] = self::postedLanguage($_POST["userlang"] ?? null) ?? $this->configManager->get('interface', 'language', 'en_EN');
                 $this->logDebug('User language set for user {username}', ['username' => $_POST["username"]]);
 
                 $this->logInfo('User {username} authenticated', ['username' => $_POST["username"]]);
@@ -424,6 +424,14 @@ class SessionAuthenticator extends LoggingService
         }
         echo json_encode(['error' => true, 'message' => $message]);
         exit;
+    }
+
+    /**
+     * The posted language when it is locale-shaped, else null. It is stored before the password is checked.
+     */
+    public static function postedLanguage(mixed $value): ?string
+    {
+        return is_string($value) && preg_match('/^[a-zA-Z_]+$/D', $value) === 1 ? $value : null;
     }
 
     /**

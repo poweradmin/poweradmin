@@ -66,4 +66,24 @@ final class SessionAuthenticatorPasswordLoginTest extends TestCase
         $this->assertNull(SessionAuthenticator::passwordLoginRefusal('sql', true, false));
         $this->assertNull(SessionAuthenticator::passwordLoginRefusal('ldap', true, true));
     }
+
+    public static function postedLanguages(): array
+    {
+        return [
+            'locale' => ['fr_FR', 'fr_FR'],
+            'missing' => [null, null],
+            'array' => [['x'], null],
+            'path traversal' => ['../x', null],
+            'newline suffix' => ["en_EN\n", null],
+            'digits' => ['en1', null],
+            'empty' => ['', null],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('postedLanguages')]
+    public function onlyALocaleShapedLanguageIsKept(mixed $posted, ?string $expected): void
+    {
+        $this->assertSame($expected, SessionAuthenticator::postedLanguage($posted));
+    }
 }
