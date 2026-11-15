@@ -60,8 +60,11 @@
               <a href="{{ base_url_prefix }}/mfa/setup" class="btn btn-sm btn-outline-secondary">{% trans %}Back to MFA Settings{% endtrans %}</a>
             </div>
             <div>
-              <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="d-inline-block me-2">
+              <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="d-inline-flex gap-2 me-2">
                 {{ macros.csrf_field() }}
+                <input type="text" class="form-control form-control-sm w-auto" name="mfa_code" autocomplete="one-time-code" maxlength="64"
+                       placeholder="{{ 'Enter verification code'|trans }}" aria-label="{{ 'Enter verification code'|trans }}"
+                       data-testid="disable-mfa-code"{% if mfa_type == 'app' %} required{% endif %}>
                 <button type="submit" name="disable_mfa" class="btn btn-sm btn-outline-danger">
                   {% trans %}Disable MFA{% endtrans %}
                 </button>
