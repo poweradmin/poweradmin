@@ -419,7 +419,11 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function saveZoneIds(int $apiKeyId, array $zoneIds): void
     {
-        $this->db->beginTransaction();
+        // Joins a transaction the caller holds, such as the one a new key is created in
+        $owns = !$this->db->inTransaction();
+        if ($owns) {
+            $this->db->beginTransaction();
+        }
         try {
             $delete = $this->db->prepare("DELETE FROM api_key_zones WHERE api_key_id = :apiKeyId");
             $delete->bindValue(':apiKeyId', $apiKeyId, PDO::PARAM_INT);
@@ -435,9 +439,13 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
                 }
             }
 
-            $this->db->commit();
+            if ($owns) {
+                $this->db->commit();
+            }
         } catch (Exception $e) {
-            $this->db->rollBack();
+            if ($owns) {
+                $this->db->rollBack();
+            }
             throw $e;
         }
     }

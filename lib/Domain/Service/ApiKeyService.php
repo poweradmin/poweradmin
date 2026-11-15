@@ -29,6 +29,7 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Psr\Log\LoggerInterface;
@@ -208,36 +209,77 @@ class ApiKeyService
             return null;
         }
 
-        // Check maximum number of API keys per user
+        // The cap applies to everyone but super admins; its count and the insert share one
+        // transaction holding the owner's row, so parallel requests cannot all pass it.
         $maxKeysPerUser = $this->config->get('api', 'max_keys_per_user', 5);
-        if ($this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser && !$this->currentUserHasPermission('user_is_ueberuser')) {
-            $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
-            return null;
+        $capped = !$this->currentUserHasPermission('user_is_ueberuser');
+        $ownsTransaction = $this->beginKeyTransaction($userId, $capped);
+        $saved = null;
+        $done = false;
+        try {
+            if ($capped && $this->apiKeyRepository->countByUser($userId) >= $maxKeysPerUser) {
+                $this->messageService->addSystemError(_('You have reached the maximum number of API keys allowed.'));
+                return null;
+            }
+
+            if ($zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
+                $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
+                return null;
+            }
+
+            // Create and save the new API key
+            $apiKey = new ApiKey(
+                $name,
+                ApiKey::generateSecretKey(),
+                $userId,
+                new DateTime(),
+                null,
+                false,
+                $expiresAt
+            );
+            $apiKey->setIsReadonly($isReadonly);
+            $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
+
+            $saved = $this->apiKeyRepository->save($apiKey);
+            // Same transaction, so a scope failure cannot leave an unrestricted key behind
+            $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
+            $saved->setZoneIds($zoneIds);
+            $done = true;
+        } finally {
+            if ($ownsTransaction && $this->db->inTransaction()) {
+                $done ? $this->db->commit() : $this->db->rollBack();
+            }
         }
-
-        if ($zoneIds !== [] && !$this->apiKeyRepository->zoneScopesReady()) {
-            $this->messageService->addSystemError(self::zoneScopesNotReadyMessage());
-            return null;
-        }
-
-        // Create and save the new API key
-        $apiKey = new ApiKey(
-            $name,
-            ApiKey::generateSecretKey(),
-            $userId,
-            new DateTime(),
-            null,
-            false,
-            $expiresAt
-        );
-        $apiKey->setIsReadonly($isReadonly);
-        $apiKey->setAllowedOperations($this->sanitizeOperations($allowedOperations));
-
-        $saved = $this->apiKeyRepository->save($apiKey);
-        $this->apiKeyRepository->saveZoneIds($saved->getId(), $zoneIds);
-        $saved->setZoneIds($zoneIds);
 
         return $saved;
+    }
+
+    /**
+     * Opens the transaction a new key is written in, holding the owner's users row when asked.
+     *
+     * @return bool True when this call opened the transaction
+     */
+    private function beginKeyTransaction(int $userId, bool $lockOwner): bool
+    {
+        $owned = !$this->db->inTransaction();
+        if ($owned) {
+            $this->db->beginTransaction();
+        }
+
+        if ($lockOwner) {
+            $driver = (string)$this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+            if ($driver === 'sqlite' && $owned) {
+                // A write statement takes SQLite's write lock now, even when it matches no row
+                $this->db->exec('UPDATE users SET active = active WHERE id = -1');
+            }
+
+            $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id' . DbCompat::rowLock($driver));
+            $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $stmt->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        return $owned;
     }
 
     /**
