@@ -1,1 +1,17 @@
 cliff.toml export-ignore
+.devcontainer/ export-ignore
+.github/ export-ignore
+.gitignore export-ignore
+.phan/ export-ignore
+.php-cs-fixer.php export-ignore
+DEVELOPMENT.md export-ignore
+package.json export-ignore
+phpcs.xml export-ignore
+phpdoc.dist.xml export-ignore
+phpunit.xml.dist export-ignore
+playwright.config.js export-ignore
+playwright/ export-ignore
+psalm-baseline.xml export-ignore
+psalm.xml export-ignore
+tests/ export-ignore
+transifex.yml export-ignore
