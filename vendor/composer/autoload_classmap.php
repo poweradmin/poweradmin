@@ -1268,6 +1268,7 @@ return array(
     'Symfony\\Contracts\\Service\\ServiceProviderInterface' => $vendorDir . '/symfony/service-contracts/ServiceProviderInterface.php',
     'Symfony\\Contracts\\Service\\ServiceSubscriberInterface' => $vendorDir . '/symfony/service-contracts/ServiceSubscriberInterface.php',
     'Symfony\\Contracts\\Service\\ServiceSubscriberTrait' => $vendorDir . '/symfony/service-contracts/ServiceSubscriberTrait.php',
+    'Symfony\\Contracts\\Service\\ShutdownInterface' => $vendorDir . '/symfony/service-contracts/ShutdownInterface.php',
     'Symfony\\Contracts\\Translation\\LocaleAwareInterface' => $vendorDir . '/symfony/translation-contracts/LocaleAwareInterface.php',
     'Symfony\\Contracts\\Translation\\TranslatableInterface' => $vendorDir . '/symfony/translation-contracts/TranslatableInterface.php',
     'Symfony\\Contracts\\Translation\\TranslatorInterface' => $vendorDir . '/symfony/translation-contracts/TranslatorInterface.php',
