@@ -53,4 +53,18 @@ class HtaccessDotPathTest extends TestCase
         $this->assertSame(0, preg_match($rule, 'assets/app.min.js'));
         $this->assertSame(0, preg_match($rule, '.well-known/acme-challenge/token'));
     }
+
+    public function testOnlyTheBootstrapAssetDirectoriesAreAllowedThroughTheVendorDeny(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $htaccess = file_get_contents($root . '/.htaccess');
+        $nginx = file_get_contents($root . '/nginx.conf.example');
+        $this->assertNotFalse($htaccess);
+        $this->assertNotFalse($nginx);
+
+        $this->assertStringContainsString('RewriteRule ^vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ - [L]', $htaccess);
+        $this->assertStringNotContainsString('(bootstrap|bootstrap-icons)/', $htaccess);
+        $this->assertStringNotContainsString('(bootstrap|bootstrap-icons)/', $nginx);
+        $this->assertSame(2, substr_count($nginx, 'twbs/(bootstrap/dist|bootstrap-icons/font)/'));
+    }
 }
