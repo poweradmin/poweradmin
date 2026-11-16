@@ -3,7 +3,7 @@
 /**
  * RDAP servers list
  *
- * Updated on 2026-07-22 - 1199 entries
+ * Updated on 2026-11-16 - 1203 entries
  * Source: IANA RDAP Bootstrap (https://data.iana.org/rdap/dns.json)
  *
  * Do not edit manually - use scripts/update_rdap_servers.php to regenerate
@@ -116,6 +116,7 @@ return array (
   'best' => 'https://rdap.centralnic.com/best/',
   'bestbuy' => 'https://rdap.identitydigital.services/rdap/',
   'bet' => 'https://rdap.identitydigital.services/rdap/',
+  'bh' => 'https://rdap.bhregistry.bh/rdap/',
   'bharti' => 'https://rdap.nic.bharti/',
   'bible' => 'https://rdap.nic.bible/',
   'bid' => 'https://rdap.nic.bid/',
@@ -461,7 +462,6 @@ return array (
   'health' => 'https://rdap.nic.health/',
   'healthcare' => 'https://rdap.identitydigital.services/rdap/',
   'help' => 'https://rdap.centralnic.com/help/',
-  'helsinki' => 'https://rdap.identitydigital.services/rdap/',
   'here' => 'https://pubapi.registry.google/rdap/',
   'hermes' => 'https://rdap.identitydigital.services/rdap/',
   'hiphop' => 'https://rdap.registry.hiphop/rdap/',
@@ -543,7 +543,6 @@ return array (
   'jpmorgan' => 'https://rdap.nic.jpmorgan/',
   'jprs' => 'https://rdap.nic.jprs/rdap/',
   'juegos' => 'https://rdap.identitydigital.services/rdap/',
-  'juniper' => 'https://rdap.identitydigital.services/rdap/',
   'kaufen' => 'https://rdap.identitydigital.services/rdap/',
   'kddi' => 'https://rdap.gmoregistry.net/rdap/',
   'ke' => 'https://rdap.kenic.or.ke/',
@@ -562,6 +561,7 @@ return array (
   'kosher' => 'https://rdap.identitydigital.services/rdap/',
   'kpmg' => 'https://rdap.nic.kpmg/',
   'kpn' => 'https://rdap.centralnic.com/kpn/',
+  'kr' => 'https://rdap.nic.or.kr/',
   'krd' => 'https://rdap.nic.krd/',
   'kred' => 'https://rdap.centralnic.com/kred/',
   'kuokgroup' => 'https://rdap.identitydigital.services/rdap/',
@@ -806,7 +806,7 @@ return array (
   'quebec' => 'https://rdap.nic.quebec/',
   'quest' => 'https://rdap.centralnic.com/quest/',
   'racing' => 'https://rdap.nic.racing/',
-  'radio' => 'https://rdap.nic.radio/',
+  'radio' => 'https://rdap.centralnic.com/radio/',
   're' => 'https://rdap.nic.re/',
   'read' => 'https://rdap.nominet.uk/read/',
   'realestate' => 'https://rdap.nominet.uk/realestate/',
@@ -866,6 +866,7 @@ return array (
   'saxo' => 'https://rdap.identitydigital.services/rdap/',
   'sbi' => 'https://rdap.identitydigital.services/rdap/',
   'sbs' => 'https://rdap.centralnic.com/sbs/',
+  'sc' => 'https://rdap.identitydigital.services/rdap/',
   'scb' => 'https://rdap.nic.scb/',
   'schaeffler' => 'https://rdap.nic.schaeffler/',
   'schmidt' => 'https://rdap.nic.schmidt/',
@@ -1066,6 +1067,7 @@ return array (
   'watches' => 'https://rdap.identitydigital.services/rdap/',
   'weather' => 'https://rdap.nic.weather/',
   'weatherchannel' => 'https://rdap.nic.weatherchannel/',
+  'web' => 'https://tld-rdap.verisign.com/web/v1/',
   'webcam' => 'https://rdap.nic.webcam/',
   'weber' => 'https://rdap.identitydigital.services/rdap/',
   'website' => 'https://rdap.radix.host/rdap/',
@@ -1100,6 +1102,7 @@ return array (
   'xn--30rr7y' => 'https://rdap.zdnsgtld.com/xn--30rr7y/',
   'xn--3bst00m' => 'https://rdap.zdnsgtld.com/xn--3bst00m/',
   'xn--3ds443g' => 'https://rdap.teleinfo.cn/xn--3ds443g/',
+  'xn--3e0b707e' => 'https://rdap.nic.or.kr/',
   'xn--3pxu8k' => 'https://tld-rdap.verisign.com/xn--3pxu8k/v1/',
   'xn--42c2d9a' => 'https://tld-rdap.verisign.com/xn--42c2d9a/v1/',
   'xn--45q11c' => 'https://rdap.zdnsgtld.com/XN--45Q11C/',
@@ -1156,6 +1159,7 @@ return array (
   'xn--mgba7c0bbn0a' => 'https://rdap.nic.xn--mgba7c0bbn0a/',
   'xn--mgbab2bd' => 'https://rdap.nic.xn--mgbab2bd/',
   'xn--mgbca7dzdo' => 'https://rdap.nic.xn--mgbca7dzdo/',
+  'xn--mgbcpq6gpa1a' => 'https://rdap.bhregistry.bh/rdap/',
   'xn--mgbi4ecexp' => 'https://rdap.nic.xn--mgbi4ecexp/',
   'xn--mgbt3dhd' => 'https://rdap.nominet.uk/xn--mgbt3dhd/',
   'xn--mk1bu44c' => 'https://tld-rdap.verisign.com/xn--mk1bu44c/v1/',

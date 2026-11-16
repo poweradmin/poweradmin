@@ -3,8 +3,8 @@
 /**
  * Top Level Domains list from IANA
  *
- * Updated on 2026-10-11 - 1437 TLDs
- * Source: http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+ * Updated on 2026-11-16 - 1436 TLDs
+ * Source: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
  *
  * Do not edit manually - use scripts/update_tlds.sh to regenerate
  */
@@ -77,23 +77,23 @@ return [
         'gp', 'gq', 'gr', 'grainger', 'graphics', 'gratis', 'green', 'gripe', 
         'grocery', 'group', 'gs', 'gt', 'gu', 'gucci', 'guge', 'guide', 'guitars', 
         'guru', 'gw', 'gy', 'hair', 'hamburg', 'hangout', 'haus', 'hbo', 'hdfc', 
-        'hdfcbank', 'health', 'healthcare', 'help', 'helsinki', 'here', 'hermes', 
-        'hiphop', 'hisamitsu', 'hitachi', 'hiv', 'hk', 'hkt', 'hm', 'hn', 
-        'hockey', 'holdings', 'holiday', 'homedepot', 'homegoods', 'homes', 
-        'homesense', 'honda', 'horse', 'hospital', 'host', 'hosting', 'hot', 
-        'hotels', 'hotmail', 'house', 'how', 'hr', 'hsbc', 'ht', 'hu', 'hughes', 
-        'hyatt', 'hyundai', 'ibm', 'icbc', 'ice', 'icu', 'id', 'ie', 'ieee', 
-        'ifm', 'ikano', 'il', 'im', 'imamat', 'imdb', 'immo', 'immobilien', 'in', 
-        'inc', 'industries', 'infiniti', 'info', 'ing', 'ink', 'institute', 
-        'insurance', 'insure', 'int', 'international', 'intuit', 'investments', 
-        'io', 'ipiranga', 'iq', 'ir', 'irish', 'is', 'ismaili', 'ist', 'istanbul', 
-        'it', 'itau', 'itv', 'jaguar', 'java', 'jcb', 'je', 'jeep', 'jetzt', 
-        'jewelry', 'jio', 'jll', 'jm', 'jmp', 'jnj', 'jo', 'jobs', 'joburg', 
-        'jot', 'joy', 'jp', 'jpmorgan', 'jprs', 'juegos', 'kaufen', 'kddi', 'ke', 
-        'kerryhotels', 'kerryproperties', 'kfh', 'kg', 'kh', 'ki', 'kia', 'kids', 
-        'kim', 'kindle', 'kitchen', 'kiwi', 'km', 'kn', 'koeln', 'komatsu', 
-        'kosher', 'kp', 'kpmg', 'kpn', 'kr', 'krd', 'kred', 'kuokgroup', 'kw', 
-        'ky', 'kyoto', 'kz', 'la', 'lacaixa', 'lamborghini', 'lamer', 'land', 
+        'hdfcbank', 'health', 'healthcare', 'help', 'here', 'hermes', 'hiphop', 
+        'hisamitsu', 'hitachi', 'hiv', 'hk', 'hkt', 'hm', 'hn', 'hockey', 
+        'holdings', 'holiday', 'homedepot', 'homegoods', 'homes', 'homesense', 
+        'honda', 'horse', 'hospital', 'host', 'hosting', 'hot', 'hotels', 
+        'hotmail', 'house', 'how', 'hr', 'hsbc', 'ht', 'hu', 'hughes', 'hyatt', 
+        'hyundai', 'ibm', 'icbc', 'ice', 'icu', 'id', 'ie', 'ieee', 'ifm', 
+        'ikano', 'il', 'im', 'imamat', 'imdb', 'immo', 'immobilien', 'in', 'inc', 
+        'industries', 'infiniti', 'info', 'ing', 'ink', 'institute', 'insurance', 
+        'insure', 'int', 'international', 'intuit', 'investments', 'io', 
+        'ipiranga', 'iq', 'ir', 'irish', 'is', 'ismaili', 'ist', 'istanbul', 'it', 
+        'itau', 'itv', 'jaguar', 'java', 'jcb', 'je', 'jeep', 'jetzt', 'jewelry', 
+        'jio', 'jll', 'jm', 'jmp', 'jnj', 'jo', 'jobs', 'joburg', 'jot', 'joy', 
+        'jp', 'jpmorgan', 'jprs', 'juegos', 'kaufen', 'kddi', 'ke', 'kerryhotels', 
+        'kerryproperties', 'kfh', 'kg', 'kh', 'ki', 'kia', 'kids', 'kim', 
+        'kindle', 'kitchen', 'kiwi', 'km', 'kn', 'koeln', 'komatsu', 'kosher', 
+        'kp', 'kpmg', 'kpn', 'kr', 'krd', 'kred', 'kuokgroup', 'kw', 'ky', 
+        'kyoto', 'kz', 'la', 'lacaixa', 'lamborghini', 'lamer', 'land', 
         'landrover', 'lanxess', 'lasalle', 'lat', 'latino', 'latrobe', 'law', 
         'lawyer', 'lb', 'lc', 'lds', 'lease', 'leclerc', 'lefrak', 'legal', 
         'lego', 'lexus', 'lgbt', 'li', 'lidl', 'life', 'lifeinsurance', 
