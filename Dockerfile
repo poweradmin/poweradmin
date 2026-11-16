@@ -106,7 +106,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
 
     # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /vendor* /bin/* /var/* /composer.json /composer.lock /package.json /package-lock.json /psalm.xml /phpcs.xml /phpstan*.neon /phpunit.xml* /phpdoc.dist.xml
-    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+    @bootstrap path /vendor/twbs/bootstrap/dist/* /vendor/twbs/bootstrap-icons/font/*
 
     # Allow Bootstrap files (override general vendor blocking)
     handle @bootstrap {
