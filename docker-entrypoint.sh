@@ -1343,6 +1343,9 @@ generate_config() {
     [ -n "${PA_SAML_AZURE_SSO_URL:-}" ] && saml_azure_sso_url="${PA_SAML_AZURE_SSO_URL}"
     [ -n "${PA_SAML_AZURE_SLO_URL:-}" ] && saml_azure_slo_url="${PA_SAML_AZURE_SLO_URL}"
 
+    # The file holds credentials: never create it world-readable
+    previous_umask=$(umask)
+    umask 077
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -1965,9 +1968,11 @@ EOF
 ];
 EOF
 
-    # Set proper permissions (root only - non-root already owns the file)
+    umask "${previous_umask}"
+
+    chmod 640 "${CONFIG_FILE}" 2>/dev/null || log "WARNING: could not set mode 640 on ${CONFIG_FILE}"
+    # Root hands the file to the PHP user; a non-root run already owns it
     if [ "$IS_ROOT" = true ]; then
-        chmod 640 "${CONFIG_FILE}"
         chown www-data:0 "${CONFIG_FILE}"
     fi
 
