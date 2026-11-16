@@ -16026,3 +16026,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "לא ניתן להתחבר למסד הנתונים PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "הקצאות וחברויות של קבוצות שנמחקו"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "קבוצות אלה נמחקו, אך נותרו הקצאות אזורים או חברים שמפנים אליהן. התיקון מסיר רק את השורות שנותרו."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "להסיר את ההקצאות והחברויות שנותרו של כל הקבוצות ברשימה?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "אף הקצאת קבוצה או חברות אינה שייכת לקבוצה שנמחקה"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "קבוצות שנמחקו ועדיין יש להן הקצאות אזורים או חברים: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "ההקצאות והחברויות של הקבוצה שנמחקה הוסרו"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "הסרת ההקצאות והחברויות של הקבוצה נכשלה"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "אין הקצאות קבוצה או חברויות של קבוצות שנמחקו להסרה"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "הוסרו ההקצאות והחברויות של קבוצות שנמחקו, מספר הקבוצות: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "קבוצות שנמחקו שהנתונים שלהן הוסרו: %d; נכשלו: %d"

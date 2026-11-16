@@ -16756,3 +16756,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Não é possível ligar à base de dados PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Atribuições e participações de grupos excluídos"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Esses grupos foram excluídos, mas ainda restam atribuições de zonas ou membros que os citam. O reparo remove apenas essas linhas remanescentes."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Remover as atribuições e participações remanescentes de todos os grupos listados?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Nenhuma atribuição de grupo ou participação pertence a um grupo excluído"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d grupos excluídos ainda têm atribuições de zonas ou membros"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Atribuições e participações do grupo excluído removidas"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Falha ao remover as atribuições e participações do grupo"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Nenhuma atribuição de grupo ou participação de grupos excluídos para remover"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Removidas as atribuições e participações de %d grupos excluídos"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Removidas as de %d grupos excluídos; %d falharam"

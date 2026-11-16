@@ -15411,3 +15411,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到 PowerDNS 数据库 \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "已删除组的分配和成员关系"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "这些组已被删除,但仍有引用它们的区域分配或成员残留。修复只会删除这些残留的行。"
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "要删除所有列出的组的残留分配和成员关系吗?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "没有属于已删除组的组分配或成员关系"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d 个已删除的组仍有区域分配或成员"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "已删除组的分配和成员关系已移除"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "移除组的分配和成员关系失败"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "没有需要移除的已删除组的组分配或成员关系"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "已移除 %d 个已删除组的分配和成员关系"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "已移除 %d 个已删除组的相关项;%d 个失败"

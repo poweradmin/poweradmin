@@ -16844,3 +16844,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nuk mund të lidhet me bazën e të dhënave PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Caktimet dhe anëtarësimet e grupeve të fshira"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Këto grupe janë fshirë, por kanë mbetur caktime zonash ose anëtarë që i përmendin. Riparimi heq vetëm këto rreshta të mbetura."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Të hiqen caktimet dhe anëtarësimet e mbetura të të gjitha grupeve të listuara?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Asnjë caktim grupi ose anëtarësim nuk i përket një grupi të fshirë"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d grupe të fshira kanë ende caktime zonash ose anëtarë"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Caktimet dhe anëtarësimet e grupit të fshirë u hoqën"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Heqja e caktimeve dhe anëtarësimeve të grupit dështoi"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Nuk ka caktime grupi ose anëtarësime të grupeve të fshira për t'u hequr"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "U hoqën caktimet dhe anëtarësimet e %d grupeve të fshira"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "U hoqën ato të %d grupeve të fshira; %d dështuan"

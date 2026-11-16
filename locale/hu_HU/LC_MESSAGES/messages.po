@@ -16700,3 +16700,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nem lehet kapcsolódni a(z) \"%s\" PowerDNS adatbázishoz: %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Törölt csoportok hozzárendelései és tagságai"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Ezek a csoportok törlődtek, de még maradtak rájuk hivatkozó zónahozzárendelések vagy tagok. A javítás csak ezeket a visszamaradt sorokat távolítja el."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Eltávolítja az összes felsorolt csoport visszamaradt hozzárendeléseit és tagságait?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Egyetlen csoporthozzárendelés vagy tagság sem tartozik törölt csoporthoz"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d törölt csoportnak még vannak zónahozzárendelései vagy tagjai"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "A törölt csoport hozzárendelései és tagságai eltávolítva"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Nem sikerült eltávolítani a csoport hozzárendeléseit és tagságait"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Nincs eltávolítandó csoporthozzárendelés vagy tagság törölt csoportoknál"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "%d törölt csoport hozzárendelései és tagságai eltávolítva"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "%d törölt csoport adatai eltávolítva; %d sikertelen"

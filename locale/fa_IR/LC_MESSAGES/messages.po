@@ -16381,3 +16381,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "نمی‌توان به پایگاه داده PowerDNS \"%s\": %s متصل شد"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "تخصیص‌ها و عضویت‌های گروه‌های حذف‌شده"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "این گروه‌ها حذف شده‌اند، اما تخصیص‌های منطقه یا اعضایی که به آن‌ها اشاره می‌کنند هنوز باقی مانده‌اند. ترمیم فقط همین ردیف‌های باقی‌مانده را حذف می‌کند."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "تخصیص‌ها و عضویت‌های باقی‌مانده همه گروه‌های فهرست‌شده حذف شوند؟"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "هیچ تخصیص گروه یا عضویتی متعلق به یک گروه حذف‌شده نیست"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "گروه‌های حذف‌شده‌ای که هنوز تخصیص منطقه یا عضو دارند: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "تخصیص‌ها و عضویت‌های گروه حذف‌شده برداشته شد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "برداشتن تخصیص‌ها و عضویت‌های گروه ناموفق بود"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "هیچ تخصیص گروه یا عضویتی از گروه‌های حذف‌شده برای برداشتن وجود ندارد"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "تخصیص‌ها و عضویت‌های گروه‌های حذف‌شده برداشته شد، تعداد گروه‌ها: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "گروه‌های حذف‌شده‌ای که داده‌هایشان برداشته شد: %d؛ ناموفق: %d"

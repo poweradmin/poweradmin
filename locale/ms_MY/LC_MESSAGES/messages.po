@@ -16636,3 +16636,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Tidak dapat menyambung ke pangkalan data PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Tugasan dan keahlian kumpulan yang dipadam"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Kumpulan ini telah dipadam, tetapi tugasan zon atau ahli yang menyebut kumpulan tersebut masih ada. Pembaikan hanya mengalih keluar baris yang tertinggal itu."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Alih keluar tugasan dan keahlian yang tertinggal bagi semua kumpulan yang disenaraikan?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Tiada tugasan kumpulan atau keahlian yang tergolong dalam kumpulan yang dipadam"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d kumpulan yang dipadam masih mempunyai tugasan zon atau ahli"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Tugasan dan keahlian kumpulan yang dipadam telah dialih keluar"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Gagal mengalih keluar tugasan dan keahlian kumpulan"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Tiada tugasan kumpulan atau keahlian kumpulan yang dipadam untuk dialih keluar"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Tugasan dan keahlian bagi %d kumpulan yang dipadam telah dialih keluar"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Data bagi %d kumpulan yang dipadam telah dialih keluar; %d gagal"

@@ -16223,3 +16223,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "لا يمكن الاتصال بقاعدة بيانات PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "تعيينات وعضويات المجموعات المحذوفة"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "حُذفت هذه المجموعات، لكن لا تزال هناك تعيينات مناطق أو أعضاء تشير إليها. يزيل الإصلاح هذه الصفوف المتبقية فقط."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "هل تريد إزالة التعيينات والعضويات المتبقية لجميع المجموعات المدرجة؟"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "لا توجد تعيينات مجموعات أو عضويات تعود إلى مجموعة محذوفة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "المجموعات المحذوفة التي لا تزال لديها تعيينات مناطق أو أعضاء: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "تمت إزالة تعيينات وعضويات المجموعة المحذوفة"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "فشلت إزالة تعيينات المجموعة وعضوياتها"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "لا توجد تعيينات مجموعات أو عضويات لمجموعات محذوفة لإزالتها"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "تمت إزالة تعيينات وعضويات المجموعات المحذوفة، عدد المجموعات: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "المجموعات المحذوفة التي أُزيلت بياناتها: %d؛ فشل: %d"

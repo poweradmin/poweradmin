@@ -16324,3 +16324,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS-tietokantaan \"%s\" ei voi yhdistää: %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Poistettujen ryhmien määritykset ja jäsenyydet"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Nämä ryhmät on poistettu, mutta niihin viittaavia aluemäärityksiä tai jäseniä on yhä jäljellä. Korjaus poistaa vain nämä jäljelle jääneet rivit."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Poistetaanko kaikkien lueteltujen ryhmien jäljelle jääneet määritykset ja jäsenyydet?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Mikään ryhmämääritys tai jäsenyys ei kuulu poistettuun ryhmään"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d poistetulla ryhmällä on yhä aluemäärityksiä tai jäseniä"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Poistetun ryhmän määritykset ja jäsenyydet poistettu"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Ryhmän määritysten ja jäsenyyksien poistaminen epäonnistui"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Ei poistettavia poistettujen ryhmien ryhmämäärityksiä tai jäsenyyksiä"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Poistettiin %d poistetun ryhmän määritykset ja jäsenyydet"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Poistettiin %d poistetun ryhmän jäljet; %d epäonnistui"

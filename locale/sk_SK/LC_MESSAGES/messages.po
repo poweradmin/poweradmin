@@ -16437,3 +16437,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nie je možné pripojiť sa k databáze PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Priradenia a členstvá vymazaných skupín"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Tieto skupiny boli vymazané, ale zostali priradenia zón alebo členovia, ktorí ich uvádzajú. Oprava odstráni iba tieto zvyšné riadky."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Odstrániť zvyšné priradenia a členstvá všetkých uvedených skupín?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Žiadne priradenie skupiny ani členstvo nepatrí vymazanej skupine"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "Vymazané skupiny, ktoré stále majú priradenia zón alebo členov: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Priradenia a členstvá vymazanej skupiny boli odstránené"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Odstránenie priradení a členstiev skupiny zlyhalo"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Žiadne priradenia skupín ani členstvá vymazaných skupín na odstránenie"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Odstránené priradenia a členstvá vymazaných skupín, počet skupín: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Vymazané skupiny s odstránenými údajmi: %d; neúspešné: %d"

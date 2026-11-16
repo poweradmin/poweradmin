@@ -17009,3 +17009,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nu se poate conecta la baza de date PowerDNS \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Atribuiri și apartenențe ale grupurilor șterse"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Aceste grupuri au fost șterse, dar există încă atribuiri de zone sau membri care le menționează. Repararea elimină doar aceste rânduri rămase."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Eliminați atribuirile și apartenențele rămase ale tuturor grupurilor listate?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Nicio atribuire de grup sau apartenență nu aparține unui grup șters"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "%d grupuri șterse mai au atribuiri de zone sau membri"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Atribuirile și apartenențele grupului șters au fost eliminate"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Eliminarea atribuirilor și apartenențelor grupului a eșuat"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Nu există atribuiri de grup sau apartenențe ale grupurilor șterse de eliminat"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Au fost eliminate atribuirile și apartenențele a %d grupuri șterse"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Au fost eliminate cele a %d grupuri șterse; %d au eșuat"

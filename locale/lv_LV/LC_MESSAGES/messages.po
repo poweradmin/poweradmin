@@ -16262,3 +16262,49 @@ msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nevar izveidot savienojumu ar PowerDNS datubāzi \"%s\": %s"
 
 
+
+#: templates/default/database_consistency.html:433
+#: templates/modern/database_consistency.html:433
+msgid "Assignments And Memberships Of Deleted Groups"
+msgstr "Dzēsto grupu piešķīrumi un dalība"
+
+#: templates/default/database_consistency.html:441
+#: templates/modern/database_consistency.html:441
+msgid "These groups were deleted, but zone assignments or members that name them remain. The repair removes only those leftover rows."
+msgstr "Šīs grupas ir dzēstas, taču palikuši zonu piešķīrumi vai dalībnieki, kas uz tām atsaucas. Labošana noņem tikai šīs atlikušās rindas."
+
+#: templates/default/database_consistency.html:443
+#: templates/modern/database_consistency.html:443
+msgid "Remove the leftover assignments and memberships of all listed groups?"
+msgstr "Vai noņemt visu uzskaitīto grupu atlikušos piešķīrumus un dalību?"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:136
+msgid "No group assignments or memberships belong to a deleted group"
+msgstr "Neviens grupas piešķīrums vai dalība nepieder dzēstai grupai"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:138
+#, php-format
+msgid "%d deleted groups still have zone assignments or members"
+msgstr "Dzēstās grupas, kurām joprojām ir zonu piešķīrumi vai dalībnieki: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Group assignments and memberships of the deleted group removed"
+msgstr "Dzēstās grupas piešķīrumi un dalība noņemti"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:180
+msgid "Failed to remove the group assignments and memberships"
+msgstr "Neizdevās noņemt grupas piešķīrumus un dalību"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:241
+msgid "No group assignments or memberships of deleted groups to remove"
+msgstr "Nav dzēsto grupu piešķīrumu vai dalības, ko noņemt"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:242
+#, php-format
+msgid "Removed the assignments and memberships of %d deleted groups"
+msgstr "Noņemti dzēsto grupu piešķīrumi un dalība, grupu skaits: %d"
+
+#: lib/Infrastructure/Service/Consistency/AbstractConsistencyChecks.php:243
+#, php-format
+msgid "Removed those of %d deleted groups; %d failed"
+msgstr "Dzēstās grupas, kuru dati noņemti: %d; neizdevās: %d"
