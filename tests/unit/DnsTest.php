@@ -131,8 +131,10 @@ class DnsTest extends TestCase
     public function testNumericFieldsAcceptOnlyPlainDigitsInRange()
     {
         $soa = fn(string $nums) => "example.com hostmaster.example.com " . $nums;
-        foreach (['1e3 7200 1209600 3600 86400', '0.5 7200 1209600 3600 86400', '+5 7200 1209600 3600 86400',
-                  '5 7200 1209600 3600 99999999999', '5 7200 1209600 3600 1e3', '5 -1 1209600 3600 86400'] as $nums) {
+        foreach (
+            ['1e3 7200 1209600 3600 86400', '0.5 7200 1209600 3600 86400', '+5 7200 1209600 3600 86400',
+                  '5 7200 1209600 3600 99999999999', '5 7200 1209600 3600 1e3', '5 -1 1209600 3600 86400'] as $nums
+        ) {
             $content = $soa($nums);
             $this->assertFalse($this->dnsInstance->is_valid_rr_soa_content($content, "hostmaster@example.com"), $nums);
         }
