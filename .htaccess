@@ -16,7 +16,7 @@
     # Deny sensitive directories first: the existing-file rule below would otherwise
     # serve real files such as config/settings.php.bak. Bootstrap assets stay allowed;
     # the path is matched relative to this directory so subfolder installs work too.
-    RewriteRule ^vendor/twbs/(bootstrap|bootstrap-icons)/ - [L]
+    RewriteRule ^vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ - [L]
     RewriteRule ^(config|lib|tests|vendor|bin|var)/ - [F,L]
     RewriteRule ^(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$ - [F,L]
 
@@ -42,7 +42,7 @@ Options -Indexes
 AddDefaultCharset UTF-8
 
 # Security: Allow access to Bootstrap CSS/JS and Bootstrap Icons
-<Files ~ "^vendor/twbs/(bootstrap|bootstrap-icons)/.*\.(css|js|woff|woff2|ttf|eot|svg)$">
+<Files ~ "^vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/.*\.(css|js|woff|woff2|ttf|eot|svg)$">
     Order Allow,Deny
     Allow from all
 </Files>
