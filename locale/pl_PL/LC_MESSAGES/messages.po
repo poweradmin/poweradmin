@@ -10669,7 +10669,7 @@ msgstr "Zalecana długość dla"
 #: lib/Module/ZoneImportExport/templates/import.html:33
 #: install/helpers/InstallStepHandler.php:175
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Ostrzeżenie:"
 
 #: templates/modern/dnssec_add_key.html:150
 msgid "bits is not recommended for"
