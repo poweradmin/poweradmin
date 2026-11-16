@@ -9,7 +9,7 @@ server {
 
     # Internal directories and files are never served. The Bootstrap assets
     # under vendor/twbs/ are the only vendor files the pages need.
-    location ~ ^/vendor/twbs/(bootstrap|bootstrap-icons)/ {
+    location ~ ^/vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ {
         expires max;
         access_log off;
     }

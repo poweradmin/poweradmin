@@ -22,7 +22,7 @@ AddDefaultCharset UTF-8
 # Deny access to internal directories, keeping the Bootstrap assets reachable
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule ^vendor/twbs/(bootstrap|bootstrap-icons)/ - [L]
+    RewriteRule ^vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ - [L]
     RewriteRule ^(inc|lib|sql|db|tests|templates|locale|vendor)/ - [F,L]
 </IfModule>
 
