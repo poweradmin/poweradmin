@@ -573,6 +573,93 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $this->assertSame(ZonesController::CHANGE_REQUEST_REQUIRED, $this->messageOf($response));
     }
 
+    public function testAZoneTypeOrPrimariesChangeIsRefusedWhenTheZoneRequiresApproval(): void
+    {
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneMeta')->willReturn(true);
+        $this->permissions->method('canCreateZone')->willReturn(true);
+        $this->permissions->method('getChangeApprovalMode')->willReturn('request');
+        $this->zones->method('getZoneById')->willReturn(['id' => self::ZONE_ID, 'name' => 'example.com', 'type' => 'MASTER']);
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'master' => '192.0.2.1']);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame(ZonesController::CHANGE_REQUEST_REQUIRED, $this->messageOf($response));
+    }
+
+    public function testResendingTheStoredValuesIsAcceptedWhenTheZoneRequiresApproval(): void
+    {
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneMeta')->willReturn(true);
+        $this->permissions->method('canCreateZone')->willReturn(true);
+        $this->permissions->method('getChangeApprovalMode')->willReturn('request');
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => self::ZONE_ID,
+            'name' => 'example.com',
+            'type' => 'SLAVE',
+            'master' => '192.0.2.1',
+        ]);
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['type' => 'SLAVE', 'master' => '192.0.2.1']);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    #[DataProvider('equivalentMasterSpellings')]
+    public function testADifferentSpellingOfTheStoredPrimariesIsNotAChange(string $stored, string $submitted): void
+    {
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => self::ZONE_ID,
+            'name' => 'example.com',
+            'type' => 'SLAVE',
+            'master' => $stored,
+        ]);
+        $this->zoneManagement->expects($this->never())->method('updateZone');
+
+        $response = $this->invokeHandler('updateZone', 'PUT', ['master' => $submitted]);
+
+        $this->assertSame(200, $response->getStatusCode());
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function equivalentMasterSpellings(): array
+    {
+        return [
+            'upper case IPv6' => ['2001:db8::1', '2001:DB8::1'],
+            'uncompressed IPv6' => ['2001:db8::1', '2001:0db8:0000:0000:0000:0000:0000:0001'],
+            'default port' => ['192.0.2.1', '192.0.2.1:53'],
+            'bracketed IPv6 default port' => ['2001:db8::1', '[2001:DB8::1]:53'],
+        ];
+    }
+
+    public function testALeadingZeroIPv4SpellingIsStillAChange(): void
+    {
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => self::ZONE_ID,
+            'name' => 'example.com',
+            'type' => 'SLAVE',
+            'master' => '192.0.2.01',
+        ]);
+        $this->zoneManagement->expects($this->once())->method('updateZone')->willReturn(['success' => true, 'message' => 'ok']);
+
+        $this->invokeHandler('updateZone', 'PUT', ['master' => '192.0.2.1']);
+    }
+
+    public function testADifferentPortIsStillAChange(): void
+    {
+        $this->zones->method('getZoneById')->willReturn([
+            'id' => self::ZONE_ID,
+            'name' => 'example.com',
+            'type' => 'SLAVE',
+            'master' => '192.0.2.1',
+        ]);
+        $this->zoneManagement->expects($this->once())->method('updateZone')->willReturn(['success' => true, 'message' => 'ok']);
+
+        $this->invokeHandler('updateZone', 'PUT', ['master' => '192.0.2.1:5300']);
+    }
+
     public function testADescriptionIsRefusedWhenZoneCommentsAreDisabled(): void
     {
         $this->config = new FakeConfiguration(['interface' => ['show_zone_comments' => false]]);

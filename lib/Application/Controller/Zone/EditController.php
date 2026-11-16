@@ -490,6 +490,9 @@ class EditController extends BaseController
         $domainManager = $this->services()->domainManager();
         $new_type = $this->httpRequest->getPostParam('newtype', '');
         if ($this->httpRequest->getPostParam('type_change') !== null && in_array($new_type, ZoneType::getTypes())) {
+            if ($this->refuseZoneChangeUnderReview($zone_id)) {
+                return;
+            }
             // Converting a zone is equivalent to creating one of the target type.
             if (!$this->permissionService()->canCreateZone((int)$this->getCurrentUserId(), $new_type)) {
                 $this->setMessage('edit', 'error', _('You do not have permission to change this zone to that type.'));
@@ -499,6 +502,9 @@ class EditController extends BaseController
         }
 
         if ($this->httpRequest->getPostParam('slave_master_change') !== null) {
+            if ($this->refuseZoneChangeUnderReview($zone_id)) {
+                return;
+            }
             $this->reportZoneWrite('edit', $domainManager->changeZoneSlaveMaster($zone_id, $this->httpRequest->getPostParam('new_master', '')), _('Slave master has been changed successfully.'));
         }
 
@@ -517,6 +523,16 @@ class EditController extends BaseController
         if ($this->httpRequest->getPostParam('template_change') !== null) {
             $this->handleTemplateChange($zone_id);
         }
+    }
+
+    /** Zone type and primaries changes rewrite the zone directly, which a reviewed zone does not allow. */
+    private function refuseZoneChangeUnderReview(int $zone_id): bool
+    {
+        if ($this->changeApprovalModeForZone($zone_id) !== ChangeApprovalPolicy::MODE_REQUEST) {
+            return false;
+        }
+        $this->setMessage('edit', 'error', ChangeRequestMessages::requiresApproval());
+        return true;
     }
 
     private function handleTemplateChange(int $zone_id): void

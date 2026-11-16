@@ -24,6 +24,8 @@ use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
 use Poweradmin\Application\Service\ControllerServiceFactory;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Zone\CatalogZoneService;
+use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
+use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -142,6 +144,37 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $domainManager->expects($this->never())->method('updateZoneRecords');
 
         $this->invokeHandler($domainManager, 42);
+    }
+
+    public function testTypeChangeIsRefusedWhenTheZoneRequiresApproval(): void
+    {
+        $_POST = ['type_change' => '1', 'newtype' => 'MASTER'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneType');
+
+        $messages = $this->invokeHandler($domainManager, 42, approval: $this->requestModeApproval());
+
+        $this->assertSame('error', $messages[0]['type']);
+    }
+
+    public function testSlaveMasterChangeIsRefusedWhenTheZoneRequiresApproval(): void
+    {
+        $_POST = ['slave_master_change' => '1', 'new_master' => '192.0.2.10'];
+
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->expects($this->never())->method('changeZoneSlaveMaster');
+
+        $messages = $this->invokeHandler($domainManager, 42, approval: $this->requestModeApproval());
+
+        $this->assertSame('error', $messages[0]['type']);
+    }
+
+    private function requestModeApproval(): ChangeApprovalContext
+    {
+        $approval = $this->createMock(ChangeApprovalContext::class);
+        $approval->method('modeForZone')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);
+        return $approval;
     }
 
     public function testTemplateChangePostAppliesTheTemplateThroughTheZoneService(): void
@@ -316,7 +349,8 @@ class EditControllerZoneMetadataPostTest extends TestCase
         bool $canCreateZone = true,
         ?ZoneManagementService $zoneService = null,
         bool $sqlApiClient = false,
-        ?CatalogZoneService $catalogService = null
+        ?CatalogZoneService $catalogService = null,
+        ?ChangeApprovalContext $approval = null
     ): array {
         $controller = $this->controllerReflection->newInstanceWithoutConstructor();
 
@@ -331,6 +365,9 @@ class EditControllerZoneMetadataPostTest extends TestCase
         $factory = $this->createMock(ControllerServiceFactory::class);
         $factory->method('zoneManagementService')->willReturn($zoneService ?? $this->createMock(ZoneManagementService::class));
         $factory->method('domainManager')->willReturn($domainManager);
+        if ($approval !== null) {
+            $factory->method('changeApprovalContext')->willReturn($approval);
+        }
         if ($catalogService !== null) {
             $factory->method('catalogZoneService')->willReturn($catalogService);
         }

@@ -898,6 +898,10 @@ class ZonesController extends PublicApiController
                 }
             }
 
+            if (!empty($updates) && ($refused = $this->refuseWhenChangeRequestRequired($this->apiPermissionService, $userId, $zoneId)) !== null) {
+                return $refused;
+            }
+
             // Converting a zone is equivalent to creating one of the target type.
             if (isset($updates['type']) && !$this->apiPermissionService->canCreateZone($userId, $updates['type'])) {
                 return $this->returnApiError('You do not have permission to change this zone to that type', 403);
@@ -1070,7 +1074,32 @@ class ZonesController extends PublicApiController
 
     private function normalizeMasterList(string $masters): string
     {
-        return implode(',', array_filter(array_map('trim', explode(',', $masters)), 'strlen'));
+        $entries = array_filter(array_map('trim', explode(',', $masters)), 'strlen');
+        return implode(',', array_map($this->canonicalMaster(...), $entries));
+    }
+
+    /** Spelling variants of one primary (IPv6 case or compression, default port 53) compare equal. */
+    private function canonicalMaster(string $entry): string
+    {
+        $port = '';
+        $host = $entry;
+        if (preg_match('/^\[([^\]]+)\](?::(\d+))?$/', $entry, $m)) {
+            $host = $m[1];
+            $port = $m[2] ?? '';
+        } elseif (substr_count($entry, ':') === 1) {
+            [$host, $port] = explode(':', $entry);
+        }
+
+        // filter_var first: some libcs accept leading zeros and zone ids that would collapse distinct entries.
+        $packed = filter_var($host, FILTER_VALIDATE_IP) === false ? false : @inet_pton($host);
+        if ($packed === false) {
+            return $entry;
+        }
+        $host = (string)inet_ntop($packed);
+        if ($port === '' || $port === '53') {
+            return $host;
+        }
+        return str_contains($host, ':') ? "[{$host}]:{$port}" : "{$host}:{$port}";
     }
 
     /**
