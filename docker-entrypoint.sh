@@ -1164,6 +1164,10 @@ generate_config() {
     local oidc_generic_secret_esc; oidc_generic_secret_esc=$(php_sq_escape "${PA_OIDC_GENERIC_CLIENT_SECRET:-}")
     local saml_sp_private_key_esc; saml_sp_private_key_esc=$(php_sq_escape "${PA_SAML_SP_PRIVATE_KEY:-}")
 
+    # Secrets are written here; never create the file group/world readable
+    local previous_umask; previous_umask=$(umask)
+    umask 077
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -1702,9 +1706,11 @@ EOF
 ];
 EOF
 
-    # Set proper permissions (root only - non-root already owns the file)
+    umask "${previous_umask}"
+
+    # An existing file keeps its mode, so set it explicitly; only root can chown
+    chmod 640 "${CONFIG_FILE}" || log "WARNING: could not set mode 640 on ${CONFIG_FILE}"
     if [ "$IS_ROOT" = true ]; then
-        chmod 644 "${CONFIG_FILE}"
         chown www-data:www-data "${CONFIG_FILE}"
     fi
 
