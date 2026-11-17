@@ -14,18 +14,6 @@ server {
     # Keep in line with PHP's post_max_size; zone file imports need more than the 1m default
     client_max_body_size 20m;
 
-    # Static assets (caching)
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        expires max;
-        log_not_found off;
-        access_log off;
-        # The app sends these on its own responses; set here for static files only
-        add_header X-Frame-Options "DENY" always;
-        add_header Content-Security-Policy "frame-ancestors 'none'" always;
-        add_header X-Content-Type-Options "nosniff" always;
-        add_header Referrer-Policy "same-origin" always;
-    }
-
     # API handling with CORS
     location ~ ^/api {
         add_header Access-Control-Allow-Origin "*" always;
@@ -58,7 +46,14 @@ server {
 
     # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
     location ~ ^/vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ {
-        allow all;
+        expires max;
+        log_not_found off;
+        access_log off;
+        # The app sends these on its own responses; set here for static files only
+        add_header X-Frame-Options "DENY" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "same-origin" always;
     }
 
     location ~ ^/(config|lib|tests|vendor|bin|var)/ {
@@ -67,6 +62,18 @@ server {
 
     location ~ \.(sql|sqlite|sqlite3|db|md|log|json|lock|xml|dist|neon)$ {
         deny all;
+    }
+
+    # Static assets (caching), after the deny rules so they still apply
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires max;
+        log_not_found off;
+        access_log off;
+        # The app sends these on its own responses; set here for static files only
+        add_header X-Frame-Options "DENY" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "same-origin" always;
     }
 
     # Handle PHP files
@@ -115,18 +122,6 @@ server {
         # Try to serve the file directly, fallback to index.php
         try_files $uri $uri/ /poweradmin/index.php$is_args$args;
 
-        # Static assets (caching)
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-            expires max;
-            log_not_found off;
-            access_log off;
-            # The app sends these on its own responses; set here for static files only
-            add_header X-Frame-Options "DENY" always;
-            add_header Content-Security-Policy "frame-ancestors 'none'" always;
-            add_header X-Content-Type-Options "nosniff" always;
-            add_header Referrer-Policy "same-origin" always;
-        }
-
         # API handling with CORS
         location ~ ^/poweradmin/api {
             add_header Access-Control-Allow-Origin "*" always;
@@ -149,7 +144,14 @@ server {
 
         # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
         location ~ ^/poweradmin/vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ {
-            allow all;
+            expires max;
+            log_not_found off;
+            access_log off;
+            # The app sends these on its own responses; set here for static files only
+            add_header X-Frame-Options "DENY" always;
+            add_header Content-Security-Policy "frame-ancestors 'none'" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Referrer-Policy "same-origin" always;
         }
 
         location ~ ^/poweradmin/(config|lib|tests|vendor|bin|var)/ {
@@ -158,6 +160,18 @@ server {
 
         location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log|json|lock|xml|dist|neon)$ {
             deny all;
+        }
+
+        # Static assets (caching), after the deny rules so they still apply
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+            expires max;
+            log_not_found off;
+            access_log off;
+            # The app sends these on its own responses; set here for static files only
+            add_header X-Frame-Options "DENY" always;
+            add_header Content-Security-Policy "frame-ancestors 'none'" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header Referrer-Policy "same-origin" always;
         }
 
         # Handle PHP files within the poweradmin subfolder
