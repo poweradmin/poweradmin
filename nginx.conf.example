@@ -11,13 +11,6 @@ server {
     root /path/to/poweradmin;
     index index.php index.html;
 
-    # Static assets (caching)
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-        expires max;
-        log_not_found off;
-        access_log off;
-    }
-
     # API handling with CORS
     location ~ ^/api {
         add_header Access-Control-Allow-Origin "*" always;
@@ -45,7 +38,9 @@ server {
 
     # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
     location ~ ^/vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ {
-        allow all;
+        expires max;
+        log_not_found off;
+        access_log off;
     }
 
     location ~ ^/(config|lib|tests|vendor|bin|var)/ {
@@ -58,6 +53,13 @@ server {
 
     location ~ \.(sql|sqlite|sqlite3|db|md|log)$ {
         deny all;
+    }
+
+    # Static assets (caching), after the deny rules so they still apply
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires max;
+        log_not_found off;
+        access_log off;
     }
 
     # Handle PHP files
@@ -98,13 +100,6 @@ server {
         # Try to serve the file directly, fallback to index.php
         try_files $uri $uri/ /poweradmin/index.php$is_args$args;
 
-        # Static assets (caching)
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
-            expires max;
-            log_not_found off;
-            access_log off;
-        }
-
         # API handling with CORS
         location ~ ^/poweradmin/api {
             add_header Access-Control-Allow-Origin "*" always;
@@ -127,7 +122,9 @@ server {
 
         # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
         location ~ ^/poweradmin/vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ {
-            allow all;
+            expires max;
+            log_not_found off;
+            access_log off;
         }
 
         location ~ ^/poweradmin/(config|lib|tests|vendor|bin|var)/ {
@@ -140,6 +137,13 @@ server {
 
         location ~ ^/poweradmin/.*\.(sql|sqlite|sqlite3|db|md|log)$ {
             deny all;
+        }
+
+        # Static assets (caching), after the deny rules so they still apply
+        location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+            expires max;
+            log_not_found off;
+            access_log off;
         }
 
         # Handle PHP files within the poweradmin subfolder
