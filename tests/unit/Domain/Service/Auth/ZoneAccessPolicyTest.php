@@ -104,6 +104,7 @@ class ZoneAccessPolicyTest extends TestCase
             'SOA locked for client-level editors' => [false, 'SOA', 'own_as_client', false, true],
             'SOA locked without edit rights' => [false, 'SOA', 'none', false, true],
             'SOA editable with all' => [false, 'SOA', 'all', false, false],
+            'SOA locked for an unknown level' => [false, 'SOA', 'owner', false, true],
             'NS lock propagates' => [false, 'NS', 'own_as_client', true, true],
             'plain record editable' => [false, 'A', 'own', false, false],
             'LUA locked for client-level editors' => [false, 'LUA', 'own_as_client', false, true],

@@ -71,9 +71,9 @@ final class ZoneAccessPolicy
 
     /**
      * A locked record renders read-only in the zone edit table: replicated
-     * (slave/consumer) zones entirely, SOA for own_as_client and no-edit callers
-     * (zone owners may edit and delete their SOA), and NS records caught by the
-     * own_as_client apex rule.
+     * (slave/consumer) zones entirely, SOA unless the caller edits at 'all' or 'own'
+     * (zone owners may edit and delete their SOA; any other level stays locked), and
+     * NS records caught by the own_as_client apex rule.
      */
     public static function isRecordLocked(
         bool $zoneIsReadOnly,
@@ -82,7 +82,7 @@ final class ZoneAccessPolicy
         bool $nsRecordLocked
     ): bool {
         return $zoneIsReadOnly
-            || ($recordType === 'SOA' && in_array($permEdit, ['own_as_client', 'none'], true))
+            || ($recordType === 'SOA' && !in_array($permEdit, ['all', 'own'], true))
             || ($recordType === 'LUA' && $permEdit === 'own_as_client')
             || $nsRecordLocked;
     }
