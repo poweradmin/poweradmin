@@ -56,6 +56,16 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
     }
 
     /**
+     * Replace the control characters the content check refuses with a space, for stored
+     * content a caller keeps unchanged. Content that is not UTF-8 is returned as is, so
+     * the check still refuses it.
+     */
+    public static function healStoredContent(string $content): string
+    {
+        return trim(preg_replace('/[\x00-\x1F\x7F-\x{9F}]+/u', ' ', $content) ?? $content);
+    }
+
+    /**
      * Validate DNS record input
      *
      * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
@@ -96,7 +106,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         }
 
         // Content is stored and exported untrimmed, so a raw line break would split a zone file line.
-        if (preg_match('/[\x00-\x1F\x7F]/', $content) === 1) {
+        // C1 controls and bytes that are not UTF-8 are refused with the C0 range.
+        if (preg_match('/[\x00-\x1F\x7F-\x{9F}]/u', $content) !== 0) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 

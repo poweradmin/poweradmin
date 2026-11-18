@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\Dns\ReverseTtlResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\Validation\Refusal;
 
 /**
@@ -803,7 +804,7 @@ class ZonesRecordsController extends PublicApiController
             // Stored content may predate the control character check; heal it when it is the fallback
             $content = array_key_exists('content', $input)
                 ? trim($content)
-                : trim((string)preg_replace('/[\x00-\x1F\x7F]+/', ' ', $content));
+                : DnsRecordValidationService::healStoredContent($content);
 
             // Block changing the record into one the user may not manage, e.g.
             // retyping to SOA/NS or renaming a subzone NS onto the zone apex

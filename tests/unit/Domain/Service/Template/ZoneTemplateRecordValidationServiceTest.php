@@ -74,6 +74,14 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         $this->assertTrue($this->validate('www.example.com', 'A', '192.0.2.1'));
     }
 
+    public function testRefusesC1ControlsAndInvalidUtf8ButKeepsOtherUnicode(): void
+    {
+        // HINFO has no printability check of its own, so only the shared guard catches these
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\u{0085}b\" \"linux\""));
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\xC3b\" \"linux\""));
+        $this->assertTrue($this->validate('www.example.com', 'HINFO', "\"caf\u{00E9}\" \"linux\""));
+    }
+
     public function testAcceptsApexMarkerAsName(): void
     {
         $this->assertTrue($this->validate('@', 'A', '192.0.2.1'));

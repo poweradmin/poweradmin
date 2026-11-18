@@ -30,6 +30,7 @@ use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Service\Dns\DnsRecordValidationService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
@@ -687,7 +688,7 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('Invalid field types in request body', 400);
         }
         // Stored content may predate the control character check; heal it when it is the fallback
-        $content = array_key_exists('content', $operation) ? trim($content) : trim((string)preg_replace('/[\x00-\x1F\x7F]+/', ' ', $content));
+        $content = array_key_exists('content', $operation) ? trim($content) : DnsRecordValidationService::healStoredContent($content);
         // Trimmed as on create; whitespace-only becomes '' and clears the comment
         $comment = $comment === null ? null : trim($comment);
         // A TTL of 0 is RFC-valid ("do not cache") and TTLValidator accepts it, so

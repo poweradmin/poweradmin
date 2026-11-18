@@ -100,7 +100,24 @@ class DnsRecordValidationServiceTest extends TestCase
             'NUL byte' => ['A', "192.0.2.1\0"],
             'DEL' => ['TXT', "\"a\x7Fb\""],
             'newline in LUA' => ['LUA', "A \"ifportup(443)\n\""],
+            'C1 next line in HINFO' => ['HINFO', "\"a\u{0085}b\" \"linux\""],
+            'C1 CSI in CAA' => ['CAA', "0 issue \"ca\u{009B}.example\""],
+            'invalid UTF-8' => ['TXT', "\"a\xC3b\""],
         ];
+    }
+
+    #[Test]
+    public function testHealStoredContentReplacesControlCharactersAndKeepsOtherText(): void
+    {
+        $this->assertSame('"a b" "linux"', DnsRecordValidationService::healStoredContent("\"a\u{0085}b\" \"linux\""));
+        $this->assertSame('"a b"', DnsRecordValidationService::healStoredContent("\"a\r\n\x01b\"\n"));
+        $this->assertSame("\"caf\u{00E9} \u{4E2D}\"", DnsRecordValidationService::healStoredContent("\"caf\u{00E9} \u{4E2D}\""));
+    }
+
+    #[Test]
+    public function testHealStoredContentLeavesInvalidUtf8ForTheGuardToRefuse(): void
+    {
+        $this->assertSame("\"a\xC3b\"", DnsRecordValidationService::healStoredContent("\"a\xC3b\""));
     }
 
     #[Test]

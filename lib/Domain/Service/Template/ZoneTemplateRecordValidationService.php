@@ -108,7 +108,7 @@ final class ZoneTemplateRecordValidationService
         $resolvedName = $this->resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
         $resolvedContent = $this->resolvePlaceholders($content);
 
-        if (preg_match('/[\x00-\x1F\x7F]/', $resolvedContent) === 1) {
+        if (preg_match('/[\x00-\x1F\x7F-\x{9F}]/u', $resolvedContent) !== 0) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
