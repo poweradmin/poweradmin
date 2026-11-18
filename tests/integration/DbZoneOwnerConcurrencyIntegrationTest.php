@@ -133,6 +133,13 @@ class DbZoneOwnerConcurrencyIntegrationTest extends TestCase
                 $db->exec("CREATE TABLE records_zone_templ (domain_id INT NOT NULL, record_id INT NOT NULL, zone_templ_id INT NOT NULL)");
                 $db->exec("CREATE TABLE records_zone_templ_api (domain_id INT NOT NULL, record_id VARCHAR(255) NOT NULL, zone_templ_id INT NOT NULL)");
                 $db->exec("CREATE TABLE app_settings (setting_key VARCHAR(128) NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type VARCHAR(16) NOT NULL DEFAULT 'string')");
+                // Ownership lookups join group membership; the permission tables mirror the MySQL copy
+                $db->exec("CREATE TABLE user_groups (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE, description TEXT NULL, perm_templ INT NOT NULL DEFAULT 0,
+                    max_zones INT NULL, created_by INT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP)");
+                $db->exec("CREATE TABLE user_group_members (id SERIAL PRIMARY KEY, group_id INT NOT NULL, user_id INT NOT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE (group_id, user_id))");
+                $db->exec("CREATE TABLE perm_templ (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, descr TEXT NOT NULL DEFAULT '', template_type VARCHAR(10) NOT NULL DEFAULT 'user')");
+                $db->exec("CREATE TABLE perm_templ_items (id SERIAL PRIMARY KEY, templ_id INT NOT NULL, perm_id INT NOT NULL)");
+                $db->exec("CREATE TABLE perm_items (id SERIAL PRIMARY KEY, name VARCHAR(64) NOT NULL, descr TEXT NOT NULL DEFAULT '')");
             }
         } catch (PDOException $e) {
             $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());

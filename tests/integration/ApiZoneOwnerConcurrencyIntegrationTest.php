@@ -127,6 +127,13 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
                 $db->exec("CREATE TABLE api_key_zones (id SERIAL PRIMARY KEY, api_key_id INT NOT NULL, zone_id INT NOT NULL)");
                 $db->exec("CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NULL, email VARCHAR(255) NULL, description VARCHAR(1024) NULL)");
                 $db->exec("CREATE TABLE app_settings (setting_key VARCHAR(128) NOT NULL PRIMARY KEY, setting_value TEXT NOT NULL, value_type VARCHAR(16) NOT NULL DEFAULT 'string')");
+                // Ownership lookups join group membership; the permission tables mirror the MySQL copy
+                $db->exec("CREATE TABLE user_groups (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL UNIQUE, description TEXT NULL, perm_templ INT NOT NULL DEFAULT 0,
+                    max_zones INT NULL, created_by INT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP)");
+                $db->exec("CREATE TABLE user_group_members (id SERIAL PRIMARY KEY, group_id INT NOT NULL, user_id INT NOT NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, UNIQUE (group_id, user_id))");
+                $db->exec("CREATE TABLE perm_templ (id SERIAL PRIMARY KEY, name VARCHAR(128) NOT NULL, descr TEXT NOT NULL DEFAULT '', template_type VARCHAR(10) NOT NULL DEFAULT 'user')");
+                $db->exec("CREATE TABLE perm_templ_items (id SERIAL PRIMARY KEY, templ_id INT NOT NULL, perm_id INT NOT NULL)");
+                $db->exec("CREATE TABLE perm_items (id SERIAL PRIMARY KEY, name VARCHAR(64) NOT NULL, descr TEXT NOT NULL DEFAULT '')");
             }
         } catch (PDOException $e) {
             $this->markTestSkipped("$engine is not reachable: " . $e->getMessage());
@@ -158,11 +165,16 @@ class ApiZoneOwnerConcurrencyIntegrationTest extends TestCase
             'database' => ['type' => $engine, 'pdns_db_name' => ''],
             'dns' => ['zone_ownership_mode' => 'both'],
         ]);
-        // PowerDNS accepts every zone delete, so the test never reaches a real server
+        // PowerDNS accepts every zone delete and reports every zone as native, so the test never reaches a real server
         $client = new class (new HttpClient('http://localhost:8181', 'unused'), 'localhost', new ApiStatusService(new ArraySession())) extends PowerdnsApiClient {
             public function deleteZone(Zone $zone): bool
             {
                 return true;
+            }
+
+            public function getZone(string $zoneName, bool $includeRrsets = true, array $filters = []): array
+            {
+                return ['name' => $zoneName, 'kind' => 'Native'];
             }
         };
         $provider = new ApiDnsBackendProvider($client, $db, $config, new ApiStatusService(new ArraySession()), new NullLogger());
