@@ -10,7 +10,7 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
 import { assignZoneOwner, createTempZone, deleteZoneById, recordWrites, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
-import { cleanUp, csrfTokenFrom, findUserIdByName, setUserTemplate, withPermTemplate, withTempUser } from '../../helpers/users.js';
+import { cleanUp, csrfTokenFrom, formStateFrom, findUserIdByName, setUserTemplate, withPermTemplate, withTempUser } from '../../helpers/users.js';
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 240_000 });
@@ -221,10 +221,12 @@ test.describe('Other users\' accounts', () => {
           await withTempUser(adminPage, browser, baseURL, testInfo, 'Read Only', async victim => {
             await withTempUser(adminPage, browser, baseURL, testInfo, passwdOnly, async (user, userPage) => {
               const token = await csrfTokenFrom(userPage, '/users');
-              const edit = (fullname, password) => userPage.request.post(`/users/${victim.id}/edit`, {
+              const edit = async (fullname, password) => userPage.request.post(`/users/${victim.id}/edit`, {
                 form: {
                   _token: token, user_id: victim.id, username: victim.username, fullname, password,
                   email: `${victim.username}@example.com`, description: '', active: '1', commit: '',
+                  // Read as admin, so a refusal comes from the permission gate and never from the stamp
+                  form_state: await formStateFrom(adminPage, `/users/${victim.id}/edit`),
                 },
               });
               const storedFullname = async () => {

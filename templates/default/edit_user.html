@@ -19,6 +19,7 @@
             <div class="card-body">
                 <form class="needs-validation" method="post" action="" novalidate>
                     {{ macros.csrf_field() }}
+                    <input type="hidden" name="form_state" value="{{ form_state }}">
                     <input type="hidden" name="number" value="{{ edit_id }}">
 
                     <div class="mb-3">

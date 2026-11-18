@@ -103,6 +103,12 @@ class EditUserController extends BaseController
     private function updateUser(int $editId, array $policyConfig): void
     {
         $stored = $this->getUserDetails($editId);
+        // A form opened before another editor saved would put back what they changed
+        if (!hash_equals(self::formState($stored), $this->httpRequest->getPostString('form_state'))) {
+            $this->setMessage('edit_user', 'error', _('This user was changed by someone else after you opened the form. Review the current values and save again.'));
+            $this->showUserEditForm($editId, $policyConfig);
+            return;
+        }
         if (!$this->validateInput($editId, $stored)) {
             $this->showUserEditForm($editId, $policyConfig);
             return;
@@ -536,6 +542,7 @@ class EditUserController extends BaseController
 
         $this->render('edit_user.html', [
             'edit_id' => $editId,
+            'form_state' => self::formState($user),
             'name' => $user['fullname'] ?: $user['username'],
             'user' => $user,
             'session_user_id' => $this->getUserContextService()->getLoggedInUserId(),
@@ -683,6 +690,19 @@ class EditUserController extends BaseController
 
         // Redirect back to edit page to show updated memberships
         $this->redirect("/users/$userId/edit");
+    }
+
+    /**
+     * A stamp of the stored values the edit form writes, so a save can tell it started from them.
+     *
+     * @param array<string, mixed> $user Row from getUserDetails()
+     */
+    public static function formState(array $user): string
+    {
+        $fields = ['username', 'fullname', 'email', 'descr', 'active', 'auth_type', 'use_ldap', 'tpl_id'];
+        $state = array_map(fn(string $field) => (string)($user[$field] ?? ''), $fields);
+
+        return hash('sha256', (string)json_encode($state, JSON_INVALID_UTF8_SUBSTITUTE));
     }
 
     private function getUserDetails(int $editId): array

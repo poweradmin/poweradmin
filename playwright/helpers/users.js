@@ -213,6 +213,20 @@ export async function csrfTokenFrom(page, path) {
 }
 
 /**
+ * The stored-state stamp an edit form carries, or '' when the page does not show the form.
+ * Posts that should be saved send it, as the browser would.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {string} path
+ * @returns {Promise<string>}
+ */
+export async function formStateFrom(page, path) {
+  await page.goto(path);
+  const field = page.locator('input[name="form_state"]');
+  return (await field.count()) > 0 ? field.first().inputValue() : '';
+}
+
+/**
  * Run every cleanup step even when an earlier one throws, then rethrow the first error.
  */
 export async function cleanUp(...steps) {

@@ -6,6 +6,7 @@
 
 <form class="needs-validation" method="post" action="" novalidate>
     {{ macros.csrf_field() }}
+    <input type="hidden" name="form_state" value="{{ form_state }}">
     <input type="hidden" name="templ_id" value="{{ id }}">
 
     <div class="row mb-4">

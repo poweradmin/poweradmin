@@ -9,7 +9,7 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { assignZoneOwner, createTempZone, deleteZoneById, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
 import { findPermTemplateIdByName } from '../../helpers/templates.js';
-import { cleanUp, csrfTokenFrom, withTempUser } from '../../helpers/users.js';
+import { cleanUp, csrfTokenFrom, formStateFrom, withTempUser } from '../../helpers/users.js';
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 180_000 });
@@ -133,7 +133,7 @@ test.describe('Admin-area writes', () => {
     const template = { templ_descr: '', template_type: 'user', commit: '' };
     const writes = (post, id) => ({
       add: () => post('/permissions/templates/add', { ...template, templ_name: `${name}-added` }),
-      edit: () => post(`/permissions/templates/${id}/edit`, { ...template, templ_id: id, templ_name: `${name}-renamed` }),
+      edit: (formState = '') => post(`/permissions/templates/${id}/edit`, { ...template, templ_id: id, templ_name: `${name}-renamed`, form_state: formState }),
       remove: () => post(`/permissions/templates/${id}/delete`, { confirm: '' }),
     });
 
@@ -144,7 +144,8 @@ test.describe('Admin-area writes', () => {
       await withTempUser(adminPage, browser, baseURL, testInfo, 'Zone Manager', async (user, userPage) => {
         const userWrites = writes(form(userPage, await csrfTokenFrom(userPage, `/users/${user.id}/edit`)), id);
         await userWrites.add();
-        await userWrites.edit();
+        // A current stamp, so only the permission gate can stop the edit
+        await userWrites.edit(await formStateFrom(adminPage, `/permissions/templates/${id}/edit`));
         await userWrites.remove();
 
         expect(await findPermTemplateIdByName(adminPage, `${name}-added`)).toBeNull();
@@ -156,7 +157,7 @@ test.describe('Admin-area writes', () => {
       const adminWrites = writes(adminPost, id);
       await adminWrites.add();
       expect(await findPermTemplateIdByName(adminPage, `${name}-added`)).toBeTruthy();
-      await adminWrites.edit();
+      await adminWrites.edit(await formStateFrom(adminPage, `/permissions/templates/${id}/edit`));
       expect(await findPermTemplateIdByName(adminPage, `${name}-renamed`)).toBe(id);
       await adminWrites.remove();
       // The lookup matches on a substring, so check the renamed template, not the shorter name

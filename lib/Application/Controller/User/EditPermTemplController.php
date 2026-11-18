@@ -97,9 +97,16 @@ class EditPermTemplController extends BaseController
         // this write a template the URL never named.
         $templateId = (int)$this->getSafeRequestValue('id');
 
+        // A form opened before another editor saved would put back what they changed
+        if (!hash_equals($this->formState($templateId), (string)$this->getSafeRequestValue('form_state'))) {
+            $this->setMessage('edit_perm_templ', 'error', _('This permission template was changed by someone else after you opened it. Review the current values and save again.'));
+            $this->showForm();
+            return;
+        }
+
         $result = $this->permissionTemplateWriteService()->update($this->callerId(), $templateId, $request);
         if (!$result['success']) {
-            $this->setMessage('list_perm_templ', 'error', $this->translateWriteError($result['message']));
+            $this->setMessage('edit_perm_templ', 'error', $this->translateWriteError($result['message']));
             $this->showForm();
             return;
         }
@@ -115,6 +122,7 @@ class EditPermTemplController extends BaseController
         $id = $this->getSafeRequestValue('id');
         $this->render('edit_perm_templ.html', [
             'id' => $id,
+            'form_state' => $this->formState((int)$id),
             'templ' => $this->permissionTemplate()->getPermissionTemplateDetails((int)$id),
             'perms_templ' => $this->permissionTemplate()->getPermissionsByTemplateId((int)$id),
             'perms_avail' => PermissionTemplateContentGuard::filterOfferedPermissions(
@@ -124,6 +132,28 @@ class EditPermTemplController extends BaseController
             'show_user_access_templates' => $this->config->get('permissions', 'show_user_access_templates', true),
             'show_group_access_templates' => $this->config->get('permissions', 'show_group_access_templates', true),
         ]);
+    }
+
+    private function formState(int $templateId): string
+    {
+        return self::stateOf(
+            $this->permissionTemplate()->getPermissionTemplateDetails($templateId) ?: [],
+            $this->permissionTemplate()->getPermissionsByTemplateId($templateId)
+        );
+    }
+
+    /**
+     * A stamp of the stored values this form writes, so a save can tell it started from them.
+     *
+     * @param array<string, mixed> $templ Row from getPermissionTemplateDetails()
+     * @param list<array<string, mixed>> $perms Rows from getPermissionsByTemplateId()
+     */
+    public static function stateOf(array $templ, array $perms): string
+    {
+        $permIds = array_map(fn(array $perm) => (int)$perm['id'], $perms);
+        sort($permIds);
+
+        return hash('sha256', (string)json_encode([$templ['name'] ?? '', $templ['descr'] ?? '', $templ['template_type'] ?? '', $permIds], JSON_INVALID_UTF8_SUBSTITUTE));
     }
 
     private function validateRequest(): bool

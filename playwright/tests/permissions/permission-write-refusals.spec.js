@@ -10,7 +10,7 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
 import { assignZoneOwner, createTempZone, deleteZoneById, recordWrites, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
-import { cleanUp, csrfTokenFrom, setUserTemplate, withTempUser } from '../../helpers/users.js';
+import { cleanUp, csrfTokenFrom, formStateFrom, setUserTemplate, withTempUser } from '../../helpers/users.js';
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 180_000 });
@@ -35,7 +35,8 @@ test.describe('Other users\' accounts', () => {
           },
         });
 
-        await editPost(victim, { password: 'Hijack3d!Pass' });
+        // A current stamp, so only the permission gate can stop this post
+        await editPost(victim, { password: 'Hijack3d!Pass', form_state: await formStateFrom(adminPage, `/users/${victim.id}/edit`) });
         await actorPage.request.post('/users', {
           form: {
             _token: token, commit: '',
@@ -55,7 +56,7 @@ test.describe('Other users\' accounts', () => {
         }
 
         // Control: the same post against the actor's own account is accepted
-        await editPost(actor);
+        await editPost(actor, { form_state: await formStateFrom(actorPage, `/users/${actor.id}/edit`) });
         await adminPage.goto(`/users/${actor.id}/edit`);
         await expect(adminPage.locator('input[name="fullname"]')).toHaveValue('Hijacked');
 

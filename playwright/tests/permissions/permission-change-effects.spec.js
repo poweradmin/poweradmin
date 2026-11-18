@@ -18,6 +18,7 @@ import {
   createGroup,
   csrfTokenFrom,
   deleteGroupById,
+  formStateFrom,
   removeGroupMember,
   removeZoneOwner,
   setUserTemplate,
@@ -151,6 +152,7 @@ test.describe('Self-escalation through the own profile', () => {
         form: {
           _token: token, user_id: user.id, username: user.username, fullname: 'Renamed Self',
           email: `${user.username}@example.com`, description: '', perm_templ: adminTemplateId, commit: '',
+          form_state: await formStateFrom(userPage, `/users/${user.id}/edit`),
         },
       });
       const addGroups = await userPage.request.post(`/users/${user.id}/edit`, {
@@ -185,6 +187,7 @@ test.describe('Access-changing forms reject a bad CSRF token', () => {
             form: {
               _token: token, user_id: user.id, username: user.username, fullname: user.username,
               email: `${user.username}@example.com`, description: '', perm_templ: managerTemplateId, active: '1', commit: '',
+              form_state: await formStateFrom(adminPage, `/users/${user.id}/edit`),
             },
           });
           await adminPage.request.post(`/groups/${group.id}/members`, {

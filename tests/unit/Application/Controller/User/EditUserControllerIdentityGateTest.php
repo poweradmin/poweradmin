@@ -56,14 +56,13 @@ class EditUserControllerIdentityGateTest extends SeamControllerTestCase
         $this->factory->method('apiPermissionService')->willReturn($apiPermissions);
 
         $repository = $this->createMock(UserRepositoryInterface::class);
-        $repository->method('getUserDetailList')->willReturn([[
-            'username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'auth_type' => 'sql', 'use_ldap' => 0, 'tpl_id' => 1,
-        ]]);
+        $stored = ['username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'auth_type' => 'sql', 'use_ldap' => 0, 'tpl_id' => 1];
+        $repository->method('getUserDetailList')->willReturn([$stored]);
         $this->factory->method('userRepository')->willReturn($repository);
         $users = $this->createMock(UserManagementService::class);
         $this->factory->method('userManagementService')->willReturn($users);
 
-        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'description' => '']);
+        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'description' => '', 'form_state' => EditUserController::formState($stored)]);
         $controller = $this->getMockBuilder(EditUserController::class)
             ->setConstructorArgs([$this->requestData(), true, $this->environment($this->configure())])
             ->onlyMethods(['showUserEditForm'])
@@ -88,6 +87,38 @@ class EditUserControllerIdentityGateTest extends SeamControllerTestCase
 
             $this->assertSame([['error', 'Authentication settings can only be changed by an administrator']], $this->messagesFor('edit_user'));
         }
+    }
+
+    public function testAFormOpenedBeforeAnotherSaveIsRefusedAndShownAgain(): void
+    {
+        // Another editor deactivated jane after this form was opened with her still active
+        [$controller, $users] = $this->submit(true, ['active' => '1', 'form_state' => EditUserController::formState(['username' => 'jane', 'active' => 1])]);
+        $users->expects($this->never())->method('updateUser');
+        $controller->expects($this->once())->method('showUserEditForm');
+
+        $this->update($controller);
+
+        $this->assertSame(
+            [['error', 'This user was changed by someone else after you opened the form. Review the current values and save again.']],
+            $this->messagesFor('edit_user')
+        );
+    }
+
+    public function testTheStampStillTellsRowsApartWhenAFieldIsNotValidUtf8(): void
+    {
+        $this->assertNotSame(
+            EditUserController::formState(['fullname' => "Jan\xE9", 'active' => 1]),
+            EditUserController::formState(['fullname' => "Jan\xE9", 'active' => 0])
+        );
+    }
+
+    public function testAMissingFormStateIsRefused(): void
+    {
+        [$controller, $users] = $this->submit(true, ['form_state' => '']);
+        $users->expects($this->never())->method('updateUser');
+        $controller->expects($this->once())->method('showUserEditForm');
+
+        $this->update($controller);
     }
 
     public function testUnchangedIdentityStillSavesWithoutThePasswordRight(): void

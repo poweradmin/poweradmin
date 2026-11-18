@@ -64,9 +64,8 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
 
         $hash = password_hash(self::PASSWORD, PASSWORD_BCRYPT, ['cost' => 4]);
         $repository = $this->createMock(UserRepositoryInterface::class);
-        $repository->method('getUserDetailList')->willReturn([[
-            'username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'auth_type' => $authType, 'use_ldap' => 0, 'tpl_id' => 1,
-        ]]);
+        $stored = ['username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'auth_type' => $authType, 'use_ldap' => 0, 'tpl_id' => 1];
+        $repository->method('getUserDetailList')->willReturn([$stored]);
         $repository->method('findByUsername')->with(self::USERNAME)->willReturn(new User(self::USER_ID, $hash, false));
         $this->factory->method('userRepository')->willReturn($repository);
 
@@ -76,12 +75,20 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
         $this->factory->method('loginAttemptService')->willReturn($this->attempts);
         $this->factory->method('clientContext')->willReturn(new ClientContext('203.0.113.5', 'phpunit', 'Unknown', false));
 
-        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'description' => '']);
+        $this->post($fields + ['username' => 'jane', 'fullname' => 'Jane', 'email' => $storedEmail, 'description' => '', 'form_state' => $this->formStateServed()]);
 
         return $this->getMockBuilder(EditUserController::class)
             ->setConstructorArgs([$this->requestData(), true, $this->environment($this->configure())])
             ->onlyMethods(['showUserEditForm'])
             ->getMock();
+    }
+
+    /**
+     * Stamp of the row the factory serves; a stub configured by an earlier submit() in the same test wins.
+     */
+    private function formStateServed(): string
+    {
+        return EditUserController::formState($this->factory->userRepository()->getUserDetailList(false, null, self::USER_ID)[0]);
     }
 
     private function update(EditUserController $controller, int $editId): void

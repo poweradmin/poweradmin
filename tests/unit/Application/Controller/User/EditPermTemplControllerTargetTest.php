@@ -51,6 +51,44 @@ class EditPermTemplControllerTargetTest extends SeamControllerTestCase
         $this->assertSame(5, $details['templ_id'], 'The route id must win over the posted templ_id');
     }
 
+    public function testAFormOpenedBeforeAnotherSaveIsRefusedAndRenderedFromStoredState(): void
+    {
+        $repository = $this->createMock(PermissionTemplateRepositoryInterface::class);
+        $repository->method('getPermissionTemplateDetails')->willReturn(['name' => 'Ops', 'descr' => '', 'template_type' => 'user']);
+        // Another editor removed permission 44 after this form was opened
+        $repository->method('getPermissionsByTemplateId')->willReturnCallback(
+            fn(int $id = 0): array => $id === 0 ? [['id' => 43], ['id' => 44]] : [['id' => 43]]
+        );
+        $repository->expects($this->never())->method('updatePermissionTemplateDetails');
+        $userRepository = $this->createMock(UserRepositoryInterface::class);
+        $userRepository->method('hasAdminPermission')->willReturn(true);
+        $this->factory->method('permissionTemplateRepository')->willReturn($repository);
+        $this->factory->method('permissionTemplateWriteService')
+            ->willReturn(new PermissionTemplateWriteService($repository, $userRepository, new LastSuperAdminGuard($userRepository)));
+
+        $staleState = EditPermTemplController::stateOf(['name' => 'Ops', 'descr' => '', 'template_type' => 'user'], [['id' => 43], ['id' => 44]]);
+        $controller = $this->getMockBuilder(EditPermTemplController::class)
+            ->setConstructorArgs([
+                ['id' => '5', 'templ_name' => 'Ops', 'template_type' => 'user', 'perm_id' => ['43', '44'], 'form_state' => $staleState],
+                true,
+                $this->environment($this->configure(['security' => ['global_token_validation' => false]])),
+            ])
+            ->onlyMethods(['render'])
+            ->getMock();
+        $rendered = [];
+        $controller->expects($this->once())->method('render')->willReturnCallback(function (string $template, array $params) use (&$rendered): void {
+            $rendered = $params;
+        });
+
+        (new ReflectionMethod($controller, 'handleFormSubmission'))->invoke($controller);
+
+        $this->assertSame([['id' => 43]], $rendered['perms_templ']);
+        $this->assertSame(
+            [['error', 'This permission template was changed by someone else after you opened it. Review the current values and save again.']],
+            $this->messagesFor('edit_perm_templ')
+        );
+    }
+
     public function testRouteIdIsUsedWhenNoTemplateIdIsPosted(): void
     {
         $details = $this->captureWrite([
@@ -115,6 +153,8 @@ class EditPermTemplControllerTargetTest extends SeamControllerTestCase
         $this->factory->method('permissionTemplateWriteService')
             ->willReturn(new PermissionTemplateWriteService($repository, $userRepository, new LastSuperAdminGuard($userRepository)));
         $config = $this->configure(['security' => ['global_token_validation' => false]]);
+        // The stub repository reports an empty template, so the form opened from that state
+        $requestData['form_state'] ??= EditPermTemplController::stateOf([], []);
         $controller = new EditPermTemplController($requestData, true, $this->environment($config));
 
         try {
