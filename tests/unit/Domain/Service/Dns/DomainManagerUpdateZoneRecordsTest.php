@@ -443,6 +443,175 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertSame([['needs_sync' => 1]], $this->rows('SELECT needs_sync FROM zone_template_sync'));
     }
 
+    public function testTemplateRecordBesideAnExistingCnameIsSkippedAndReported(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([
+            ['www.[ZONE]', 'A', '192.0.2.10', 300, 0],
+            ['[ZONE]', 'NS', '[NS1]', 300, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 103, 'name' => 'WWW.old.example', 'type' => 'CNAME', 'content' => 'web.example.net'],
+        ]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type) use (&$written): int {
+            $written[] = $name . ' ' . $type;
+            return 500 + count($written);
+        });
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
+        $this->assertStringContainsString('www.old.example A', (string) $result->message);
+        $this->assertSame(['old.example NS'], $written);
+        $this->assertSame([['record_id' => 501]], $this->rows('SELECT record_id FROM records_zone_templ'));
+        $this->assertSame([['zone_templ_id' => self::TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));
+        $this->assertSame([['needs_sync' => 1]], $this->rows('SELECT needs_sync FROM zone_template_sync'));
+    }
+
+    public function testTemplateCnameBesideExistingRecordsIsSkipped(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([['www.[ZONE]', 'CNAME', 'web.example.net', 300, 0]]);
+        $this->backend = $this->apiBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 'www.old.example./TXT/x', 'name' => 'www.old.example.', 'type' => 'TXT', 'content' => '"x"'],
+        ]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->never())->method('addRecordGetId');
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('www.old.example CNAME', (string) $result->message);
+    }
+
+    /**
+     * @return array<string, array{0: list<array{0: string, 1: string, 2: string, 3: int, 4: int}>}>
+     */
+    public static function cnameSiblingOrders(): array
+    {
+        $cname = ['www.[ZONE]', 'CNAME', 'web.example.net', 300, 0];
+        $mx = ['www.[ZONE]', 'MX', 'mail.[ZONE]', 300, 10];
+        return [
+            'CNAME first' => [[$cname, $mx]],
+            'CNAME last' => [[$mx, $cname]],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('cnameSiblingOrders')]
+    public function testTemplateCnameYieldsToAnotherTemplateRecordWhateverTheRowOrder(array $templateRecords): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords($templateRecords);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type) use (&$written): int {
+            $written[] = $type;
+            return 500 + count($written);
+        });
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(['MX'], $written);
+        $this->assertStringContainsString('www.old.example CNAME', (string) $result->message);
+    }
+
+    public function testApexSoaAndNsAreStillWrittenWhenTheApexHoldsAStoredCname(): void
+    {
+        $this->seedZone(0);
+        $this->seedRecord(104, 'old.example', 'SOA', 'ns1.example hostmaster.example 2024010100 1 2 3 4');
+        $this->seedTemplateRecords([
+            ['[ZONE]', 'SOA', '[NS1] [HOSTMASTER] [SERIAL]', 0, 0],
+            ['[ZONE]', 'NS', '[NS1]', 0, 0],
+            ['[ZONE]', 'A', '192.0.2.10', 0, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 103, 'name' => 'old.example', 'type' => 'CNAME', 'content' => 'web.example.net'],
+        ]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type) use (&$written): int {
+            $written[] = $type;
+            return 500 + count($written);
+        });
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(['SOA', 'NS'], $written);
+        $this->assertStringContainsString('old.example A', (string) $result->message);
+        $this->assertStringNotContainsString('SOA', (string) $result->message);
+        $this->assertStringNotContainsString('NS', (string) $result->message);
+    }
+
+    public function testTemplateCnameAtTheApexYieldsToTheTemplateSoaAndNs(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([
+            ['[ZONE]', 'CNAME', 'web.example.net', 0, 0],
+            ['[ZONE]', 'NS', '[NS1]', 0, 0],
+            ['[ZONE]', 'SOA', '[NS1] [HOSTMASTER] [SERIAL]', 0, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('recordExists')->willReturn(false);
+        $written = [];
+        $this->backend->method('addRecordGetId')->willReturnCallback(function (int $domainId, string $name, string $type) use (&$written): int {
+            $written[] = $type;
+            return 500 + count($written);
+        });
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertEqualsCanonicalizing(['NS', 'SOA'], $written);
+        $this->assertStringContainsString('old.example CNAME', (string) $result->message);
+    }
+
+    public function testRecordsTheTemplateWroteEarlierDoNotCountAsConflicts(): void
+    {
+        $this->seedZone(self::TEMPLATE_ID);
+        // The template used to publish www as a CNAME and now publishes an address.
+        $this->seedRecord(101, 'www.old.example', 'CNAME', 'web.example.net', linkedTo: self::TEMPLATE_ID);
+        $this->seedTemplateRecords([['www.[ZONE]', 'A', '192.0.2.10', 300, 0]]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturnCallback(
+            fn(int $zoneId): array => $this->rows("SELECT id, name, type, content FROM records WHERE domain_id = $zoneId")
+        );
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->once())->method('addRecordGetId')
+            ->with(self::ZONE_ID, 'www.old.example', 'A', '192.0.2.10', 300, 0)->willReturn(501);
+
+        $this->assertTrue($this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID)->success);
+    }
+
+    public function testApiRefusalAndCnameConflictAreBothReported(): void
+    {
+        $this->seedZone(0);
+        $this->seedTemplateRecords([
+            ['www.[ZONE]', 'A', '192.0.2.10', 300, 0],
+            ['mail.[ZONE]', 'A', '192.0.2.11', 300, 0],
+        ]);
+        $this->backend = $this->apiBackend();
+        $this->backend->method('getRecordsByZoneId')->willReturn([
+            ['id' => 'www.old.example./CNAME/web.example.net.', 'name' => 'www.old.example.', 'type' => 'CNAME', 'content' => 'web.example.net.'],
+        ]);
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->method('addRecordGetId')->willReturn(null);
+
+        $result = $this->manager()->updateZoneRecords(self::TTL, self::ZONE_ID, self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertStringContainsString('Failed to update zone records: mail.old.example A', (string) $result->message);
+        $this->assertStringContainsString('www.old.example A', (string) $result->message);
+    }
+
     public function testApiBackendKeepsTheLinkOfARecordPowerDnsRefusedToDelete(): void
     {
         $this->seedZone(self::TEMPLATE_ID);

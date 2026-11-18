@@ -102,25 +102,33 @@ class ZoneTemplateApplier
      *
      * The caller has already authorised the change. $writeRecords carries the
      * zone-add grant: without it the earlier records are still removed and the
-     * zone repointed, but no template records are written.
+     * zone repointed, but no template records are written. Template records that
+     * would break the CNAME rule are skipped and reported; the rest are kept.
      */
     public function applyTemplate(int $zoneId, int $templateId, int $defaultTtl, bool $writeRecords): ZoneWriteResult
     {
         $this->transaction->begin();
         try {
             $refused = [];
+            $conflicts = [];
             if ($templateId !== 0) {
                 $refused = $this->removeTemplateRecords($zoneId, $templateId);
                 if ($writeRecords) {
-                    $refused = array_merge($refused, $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl));
+                    [$writeRefused, $conflicts] = $this->writeTemplateRecords($zoneId, $templateId, $defaultTtl);
+                    $refused = array_merge($refused, $writeRefused);
                 }
             }
 
-            $this->relinkZoneTemplate($zoneId, $templateId, $refused === []);
+            $this->relinkZoneTemplate($zoneId, $templateId, $refused === [] && $conflicts === []);
             $this->finishTransaction(true);
 
+            $conflictMessage = $conflicts === [] ? '' : sprintf(_('Template records skipped because they conflict with a CNAME at the same name: %s'), implode(', ', $conflicts));
             if ($refused !== []) {
-                return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), implode(', ', $refused)));
+                $message = sprintf(_('Failed to update zone records: %s'), implode(', ', $refused));
+                return ZoneWriteResult::backendFailure(trim($message . ' ' . $conflictMessage));
+            }
+            if ($conflictMessage !== '') {
+                return ZoneWriteResult::failure($conflictMessage);
             }
 
             return ZoneWriteResult::ok($zoneId);
@@ -206,13 +214,17 @@ class ZoneTemplateApplier
 
     /**
      * Write the template's records with placeholders resolved and link each one
-     * back to the template. Records the zone already holds are skipped.
+     * back to the template. Records the zone already holds are skipped, and so
+     * are records that would sit beside a stored CNAME and template CNAMEs that
+     * would share their name with any other record. The apex SOA and NS are always written.
      *
-     * @return list<string> API backend records PowerDNS refused to add
+     * @return array{0: list<string>, 1: list<string>} API backend records PowerDNS
+     *     refused to add, and records skipped for a CNAME conflict
      */
     private function writeTemplateRecords(int $zoneId, int $templateId, int $defaultTtl): array
     {
         $refused = [];
+        $conflicts = [];
         $domain = (string) $this->domainRepository->getDomainNameById($zoneId);
         $soaRecord = $this->soaRecordManager->getSOARecord($zoneId);
         $templateRecords = $this->zoneTemplateRepository->getZoneTemplateRecords($templateId);
@@ -222,11 +234,15 @@ class ZoneTemplateApplier
             $this->transaction->commit();
         }
 
+        $typesByName = $templateRecords === [] ? [] : $this->recordTypesByName($zoneId);
+        $templateEntriesByName = $this->templateEntriesByName($templateRecords, $domain);
+
         foreach ($templateRecords as $record) {
             $type = (string) $record['type'];
             if (!self::shouldApplyTemplateRecord($domain, $type)) {
                 continue;
             }
+            $name = $this->resolveName($record, $domain);
 
             if ($type === 'SOA') {
                 if ($this->backendProvider->managesSoaRecord()) {
@@ -238,8 +254,6 @@ class ZoneTemplateApplier
                 $content = $this->placeholders->parseTemplateValue((string) $record['content'], $domain, $type);
             }
 
-            // A template name without [ZONE] is relative to the zone, like a form entry
-            $name = strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain));
             $ttl = (int) ($record['ttl'] ?: $defaultTtl);
             $prio = intval($record['prio']);
             // A template saved before NID kept its preference in the content still holds a bare node id
@@ -249,6 +263,13 @@ class ZoneTemplateApplier
             }
 
             if ($this->backendProvider->recordExists($zoneId, $name, $type, $content)) {
+                continue;
+            }
+
+            // The apex SOA and NS stay even beside a stored apex CNAME, so the zone keeps serving
+            $apexAnchor = $type === 'SOA' || ($type === 'NS' && DnsHelper::isZoneApex($name, $domain));
+            if (!$apexAnchor && self::breaksCnameRule($type, $typesByName[$name] ?? [], count($templateEntriesByName[$name] ?? []))) {
+                $conflicts[] = $name . ' ' . $type;
                 continue;
             }
 
@@ -274,7 +295,66 @@ class ZoneTemplateApplier
             });
         }
 
-        return $refused;
+        return [$refused, $conflicts];
+    }
+
+    /**
+     * The record types the zone holds, keyed by lowercase owner name.
+     *
+     * @return array<string, list<string>>
+     */
+    private function recordTypesByName(int $zoneId): array
+    {
+        $typesByName = [];
+        foreach ($this->backendProvider->getRecordsByZoneId($zoneId) as $record) {
+            $name = strtolower(rtrim((string) ($record['name'] ?? ''), '.'));
+            $typesByName[$name][] = strtoupper((string) ($record['type'] ?? ''));
+        }
+        return $typesByName;
+    }
+
+    /**
+     * The distinct type and content pairs the template writes at each name.
+     *
+     * @param array<int, array<string, mixed>> $templateRecords
+     * @return array<string, array<string, true>>
+     */
+    private function templateEntriesByName(array $templateRecords, string $domain): array
+    {
+        $entries = [];
+        foreach ($templateRecords as $record) {
+            $type = (string) $record['type'];
+            if (!self::shouldApplyTemplateRecord($domain, $type)) {
+                continue;
+            }
+            $content = $type === 'SOA' ? '' : $this->placeholders->parseTemplateValue((string) $record['content'], $domain, $type);
+            $entries[$this->resolveName($record, $domain)][strtoupper($type) . ' ' . $content] = true;
+        }
+        return $entries;
+    }
+
+    /**
+     * A template name without [ZONE] is relative to the zone, like a form entry.
+     *
+     * @param array<string, mixed> $record
+     */
+    private function resolveName(array $record, string $domain): string
+    {
+        return strtolower(DnsHelper::restoreZoneSuffix($this->placeholders->parseTemplateValue((string) $record['name'], $domain), $domain));
+    }
+
+    /**
+     * A CNAME owns its name alone. A template CNAME yields to any stored record or
+     * other template entry at its name, so the outcome never depends on row order.
+     *
+     * @param list<string> $storedTypes
+     */
+    private static function breaksCnameRule(string $type, array $storedTypes, int $templateEntriesAtName): bool
+    {
+        if (strtoupper($type) === RecordType::CNAME) {
+            return $storedTypes !== [] || $templateEntriesAtName > 1;
+        }
+        return in_array(RecordType::CNAME, $storedTypes, true);
     }
 
     /**
