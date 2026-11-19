@@ -258,6 +258,22 @@ class SupermasterManager
     }
 
     /**
+     * Point the supermasters that hand zones to a renamed account at its new name.
+     */
+    public function renameAccount(string $oldAccount, string $newAccount): void
+    {
+        if ($oldAccount === '' || $oldAccount === $newAccount) {
+            return;
+        }
+
+        foreach ($this->backendProvider->getSupermasters() as $supermaster) {
+            if (($supermaster['account'] ?? null) === $oldAccount) {
+                $this->backendProvider->updateSupermaster($supermaster['master_ip'], $supermaster['ns_name'], $supermaster['master_ip'], $supermaster['ns_name'], $newAccount);
+            }
+        }
+    }
+
+    /**
      * Validate Account is valid string
      *
      * @param string $account Account name alphanumeric and ._-

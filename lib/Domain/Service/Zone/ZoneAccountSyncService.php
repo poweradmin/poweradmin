@@ -67,9 +67,40 @@ class ZoneAccountSyncService
     }
 
     /**
+     * Replace a username that was just renamed away on every zone still carrying it. With
+     * the owner sync on the oldest owner is pushed, else the new name (a renamed user is not
+     * a removed one); with it off the new name is written straight over the old. Zones with
+     * another account, set by hand, stay as they are. A failing zone does not stop the rest;
+     * the first failure is rethrown at the end.
+     */
+    public function followRenamedUsername(string $oldUsername, string $newUsername): void
+    {
+        if ($this->backendProvider === null || $oldUsername === '' || $newUsername === '') {
+            return;
+        }
+
+        $failure = null;
+        foreach ($this->backendProvider->getZoneIdsByAccount($oldUsername) as $domainId) {
+            try {
+                if ($this->isEnabled()) {
+                    $this->pushZoneAccount($domainId, $this->owners->oldestOwnerUsername($domainId) ?? $newUsername);
+                } else {
+                    $this->backendProvider->updateZoneAccount($domainId, $newUsername);
+                }
+            } catch (\Throwable $e) {
+                $failure ??= $e;
+            }
+        }
+        if ($failure !== null) {
+            throw $failure;
+        }
+    }
+
+    /**
      * Push a resolved owner username to the backend, for callers with their
      * own ownership lookup. Zones without a direct owner get an empty account
-     * so removed users don't linger.
+     * so removed users don't linger; a renamed user is not a removed one, see
+     * followRenamedUsername().
      *
      * @param int $domainId Domain ID
      * @param string|null $username Owner username, or null when the zone has no direct owner

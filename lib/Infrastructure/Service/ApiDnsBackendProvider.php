@@ -418,6 +418,19 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         return $this->client->updateZoneProperties($apiName, ['account' => $account]);
     }
 
+    public function getZoneIdsByAccount(string $account): array
+    {
+        $ids = [];
+        foreach ($this->readZoneKinds() as $apiName => $entry) {
+            $id = $entry['account'] === $account ? $this->localIdForZoneName(rtrim($apiName, '.')) : 0;
+            if ($id > 0) {
+                $ids[] = $id;
+            }
+        }
+
+        return $ids;
+    }
+
     public function getCatalogMembers(string $catalogName): array
     {
         return array_map(
@@ -503,7 +516,7 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
     }
 
     /**
-     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string}>
+     * @return array<string, array{kind: string, masters: array<int, string>, catalog: string, account: string}>
      */
     private function readZoneKinds(): array
     {

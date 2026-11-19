@@ -98,4 +98,12 @@ interface ZoneWriteBackendInterface
      * @return bool
      */
     public function updateZoneAccount(int $domainId, string $account): bool;
+
+    /**
+     * Ids of the zones whose account field holds exactly this value.
+     *
+     * @param string $account Account value
+     * @return list<int> Canonical zone ids
+     */
+    public function getZoneIdsByAccount(string $account): array;
 }

@@ -143,4 +143,66 @@ class ZoneAccountSyncServiceTest extends TestCase
         $withoutProvider = new ZoneAccountSyncService($this->owners, $this->config, null);
         $this->assertFalse($withoutProvider->isEnabled());
     }
+
+    #[Test]
+    public function followRenamedUsernamePushesTheOldestOwnerWhenSyncIsOn(): void
+    {
+        $this->setSyncEnabled(true);
+        $this->backendProvider->method('getZoneIdsByAccount')->with('old')->willReturn([42]);
+        $this->expectOwnerQueryReturning('new');
+        $this->backendProvider->expects($this->once())->method('updateZoneAccount')->with(42, 'new')->willReturn(true);
+
+        (new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider))->followRenamedUsername('old', 'new');
+    }
+
+    #[Test]
+    public function followRenamedUsernameKeepsTheNewNameOnAZoneWithoutADirectOwner(): void
+    {
+        $this->setSyncEnabled(true);
+        $this->backendProvider->method('getZoneIdsByAccount')->with('old')->willReturn([42]);
+        $this->expectOwnerQueryReturning(null);
+        $this->backendProvider->expects($this->once())->method('updateZoneAccount')->with(42, 'new')->willReturn(true);
+
+        (new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider))->followRenamedUsername('old', 'new');
+    }
+
+    #[Test]
+    public function followRenamedUsernameRewritesTheOldNameWhenSyncIsOff(): void
+    {
+        $this->setSyncEnabled(false);
+        $this->owners->expects($this->never())->method('oldestOwnerUsername');
+        $this->backendProvider->method('getZoneIdsByAccount')->with('old')->willReturn([42]);
+        $this->backendProvider->expects($this->once())->method('updateZoneAccount')->with(42, 'new')->willReturn(true);
+
+        (new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider))->followRenamedUsername('old', 'new');
+    }
+
+    #[Test]
+    public function followRenamedUsernameDoesNothingWithoutABackend(): void
+    {
+        (new ZoneAccountSyncService($this->owners, $this->config, null))->followRenamedUsername('old', 'new');
+        $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function followRenamedUsernameKeepsGoingAfterAFailingZoneAndRethrowsIt(): void
+    {
+        $this->setSyncEnabled(false);
+        $this->backendProvider->method('getZoneIdsByAccount')->willReturn([1, 2]);
+        $calls = [];
+        $this->backendProvider->method('updateZoneAccount')->willReturnCallback(function (int $id) use (&$calls): bool {
+            $calls[] = $id;
+            if ($id === 1) {
+                throw new \RuntimeException('down');
+            }
+            return true;
+        });
+
+        try {
+            (new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider))->followRenamedUsername('old', 'new');
+            $this->fail('expected the first failure');
+        } catch (\RuntimeException) {
+            $this->assertSame([1, 2], $calls);
+        }
+    }
 }

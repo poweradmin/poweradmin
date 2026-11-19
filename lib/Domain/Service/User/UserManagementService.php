@@ -30,6 +30,7 @@ use Poweradmin\Domain\Port\TransactionInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
@@ -99,7 +100,8 @@ class UserManagementService
         ?LoggerInterface $logger = null,
         private readonly ?TransactionInterface $transaction = null,
         private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null,
-        private readonly ?ZoneAccountSyncService $accountSync = null
+        private readonly ?ZoneAccountSyncService $accountSync = null,
+        private readonly ?SupermasterManager $supermasters = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -505,6 +507,7 @@ class UserManagementService
             }
 
             $this->notifyOldEmail($user, $command);
+            $this->followRename((string)($user['username'] ?? ''), $command->username);
 
             return [
                 'success' => true,
@@ -523,6 +526,29 @@ class UserManagementService
                 'refusal' => Refusal::BACKEND_FAILURE,
                 'code' => self::ERR_WRITE,
             ];
+        }
+    }
+
+    /**
+     * A renamed user's old name is still on the zones and supermasters that carried it as
+     * their account, where the next person to take the name would inherit them. A failure
+     * is logged and never undoes the rename.
+     */
+    private function followRename(string $oldUsername, ?string $newUsername): void
+    {
+        if ($newUsername === null || $newUsername === '' || $newUsername === $oldUsername) {
+            return;
+        }
+
+        try {
+            $this->accountSync?->followRenamedUsername($oldUsername, $newUsername);
+        } catch (\Throwable $e) {
+            $this->logFailure('move the zone accounts of a renamed user', $e);
+        }
+        try {
+            $this->supermasters?->renameAccount($oldUsername, $newUsername);
+        } catch (\Throwable $e) {
+            $this->logFailure('move the supermaster accounts of a renamed user', $e);
         }
     }
 
@@ -767,10 +793,18 @@ class UserManagementService
             }
         }
 
-        $this->releaseAccountsOfLeftZones($userId, $zoneDecisions);
+        $released = $this->releaseAccountsOfLeftZones($userId, $zoneDecisions);
 
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
-        $deleted = $this->deleteUnlessLastAdmin($userId, $actingUserId);
+        try {
+            $deleted = $this->deleteUnlessLastAdmin($userId, $actingUserId);
+        } catch (\Throwable $e) {
+            $this->restoreAccounts($released);
+            throw $e;
+        }
+        if (is_array($deleted) || !$deleted) {
+            $this->restoreAccounts($released);
+        }
         if (is_array($deleted)) {
             return $deleted;
         }
@@ -786,23 +820,48 @@ class UserManagementService
      * owner, or none. It runs before the rows go: the API backend finds the zone through them.
      *
      * @param list<array<string, mixed>> $zoneDecisions
+     * @return list<int> Zones whose account was pushed
      */
-    private function releaseAccountsOfLeftZones(int $userId, array $zoneDecisions): void
+    private function releaseAccountsOfLeftZones(int $userId, array $zoneDecisions): array
     {
         if ($this->accountSync === null || !$this->accountSync->isEnabled()) {
-            return;
+            return [];
         }
 
-        $decided = array_map(static fn(array $decision): int => (int)$decision['zid'], $zoneDecisions);
+        // A handed-over zone is re-synced too: in SQL mode the deleted user stays its oldest owner row
+        $deleting = array_map(
+            static fn(array $decision): int => (int)$decision['zid'],
+            array_filter($zoneDecisions, static fn(array $decision): bool => $decision['target'] === 'delete')
+        );
+        $released = [];
         foreach ($this->userRepository->getUserZones($userId) as $zone) {
             $zoneId = (int)($zone['domain_id'] ?? 0) ?: (int)($zone['id'] ?? 0);
-            if ($zoneId === 0 || in_array($zoneId, $decided, true)) {
+            if ($zoneId === 0 || in_array($zoneId, $deleting, true)) {
                 continue;
             }
             try {
                 $this->accountSync->syncZoneAccount($zoneId, $userId);
+                $released[] = $zoneId;
             } catch (\Throwable $e) {
                 $this->logFailure('release the account of zone ' . $zoneId, $e);
+            }
+        }
+
+        return $released;
+    }
+
+    /**
+     * The delete did not happen, so the user still owns these zones: count them again.
+     *
+     * @param list<int> $zoneIds
+     */
+    private function restoreAccounts(array $zoneIds): void
+    {
+        foreach ($zoneIds as $zoneId) {
+            try {
+                $this->accountSync?->syncZoneAccount($zoneId);
+            } catch (\Throwable $e) {
+                $this->logFailure('restore the account of zone ' . $zoneId, $e);
             }
         }
     }

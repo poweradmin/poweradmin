@@ -32,6 +32,9 @@ use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
+use Poweradmin\Domain\Service\Dns\ZoneWriteResult;
+use Poweradmin\Domain\Service\User\UpdateUserCommand;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\User\UserProfileAssembler;
 use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
@@ -42,7 +45,10 @@ class UserManagementServiceAccountReleaseTest extends TestCase
 {
     private UserRepositoryInterface&MockObject $userRepository;
     private ZoneAccountSyncService&MockObject $accountSync;
+    private SupermasterManager&MockObject $supermasters;
     private UserManagementService $service;
+
+    private string $storedUsername = 'someone';
 
     /** @var list<string> */
     private array $calls = [];
@@ -50,7 +56,7 @@ class UserManagementServiceAccountReleaseTest extends TestCase
     protected function setUp(): void
     {
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
-        $this->userRepository->method('getUserById')->willReturn(['id' => 2, 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserById')->willReturnCallback(fn(): array => ['id' => 2, 'username' => $this->storedUsername, 'auth_method' => 'sql']);
         $this->userRepository->method('isLastUberuser')->willReturn(false);
         $this->userRepository->method('getUserZones')->willReturn([
             ['id' => 71, 'domain_id' => 7],
@@ -62,13 +68,19 @@ class UserManagementServiceAccountReleaseTest extends TestCase
             return true;
         });
 
-        $permissions = $this->createMock(PermissionService::class);
-        $permissions->method('canDeleteZoneById')->willReturn(true);
-        $zones = $this->createMock(ZoneManagementService::class);
-        $zones->method('deleteZone')->willReturn(['success' => true, 'message' => '']);
-
         $this->accountSync = $this->createMock(ZoneAccountSyncService::class);
         $this->accountSync->method('isEnabled')->willReturn(true);
+        $this->supermasters = $this->createMock(SupermasterManager::class);
+        $this->rebuild();
+    }
+
+    private function rebuild(?DomainManagerInterface $domainManager = null): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('canDeleteZoneById')->willReturn(true);
+        $permissions->method('canEditZoneMeta')->willReturn(true);
+        $zones = $this->createMock(ZoneManagementService::class);
+        $zones->method('deleteZone')->willReturn(['success' => true, 'message' => '']);
 
         $this->service = new UserManagementService(
             $this->userRepository,
@@ -77,10 +89,33 @@ class UserManagementServiceAccountReleaseTest extends TestCase
             new UserAuthenticationService('bcrypt', 4),
             $this->createMock(PasswordPolicyService::class),
             false,
-            $this->createMock(DomainManagerInterface::class),
+            $domainManager ?? $this->createMock(DomainManagerInterface::class),
             $zones,
-            accountSync: $this->accountSync
+            accountSync: $this->accountSync,
+            supermasters: $this->supermasters
         );
+    }
+
+    #[Test]
+    public function testARenameMovesTheZonesAndSupermastersCarryingTheOldName(): void
+    {
+        $this->userRepository->method('updateUser')->willReturn(true);
+        $this->storedUsername = 'old';
+        $this->accountSync->expects($this->once())->method('followRenamedUsername')->with('old', 'new');
+        $this->supermasters->expects($this->once())->method('renameAccount')->with('old', 'new');
+
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'new'))['success']);
+    }
+
+    #[Test]
+    public function testAnEditThatKeepsTheNameMovesNothing(): void
+    {
+        $this->userRepository->method('updateUser')->willReturn(true);
+        $this->storedUsername = 'same';
+        $this->accountSync->expects($this->never())->method('followRenamedUsername');
+        $this->supermasters->expects($this->never())->method('renameAccount');
+
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'same', fullname: 'Someone'))['success']);
     }
 
     #[Test]
@@ -95,6 +130,74 @@ class UserManagementServiceAccountReleaseTest extends TestCase
 
         $this->assertTrue($result['success']);
         $this->assertSame(['sync 8 excluding 2', 'sync 9 excluding 2', 'deleteUser'], $this->calls);
+    }
+
+    #[Test]
+    public function testAHandedOverZoneIsResyncedWithoutTheUserToo(): void
+    {
+        $this->accountSync->expects($this->exactly(2))->method('syncZoneAccount')
+            ->willReturnCallback(function (int $zoneId, ?int $exclude): void {
+                $this->calls[] = "sync $zoneId excluding $exclude";
+            });
+        $domainManager = $this->createMock(DomainManagerInterface::class);
+        $domainManager->method('handOverZone')->willReturn(ZoneWriteResult::ok(8));
+        $this->rebuild($domainManager);
+
+        $this->service->deleteUserWithZoneDecisions(1, 2, [['zid' => 7, 'target' => 'delete'], ['zid' => 8, 'target' => 'new_owner', 'newowner' => 5]]);
+
+        $this->assertSame(['sync 8 excluding 2', 'sync 9 excluding 2', 'deleteUser'], $this->calls);
+    }
+
+    #[Test]
+    public function testARefusedDeleteCountsTheUserAsOwnerAgain(): void
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getUserById')->willReturn(['id' => 2, 'auth_method' => 'sql']);
+        $repository->method('isLastUberuser')->willReturnOnConsecutiveCalls(false, true);
+        $repository->method('getUserZones')->willReturn([['id' => 91, 'domain_id' => 9]]);
+        $this->userRepository = $repository;
+        $this->rebuild();
+        $this->accountSync->method('syncZoneAccount')->willReturnCallback(function (int $zoneId, ?int $exclude = null): void {
+            $this->calls[] = "sync $zoneId excluding " . var_export($exclude, true);
+        });
+
+        $result = $this->service->deleteUserWithZoneDecisions(1, 2, []);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(['sync 9 excluding 2', 'sync 9 excluding NULL'], $this->calls);
+    }
+
+    #[Test]
+    public function testAThrowingDeleteCountsTheUserAsOwnerAgainAndRethrows(): void
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('getUserById')->willReturn(['id' => 2, 'auth_method' => 'sql']);
+        $repository->method('isLastUberuser')->willReturn(false);
+        $repository->method('getUserZones')->willReturn([['id' => 91, 'domain_id' => 9]]);
+        $repository->method('deleteUser')->willThrowException(new \RuntimeException('deadlock'));
+        $this->userRepository = $repository;
+        $this->rebuild();
+        $this->accountSync->method('syncZoneAccount')->willReturnCallback(function (int $zoneId, ?int $exclude = null): void {
+            $this->calls[] = "sync $zoneId excluding " . var_export($exclude, true);
+        });
+
+        try {
+            $this->service->deleteUserWithZoneDecisions(1, 2, []);
+            $this->fail('expected the exception');
+        } catch (\RuntimeException) {
+            $this->assertSame(['sync 9 excluding 2', 'sync 9 excluding NULL'], $this->calls);
+        }
+    }
+
+    #[Test]
+    public function testAFailingZoneStepDoesNotSkipTheSupermasterStep(): void
+    {
+        $this->userRepository->method('updateUser')->willReturn(true);
+        $this->storedUsername = 'old';
+        $this->accountSync->method('followRenamedUsername')->willThrowException(new \RuntimeException('down'));
+        $this->supermasters->expects($this->once())->method('renameAccount')->with('old', 'new');
+
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'new'))['success']);
     }
 
     #[Test]

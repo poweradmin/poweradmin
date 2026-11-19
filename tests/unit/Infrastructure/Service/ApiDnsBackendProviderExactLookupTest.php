@@ -199,4 +199,15 @@ class ApiDnsBackendProviderExactLookupTest extends TestCase
 
         $this->assertSame([], $this->provider->findZoneRecordsByContent(2, '*.example.com'));
     }
+
+    public function testZonesCarryingAnAccountAreFoundByTheirLocalIds(): void
+    {
+        $this->client->method('getAllZoneKinds')->willReturn([
+            'example.com.' => ['kind' => 'Native', 'masters' => [], 'catalog' => '', 'account' => 'alice'],
+            'sub.example.com.' => ['kind' => 'Native', 'masters' => [], 'catalog' => '', 'account' => 'bob'],
+            'unsynced.org.' => ['kind' => 'Native', 'masters' => [], 'catalog' => '', 'account' => 'alice'],
+        ]);
+
+        $this->assertSame([1], $this->provider->getZoneIdsByAccount('alice'));
+    }
 }

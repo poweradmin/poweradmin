@@ -836,4 +836,15 @@ class SqlDnsBackendProviderTest extends TestCase
 
         $this->assertSame(['is_disabled' => false, 'is_missing_soa' => false], $result);
     }
+
+    public function testGetZoneIdsByAccountMatchesTheExactValue(): void
+    {
+        $provider = $this->sqliteProvider($db);
+        $db->exec("ALTER TABLE domains ADD COLUMN account TEXT");
+        $db->exec("UPDATE domains SET account = 'alice' WHERE id IN (1, 3)");
+        $db->exec("UPDATE domains SET account = 'alice2' WHERE id = 2");
+
+        $this->assertSame([1, 3], $provider->getZoneIdsByAccount('alice'));
+        $this->assertSame([], $provider->getZoneIdsByAccount('bob'));
+    }
 }

@@ -170,4 +170,17 @@ class SupermasterManagerDelegationTest extends TestCase
             ['master_ip' => '192.168.1.3', 'ns_name' => 'ns3.example.com', 'account' => 'ghost', 'fullname' => ''],
         ], $result);
     }
+
+    public function testRenameAccountMovesOnlyTheSupermastersOfTheOldAccount(): void
+    {
+        $this->mockBackendProvider->method('getSupermasters')->willReturn([
+            ['master_ip' => '192.0.2.1', 'ns_name' => 'ns1.example.com', 'account' => 'old'],
+            ['master_ip' => '192.0.2.2', 'ns_name' => 'ns2.example.com', 'account' => 'other'],
+        ]);
+        $this->mockBackendProvider->expects($this->once())->method('updateSupermaster')
+            ->with('192.0.2.1', 'ns1.example.com', '192.0.2.1', 'ns1.example.com', 'new')
+            ->willReturn(true);
+
+        (new SupermasterManager($this->mockUsers, $this->mockConfig, $this->mockBackendProvider))->renameAccount('old', 'new');
+    }
 }

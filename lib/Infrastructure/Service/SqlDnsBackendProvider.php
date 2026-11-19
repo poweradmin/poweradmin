@@ -255,6 +255,16 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return true;
     }
 
+    public function getZoneIdsByAccount(string $account): array
+    {
+        $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE account = :account");
+        $stmt->execute([':account' => $account]);
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function getCatalogMembers(string $catalogName): array
     {
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
