@@ -65,6 +65,8 @@ class UsersControllerSelfEditTest extends TestCase
 
         $repository = $this->createMock(\Poweradmin\Domain\Repository\UserRepositoryInterface::class);
         $repository->method('getUserById')->willReturn(['username' => $storedUsername, 'fullname' => 'Name', 'email' => 'a@example.com', 'auth_method' => $authMethod]);
+        $listed = ['uid' => $targetId, 'username' => $storedUsername, 'fullname' => 'Name', 'email' => 'a@example.com', 'auth_type' => $authMethod];
+        $repository->method('getUserDetailList')->willReturn([$listed]);
 
         $services = $this->createMock(ControllerServiceFactory::class);
         $services->method('userRepository')->willReturn($repository);
@@ -72,7 +74,7 @@ class UsersControllerSelfEditTest extends TestCase
         $services->method('userManagementService')->willReturn($users);
         $controller->method('services')->willReturn($services);
 
-        $posted = ['uid' => $targetId, 'username' => 'renamed', 'fullname' => 'Name', 'email' => 'a@example.com', 'active' => 'on'];
+        $posted = ['uid' => $targetId, 'username' => 'renamed', 'fullname' => 'Name', 'email' => 'a@example.com', 'active' => 'on', 'form_state' => UsersController::listRowState($listed)];
         (new ReflectionMethod(UsersController::class, 'updateUserRow'))->invoke($controller, $posted);
 
         return $captured;

@@ -10,7 +10,7 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { expectAccessDenied } from '../../helpers/access.js';
 import { assignZoneOwner, createTempZone, deleteZoneById, recordWrites, storedRecords, uniqueName, uniqueZoneName } from '../../helpers/zones.js';
-import { cleanUp, csrfTokenFrom, formStateFrom, setUserTemplate, withTempUser } from '../../helpers/users.js';
+import { cleanUp, csrfTokenFrom, formStateFrom, listRowStateFrom, setUserTemplate, withTempUser } from '../../helpers/users.js';
 
 // Teardown runs inside the test body, so the budget covers it too
 test.describe.configure({ mode: 'serial', timeout: 180_000 });
@@ -42,6 +42,7 @@ test.describe('Other users\' accounts', () => {
             _token: token, commit: '',
             'user[0][uid]': victim.id, 'user[0][username]': victim.username, 'user[0][fullname]': 'Hijacked',
             'user[0][email]': `${victim.username}@example.com`, 'user[0][active]': 'on',
+            'user[0][form_state]': await listRowStateFrom(adminPage, victim),
           },
         });
 
@@ -66,6 +67,7 @@ test.describe('Other users\' accounts', () => {
             _token: await csrfTokenFrom(adminPage, '/users'), commit: '',
             'user[0][uid]': actor.id, 'user[0][username]': actor.username, 'user[0][fullname]': 'Bulk edited',
             'user[0][email]': `${actor.username}@example.com`, 'user[0][active]': 'on',
+            'user[0][form_state]': await listRowStateFrom(adminPage, actor),
           },
         });
         await adminPage.goto(`/users/${actor.id}/edit`);

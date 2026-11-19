@@ -53,6 +53,8 @@ class UsersControllerEmailTest extends TestCase
         $apiPermissions->method('canEditUserPassword')->willReturn($mayEditPasswords);
         $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getUserById')->willReturn(['id' => 9, 'username' => $storedUsername, 'email' => $storedEmail]);
+        $listed = ['uid' => 9, 'username' => $storedUsername, 'email' => $storedEmail];
+        $repository->method('getUserDetailList')->willReturn([$listed]);
         $users = $this->createMock(UserManagementService::class);
         $users->method('updateUser')->willReturn(['success' => true]);
 
@@ -62,9 +64,57 @@ class UsersControllerEmailTest extends TestCase
         $services->method('userManagementService')->willReturn($users);
         $controller->method('services')->willReturn($services);
 
-        $posted = ['uid' => 9, 'username' => 'alice', 'fullname' => 'Alice', 'email' => $postedEmail, 'active' => 'on'];
+        $posted = ['uid' => 9, 'username' => 'alice', 'fullname' => 'Alice', 'email' => $postedEmail, 'active' => 'on', 'form_state' => UsersController::listRowState($listed)];
 
         return (new ReflectionMethod(UsersController::class, 'updateUserRow'))->invoke($controller, $posted);
+    }
+
+    public function testARowOpenedBeforeAnotherSaveIsRefusedWithTheStoredName(): void
+    {
+        $controller = $this->getMockBuilder(UsersController::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId', 'services', 'setMessage'])
+            ->getMock();
+        $controller->method('getCurrentUserId')->willReturn(1);
+        $controller->method('hasPermission')->willReturn(true);
+        $apiPermissions = $this->createMock(ApiPermissionService::class);
+        $apiPermissions->method('canEditUser')->willReturn(true);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        // Another editor deactivated alice after the list was opened with her still active
+        $repository->method('getUserDetailList')->willReturn([['uid' => 9, 'username' => 'alice', 'active' => 0]]);
+        $users = $this->createMock(UserManagementService::class);
+        $users->expects($this->never())->method('updateUser');
+        $services = $this->createMock(ControllerServiceFactory::class);
+        $services->method('apiPermissionService')->willReturn($apiPermissions);
+        $services->method('userRepository')->willReturn($repository);
+        $services->method('userManagementService')->willReturn($users);
+        $controller->method('services')->willReturn($services);
+        $controller->expects($this->once())->method('setMessage')
+            ->with('users', 'error', 'User alice was changed by someone else after you opened this list, so that row was not saved.');
+
+        $posted = ['uid' => 9, 'username' => 'mallory', 'active' => 'on', 'form_state' => UsersController::listRowState(['uid' => 9, 'username' => 'alice', 'active' => 1])];
+
+        $this->assertFalse((new ReflectionMethod(UsersController::class, 'updateUserRow'))->invoke($controller, $posted));
+    }
+
+    public function testARowWithoutAUserIdIsRefusedWithoutNamingAnyone(): void
+    {
+        $controller = $this->getMockBuilder(UsersController::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['run', 'hasPermission', 'getCurrentUserId', 'services', 'setMessage'])
+            ->getMock();
+        $controller->method('getCurrentUserId')->willReturn(1);
+        $apiPermissions = $this->createMock(ApiPermissionService::class);
+        $apiPermissions->method('canEditUser')->willReturn(true);
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->expects($this->never())->method('getUserDetailList');
+        $services = $this->createMock(ControllerServiceFactory::class);
+        $services->method('apiPermissionService')->willReturn($apiPermissions);
+        $services->method('userRepository')->willReturn($repository);
+        $controller->method('services')->willReturn($services);
+        $controller->expects($this->once())->method('setMessage')->with('users', 'error', 'User does not exist.');
+
+        $this->assertFalse((new ReflectionMethod(UsersController::class, 'updateUserRow'))->invoke($controller, ['uid' => 0, 'username' => 'x']));
     }
 
     public function testAnUnchangedEmptyEmailDoesNotBlockTheRow(): void

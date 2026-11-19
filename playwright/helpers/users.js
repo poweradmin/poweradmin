@@ -227,6 +227,19 @@ export async function formStateFrom(page, path) {
 }
 
 /**
+ * The stamp of one user's row on the users list, or '' when the list does not show it.
+ *
+ * @param {import('@playwright/test').Page} page
+ * @param {{id: string|number, username: string}} user
+ * @returns {Promise<string>}
+ */
+export async function listRowStateFrom(page, user) {
+  await page.goto(`/users?search=${encodeURIComponent(user.username)}`);
+  const field = page.locator(`input[name="user[${user.id}][form_state]"]`);
+  return (await field.count()) > 0 ? field.first().inputValue() : '';
+}
+
+/**
  * Run every cleanup step even when an earlier one throws, then rethrow the first error.
  */
 export async function cleanUp(...steps) {

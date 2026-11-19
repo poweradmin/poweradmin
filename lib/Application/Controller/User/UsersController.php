@@ -105,6 +105,22 @@ class UsersController extends BaseController
             return false;
         }
 
+        // Every row is posted, so a list opened before another editor saved would put back what they changed
+        // An id of 0 would make the lookup list every user and name an unrelated one
+        $listed = $targetId > 0 ? ($this->services()->userRepository()->getUserDetailList(false, null, $targetId)[0] ?? []) : [];
+        if ($listed === []) {
+            $this->setMessage('users', 'error', _('User does not exist.'));
+            return false;
+        }
+        $postedState = is_string($posted['form_state'] ?? null) ? $posted['form_state'] : '';
+        if (!hash_equals(self::listRowState($listed), $postedState)) {
+            $this->setMessage('users', 'error', sprintf(
+                _('User %s was changed by someone else after you opened this list, so that row was not saved.'),
+                (string)($listed['username'] ?? $targetId)
+            ));
+            return false;
+        }
+
         // The same address rule as the single-user form, for an address this save changes:
         // accounts an identity provider created may have none, and every row is posted
         $email = (string)($posted['email'] ?? '');
@@ -187,6 +203,17 @@ class UsersController extends BaseController
             || $postedUseLdap != (int)$current['use_ldap'];
     }
 
+    /**
+     * A row's stamp of the stored values the list writes; use_ldap is not one of them, and the
+     * list query reads it only while LDAP is on, so it is left out to keep both reads equal.
+     *
+     * @param array<string, mixed> $user Row from getUserDetailList()
+     */
+    public static function listRowState(array $user): string
+    {
+        return EditUserController::formState(array_merge($user, ['use_ldap' => 0]));
+    }
+
     private function showUsers(): void
     {
         $permissions = $this->services()->permissionService()->getPermissionFlags(
@@ -236,6 +263,7 @@ class UsersController extends BaseController
                 $user['zone_limit'] = $zoneUsage[(int)$user['uid']]['limit'] ?? null;
             }
             $user['can_edit'] = $apiPermissions->canEditUser($callerId, (int)$user['uid']);
+            $user['form_state'] = self::listRowState($user);
             $user['can_change_template'] = $user['can_edit'] && $permissions[Permission::PERM_USER_EDIT_TEMPL_PERM];
         }
         unset($user);
