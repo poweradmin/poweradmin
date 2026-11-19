@@ -35,7 +35,7 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class Dns
@@ -104,7 +104,7 @@ class Dns
         $zone = strtolower((string)$zone);
 
         if ($type != "CNAME") {
-            if (!$this->is_valid_rr_cname_exists($name, $rid)) {
+            if (!$this->is_valid_rr_cname_exists($name, $rid, $zid)) {
                 return false;
             }
         }
@@ -140,10 +140,10 @@ class Dns
                 break;
 
             case "CNAME":
-                if (!$this->is_valid_rr_cname_name($name)) {
+                if (!$this->is_valid_rr_cname_name($name, $zid)) {
                     return false;
                 }
-                if (!$this->is_valid_rr_cname_unique($name, $rid)) {
+                if (!$this->is_valid_rr_cname_unique($name, $rid, $zid)) {
                     return false;
                 }
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
@@ -174,7 +174,7 @@ class Dns
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
                     return false;
                 }
-                if (!$this->is_valid_non_alias_target($content)) {
+                if (!$this->is_valid_non_alias_target($content, $zid)) {
                     return false;
                 }
                 break;
@@ -623,17 +623,19 @@ class Dns
      * Check if any MX or NS entries exist which invalidated CNAME
      *
      * @param string $name CNAME to lookup
+     * @param int|null $zid Zone the CNAME belongs to; null checks every zone
      *
      * @return boolean true if valid, false otherwise
      */
-    public function is_valid_rr_cname_name(string $name): bool
+    public function is_valid_rr_cname_name(string $name, ?int $zid = null): bool
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table
 			WHERE content = " . $this->db->quote($name, 'text') . "
-			AND (type = " . $this->db->quote('MX', 'text') . " OR type = " . $this->db->quote('NS', 'text') . ")";
+			AND (type = " . $this->db->quote('MX', 'text') . " OR type = " . $this->db->quote('NS', 'text') . ")"
+            . ($zid !== null ? " AND domain_id = " . $zid : '');
 
         $response = $this->db->queryOne($query);
 
@@ -652,15 +654,17 @@ class Dns
      *
      * @param string $name CNAME
      * @param int $rid Record ID
+     * @param int|null $zid Zone the record belongs to; null checks every zone
      *
      * @return boolean true if non-existant, false if exists
      */
-    public function is_valid_rr_cname_exists(string $name, int $rid): bool
+    public function is_valid_rr_cname_exists(string $name, int $rid, ?int $zid = null): bool
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
+        $where .= ($zid !== null ? " AND domain_id = " . $zid : '');
         $query = "SELECT id FROM $records_table
                         WHERE name = " . $this->db->quote($name, 'text') . $where . "
                         AND TYPE = 'CNAME'";
@@ -680,15 +684,17 @@ class Dns
      *
      * @param string $name CNAME
      * @param string $rid Record ID
+     * @param int|null $zid Zone the CNAME belongs to; null checks every zone
      *
      * @return boolean true if unique, false if duplicate
      */
-    public function is_valid_rr_cname_unique(string $name, string $rid): bool
+    public function is_valid_rr_cname_unique(string $name, string $rid, ?int $zid = null): bool
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
+        $where .= ($zid !== null ? " AND domain_id = " . $zid : '');
         $query = "SELECT id FROM $records_table
                         WHERE name = " . $this->db->quote($name, 'text') . $where;
 
@@ -726,17 +732,19 @@ class Dns
     /** Check if target is not a CNAME
      *
      * @param string $target target to check
+     * @param int|null $zid Zone the NS or MX record belongs to; null checks every zone
      *
      * @return boolean true if not alias, false if CNAME exists
      */
-    public function is_valid_non_alias_target(string $target): bool
+    public function is_valid_non_alias_target(string $target, ?int $zid = null): bool
     {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table
 			WHERE name = " . $this->db->quote($target, 'text') . "
-			AND TYPE = " . $this->db->quote('CNAME', 'text');
+			AND TYPE = " . $this->db->quote('CNAME', 'text')
+            . ($zid !== null ? " AND domain_id = " . $zid : '');
 
         $response = $this->db->queryOne($query);
         if ($response) {
