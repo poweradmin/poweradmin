@@ -30,6 +30,7 @@ use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -1162,37 +1163,22 @@ class DnsRecord
      */
     public function get_best_matching_zone_id_from_name(string $domain): int
     {
-        // rev-patch
-        // string to find the correct zone
-        // %ip6.arpa and %in-addr.arpa is looked for
-
-        $match = 72; // the longest ip6.arpa has a length of 72
-        $found_domain_id = -1;
-
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
-        // get all reverse-zones
+        // ORDER BY length DESC returns the most specific zone first, so the first zone the
+        // name equals or ends with on a label boundary wins ("12.0.192..." is not in "2.0.192...")
         $query = "SELECT name, id FROM $domains_table
                    WHERE name like " . $this->db->quote('%.arpa', 'text') . "
                    ORDER BY length(name) DESC";
 
         $response = $this->db->query($query);
-        if ($response) {
-            while ($r = $response->fetch()) {
-                $pos = stripos($domain, $r["name"]);
-                if ($pos !== false) {
-                    // one possible searched $domain is found
-                    if ($pos < $match) {
-                        $match = $pos;
-                        $found_domain_id = $r["id"];
-                    }
-                }
+        while ($r = $response->fetch()) {
+            if (DnsHelper::isWithinZone($domain, $r["name"])) {
+                return (int)$r["id"];
             }
-        } else {
-            return -1;
         }
-        return $found_domain_id;
+        return -1;
     }
 
     /** Check whether a new zone would be carved out of a zone owned by another user
