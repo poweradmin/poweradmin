@@ -16557,3 +16557,16 @@ msgstr "ゾーンテンプレートに、同じ名前の他のレコードと競
 msgid "%d zone was updated without the template records that conflict with a CNAME."
 msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
 msgstr[0] "%d 個のゾーンを、CNAME と競合するテンプレートレコードを除いて更新しました。"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "この権限テンプレートは、開いた後に別のユーザーによって変更されました。現在の値を確認して、もう一度保存してください。"
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "このユーザーは、フォームを開いた後に別のユーザーによって変更されました。現在の値を確認して、もう一度保存してください。"
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "ユーザー %s は、この一覧を開いた後に別のユーザーによって変更されたため、その行は保存されませんでした。"

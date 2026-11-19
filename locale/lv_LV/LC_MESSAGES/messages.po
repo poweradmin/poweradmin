@@ -16326,3 +16326,16 @@ msgid_plural "%d zones were updated without the template records that conflict w
 msgstr[0] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
 msgstr[1] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
 msgstr[2] "Zonas, kas atjauninātas bez veidnes ierakstiem, kuri ir pretrunā ar CNAME: %d"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "Pēc tam, kad atvērāt šo atļauju veidni, to mainīja kāds cits. Pārskatiet pašreizējās vērtības un saglabājiet vēlreiz."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "Pēc tam, kad atvērāt veidlapu, šo lietotāju mainīja kāds cits. Pārskatiet pašreizējās vērtības un saglabājiet vēlreiz."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "Pēc tam, kad atvērāt šo sarakstu, lietotāju %s mainīja kāds cits, tāpēc šī rinda netika saglabāta."

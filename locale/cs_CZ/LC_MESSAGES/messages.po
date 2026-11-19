@@ -16533,3 +16533,16 @@ msgid_plural "%d zones were updated without the template records that conflict w
 msgstr[0] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"
 msgstr[1] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"
 msgstr[2] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "Tuto šablonu oprávnění po jejím otevření změnil někdo jiný. Zkontrolujte aktuální hodnoty a uložte znovu."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "Tohoto uživatele po otevření formuláře změnil někdo jiný. Zkontrolujte aktuální hodnoty a uložte znovu."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "Uživatele %s po otevření tohoto seznamu změnil někdo jiný, proto tento řádek nebyl uložen."

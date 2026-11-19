@@ -17135,3 +17135,16 @@ msgid "%d zone was updated without the template records that conflict with a CNA
 msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
 msgstr[0] "%d ζώνη ενημερώθηκε χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."
 msgstr[1] "%d ζώνες ενημερώθηκαν χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "Αυτό το πρότυπο δικαιωμάτων άλλαξε από κάποιον άλλον αφού το ανοίξατε. Ελέγξτε τις τρέχουσες τιμές και αποθηκεύστε ξανά."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "Αυτός ο χρήστης άλλαξε από κάποιον άλλον αφού ανοίξατε τη φόρμα. Ελέγξτε τις τρέχουσες τιμές και αποθηκεύστε ξανά."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "Ο χρήστης %s άλλαξε από κάποιον άλλον αφού ανοίξατε αυτή τη λίστα, οπότε η γραμμή δεν αποθηκεύτηκε."

@@ -16633,3 +16633,16 @@ msgid_plural "%d zones were updated without the template records that conflict w
 msgstr[0] "%d zona atnaujinta be šablono įrašų, prieštaraujančių CNAME įrašui."
 msgstr[1] "%d zonos atnaujintos be šablono įrašų, prieštaraujančių CNAME įrašui."
 msgstr[2] "%d zonų atnaujinta be šablono įrašų, prieštaraujančių CNAME įrašui."
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "Atidarius šį teisių šabloną, jį pakeitė kažkas kitas. Peržiūrėkite dabartines reikšmes ir išsaugokite dar kartą."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "Atidarius formą, šį naudotoją pakeitė kažkas kitas. Peržiūrėkite dabartines reikšmes ir išsaugokite dar kartą."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "Atidarius šį sąrašą, naudotoją %s pakeitė kažkas kitas, todėl ta eilutė neišsaugota."

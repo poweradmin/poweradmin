@@ -17038,3 +17038,16 @@ msgstr[1] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach 
 msgstr[2] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
 msgstr[3] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
 msgstr[4] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "D'athraigh duine eile an teimpléad ceadanna seo tar éis duit é a oscailt. Athbhreithnigh na luachanna reatha agus sábháil arís."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "D'athraigh duine eile an t-úsáideoir seo tar éis duit an fhoirm a oscailt. Athbhreithnigh na luachanna reatha agus sábháil arís."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "D'athraigh duine eile an t-úsáideoir %s tar éis duit an liosta seo a oscailt, mar sin níor sábháladh an tsraith sin."

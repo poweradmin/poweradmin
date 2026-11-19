@@ -15819,3 +15819,16 @@ msgstr "เทมเพลตโซนมีเรกคอร์ด CNAME ท�
 msgid "%d zone was updated without the template records that conflict with a CNAME."
 msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
 msgstr[0] "อัปเดต %d โซนโดยไม่รวมเรกคอร์ดของเทมเพลตที่ขัดแย้งกับ CNAME"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "มีผู้อื่นเปลี่ยนเทมเพลตสิทธิ์นี้หลังจากที่คุณเปิด ตรวจสอบค่าปัจจุบันแล้วบันทึกอีกครั้ง"
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "มีผู้อื่นเปลี่ยนผู้ใช้นี้หลังจากที่คุณเปิดแบบฟอร์ม ตรวจสอบค่าปัจจุบันแล้วบันทึกอีกครั้ง"
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "มีผู้อื่นเปลี่ยนผู้ใช้ %s หลังจากที่คุณเปิดรายการนี้ จึงไม่ได้บันทึกแถวนั้น"

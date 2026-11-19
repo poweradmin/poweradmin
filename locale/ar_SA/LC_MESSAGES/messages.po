@@ -16290,3 +16290,16 @@ msgstr[2] "عدد المناطق التي حُدِّثت دون سجلات ال�
 msgstr[3] "عدد المناطق التي حُدِّثت دون سجلات القالب المتعارضة مع CNAME: %d"
 msgstr[4] "عدد المناطق التي حُدِّثت دون سجلات القالب المتعارضة مع CNAME: %d"
 msgstr[5] "عدد المناطق التي حُدِّثت دون سجلات القالب المتعارضة مع CNAME: %d"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "غيّر شخص آخر قالب الأذونات هذا بعد أن فتحته. راجع القيم الحالية واحفظ مرة أخرى."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "غيّر شخص آخر هذا المستخدم بعد أن فتحت النموذج. راجع القيم الحالية واحفظ مرة أخرى."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "غيّر شخص آخر المستخدم %s بعد أن فتحت هذه القائمة، لذلك لم يُحفظ ذلك الصف."

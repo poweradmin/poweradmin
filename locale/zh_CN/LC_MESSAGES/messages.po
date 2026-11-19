@@ -15474,3 +15474,16 @@ msgid "%d zone was updated without the template records that conflict with a CNA
 msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
 msgstr[0] "已更新 %d 个区域，但未包含与 CNAME 冲突的模板记录。"
 msgstr[1] "已更新 %d 个区域，但未包含与 CNAME 冲突的模板记录。"
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "您打开此权限模板后，其他人修改了它。请检查当前值后再次保存。"
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "您打开表单后，其他人修改了此用户。请检查当前值后再次保存。"
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "您打开此列表后，其他人修改了用户 %s，因此该行未保存。"

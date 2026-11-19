@@ -16265,3 +16265,16 @@ msgid "%d zone was updated without the template records that conflict with a CNA
 msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
 msgstr[0] "%d tsoon uuendati ilma malli kirjeteta, mis on vastuolus CNAME-kirjega."
 msgstr[1] "%d tsooni uuendati ilma malli kirjeteta, mis on vastuolus CNAME-kirjega."
+
+#: lib/Application/Controller/User/EditPermTemplController.php:102
+msgid "This permission template was changed by someone else after you opened it. Review the current values and save again."
+msgstr "Keegi teine muutis seda õiguste malli pärast seda, kui selle avasite. Vaadake praegused väärtused üle ja salvestage uuesti."
+
+#: lib/Application/Controller/User/EditUserController.php:108
+msgid "This user was changed by someone else after you opened the form. Review the current values and save again."
+msgstr "Keegi teine muutis seda kasutajat pärast seda, kui vormi avasite. Vaadake praegused väärtused üle ja salvestage uuesti."
+
+#: lib/Application/Controller/User/UsersController.php:113
+#, php-format
+msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
+msgstr "Keegi teine muutis kasutajat %s pärast seda, kui selle loendi avasite, seega seda rida ei salvestatud."
