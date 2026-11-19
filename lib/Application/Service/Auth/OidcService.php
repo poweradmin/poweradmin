@@ -48,7 +48,8 @@ final class OidcService
 {
     // Carries OIDC flow state across the IdP's cross-site POST when a provider
     // uses response_mode=form_post, since the session cookie is SameSite=Lax.
-    private const FLOW_COOKIE_NAME = 'oidc_flow';
+    // __Host- stops a sibling host planting one.
+    private const FLOW_COOKIE_NAME = '__Host-oidc_flow';
     private const FLOW_COOKIE_TTL = 300;
 
     private LoggerInterface $logger;
@@ -742,20 +743,11 @@ final class OidcService
     {
         setcookie(self::FLOW_COOKIE_NAME, $value, [
             'expires' => $expires,
-            'path' => $this->getFlowCookiePath(),
+            'path' => '/',
             'secure' => true,
             'httponly' => true,
             'samesite' => 'None',
         ]);
-    }
-
-    private function getFlowCookiePath(): string
-    {
-        // Must match the real callback path or the browser won't return the
-        // cookie; getCallbackUrl() honors application_url and base_url_prefix.
-        $path = parse_url($this->getCallbackUrl(), PHP_URL_PATH);
-
-        return is_string($path) && $path !== '' ? $path : '/oidc/callback';
     }
 
     private function flowEncryptionService(): PasswordEncryptionService

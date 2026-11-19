@@ -125,18 +125,30 @@ class OidcServiceFormPostTest extends TestCase
         $this->assertTrue($this->invoke($service, 'shouldUseFormPost', ['response_mode' => 'form_post'], 'test'));
     }
 
-    public function testFlowCookiePathMatchesSubfolderCallbackUrl(): void
+    public function testFlowCookieUsesTheHostPrefixedName(): void
     {
-        $service = $this->makeService('https://dns.example.com/poweradmin');
+        $this->assertSame('__Host-oidc_flow', (new \ReflectionClassConstant(OidcService::class, 'FLOW_COOKIE_NAME'))->getValue());
+    }
 
-        $this->assertSame('/poweradmin/oidc/callback', $this->invoke($service, 'getFlowCookiePath'));
+    public function testRestoreFlowIgnoresTheUnprefixedCookie(): void
+    {
+        $service = $this->makeService('https://dns.example.com');
+        $_COOKIE['oidc_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
+            'state' => 'state-123',
+            'provider' => 'keycloak',
+            'verifier' => 'pkce-verifier-456',
+        ]));
+
+        $this->invoke($service, 'restoreFlowFromCookie');
+
+        $this->assertArrayNotHasKey('oidc_state', $this->session->all());
     }
 
     public function testRestoreFlowFromCookieHydratesSession(): void
     {
         $service = $this->makeService('https://dns.example.com');
         $encryption = new PasswordEncryptionService(self::SESSION_KEY);
-        $_COOKIE['oidc_flow'] = $encryption->encrypt(json_encode([
+        $_COOKIE['__Host-oidc_flow'] = $encryption->encrypt(json_encode([
             'state' => 'state-123',
             'provider' => 'keycloak',
             'verifier' => 'pkce-verifier-456',
@@ -152,7 +164,7 @@ class OidcServiceFormPostTest extends TestCase
     public function testRestoreFlowIgnoresGarbageCookie(): void
     {
         $service = $this->makeService('https://dns.example.com');
-        $_COOKIE['oidc_flow'] = 'not-an-encrypted-payload';
+        $_COOKIE['__Host-oidc_flow'] = 'not-an-encrypted-payload';
 
         $this->invoke($service, 'restoreFlowFromCookie');
 
@@ -166,7 +178,7 @@ class OidcServiceFormPostTest extends TestCase
     {
         $service = $this->makeService('https://dns.example.com');
         $encryption = new PasswordEncryptionService(self::SESSION_KEY);
-        $_COOKIE['oidc_flow'] = $encryption->encrypt(json_encode([
+        $_COOKIE['__Host-oidc_flow'] = $encryption->encrypt(json_encode([
             'state' => 'state-123',
             'provider' => 'keycloak',
         ]));
@@ -182,7 +194,7 @@ class OidcServiceFormPostTest extends TestCase
     {
         $service = $this->makeService('https://dns.example.com');
         $encryption = new PasswordEncryptionService('some-other-key');
-        $_COOKIE['oidc_flow'] = $encryption->encrypt(json_encode([
+        $_COOKIE['__Host-oidc_flow'] = $encryption->encrypt(json_encode([
             'state' => 'state-123',
             'provider' => 'keycloak',
             'verifier' => 'pkce-verifier-456',
