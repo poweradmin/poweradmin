@@ -38,6 +38,19 @@ function initializeTimezone(ConfigurationInterface $config): void
 }
 
 /**
+ * Secure flag for the session cookie: detected HTTPS, or an operator's session.cookie_secure,
+ * which this never lowers (a terminator that hides the scheme would otherwise drop it).
+ * $iniCookieSecure overrides the ini lookup, which cannot be changed once a session is active.
+ */
+function isSecureSessionCookie(?string $iniCookieSecure = null): bool
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+    return $https || filter_var($iniCookieSecure ?? ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL);
+}
+
+/**
  * Initialize secure session configuration
  */
 function initializeSession(): void
@@ -47,9 +60,8 @@ function initializeSession(): void
         (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
     }
 
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
     session_set_cookie_params([
-        'secure'   => $secure,
+        'secure'   => isSecureSessionCookie(),
         'httponly' => true,
         'samesite' => 'Lax',
     ]);

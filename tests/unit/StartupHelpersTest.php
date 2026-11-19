@@ -353,4 +353,23 @@ class StartupHelpersTest extends TestCase
             "Memory usage too high: {$memoryUsed} bytes for 50 errors"
         );
     }
+
+    public function testSessionCookieSecureFollowsDetectionOrIni(): void
+    {
+        $server = $_SERVER;
+        try {
+            unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO']);
+            $this->assertFalse(isSecureSessionCookie('0'));
+            $this->assertTrue(isSecureSessionCookie('1'), 'ini session.cookie_secure must not be lowered');
+
+            $_SERVER['HTTPS'] = 'on';
+            $this->assertTrue(isSecureSessionCookie('0'));
+
+            unset($_SERVER['HTTPS']);
+            $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+            $this->assertTrue(isSecureSessionCookie('0'));
+        } finally {
+            $_SERVER = $server;
+        }
+    }
 }
