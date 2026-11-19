@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -89,15 +89,16 @@ class DnsCommonValidator
      * Check if target is not a CNAME
      *
      * @param string $target target to check
+     * @param int|null $zid Zone the NS or MX record belongs to; null checks every zone
      *
      * @return ValidationResult ValidationResult indicating if target is valid
      */
-    public function validateNonAliasTarget(string $target): ValidationResult
+    public function validateNonAliasTarget(string $target, ?int $zid = null): ValidationResult
     {
         if ($this->backendProvider !== null && $this->backendProvider->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($target, 'record', 10000, true);
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $target && $r['type'] === 'CNAME') {
+                if ($r['name'] === $target && $r['type'] === 'CNAME' && ($zid === null || (int)($r['domain_id'] ?? 0) === $zid)) {
                     return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
                 }
             }
@@ -107,9 +108,14 @@ class DnsCommonValidator
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT id FROM $records_table
-				WHERE name = ? AND TYPE = ?");
-        $stmt->execute([$target, 'CNAME']);
+        $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = ?";
+        $params = [$target, 'CNAME'];
+        if ($zid !== null) {
+            $query .= ' AND domain_id = ?';
+            $params[] = $zid;
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
         $response = $stmt->fetchColumn();
         if ($response) {
             return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));

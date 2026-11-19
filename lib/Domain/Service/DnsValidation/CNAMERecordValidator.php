@@ -88,7 +88,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for CNAME records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
-     * @param mixed ...$args Additional parameters: [0] => int $rid, [1] => string $zone
+     * @param mixed ...$args Additional parameters: [0] => int $rid, [1] => string $zone, [2] => ?int $zid (scopes the lookups to that zone)
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -97,21 +97,22 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         // Extract optional parameters
         $rid = $args[0] ?? 0;
         $zone = $args[1] ?? '';
+        $zid = isset($args[2]) ? (int)$args[2] : null;
 
         // 1. Check if CNAME unique (already exists as another record type)
-        $uniqueResult = $this->validateCnameUnique($name, $rid);
+        $uniqueResult = $this->validateCnameUnique($name, $rid, $zid);
         if (!$uniqueResult->isValid()) {
             return $uniqueResult;
         }
 
         // 2. Check if CNAME already exists
-        $existenceResult = $this->validateCnameExistence($name, $rid);
+        $existenceResult = $this->validateCnameExistence($name, $rid, $zid);
         if (!$existenceResult->isValid()) {
             return $existenceResult;
         }
 
         // 3. Check for MX or NS records pointing to this CNAME
-        $nameResult = $this->validateCnameName($name);
+        $nameResult = $this->validateCnameName($name, $zid);
         if (!$nameResult->isValid()) {
             return $nameResult;
         }
@@ -224,16 +225,17 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME
      * @param int|string $rid Record ID
+     * @param int|null $zid Zone the record belongs to; null checks every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameUnique(string $name, int|string $rid): ValidationResult
+    private function validateCnameUnique(string $name, int|string $rid, ?int $zid = null): ValidationResult
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', self::EXACT_SEARCH_LIMIT, true);
             $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
+                if ($r['name'] === $name && $r['type'] !== 'CNAME' && ($zid === null || (int)($r['domain_id'] ?? 0) === $zid) && ($isNewRecord || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
                 }
             }
@@ -243,15 +245,18 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
-        if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME' AND id != ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
-        } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
+        $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE != 'CNAME'";
+        $params = [$name];
+        if ($zid !== null) {
+            $query .= ' AND domain_id = ?';
+            $params[] = $zid;
         }
+        if (is_numeric($rid) && (int)$rid > 0) {
+            $query .= ' AND id != ?';
+            $params[] = (int)$rid;
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
 
         $response = $stmt->fetchColumn();
         if ($response) {
@@ -266,10 +271,11 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * Check if any MX or NS entries exist which invalidate CNAME
      *
      * @param string $name CNAME to lookup
+     * @param int|null $zid Zone the CNAME belongs to; null checks every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameName(string $name): ValidationResult
+    private function validateCnameName(string $name, ?int $zid = null): ValidationResult
     {
         if ($this->isApiBackend()) {
             // The search reads * as a wildcard, and MX and NS content never holds one
@@ -280,7 +286,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
             foreach ([rtrim($name, '.'), rtrim($name, '.') . '.'] as $query) {
                 $result = $this->backendProvider->searchDnsData($query, 'record', self::EXACT_SEARCH_LIMIT, true);
                 foreach ($result['records'] ?? [] as $r) {
-                    if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true)) {
+                    if ($r['content'] === $name && in_array($r['type'], ['MX', 'NS'], true) && ($zid === null || (int)($r['domain_id'] ?? 0) === $zid)) {
                         return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
                     }
                 }
@@ -291,8 +297,13 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
+        $params = [$name, 'MX', 'NS'];
+        if ($zid !== null) {
+            $query .= ' AND domain_id = ?';
+            $params[] = $zid;
+        }
         $stmt = $this->db->prepare($query);
-        $stmt->execute([$name, 'MX', 'NS']);
+        $stmt->execute($params);
 
         $response = $stmt->fetchColumn();
 
@@ -324,15 +335,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME
      * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
+     * @param int|null $zid Zone the record belongs to; null checks every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    public function validateCnameExistence(string $name, int|string $rid): ValidationResult
+    public function validateCnameExistence(string $name, int|string $rid, ?int $zid = null): ValidationResult
     {
         if ($this->isApiBackend()) {
             $result = $this->backendProvider->searchDnsData($name, 'record', self::EXACT_SEARCH_LIMIT, true);
             foreach ($result['records'] ?? [] as $r) {
-                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
+                if ($r['name'] === $name && $r['type'] === 'CNAME' && ($zid === null || (int)($r['domain_id'] ?? 0) === $zid) && ($rid === -1 || (string)($r['id'] ?? '') !== (string)$rid)) {
                     return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
                 }
             }
@@ -342,15 +354,18 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Existing-record edit: exclude the row being edited from the duplicate check.
-        if (is_numeric($rid) && (int)$rid > 0) {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name, (int)$rid]);
-        } else {
-            $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute([$name]);
+        $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME'";
+        $params = [$name];
+        if ($zid !== null) {
+            $query .= ' AND domain_id = ?';
+            $params[] = $zid;
         }
+        if (is_numeric($rid) && (int)$rid > 0) {
+            $query .= ' AND id != ?';
+            $params[] = (int)$rid;
+        }
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
 
         $response = $stmt->fetchColumn();
         if ($response) {
