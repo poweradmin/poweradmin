@@ -33,7 +33,10 @@ if (!function_exists('session_start')) {
     die("You have to install the PHP session extension!");
 }
 
-$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+// Never lower an operator's session.cookie_secure: a proxy that hides the scheme would drop it
+$secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+    || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+    || filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL);
 session_set_cookie_params([
     'secure' => $secure,
     'httponly' => true,
