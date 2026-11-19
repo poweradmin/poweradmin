@@ -117,6 +117,10 @@ class DockerEntrypointMappingParserTest extends TestCase
                 '', 'grp=Ad\\min',
                 "'grp' => 'Ad\\\\min'",
             ],
+            'glob characters are not expanded against the working directory' => [
+                '', '*',
+                "'*' => ''",
+            ],
             'plain mode ignores semicolons' => [
                 '', 'a=b;c=d',
                 "'a' => 'b;c=d'",

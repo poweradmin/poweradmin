@@ -1047,6 +1047,8 @@ generate_config() {
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed.
     # With "dn" as $2 the keys may be LDAP DNs: items split on ';' and the pair on the last ':'
     parse_mapping() {
+        # No globbing of the unquoted word splits below; local - restores the option on return
+        local -; set -f
         local sep=',' dn_keys=0 item key val part items="" parts=""
         # A DN key carries '=' and ',' itself, so 'cn=x,dc=y:Tmpl' is one ';'-separated item
         if [[ "${2:-}" == dn && ( "$1" == *\;* || ( "$1" == *=* && "$1" == *:* ) ) ]]; then
