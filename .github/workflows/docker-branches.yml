@@ -6,8 +6,9 @@ name: Docker Image Publish (branches)
 #
 # The plan job turns the trigger into a build matrix: the branch whose validations just
 # passed, the branch picked on manual dispatch, or every branch on the weekly rebuild.
-# release/3.x has no docker.yml of its own, so this is its only builder; its image runs
-# as 82:82 on port 80 with no port-switching entrypoint, so the non-root smoke test is off.
+# release/3.x has its own docker.yml for v* tags (since 44ed21f03) and this builds only its
+# moving lts tag; its image runs as 82:82 on port 80 with no port-switching entrypoint, so
+# the non-root smoke test is off.
 on:
   workflow_run:
     workflows: ["validations"]
