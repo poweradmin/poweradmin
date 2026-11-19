@@ -1670,8 +1670,12 @@ setup_permissions() {
 
     # Config directory (when using custom PA_CONFIG_PATH)
     config_dir=$(dirname "${CONFIG_FILE}")
+    # Not recursive: PA_CONFIG_PATH may sit in a shared directory, and a read-only mount must still boot
     if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
-        chown -R www-data:www-data "${config_dir}"
+        for config_target in "${CONFIG_FILE}" "${config_dir}/settings.defaults.php"; do
+            [ -e "${config_target}" ] || continue
+            chown www-data:www-data "${config_target}" 2>/dev/null || log "WARNING: Could not change owner of ${config_target}"
+        done
     fi
 
     # Caddy data directory (may fail on read-only filesystem, that's OK)
@@ -1737,8 +1741,9 @@ main() {
     if [ -d "${config_dir}" ] && [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
         log "Restoring settings.defaults.php into config directory..."
         if [ "$IS_ROOT" = true ]; then
-            cp /usr/local/share/settings.defaults.php "${defaults_file}"
-            chown www-data:www-data "${defaults_file}"
+            cp /usr/local/share/settings.defaults.php "${defaults_file}" 2>/dev/null || \
+                log "WARNING: Could not restore settings.defaults.php - directory may not be writable"
+            chown www-data:www-data "${defaults_file}" 2>/dev/null || true
         else
             cp /usr/local/share/settings.defaults.php "${defaults_file}" 2>/dev/null || \
                 log "WARNING: Could not restore settings.defaults.php - directory may not be writable"
