@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
@@ -104,7 +105,7 @@ class ListLogApiController extends BaseController
         if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
             die(_('Page number exceeds available pages.'));
         }
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->dbApiLogger->getFilteredLogs($filters, $logs_per_page, $offset);
 
         $this->render('list_log_api.html', [

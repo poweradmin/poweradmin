@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V1;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -209,7 +210,7 @@ class ZonesController extends PublicApiController
             } else {
                 // Use pagination
                 $page = max(1, (int)$this->request->query->get('page', 1));
-                $offset = ($page - 1) * $perPage;
+                $offset = ResultPaginator::offset($page, $perPage);
 
                 $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, null, $offset, $perPage);
                 $lastPage = (int)ceil($totalCount / $perPage);

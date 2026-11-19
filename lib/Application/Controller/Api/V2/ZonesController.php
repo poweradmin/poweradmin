@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -191,7 +192,7 @@ class ZonesController extends PublicApiController
                 // Use pagination with permission and name filtering at database level
                 $page = max(1, (int)$this->request->query->get('page', 1));
                 $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
-                $offset = ($page - 1) * $perPage;
+                $offset = ResultPaginator::offset($page, $perPage);
 
                 $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, $offset, $perPage);
                 $lastPage = (int)ceil($totalCount / $perPage);

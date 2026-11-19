@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -138,7 +139,7 @@ class UsersController extends BaseController
 
         // Get total count and paginated users
         $totalUsers = UserManager::countUsers($this->db);
-        $offset = ($currentPage - 1) * $rowsPerPage;
+        $offset = ResultPaginator::offset($currentPage, $rowsPerPage);
         $users = UserManager::getUserDetailList(
             $this->db,
             $this->config->get('ldap', 'enabled', false),

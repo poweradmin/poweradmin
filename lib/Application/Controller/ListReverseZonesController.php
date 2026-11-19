@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use PDO;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
@@ -103,8 +104,7 @@ class ListReverseZonesController extends BaseController
 
         $row_start = 0;
         if (isset($_GET['start'])) {
-            $start = max(1, (int)htmlspecialchars($_GET['start']));
-            $row_start = ($start - 1) * $iface_rowamount;
+            $row_start = ResultPaginator::offset((int)$_GET['start'], $iface_rowamount);
         }
 
         $perm_view = Permission::getViewPermission($this->db);

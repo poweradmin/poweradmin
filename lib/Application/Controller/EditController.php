@@ -32,6 +32,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use Exception;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Application\Presenter\PaginationPresenter;
@@ -186,7 +187,7 @@ class EditController extends BaseController
 
         $row_start = 0;
         if (isset($_GET["start"])) {
-            $row_start = (max(1, (int)$_GET["start"]) - 1) * $iface_rowamount;
+            $row_start = ResultPaginator::offset((int)$_GET["start"], $iface_rowamount);
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);

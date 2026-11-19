@@ -35,6 +35,7 @@ use PDO;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -160,7 +161,7 @@ class ListLogZonesController extends BaseController
         if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
             die(_('Page number exceeds available pages.'));
         }
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset, $ownedZoneIds);
         if ($applyOwnerFilter) {
             $logs = $this->withoutClientIp($logs);

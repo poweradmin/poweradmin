@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
@@ -119,7 +120,7 @@ class ListLogGroupsController extends BaseController
         if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
             die('Unknown page');
         }
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->dbGroupLogger->getFilteredLogs($filters, $logs_per_page, $offset);
 
         $this->render('list_log_groups.html', [

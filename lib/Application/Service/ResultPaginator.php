@@ -30,6 +30,8 @@ namespace Poweradmin\Application\Service;
  */
 class ResultPaginator
 {
+    private const MAX_OFFSET = 2147483647;
+
     /**
      * Sort an array of associative arrays by a given key.
      *
@@ -235,5 +237,19 @@ class ResultPaginator
         $result = array_keys($letters);
         sort($result);
         return $result;
+    }
+
+    /**
+     * Row offset of a 1-based page, kept an int so a huge page number reads past the end instead of overflowing.
+     */
+    public static function offset(int $page, int $rowAmount): int
+    {
+        $rowAmount = max(1, $rowAmount);
+        $zeroBased = max(0, $page - 1);
+        if ($zeroBased > intdiv(self::MAX_OFFSET, $rowAmount)) {
+            return self::MAX_OFFSET;
+        }
+
+        return $zeroBased * $rowAmount;
     }
 }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\ResultPaginator;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
@@ -71,7 +72,7 @@ class ListTemplateZonesController extends BaseController
         // Get the current page from request
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
-        $offset = ($currentPage - 1) * $itemsPerPage;
+        $offset = ResultPaginator::offset($currentPage, $itemsPerPage);
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
