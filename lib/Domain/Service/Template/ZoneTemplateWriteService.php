@@ -262,6 +262,10 @@ class ZoneTemplateWriteService
             $templateRecords = [];
 
             foreach ($records as $record) {
+                // A presigned zone's signatures belong to its own keys and sit beside every name
+                if (in_array(strtoupper((string)$record['type']), [RecordType::RRSIG, RecordType::NSEC, RecordType::NSEC3], true)) {
+                    continue;
+                }
                 // Skip rather than fail: a saved zone legitimately carries records
                 // the caller may read but not author. Skipped types are reported below.
                 if (!$this->access->canStoreTemplateRecordType((string)$record['type'])) {
@@ -290,6 +294,15 @@ class ZoneTemplateWriteService
                     'ttl' => $record['ttl'],
                     'prio' => $prio,
                 ];
+            }
+
+            // Applying a template skips CNAMEs like these, so refuse to save them in the first place
+            $conflicts = ZoneTemplateRecordValidationService::conflictingCnames($templateRecords);
+            if ($conflicts !== []) {
+                return ZoneTemplateWriteResult::failure(sprintf(
+                    _('The zone template has CNAME records that conflict with other records at the same name: %s'),
+                    implode(', ', $conflicts)
+                ));
             }
 
             // The repository writes the template, its records and - when the

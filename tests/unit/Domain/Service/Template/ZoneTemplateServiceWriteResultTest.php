@@ -219,6 +219,38 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         );
     }
 
+    public function testSaveAsRefusesACnameThatSharesItsNameOrSitsAtTheApex(): void
+    {
+        $fromZone = $this->service()->addZoneTemplSaveAs('zone copy', '', self::ADMIN_USER_ID, [
+            ['name' => 'www.example.com', 'type' => 'CNAME', 'content' => 'target.example.net', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'WWW.example.com', 'type' => 'TXT', 'content' => '"v=spf1 -all"', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'target.example.net', 'ttl' => 3600, 'prio' => 0],
+        ], [], 'example.com');
+        $fromTemplate = $this->service()->addZoneTemplSaveAs('template copy', '', self::ADMIN_USER_ID, [
+            ['name' => '[ZONE]', 'type' => 'CNAME', 'content' => 'target.example.net', 'ttl' => 3600, 'prio' => 0],
+        ], []);
+
+        $this->assertFalse($fromZone->success);
+        $this->assertSame(Refusal::INVALID_INPUT, $fromZone->refusal);
+        $this->assertSame('The zone template has CNAME records that conflict with other records at the same name: www.[ZONE] CNAME', $fromZone->message);
+        $this->assertSame('The zone template has CNAME records that conflict with other records at the same name: [ZONE] CNAME', $fromTemplate->message);
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ WHERE name IN ('zone copy', 'template copy')")->fetchColumn());
+    }
+
+    public function testSaveAsKeepsACnameThatOwnsItsNameBesideACopyOfItselfAndItsSignature(): void
+    {
+        $saved = $this->service()->addZoneTemplSaveAs('alias copy', '', self::ADMIN_USER_ID, [
+            ['name' => 'example.com', 'type' => 'NS', 'content' => 'ns1.example.com', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'target.example.net', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'alias.example.com', 'type' => 'CNAME', 'content' => 'target.example.net', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'alias.example.com', 'type' => 'RRSIG', 'content' => 'CNAME 13 3 3600 20261201000000 20261101000000 12345 example.com. c2ln', 'ttl' => 3600, 'prio' => 0],
+        ], [], 'example.com');
+
+        $this->assertTrue($saved->success);
+        $this->assertSame(['alias.[ZONE]', 'alias.[ZONE]'], $this->db->query("SELECT name FROM zone_templ_records WHERE type = 'CNAME'")->fetchAll(\PDO::FETCH_COLUMN));
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records WHERE type = 'RRSIG'")->fetchColumn());
+    }
+
     private function service(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);

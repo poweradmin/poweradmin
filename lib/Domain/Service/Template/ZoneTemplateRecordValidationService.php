@@ -181,12 +181,40 @@ final class ZoneTemplateRecordValidationService
     }
 
     /**
+     * The CNAMEs in a set of template records that break the CNAME rule: one that shares
+     * its name with another distinct record, or one at the zone apex.
+     *
+     * @param array<int, array<string, mixed>> $records
+     * @return list<string> "name CNAME" for each conflicting CNAME, with the name as stored
+     */
+    public static function conflictingCnames(array $records): array
+    {
+        $entriesAtOwner = [];
+        foreach ($records as $record) {
+            $type = strtoupper((string)($record['type'] ?? ''));
+            $entriesAtOwner[self::ownerName((string)($record['name'] ?? ''))][$type . ' ' . ($record['content'] ?? '')] = true;
+        }
+
+        $conflicts = [];
+        foreach ($records as $record) {
+            if (strtoupper((string)($record['type'] ?? '')) !== RecordType::CNAME) {
+                continue;
+            }
+            $owner = self::ownerName((string)($record['name'] ?? ''));
+            if ($owner === self::SAMPLE_ZONE || count($entriesAtOwner[$owner] ?? []) > 1) {
+                $conflicts[] = $record['name'] . ' ' . RecordType::CNAME;
+            }
+        }
+        return array_values(array_unique($conflicts));
+    }
+
+    /**
      * The owner name a template name resolves to in the sample zone, so "www",
      * "www.[ZONE]" and "WWW.[ZONE]" compare equal.
      */
-    private function ownerName(string $name): string
+    private static function ownerName(string $name): string
     {
-        $resolved = $this->resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
+        $resolved = self::resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
         return strtolower(DnsHelper::restoreZoneSuffix($resolved, self::SAMPLE_ZONE));
     }
 
@@ -213,7 +241,7 @@ final class ZoneTemplateRecordValidationService
         return $validator->validate($content, $name, $prio, $ttl, $defaultTtl);
     }
 
-    private function resolvePlaceholders(string $value): string
+    private static function resolvePlaceholders(string $value): string
     {
         return str_replace(
             array_keys(self::PLACEHOLDER_SAMPLES),
