@@ -2045,8 +2045,13 @@ setup_permissions() {
     # Config directory (when using custom PA_CONFIG_PATH)
     config_dir=$(dirname "${CONFIG_FILE}")
     if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
-        chown -R www-data:0 "${config_dir}"
-        chmod -R g+w "${config_dir}"
+        # Only the two files Poweradmin reads, never the directory: a custom path can sit in a
+        # shared directory like /etc, and a read-only mount must still boot.
+        for target in "${CONFIG_FILE}" "${config_dir}/settings.defaults.php"; do
+            [ -e "${target}" ] || continue
+            chown www-data:0 "${target}" 2>/dev/null || log "WARNING: Could not change the owner of ${target}"
+            chmod g+w "${target}" 2>/dev/null || log "WARNING: Could not make ${target} group-writable"
+        done
     fi
 
     # Caddy data directory (may fail on read-only filesystem, that's OK)
@@ -2117,8 +2122,10 @@ main() {
     if [ -d "${config_dir}" ] && [ ! -f "${defaults_file}" ] && [ -f "/usr/local/share/settings.defaults.php" ]; then
         log "Restoring settings.defaults.php into config directory..."
         if [ "$IS_ROOT" = true ]; then
-            cp /usr/local/share/settings.defaults.php "${defaults_file}"
-            chown www-data:www-data "${defaults_file}"
+            cp /usr/local/share/settings.defaults.php "${defaults_file}" 2>/dev/null || \
+                log "WARNING: Could not restore settings.defaults.php - directory may not be writable"
+            [ ! -f "${defaults_file}" ] || chown www-data:www-data "${defaults_file}" 2>/dev/null || \
+                log "WARNING: Could not change the owner of ${defaults_file}"
         else
             cp /usr/local/share/settings.defaults.php "${defaults_file}" 2>/dev/null || \
                 log "WARNING: Could not restore settings.defaults.php - directory may not be writable"
