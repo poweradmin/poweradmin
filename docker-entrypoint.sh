@@ -855,11 +855,6 @@ create_admin_user() {
         log "ERROR: Failed to create admin user '${admin_username}'"
         exit 1
     fi
-
-    # Export for use in print_config_summary
-    export ADMIN_PASSWORD_GENERATED="${password_generated}"
-    export ADMIN_USERNAME="${admin_username}"
-    export ADMIN_PASSWORD="${admin_password}"
 }
 
 # Generate configuration file from environment variables
