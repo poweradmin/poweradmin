@@ -114,4 +114,27 @@ class EditZoneTemplControllerUpdateZonesTest extends SeamControllerTestCase
 
         $this->applyToLinkedZones();
     }
+
+    public function testAZoneUpdatedWithoutConflictingRecordsIsReportedApartFromFailures(): void
+    {
+        $this->post(['update_zones' => '1']);
+
+        $skipped = 'Template records skipped because they conflict with a CNAME at the same name: www.a.example A';
+        $this->domains->method('updateZoneRecords')->willReturnCallback(
+            static fn(int $ttl, int $domainId): ZoneWriteResult => $domainId === self::DIRECT_DOMAIN
+                ? ZoneWriteResult::failure($skipped)
+                : ZoneWriteResult::backendFailure('Failed to update zone records: b.example NS')
+        );
+        $this->sync->expects($this->once())->method('markZonesAsSynced')->with([], self::TEMPLATE);
+
+        $this->applyToLinkedZones();
+
+        $this->assertContains(
+            ['warning', '1 zone could not be updated. 1 zone was updated without the template records that conflict with a CNAME.'],
+            $this->messagesFor('edit_zone_templ')
+        );
+        $system = $this->messagesFor('system');
+        $this->assertContains(['error', $skipped], $system);
+        $this->assertContains(['error', 'Failed to update zone records: b.example NS'], $system);
+    }
 }

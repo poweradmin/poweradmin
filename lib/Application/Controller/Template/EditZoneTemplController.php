@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Template\ZoneTemplateService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Domain\Service\Validation\Refusal;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Infrastructure\Utility\ResultPaginator;
@@ -219,6 +220,7 @@ class EditZoneTemplController extends BaseController
         $defaultTtl = $this->config->get('dns', 'ttl', 86400);
         $syncedZoneIds = [];
         $failures = [];
+        $partial = [];
         foreach ($zones as $zone) {
             // A reviewed zone does not take direct record writes, as in the zone editor's template change
             if ($this->changeApprovalModeForZone((int)$zone['domain_id']) === ChangeApprovalPolicy::MODE_REQUEST) {
@@ -231,6 +233,9 @@ class EditZoneTemplController extends BaseController
             $updated = $domainManager->updateZoneRecords($defaultTtl, $zone['domain_id'], $zone_templ_id);
             if ($updated->success) {
                 $syncedZoneIds[] = $zone['zone_id'];
+            } elseif ($updated->refusal === Refusal::INVALID_INPUT) {
+                // The applier refuses this way only for records skipped beside a CNAME; the rest was written
+                $partial[] = (string)$updated->message;
             } else {
                 $failures[] = (string)$updated->message;
             }
@@ -238,16 +243,23 @@ class EditZoneTemplController extends BaseController
 
         $syncService->markZonesAsSynced($syncedZoneIds, $zone_templ_id);
 
-        if ($failures !== []) {
-            $this->setMessage('edit_zone_templ', 'warning', sprintf(
-                ngettext(
-                    '%d zone could not be updated.',
-                    '%d zones could not be updated.',
-                    count($failures)
-                ),
-                count($failures)
-            ));
-            foreach (array_unique($failures) as $reason) {
+        if ($failures !== [] || $partial !== []) {
+            $summary = [];
+            if ($failures !== []) {
+                $summary[] = sprintf(ngettext('%d zone could not be updated.', '%d zones could not be updated.', count($failures)), count($failures));
+            }
+            if ($partial !== []) {
+                $summary[] = sprintf(
+                    ngettext(
+                        '%d zone was updated without the template records that conflict with a CNAME.',
+                        '%d zones were updated without the template records that conflict with a CNAME.',
+                        count($partial)
+                    ),
+                    count($partial)
+                );
+            }
+            $this->setMessage('edit_zone_templ', 'warning', implode(' ', $summary));
+            foreach (array_unique(array_merge($failures, $partial)) as $reason) {
                 $this->addSystemMessage('error', $reason);
             }
         } else {
