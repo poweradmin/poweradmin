@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class RecordSearch extends BaseSearch
@@ -79,7 +80,7 @@ class RecordSearch extends BaseSearch
             return [];
         }
 
-        $offset = ($page - 1) * $iface_rowamount;
+        $offset = PaginationService::offset($page, $iface_rowamount);
 
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';

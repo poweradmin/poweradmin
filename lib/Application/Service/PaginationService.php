@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,22 @@ use Poweradmin\Domain\Model\Pagination;
 
 class PaginationService
 {
+    private const MAX_OFFSET = 2147483647;
+
+    /**
+     * Row offset of a 1-based page, kept an int so a huge page number reads past the end instead of overflowing.
+     */
+    public static function offset(int $page, int $rowAmount): int
+    {
+        $rowAmount = max(1, $rowAmount);
+        $zeroBased = max(0, $page - 1);
+        if ($zeroBased > intdiv(self::MAX_OFFSET, $rowAmount)) {
+            return self::MAX_OFFSET;
+        }
+
+        return $zeroBased * $rowAmount;
+    }
+
     public function createPagination(int $totalItems, int $itemsPerPage, int $currentPage): Pagination
     {
         $currentPage = max(1, min($currentPage, (int) ceil($totalItems / $itemsPerPage)));

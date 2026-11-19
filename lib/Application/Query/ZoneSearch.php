@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class ZoneSearch extends BaseSearch
@@ -102,7 +103,7 @@ class ZoneSearch extends BaseSearch
             return [];
         }
 
-        $offset = ($page - 1) * $iface_rowamount;
+        $offset = PaginationService::offset($page, $iface_rowamount);
 
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
