@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Application;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Bootstrap;
 use ReflectionFunction;
@@ -48,6 +49,37 @@ class BootstrapTest extends TestCase
         $this->assertEquals('Asia/Tokyo', date_default_timezone_get());
 
         date_default_timezone_set($originalTz);
+    }
+
+    #[DataProvider('sessionCookieSecureCases')]
+    public function testSessionCookieSecureIsNeverLowerThanTheIni(array $server, string $ini, bool $expected): void
+    {
+        $originalServer = $_SERVER;
+        $originalIni = ini_get('session.cookie_secure');
+        unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO']);
+        $_SERVER = array_merge($_SERVER, $server);
+        ini_set('session.cookie_secure', $ini);
+
+        try {
+            $this->assertSame($expected, Bootstrap::sessionCookieSecure());
+        } finally {
+            $_SERVER = $originalServer;
+            ini_set('session.cookie_secure', (string) $originalIni);
+        }
+    }
+
+    /** @return array<string, array{array<string, string>, string, bool}> */
+    public static function sessionCookieSecureCases(): array
+    {
+        return [
+            'plain http, ini off' => [[], '0', false],
+            'plain http, ini on' => [[], '1', true],
+            'plain http, ini On' => [[], 'On', true],
+            'https, ini off' => [['HTTPS' => 'on'], '0', true],
+            'HTTPS=off, ini off' => [['HTTPS' => 'off'], '0', false],
+            'forwarded https, ini off' => [['HTTP_X_FORWARDED_PROTO' => 'https'], '0', true],
+            'forwarded http, ini on' => [['HTTP_X_FORWARDED_PROTO' => 'http'], '1', true],
+        ];
     }
 
     public function testNotFoundRendererIsBuiltLazily(): void

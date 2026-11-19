@@ -64,6 +64,17 @@ class Bootstrap
     }
 
     /**
+     * The Secure flag follows the detected scheme and is never lower than php.ini's
+     * session.cookie_secure, so an operator behind a proxy that hides the scheme can still force it.
+     */
+    public static function sessionCookieSecure(): bool
+    {
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+        return $https || filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL);
+    }
+
+    /**
      * Starts the session with secure cookie flags and a gc lifetime behind the app's own timeout.
      */
     public static function initializeSession(ConfigurationInterface $config): void
@@ -86,9 +97,8 @@ class Bootstrap
             return;
         }
 
-        $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         session_set_cookie_params([
-            'secure'   => $secure,
+            'secure'   => self::sessionCookieSecure(),
             'httponly' => true,
             'samesite' => 'Lax',
         ]);
