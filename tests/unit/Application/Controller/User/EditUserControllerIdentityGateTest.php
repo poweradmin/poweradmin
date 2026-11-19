@@ -30,6 +30,7 @@ use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\UserManagementService;
+use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;
 
@@ -44,7 +45,7 @@ class EditUserControllerIdentityGateTest extends SeamControllerTestCase
     private const TARGET_ID = 9;
 
     /** @return array{0: EditUserController&\PHPUnit\Framework\MockObject\MockObject, 1: UserManagementService&\PHPUnit\Framework\MockObject\MockObject} */
-    private function submit(bool $mayEditPasswords, array $fields): array
+    private function submit(bool $mayEditPasswords, array $fields, ?int $storedZoneLimit = null, bool $maySetLimits = true): array
     {
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('hasPermission')->willReturnCallback(
@@ -58,6 +59,10 @@ class EditUserControllerIdentityGateTest extends SeamControllerTestCase
         $repository = $this->createMock(UserRepositoryInterface::class);
         $stored = ['username' => 'jane', 'fullname' => 'Jane', 'email' => 'jane@example.org', 'auth_type' => 'sql', 'use_ldap' => 0, 'tpl_id' => 1];
         $repository->method('getUserDetailList')->willReturn([$stored]);
+        $repository->method('findZoneLimit')->willReturn($storedZoneLimit);
+        $limits = $this->createMock(ZoneOwnershipLimit::class);
+        $limits->method('maySetLimits')->willReturn($maySetLimits);
+        $this->factory->method('zoneOwnershipLimit')->willReturn($limits);
         $this->factory->method('userRepository')->willReturn($repository);
         $users = $this->createMock(UserManagementService::class);
         $this->factory->method('userManagementService')->willReturn($users);
@@ -110,6 +115,28 @@ class EditUserControllerIdentityGateTest extends SeamControllerTestCase
             EditUserController::formState(['fullname' => "Jan\xE9", 'active' => 1]),
             EditUserController::formState(['fullname' => "Jan\xE9", 'active' => 0])
         );
+    }
+
+    public function testAZoneLimitChangedAfterTheFormOpenedIsRefused(): void
+    {
+        // The form was opened while jane had no limit; another superuser has since set one
+        [$controller, $users] = $this->submit(true, [], 5);
+        $users->expects($this->never())->method('updateUser');
+        $controller->expects($this->once())->method('showUserEditForm');
+
+        $this->update($controller);
+    }
+
+    public function testAZoneLimitChangeDoesNotRefuseACallerWhoseFormCannotSetIt(): void
+    {
+        [$controller, $users] = $this->submit(true, ['fullname' => 'Jane Q'], 5, false);
+        $users->expects($this->once())->method('updateUser')->willReturn(['success' => true]);
+
+        try {
+            $this->update($controller);
+        } catch (RequestHalted) {
+            // a saved user redirects
+        }
     }
 
     public function testAMissingFormStateIsRefused(): void

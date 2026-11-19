@@ -104,7 +104,7 @@ class EditUserController extends BaseController
     {
         $stored = $this->getUserDetails($editId);
         // A form opened before another editor saved would put back what they changed
-        if (!hash_equals(self::formState($stored), $this->httpRequest->getPostString('form_state'))) {
+        if (!hash_equals($this->editFormState($editId, $stored), $this->httpRequest->getPostString('form_state'))) {
             $this->setMessage('edit_user', 'error', _('This user was changed by someone else after you opened the form. Review the current values and save again.'));
             $this->showUserEditForm($editId, $policyConfig);
             return;
@@ -542,7 +542,7 @@ class EditUserController extends BaseController
 
         $this->render('edit_user.html', [
             'edit_id' => $editId,
-            'form_state' => self::formState($user),
+            'form_state' => $this->editFormState($editId, $user),
             'name' => $user['fullname'] ?: $user['username'],
             'user' => $user,
             'session_user_id' => $this->getUserContextService()->getLoggedInUserId(),
@@ -699,10 +699,24 @@ class EditUserController extends BaseController
      */
     public static function formState(array $user): string
     {
-        $fields = ['username', 'fullname', 'email', 'descr', 'active', 'auth_type', 'use_ldap', 'tpl_id'];
+        $fields = ['username', 'fullname', 'email', 'descr', 'active', 'auth_type', 'use_ldap', 'tpl_id', 'max_zones'];
         $state = array_map(fn(string $field) => (string)($user[$field] ?? ''), $fields);
 
         return hash('sha256', (string)json_encode($state, JSON_INVALID_UTF8_SUBSTITUTE));
+    }
+
+    /**
+     * The edit form's stamp, which also covers the zone limit for callers whose form writes it.
+     *
+     * @param array<string, mixed> $user Row from getUserDetails()
+     */
+    private function editFormState(int $editId, array $user): string
+    {
+        if ($this->services()->zoneOwnershipLimit()->maySetLimits((int)$this->getCurrentUserId())) {
+            $user += ['max_zones' => $this->services()->userRepository()->findZoneLimit($editId)];
+        }
+
+        return self::formState($user);
     }
 
     private function getUserDetails(int $editId): array
