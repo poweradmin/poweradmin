@@ -144,6 +144,11 @@ abstract class PublicApiController extends AbstractApiController
             $basicAuthMiddleware = $this->services()->basicAuthenticationMiddleware();
             $this->authenticatedUserId = $basicAuthMiddleware->getAuthenticatedUserId($this->request);
             $authenticated = ($this->authenticatedUserId > 0);
+
+            // Browsers replay cached Basic credentials on a cross-site form post; scripts send no Fetch metadata.
+            if ($authenticated && $this->isCrossSiteBrowserRequest()) {
+                $this->sendAndHalt($this->returnApiError('Cross-site requests are not allowed with Basic authentication', 403));
+            }
         }
 
         // If all authentication methods failed, return 401 Unauthorized
@@ -161,6 +166,13 @@ abstract class PublicApiController extends AbstractApiController
         if ($this->authenticatedUserId > 0) {
             $this->services()->bindActor(new ApiKeyActor($this->authenticatedUserId, $this->getAuthenticatedUsername()));
         }
+    }
+
+    private function isCrossSiteBrowserRequest(): bool
+    {
+        $site = $this->request->headers->get('Sec-Fetch-Site');
+
+        return $site !== null && !in_array(strtolower(trim($site)), ['same-origin', 'none'], true);
     }
 
     /**
