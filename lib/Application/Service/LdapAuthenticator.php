@@ -125,7 +125,7 @@ class LdapAuthenticator extends LoggingService
         if ($this->isCachedAuthenticationValid()) {
             // Even with valid cache, we must verify the user is still active in the database
             // This ensures disabled/deleted users are logged out immediately, not after cache expiry
-            if (!$this->validateUserActiveStatus($username)) {
+            if (!$this->validateUserActiveStatus($username, $this->userContextService->getLoggedInUserId())) {
                 $this->logWarning('Cached LDAP user {username} is no longer active, invalidating cache', ['username' => $username]);
                 $this->invalidateAuthenticationCache();
                 $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
@@ -458,13 +458,20 @@ class LdapAuthenticator extends LoggingService
      * LDAP authentication is still cached.
      *
      * @param string $username The username to validate
+     * @param int|null $userId The id the session was authenticated as; must match the row when given
      * @return bool True if user is active and use_ldap=1, false otherwise
      */
-    private function validateUserActiveStatus(string $username): bool
+    private function validateUserActiveStatus(string $username, ?int $userId = null): bool
     {
         $match = DbCompat::accentSensitiveEquals($this->dbType, 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
-        $stmt->execute(['username' => $username]);
+        $sql = "SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1";
+        $params = ['username' => $username];
+        if ($userId !== null) {
+            $sql .= ' AND id = :id';
+            $params['id'] = $userId;
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute($params);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {

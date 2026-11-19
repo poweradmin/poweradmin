@@ -508,4 +508,20 @@ class LdapAuthenticatorCacheTest extends TestCase
         $method = $this->reflection->getMethod($methodName);
         return $method;
     }
+
+    public function testActiveStatusCheckMatchesTheSessionUserId(): void
+    {
+        $pdo = new \PDO('sqlite::memory:');
+        $pdo->exec('CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, fullname TEXT, active INTEGER, use_ldap INTEGER)');
+        $pdo->exec("INSERT INTO users VALUES (7, 'alice', 'Alice', 1, 1)");
+
+        $this->reflection->getProperty('db')->setValue($this->authenticator, $pdo);
+        $this->reflection->getProperty('dbType')->setValue($this->authenticator, 'sqlite');
+
+        $method = $this->getPrivateMethod('validateUserActiveStatus');
+
+        $this->assertTrue($method->invoke($this->authenticator, 'alice', 7));
+        $this->assertFalse($method->invoke($this->authenticator, 'alice', 8), 'A session carrying another instance\'s id must not validate');
+        $this->assertTrue($method->invoke($this->authenticator, 'alice'));
+    }
 }
