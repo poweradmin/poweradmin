@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class ListRecordChangesController extends BaseController
 {
@@ -162,7 +163,7 @@ class ListRecordChangesController extends BaseController
         if ($totalLogs > 0 && $selectedPage > $pages) {
             die(_('Page number exceeds available pages.'));
         }
-        $offset = ($selectedPage - 1) * $logsPerPage;
+        $offset = ResultPaginator::offset($selectedPage, $logsPerPage);
         $logs = $this->changeLogger->getFiltered($filters, $logsPerPage, $offset);
 
         $timeWindows = [];

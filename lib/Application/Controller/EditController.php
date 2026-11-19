@@ -78,6 +78,7 @@ use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
 use Poweradmin\Domain\Enum\SortDirection;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class EditController extends BaseController
 {
@@ -213,7 +214,7 @@ class EditController extends BaseController
         $row_start = 0;
         $start = $this->request->getQueryParam('start');
         if ($start !== null) {
-            $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
+            $row_start = ResultPaginator::offset((int)$start, $iface_rowamount);
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);

@@ -186,4 +186,11 @@ class PaginationTest extends TestCase
         $this->assertTrue($pagination->isFirstPage());
         $this->assertTrue($pagination->isLastPage());
     }
+
+    public function testGetOffsetStaysAnIntForAHugePage(): void
+    {
+        $pagination = new Pagination(100, 50, PHP_INT_MAX);
+
+        $this->assertSame(2147483647, $pagination->getOffset());
+    }
 }

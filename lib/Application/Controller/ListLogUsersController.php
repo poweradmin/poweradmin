@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class ListLogUsersController extends BaseController
 {
@@ -118,7 +119,7 @@ class ListLogUsersController extends BaseController
         if ($number_of_pages > 0 && $selected_page > $number_of_pages) {
             $selected_page = $number_of_pages;
         }
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->dbUserLogger->getFilteredLogs($filters, $logs_per_page, $offset);
 
         $this->render('list_log_users.html', [

@@ -42,6 +42,7 @@ use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class EditZoneTemplController extends BaseController
 {
@@ -170,7 +171,7 @@ class EditZoneTemplController extends BaseController
         $start = filter_input(INPUT_GET, "start", FILTER_VALIDATE_INT);
 
         if ($start !== false && $start > 0) {
-            $row_start = max(0, ($start - 1) * $rowAmount);
+            $row_start = ResultPaginator::offset($start, $rowAmount);
         }
 
         return $row_start;

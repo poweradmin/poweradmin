@@ -117,7 +117,12 @@ readonly class Pagination
      */
     public function getOffset(): int
     {
-        return ($this->currentPage - 1) * $this->itemsPerPage;
+        $zeroBased = $this->currentPage - 1;
+        if ($zeroBased > intdiv(2147483647, $this->itemsPerPage)) {
+            return 2147483647;
+        }
+
+        return $zeroBased * $this->itemsPerPage;
     }
 
     /**

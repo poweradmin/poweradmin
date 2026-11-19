@@ -764,7 +764,7 @@ class DnsDataService
         $zones = ResultPaginator::sort($zones, $apiSortBy, $sortDirection);
 
         // Paginate
-        $offset = ($page - 1) * $rowAmount;
+        $offset = ResultPaginator::offset($page, $rowAmount);
         $zones = ResultPaginator::paginate($zones, $offset, $rowAmount);
 
         // After paging so the per-zone API calls scale with the page, not the
@@ -910,7 +910,7 @@ class DnsDataService
         $records = ResultPaginator::sort($records, $sortBy, $sortDirection);
 
         // Paginate
-        $offset = ($page - 1) * $rowAmount;
+        $offset = ResultPaginator::offset($page, $rowAmount);
         $records = ResultPaginator::paginate($records, $offset, $rowAmount);
 
         // Format to match template shape

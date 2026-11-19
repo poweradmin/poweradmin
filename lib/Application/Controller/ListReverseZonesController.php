@@ -47,6 +47,7 @@ use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class ListReverseZonesController extends BaseController
 {
@@ -108,8 +109,7 @@ class ListReverseZonesController extends BaseController
         $row_start = 0;
         $start_param = $this->request->getQueryParam('start');
         if ($start_param !== null) {
-            $start = (int)htmlspecialchars($start_param);
-            $row_start = max(0, ($start - 1) * $iface_rowamount);
+            $row_start = ResultPaginator::offset((int)htmlspecialchars($start_param), $iface_rowamount);
         }
 
         $perm_view = Permission::getViewPermission($this->db);

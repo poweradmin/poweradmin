@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class UsersController extends BaseController
 {
@@ -154,7 +155,7 @@ class UsersController extends BaseController
         $searchParam = $this->request->getQueryParam('search', '');
         $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
         $totalUsers = $userRepository->getTotalUserCount($restrictToUserId, $searchTerm);
-        $offset = ($currentPage - 1) * $rowsPerPage;
+        $offset = ResultPaginator::offset($currentPage, $rowsPerPage);
         $users = $userRepository->getUserDetailList(
             $this->config->get('ldap', 'enabled', false),
             $restrictToUserId,

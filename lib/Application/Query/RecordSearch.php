@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Application\Service\ResultPaginator;
 
 // TODO: search_group_records relies on MySQL sql_mode hacks plus per-backend
 // MIN() workarounds; rewrite with proper cross-database GROUP BY.
@@ -103,7 +104,7 @@ class RecordSearch extends BaseSearch
         bool $iface_record_comments,
         int $page
     ): array {
-        $offset = ($page - 1) * $iface_rowamount;
+        $offset = ResultPaginator::offset($page, $iface_rowamount);
 
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);

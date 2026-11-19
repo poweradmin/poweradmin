@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class ListLogZonesController extends BaseController
 {
@@ -157,7 +158,7 @@ class ListLogZonesController extends BaseController
         if ($number_of_pages > 0 && $selected_page > $number_of_pages) {
             $selected_page = $number_of_pages;
         }
-        $offset = ($selected_page - 1) * $logs_per_page;
+        $offset = ResultPaginator::offset($selected_page, $logs_per_page);
         $logs = $this->dbZoneLogger->getFilteredLogs($filters, $logs_per_page, $offset, $ownedZoneIds);
         if ($applyOwnerFilter) {
             $logs = $this->withoutClientIp($logs);

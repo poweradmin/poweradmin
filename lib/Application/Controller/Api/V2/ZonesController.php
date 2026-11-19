@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Poweradmin\Domain\Enum\ZoneKind;
+use Poweradmin\Application\Service\ResultPaginator;
 
 class ZonesController extends PublicApiController
 {
@@ -216,7 +217,7 @@ class ZonesController extends PublicApiController
                 // Use pagination with permission and name filtering at database level
                 $page = max(1, (int)$this->request->query->get('page', 1));
                 $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
-                $offset = ($page - 1) * $perPage;
+                $offset = ResultPaginator::offset($page, $perPage);
 
                 $zones = $this->zoneRepository->getAllZonesFiltered($visibleZoneIds, $filterUserId, $nameFilter, $offset, $perPage);
                 $lastPage = (int)ceil($totalCount / $perPage);
