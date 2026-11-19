@@ -48,6 +48,8 @@ class DatabaseConsistencySlaveZoneDeleteTest extends TestCase
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))",
+                "CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER, event TEXT)",
+                "INSERT INTO log_zones (zone_id, event) VALUES (3, 'slave'), (4, 'other')",
                 "INSERT INTO domains VALUES (3, 'slave.example', 'SLAVE', ''), (4, 'other.example', 'MASTER', NULL)",
                 "INSERT INTO zones (domain_id, owner) VALUES (3, 1), (4, 1)",
                 "INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (1, 3), (2, 3), (2, 4)",
@@ -74,5 +76,18 @@ class DatabaseConsistencySlaveZoneDeleteTest extends TestCase
                 $this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM)
             )
         );
+    }
+
+    public function testDeletingTheSlaveZoneCutsItsHistoryLooseFromTheId(): void
+    {
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('isApiBackend')->willReturn(false);
+        $config = ConfigurationManager::getInstance();
+        $config->initialize();
+
+        $this->assertTrue((new DatabaseConsistencyService($this->db, $config, $provider))->deleteSlaveZone(3));
+
+        $this->assertNull($this->db->query("SELECT zone_id FROM log_zones WHERE event = 'slave'")->fetchColumn() ?: null);
+        $this->assertSame(4, (int)$this->db->query("SELECT zone_id FROM log_zones WHERE event = 'other'")->fetchColumn());
     }
 }

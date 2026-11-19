@@ -290,6 +290,14 @@ class ZoneSyncService
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
             $stmt->execute([':id' => $zoneId]);
+
+            // A later zone can be given this id again (SQLite reuses the highest rowid); a shared id stays with the other zone
+            $stmt = $this->db->prepare("SELECT COUNT(*) FROM zones WHERE zone_name IS NOT NULL AND COALESCE(NULLIF(domain_id, 0), id) = :id");
+            $stmt->bindValue(':id', $canonicalId, PDO::PARAM_INT);
+            $stmt->execute();
+            if ((int)$stmt->fetchColumn() === 0) {
+                SharedZoneIds::detachZoneHistory($this->db, (int)$canonicalId);
+            }
             $count++;
         }
 

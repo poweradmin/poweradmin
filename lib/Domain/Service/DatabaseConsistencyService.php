@@ -641,6 +641,8 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
 
+                SharedZoneIds::detachZoneHistory($this->db, $zoneId);
+
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
                 $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
                 $stmt->execute();
@@ -670,6 +672,8 @@ class DatabaseConsistencyService
             // Delete group ownership associations
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
+
+            SharedZoneIds::detachZoneHistory($this->db, $zoneId);
 
             // Delete zone ownership
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");

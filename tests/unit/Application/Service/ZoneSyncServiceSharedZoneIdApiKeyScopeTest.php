@@ -45,6 +45,8 @@ class ZoneSyncServiceSharedZoneIdApiKeyScopeTest extends TestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER,
             comment TEXT, zone_name TEXT, zone_type TEXT, zone_master TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER, event TEXT)");
+        $this->db->exec("INSERT INTO log_zones (zone_id, event) VALUES (5, 'a-or-b'), (30, 'c'), (40, 'd')");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name, zone_type) VALUES
@@ -121,5 +123,25 @@ class ZoneSyncServiceSharedZoneIdApiKeyScopeTest extends TestCase
 
         $this->assertSame([5, 12, 30], array_map('intval', $this->db->query("SELECT id FROM zones ORDER BY id")->fetchAll(PDO::FETCH_COLUMN)));
         $this->assertSame([1 => [5], 2 => [0, 5, 30], 3 => [30], 4 => [40]], $this->keyScopes());
+    }
+
+    public function testRemovedZoneHistoryIsCutLooseFromItsId(): void
+    {
+        $this->syncWith(['a.example', 'b.example', 'd.example']);
+
+        $this->assertSame(
+            [[5, 'a-or-b'], [null, 'c'], [40, 'd']],
+            array_map(
+                static fn(array $r): array => [$r[0] === null ? null : (int)$r[0], $r[1]],
+                $this->db->query("SELECT zone_id, event FROM log_zones ORDER BY id")->fetchAll(PDO::FETCH_NUM)
+            )
+        );
+    }
+
+    public function testHistoryOfAnIdAnotherZoneStillHoldsIsKept(): void
+    {
+        $this->syncWith(['b.example', 'c.example', 'd.example']);
+
+        $this->assertSame(5, (int)$this->db->query("SELECT zone_id FROM log_zones WHERE event = 'a-or-b'")->fetchColumn());
     }
 }
