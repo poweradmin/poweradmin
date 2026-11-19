@@ -762,6 +762,7 @@ class DomainManager implements DomainManagerInterface
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
+        $conflicts = [];
         $this->db->beginTransaction();
         try {
             if ($zone_template_id != 0) {
@@ -814,12 +815,15 @@ class DomainManager implements DomainManagerInterface
                         $this->db->commit();
                     }
 
+                    $storedRecords = $templ_records === [] ? [] : $this->backendProvider->getRecordsByZoneId($zone_id);
+                    $typesByName = self::recordTypesByName($storedRecords);
+                    $storedKeys = array_fill_keys(array_map(fn(array $stored): string => self::recordKey((string) ($stored['name'] ?? ''), (string) ($stored['type'] ?? ''), (string) ($stored['content'] ?? '')), $storedRecords), true);
+                    $templateEntriesByName = self::templateEntriesByName($templ_records, (string) $domain, $zoneTemplate);
+
                     // Process each template record
                     foreach ($templ_records as $r) {
                         if (self::shouldApplyTemplateRecord($domain, $r["type"])) {
-                            // A template name without a [ZONE] placeholder is a bare
-                            // label and has to be qualified with the zone
-                            $name = DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue($r["name"], $domain), $domain);
+                            $name = self::templateRecordName($r, (string) $domain, $zoneTemplate);
                             $recordType = $r["type"];
 
                             if ($recordType == "SOA") {
@@ -871,6 +875,15 @@ class DomainManager implements DomainManagerInterface
 
                             // Only insert if the record doesn't already exist
                             if (!$recordExists) {
+                                // The apex SOA and NS stay even beside a stored apex CNAME, so the zone keeps serving
+                                $apexAnchor = $recordType === 'SOA' || ($recordType === 'NS' && strtolower(rtrim($name, '.')) === strtolower(DnsHelper::zoneApexName((string) $domain)));
+                                if (!$apexAnchor && self::breaksCnameRule($recordType, $typesByName[strtolower($name)] ?? [], count($templateEntriesByName[strtolower($name)] ?? []))) {
+                                    // API mode keeps earlier template records, and recordExists misses them when only case differs
+                                    if (!isset($storedKeys[self::recordKey($name, $recordType, $content)])) {
+                                        $conflicts[] = $name . ' ' . $recordType;
+                                    }
+                                    continue;
+                                }
                                 if ($isApiBackend) {
                                     try {
                                         $record_id = $this->backendProvider->addRecordGetId($zone_id, $name, $recordType, $content, (int)$ttl, $prio);
@@ -938,7 +951,9 @@ class DomainManager implements DomainManagerInterface
                     $syncService->removeStaleSyncRecords((int)$zonesId, $zone_template_id);
                     if ($zone_template_id !== 0) {
                         $syncService->createSyncRecord((int)$zonesId, $zone_template_id);
-                        $syncService->markZoneAsSynced((int)$zonesId, $zone_template_id);
+                        if ($conflicts === []) {
+                            $syncService->markZoneAsSynced((int)$zonesId, $zone_template_id);
+                        }
                     }
                 }
             }
@@ -960,6 +975,12 @@ class DomainManager implements DomainManagerInterface
             if (is_string($zoneName)) {
                 DnssecProviderFactory::rectifyAfterWrite($this->db, $this->config, $zoneName, $this->logger);
             }
+        }
+
+        // The other records were written; report the skipped ones and leave the zone out of sync
+        if ($conflicts !== []) {
+            $this->messageService->addSystemError(sprintf(_('Template records skipped because they conflict with a CNAME at the same name: %s'), implode(', ', $conflicts)));
+            return false;
         }
 
         return true;
@@ -987,6 +1008,75 @@ class DomainManager implements DomainManagerInterface
      * longer silently dropped. IPv6 reverse zones (ip6.arpa) carry no restriction.
      */
     private const IPV4_REVERSE_TEMPLATE_TYPES = ['NS', 'SOA', 'PTR', 'LUA', 'CNAME', 'TXT'];
+
+    /**
+     * The record types the zone holds, keyed by lowercase owner name.
+     *
+     * @param array<int, array<string, mixed>> $storedRecords
+     * @return array<string, list<string>>
+     */
+    private static function recordTypesByName(array $storedRecords): array
+    {
+        $typesByName = [];
+        foreach ($storedRecords as $record) {
+            $name = strtolower(rtrim((string) ($record['name'] ?? ''), '.'));
+            $typesByName[$name][] = strtoupper((string) ($record['type'] ?? ''));
+        }
+        return $typesByName;
+    }
+
+    /**
+     * A record's identity with case and trailing dots ignored.
+     */
+    private static function recordKey(string $name, string $type, string $content): string
+    {
+        return strtolower(rtrim($name, '.')) . ' ' . strtoupper($type) . ' ' . strtolower(rtrim($content, '.'));
+    }
+
+    /**
+     * The distinct type and content pairs the template writes at each name.
+     *
+     * @param array<int, array<string, mixed>> $templateRecords
+     * @return array<string, array<string, true>>
+     */
+    private static function templateEntriesByName(array $templateRecords, string $domain, ZoneTemplate $zoneTemplate): array
+    {
+        $entries = [];
+        foreach ($templateRecords as $record) {
+            $type = (string) $record['type'];
+            if (!self::shouldApplyTemplateRecord($domain, $type)) {
+                continue;
+            }
+            $content = $type === 'SOA' ? '' : DnsFormatter::quoteEch($type, $zoneTemplate->parseTemplateValue((string) $record['content'], $domain));
+            $entries[strtolower(self::templateRecordName($record, $domain, $zoneTemplate))][strtoupper($type) . ' ' . $content] = true;
+        }
+        return $entries;
+    }
+
+    /**
+     * A template name without a [ZONE] placeholder is a bare label and has to be
+     * qualified with the zone.
+     *
+     * @param array<string, mixed> $record
+     */
+    private static function templateRecordName(array $record, string $domain, ZoneTemplate $zoneTemplate): string
+    {
+        return DnsHelper::restoreZoneSuffix($zoneTemplate->parseTemplateValue((string) $record['name'], $domain), $domain);
+    }
+
+    /**
+     * A CNAME owns its name alone. A template CNAME yields to any stored record or
+     * other template entry at its name, so the outcome never depends on row order.
+     *
+     * @param list<string> $storedTypes
+     */
+    private static function breaksCnameRule(string $type, array $storedTypes, int $templateEntriesAtName): bool
+    {
+        if (strtoupper($type) === 'CNAME') {
+            return $storedTypes !== [] || $templateEntriesAtName > 1;
+        }
+        return in_array('CNAME', $storedTypes, true);
+    }
 
     private static function shouldApplyTemplateRecord(string $domain, string $type): bool
     {
