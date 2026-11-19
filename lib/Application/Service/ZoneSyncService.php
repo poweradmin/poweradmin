@@ -278,6 +278,10 @@ class ZoneSyncService
             // Delete zone record
             $stmt = $this->db->prepare("DELETE FROM zones WHERE id = :id");
             $stmt->execute([':id' => $zoneId]);
+
+            // Keep the zone's log lines from following a reused id, as the zone delete does
+            $stmt = $this->db->prepare("UPDATE log_zones SET zone_id = NULL WHERE zone_id = :id");
+            $stmt->execute([':id' => $canonicalId]);
             $count++;
         }
 

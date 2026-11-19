@@ -122,6 +122,7 @@ class RecordDeleteCommentLinkCleanupTest extends TestCase
 
     public function testConsistencyDeletesDropTheLinks(): void
     {
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER)");
         $checks = $this->consistency();
         $this->assertTrue($checks->fixDuplicateSOA(1));
         $this->assertSame(['10', '12'], $this->links());

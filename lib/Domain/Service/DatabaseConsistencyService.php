@@ -428,6 +428,14 @@ class DatabaseConsistencyService
     }
 
     /**
+     * Keep a deleted zone's log lines from following a reused zone id.
+     */
+    private function detachZoneLogs(int $zoneId): void
+    {
+        $this->db->prepare("UPDATE log_zones SET zone_id = NULL WHERE zone_id = :id")->execute(['id' => $zoneId]);
+    }
+
+    /**
      * Delete a slave zone
      *
      * @param int $zoneId The zone ID to delete
@@ -449,6 +457,8 @@ class DatabaseConsistencyService
 
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
+
+                $this->detachZoneLogs($zoneId);
 
                 $this->db->commit();
             } catch (Exception $e) {
@@ -484,6 +494,8 @@ class DatabaseConsistencyService
             // Delete domain
             $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
             $stmt->execute(['id' => $zoneId]);
+
+            $this->detachZoneLogs($zoneId);
 
             $this->db->commit();
             return true;

@@ -41,6 +41,7 @@ class ZoneSyncServiceRemovalGuardTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec('CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER, comment TEXT, zone_name TEXT, zone_type TEXT, zone_master TEXT)');
         $this->db->exec('CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)');
+        $this->db->exec('CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER, event TEXT)');
         $this->db->exec('CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER)');
         $this->db->exec('CREATE TABLE app_settings (setting_key TEXT PRIMARY KEY, setting_value TEXT NOT NULL, value_type TEXT NOT NULL DEFAULT \'string\')');
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (1, 1, 4, 'a.example'), (2, 2, 4, 'b.example'), (3, 3, 4, 'c.example')");
