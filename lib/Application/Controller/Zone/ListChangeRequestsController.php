@@ -26,6 +26,7 @@ use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Presenter\ChangeRequestPresenter;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Utility\DnsIdnService;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Lists change requests: reviewers see the zones their approve level covers,
@@ -82,7 +83,7 @@ class ListChangeRequestsController extends BaseController
         $repository = $this->services()->zoneChangeRequestRepository();
         $rowsPerPage = $this->resolveRowsPerPage();
         $total = $repository->count($filters);
-        $offset = ($this->httpRequest->getPage() - 1) * $rowsPerPage;
+        $offset = ResultPaginator::offset($this->httpRequest->getPage(), $rowsPerPage);
         $requests = $repository->list($filters, $offset, $rowsPerPage);
 
         $zoneName = null;

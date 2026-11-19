@@ -115,6 +115,16 @@ class UsersControllerListTest extends SeamControllerTestCase
         $this->assertSame([['error', 'You do not have permission to view the users list.']], $this->messagesFor('index'));
     }
 
+    public function testAnOverlongPageNumberDoesNotOverflowTheListOffset(): void
+    {
+        $this->granted = [Permission::PERM_USER_VIEW_OTHERS];
+        $this->query(['start' => '99999999999999999999']);
+
+        $params = $this->runAndRender();
+
+        $this->assertArrayHasKey('users', $params);
+    }
+
     public function testUeberuserGetsTheRawFlagsAndEveryRow(): void
     {
         $this->granted = [

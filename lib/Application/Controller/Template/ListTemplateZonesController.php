@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Template;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Renders the list of zones linked to one zone template.
@@ -63,7 +64,7 @@ class ListTemplateZonesController extends BaseController
     {
         $itemsPerPage = $this->resolveRowsPerPage();
         $currentPage = $this->httpRequest->getPage();
-        $offset = ($currentPage - 1) * $itemsPerPage;
+        $offset = ResultPaginator::offset($currentPage, $itemsPerPage);
 
         $zoneTemplate = $this->services()->zoneTemplateService();
         $template_details = $this->services()->zoneTemplateRepository()->getZoneTemplateDetails($zone_templ_id) ?: [];

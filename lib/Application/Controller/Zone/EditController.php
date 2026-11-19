@@ -57,6 +57,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordListingInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -160,7 +161,7 @@ class EditController extends BaseController
         $row_start = 0;
         $start = $this->httpRequest->getQueryParam('start');
         if ($start !== null) {
-            $row_start = max(0, ((int)$start - 1) * $iface_rowamount);
+            $row_start = ResultPaginator::offset((int)$start, $iface_rowamount);
         }
 
         [$record_sort_by, $sort_direction] = $this->createZoneSortingService()->getZoneSortOrder(

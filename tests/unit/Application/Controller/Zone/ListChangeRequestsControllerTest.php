@@ -37,6 +37,8 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
     /** @var array<string, mixed>|null The filters the repository was asked for */
     private ?array $listedWith = null;
 
+    private mixed $listedOffset = null;
+
     private function makeController(bool $approvalEnabled, array $query = [], bool $allowSelfApproval = true, string $status = ZoneChangeRequest::STATUS_PENDING): TestableListChangeRequestsController
     {
         $this->query($query);
@@ -48,8 +50,9 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $repository = $this->createMock(ZoneChangeRequestRepositoryInterface::class);
         $repository->method('count')->willReturn(1);
-        $repository->method('list')->willReturnCallback(function (array $filters) use ($status): array {
+        $repository->method('list')->willReturnCallback(function (array $filters, int $offset) use ($status): array {
             $this->listedWith = $filters;
+            $this->listedOffset = $offset;
             return [$this->pendingRequest(status: $status)];
         });
         $this->factory->method('zoneChangeRequestRepository')->willReturn($repository);
@@ -219,5 +222,16 @@ class ListChangeRequestsControllerTest extends ChangeRequestControllerTestCase
 
         $this->assertSame(['status' => 'pending', 'zoneIds' => null], $this->listedWith);
         $this->assertFalse($this->output->rendered[0][1]['own_only']);
+    }
+
+    public function testAnOverlongPageNumberReadsPastTheEndInsteadOfFailing(): void
+    {
+        $this->reviewer(true);
+        $this->permissions->method('getChangeRequestPermissionLevel')->willReturn('none');
+        $controller = $this->makeController(true, ['start' => '99999999999999999999']);
+
+        $controller->run();
+
+        $this->assertSame(2147483647, $this->listedOffset);
     }
 }

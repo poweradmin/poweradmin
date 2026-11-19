@@ -29,6 +29,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionTemplateAssignmentGuard;
 use Poweradmin\Domain\Service\Auth\SelfEditFieldGuard;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -238,7 +239,7 @@ class UsersController extends BaseController
         $searchParam = $this->httpRequest->getQueryParam('search', '');
         $searchTerm = is_string($searchParam) ? trim($searchParam) : '';
         $totalUsers = $userRepository->getTotalUserCount($restrictToUserId, $searchTerm);
-        $offset = ($currentPage - 1) * $rowsPerPage;
+        $offset = ResultPaginator::offset($currentPage, $rowsPerPage);
         $users = $userRepository->getUserDetailList(
             $this->config->get('ldap', 'enabled', false),
             $restrictToUserId,

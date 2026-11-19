@@ -28,6 +28,7 @@ use DateTimeZone;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
+use Poweradmin\Infrastructure\Utility\ResultPaginator;
 
 /**
  * Renders the record change log page for admins with filters, pagination and CSV/JSON export.
@@ -152,10 +153,10 @@ class ListRecordChangesController extends BaseController
 
         $totalLogs = $this->changeLogger()->countFiltered($filters);
         $pages = (int) ceil($totalLogs / max(1, $logsPerPage));
-        if ($totalLogs > 0 && $selectedPage > $pages) {
+        if ($selectedPage > max(1, $pages)) {
             die(_('Page number exceeds available pages.'));
         }
-        $offset = ($selectedPage - 1) * $logsPerPage;
+        $offset = ResultPaginator::offset($selectedPage, $logsPerPage);
         $logs = $this->changeLogger()->getFiltered($filters, $logsPerPage, $offset);
 
         $timeWindows = [];
