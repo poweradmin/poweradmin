@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController;
 use Poweradmin\Application\Controller\Api\V2\ZonesRecordsController;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -36,6 +37,7 @@ use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -73,6 +75,28 @@ class StoredContentFallbackTest extends TestCase
         $this->assertSame('0 issue "ca.example"', $this->edits[0]['content']);
     }
 
+    #[RunInSeparateProcess]
+    public function testBulkUpdateWithContentKeepsRefusingAControlCharacter(): void
+    {
+        try {
+            $this->bulkUpdate(['id' => 7, 'content' => "0 issue\x01\"ca.example\""], $this->record('CAA', '0 issue "ca.example"'));
+            $this->fail('Submitted content with a control character was accepted');
+        } catch (ApiErrorException $e) {
+            $this->assertSame(400, $e->getCode());
+        }
+
+        $this->assertSame([], $this->edits);
+    }
+
+    #[RunInSeparateProcess]
+    public function testPutWithContentKeepsRefusingAControlCharacter(): void
+    {
+        $response = $this->put($this->record('CAA', '0 issue "ca.example"'), ['ttl' => 300, 'content' => "0 issue\x01\"ca.example\""]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame([], $this->edits);
+    }
+
     /** @return array<string, mixed> */
     private function record(string $type, string $content): array
     {
@@ -87,12 +111,13 @@ class StoredContentFallbackTest extends TestCase
         $method->invoke($controller, 3, $operation, 'MASTER', 'example.com');
     }
 
-    /** @param array<string, mixed> $record */
-    private function put(array $record): void
+    /** @param array<string, mixed> $record @param array<string, mixed> $body */
+    private function put(array $record, array $body = ['ttl' => 300]): JsonResponse
     {
-        $controller = $this->controller(ZonesRecordsController::class, ['ttl' => 300], $record);
+        $controller = $this->controller(ZonesRecordsController::class, $body, $record);
         $method = (new ReflectionClass($controller))->getMethod('updateRecord');
-        $method->invoke($controller);
+
+        return $method->invoke($controller);
     }
 
     /**
