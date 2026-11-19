@@ -170,4 +170,28 @@ class SharedZoneIdRemovalPathsTest extends TestCase
 
         $this->assertSame([1 => [5], 2 => [3], 3 => [30]], $this->keyScopes());
     }
+
+    public function testTheConsistencyCheckKeepsTheHistoryOfAnIdAnotherZoneStillOpens(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name, zone_type) VALUES (60, 50, 7, 'x.example', 'SLAVE'), (61, 50, 8, 'y.example', 'MASTER')");
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER)");
+        $this->db->exec("INSERT INTO log_zones (zone_id) VALUES (50), (3)");
+        $this->db->exec("CREATE TABLE zone_change_requests (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, status TEXT, error TEXT, reviewed_at TEXT)");
+        $this->db->exec("INSERT INTO zone_change_requests (zone_id, status) VALUES (50, 'pending')");
+
+        $this->assertTrue($this->consistencyChecks()->deleteSlaveZone(50));
+
+        $this->assertSame([3, 50], $this->idsOf("SELECT zone_id FROM log_zones ORDER BY zone_id"));
+        $this->assertSame(['pending'], $this->db->query("SELECT status FROM zone_change_requests")->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    public function testTheConsistencyCheckDetachesTheHistoryOfAnIdNothingElseOpens(): void
+    {
+        $this->db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER)");
+        $this->db->exec("INSERT INTO log_zones (zone_id) VALUES (5), (3)");
+
+        $this->assertTrue($this->consistencyChecks()->deleteSlaveZone(3));
+
+        $this->assertSame([5], $this->idsOf("SELECT zone_id FROM log_zones WHERE zone_id IS NOT NULL"));
+    }
 }

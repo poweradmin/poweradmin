@@ -628,6 +628,7 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $this->transaction()->begin();
         try {
             SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $zoneId);
+            SharedZoneIds::detachZoneHistory($this->db, $zoneId);
             foreach (
                 [
                     "DELETE FROM record_comment_links WHERE comment_id IN (SELECT id FROM {$this->commentsTable} WHERE domain_id = :domain_id)",

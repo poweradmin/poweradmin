@@ -334,6 +334,7 @@ class ZoneSyncService
             $stmt->execute([':id' => $canonicalId, ':did' => $canonicalId]);
             if ((int)$stmt->fetchColumn() === 0) {
                 SharedZoneIds::pointApiKeyScopesAtNoZone($this->db, $canonicalId);
+                SharedZoneIds::detachZoneHistory($this->db, $canonicalId);
             }
             $count++;
         }

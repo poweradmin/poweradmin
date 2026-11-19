@@ -323,10 +323,15 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
 
         $this->transaction()->begin();
         try {
+            // A shared id still belongs to the zone that keeps it, history included
+            $shared = SharedZoneIds::isShared($this->db, $zoneId);
             $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :domain_id AND zone_name IS NOT NULL");
             $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
             SharedZoneIds::releaseIdsOpenedByRows($this->db, $stmt->fetchAll(PDO::FETCH_COLUMN), $this->logger);
+            if (!$shared) {
+                SharedZoneIds::detachZoneHistory($this->db, $zoneId);
+            }
 
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);

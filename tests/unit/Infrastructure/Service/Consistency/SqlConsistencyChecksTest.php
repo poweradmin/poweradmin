@@ -517,6 +517,28 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('zones'));
     }
 
+    public function testDeleteSlaveZoneDetachesItsHistoryFromTheReusableId(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $this->domain(2, 'keep.example.com');
+        foreach (['log_zones', 'log_changesets', 'log_record_changes'] as $table) {
+            $this->db->exec("CREATE TABLE $table (id INTEGER PRIMARY KEY, zone_id INTEGER)");
+            $this->db->exec("INSERT INTO $table (zone_id) VALUES (1), (2)");
+        }
+        $this->db->exec("CREATE TABLE zone_change_requests (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, status TEXT, error TEXT, reviewed_at TEXT)");
+        $this->db->exec("INSERT INTO zone_change_requests (zone_id, status) VALUES (1, 'pending'), (1, 'approved'), (2, 'pending')");
+
+        $this->assertTrue($this->checker()->deleteSlaveZone(1));
+
+        foreach (['log_zones', 'log_changesets', 'log_record_changes'] as $table) {
+            $this->assertSame(0, $this->rows($table, 'zone_id = 1'), $table);
+            $this->assertSame(1, $this->rows($table, 'zone_id IS NULL'), $table);
+        }
+        $this->assertSame(0, $this->rows('zone_change_requests', 'zone_id = 1'));
+        $this->assertSame(1, $this->rows('zone_change_requests', "zone_id = 0 AND status = 'cancelled'"));
+        $this->assertSame(1, $this->rows('zone_change_requests', 'zone_id = 2'));
+    }
+
     public function testDeleteSlaveZoneKeepsKeysScopedToItRestrictedToNoZone(): void
     {
         $this->domain(1, 'slave.example.com', 'SLAVE', '');
