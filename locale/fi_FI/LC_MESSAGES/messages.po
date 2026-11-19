@@ -16370,3 +16370,20 @@ msgstr "Poistettiin %d poistetun ryhmän määritykset ja jäsenyydet"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Poistettiin %d poistetun ryhmän jäljet; %d epäonnistui"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Mallin tietueet ohitettiin, koska ne ovat ristiriidassa samannimisen CNAME-tietueen kanssa: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Aluemallissa on CNAME-tietueita, jotka ovat ristiriidassa muiden samannimisten tietueiden kanssa: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d alue päivitettiin ilman mallin tietueita, jotka ovat ristiriidassa CNAME-tietueen kanssa."
+msgstr[1] "%d aluetta päivitettiin ilman mallin tietueita, jotka ovat ristiriidassa CNAME-tietueen kanssa."

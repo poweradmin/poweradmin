@@ -16467,3 +16467,19 @@ msgstr "Đã loại bỏ phân công và tư cách thành viên của %d nhóm �
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Đã loại bỏ dữ liệu của %d nhóm đã xóa; %d thất bại"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Đã bỏ qua các bản ghi của mẫu vì chúng xung đột với một CNAME cùng tên: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Mẫu vùng có các bản ghi CNAME xung đột với các bản ghi khác cùng tên: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "Đã cập nhật %d vùng mà không có các bản ghi mẫu xung đột với CNAME."

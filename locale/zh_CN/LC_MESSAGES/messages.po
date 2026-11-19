@@ -15457,3 +15457,20 @@ msgstr "已移除 %d 个已删除组的分配和成员关系"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "已移除 %d 个已删除组的相关项;%d 个失败"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "已跳过模板记录，因为它们与同名的 CNAME 冲突：%s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "区域模板中有与同名其他记录冲突的 CNAME 记录：%s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "已更新 %d 个区域，但未包含与 CNAME 冲突的模板记录。"
+msgstr[1] "已更新 %d 个区域，但未包含与 CNAME 冲突的模板记录。"

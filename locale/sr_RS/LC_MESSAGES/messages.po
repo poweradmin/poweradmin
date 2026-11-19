@@ -16352,3 +16352,21 @@ msgstr "Уклоњене доделе и чланства обрисаних г�
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Обрисане групе чији су подаци уклоњени: %d; неуспешно: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Записи шаблона су прескочени јер су у сукобу са CNAME записом истог назива: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Шаблон зоне садржи CNAME записе који су у сукобу са другим записима истог назива: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "Зоне ажуриране без записа шаблона који су у сукобу са CNAME записом: %d"
+msgstr[1] "Зоне ажуриране без записа шаблона који су у сукобу са CNAME записом: %d"
+msgstr[2] "Зоне ажуриране без записа шаблона који су у сукобу са CNAME записом: %d"

@@ -16595,3 +16595,20 @@ msgstr "%d silinmiş grubun atamaları ve üyelikleri kaldırıldı"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "%d silinmiş grubun kayıtları kaldırıldı; %d başarısız"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Şablon kayıtları, aynı adlı bir CNAME ile çakıştığı için atlandı: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Bölge şablonunda aynı adlı başka kayıtlarla çakışan CNAME kayıtları var: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d bölge, CNAME ile çakışan şablon kayıtları olmadan güncellendi."
+msgstr[1] "%d bölge, CNAME ile çakışan şablon kayıtları olmadan güncellendi."

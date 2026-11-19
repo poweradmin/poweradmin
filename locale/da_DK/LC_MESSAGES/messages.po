@@ -16575,3 +16575,20 @@ msgstr "Fjernede tildelingerne og medlemskaberne for %d slettede grupper"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Fjernede dem for %d slettede grupper; %d mislykkedes"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Skabelonens records blev sprunget over, fordi de er i konflikt med en CNAME med samme navn: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Zoneskabelonen har CNAME-records, der er i konflikt med andre records med samme navn: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d zone blev opdateret uden de skabelonrecords, der er i konflikt med en CNAME."
+msgstr[1] "%d zoner blev opdateret uden de skabelonrecords, der er i konflikt med en CNAME."

@@ -16705,3 +16705,20 @@ msgstr "Penugasan dan keanggotaan dari %d grup yang dihapus telah dihapus"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Data dari %d grup yang dihapus telah dihapus; %d gagal"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Rekaman templat dilewati karena berkonflik dengan CNAME bernama sama: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Templat zona memiliki rekaman CNAME yang berkonflik dengan rekaman lain bernama sama: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d zona diperbarui tanpa rekaman templat yang berkonflik dengan CNAME."
+msgstr[1] "%d zona diperbarui tanpa rekaman templat yang berkonflik dengan CNAME."

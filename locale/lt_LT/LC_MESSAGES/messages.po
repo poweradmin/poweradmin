@@ -16615,3 +16615,21 @@ msgstr "Pašalinti ištrintų grupių priskyrimai ir narystės, grupių skaičiu
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Ištrintų grupių, kurių duomenys pašalinti: %d; nepavyko: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Šablono įrašai praleisti, nes jie prieštarauja to paties pavadinimo CNAME įrašui: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Zonos šablone yra CNAME įrašų, kurie prieštarauja kitiems to paties pavadinimo įrašams: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d zona atnaujinta be šablono įrašų, prieštaraujančių CNAME įrašui."
+msgstr[1] "%d zonos atnaujintos be šablono įrašų, prieštaraujančių CNAME įrašui."
+msgstr[2] "%d zonų atnaujinta be šablono įrašų, prieštaraujančių CNAME įrašui."

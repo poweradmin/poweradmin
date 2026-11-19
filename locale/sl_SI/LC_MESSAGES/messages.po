@@ -16608,3 +16608,22 @@ msgstr "Odstranjene dodelitve in članstva izbrisanih skupin, število skupin: %
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Izbrisane skupine, katerih podatki so odstranjeni: %d; neuspešno: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Zapisi predloge so bili izpuščeni, ker so v sporu z zapisom CNAME z istim imenom: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Predloga cone vsebuje zapise CNAME, ki so v sporu z drugimi zapisi z istim imenom: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "Cone, posodobljene brez zapisov predloge, ki so v sporu s CNAME: %d"
+msgstr[1] "Cone, posodobljene brez zapisov predloge, ki so v sporu s CNAME: %d"
+msgstr[2] "Cone, posodobljene brez zapisov predloge, ki so v sporu s CNAME: %d"
+msgstr[3] "Cone, posodobljene brez zapisov predloge, ki so v sporu s CNAME: %d"

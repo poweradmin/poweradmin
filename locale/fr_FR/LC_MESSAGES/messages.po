@@ -17146,3 +17146,20 @@ msgstr "Affectations et appartenances de %d groupes supprimés retirées"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Retirées pour %d groupes supprimés ; %d en échec"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Des enregistrements du modèle ont été ignorés car ils sont en conflit avec un CNAME du même nom : %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Le modèle de zone contient des enregistrements CNAME en conflit avec d'autres enregistrements du même nom : %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d zone a été mise à jour sans les enregistrements du modèle en conflit avec un CNAME."
+msgstr[1] "%d zones ont été mises à jour sans les enregistrements du modèle en conflit avec un CNAME."

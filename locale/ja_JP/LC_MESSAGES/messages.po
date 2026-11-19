@@ -16541,3 +16541,19 @@ msgstr "削除された %d 件のグループの割り当てとメンバーシ�
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "%d 件の削除済みグループの割り当てとメンバーシップを削除しました。%d 件失敗しました"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "同じ名前の CNAME と競合するため、テンプレートのレコードをスキップしました: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "ゾーンテンプレートに、同じ名前の他のレコードと競合する CNAME レコードがあります: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d 個のゾーンを、CNAME と競合するテンプレートレコードを除いて更新しました。"

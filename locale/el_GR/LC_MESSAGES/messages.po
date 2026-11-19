@@ -17118,3 +17118,20 @@ msgstr "Αφαιρέθηκαν οι αναθέσεις και οι συμμετ�
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Αφαιρέθηκαν αυτές %d διαγραμμένων ομάδων· %d απέτυχαν"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Οι εγγραφές του προτύπου παραλείφθηκαν επειδή συγκρούονται με εγγραφή CNAME με το ίδιο όνομα: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Το πρότυπο ζώνης περιέχει εγγραφές CNAME που συγκρούονται με άλλες εγγραφές με το ίδιο όνομα: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d ζώνη ενημερώθηκε χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."
+msgstr[1] "%d ζώνες ενημερώθηκαν χωρίς τις εγγραφές του προτύπου που συγκρούονται με CNAME."

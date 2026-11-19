@@ -16793,3 +16793,20 @@ msgstr "Премахнати са назначенията и членстват
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Премахнати са тези на %d изтрити групи; %d неуспешни"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Записите от шаблона са пропуснати, защото са в конфликт с CNAME със същото име: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Шаблонът на зоната съдържа CNAME записи, които са в конфликт с други записи със същото име: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d зона беше обновена без записите от шаблона, които са в конфликт с CNAME."
+msgstr[1] "%d зони бяха обновени без записите от шаблона, които са в конфликт с CNAME."

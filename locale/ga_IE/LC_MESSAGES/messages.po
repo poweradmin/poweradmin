@@ -17018,3 +17018,23 @@ msgstr "Baineadh sannadh agus ballraíocht grúpaí scriosta, líon na ngrúpaí
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Grúpaí scriosta ar baineadh a sonraí: %d; theip ar: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Fágadh taifid an teimpléid ar lár mar go dtagann siad salach ar CNAME leis an ainm céanna: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Tá taifid CNAME sa teimpléad creasa a thagann salach ar thaifid eile leis an ainm céanna: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+msgstr[1] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+msgstr[2] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+msgstr[3] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"
+msgstr[4] "Creasanna a nuashonraíodh gan na taifid teimpléid a thagann salach ar CNAME: %d"

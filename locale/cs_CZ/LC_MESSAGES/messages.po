@@ -16515,3 +16515,21 @@ msgstr "Odebrána přiřazení a členství smazaných skupin, počet skupin: %d
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Smazané skupiny s odebranými daty: %d; neúspěšné: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Záznamy šablony byly přeskočeny, protože jsou v konfliktu se záznamem CNAME se stejným názvem: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Šablona zóny obsahuje záznamy CNAME, které jsou v konfliktu s jinými záznamy se stejným názvem: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"
+msgstr[1] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"
+msgstr[2] "Zóny aktualizované bez záznamů šablony v konfliktu s CNAME: %d"

@@ -16072,3 +16072,20 @@ msgstr "הוסרו ההקצאות והחברויות של קבוצות שנמח�
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "קבוצות שנמחקו שהנתונים שלהן הוסרו: %d; נכשלו: %d"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "רשומות התבנית דולגו מפני שהן מתנגשות עם רשומת CNAME באותו שם: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "תבנית האזור מכילה רשומות CNAME שמתנגשות עם רשומות אחרות באותו שם: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "אזור %d עודכן ללא רשומות התבנית שמתנגשות עם CNAME."
+msgstr[1] "%d אזורים עודכנו ללא רשומות התבנית שמתנגשות עם CNAME."

@@ -16763,3 +16763,20 @@ msgstr "Toewijzingen en lidmaatschappen van %d verwijderde groepen verwijderd"
 #, php-format
 msgid "Removed those of %d deleted groups; %d failed"
 msgstr "Die van %d verwijderde groepen verwijderd; %d mislukt"
+
+#: lib/Domain/Service/Dns/ZoneTemplateApplier.php:125
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Sjabloonrecords overgeslagen omdat ze conflicteren met een CNAME met dezelfde naam: %s"
+
+#: lib/Domain/Service/Dns/DomainManager.php:264
+#, php-format
+msgid "The zone template has CNAME records that conflict with other records at the same name: %s"
+msgstr "Het zonesjabloon bevat CNAME-records die conflicteren met andere records met dezelfde naam: %s"
+
+#: lib/Application/Controller/Template/EditZoneTemplController.php:254
+#, php-format
+msgid "%d zone was updated without the template records that conflict with a CNAME."
+msgid_plural "%d zones were updated without the template records that conflict with a CNAME."
+msgstr[0] "%d zone is bijgewerkt zonder de sjabloonrecords die conflicteren met een CNAME."
+msgstr[1] "%d zones zijn bijgewerkt zonder de sjabloonrecords die conflicteren met een CNAME."
