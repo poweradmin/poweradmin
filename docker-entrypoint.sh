@@ -29,6 +29,19 @@ to_php_bool() {
     esac
 }
 
+# Print $2 when it is a number (or null when that is the default); otherwise warn on
+# stderr and print the default $3. $1 names the variable for the log line. A stray unit
+# such as PA_SESSION_TIMEOUT=30m used to land in settings.php as a parse error.
+php_num() {
+    local name="$1" value="$2" default="$3"
+    if [[ "${value}" =~ ^-?(0|[1-9][0-9]*)(\.[0-9]+)?$ ]] || { [ "${default}" = "null" ] && [ "${value}" = "null" ]; }; then
+        printf '%s' "${value}"
+    else
+        log "WARNING: ${name}='${value}' is not a number, using default ${default}" >&2
+        printf '%s' "${default}"
+    fi
+}
+
 # Escape a value for safe interpolation inside a single-quoted PHP string. Without
 # this a secret containing a quote (e.g. DB_PASS=p'ass) produced an unparseable
 # config and every request 500'd. Backslashes are doubled, then single quotes.
@@ -1191,12 +1204,12 @@ return [
         'ns2' => '${DNS_NS2:-ns2.example.com}',
         'ns3' => '${DNS_NS3:-}',
         'ns4' => '${DNS_NS4:-}',
-        'ttl' => ${PA_DNS_TTL:-86400},
-        'ttl_reverse' => ${PA_DNS_TTL_REVERSE:-null},
-        'soa_refresh' => ${PA_DNS_SOA_REFRESH:-28800},
-        'soa_retry' => ${PA_DNS_SOA_RETRY:-7200},
-        'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
-        'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
+        'ttl' => $(php_num PA_DNS_TTL "${PA_DNS_TTL:-86400}" 86400),
+        'ttl_reverse' => $(php_num PA_DNS_TTL_REVERSE "${PA_DNS_TTL_REVERSE:-null}" null),
+        'soa_refresh' => $(php_num PA_DNS_SOA_REFRESH "${PA_DNS_SOA_REFRESH:-28800}" 28800),
+        'soa_retry' => $(php_num PA_DNS_SOA_RETRY "${PA_DNS_SOA_RETRY:-7200}" 7200),
+        'soa_expire' => $(php_num PA_DNS_SOA_EXPIRE "${PA_DNS_SOA_EXPIRE:-604800}" 604800),
+        'soa_minimum' => $(php_num PA_DNS_SOA_MINIMUM "${PA_DNS_SOA_MINIMUM:-86400}" 86400),
         'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
         'soa_edit' => '${PA_DNS_SOA_EDIT:-}',
         'soa_edit_api' => '${PA_DNS_SOA_EDIT_API:-}',
@@ -1219,13 +1232,13 @@ return [
     'security' => [
         'session_key' => '${session_key_esc}',
         'password_encryption' => '${PA_PASSWORD_ENCRYPTION:-bcrypt}',
-        'password_cost' => ${PA_PASSWORD_COST:-12},
+        'password_cost' => $(php_num PA_PASSWORD_COST "${PA_PASSWORD_COST:-12}" 12),
         'login_token_validation' => ${login_token_validation},
         'global_token_validation' => ${global_token_validation},
         'trusted_proxies' => ${trusted_proxies_php},
         'password_policy' => [
             'enable_password_rules' => ${password_rules_enabled},
-            'min_length' => ${PA_PASSWORD_MIN_LENGTH:-6},
+            'min_length' => $(php_num PA_PASSWORD_MIN_LENGTH "${PA_PASSWORD_MIN_LENGTH:-6}" 6),
             'require_uppercase' => ${password_require_uppercase},
             'require_lowercase' => ${password_require_lowercase},
             'require_numbers' => ${password_require_numbers},
@@ -1233,8 +1246,8 @@ return [
         ],
         'account_lockout' => [
             'enable_lockout' => ${lockout_enabled},
-            'lockout_attempts' => ${PA_LOCKOUT_ATTEMPTS:-5},
-            'lockout_duration' => ${PA_LOCKOUT_DURATION:-15},
+            'lockout_attempts' => $(php_num PA_LOCKOUT_ATTEMPTS "${PA_LOCKOUT_ATTEMPTS:-5}" 5),
+            'lockout_duration' => $(php_num PA_LOCKOUT_DURATION "${PA_LOCKOUT_DURATION:-15}" 15),
             'track_ip_address' => ${lockout_track_ip},
             'clear_attempts_on_success' => ${lockout_clear_on_success},
         ],
@@ -1244,37 +1257,37 @@ return [
             'app_enabled' => ${mfa_app_enabled},
             'email_enabled' => ${mfa_email_enabled},
             'skip_for_external_auth' => ${mfa_skip_for_external_auth},
-            'recovery_codes' => ${PA_MFA_RECOVERY_CODES:-8},
-            'recovery_code_length' => ${PA_MFA_RECOVERY_CODE_LENGTH:-10},
-            'max_verify_attempts' => ${PA_MFA_MAX_VERIFY_ATTEMPTS:-5},
-            'verify_lockout_duration' => ${PA_MFA_VERIFY_LOCKOUT_DURATION:-15},
+            'recovery_codes' => $(php_num PA_MFA_RECOVERY_CODES "${PA_MFA_RECOVERY_CODES:-8}" 8),
+            'recovery_code_length' => $(php_num PA_MFA_RECOVERY_CODE_LENGTH "${PA_MFA_RECOVERY_CODE_LENGTH:-10}" 10),
+            'max_verify_attempts' => $(php_num PA_MFA_MAX_VERIFY_ATTEMPTS "${PA_MFA_MAX_VERIFY_ATTEMPTS:-5}" 5),
+            'verify_lockout_duration' => $(php_num PA_MFA_VERIFY_LOCKOUT_DURATION "${PA_MFA_VERIFY_LOCKOUT_DURATION:-15}" 15),
         ],
         'password_reset' => [
             'enabled' => ${password_reset_enabled},
-            'token_lifetime' => ${PA_PASSWORD_RESET_TOKEN_LIFETIME:-3600},
-            'rate_limit_attempts' => ${PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS:-5},
-            'rate_limit_window' => ${PA_PASSWORD_RESET_RATE_LIMIT_WINDOW:-3600},
-            'min_time_between_requests' => ${PA_PASSWORD_RESET_MIN_TIME_BETWEEN:-60},
+            'token_lifetime' => $(php_num PA_PASSWORD_RESET_TOKEN_LIFETIME "${PA_PASSWORD_RESET_TOKEN_LIFETIME:-3600}" 3600),
+            'rate_limit_attempts' => $(php_num PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS "${PA_PASSWORD_RESET_RATE_LIMIT_ATTEMPTS:-5}" 5),
+            'rate_limit_window' => $(php_num PA_PASSWORD_RESET_RATE_LIMIT_WINDOW "${PA_PASSWORD_RESET_RATE_LIMIT_WINDOW:-3600}" 3600),
+            'min_time_between_requests' => $(php_num PA_PASSWORD_RESET_MIN_TIME_BETWEEN "${PA_PASSWORD_RESET_MIN_TIME_BETWEEN:-60}" 60),
         ],
         'username_recovery' => [
             'enabled' => ${username_recovery_enabled},
-            'rate_limit_attempts' => ${PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS:-5},
-            'rate_limit_window' => ${PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW:-3600},
-            'min_time_between_requests' => ${PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN:-60},
+            'rate_limit_attempts' => $(php_num PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS "${PA_USERNAME_RECOVERY_RATE_LIMIT_ATTEMPTS:-5}" 5),
+            'rate_limit_window' => $(php_num PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW "${PA_USERNAME_RECOVERY_RATE_LIMIT_WINDOW:-3600}" 3600),
+            'min_time_between_requests' => $(php_num PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN "${PA_USERNAME_RECOVERY_MIN_TIME_BETWEEN:-60}" 60),
         ],
         'recaptcha' => [
             'enabled' => ${recaptcha_enabled},
             'site_key' => '${recaptcha_site_esc}',
             'secret_key' => '${recaptcha_secret_esc}',
             'version' => '${PA_RECAPTCHA_VERSION:-v3}',
-            'v3_threshold' => ${PA_RECAPTCHA_V3_THRESHOLD:-0.5},
+            'v3_threshold' => $(php_num PA_RECAPTCHA_V3_THRESHOLD "${PA_RECAPTCHA_V3_THRESHOLD:-0.5}" 0.5),
         ],
     ],
     'mail' => [
         'enabled' => ${mail_enabled},
         'transport' => '${PA_MAIL_TRANSPORT:-php}',
         'host' => '${PA_SMTP_HOST:-}',
-        'port' => ${PA_SMTP_PORT:-587},
+        'port' => $(php_num PA_SMTP_PORT "${PA_SMTP_PORT:-587}" 587),
         'username' => '${PA_SMTP_USER:-}',
         'password' => '${smtp_password_esc}',
         'encryption' => '${PA_SMTP_ENCRYPTION:-tls}',
@@ -1292,8 +1305,8 @@ return [
         'base_url' => '${PA_BASE_URL:-}',
         'language' => '${PA_DEFAULT_LANGUAGE:-en_EN}',
         'enabled_languages' => '${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}',
-        'session_timeout' => ${PA_SESSION_TIMEOUT:-1800},
-        'rows_per_page' => ${PA_ROWS_PER_PAGE:-10},
+        'session_timeout' => $(php_num PA_SESSION_TIMEOUT "${PA_SESSION_TIMEOUT:-1800}" 1800),
+        'rows_per_page' => $(php_num PA_ROWS_PER_PAGE "${PA_ROWS_PER_PAGE:-10}" 10),
         'theme' => '${PA_THEME:-default}',
         'style' => '${PA_STYLE:-light}',
         'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
@@ -1332,15 +1345,15 @@ return [
         'basic_auth_enabled' => ${api_basic_auth_enabled},
         'basic_auth_realm' => '${PA_API_BASIC_AUTH_REALM:-Poweradmin API}',
         'docs_enabled' => ${api_docs_enabled},
-        'max_keys_per_user' => ${PA_API_MAX_KEYS_PER_USER:-5},
+        'max_keys_per_user' => $(php_num PA_API_MAX_KEYS_PER_USER "${PA_API_MAX_KEYS_PER_USER:-5}" 5),
     ],
     'health' => [
         'enabled' => ${health_enabled},
         'ping_enabled' => ${health_ping_enabled},
-        'db_timeout' => ${PA_HEALTH_DB_TIMEOUT:-2},
-        'pdns_timeout' => ${PA_HEALTH_PDNS_TIMEOUT:-2},
+        'db_timeout' => $(php_num PA_HEALTH_DB_TIMEOUT "${PA_HEALTH_DB_TIMEOUT:-2}" 2),
+        'pdns_timeout' => $(php_num PA_HEALTH_PDNS_TIMEOUT "${PA_HEALTH_PDNS_TIMEOUT:-2}" 2),
         'token' => '$(php_sq_escape "${PA_HEALTH_TOKEN:-}")',
-        'cache_seconds' => ${PA_HEALTH_CACHE_SECONDS:-0},
+        'cache_seconds' => $(php_num PA_HEALTH_CACHE_SECONDS "${PA_HEALTH_CACHE_SECONDS:-0}" 0),
     ],
     'user_agreement' => [
         'enabled' => ${user_agreement_enabled},
@@ -1352,7 +1365,7 @@ return [
         'url' => '${PA_PDNS_API_URL:-}',
         'key' => '${pdns_api_key_esc}',
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
-        'timeout' => ${PA_PDNS_API_TIMEOUT:-10},
+        'timeout' => $(php_num PA_PDNS_API_TIMEOUT "${PA_PDNS_API_TIMEOUT:-10}" 10),
         'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
         'webserver_password' => '${pdns_webserver_password_esc}',
     ],
@@ -1364,7 +1377,7 @@ return [
         'bind_dn' => '${PA_LDAP_BIND_DN:-}',
         'bind_password' => '${ldap_bind_password_esc}',
         'user_attribute' => '${PA_LDAP_USER_ATTRIBUTE:-uid}',
-        'protocol_version' => ${PA_LDAP_PROTOCOL_VERSION:-3},
+        'protocol_version' => $(php_num PA_LDAP_PROTOCOL_VERSION "${PA_LDAP_PROTOCOL_VERSION:-3}" 3),
         'search_filter' => '${PA_LDAP_SEARCH_FILTER:-}',
         'sync_user_info' => ${ldap_sync_user_info},
         'fullname_attribute' => '${PA_LDAP_FULLNAME_ATTRIBUTE:-displayName}',
@@ -1375,7 +1388,7 @@ return [
         'groups_attribute' => '${PA_LDAP_GROUPS_ATTRIBUTE:-memberOf}',
         'permission_template_mapping' => ${ldap_permission_template_mapping},
         'group_mapping' => ${ldap_group_mapping},
-        'session_cache_timeout' => ${PA_LDAP_SESSION_CACHE_TIMEOUT:-300},
+        'session_cache_timeout' => $(php_num PA_LDAP_SESSION_CACHE_TIMEOUT "${PA_LDAP_SESSION_CACHE_TIMEOUT:-300}" 300),
     ],
     'logging' => [
         'type' => '${PA_LOGGING_TYPE:-null}',
@@ -1386,7 +1399,7 @@ return [
         'syslog_facility' => ${PA_LOGGING_SYSLOG_FACILITY:-LOG_USER},
         'require_change_comment' => ${logging_require_change_comment},
         'api_request_logging' => ${logging_api_request_logging},
-        'api_log_retention_days' => ${PA_LOGGING_API_LOG_RETENTION_DAYS:-0},
+        'api_log_retention_days' => $(php_num PA_LOGGING_API_LOG_RETENTION_DAYS "${PA_LOGGING_API_LOG_RETENTION_DAYS:-0}" 0),
     ],
     'misc' => [
         'display_stats' => ${display_stats},
@@ -1674,21 +1687,21 @@ EOF
         ],
         'zone_import_export' => [
             'enabled' => ${mod_zone_import_export_enabled},
-            'auto_ttl_value' => ${PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL:-300},
-            'max_file_size' => ${PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE:-1048576},
+            'auto_ttl_value' => $(php_num PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL "${PA_MODULE_ZONE_IMPORT_EXPORT_AUTO_TTL:-300}" 300),
+            'max_file_size' => $(php_num PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE "${PA_MODULE_ZONE_IMPORT_EXPORT_MAX_FILE_SIZE:-1048576}" 1048576),
         ],
         'whois' => [
             'enabled' => ${mod_whois_enabled},
             'default_server' => '${PA_MODULE_WHOIS_DEFAULT_SERVER:-}',
             'custom_servers' => ${whois_custom_servers},
-            'socket_timeout' => ${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10},
+            'socket_timeout' => $(php_num PA_MODULE_WHOIS_SOCKET_TIMEOUT "${PA_MODULE_WHOIS_SOCKET_TIMEOUT:-10}" 10),
             'restrict_to_admin' => ${mod_whois_restrict_to_admin},
         ],
         'rdap' => [
             'enabled' => ${mod_rdap_enabled},
             'default_server' => '${PA_MODULE_RDAP_DEFAULT_SERVER:-}',
             'custom_servers' => ${rdap_custom_servers},
-            'request_timeout' => ${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10},
+            'request_timeout' => $(php_num PA_MODULE_RDAP_REQUEST_TIMEOUT "${PA_MODULE_RDAP_REQUEST_TIMEOUT:-10}" 10),
             'restrict_to_admin' => ${mod_rdap_restrict_to_admin},
         ],
         'email_previews' => [
