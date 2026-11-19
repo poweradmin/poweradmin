@@ -496,6 +496,32 @@ class LdapAuthenticatorCacheTest extends TestCase
     }
 
     /**
+     * A cached session whose user id belongs to another row of the same username is refused
+     */
+    public function testValidateUserActiveStatusBindsSessionUserId(): void
+    {
+        $mockStmt = $this->createMock(\PDOStatement::class);
+        $mockStmt->expects($this->once())
+            ->method('execute')
+            ->with(['username' => 'testuser', 'id' => 7])
+            ->willReturn(true);
+        $mockStmt->expects($this->once())
+            ->method('fetch')
+            ->willReturn(false);
+
+        $mockDb = $this->createMock(\PDO::class);
+        $mockDb->expects($this->once())
+            ->method('prepare')
+            ->with("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1 AND id = :id")
+            ->willReturn($mockStmt);
+
+        $this->reflection->getProperty('db')->setValue($this->authenticator, $mockDb);
+
+        $method = $this->getPrivateMethod('validateUserActiveStatus');
+        $this->assertFalse($method->invoke($this->authenticator, 'testuser', 7));
+    }
+
+    /**
      * Helper method to access private methods via reflection
      */
     private function getPrivateMethod(string $methodName): ReflectionMethod
