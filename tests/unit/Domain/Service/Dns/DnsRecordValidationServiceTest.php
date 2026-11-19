@@ -115,9 +115,10 @@ class DnsRecordValidationServiceTest extends TestCase
     }
 
     #[Test]
-    public function testHealStoredContentLeavesInvalidUtf8ForTheGuardToRefuse(): void
+    public function testHealStoredContentReplacesBytesThatAreNotUtf8(): void
     {
-        $this->assertSame("\"a\xC3b\"", DnsRecordValidationService::healStoredContent("\"a\xC3b\""));
+        $this->assertSame('"a?b"', DnsRecordValidationService::healStoredContent("\"a\xC3b\""));
+        $this->assertSame('"Lin?x"', DnsRecordValidationService::healStoredContent("\"Lin\xE9x\""));
     }
 
     #[Test]

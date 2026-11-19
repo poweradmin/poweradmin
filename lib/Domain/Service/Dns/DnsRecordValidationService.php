@@ -57,12 +57,12 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 
     /**
      * Replace the control characters the content check refuses with a space, for stored
-     * content a caller keeps unchanged. Content that is not UTF-8 is returned as is, so
-     * the check still refuses it.
+     * content a caller keeps unchanged. Bytes that are not UTF-8 become "?", so an update
+     * that leaves the content out (a TTL change, say) still saves a legacy record.
      */
     public static function healStoredContent(string $content): string
     {
-        return trim(preg_replace('/[\x00-\x1F\x7F-\x{9F}]+/u', ' ', $content) ?? $content);
+        return trim((string) preg_replace('/[\x00-\x1F\x7F-\x{9F}]+/u', ' ', mb_scrub($content, 'UTF-8')));
     }
 
     /**
