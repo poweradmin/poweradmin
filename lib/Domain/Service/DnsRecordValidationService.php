@@ -96,7 +96,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         }
 
         // Content is stored and exported untrimmed, so a raw line break would split a zone file line.
-        if (preg_match('/[\x00-\x1F\x7F]/', $content) === 1) {
+        // C1 controls and bytes that are not UTF-8 are refused with the C0 range
+        if (preg_match('/[\x00-\x1F\x7F-\x{9F}]/u', $content) !== 0) {
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 

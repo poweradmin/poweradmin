@@ -63,6 +63,14 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         $this->assertTrue($this->validate('www.example.com', 'A', '192.0.2.1'));
     }
 
+    public function testRefusesC1ControlsAndInvalidUtf8ButKeepsOtherUnicode(): void
+    {
+        // HINFO has no printability check of its own, so only the shared guard catches these
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\u{0085}b\" \"linux\""));
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\xC3b\" \"linux\""));
+        $this->assertTrue($this->validate('www.example.com', 'HINFO', "\"caf\u{00E9}\" \"linux\""));
+    }
+
     public function testRefusesLineBreaksAndControlCharactersInLua(): void
     {
         $this->assertFalse($this->validate('www.example.com', 'LUA', "A \"ifportup(443, {'192.0.2.1'})\n\tor '192.0.2.2'\""));

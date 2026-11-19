@@ -100,6 +100,9 @@ class DnsRecordValidationServiceTest extends TestCase
             'DEL' => ['TXT', "\"a\x7Fb\""],
             'newline in LUA' => ['LUA', "A \"return '192.0.2.1'\n\""],
             'control character in LUA' => ['LUA', "A \"return '192.0.2.1'\x01\""],
+            'C1 next line in HINFO' => ['HINFO', "\"a\u{0085}b\" \"linux\""],
+            'C1 CSI in CAA' => ['CAA', "0 issue \"ca\u{009B}.example\""],
+            'invalid UTF-8' => ['TXT', "\"a\xC3b\""],
         ];
     }
 
