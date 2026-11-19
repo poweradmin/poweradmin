@@ -188,7 +188,8 @@ abstract class AbstractApiController extends BaseController
             return trim($content);
         }
 
-        return trim((string)preg_replace('/[\x00-\x1F\x7F]+/', ' ', $content));
+        // Bytes that are not UTF-8 are scrubbed, so an update that leaves the content out still saves
+        return trim((string)preg_replace('/[\x00-\x1F\x7F-\x{9F}]+/u', ' ', mb_scrub($content, 'UTF-8')));
     }
 
     /**

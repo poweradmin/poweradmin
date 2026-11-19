@@ -56,6 +56,14 @@ class ZoneTemplateRecordValidationServiceTest extends TestCase
         return $this->service->validate($name, $type, $content, $ttl, $prio, 3600)->isValid();
     }
 
+    public function testRefusesC1ControlsAndInvalidUtf8ButKeepsOtherUnicode(): void
+    {
+        // HINFO has no printability check of its own, so only the shared guard catches these
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\u{0085}b\" \"linux\""));
+        $this->assertFalse($this->validate('www.example.com', 'HINFO', "\"a\xC3b\" \"linux\""));
+        $this->assertTrue($this->validate('www.example.com', 'HINFO', "\"caf\u{00E9}\" \"linux\""));
+    }
+
     public function testRefusesControlCharactersInContent(): void
     {
         $this->assertFalse($this->validate('[ZONE]', 'CSYNC', "66 3 AAAA\n NS A"));

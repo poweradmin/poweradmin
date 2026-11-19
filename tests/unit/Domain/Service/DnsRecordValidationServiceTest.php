@@ -106,6 +106,9 @@ class DnsRecordValidationServiceTest extends TestCase
             'carriage return' => ['AAAA', "2001:db8::1\r"],
             'NUL byte' => ['A', "192.0.2.1\0"],
             'DEL' => ['TXT', "\"a\x7Fb\""],
+            'C1 next line in HINFO' => ['HINFO', "\"a\u{0085}b\" \"linux\""],
+            'C1 CSI in CAA' => ['CAA', "0 issue \"ca\u{009B}.example\""],
+            'invalid UTF-8' => ['TXT', "\"a\xC3b\""],
         ];
     }
 
