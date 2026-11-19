@@ -69,7 +69,8 @@ test.describe('User Form Autofill Prevention', () => {
       await page.goto('/users/1/edit');
       await page.waitForLoadState('networkidle');
 
-      const passwordInput = page.locator('input[name="password"], input[type="password"]');
+      // The own profile also has a current_password field, which rightly autocompletes
+      const passwordInput = page.locator('input[name="password"]');
 
       expect(await passwordInput.count()).toBeGreaterThan(0);
 
