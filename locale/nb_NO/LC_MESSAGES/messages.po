@@ -15641,3 +15641,8 @@ msgstr "Verdien for tls-supported-groups må være en kommaseparert liste med ta
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Bruk parameternavnet i stedet for \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Malpostene ble hoppet over fordi de er i konflikt med en CNAME med samme navn: %s"

@@ -15259,3 +15259,8 @@ msgstr "ערך ה-tls-supported-groups חייב להיות רשימת מספרי
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "השתמש בשם הפרמטר במקום \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "רשומות התבנית דולגו מפני שהן מתנגשות עם רשומת CNAME באותו שם: %s"

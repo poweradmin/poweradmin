@@ -15894,3 +15894,8 @@ msgstr "De waarde van tls-supported-groups moet een door komma's gescheiden lijs
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Gebruik de parameternaam in plaats van \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Sjabloonrecords overgeslagen omdat ze conflicteren met een CNAME met dezelfde naam: %s"

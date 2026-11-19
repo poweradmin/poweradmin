@@ -15739,3 +15739,8 @@ msgstr "tls-supported-groups değeri, 0 ile 65535 arasındaki sayıların virgü
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "\"%s\" yerine parametre adını kullanın."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Şablon kayıtları, aynı adlı bir CNAME ile çakıştığı için atlandı: %s"

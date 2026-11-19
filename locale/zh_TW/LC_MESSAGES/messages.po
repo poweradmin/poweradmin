@@ -14677,3 +14677,8 @@ msgstr "tls-supported-groups 值必須是以逗號分隔的 0 到 65535 之間�
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "請使用參數名稱，而非 \"%s\"。"
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "已略過範本記錄，因為它們與同名的 CNAME 衝突：%s"

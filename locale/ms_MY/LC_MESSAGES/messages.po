@@ -15819,3 +15819,8 @@ msgstr "Nilai tls-supported-groups mesti senarai nombor antara 0 hingga 65535 ya
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Gunakan nama parameter dan bukan \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Rekod templat dilangkau kerana bercanggah dengan CNAME yang sama nama: %s"

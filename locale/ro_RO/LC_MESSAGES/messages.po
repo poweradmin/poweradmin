@@ -16186,3 +16186,8 @@ msgstr "Valoarea tls-supported-groups trebuie să fie o listă de numere între 
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Folosiți numele parametrului în loc de \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Înregistrările șablonului au fost omise deoarece sunt în conflict cu un CNAME cu același nume: %s"

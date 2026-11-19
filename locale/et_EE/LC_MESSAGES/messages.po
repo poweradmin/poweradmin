@@ -15393,3 +15393,8 @@ msgstr "tls-supported-groups väärtus peab olema komadega eraldatud loend arvud
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Kasutage parameetri nime, mitte \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Malli kirjed jäeti vahele, sest need on vastuolus sama nimega CNAME-kirjega: %s"

@@ -16121,3 +16121,8 @@ msgstr "Caithfidh an luach tls-supported-groups a bheith ina liosta uimhreacha i
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "Úsáid ainm an pharaiméadair in ionad \"%s\"."
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Fágadh taifid an teimpléid ar lár mar go dtagann siad salach ar CNAME leis an ainm céanna: %s"

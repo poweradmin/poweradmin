@@ -14999,3 +14999,8 @@ msgstr "ค่า tls-supported-groups ต้องเป็นรายกา�
 #, php-format
 msgid "Use the parameter name instead of \"%s\"."
 msgstr "ใช้ชื่อพารามิเตอร์แทน \"%s\""
+
+#: lib/Domain/Service/Dns/DomainManager.php:1075
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "ข้ามเรกคอร์ดของเทมเพลตเนื่องจากขัดแย้งกับ CNAME ที่มีชื่อเดียวกัน: %s"
