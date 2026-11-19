@@ -86,6 +86,16 @@ class DbZoneAccountOwnerRepositoryTest extends TestCase
         $this->assertSame('bob', $this->repository(false)->oldestOwnerUsername(60));
     }
 
+    public function testAnExcludedUserIsPassedOver(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username) VALUES (2, 'bob')");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (3, 60, 2, 'example.com'), (4, 60, 1, 'example.com')");
+
+        $this->assertSame('alice', $this->repository(false)->oldestOwnerUsername(60, 2));
+        $this->db->exec("DELETE FROM zones WHERE owner = 1");
+        $this->assertNull($this->repository(false)->oldestOwnerUsername(60, 2));
+    }
+
     public function testAZoneWithNoOwnerResolvesToNull(): void
     {
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (60, 60, NULL, 'orphan.example.com')");

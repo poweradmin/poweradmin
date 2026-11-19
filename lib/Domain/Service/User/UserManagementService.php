@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Poweradmin\Domain\Service\Zone\ZoneLimitBreach;
@@ -97,7 +98,8 @@ class UserManagementService
         bool $protectLastAdminOnEdit = false,
         ?LoggerInterface $logger = null,
         private readonly ?TransactionInterface $transaction = null,
-        private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null
+        private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null,
+        private readonly ?ZoneAccountSyncService $accountSync = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -765,6 +767,8 @@ class UserManagementService
             }
         }
 
+        $this->releaseAccountsOfLeftZones($userId, $zoneDecisions);
+
         // Row cleanup (auth links, preferences, MFA, memberships, templates) is shared with the API.
         $deleted = $this->deleteUnlessLastAdmin($userId, $actingUserId);
         if (is_array($deleted)) {
@@ -775,6 +779,32 @@ class UserManagementService
         }
 
         return ['success' => true, 'message' => 'User deleted successfully', 'zones_affected' => count($zoneDecisions)];
+    }
+
+    /**
+     * Zones the deleted user owned and that stay behind get the PowerDNS account of their next
+     * owner, or none. It runs before the rows go: the API backend finds the zone through them.
+     *
+     * @param list<array<string, mixed>> $zoneDecisions
+     */
+    private function releaseAccountsOfLeftZones(int $userId, array $zoneDecisions): void
+    {
+        if ($this->accountSync === null || !$this->accountSync->isEnabled()) {
+            return;
+        }
+
+        $decided = array_map(static fn(array $decision): int => (int)$decision['zid'], $zoneDecisions);
+        foreach ($this->userRepository->getUserZones($userId) as $zone) {
+            $zoneId = (int)($zone['domain_id'] ?? 0) ?: (int)($zone['id'] ?? 0);
+            if ($zoneId === 0 || in_array($zoneId, $decided, true)) {
+                continue;
+            }
+            try {
+                $this->accountSync->syncZoneAccount($zoneId, $userId);
+            } catch (\Throwable $e) {
+                $this->logFailure('release the account of zone ' . $zoneId, $e);
+            }
+        }
     }
 
     /**
@@ -900,7 +930,7 @@ class UserManagementService
     }
 
     /** The exception text can hold SQL details, so it goes to the log and the caller gets a plain message */
-    private function logFailure(string $action, Exception $e): void
+    private function logFailure(string $action, \Throwable $e): void
     {
         $this->logger->error('Failed to {action}: {class}: {message}', [
             'action' => $action,

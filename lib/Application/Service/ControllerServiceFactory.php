@@ -109,6 +109,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Service\User\UserManagementService;
 use Poweradmin\Domain\Service\User\UserPreferenceService;
 use Poweradmin\Domain\Service\User\UserTimezoneService;
+use Poweradmin\Domain\Service\Zone\ZoneAccountSyncService;
 use Poweradmin\Domain\Service\Zone\ZoneChangeRequestService;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
 use Poweradmin\Domain\Service\Zone\ZoneEditService;
@@ -566,6 +567,11 @@ class ControllerServiceFactory implements ModuleServices
     public function zoneOwnershipLimit(): ZoneOwnershipLimit
     {
         return $this->zones->zoneOwnershipLimit();
+    }
+
+    public function zoneAccountSyncService(): ZoneAccountSyncService
+    {
+        return $this->zones->zoneAccountSyncService();
     }
 
     public function zoneListPermissionService(): ZoneListPermissionService

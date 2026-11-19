@@ -132,7 +132,8 @@ final class UserServices
             (bool)$this->config->get('security', 'protect_last_admin_on_edit', false),
             $this->logger,
             $this->services->transaction(),
-            new EmailChangeNotifier($this->services->mailService(), $this->config)
+            new EmailChangeNotifier($this->services->mailService(), $this->config),
+            $this->services->zoneAccountSyncService()
         );
     }
 

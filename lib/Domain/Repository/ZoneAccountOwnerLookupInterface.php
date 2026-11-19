@@ -31,6 +31,7 @@ interface ZoneAccountOwnerLookupInterface
      * Username of the oldest direct owner of the zone, or null when the zone has none.
      *
      * @param int $domainId Canonical zone id (the PowerDNS domain id, or the zones row id in API mode)
+     * @param int|null $excludeUserId A user to leave out, for a zone about to lose them as an owner
      */
-    public function oldestOwnerUsername(int $domainId): ?string;
+    public function oldestOwnerUsername(int $domainId, ?int $excludeUserId = null): ?string;
 }

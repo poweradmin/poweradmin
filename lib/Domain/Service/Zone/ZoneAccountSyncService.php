@@ -55,14 +55,15 @@ class ZoneAccountSyncService
      * Update the zone's PowerDNS account field with the oldest owner's username
      *
      * @param int $domainId Domain ID
+     * @param int|null $excludeUserId A user to leave out, for a zone about to lose them as an owner
      */
-    public function syncZoneAccount(int $domainId): void
+    public function syncZoneAccount(int $domainId, ?int $excludeUserId = null): void
     {
         if (!$this->isEnabled()) {
             return;
         }
 
-        $this->pushZoneAccount($domainId, $this->owners->oldestOwnerUsername($domainId));
+        $this->pushZoneAccount($domainId, $this->owners->oldestOwnerUsername($domainId, $excludeUserId));
     }
 
     /**

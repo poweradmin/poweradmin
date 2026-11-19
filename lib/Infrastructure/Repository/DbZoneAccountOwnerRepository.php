@@ -38,7 +38,7 @@ final class DbZoneAccountOwnerRepository implements ZoneAccountOwnerLookupInterf
     {
     }
 
-    public function oldestOwnerUsername(int $domainId): ?string
+    public function oldestOwnerUsername(int $domainId, ?int $excludeUserId = null): ?string
     {
         // A miss here does not merely skip the sync, it pushes an empty account and wipes
         // whatever PowerDNS held, so the lookup has to resolve the canonical id.
@@ -47,11 +47,14 @@ final class DbZoneAccountOwnerRepository implements ZoneAccountOwnerLookupInterf
             SELECT u.username
             FROM users u
             INNER JOIN zones z ON z.owner = u.id
-            WHERE $canonicalId = ?
+            WHERE $canonicalId = ?" . ($excludeUserId !== null ? ' AND u.id != ?' : '') . "
             ORDER BY z.id
             LIMIT 1
         ");
         $stmt->bindValue(1, $domainId, PDO::PARAM_INT);
+        if ($excludeUserId !== null) {
+            $stmt->bindValue(2, $excludeUserId, PDO::PARAM_INT);
+        }
         $stmt->execute();
         $account = $stmt->fetchColumn();
 
