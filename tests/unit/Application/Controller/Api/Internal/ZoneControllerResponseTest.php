@@ -109,4 +109,118 @@ class ZoneControllerResponseTest extends TestCase
             '/api/internal/zone?action=get&id=5'
         );
     }
+
+    /**
+     * @param int[] $owned
+     */
+    private function controllerWithOwnershipView(string $level, array $owned, array $rows, ?array $detail = null): ZoneController
+    {
+        $controller = new class ($level, $owned) extends ZoneController {
+            /** @param int[] $owned */
+            public function __construct(private string $level, private array $owned)
+            {
+            }
+
+            protected function hasPermission(string $permission): bool
+            {
+                return true;
+            }
+
+            protected function ownershipViewLevel(int $userId): string
+            {
+                return $this->level;
+            }
+
+            protected function userOwnsZoneId(int $userId, int $zoneId): bool
+            {
+                return in_array($zoneId, $this->owned, true);
+            }
+        };
+
+        $repository = $this->createMock(\Poweradmin\Domain\Repository\ZoneRepositoryInterface::class);
+        $repository->method('listZones')->willReturn($rows);
+        $repository->method('zoneExists')->willReturn(true);
+        $repository->method('getZone')->willReturn($detail);
+
+        $ref = new ReflectionClass(ZoneController::class);
+        $ref->getProperty('zoneRepository')->setValue($controller, $repository);
+        $ref->getProperty('userContextService')->setValue($controller, new class extends \Poweradmin\Domain\Service\UserContextService {
+            public function __construct()
+            {
+            }
+
+            public function getLoggedInUserId(): int
+            {
+                return 7;
+            }
+        });
+
+        return $controller;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function rows(): array
+    {
+        $row = fn(int $id) => ['id' => $id, 'name' => "z$id.example", 'type' => 'MASTER', 'username' => 'alice', 'fullname' => 'Alice A'];
+
+        return [$row(1), $row(2)];
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function listed(ZoneController $controller): array
+    {
+        return json_decode((string)$this->invokeWith($controller, 'listZones', '/x?action=list')->getContent(), true)['data']['zones'];
+    }
+
+    /** @return array<string, mixed> */
+    private function detail(): array
+    {
+        return ['id' => 2, 'name' => 'z2.example', 'username' => 'alice', 'fullname' => 'Alice A', 'owners' => ['alice'], 'full_names' => ['Alice A'], 'owner' => 9];
+    }
+
+    public function testListZonesHidesOwnersWhenOwnershipViewIsNone(): void
+    {
+        foreach ($this->listed($this->controllerWithOwnershipView('none', [], $this->rows())) as $zone) {
+            $this->assertArrayHasKey('username', $zone);
+            $this->assertNull($zone['username']);
+            $this->assertNull($zone['fullname']);
+        }
+    }
+
+    public function testListZonesShowsOwnersOnlyOnOwnedZonesAtOwnLevel(): void
+    {
+        $zones = $this->listed($this->controllerWithOwnershipView('own', [1], $this->rows()));
+
+        $this->assertSame('alice', $zones[0]['username']);
+        $this->assertNull($zones[1]['username']);
+    }
+
+    public function testListZonesKeepsOwnersAtAllLevel(): void
+    {
+        $zones = $this->listed($this->controllerWithOwnershipView('all', [], $this->rows()));
+
+        $this->assertSame('alice', $zones[1]['username']);
+    }
+
+    public function testGetZoneHidesOwnerIdentityWhenOwnershipViewIsNone(): void
+    {
+        $controller = $this->controllerWithOwnershipView('none', [], [], $this->detail());
+        $zone = json_decode((string)$this->invokeWith($controller, 'getZone', '/x?action=get&id=2')->getContent(), true)['data']['zone'];
+
+        $this->assertNull($zone['username']);
+        $this->assertNull($zone['fullname']);
+        $this->assertSame([], $zone['owners']);
+        $this->assertSame([], $zone['full_names']);
+        $this->assertSame(0, $zone['owner']);
+        $this->assertSame('z2.example', $zone['name']);
+    }
+
+    public function testGetZoneShowsOwnersOnOwnedZoneAtOwnLevel(): void
+    {
+        $controller = $this->controllerWithOwnershipView('own', [2], [], $this->detail());
+        $zone = json_decode((string)$this->invokeWith($controller, 'getZone', '/x?action=get&id=2')->getContent(), true)['data']['zone'];
+
+        $this->assertSame('alice', $zone['username']);
+        $this->assertSame(['alice'], $zone['owners']);
+    }
 }

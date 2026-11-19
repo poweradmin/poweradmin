@@ -93,6 +93,7 @@ class ZoneController extends InternalApiController
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $viewOthers = $this->hasPermission('zone_content_view_others');
         $zones = $this->zoneRepository->listZones($userId, $viewOthers);
+        $zones = $this->withOwnersVisibleTo($userId, $zones);
 
         return $this->returnJsonResponse([
             'success' => true,
@@ -139,6 +140,8 @@ class ZoneController extends InternalApiController
             return $this->returnErrorResponse('Zone not found', 404);
         }
 
+        $zone = $this->withOwnersVisibleTo($this->userContextService->getLoggedInUserId() ?? 0, [$zone])[0];
+
         return $this->returnJsonResponse([
             'success' => true,
             'message' => 'Zone retrieved successfully',
@@ -149,5 +152,51 @@ class ZoneController extends InternalApiController
                 'timestamp' => date('Y-m-d H:i:s')
             ]
         ]);
+    }
+
+    /**
+     * Blank owner identity on rows the zone_ownership_view level hides, as the web lists do.
+     *
+     * @param list<array<string, mixed>> $zones
+     * @return list<array<string, mixed>>
+     */
+    private function withOwnersVisibleTo(int $userId, array $zones): array
+    {
+        $level = $this->ownershipViewLevel($userId);
+        if ($level === 'all') {
+            return $zones;
+        }
+
+        foreach ($zones as &$zone) {
+            if ($level === 'own' && $this->userOwnsZoneId($userId, (int)$zone['id'])) {
+                continue;
+            }
+            foreach (['username', 'fullname'] as $key) {
+                if (array_key_exists($key, $zone)) {
+                    $zone[$key] = null;
+                }
+            }
+            foreach (['owners', 'full_names', 'users'] as $key) {
+                if (array_key_exists($key, $zone)) {
+                    $zone[$key] = [];
+                }
+            }
+            if (array_key_exists('owner', $zone)) {
+                $zone['owner'] = 0;
+            }
+        }
+        unset($zone);
+
+        return $zones;
+    }
+
+    protected function ownershipViewLevel(int $userId): string
+    {
+        return $this->createPermissionService()->getZoneOwnershipViewPermissionLevel($userId);
+    }
+
+    protected function userOwnsZoneId(int $userId, int $zoneId): bool
+    {
+        return $this->createPermissionService()->userOwnsZone($userId, $zoneId);
     }
 }
