@@ -612,6 +612,43 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
         $this->assertStringContainsString('www.old.example A', (string) $result->message);
     }
 
+    /**
+     * @return array<string, array{0: list<array{0: string, 1: string, 2: string, 3: int, 4: int}>, 1: string}>
+     */
+    public static function conflictingTemplates(): array
+    {
+        return [
+            'CNAME beside an A' => [[['www', 'CNAME', 'web.example.net', 0, 0], ['WWW.[ZONE]', 'A', '192.0.2.10', 0, 0]], 'www.new.example CNAME'],
+            'CNAME at the apex' => [[['[ZONE]', 'CNAME', 'web.example.net', 0, 0]], 'new.example CNAME'],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('conflictingTemplates')]
+    public function testANewZoneIsRefusedBeforeCreationWhenItsTemplateBreaksTheCnameRule(array $templateRecords, string $reported): void
+    {
+        $this->seedTemplateRecords($templateRecords);
+        $this->backend = $this->sqlBackend();
+        $this->backend->expects($this->never())->method('createZone');
+
+        $result = $this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID);
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
+        $this->assertStringContainsString($reported, (string) $result->message);
+    }
+
+    public function testATemplateWithoutCnameConflictsReachesZoneCreation(): void
+    {
+        $this->seedTemplateRecords([
+            ['www', 'CNAME', 'web.example.net', 0, 0],
+            ['[ZONE]', 'A', '192.0.2.10', 0, 0],
+        ]);
+        $this->backend = $this->sqlBackend();
+        $this->backend->expects($this->once())->method('createZone')->willReturn(false);
+
+        $this->assertFalse($this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', self::TEMPLATE_ID)->success);
+    }
+
     public function testApiBackendKeepsTheLinkOfARecordPowerDnsRefusedToDelete(): void
     {
         $this->seedZone(self::TEMPLATE_ID);

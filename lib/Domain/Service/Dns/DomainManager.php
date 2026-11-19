@@ -257,6 +257,14 @@ final class DomainManager implements DomainManagerInterface
             $slave_master = $normalized;
         }
 
+        // Refused before the zone exists, so nothing is left to roll back
+        if (!$replicates && is_numeric($zone_template) && (int)$zone_template !== 0) {
+            $conflicts = $this->templateApplier->conflictingTemplateCnames((int)$zone_template, $domain);
+            if ($conflicts !== []) {
+                return ZoneWriteResult::failure(sprintf(_('The zone template has CNAME records that conflict with other records at the same name: %s'), implode(', ', $conflicts)));
+            }
+        }
+
         // Create the zone before the outer transaction: in API mode
         // createZone() commits its own placeholder row when no transaction is open.
         try {

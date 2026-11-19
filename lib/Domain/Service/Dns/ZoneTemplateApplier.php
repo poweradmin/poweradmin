@@ -139,6 +139,26 @@ class ZoneTemplateApplier
     }
 
     /**
+     * Template CNAMEs a new zone could not hold: one that shares its name with
+     * another template entry, or one at the zone apex.
+     *
+     * @return list<string> "name CNAME" for each
+     */
+    public function conflictingTemplateCnames(int $templateId, string $domain): array
+    {
+        $entriesByName = $this->templateEntriesByName($this->zoneTemplateRepository->getZoneTemplateRecords($templateId), $domain);
+
+        $conflicts = [];
+        foreach ($entriesByName as $name => $entries) {
+            $cnames = array_filter(array_keys($entries), fn(string $entry): bool => str_starts_with($entry, RecordType::CNAME . ' '));
+            if ($cnames !== [] && (count($entries) > 1 || DnsHelper::isZoneApex((string) $name, $domain))) {
+                $conflicts[] = $name . ' ' . RecordType::CNAME;
+            }
+        }
+        return $conflicts;
+    }
+
+    /**
      * Commit or roll back whatever is still open; the API backend path has
      * already committed before its writes.
      */
