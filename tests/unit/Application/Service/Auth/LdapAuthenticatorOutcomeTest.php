@@ -54,6 +54,9 @@ class LdapAuthenticatorOutcomeTest extends TestCase
 {
     private ArraySession $session;
 
+    /** @var array{string, int|null}|null */
+    private ?array $lookedUp = null;
+
     private MockObject&AuditService $audit;
     private MockObject&LoginAttemptService $attempts;
 
@@ -108,6 +111,15 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $this->assertTrue($this->session->get(SessionKeys::AUTHENTICATED));
     }
 
+    public function testCachedBindIsCheckedAgainstTheSessionUserId(): void
+    {
+        $this->cacheBind('alice');
+
+        $this->authenticator(userRow: ['id' => 7, 'fullname' => 'Alice'])->authenticate();
+
+        $this->assertSame(['alice', 7], $this->lookedUp);
+    }
+
     public function testCachedBindForADeactivatedUserEndsTheSession(): void
     {
         $this->cacheBind('alice');
@@ -146,7 +158,11 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $userLookup = $this->createMock(AuthUserLookupInterface::class);
         $userLookup->expects($userRow === null ? $this->never() : $this->once())
             ->method('hasActiveLdapUser')
-            ->willReturn((bool)$userRow);
+            ->willReturnCallback(function (string $username, ?int $userId = null) use ($userRow): bool {
+                $this->lookedUp = [$username, $userId];
+
+                return (bool)$userRow;
+            });
 
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {

@@ -44,8 +44,9 @@ interface AuthUserLookupInterface
     /**
      * Whether the account is still active and still LDAP-enabled, re-checked on
      * every request so a disabled account loses a cached LDAP bind at once.
+     * With $userId the row must carry that id as well as the username.
      */
-    public function hasActiveLdapUser(string $username): bool;
+    public function hasActiveLdapUser(string $username, ?int $userId = null): bool;
 
     /**
      * Whether the account still exists and is active, re-checked on every request

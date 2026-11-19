@@ -164,11 +164,15 @@ class DbUserRepository implements UserRepositoryInterface
         return $rowObj ?: null;
     }
 
-    public function hasActiveLdapUser(string $username): bool
+    public function hasActiveLdapUser(string $username, ?int $userId = null): bool
     {
         $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'username', ':username');
-        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1");
-        $stmt->execute(['username' => $username]);
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE $match AND active = 1 AND use_ldap = 1" . ($userId !== null ? ' AND id = :id' : ''));
+        $stmt->bindValue(':username', $username);
+        if ($userId !== null) {
+            $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        }
+        $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return (bool)$rowObj;

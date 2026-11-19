@@ -82,6 +82,13 @@ class DbUserRepositoryAuthLookupTest extends TestCase
         $this->assertFalse($this->repository->hasActiveLdapUser('nosuchuser'));
     }
 
+    public function testActiveLdapUserCheckCanRequireTheUserId(): void
+    {
+        $this->assertTrue($this->repository->hasActiveLdapUser('bob', 2));
+        $this->assertFalse($this->repository->hasActiveLdapUser('bob', 9));
+        $this->assertFalse($this->repository->hasActiveLdapUser('bob', 3));
+    }
+
     public function testBasicAuthRowRequiresAnActiveAccount(): void
     {
         $row = $this->repository->findBasicAuthUser('alice');

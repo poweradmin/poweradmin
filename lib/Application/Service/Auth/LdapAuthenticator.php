@@ -117,7 +117,7 @@ final class LdapAuthenticator
         if ($this->isCachedAuthenticationValid()) {
             // Even with valid cache, we must verify the user is still active in the database
             // This ensures disabled/deleted users are logged out immediately, not after cache expiry
-            if (!$this->validateUserActiveStatus($username)) {
+            if (!$this->validateUserActiveStatus($username, (int) $this->userContextService->getSessionData(SessionKeys::USERID))) {
                 $this->logger->warning('Cached LDAP user {username} is no longer active, invalidating cache', ['username' => $username]);
                 $this->invalidateAuthenticationCache();
                 return AuthOutcome::failure(_('LDAP Authentication failed!'), endSession: true);
@@ -457,11 +457,12 @@ final class LdapAuthenticator
      * LDAP authentication is still cached.
      *
      * @param string $username The username to validate
+     * @param int|null $userId The id the session was cached for; the row must carry it too
      * @return bool True if user is active and use_ldap=1, false otherwise
      */
-    private function validateUserActiveStatus(string $username): bool
+    private function validateUserActiveStatus(string $username, ?int $userId = null): bool
     {
-        if (!$this->userLookup->hasActiveLdapUser($username)) {
+        if (!$this->userLookup->hasActiveLdapUser($username, $userId)) {
             $this->logger->debug('User {username} is not active or use_ldap is disabled', ['username' => $username]);
             return false;
         }
