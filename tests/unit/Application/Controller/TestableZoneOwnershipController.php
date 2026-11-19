@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller;
 
 use PDO;
 use Poweradmin\Application\Controller\ZoneOwnershipController;
+use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Repository\ZoneGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -37,6 +38,8 @@ class TestableZoneOwnershipController extends ZoneOwnershipController
     public array $messages = [];
 
     public ZoneGroupRepositoryInterface $zoneGroupRepository;
+
+    public ?UserRepository $userRepository = null;
 
     /** @var array<string, bool> */
     public array $permissions = [];
@@ -68,5 +71,10 @@ class TestableZoneOwnershipController extends ZoneOwnershipController
     protected function createZoneGroupRepository(): ZoneGroupRepositoryInterface
     {
         return $this->zoneGroupRepository;
+    }
+
+    protected function createUserRepository(): UserRepository
+    {
+        return $this->userRepository ?? parent::createUserRepository();
     }
 }
