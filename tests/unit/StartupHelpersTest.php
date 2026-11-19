@@ -73,4 +73,39 @@ class StartupHelpersTest extends TestCase
         $this->assertSame('1', ini_get('session.use_strict_mode'));
         $this->assertNotSame('planted0session0id0never0issued', $issuedId);
     }
+
+    #[RunInSeparateProcess]
+    public function testSessionCookieSecureHonoursIniWhenHttpsIsNotDetected(): void
+    {
+        unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO']);
+        ini_set('session.cookie_secure', '1');
+
+        $this->assertTrue(sessionCookieSecure());
+    }
+
+    #[RunInSeparateProcess]
+    public function testSessionCookieSecureFalseWhenNeitherHttpsNorIni(): void
+    {
+        unset($_SERVER['HTTPS'], $_SERVER['HTTP_X_FORWARDED_PROTO']);
+        ini_set('session.cookie_secure', '0');
+
+        $this->assertFalse(sessionCookieSecure());
+    }
+
+    #[RunInSeparateProcess]
+    public function testSessionCookieSecureTrueOnDetectedHttpsRegardlessOfIni(): void
+    {
+        ini_set('session.cookie_secure', '0');
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $this->assertTrue(sessionCookieSecure());
+    }
+
+    public function testInstallerSessionCookieAlsoHonoursIniSecure(): void
+    {
+        $installer = file_get_contents(__DIR__ . '/../../install/index.php');
+        $this->assertNotFalse($installer);
+
+        $this->assertStringContainsString("filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL)", $installer);
+    }
 }

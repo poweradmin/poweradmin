@@ -38,6 +38,17 @@ function initializeTimezone(ConfigurationInterface $config): void
 }
 
 /**
+ * Detected HTTPS, or a php.ini session.cookie_secure the operator turned on; never lowers the ini.
+ */
+function sessionCookieSecure(): bool
+{
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
+    return $https || filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL);
+}
+
+/**
  * Initialize secure session configuration
  */
 function initializeSession(ConfigurationInterface $config): void
@@ -56,9 +67,8 @@ function initializeSession(ConfigurationInterface $config): void
         ini_set('session.gc_maxlifetime', (string)($sessionTimeout + 300));
     }
 
-    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
     session_set_cookie_params([
-        'secure'   => $secure,
+        'secure'   => sessionCookieSecure(),
         'httponly' => true,
         'samesite' => 'Lax',
     ]);

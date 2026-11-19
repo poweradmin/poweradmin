@@ -34,7 +34,7 @@ if (session_status() === PHP_SESSION_NONE) {
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
         || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
     session_set_cookie_params([
-        'secure'   => $secure,
+        'secure'   => $secure || filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOL),
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
