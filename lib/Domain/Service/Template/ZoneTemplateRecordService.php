@@ -73,20 +73,33 @@ class ZoneTemplateRecordService
      *
      * Built on demand because the validator registry instantiates every record-type
      * validator, which is wasted work on the paths that never store a record.
+     *
+     * @param array<string, mixed>|null $stored The stored row an edit replaces, null when adding
      */
-    private function validateTemplateRecord(string $name, string $type, string $content, mixed $ttl, mixed $prio): ValidationResult
+    private function validateTemplateRecord(int $templateId, int $recordId, string $name, string $type, string $content, mixed $ttl, mixed $prio, ?array $stored = null): ValidationResult
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
             new DnsValidatorRegistry($this->config, $this->backendProvider, $this->capabilities)
         );
 
-        return $this->recordValidationService->validate(
+        $result = $this->recordValidationService->validate(
             $name,
             $type,
             $content,
             $ttl,
             $prio,
             (int)$this->config->get('dns', 'ttl', 3600)
+        );
+        if (!$result->isValid()) {
+            return $result;
+        }
+
+        return $this->recordValidationService->validateCnameSiblings(
+            $name,
+            $type,
+            $this->repository->getZoneTemplateRecords($templateId),
+            $recordId,
+            $stored
         );
     }
 
@@ -127,7 +140,7 @@ class ZoneTemplateRecordService
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
 
-        $validationResult = $this->validateTemplateRecord($name, $type, $content, $ttl, $prio);
+        $validationResult = $this->validateTemplateRecord($zone_templ_id, 0, $name, $type, $content, $ttl, $prio);
         if (!$validationResult->isValid()) {
             return ZoneTemplateWriteResult::failure((string)$validationResult->getFirstError());
         }
@@ -183,11 +196,14 @@ class ZoneTemplateRecordService
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
 
         $validationResult = $this->validateTemplateRecord(
+            $zone_templ_id,
+            (int)$record['rid'],
             $record['name'],
             $record['type'],
             $record['content'],
             $record['ttl'],
-            (int)($record['prio'] ?? 0)
+            (int)($record['prio'] ?? 0),
+            $storedRecord
         );
         if (!$validationResult->isValid()) {
             return ZoneTemplateWriteResult::failure((string)$validationResult->getFirstError());

@@ -60,8 +60,10 @@ class ZoneTemplateRecordsController extends PublicApiController
      *
      * Built on demand because the validator registry instantiates every record-type
      * validator, which is wasted work on the read endpoints.
+     *
+     * @param array<string, mixed>|null $stored The stored row an update replaces, null when adding
      */
-    private function validateTemplateRecord(string $name, string $type, string $content, int $ttl, int $priority): ?JsonResponse
+    private function validateTemplateRecord(int $templateId, int $recordId, string $name, string $type, string $content, int $ttl, int $priority, ?array $stored = null): ?JsonResponse
     {
         $this->recordValidationService ??= new ZoneTemplateRecordValidationService(
             $this->services()->dnsValidatorRegistry()
@@ -75,6 +77,16 @@ class ZoneTemplateRecordsController extends PublicApiController
             $priority,
             (int)$this->config->get('dns', 'ttl', 3600)
         );
+
+        if ($result->isValid()) {
+            $result = $this->recordValidationService->validateCnameSiblings(
+                $name,
+                $type,
+                $this->repository->getZoneTemplateRecords($templateId),
+                $recordId,
+                $stored
+            );
+        }
 
         return $result->isValid() ? null : $this->returnApiError($result->getFirstError(), 400);
     }
@@ -387,7 +399,7 @@ class ZoneTemplateRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
             }
 
-            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            $validationError = $this->validateTemplateRecord($templateId, 0, $name, $type, $content, $ttl, $priority);
             if ($validationError !== null) {
                 return $validationError;
             }
@@ -585,7 +597,7 @@ class ZoneTemplateRecordsController extends PublicApiController
                 return $this->returnApiError('You do not have permission to store this record type in a zone template', 403);
             }
 
-            $validationError = $this->validateTemplateRecord($name, $type, $content, $ttl, $priority);
+            $validationError = $this->validateTemplateRecord($templateId, $recordId, $name, $type, $content, $ttl, $priority, $record);
             if ($validationError !== null) {
                 return $validationError;
             }

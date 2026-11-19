@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 /**
  * Validates zone template records before they are stored.
@@ -129,6 +130,64 @@ final class ZoneTemplateRecordValidationService
         $result = $this->runValidator($type, $resolvedName, $resolvedContent, $ttl, $prio, $defaultTtl);
 
         return $result->isValid() ? ValidationResult::success(true) : $result;
+    }
+
+    /**
+     * Check that a template record keeps the CNAME rule with the template's other
+     * records: a CNAME owns its name alone, and never sits at the zone apex.
+     *
+     * An edit that keeps the owner name and whether the record is a CNAME adds no new
+     * conflict, so a template saved before this check can still take a TTL or content change.
+     *
+     * @param array<int, array<string, mixed>> $siblings The template's stored records
+     * @param int $recordId Stored record being edited, left out of the comparison; 0 for a new record
+     * @param array<string, mixed>|null $stored The stored row being edited, null for a new record
+     */
+    public function validateCnameSiblings(string $name, string $type, array $siblings, int $recordId = 0, ?array $stored = null): ValidationResult
+    {
+        $owner = $this->ownerName($name);
+        $isCname = strtoupper($type) === RecordType::CNAME;
+        if (
+            $stored !== null
+            && $this->ownerName((string)($stored['name'] ?? '')) === $owner
+            && (strtoupper((string)($stored['type'] ?? '')) === RecordType::CNAME) === $isCname
+        ) {
+            return ValidationResult::success(true);
+        }
+        if ($isCname && $owner === self::SAMPLE_ZONE) {
+            return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), RecordType::SOA));
+        }
+
+        foreach ($siblings as $sibling) {
+            if ($recordId !== 0 && (int)($sibling['id'] ?? 0) === $recordId) {
+                continue;
+            }
+            if ($this->ownerName((string)($sibling['name'] ?? '')) !== $owner) {
+                continue;
+            }
+            $siblingType = strtoupper((string)($sibling['type'] ?? ''));
+            if ($isCname && $siblingType === RecordType::CNAME) {
+                return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
+            }
+            if ($isCname) {
+                return ValidationResult::failure(sprintf(_('A CNAME record cannot coexist with other record types for the same name. Found existing %s record.'), $siblingType));
+            }
+            if ($siblingType === RecordType::CNAME) {
+                return ValidationResult::failure(_('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.'));
+            }
+        }
+
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * The owner name a template name resolves to in the sample zone, so "www",
+     * "www.[ZONE]" and "WWW.[ZONE]" compare equal.
+     */
+    private function ownerName(string $name): string
+    {
+        $resolved = $this->resolvePlaceholders($name === '@' ? '[ZONE]' : $name);
+        return strtolower(DnsHelper::restoreZoneSuffix($resolved, self::SAMPLE_ZONE));
     }
 
     private function runValidator(

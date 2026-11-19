@@ -82,6 +82,67 @@ class ZoneTemplateRecordValidationServiceTest extends SqliteDnsBackendTestCase
         $this->assertTrue($this->validate('www.example.com', 'HINFO', "\"caf\u{00E9}\" \"linux\""));
     }
 
+    public function testCnameSiblingCheckComparesResolvedOwnerNames(): void
+    {
+        $siblings = [
+            ['id' => 1, 'name' => 'www.[ZONE]', 'type' => 'A'],
+            ['id' => 2, 'name' => 'mail', 'type' => 'CNAME'],
+            ['id' => 3, 'name' => '[ZONE]', 'type' => 'NS'],
+        ];
+        $service = $this->service;
+
+        // A CNAME beside an A at the same owner, however the name is written
+        $this->assertFalse($service->validateCnameSiblings('WWW', 'CNAME', $siblings)->isValid());
+        $this->assertFalse($service->validateCnameSiblings('www.[ZONE]', 'CNAME', $siblings)->isValid());
+        // A record beside an existing CNAME, and a second CNAME
+        $this->assertFalse($service->validateCnameSiblings('mail.[ZONE]', 'MX', $siblings)->isValid());
+        $this->assertFalse($service->validateCnameSiblings('Mail', 'CNAME', $siblings)->isValid());
+        // A CNAME never sits at the apex, even in a template without SOA
+        $this->assertFalse($service->validateCnameSiblings('@', 'CNAME', [])->isValid());
+        $this->assertFalse($service->validateCnameSiblings('[ZONE]', 'CNAME', [])->isValid());
+        // No conflict: other names, and non-CNAME types sharing a name
+        $this->assertTrue($service->validateCnameSiblings('ftp', 'CNAME', $siblings)->isValid());
+        $this->assertTrue($service->validateCnameSiblings('www', 'AAAA', $siblings)->isValid());
+    }
+
+    public function testCnameSiblingCheckLeavesOutTheRecordBeingEdited(): void
+    {
+        $siblings = [['id' => 2, 'name' => 'mail', 'type' => 'CNAME']];
+        $service = $this->service;
+
+        $this->assertTrue($service->validateCnameSiblings('mail', 'CNAME', $siblings, 2)->isValid());
+        $this->assertTrue($service->validateCnameSiblings('mail', 'A', $siblings, 2)->isValid());
+        $this->assertFalse($service->validateCnameSiblings('mail', 'A', $siblings, 9)->isValid());
+    }
+
+    public function testAnEditThatKeepsItsOwnerAndCnameStateIsNotRefusedForAnOlderConflict(): void
+    {
+        // Saved before the check existed: an A and a CNAME at www, and a CNAME at the apex
+        $siblings = [
+            ['id' => 1, 'name' => 'www', 'type' => 'A'],
+            ['id' => 2, 'name' => 'www.[ZONE]', 'type' => 'CNAME'],
+            ['id' => 3, 'name' => '@', 'type' => 'CNAME'],
+        ];
+        $service = $this->service;
+
+        $this->assertTrue($service->validateCnameSiblings('www', 'A', $siblings, 1, $siblings[0])->isValid());
+        $this->assertTrue($service->validateCnameSiblings('WWW', 'AAAA', $siblings, 1, $siblings[0])->isValid());
+        $this->assertTrue($service->validateCnameSiblings('www', 'CNAME', $siblings, 2, $siblings[1])->isValid());
+        $this->assertTrue($service->validateCnameSiblings('[ZONE]', 'CNAME', $siblings, 3, $siblings[2])->isValid());
+        // Moving onto a CNAME's name, or turning the A into a CNAME, is a new conflict
+        $this->assertFalse($service->validateCnameSiblings('www', 'CNAME', $siblings, 1, $siblings[0])->isValid());
+        $this->assertFalse($service->validateCnameSiblings('www', 'MX', $siblings, 3, ['name' => 'mail', 'type' => 'MX'])->isValid());
+    }
+
+    public function testCnameSiblingCheckResolvesTrailingDotsAndOtherPlaceholders(): void
+    {
+        $siblings = [['id' => 1, 'name' => 'www.[ZONE].', 'type' => 'A']];
+        $service = $this->service;
+
+        $this->assertFalse($service->validateCnameSiblings('www', 'CNAME', $siblings)->isValid());
+        $this->assertFalse($service->validateCnameSiblings('[DOMAIN].[TLD]', 'CNAME', [])->isValid());
+    }
+
     public function testAcceptsApexMarkerAsName(): void
     {
         $this->assertTrue($this->validate('@', 'A', '192.0.2.1'));

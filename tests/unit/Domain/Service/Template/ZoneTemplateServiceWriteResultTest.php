@@ -131,6 +131,42 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $this->assertFalse($this->db->query("SELECT id FROM zone_templ WHERE is_default = 1")->fetchColumn());
     }
 
+    public function testARecordThatBreaksTheCnameRuleWithinTheTemplateIsRefused(): void
+    {
+        $this->db->exec("INSERT INTO zone_templ_records (id, zone_templ_id, name, type, content, ttl, prio) VALUES (5, " . self::PRIVATE_TEMPLATE . ", 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0)");
+        $service = $this->service();
+
+        $added = $service->addZoneTemplRecord(self::PRIVATE_TEMPLATE, 'www', 'CNAME', 'web.example.net', 3600, 0);
+        $this->assertFalse($added->success);
+        $this->assertSame(Refusal::INVALID_INPUT, $added->refusal);
+        $this->assertSame('A CNAME record cannot coexist with other record types for the same name. Found existing A record.', $added->message);
+
+        // Retyping the only record at that name is not a conflict with itself
+        $edited = $service->editZoneTemplRecord(['rid' => 5, 'name' => 'www.[ZONE]', 'type' => 'CNAME', 'content' => 'web.example.net', 'ttl' => 3600, 'prio' => 0], self::PRIVATE_TEMPLATE);
+        $this->assertTrue($edited->success);
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records")->fetchColumn());
+    }
+
+    public function testAnOlderConflictInTheTemplateStillAllowsUnrelatedEdits(): void
+    {
+        $template = self::PRIVATE_TEMPLATE;
+        $this->db->exec(
+            "INSERT INTO zone_templ_records (id, zone_templ_id, name, type, content, ttl, prio) VALUES"
+            . " (5, $template, 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0),"
+            . " (6, $template, 'www', 'CNAME', 'web.example.net', 3600, 0),"
+            . " (7, $template, 'mail', 'A', '192.0.2.2', 3600, 0)"
+        );
+        $service = $this->service();
+
+        $ttlOnly = $service->editZoneTemplRecord(['rid' => 5, 'name' => 'www.[ZONE]', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 300, 'prio' => 0], self::PRIVATE_TEMPLATE);
+        $this->assertTrue($ttlOnly->success);
+
+        $moved = $service->editZoneTemplRecord(['rid' => 7, 'name' => 'www', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0], self::PRIVATE_TEMPLATE);
+        $this->assertFalse($moved->success);
+        $this->assertSame('This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types.', $moved->message);
+        $this->assertSame([['name' => 'mail']], $this->db->query("SELECT name FROM zone_templ_records WHERE id = 7")->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
     public function testRecordFromAnotherTemplateIsRefusedOnEditAndDelete(): void
     {
         $this->db->exec("INSERT INTO zone_templ_records (id, zone_templ_id, name, type, content, ttl, prio) VALUES (5, " . self::PRIVATE_TEMPLATE . ", 'www.[ZONE]', 'A', '192.0.2.1', 3600, 0)");
