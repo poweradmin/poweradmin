@@ -51,4 +51,9 @@ class DockerEntrypointPermissionsTest extends TestCase
             $this->script
         );
     }
+
+    public function testAdminPasswordIsNeverExported(): void
+    {
+        $this->assertSame(0, preg_match('/^\s*export\s+ADMIN_(PASSWORD|USERNAME|PASSWORD_GENERATED)=/m', $this->script));
+    }
 }
