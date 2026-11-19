@@ -41,6 +41,7 @@ class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
         $this->validator = new DnsCommonValidator($this->sqliteBackendProvider([
             [10, 1, 'example.com', 'A', '192.0.2.1'],
             [11, 1, 'has.cname.example.com', 'CNAME', 'example.com'],
+            [12, 2, 'other.cname.example.org', 'CNAME', 'example.org'],
         ]));
     }
 
@@ -148,6 +149,13 @@ class DnsCommonValidatorTest extends SqliteDnsBackendTestCase
         $result = $this->validator->validateNonAliasTarget("example.com");
         $this->assertTrue($result->isValid());
         $this->assertTrue($result->getData());
+    }
+
+    public function testValidateNonAliasTargetOnlyLooksInTheGivenZone(): void
+    {
+        $this->assertTrue($this->validator->validateNonAliasTarget('other.cname.example.org', 1)->isValid());
+        $this->assertFalse($this->validator->validateNonAliasTarget('other.cname.example.org', 2)->isValid());
+        $this->assertFalse($this->validator->validateNonAliasTarget('other.cname.example.org')->isValid());
     }
 
     public function testValidateNonAliasTargetWithCname()

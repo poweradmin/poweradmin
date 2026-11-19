@@ -818,10 +818,15 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         return $this->findRecordsByContent($content, $type);
     }
 
+    public function findZoneRecordsByContent(int $domainId, string $content, ?string $type = null): array
+    {
+        return $this->findRecords('content = :value', $content, $type, $domainId);
+    }
+
     /**
-     * Cross-zone record lookup on one bound predicate, ENTs excluded.
+     * Record lookup on one bound predicate, ENTs excluded; across every zone unless one is given.
      */
-    private function findRecords(string $predicate, string $value, ?string $type): array
+    private function findRecords(string $predicate, string $value, ?string $type, ?int $domainId = null): array
     {
         $recordsTable = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled
@@ -829,6 +834,10 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
                   WHERE $predicate AND type IS NOT NULL AND type != ''";
         $params = [':value' => $value];
 
+        if ($domainId !== null) {
+            $query .= " AND domain_id = :did";
+            $params[':did'] = $domainId;
+        }
         if ($type !== null) {
             $query .= " AND type = :type";
             $params[':type'] = $type;

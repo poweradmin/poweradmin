@@ -1114,6 +1114,27 @@ final class ApiDnsBackendProvider implements DnsBackendProviderInterface, Report
         return $complete ? $records : null;
     }
 
+    public function findZoneRecordsByContent(int $domainId, string $content, ?string $type = null): array
+    {
+        // The bounded search answers when it saw every match; a capped search or a
+        // wildcard it cannot ask for exactly sends this to the zone itself
+        $zoneName = $this->getZoneNameByLocalId($domainId);
+        if ($zoneName !== null && strpbrk($content, '*?') === false) {
+            [$records, $complete] = $this->contentMatches($content, $type);
+            if ($complete) {
+                return array_values(array_filter(
+                    $records,
+                    fn(array $r): bool => strcasecmp((string)($r['zone_name'] ?? ''), $zoneName) === 0
+                ));
+            }
+        }
+
+        return array_values(array_filter(
+            $this->getRecordsByZoneId($domainId, $type),
+            fn(array $r): bool => $r['content'] === $content
+        ));
+    }
+
     /**
      * Name-like content is stored with or without its trailing dot depending on how it
      * was written, and the search matches the stored form, so both are asked for.

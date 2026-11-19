@@ -117,7 +117,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         // Perform common validation for all record types
         $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
         if ($type != RecordType::CNAME && $cnameValidator instanceof CNAMERecordValidator) {
-            $cnameResult = $cnameValidator->validateCnameExistence($name, $rid, $vacatedIds);
+            $cnameResult = $cnameValidator->validateCnameExistence($name, $rid, $vacatedIds, $zid);
             if (!$cnameResult->isValid()) {
                 return $cnameResult;
             }
@@ -131,8 +131,8 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 
         // Perform validation using the appropriate validator
         if ($type === RecordType::CNAME) {
-            // CNAME validator expects: $rid, $zone
-            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone, $vacatedIds);
+            // CNAME validator expects: $rid, $zone, $vacatedIds, $zid
+            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone, $vacatedIds, $zid);
         } elseif ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
             $validationResult = $validator->validateSoa($content, $name, $prio, $ttl, $dns_ttl, $dns_hostmaster, $zone);
         } else {
@@ -155,7 +155,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         // Perform additional validation for specific record types
         if ($type === RecordType::NS || $type === RecordType::MX) {
             // For NS/MX, check that target is not a CNAME
-            $aliasResult = $this->dnsCommonValidator->validateNonAliasTarget($content);
+            $aliasResult = $this->dnsCommonValidator->validateNonAliasTarget($content, $zid);
             if (!$aliasResult->isValid()) {
                 return $aliasResult;
             }

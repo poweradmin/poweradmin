@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnamePolicy;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\Validation\RecordField;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use TestHelpers\SqliteDnsBackendTestCase;
 
 /**
@@ -508,5 +509,55 @@ class CNAMERecordValidatorTest extends SqliteDnsBackendTestCase
 
         $result = $method->invoke($validator, 'other.example.com', -1);
         $this->assertTrue($result->isValid());
+    }
+
+    private function validatorOver(array $rows): CNAMERecordValidator
+    {
+        return new CNAMERecordValidator($this->hostnameValidator, $this->sqliteBackendProvider($rows));
+    }
+
+    private function validateIn(CNAMERecordValidator $validator, ?int $zid): ValidationResult
+    {
+        $args = $zid === null ? [] : [[], $zid];
+
+        return $validator->validate('target.example.org.', 'www.example.com', 0, 3600, 86400, -1, 'example.com', ...$args);
+    }
+
+    public function testAnotherZonesMxPointingAtTheNameDoesNotBlockTheCname(): void
+    {
+        $validator = $this->validatorOver([[10, 2, 'mail.other.org', 'MX', 'www.example.com']]);
+
+        $this->assertTrue($this->validateIn($validator, 1)->isValid());
+        $this->assertFalse($this->validateIn($validator, null)->isValid());
+    }
+
+    public function testTheSameZonesMxPointingAtTheNameStillBlocksTheCname(): void
+    {
+        $validator = $this->validatorOver([[10, 1, 'mail.example.com', 'MX', 'www.example.com']]);
+
+        $this->assertFalse($this->validateIn($validator, 1)->isValid());
+    }
+
+    public function testAnotherZonesRecordAtTheNameDoesNotBlockTheCname(): void
+    {
+        $validator = $this->validatorOver([[10, 2, 'www.example.com', 'A', '192.0.2.1']]);
+
+        $this->assertTrue($this->validateIn($validator, 1)->isValid());
+    }
+
+    public function testTheSameZonesRecordAtTheNameStillBlocksTheCname(): void
+    {
+        $validator = $this->validatorOver([[10, 1, 'www.example.com', 'A', '192.0.2.1']]);
+
+        $this->assertFalse($this->validateIn($validator, 1)->isValid());
+    }
+
+    public function testExistenceCheckIgnoresACnameInAnotherZone(): void
+    {
+        $validator = $this->validatorOver([[10, 2, 'www.example.com', 'CNAME', 'x.example.org']]);
+
+        $this->assertTrue($validator->validateCnameExistence('www.example.com', -1, [], 1)->isValid());
+        $this->assertFalse($validator->validateCnameExistence('www.example.com', -1, [], 2)->isValid());
+        $this->assertFalse($validator->validateCnameExistence('www.example.com', -1)->isValid());
     }
 }

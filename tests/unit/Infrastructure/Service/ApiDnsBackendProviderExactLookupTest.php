@@ -162,4 +162,41 @@ class ApiDnsBackendProviderExactLookupTest extends TestCase
         $this->assertNotNull($records);
         $this->assertSame(['MX'], array_column($records, 'type'));
     }
+
+    public function testAZoneContentLookupUsesTheBoundedSearchAndKeepsOnlyThatZone(): void
+    {
+        $this->client->expects($this->never())->method('getZone');
+        $this->client->method('searchData')->willReturn([
+            ['object_type' => 'record', 'name' => 'mail.sub.example.com.', 'type' => 'MX', 'content' => '10 www.example.com.', 'ttl' => 60, 'zone' => 'sub.example.com.'],
+            ['object_type' => 'record', 'name' => 'mail.example.com.', 'type' => 'MX', 'content' => '10 www.example.com.', 'ttl' => 60, 'zone' => 'example.com.'],
+        ]);
+
+        $records = $this->provider->findZoneRecordsByContent(2, 'www.example.com');
+
+        $this->assertSame(['mail.sub.example.com'], array_column($records, 'name'));
+    }
+
+    public function testACappedSearchSendsTheZoneContentLookupToTheZoneItself(): void
+    {
+        $this->client->method('searchData')->willReturn(array_fill(0, 10000, [
+            'object_type' => 'record', 'name' => 'x.other.org.', 'type' => 'A', 'content' => '192.0.2.9', 'ttl' => 60, 'zone' => 'other.org.',
+        ]));
+        $this->client->expects($this->once())->method('getZone')->with('sub.example.com.')
+            ->willReturn(['name' => 'sub.example.com.', 'rrsets' => [
+                self::rrset('mail.sub.example.com.', 'MX', 'www.example.com'),
+                self::rrset('x.sub.example.com.', 'A', '192.0.2.1'),
+            ]]);
+
+        $records = $this->provider->findZoneRecordsByContent(2, 'www.example.com');
+
+        $this->assertSame(['MX'], array_column($records, 'type'));
+    }
+
+    public function testAWildcardZoneContentLookupReadsTheZoneWithoutSearching(): void
+    {
+        $this->client->expects($this->never())->method('searchData');
+        $this->client->expects($this->once())->method('getZone')->willReturn(['name' => 'sub.example.com.', 'rrsets' => []]);
+
+        $this->assertSame([], $this->provider->findZoneRecordsByContent(2, '*.example.com'));
+    }
 }

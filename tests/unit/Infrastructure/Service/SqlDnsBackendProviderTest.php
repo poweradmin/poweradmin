@@ -162,6 +162,14 @@ class SqlDnsBackendProviderTest extends TestCase
         $this->assertSame(2, (int)$records[0]['domain_id']);
     }
 
+    public function testFindZoneRecordsByContentStaysInOneZone(): void
+    {
+        $provider = $this->sqliteProvider();
+
+        $this->assertSame([12], array_map('intval', array_column($provider->findZoneRecordsByContent(1, 'www.example.com'), 'id')));
+        $this->assertSame([], $provider->findZoneRecordsByContent(2, 'www.example.com'));
+    }
+
     public function testFindRecordsByContentIsExactAndSkipsEnts(): void
     {
         $provider = $this->sqliteProvider();

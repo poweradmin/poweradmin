@@ -65,7 +65,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for CNAME records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
-     * @param mixed ...$args Additional parameters: [0] => int $rid, [1] => string $zone
+     * @param mixed ...$args Additional parameters: [0] => int $rid, [1] => string $zone, [2] => list<string> $vacatedIds, [3] => int $zid
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
@@ -75,21 +75,22 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $rid = $args[0] ?? 0;
         $zone = $args[1] ?? '';
         $vacatedIds = $args[2] ?? [];
+        $zid = isset($args[3]) ? (int)$args[3] : null;
 
         // 1. Check if CNAME unique (already exists as another record type)
-        $uniqueResult = $this->validateCnameUnique($name, $rid, $vacatedIds);
+        $uniqueResult = $this->validateCnameUnique($name, $rid, $vacatedIds, $zid);
         if (!$uniqueResult->isValid()) {
             return $uniqueResult;
         }
 
         // 2. Check if CNAME already exists
-        $existenceResult = $this->validateCnameExistence($name, $rid, $vacatedIds);
+        $existenceResult = $this->validateCnameExistence($name, $rid, $vacatedIds, $zid);
         if (!$existenceResult->isValid()) {
             return $existenceResult;
         }
 
         // 3. Check for MX or NS records pointing to this CNAME
-        $nameResult = $this->validateCnameName($name);
+        $nameResult = $this->validateCnameName($name, $zid);
         if (!$nameResult->isValid()) {
             return $nameResult;
         }
@@ -203,14 +204,15 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name CNAME
      * @param int|string $rid Record ID
      * @param list<string> $vacatedIds Ids of records the same write removes first
+     * @param int|null $zid Zone the record lives in; null looks across every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameUnique(string $name, int|string $rid, array $vacatedIds = []): ValidationResult
+    private function validateCnameUnique(string $name, int|string $rid, array $vacatedIds = [], ?int $zid = null): ValidationResult
     {
         // Existing-record edit: exclude the row being edited from the duplicate check.
         $isNewRecord = is_numeric($rid) && (int)$rid <= 0;
-        foreach ($this->backendProvider->findRecordsByName($name) as $r) {
+        foreach ($this->recordsAtName($name, null, $zid) as $r) {
             if (in_array((string)($r['id'] ?? ''), $vacatedIds, true)) {
                 continue;
             }
@@ -228,12 +230,15 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * Check if any MX or NS entries exist which invalidate CNAME
      *
      * @param string $name CNAME to lookup
+     * @param int|null $zid Zone the record lives in; null looks across every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    private function validateCnameName(string $name): ValidationResult
+    private function validateCnameName(string $name, ?int $zid = null): ValidationResult
     {
-        $pointingHere = $this->backendProvider->findAllRecordsByContent($name);
+        $pointingHere = $zid === null
+            ? $this->backendProvider->findAllRecordsByContent($name)
+            : $this->backendProvider->findZoneRecordsByContent($zid, $name);
         if ($pointingHere === null) {
             return ValidationResult::failure(_('This CNAME cannot be checked: too many records point to this name.'))
                 ->withField(RecordField::NAME);
@@ -264,18 +269,29 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function recordsAtName(string $name, ?string $type, ?int $zid): array
+    {
+        return $zid === null
+            ? $this->backendProvider->findRecordsByName($name, $type)
+            : $this->backendProvider->getRecordsByName($zid, $name, $type);
+    }
+
+    /**
      * Check if CNAME already exists
      *
      * @param string $name CNAME
      * @param int|string $rid Record ID (-1 for new records, string in API backend mode)
      * @param list<string> $vacatedIds Ids of records the same write removes first
+     * @param int|null $zid Zone the record lives in; null looks across every zone
      *
      * @return ValidationResult ValidationResult containing success or error message
      */
-    public function validateCnameExistence(string $name, int|string $rid, array $vacatedIds = []): ValidationResult
+    public function validateCnameExistence(string $name, int|string $rid, array $vacatedIds = [], ?int $zid = null): ValidationResult
     {
         // Existing-record edit: exclude the row being edited from the duplicate check.
-        foreach ($this->backendProvider->findRecordsByName($name, 'CNAME') as $r) {
+        foreach ($this->recordsAtName($name, 'CNAME', $zid) as $r) {
             if (in_array((string)($r['id'] ?? ''), $vacatedIds, true)) {
                 continue;
             }

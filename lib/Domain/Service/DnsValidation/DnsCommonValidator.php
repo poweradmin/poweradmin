@@ -75,12 +75,16 @@ class DnsCommonValidator
      * Check if target is not a CNAME
      *
      * @param string $target target to check
+     * @param int|null $zid Zone the record lives in; null looks across every zone
      *
      * @return ValidationResult ValidationResult indicating if target is valid
      */
-    public function validateNonAliasTarget(string $target): ValidationResult
+    public function validateNonAliasTarget(string $target, ?int $zid = null): ValidationResult
     {
-        if ($this->backendProvider->findRecordsByName($target, 'CNAME') !== []) {
+        $cnames = $zid === null
+            ? $this->backendProvider->findRecordsByName($target, 'CNAME')
+            : $this->backendProvider->getRecordsByName($zid, $target, 'CNAME');
+        if ($cnames !== []) {
             return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'))
                 ->withField(RecordField::CONTENT);
         }

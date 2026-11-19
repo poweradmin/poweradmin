@@ -109,6 +109,17 @@ interface RecordReadBackendInterface
     public function findAllRecordsByContent(string $content, ?string $type = null): ?array;
 
     /**
+     * The records of one zone whose content equals the given value, optionally filtered
+     * by type; null when the backend could not see every match.
+     *
+     * @param int $domainId Domain ID
+     * @param string $content Record content, exact match
+     * @param string|null $type Optional record type filter
+     * @return array|null Array of record data, or null when the lookup may be incomplete
+     */
+    public function findZoneRecordsByContent(int $domainId, string $content, ?string $type = null): ?array;
+
+    /**
      * Get SOA record content for a zone.
      *
      * @param int $domainId Domain ID
