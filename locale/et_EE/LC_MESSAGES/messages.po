@@ -13874,3 +13874,8 @@ msgstr "Kasutage parameetri nime, mitte \"%s\"."
 
 msgid "Invalid zone type."
 msgstr "Vigane tsooni tüüp."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Malli kirjed jäeti vahele, sest need on vastuolus sama nimega CNAME-kirjega: %s"

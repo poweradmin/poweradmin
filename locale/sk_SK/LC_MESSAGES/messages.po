@@ -13720,3 +13720,8 @@ msgstr "Použite názov parametra namiesto \"%s\"."
 
 msgid "Invalid zone type."
 msgstr "Neplatný typ zóny."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Záznamy šablóny boli preskočené, pretože sú v konflikte so záznamom CNAME s rovnakým názvom: %s"

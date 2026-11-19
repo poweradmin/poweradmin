@@ -13817,3 +13817,8 @@ msgstr "Käytä parametrin nimeä merkkijonon \"%s\" sijaan."
 
 msgid "Invalid zone type."
 msgstr "Virheellinen alueen tyyppi."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Mallin tietueet ohitettiin, koska ne ovat ristiriidassa samannimisen CNAME-tietueen kanssa: %s"

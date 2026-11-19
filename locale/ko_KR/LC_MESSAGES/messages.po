@@ -14835,3 +14835,8 @@ msgstr "\"%s\" 대신 매개변수 이름을 사용하세요."
 
 msgid "Invalid zone type."
 msgstr "유효하지 않은 존 유형입니다."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "같은 이름의 CNAME과 충돌하여 템플릿 레코드를 건너뛰었습니다: %s"

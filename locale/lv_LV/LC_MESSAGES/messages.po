@@ -13862,3 +13862,8 @@ msgstr "Izmantojiet parametra nosaukumu \"%s\" vietā."
 
 msgid "Invalid zone type."
 msgstr "Nederīgs zonas tips."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Veidnes ieraksti tika izlaisti, jo tie ir pretrunā ar tāda paša nosaukuma CNAME ierakstu: %s"

@@ -13522,3 +13522,8 @@ msgstr ""
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:365
 msgid "Invalid zone type."
 msgstr ""
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr ""

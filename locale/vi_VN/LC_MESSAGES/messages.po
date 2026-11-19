@@ -14964,3 +14964,8 @@ msgstr "Hãy dùng tên tham số thay cho \"%s\"."
 
 msgid "Invalid zone type."
 msgstr "Loại vùng không hợp lệ."
+
+#: lib/Domain/Service/Dns/DomainManager.php:977
+#, php-format
+msgid "Template records skipped because they conflict with a CNAME at the same name: %s"
+msgstr "Đã bỏ qua các bản ghi của mẫu vì chúng xung đột với một CNAME cùng tên: %s"
