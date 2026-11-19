@@ -112,6 +112,34 @@ class DockerEntrypointMappingParserTest extends TestCase
         ];
     }
 
+    public function testParseMappingDoesNotExpandAStarToFileNames(): void
+    {
+        $dir = sys_get_temp_dir() . '/pa-map-' . bin2hex(random_bytes(4));
+        mkdir($dir);
+        touch($dir . '/a.txt');
+        touch($dir . '/b.txt');
+
+        try {
+            $process = proc_open(
+                ['bash', '-c', self::$functions . "\nparse_mapping \"\$1\"\n", 'parse', '*'],
+                [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+                $pipes,
+                $dir
+            );
+            $this->assertIsResource($process);
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+            $this->assertSame("'*' => ''", $stdout);
+        } finally {
+            unlink($dir . '/a.txt');
+            unlink($dir . '/b.txt');
+            rmdir($dir);
+        }
+    }
+
     #[DataProvider('mappingProvider')]
     public function testParseMapping(string $flag, string $input, string $expected): void
     {

@@ -47,7 +47,7 @@ php_sq() {
 # such as PA_SESSION_TIMEOUT=30m used to land in settings.php as a parse error.
 php_num() {
     local name="$1" value="$2" default="$3"
-    if [[ "${value}" =~ ^-?[0-9]+(\.[0-9]+)?$ ]] || { [ "${default}" = "null" ] && [ "${value}" = "null" ]; }; then
+    if [[ "${value}" =~ ^-?(0|[1-9][0-9]*)(\.[0-9]+)?$ ]] || { [ "${default}" = "null" ] && [ "${value}" = "null" ]; }; then
         printf '%s' "${value}"
     else
         log "WARNING: ${name}='${value}' is not a number, using default ${default}" >&2
@@ -81,19 +81,25 @@ client_ip_header() {
     esac
 }
 
-# Print $2 when it names a PHP LOG_* constant; otherwise warn on stderr and print $3
+# Print $2 when it names a syslog facility constant PHP defines; otherwise warn on stderr
+# and print $3. Any other LOG_* name is an undefined constant when settings.php loads.
 php_log_facility() {
     local name="$1" value="$2" default="$3"
-    if [[ "${value}" =~ ^LOG_[A-Z0-9]+$ ]]; then
-        printf '%s' "${value}"
-    else
-        log "WARNING: ${name}='${value}' is not a LOG_* constant, using default ${default}" >&2
-        printf '%s' "${default}"
-    fi
+    case "${value}" in
+        LOG_AUTH|LOG_AUTHPRIV|LOG_CRON|LOG_DAEMON|LOG_KERN|LOG_LPR|LOG_MAIL|LOG_NEWS|LOG_SYSLOG|LOG_USER|LOG_UUCP|LOG_LOCAL[0-7])
+            printf '%s' "${value}"
+            ;;
+        *)
+            log "WARNING: ${name}='${value}' is not a PHP syslog facility constant, using default ${default}" >&2
+            printf '%s' "${default}"
+            ;;
+    esac
 }
 
 # Print a comma-separated list as a PHP array of quoted strings ([] when empty)
 php_str_array() {
+    # No globbing: PA_FRAME_ANCESTORS=* must stay a literal item, not the file names here
+    local -; set -f
     local item items="" IFS=','
     for item in $1; do
         item="${item#"${item%%[![:space:]]*}"}"
@@ -1217,6 +1223,7 @@ generate_config() {
     # Single quotes are escaped, whitespace around commas/delimiters is trimmed.
     # With "dn" as $2 the keys may be LDAP DNs: items split on ';' and the pair on the last ':'
     parse_mapping() {
+        local -; set -f
         local sep=',' dn_keys=0 item key val part items="" parts=""
         # A DN key carries '=' and ',' itself, so 'cn=x,dc=y:Tmpl' is one ';'-separated item
         if [[ "${2:-}" == dn && ( "$1" == *\;* || ( "$1" == *=* && "$1" == *:* ) ) ]]; then
