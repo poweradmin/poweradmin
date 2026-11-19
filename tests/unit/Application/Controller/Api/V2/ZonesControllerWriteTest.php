@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\Zone\ZoneOwnershipFormResolver;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Service\Zone\ShadowedRecords;
 use Poweradmin\Domain\Service\Zone\ZoneCreateOwnershipResolver;
@@ -61,6 +62,7 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
     private ApiKeyScope $scope;
     private int $zoneIdParameter = self::ZONE_ID;
     private ?FakeConfiguration $config = null;
+    private bool $mayNameAccount = true;
 
     protected function setUp(): void
     {
@@ -102,6 +104,9 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
         $factory->method('auditService')->willReturn($this->audit);
         $factory->method('userRepository')->willReturn($this->stubUsers());
         $factory->method('zoneCreateOwnershipResolver')->willReturn($resolver);
+        $formResolver = $this->createMock(ZoneOwnershipFormResolver::class);
+        $formResolver->method('mayNameAccount')->willReturnCallback(fn(): bool => $this->mayNameAccount);
+        $factory->method('zoneOwnershipFormResolver')->willReturn($formResolver);
 
         return $factory;
     }
@@ -175,6 +180,25 @@ class ZonesControllerWriteTest extends V2ControllerTestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame('Invalid field types in request body', $this->messageOf($response));
+    }
+
+    public function testAnAccountWithOtherCharactersIs400BeforeAnythingIsCreated(): void
+    {
+        $this->zoneManagement->expects($this->never())->method('createZone');
+
+        $response = $this->invokeHandler('createZone', 'POST', ['name' => 'example.com', 'account' => 'bad name;']);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    public function testAnAccountTheCallerMayNotNameIs403BeforeAnythingIsCreated(): void
+    {
+        $this->mayNameAccount = false;
+        $this->zoneManagement->expects($this->never())->method('createZone');
+
+        $response = $this->invokeHandler('createZone', 'POST', ['name' => 'example.com', 'account' => 'someone-else']);
+
+        $this->assertSame(403, $response->getStatusCode());
     }
 
     public function testANonNumericTemplateIs400(): void

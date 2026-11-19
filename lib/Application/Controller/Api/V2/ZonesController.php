@@ -33,6 +33,7 @@ use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ZoneManagementService;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -568,6 +569,14 @@ class ZonesController extends PublicApiController
             // Check if user has permission to create zones
             if (!$this->apiPermissionService->canCreateZone($userId, $type)) {
                 return $this->returnApiError('You do not have permission to create zones of this type', 403);
+            }
+
+            // PowerDNS account names the zone's owner; the supermaster forms hold it to the same two rules
+            if ($account !== '' && !SupermasterManager::validateAccount($account)) {
+                return $this->returnApiError('Invalid account: only letters, digits, dots, underscores and hyphens are allowed', 400);
+            }
+            if ($account !== '' && !$this->services()->zoneOwnershipFormResolver()->mayNameAccount($this->services()->userRepository()->getUsersWithZoneCounts(), $userId, $account)) {
+                return $this->returnApiError('You can only name your own account', 403);
             }
 
             $resolved = ZoneOwnershipInputFactory::fromJsonBody($input);
