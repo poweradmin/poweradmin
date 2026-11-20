@@ -387,6 +387,15 @@ CREATE INDEX idx_saml_provider_id ON saml_user_links(provider_id);
 CREATE INDEX idx_saml_subject ON saml_user_links(saml_subject);
 
 
+CREATE TABLE saml_assertion_ids (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    assertion_id VARCHAR(255) NOT NULL UNIQUE,
+    not_on_or_after TIMESTAMP NOT NULL
+);
+
+CREATE INDEX idx_saml_assertion_expiry ON saml_assertion_ids(not_on_or_after);
+
+
 CREATE TABLE user_groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL UNIQUE,

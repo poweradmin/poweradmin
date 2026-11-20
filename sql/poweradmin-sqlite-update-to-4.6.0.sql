@@ -84,6 +84,14 @@ CREATE INDEX IF NOT EXISTS idx_zone_templ_groups_group ON zone_templ_groups(grou
 -- the upgrade hold local time, so they are retired.
 UPDATE password_reset_tokens SET used = 1 WHERE used = 0;
 
+-- Used SAML assertion IDs, so a captured response cannot sign in twice. Times are UTC.
+CREATE TABLE IF NOT EXISTS saml_assertion_ids (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    assertion_id VARCHAR(255) NOT NULL UNIQUE,
+    not_on_or_after TIMESTAMP NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_saml_assertion_expiry ON saml_assertion_ids(not_on_or_after);
+
 -- Usernames are unique (a rename could collide with another account). Kept last: on data
 -- that already holds a name twice this fails with "UNIQUE constraint failed". Find those rows with
 --   SELECT username, COUNT(*) FROM users GROUP BY username HAVING COUNT(*) > 1;

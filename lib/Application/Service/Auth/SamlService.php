@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Logger\ClassContextLogger;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Port\SessionInterface;
+use Poweradmin\Domain\Repository\SamlAssertionStoreInterface;
 
 /**
  * Runs the SAML login flow: builds the IdP redirect, consumes the assertion and handles single logout.
@@ -50,6 +51,10 @@ final class SamlService
     private const FLOW_COOKIE_NAME = '__Host-saml_flow';
     // Longer than OIDC's 300 s: an IdP sign-in with its own second factor often takes a while
     private const FLOW_COOKIE_TTL = 600;
+    // Used when the assertion carries no NotOnOrAfter; php-saml accepts a response up to 180 s late,
+    // so the remembered ID outlives the assertion by a margin
+    private const ASSERTION_FALLBACK_TTL = 600;
+    private const ASSERTION_CLOCK_MARGIN = 300;
 
     private LoggerInterface $logger;
     private ConfigurationInterface $configManager;
@@ -74,7 +79,8 @@ final class SamlService
         MfaService $mfaService,
         SessionInterface $session,
         ?Request $request = null,
-        ?Auth $auth = null
+        ?Auth $auth = null,
+        private readonly ?SamlAssertionStoreInterface $assertionStore = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -209,7 +215,7 @@ final class SamlService
     {
         $this->logger->info('Processing SAML assertion');
 
-        // Single-use: a replayed POST finds no cookie and no request ID to match
+        // The flow cookie is a stateless blob a captured request carries again; consumeAssertion() is what makes a response single-use
         $flow = $this->takeFlowCookie();
         $providerId = $flow['provider'] ?? $this->getSessionValue('saml_provider', '');
 
@@ -256,6 +262,60 @@ final class SamlService
         }
 
         return null;
+    }
+
+    /**
+     * Records the assertion ID, so the same response cannot sign in twice. False when the ID
+     * was seen before, is missing, or cannot be stored. Without a store nothing is checked.
+     */
+    private function consumeAssertion(Auth $auth): bool
+    {
+        if ($this->assertionStore === null) {
+            return true;
+        }
+
+        $assertionId = (string)$auth->getLastAssertionId();
+        if ($assertionId === '') {
+            $this->logger->warning('SAML response refused: the assertion has no ID');
+            return false;
+        }
+
+        $notOnOrAfter = (int)$auth->getLastAssertionNotOnOrAfter() ?: $this->conditionsNotOnOrAfter($auth);
+        $expiresAt = ($notOnOrAfter > 0 ? $notOnOrAfter : time() + self::ASSERTION_FALLBACK_TTL) + self::ASSERTION_CLOCK_MARGIN;
+
+        try {
+            if ($this->assertionStore->consume($assertionId, $expiresAt)) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            $this->logger->error('SAML assertion ID could not be recorded: {error}', ['error' => $e->getMessage()]);
+            return false;
+        }
+
+        $this->logger->warning('SAML response refused: assertion {assertion} was already used', ['assertion' => $assertionId]);
+        return false;
+    }
+
+    /**
+     * Conditions/@NotOnOrAfter of the processed response, which php-saml enforces when the
+     * subject confirmation carries none. 0 when absent.
+     */
+    private function conditionsNotOnOrAfter(Auth $auth): int
+    {
+        $xml = $auth->getLastResponseXML();
+        if (!is_string($xml) || $xml === '') {
+            return 0;
+        }
+
+        $document = new \DOMDocument();
+        if (!@$document->loadXML($xml, LIBXML_NONET)) {
+            return 0;
+        }
+        $xpath = new \DOMXPath($document);
+        $xpath->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
+        $node = $xpath->query('//saml:Assertion/saml:Conditions/@NotOnOrAfter')->item(0);
+
+        return $node instanceof \DOMAttr ? (int)Utils::parseSAML2Time($node->value) : 0;
     }
 
     /**
@@ -310,6 +370,11 @@ final class SamlService
             $this->logger->warning('SAML authentication failed - not authenticated');
             $sessionEntity = new FlashMessage(_('Authentication failed: Invalid SAML response'), 'danger');
             $this->authenticationService->auth($sessionEntity);
+            return null;
+        }
+
+        if (!$this->consumeAssertion($auth)) {
+            $this->authenticationService->auth(new FlashMessage(_('Authentication failed!'), 'danger'));
             return null;
         }
 

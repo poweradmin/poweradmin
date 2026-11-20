@@ -185,6 +185,16 @@ DEALLOCATE PREPARE repair;
 ALTER TABLE `password_reset_tokens` MODIFY `expires_at` datetime NOT NULL;
 UPDATE `password_reset_tokens` SET `used` = 1 WHERE `used` = 0;
 
+-- Used SAML assertion IDs, so a captured response cannot sign in twice. Times are UTC.
+CREATE TABLE IF NOT EXISTS `saml_assertion_ids` (
+    `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `assertion_id` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
+    `not_on_or_after` DATETIME NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_saml_assertion_id` (`assertion_id`),
+    KEY `idx_saml_assertion_expiry` (`not_on_or_after`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:

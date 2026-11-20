@@ -65,6 +65,7 @@ use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordTypeDefaultRepositoryInterface;
+use Poweradmin\Domain\Repository\SamlAssertionStoreInterface;
 use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
@@ -502,6 +503,11 @@ class ControllerServiceFactory implements ModuleServices
     public function samlConfigurationService(): SamlConfigurationService
     {
         return $this->auth->samlConfigurationService();
+    }
+
+    public function samlAssertionStore(): SamlAssertionStoreInterface
+    {
+        return $this->auth->samlAssertionStore();
     }
 
     public function oidcConfigurationService(): OidcConfigurationService

@@ -2109,6 +2109,43 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'saml_assertion_ids',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'saml_assertion_ids',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'assertion_id' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        // Binary collation keeps assertion IDs case-sensitive (matches shipped SQL).
+                        'collation' => 'utf8mb4_bin',
+                        'name' => 'assertion_id',
+                        'table' => 'saml_assertion_ids',
+                        'flags' => 'not_null'
+                    ),
+                    'not_on_or_after' => array(
+                        'type' => 'datetime',
+                        'notnull' => 1,
+                        'name' => 'not_on_or_after',
+                        'table' => 'saml_assertion_ids',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_saml_assertion_id' => array('assertion_id', 'unique' => true),
+                    'idx_saml_assertion_expiry' => array('not_on_or_after')
+                )
+            ),
+            array(
                 'table_name' => 'user_groups',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

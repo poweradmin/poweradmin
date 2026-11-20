@@ -214,6 +214,14 @@ END $$;
 -- the upgrade hold local time, so they are retired.
 UPDATE password_reset_tokens SET used = TRUE WHERE used = FALSE;
 
+-- Used SAML assertion IDs, so a captured response cannot sign in twice. Times are UTC.
+CREATE TABLE IF NOT EXISTS "public"."saml_assertion_ids" (
+    "id" SERIAL PRIMARY KEY,
+    "assertion_id" varchar(255) NOT NULL UNIQUE,
+    "not_on_or_after" timestamp NOT NULL
+);
+CREATE INDEX IF NOT EXISTS "idx_saml_assertion_expiry" ON "public"."saml_assertion_ids" ("not_on_or_after");
+
 -- Name zones left unnamed by older versions (#1648). The API backend finds zones only by
 -- zones.zone_name, so an unnamed zone would come back after a switch as a new, ownerless zone.
 -- Same rows and values as the zones_without_names consistency fix:

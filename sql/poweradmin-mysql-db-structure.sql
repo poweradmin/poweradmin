@@ -476,6 +476,15 @@ CREATE TABLE `saml_user_links` (
   CONSTRAINT `fk_saml_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `saml_assertion_ids` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `assertion_id` VARCHAR(255) NOT NULL COLLATE utf8mb4_bin,
+  `not_on_or_after` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_saml_assertion_id` (`assertion_id`),
+  KEY `idx_saml_assertion_expiry` (`not_on_or_after`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE `user_groups` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,

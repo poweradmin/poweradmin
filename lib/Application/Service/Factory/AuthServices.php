@@ -40,6 +40,7 @@ use Poweradmin\Application\Service\Web\UrlService;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Repository\LoginAttemptRepositoryInterface;
 use Poweradmin\Domain\Repository\PasswordResetTokenRepositoryInterface;
+use Poweradmin\Domain\Repository\SamlAssertionStoreInterface;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UsernameRecoveryRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
@@ -50,6 +51,7 @@ use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
+use Poweradmin\Infrastructure\Repository\DbSamlAssertionRepository;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Application\Service\Auth\ApiKeyAuthenticationMiddleware;
@@ -84,6 +86,7 @@ final class AuthServices
     private ?AuthenticationService $authenticationService = null;
     private ?MailService $mailService = null;
     private ?SamlConfigurationService $samlConfigurationService = null;
+    private ?SamlAssertionStoreInterface $samlAssertionStore = null;
     private ?OidcConfigurationService $oidcConfigurationService = null;
     private ?RecaptchaService $recaptchaService = null;
     private ?LoginAttemptService $loginAttemptService = null;
@@ -169,6 +172,11 @@ final class AuthServices
     public function samlConfigurationService(): SamlConfigurationService
     {
         return $this->samlConfigurationService ??= new SamlConfigurationService($this->config, $this->logger);
+    }
+
+    public function samlAssertionStore(): SamlAssertionStoreInterface
+    {
+        return $this->samlAssertionStore ??= new DbSamlAssertionRepository($this->db);
     }
 
     public function oidcConfigurationService(): OidcConfigurationService

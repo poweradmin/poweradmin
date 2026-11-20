@@ -55,7 +55,8 @@ class SamlCallbackController extends BaseController
             $this->services()->auditService(),
             $this->services()->mfaService(),
             $this->session(),
-            $this->httpRequest
+            $this->httpRequest,
+            assertionStore: $this->services()->samlAssertionStore()
         );
     }
 
