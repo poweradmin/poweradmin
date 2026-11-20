@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\UserContextService;
@@ -178,6 +179,13 @@ class DeleteUserController extends BaseController
         }
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         $zones = $domainRepository->getZones("own", (int)$uid);
+        $perm_delete = Permission::getDeletePermission($this->db);
+        if ($perm_delete === 'own') {
+            foreach ($zones as &$zoneRow) {
+                $zoneRow['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, (int)$zoneRow['id']);
+            }
+            unset($zoneRow);
+        }
 
         $users = [];
         if (count($zones) > 0) {
@@ -188,6 +196,7 @@ class DeleteUserController extends BaseController
             'name' => $name,
             'uid' => $uid,
             'zones' => $zones,
+            'perm_delete' => $perm_delete,
             'zones_count' => count($zones),
             'users' => $users,
             'lazy_owner_options' => count($zones) * count($users) > self::MAX_INLINE_OWNER_OPTIONS,
