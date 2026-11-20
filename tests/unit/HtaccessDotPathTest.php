@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -82,6 +83,47 @@ class HtaccessDotPathTest extends TestCase
         foreach ([0, 1] as $i) {
             $this->assertGreaterThan($deny[0][$i][1], $static[0][$i][1], 'the first matching regex location wins in nginx');
             $this->assertGreaterThan($dot[0][$i][1], $static[0][$i][1], 'the first matching regex location wins in nginx');
+        }
+    }
+
+    public function testApiPreflightIsAnsweredWith204AndTheCorsHeaders(): void
+    {
+        $htaccess = file_get_contents(dirname(__DIR__, 2) . '/.htaccess');
+        $this->assertNotFalse($htaccess);
+
+        $preflight = strpos($htaccess, "RewriteCond %{REQUEST_METHOD} =OPTIONS\n    RewriteRule ^api(/|\$) - [R=204,L]");
+        $catchAll = strpos($htaccess, 'RewriteRule ^(.*)$ index.php');
+
+        $this->assertNotFalse($preflight, 'no rule answers the API preflight');
+        $this->assertNotFalse($catchAll);
+        $this->assertLessThan($catchAll, $preflight);
+        $this->assertStringContainsString('Header always set Access-Control-Allow-Methods', $htaccess);
+        $this->assertStringContainsString('Header always set Access-Control-Allow-Headers', $htaccess);
+        $this->assertSame(4, substr_count($htaccess, ' env=CORS'));
+        $this->assertSame(4, substr_count($htaccess, ' env=REDIRECT_CORS'), 'the headers must survive the internal rewrite to index.php');
+    }
+
+    /** @return array<string, array{string}> */
+    public static function corsConfigFiles(): array
+    {
+        return [
+            '.htaccess' => ['.htaccess'],
+            'nginx.conf.example' => ['nginx.conf.example'],
+            'caddy.conf.example' => ['caddy.conf.example'],
+            'Dockerfile' => ['Dockerfile'],
+        ];
+    }
+
+    #[DataProvider('corsConfigFiles')]
+    public function testCorsAllowsPatch(string $file): void
+    {
+        $content = file_get_contents(dirname(__DIR__, 2) . '/' . $file);
+        $this->assertNotFalse($content);
+
+        preg_match_all('/Access-Control-Allow-Methods[^\n]*/', $content, $lines);
+        $this->assertNotEmpty($lines[0]);
+        foreach ($lines[0] as $line) {
+            $this->assertStringContainsString('PATCH', $line, $file);
         }
     }
 }

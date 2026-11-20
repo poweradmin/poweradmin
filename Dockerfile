@@ -162,7 +162,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     @api path /api*
     handle @api {
         header Access-Control-Allow-Origin "{$CORS_ALLOW_ORIGIN:*}"
-        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
 

@@ -28,6 +28,10 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
+    # CORS preflight for the API is answered here; the web UI keeps its own OPTIONS handling
+    RewriteCond %{REQUEST_METHOD} =OPTIONS
+    RewriteRule ^api(/|$) - [R=204,L]
+
     # dyndns2 path used by stock dynamic DNS clients
     RewriteRule ^nic/update$ dynamic_update.php [QSA,L]
 
@@ -65,13 +69,16 @@ AddDefaultCharset UTF-8
     Deny from all
 </Files>
 
-# Enable CORS for API endpoints
+# Enable CORS for API endpoints; "always" so the 204 preflight carries the headers too
 <IfModule mod_headers.c>
-    <FilesMatch "^index\.php$">
-        SetEnvIf Request_URI "/api/" CORS=true
-        Header set Access-Control-Allow-Origin "*" env=CORS
-        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS
-        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=CORS
-        Header set Access-Control-Max-Age "3600" env=CORS
-    </FilesMatch>
+    SetEnvIf Request_URI "/api(/|$)" CORS=true
+    Header always set Access-Control-Allow-Origin "*" env=CORS
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" env=CORS
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=CORS
+    Header always set Access-Control-Max-Age "3600" env=CORS
+    # The internal rewrite to index.php renames the variable
+    Header always set Access-Control-Allow-Origin "*" env=REDIRECT_CORS
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" env=REDIRECT_CORS
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=REDIRECT_CORS
+    Header always set Access-Control-Max-Age "3600" env=REDIRECT_CORS
 </IfModule>
