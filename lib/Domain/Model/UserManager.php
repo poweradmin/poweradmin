@@ -399,6 +399,12 @@ class UserManager
                 }
             }
 
+            // Refuse the whole request before any write: a decision may only name a zone the deleted
+            // user owns, and deleting a zone takes the caller's zone delete right for it
+            if (!$this->zoneDecisionsAllowed($uid, $zones)) {
+                return false;
+            }
+
             $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
@@ -421,6 +427,57 @@ class UserManager
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTemplUserId($uid);
         }
+        return true;
+    }
+
+    /**
+     * Check the per-zone decisions posted with a user deletion.
+     *
+     * @param int $uid User being deleted
+     * @param array $zones Zone decisions
+     */
+    private function zoneDecisionsAllowed(int $uid, array $zones): bool
+    {
+        $permDelete = Permission::getDeletePermission($this->db);
+        $owned = $this->db->prepare(
+            "SELECT 1 FROM zones WHERE owner = :uid AND " . CanonicalZoneSql::canonicalIdColumn('zones') . " = :zid
+            UNION ALL
+            SELECT 1 FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id
+            WHERE ugm.user_id = :uid2 AND zg.domain_id = :zid2"
+        );
+
+        foreach ($zones as $zone) {
+            if (!is_array($zone)) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+
+            if (!in_array($zone['target'] ?? null, ['delete', 'new_owner'], true)) {
+                continue;
+            }
+
+            $zid = (int)($zone['zid'] ?? 0);
+            $owned->bindValue(':uid', $uid, PDO::PARAM_INT);
+            $owned->bindValue(':zid', $zid, PDO::PARAM_INT);
+            $owned->bindValue(':uid2', $uid, PDO::PARAM_INT);
+            $owned->bindValue(':zid2', $zid, PDO::PARAM_INT);
+            $owned->execute();
+            if (!$owned->fetchColumn()) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+
+            if ($zone['target'] !== 'delete' || $permDelete === 'all') {
+                continue;
+            }
+
+            if ($permDelete !== 'own' || !self::verifyUserIsOwnerZoneId($this->db, $zid)) {
+                $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+                return false;
+            }
+        }
+
         return true;
     }
 
