@@ -336,4 +336,44 @@ class SamlConfigurationServiceTest extends TestCase
         $this->assertCount(1, $errors);
         $this->assertStringContainsString('admins', $errors[0]);
     }
+
+    /**
+     * @return array<string, array{array<string, mixed>, bool}>
+     */
+    public static function signingKeySources(): array
+    {
+        return [
+            'single certificate' => [['x509cert' => 'cert'], true],
+            'signing certificates only' => [['x509cert_multi' => ['signing' => ['cert']]], true],
+            'encryption certificates only' => [['x509cert_multi' => ['encryption' => ['cert']]], false],
+            'no certificate' => [[], false],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $certificates
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('signingKeySources')]
+    public function testAssertionsMustBeSignedWheneverAnIdpSigningKeyIsConfigured(array $certificates, bool $expected): void
+    {
+        $pem = $this->generateSelfSignedPem();
+        array_walk_recursive($certificates, static function (string &$value) use ($pem): void {
+            $value = $pem;
+        });
+        $provider = array_merge([
+            'entity_id' => 'https://idp.example/',
+            'sso_url' => 'https://idp.example/sso',
+        ], $certificates);
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
+                ['saml', 'providers', [], ['idp' => $provider]],
+                ['interface', 'application_url', '', 'https://pa.example/poweradmin'],
+                ['interface', 'base_url', '', ''],
+            ]);
+
+        $settings = $this->service->generateOneLoginSettings('idp');
+
+        $this->assertSame($expected, $settings['security']['wantAssertionsSigned']);
+    }
 }
