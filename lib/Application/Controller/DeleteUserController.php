@@ -189,7 +189,18 @@ class DeleteUserController extends BaseController
             $users = UserManager::showUsers($this->db, (int)$uid);
         }
 
+        // The delete choice is offered only for zones the caller may delete
+        $mayDeleteOthers = UserManager::verifyPermission($this->db, 'zone_delete_others');
+        $mayDeleteOwn = UserManager::verifyPermission($this->db, 'zone_delete_own');
+        $deletableZoneIds = [];
+        foreach ($zones as $zone) {
+            if ($mayDeleteOthers || ($mayDeleteOwn && UserManager::verifyUserIsOwnerZoneId($this->db, (int)$zone['id']))) {
+                $deletableZoneIds[] = (int)$zone['id'];
+            }
+        }
+
         $this->render('delete_user.html', [
+            'deletable_zone_ids' => $deletableZoneIds,
             'name' => $name,
             'uid' => $uid,
             'zones' => $zones,

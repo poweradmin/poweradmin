@@ -407,6 +407,10 @@ class UserManager
                 }
             }
 
+            if (!$this->zoneDecisionsAreAllowed($uid, $zones)) {
+                return false;
+            }
+
             $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
@@ -438,6 +442,55 @@ class UserManager
                 (new DbUserRepository($this->db, $this->config))->deleteEmailRequestsIfUnused($email);
             }
         }
+        return true;
+    }
+
+    /**
+     * Whether every per-zone decision names a zone the deleted user owns and, for a delete, one the
+     * caller may delete. Checked for the whole request before any zone is touched.
+     *
+     * @param int $uid User being deleted
+     * @param array $zones Per-zone decisions
+     */
+    private function zoneDecisionsAreAllowed(int $uid, array $zones): bool
+    {
+        // The form lists the zones the user reaches directly or through a group
+        $owned = $this->db->prepare("SELECT 1 FROM zones WHERE owner = :uid AND " . CanonicalZoneSql::canonicalIdColumn('zones') . " = :zid");
+        $viaGroup = $this->db->prepare("SELECT 1 FROM zones_groups zg INNER JOIN user_group_members ugm ON ugm.group_id = zg.group_id WHERE ugm.user_id = :uid AND zg.domain_id = :zid");
+        $perm_delete = null;
+
+        foreach ($zones as $zone) {
+            // The no-JS form posts a row with target "leave" for every listed zone
+            if (!is_array($zone)) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+            if (!in_array($zone['target'] ?? null, ['delete', 'new_owner'], true)) {
+                continue;
+            }
+
+            $zid = (int)($zone['zid'] ?? 0);
+            $found = false;
+            foreach ([$owned, $viaGroup] as $lookup) {
+                $lookup->bindValue(':uid', $uid, PDO::PARAM_INT);
+                $lookup->bindValue(':zid', $zid, PDO::PARAM_INT);
+                $lookup->execute();
+                $found = $found || (bool)$lookup->fetchColumn();
+            }
+            if ($zid <= 0 || !$found) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+
+            if ($zone['target'] === 'delete') {
+                $perm_delete ??= Permission::getDeletePermission($this->db);
+                if ($perm_delete !== 'all' && !($perm_delete === 'own' && self::verifyUserIsOwnerZoneId($this->db, $zid))) {
+                    $this->messageService->addSystemError(_('You do not have the permission to delete a zone.'));
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
