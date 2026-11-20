@@ -89,7 +89,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /db /app/config \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php \
-    && printf 'display_errors = Off\nlog_errors = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
+    && printf 'display_errors = Off\nlog_errors = On\nzend.exception_ignore_args = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
 
 # Create Caddyfile for FrankenPHP
 # Uses RUN with single-quoted heredoc to preserve Caddy's {$ENV} syntax literally

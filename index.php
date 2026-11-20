@@ -54,7 +54,8 @@ try {
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
-    error_log($e->getTraceAsString());
+    // Origin only: a trace prints call arguments, and this runs for requests carrying a password
+    error_log(sprintf('%s in %s:%d', $e::class, $e->getFile(), $e->getLine()));
 
     // Check if request expects JSON response
     $expectsJson = (
