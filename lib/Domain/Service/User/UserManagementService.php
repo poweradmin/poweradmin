@@ -69,6 +69,7 @@ class UserManagementService
     public const ERR_TRANSFER_TARGET = 'transfer_target';
     public const ERR_ZONE_DELETE_FORBIDDEN = 'zone_delete_forbidden';
     public const ERR_ZONE_META_FORBIDDEN = 'zone_meta_forbidden';
+    public const ERR_ZONE_NOT_OWNED = 'zone_not_owned';
     public const ERR_ZONE_WRITE = 'zone_write';
     public const ERR_WRITE = 'write';
 
@@ -721,6 +722,12 @@ class UserManagementService
             $zoneDecisions,
             fn(mixed $decision): bool => is_array($decision) && isset($decision['zid']) && in_array($decision['target'] ?? null, ['delete', 'new_owner'], true)
         ));
+        // A decision may only name a zone the deleted user owns, directly or through a group (the zones the form lists)
+        foreach ($zoneDecisions as $decision) {
+            if (!$this->permissions->userOwnsZone($userId, (int)$decision['zid'])) {
+                return ['success' => false, 'message' => 'Zone ' . (int)$decision['zid'] . ' is not owned by the user being deleted', 'refusal' => Refusal::INVALID_INPUT, 'code' => self::ERR_ZONE_NOT_OWNED];
+            }
+        }
         foreach ($zoneDecisions as $decision) {
             $zoneId = (int)$decision['zid'];
             if ($decision['target'] === 'delete' && !$this->permissions->canDeleteZoneById($actingUserId, $zoneId)) {

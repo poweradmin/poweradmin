@@ -159,6 +159,7 @@ class RefusalStatusTest extends TestCase
             UserManagementService::ERR_TRANSFER_TARGET => [400, 404],
             UserManagementService::ERR_ZONE_DELETE_FORBIDDEN => [403],
             UserManagementService::ERR_ZONE_META_FORBIDDEN => [403],
+            UserManagementService::ERR_ZONE_NOT_OWNED => [400],
             UserManagementService::ERR_ZONE_WRITE => [400, 403, 404, 500],
             UserManagementService::ERR_WRITE => [500],
         ];

@@ -79,6 +79,7 @@ class UserManagementServiceAccountReleaseTest extends TestCase
         $permissions = $this->createMock(PermissionService::class);
         $permissions->method('canDeleteZoneById')->willReturn(true);
         $permissions->method('canEditZoneMeta')->willReturn(true);
+        $permissions->method('userOwnsZone')->willReturn(true);
         $zones = $this->createMock(ZoneManagementService::class);
         $zones->method('deleteZone')->willReturn(['success' => true, 'message' => '']);
 

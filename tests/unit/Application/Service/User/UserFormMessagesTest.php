@@ -69,6 +69,13 @@ class UserFormMessagesTest extends TestCase
         $this->assertSame('The selected user already owns the zone.', UserFormMessages::deleteErrorMessage($result));
     }
 
+    public function testAZoneTheUserDoesNotOwnIsWordedForThePage(): void
+    {
+        $result = ['message' => 'Zone 42 is not owned by the user being deleted', 'code' => UserManagementService::ERR_ZONE_NOT_OWNED];
+
+        $this->assertSame('A zone you chose an action for does not belong to this user.', UserFormMessages::deleteErrorMessage($result));
+    }
+
     public function testPolicyMessagesPassThrough(): void
     {
         $result = ['message' => 'Password must be at least 8 characters long', 'code' => UserManagementService::ERR_PASSWORD_POLICY];

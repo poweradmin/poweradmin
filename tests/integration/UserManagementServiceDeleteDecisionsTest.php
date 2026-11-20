@@ -121,7 +121,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
     {
         // The acting user may delete users and their own zones, but not zones owned by others.
         $this->seedUserAdmin([50 => Permission::PERM_ZONE_DELETE_OWN]);
-        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::USER_ADMIN . "), (11, " . self::TARGET . ")");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::USER_ADMIN . "), (10, " . self::TARGET . "), (11, " . self::TARGET . ")");
 
         $decisions = [['zid' => 10, 'target' => 'delete'], ['zid' => 11, 'target' => 'delete']];
         $result = $this->service()->deleteUserWithZoneDecisions(self::USER_ADMIN, self::TARGET, $decisions);
@@ -129,7 +129,51 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->assertFalse($result['success']);
         $this->assertSame(UserManagementService::ERR_ZONE_DELETE_FORBIDDEN, $result['code']);
         $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
-        $this->assertSame(2, $this->rows('zones'));
+        $this->assertSame(3, $this->rows('zones'));
+    }
+
+    #[RunInSeparateProcess]
+    public function testADecisionOnAZoneTheUserDoesNotOwnIsRefusedBeforeAnythingChanges(): void
+    {
+        // The acting user holds every zone right, yet zone 11 belongs to someone else than the deleted user
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, " . self::TARGET . "), (11, " . self::ADMIN_USER_ID . ")");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->expects($this->never())->method('deleteZone');
+
+        foreach (['delete', 'new_owner'] as $target) {
+            $decisions = [
+                ['zid' => 10, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+                ['zid' => 11, 'target' => $target, 'newowner' => self::ADMIN_USER_ID],
+            ];
+            $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+            $this->assertFalse($result['success']);
+            $this->assertSame(UserManagementService::ERR_ZONE_NOT_OWNED, $result['code']);
+        }
+        $this->assertSame(1, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(1, $this->rows('zones WHERE domain_id = 10 AND owner = ' . self::TARGET));
+        $this->assertSame(1, $this->rows('zones WHERE domain_id = 11 AND owner = ' . self::ADMIN_USER_ID));
+    }
+
+    #[RunInSeparateProcess]
+    public function testAZoneTheUserOwnsOnlyThroughAGroupCanBeDeletedOrHandedOver(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::TARGET . ", 'target', " . self::ADMIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::TARGET . ", 9)");
+        $this->db->exec("INSERT OR IGNORE INTO user_groups (id, name, perm_templ) VALUES (9, 'Ops', 1)");
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (11, 'group.example', 'NATIVE')");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (10, 6), (11, 6)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (10, 9), (11, 9)");
+        $this->zoneService = $this->createMock(ZoneManagementService::class);
+        $this->zoneService->expects($this->once())->method('deleteZone')->with(10)->willReturn(['success' => true, 'message' => 'ok']);
+
+        $decisions = [['zid' => 10, 'target' => 'delete'], ['zid' => 11, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID]];
+        $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::TARGET, $decisions);
+
+        $this->assertTrue($result['success'], $result['message']);
+        $this->assertSame(0, $this->rows('users WHERE id = ' . self::TARGET));
+        $this->assertSame(1, $this->rows('zones WHERE domain_id = 11 AND owner = ' . self::ADMIN_USER_ID));
     }
 
     #[RunInSeparateProcess]

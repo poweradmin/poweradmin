@@ -117,6 +117,7 @@ class UserManagementServiceZoneLimitTest extends TestCase
 
     public function testAReassignmentPastALimitIsRefusedBeforeAnyWrite(): void
     {
+        $this->permissionService->method('userOwnsZone')->willReturn(true);
         $this->permissionService->method('canEditZoneMeta')->willReturn(true);
         $this->permissionService->method('canDeleteZoneById')->willReturn(true);
         $this->limit->expects($this->once())->method('reassignZones')
@@ -140,6 +141,7 @@ class UserManagementServiceZoneLimitTest extends TestCase
 
     public function testReassignmentsRunBeforeAnyZoneIsDeleted(): void
     {
+        $this->permissionService->method('userOwnsZone')->willReturn(true);
         $this->permissionService->method('canEditZoneMeta')->willReturn(true);
         $this->permissionService->method('canDeleteZoneById')->willReturn(true);
         $calls = [];
@@ -168,6 +170,7 @@ class UserManagementServiceZoneLimitTest extends TestCase
     public function testAFailedReassignmentStopsBeforeDeletingAndRollsBack(): void
     {
         $breach = new ZoneLimitBreach(ZoneLimitBreach::SUBJECT_USER, 'bob', 5, 5);
+        $this->permissionService->method('userOwnsZone')->willReturn(true);
         $this->permissionService->method('canEditZoneMeta')->willReturn(true);
         $this->permissionService->method('canDeleteZoneById')->willReturn(true);
         $written = null;

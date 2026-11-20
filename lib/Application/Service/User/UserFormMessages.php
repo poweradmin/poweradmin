@@ -54,6 +54,7 @@ final class UserFormMessages
             UserManagementService::ERR_NOT_FOUND => _('User does not exist.'),
             UserManagementService::ERR_LAST_ADMIN => _('Cannot disable the last remaining super admin user.'),
             UserManagementService::ERR_LAST_ADMIN_DEMOTE => _('Cannot remove super admin from the last remaining super admin user.'),
+            UserManagementService::ERR_ZONE_NOT_OWNED => _('A zone you chose an action for does not belong to this user.'),
             // The write message carries the driver's text, which is for the log, not the page.
             UserManagementService::ERR_WRITE => _('The user could not be saved.'),
             default => (string)($result['message'] ?? ''),
