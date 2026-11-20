@@ -63,6 +63,14 @@ class DeleteUserZoneDecisionsTest extends TestCase
         $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL, created_by INTEGER, is_default INTEGER NOT NULL DEFAULT 0)");
 
+        $this->db->exec("CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, created_by INTEGER NULL)");
+        $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'user_edit_others'), (2, 'zone_content_edit_others'), (3, 'zone_delete_others'), (4, 'zone_meta_edit_others')");
         // Template 1 holds the delete right, template 2 only the content edit right
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (1, 'deleter'), (2, 'editor'), (3, 'plain')");
@@ -155,7 +163,6 @@ class DeleteUserZoneDecisionsTest extends TestCase
         $this->db->exec("CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)");
         $this->db->exec("CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, active INTEGER, content TEXT)");
         $this->db->exec("CREATE TABLE record_comment_links (id INTEGER PRIMARY KEY, record_id INTEGER, comment_id INTEGER)");
-        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0)");
         $this->db->exec("INSERT INTO domains (id, name, type) VALUES (" . self::OWN_ZONE . ", 'a.example', 'NATIVE')");
 
@@ -165,6 +172,39 @@ class DeleteUserZoneDecisionsTest extends TestCase
         $this->assertFalse($this->userExists(self::DELETED));
         $this->assertSame(0, $this->zoneRowCount(self::OWN_ZONE));
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM domains WHERE id = " . self::OWN_ZONE)->fetchColumn());
+    }
+
+    #[RunInSeparateProcess]
+    public function testTheWebDeleteClearsLinksMembershipsKeysAndTemplatesWithoutTheTemplateEditRight(): void
+    {
+        $this->setCallerTemplate(2);
+        foreach (
+            [
+                "INSERT INTO oidc_user_links (user_id) VALUES (2)",
+                "INSERT INTO saml_user_links (user_id) VALUES (2)",
+                "INSERT INTO user_mfa (user_id) VALUES (2)",
+                "INSERT INTO user_preferences (user_id) VALUES (2)",
+                "INSERT INTO login_attempts (user_id) VALUES (2)",
+                "INSERT INTO user_agreements (user_id) VALUES (2)",
+                "INSERT INTO user_group_members (user_id, group_id) VALUES (2, 9)",
+                "INSERT INTO api_keys (created_by) VALUES (2)",
+                "INSERT INTO zone_templ (id, name, owner) VALUES (5, 'mine', 2)",
+                "INSERT INTO zone_templ_records (zone_templ_id) VALUES (5)",
+                "UPDATE zones SET zone_templ_id = 5 WHERE domain_id = " . self::FOREIGN_ZONE,
+            ] as $sql
+        ) {
+            $this->db->exec($sql);
+        }
+
+        $this->assertTrue($this->deleteUser([]));
+
+        foreach (['oidc_user_links', 'saml_user_links', 'user_mfa', 'user_preferences', 'login_attempts', 'user_agreements', 'user_group_members'] as $table) {
+            $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM $table")->fetchColumn(), $table);
+        }
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM api_keys")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT zone_templ_id FROM zones WHERE domain_id = " . self::FOREIGN_ZONE)->fetchColumn());
     }
 
     #[RunInSeparateProcess]

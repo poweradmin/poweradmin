@@ -158,6 +158,12 @@ class UserManagementServiceLastSuperAdminLockTest extends TestCase
         $pdo->exec('CREATE TABLE password_reset_tokens (email TEXT)');
         $pdo->exec('CREATE TABLE username_recovery_requests (email TEXT)');
         $pdo->exec('CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER)');
+        $pdo->exec('CREATE TABLE user_agreements (user_id INTEGER)');
+        $pdo->exec('CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)');
+        $pdo->exec('CREATE TABLE api_keys (created_by INTEGER)');
+        $pdo->exec('CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, owner INTEGER)');
+        $pdo->exec('CREATE TABLE zone_templ_records (zone_templ_id INTEGER)');
+        $pdo->exec('CREATE TABLE records_zone_templ (zone_templ_id INTEGER)');
         $pdo->exec("INSERT INTO perm_items VALUES (1, 'user_is_ueberuser')");
         $pdo->exec('INSERT INTO perm_templ VALUES (1)');
         $pdo->exec('INSERT INTO perm_templ_items VALUES (1, 1, 1)');

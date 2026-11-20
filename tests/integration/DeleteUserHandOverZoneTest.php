@@ -63,6 +63,15 @@ class DeleteUserHandOverZoneTest extends TestCase
         $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT NOT NULL DEFAULT '', owner INTEGER NOT NULL, created_by INTEGER, is_default INTEGER NOT NULL DEFAULT 0)");
 
+        $this->db->exec("CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, created_by INTEGER NULL)");
+        $this->db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+
         // An ueberuser admin so the permission checks pass
         $this->db->exec("INSERT INTO perm_items (id, name) VALUES (53, 'user_is_ueberuser')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (1, 'Administrator')");

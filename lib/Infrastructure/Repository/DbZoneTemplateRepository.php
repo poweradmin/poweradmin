@@ -233,6 +233,28 @@ class DbZoneTemplateRepository
     }
 
     /**
+     * Delete every zone template the user owns, with its records and zone links.
+     *
+     * @param int $ownerId Owner user ID
+     */
+    public function deleteZoneTemplatesOwnedBy(int $ownerId): void
+    {
+        $owned = "SELECT id FROM zone_templ WHERE owner = :owner";
+        foreach (
+            [
+                "DELETE FROM zone_templ_records WHERE zone_templ_id IN ($owned)",
+                "DELETE FROM records_zone_templ WHERE zone_templ_id IN ($owned)",
+                "UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id IN ($owned)",
+                "DELETE FROM zone_templ WHERE owner = :owner",
+            ] as $query
+        ) {
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':owner', $ownerId, \PDO::PARAM_INT);
+            $stmt->execute();
+        }
+    }
+
+    /**
      * Add a record to a zone template
      *
      * @param int $templateId Template ID

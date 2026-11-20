@@ -291,20 +291,7 @@ class DbUserRepository implements UserRepository
             $stmt->execute([':userId' => $userId]);
             $email = $stmt->fetchColumn();
 
-            // Delete related OIDC/SAML authentication links first
-            $this->cleanupExternalAuthLinks($userId);
-
-            // Delete user preferences
-            $stmt = $this->db->prepare("DELETE FROM user_preferences WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete MFA settings
-            $stmt = $this->db->prepare("DELETE FROM user_mfa WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete login attempts
-            $stmt = $this->db->prepare("DELETE FROM login_attempts WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
+            $this->deleteUserDependents($userId);
 
             // Finally delete the user
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
@@ -330,6 +317,34 @@ class DbUserRepository implements UserRepository
                 $this->db->rollback();
             }
             throw $e;
+        }
+    }
+
+    /**
+     * Remove every row that points at the user by id, for callers that delete the users row
+     * themselves. SQLite hands a deleted id to the next account, so nothing may survive on it.
+     *
+     * @param int $userId User ID being deleted
+     */
+    public function deleteUserDependents(int $userId): void
+    {
+        // Delete related OIDC/SAML authentication links first
+        $this->cleanupExternalAuthLinks($userId);
+
+        (new DbZoneTemplateRepository($this->db, $this->config))->deleteZoneTemplatesOwnedBy($userId);
+
+        foreach (
+            [
+                "DELETE FROM user_preferences WHERE user_id = :userId",
+                "DELETE FROM user_mfa WHERE user_id = :userId",
+                "DELETE FROM login_attempts WHERE user_id = :userId",
+                "DELETE FROM user_agreements WHERE user_id = :userId",
+                "DELETE FROM user_group_members WHERE user_id = :userId",
+                "DELETE FROM api_keys WHERE created_by = :userId",
+            ] as $query
+        ) {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([':userId' => $userId]);
         }
     }
 
