@@ -76,7 +76,7 @@ class ListTemplateZonesController extends BaseController
         $totalZones = count($zones);
 
         // Apply pagination manually for now (ideally would be implemented in the model)
-        $paginatedZones = array_slice($zones, $offset, $itemsPerPage);
+        $paginatedZones = $this->withVisibleOwners(array_slice($zones, $offset, $itemsPerPage));
 
         $this->render('list_template_zones.html', [
             'template' => $template_details,
@@ -86,5 +86,32 @@ class ListTemplateZonesController extends BaseController
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage
         ]);
+    }
+
+    /**
+     * Blanks the owner cells the ownership view level hides: all rows at "none",
+     * rows the user does not own at "own".
+     *
+     * @param array<int, array<string, mixed>> $zones
+     * @return array<int, array<string, mixed>>
+     */
+    private function withVisibleOwners(array $zones): array
+    {
+        $userId = (int)$this->getCurrentUserId();
+        $permissions = $this->services()->permissionService();
+        $level = $permissions->getZoneOwnershipViewPermissionLevel($userId);
+        if ($level === 'all') {
+            return $zones;
+        }
+
+        foreach ($zones as &$zone) {
+            if ($level !== 'own' || !$permissions->userOwnsZone($userId, (int)$zone['id'])) {
+                $zone['owner_name'] = null;
+                $zone['owner_fullname'] = null;
+            }
+        }
+        unset($zone);
+
+        return $zones;
     }
 }

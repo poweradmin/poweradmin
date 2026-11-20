@@ -61,4 +61,61 @@ class ListTemplateZonesControllerPageTest extends SeamControllerTestCase
         $this->assertSame('list_template_zones.html', $this->output->rendered[0][0]);
         $this->assertSame([], $this->renderedParams()['zones']);
     }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    private function renderedZones(string $level): array
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('hasPermission')->willReturn(true);
+        $permissions->method('getZoneOwnershipViewPermissionLevel')->willReturn($level);
+        $permissions->method('userOwnsZone')->willReturnCallback(static fn(int $userId, int $zoneId): bool => $zoneId === 1);
+
+        $templates = $this->createMock(ZoneTemplateService::class);
+        $templates->method('getZonesUsingTemplate')->willReturn([
+            ['id' => 1, 'name' => 'a.example', 'owner_name' => 'alice', 'owner_fullname' => 'Alice A'],
+            ['id' => 2, 'name' => 'b.example', 'owner_name' => 'bob', 'owner_fullname' => 'Bob B'],
+        ]);
+
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getFullNameById')->willReturn('Test User');
+
+        $this->factory->method('permissionService')->willReturn($permissions);
+        $this->factory->method('zoneTemplateService')->willReturn($templates);
+        $policy = $this->createMock(ZoneTemplateAccessPolicy::class);
+        $policy->method('canCurrentUserViewTemplate')->willReturn(true);
+        $this->factory->method('zoneTemplateAccessPolicy')->willReturn($policy);
+        $this->factory->method('zoneTemplateRepository')->willReturn($this->createMock(ZoneTemplateRepositoryInterface::class));
+        $this->factory->method('userRepository')->willReturn($users);
+        $this->factory->method('paginationService')->willReturn(new PaginationService());
+        $this->query(['id' => '3']);
+
+        (new ListTemplateZonesController($this->requestData(), true, $this->environment($this->configure())))->run();
+
+        return $this->renderedParams()['zones'];
+    }
+
+    public function testOwnersStayVisibleAtTheAllLevel(): void
+    {
+        $zones = $this->renderedZones('all');
+
+        $this->assertSame(['alice', 'bob'], array_column($zones, 'owner_name'));
+    }
+
+    public function testOwnersAreBlankedAtTheNoneLevel(): void
+    {
+        $zones = $this->renderedZones('none');
+
+        $this->assertSame([null, null], array_column($zones, 'owner_name'));
+        $this->assertSame([null, null], array_column($zones, 'owner_fullname'));
+    }
+
+    public function testOnlyOwnedZonesShowTheirOwnerAtTheOwnLevel(): void
+    {
+        $zones = $this->renderedZones('own');
+
+        $this->assertSame(['alice', null], array_column($zones, 'owner_name'));
+        $this->assertSame(['Alice A', null], array_column($zones, 'owner_fullname'));
+    }
 }
