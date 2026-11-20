@@ -20,6 +20,10 @@
     RewriteRule ^(config|lib|tests|vendor|bin|var)/ - [F,L]
     RewriteRule ^(composer\.(json|lock)|package(-lock)?\.json|psalm\.xml|phpcs\.xml|phpstan[^/]*\.neon|phpunit\.xml[^/]*|phpdoc\.dist\.xml)$ - [F,L]
 
+    # Answer CORS preflight for the API here; headers are added in the mod_headers block below
+    RewriteCond %{REQUEST_METHOD} =OPTIONS
+    RewriteRule ^api(/|$) - [R=204,L]
+
     # Disable rewriting for existing files and directories
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
@@ -67,11 +71,14 @@ AddDefaultCharset UTF-8
 
 # Enable CORS for API endpoints
 <IfModule mod_headers.c>
-    <FilesMatch "^index\.php$">
-        SetEnvIf Request_URI "/api/" CORS=true
-        Header set Access-Control-Allow-Origin "*" env=CORS
-        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS
-        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=CORS
-        Header set Access-Control-Max-Age "3600" env=CORS
-    </FilesMatch>
+    SetEnvIf Request_URI "/api(/|$)" CORS=true
+    Header always set Access-Control-Allow-Origin "*" env=CORS
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" env=CORS
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=CORS
+    Header always set Access-Control-Max-Age "3600" env=CORS
+    # The internal rewrite to index.php renames the variable
+    Header always set Access-Control-Allow-Origin "*" env=REDIRECT_CORS
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS" env=REDIRECT_CORS
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=REDIRECT_CORS
+    Header always set Access-Control-Max-Age "3600" env=REDIRECT_CORS
 </IfModule>

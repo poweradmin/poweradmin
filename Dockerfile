@@ -135,7 +135,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     @options method OPTIONS
     handle @options {
         header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
         respond "" 204
@@ -145,7 +145,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     @api path /api*
     handle @api {
         header Access-Control-Allow-Origin "*"
-        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
 
