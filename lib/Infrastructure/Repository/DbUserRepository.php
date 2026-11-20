@@ -973,6 +973,7 @@ class DbUserRepository implements UserRepositoryInterface
                     "DELETE FROM user_mfa WHERE user_id = :userId",
                     "DELETE FROM login_attempts WHERE user_id = :userId",
                     "DELETE FROM user_group_members WHERE user_id = :userId",
+                    "DELETE FROM user_agreements WHERE user_id = :userId",
                     // The FK only nulls created_by. ApiKeyService refuses an ownerless
                     // key, so the row is dead, but it still lists as if it were usable.
                     "DELETE FROM api_keys WHERE created_by = :userId",

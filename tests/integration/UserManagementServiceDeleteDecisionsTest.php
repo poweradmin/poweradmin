@@ -76,6 +76,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT, created_by INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
@@ -106,6 +107,7 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::SECOND_ADMIN . ", 'second', " . self::ADMIN_PERM_TEMPL_ID . ")");
         $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::SECOND_ADMIN . ", 9)");
         $this->db->exec("INSERT INTO zone_templ VALUES (50, 'private', " . self::SECOND_ADMIN . ")");
+        $this->db->exec("INSERT INTO user_agreements (user_id) VALUES (" . self::SECOND_ADMIN . "), (" . self::ADMIN_USER_ID . ")");
 
         $result = $this->service()->deleteUserWithZoneDecisions(self::ADMIN_USER_ID, self::SECOND_ADMIN, []);
 
@@ -113,6 +115,8 @@ class UserManagementServiceDeleteDecisionsTest extends SqliteIntegrationTestCase
         $this->assertSame(0, $this->rows('users WHERE id = ' . self::SECOND_ADMIN));
         $this->assertSame(0, $this->rows('user_group_members WHERE user_id = ' . self::SECOND_ADMIN));
         $this->assertSame(0, $this->rows('zone_templ WHERE owner = ' . self::SECOND_ADMIN));
+        $this->assertSame(0, $this->rows('user_agreements WHERE user_id = ' . self::SECOND_ADMIN));
+        $this->assertSame(1, $this->rows('user_agreements WHERE user_id = ' . self::ADMIN_USER_ID));
         $this->assertSame(1, $this->rows('users WHERE id = ' . self::ADMIN_USER_ID));
     }
 

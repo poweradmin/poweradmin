@@ -63,6 +63,7 @@ class SharedZoneIdRemovalPathsTest extends TestCase
                 "CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT, created_by INTEGER)",
