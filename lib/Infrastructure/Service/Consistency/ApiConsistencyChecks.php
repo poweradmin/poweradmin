@@ -333,6 +333,13 @@ final class ApiConsistencyChecks extends AbstractConsistencyChecks
                 SharedZoneIds::detachZoneHistory($this->db, $zoneId);
             }
 
+            if (!$shared) {
+                foreach (["records_zone_templ", "records_zone_templ_api"] as $table) {
+                    $stmt = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
+                    $stmt->execute(['domain_id' => $zoneId]);
+                }
+            }
+
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 

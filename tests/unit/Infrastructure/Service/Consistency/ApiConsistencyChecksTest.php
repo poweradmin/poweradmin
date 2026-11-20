@@ -71,6 +71,8 @@ class ApiConsistencyChecksTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER NULL, zone_templ_id INTEGER DEFAULT 0, zone_name TEXT NULL)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, group_id INTEGER, user_id INTEGER)");
         $this->db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)");
@@ -514,6 +516,24 @@ class ApiConsistencyChecksTest extends TestCase
         $this->assertSame(0, $this->rows('zones', 'domain_id = 1'));
         $this->assertSame(0, $this->rows('zones_groups'));
         $this->assertSame(1, $this->rows('zones', 'domain_id = 2'));
+    }
+
+    public function testDeleteSlaveZoneRemovesItsTemplateLinks(): void
+    {
+        $this->provider->method('getZoneNameById')->willReturn('slave.example.com');
+        $this->provider->method('deleteZone')->willReturn(true);
+        $this->zoneRow(1, 1, 5, 'slave.example.com');
+        foreach ([1, 2] as $id) {
+            $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ($id, 1, 1)");
+            $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES ($id, 'x', 1)");
+        }
+
+        $this->assertTrue($this->checker()->deleteSlaveZone(1));
+
+        foreach (['records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $this->assertSame(0, $this->rows($table, 'domain_id = 1'), $table);
+            $this->assertSame(1, $this->rows($table, 'domain_id = 2'), $table);
+        }
     }
 
     public function testFixingASlaveZoneWithoutMastersCancelsItsOpenChangeRequests(): void

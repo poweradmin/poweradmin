@@ -48,6 +48,8 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
     private ?TransactionInterface $transactionPort = null;
     private string $recordsTable;
     private string $commentsTable;
+    private string $domainMetadataTable;
+    private string $cryptoKeysTable;
 
     public function __construct(
         private readonly PDO $db,
@@ -63,6 +65,8 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
         $this->domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
         $this->recordsTable = $tableNameService->getTable(PdnsTable::RECORDS);
         $this->commentsTable = $tableNameService->getTable(PdnsTable::COMMENTS);
+        $this->domainMetadataTable = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $this->cryptoKeysTable = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
     }
 
     protected function nativeDb(): PDO
@@ -641,6 +645,19 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
 
             $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
+
+            // Keys and metadata are keyed on the id, which SQLite hands to the next zone
+            foreach (
+                [
+                    "DELETE FROM records_zone_templ WHERE domain_id = :domain_id",
+                    "DELETE FROM records_zone_templ_api WHERE domain_id = :domain_id",
+                    "DELETE FROM {$this->domainMetadataTable} WHERE domain_id = :domain_id",
+                    "DELETE FROM {$this->cryptoKeysTable} WHERE domain_id = :domain_id",
+                ] as $sql
+            ) {
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute(['domain_id' => $zoneId]);
+            }
 
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);

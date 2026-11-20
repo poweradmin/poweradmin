@@ -66,6 +66,10 @@ class SqlConsistencyChecksTest extends TestCase
         $this->db->exec("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))");
         $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)");
+        $this->db->exec("CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, active INTEGER, content TEXT)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)");
     }
 
     private function checker(): SqlConsistencyChecks
@@ -421,7 +425,6 @@ class SqlConsistencyChecksTest extends TestCase
             $this->db->exec("INSERT INTO $table (zone_id) VALUES (50), (70)");
         }
         foreach (['records_zone_templ', 'records_zone_templ_api'] as $table) {
-            $this->db->exec("CREATE TABLE $table (id INTEGER PRIMARY KEY, domain_id INTEGER)");
             $this->db->exec("INSERT INTO $table (domain_id) VALUES (50), (70)");
         }
         $checker = $this->checker();
@@ -515,6 +518,25 @@ class SqlConsistencyChecksTest extends TestCase
         $this->assertSame(1, $this->rows('domains'));
         $this->assertSame(1, $this->rows('records'));
         $this->assertSame(1, $this->rows('zones'));
+    }
+
+    public function testDeleteSlaveZoneRemovesItsMetadataKeysAndTemplateLinks(): void
+    {
+        $this->domain(1, 'slave.example.com', 'SLAVE', '');
+        $this->domain(2, 'keep.example.com');
+        foreach ([1, 2] as $id) {
+            $this->db->exec("INSERT INTO domainmetadata (domain_id, kind, content) VALUES ($id, 'SOA-EDIT-API', 'DEFAULT')");
+            $this->db->exec("INSERT INTO cryptokeys (domain_id, flags, active, content) VALUES ($id, 257, 1, 'k')");
+            $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ($id, 1, 1)");
+            $this->db->exec("INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES ($id, 'x', 1)");
+        }
+
+        $this->assertTrue($this->checker()->deleteSlaveZone(1));
+
+        foreach (['domainmetadata', 'cryptokeys', 'records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $this->assertSame(0, $this->rows($table, 'domain_id = 1'), $table);
+            $this->assertSame(1, $this->rows($table, 'domain_id = 2'), $table);
+        }
     }
 
     public function testDeleteSlaveZoneDetachesItsHistoryFromTheReusableId(): void
@@ -847,7 +869,7 @@ class SqlConsistencyChecksTest extends TestCase
     {
         $this->db->exec("CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, modified_at INTEGER, account TEXT, comment TEXT)");
         $this->db->exec("CREATE TABLE IF NOT EXISTS record_comment_links (record_id VARCHAR(4096) NOT NULL, comment_id INTEGER NOT NULL, PRIMARY KEY (record_id), UNIQUE (comment_id))");
-        $this->db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $this->db->exec("CREATE TABLE IF NOT EXISTS records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
     }
 
     public function testAMixedCaseCopyOfARecordAlreadyStoredLowercaseIsDeletedNotRenamed(): void
