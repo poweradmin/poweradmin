@@ -63,13 +63,22 @@ class UnlinkZonesTemplController extends BaseController
         }
     }
 
+    /**
+     * Unlinking drops the zone out of template sync, which the zone edit page treats as a meta edit.
+     */
+    private function mayUnlinkZone(int $zoneId): bool
+    {
+        $userId = $this->getCurrentUserId();
+
+        return $userId !== null && $this->services()->permissionService()->canEditZoneMeta((int)$userId, $zoneId);
+    }
+
     private function unlinkZones(array $zone_ids, int $template_id): void
     {
         $successful = 0;
         $failed = 0;
         $zoneTemplate = $this->services()->zoneTemplateService();
         $auditService = $this->services()->auditService();
-        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);
@@ -78,8 +87,7 @@ class UnlinkZonesTemplController extends BaseController
                 continue;
             }
 
-            // Check if user has permission to edit this zone
-            if (!$perm_godlike && !$this->isZoneOwner($zone_id)) {
+            if (!$this->mayUnlinkZone($zone_id)) {
                 $failed++;
                 continue;
             }
@@ -124,10 +132,9 @@ class UnlinkZonesTemplController extends BaseController
     private function showConfirmation(array $zone_ids, int $template_id): void
     {
         // Only zones the unlink step would accept, so the page never names a foreign zone
-        $perm_godlike = $this->hasPermission(Permission::PERM_USER_IS_UEBERUSER);
         $valid_zone_ids = array_values(array_filter(
             array_map('intval', $zone_ids),
-            fn(int $zone_id): bool => $zone_id > 0 && ($perm_godlike || $this->isZoneOwner($zone_id))
+            fn(int $zone_id): bool => $zone_id > 0 && $this->mayUnlinkZone($zone_id)
         ));
 
         if (empty($valid_zone_ids)) {

@@ -45,6 +45,7 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
 
     private bool $isUberuser = false;
     private bool $canViewTemplate = true;
+    private string $metaEditLevel = 'own';
 
     /** @var ZoneTemplateService&MockObject */
     private ZoneTemplateService $templates;
@@ -60,6 +61,11 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
                 : $permission === Permission::PERM_ZONE_CONTENT_EDIT_OWN
         );
         $permissions->method('userOwnsZone')->willReturnCallback(static fn(int $userId, int $zoneId): bool => $zoneId === self::OWN_ZONE);
+        $permissions->method('canEditZoneMeta')->willReturnCallback(
+            fn(int $userId, int $zoneId): bool => $this->isUberuser
+                || ($this->metaEditLevel === 'all')
+                || ($this->metaEditLevel === 'own' && $zoneId === self::OWN_ZONE)
+        );
 
         $repository = $this->createMock(ZoneTemplateRepositoryInterface::class);
         $repository->method('getZoneTemplateDetails')->willReturn(['name' => 'basic']);
@@ -111,6 +117,52 @@ class UnlinkZonesTemplControllerTest extends SeamControllerTestCase
         $this->templates->expects($this->once())->method('getZonesByIds')->with([self::OWN_ZONE, self::FOREIGN_ZONE])->willReturn([]);
 
         $this->confirm([(string)self::OWN_ZONE, (string)self::FOREIGN_ZONE])->run();
+    }
+
+    public function testAnOwnerWithoutMetaEditRightsConfirmsNoZone(): void
+    {
+        $this->metaEditLevel = 'none';
+        $this->templates->expects($this->never())->method('getZonesByIds');
+
+        try {
+            $this->confirm([(string)self::OWN_ZONE])->run();
+            $this->fail('Expected the request to end in an error page.');
+        } catch (RequestHalted $halt) {
+            $this->assertSame('No valid zones selected.', $halt->target);
+        }
+    }
+
+    public function testMetaEditOnOthersZonesConfirmsAZoneTheUserDoesNotOwn(): void
+    {
+        $this->metaEditLevel = 'all';
+        $this->templates->expects($this->once())->method('getZonesByIds')->with([self::FOREIGN_ZONE])->willReturn([]);
+
+        $this->confirm([(string)self::FOREIGN_ZONE])->run();
+    }
+
+    public function testTheUnlinkStepSkipsAZoneWithoutMetaEditRights(): void
+    {
+        $this->metaEditLevel = 'none';
+        $this->templates->expects($this->never())->method('unlinkZoneFromTemplate');
+        $this->post(['zone_ids' => [(string)self::OWN_ZONE], 'template_id' => '3', 'confirm' => '1']);
+
+        try {
+            (new UnlinkZonesTemplController($this->requestData(), true, $this->environment($this->configure())))->run();
+        } catch (RequestHalted) {
+            // The redirect ends the request
+        }
+    }
+
+    public function testTheUnlinkStepUnlinksAZoneWithMetaEditRights(): void
+    {
+        $this->templates->expects($this->once())->method('unlinkZoneFromTemplate')->with(self::OWN_ZONE)->willReturn(true);
+        $this->post(['zone_ids' => [(string)self::OWN_ZONE], 'template_id' => '3', 'confirm' => '1']);
+
+        try {
+            (new UnlinkZonesTemplController($this->requestData(), true, $this->environment($this->configure())))->run();
+        } catch (RequestHalted) {
+            // The redirect ends the request
+        }
     }
 
     public function testATemplateTheUserCannotViewAnswersLikeAMissingOne(): void
