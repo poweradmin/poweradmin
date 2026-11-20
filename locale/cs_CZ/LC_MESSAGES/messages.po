@@ -16546,3 +16546,7 @@ msgstr "Tohoto uživatele po otevření formuláře změnil někdo jiný. Zkontr
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Uživatele %s po otevření tohoto seznamu změnil někdo jiný, proto tento řádek nebyl uložen."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Zóna, pro kterou jste vybrali akci, nepatří tomuto uživateli."

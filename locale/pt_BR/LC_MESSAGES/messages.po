@@ -16832,3 +16832,7 @@ msgstr "Outra pessoa alterou este usuário depois que você abriu o formulário.
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Outra pessoa alterou o usuário %s depois que você abriu esta lista, então essa linha não foi salva."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Uma zona para a qual você escolheu uma ação não pertence a este usuário."

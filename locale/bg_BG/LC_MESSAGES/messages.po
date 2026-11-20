@@ -16823,3 +16823,7 @@ msgstr "Този потребител е променен от някой дру
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Потребителят %s е променен от някой друг, след като сте отворили този списък, затова този ред не е запазен."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Зона, за която сте избрали действие, не принадлежи на този потребител."

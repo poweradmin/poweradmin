@@ -17086,3 +17086,7 @@ msgstr "Altcineva a modificat acest utilizator după ce ați deschis formularul.
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Altcineva a modificat utilizatorul %s după ce ați deschis această listă, așa că rândul respectiv nu a fost salvat."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "O zonă pentru care ați ales o acțiune nu aparține acestui utilizator."

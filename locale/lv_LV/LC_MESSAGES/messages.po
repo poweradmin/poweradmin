@@ -16339,3 +16339,7 @@ msgstr "Pēc tam, kad atvērāt veidlapu, šo lietotāju mainīja kāds cits. P�
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Pēc tam, kad atvērāt šo sarakstu, lietotāju %s mainīja kāds cits, tāpēc šī rinda netika saglabāta."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Zona, kurai izvēlējāties darbību, nepieder šim lietotājam."

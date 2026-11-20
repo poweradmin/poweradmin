@@ -15506,3 +15506,7 @@ msgstr "您開啟表單後，其他人修改了此使用者。請檢查目前的
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "您開啟此清單後，其他人修改了使用者 %s，因此該列未儲存。"
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "您為其選擇了操作的區域不屬於此使用者。"

@@ -16640,3 +16640,7 @@ msgstr "Nekdo drug je spremenil tega uporabnika, potem ko ste odprli obrazec. Pr
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Nekdo drug je spremenil uporabnika %s, potem ko ste odprli ta seznam, zato ta vrstica ni bila shranjena."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Cona, za katero ste izbrali dejanje, ne pripada temu uporabniku."

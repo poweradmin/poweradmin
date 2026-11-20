@@ -17148,3 +17148,7 @@ msgstr "Αυτός ο χρήστης άλλαξε από κάποιον άλλο
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Ο χρήστης %s άλλαξε από κάποιον άλλον αφού ανοίξατε αυτή τη λίστα, οπότε η γραμμή δεν αποθηκεύτηκε."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Μια ζώνη για την οποία επιλέξατε ενέργεια δεν ανήκει σε αυτόν τον χρήστη."

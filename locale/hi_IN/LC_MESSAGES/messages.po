@@ -16295,3 +16295,7 @@ msgstr "आपके फ़ॉर्म खोलने के बाद कि�
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "आपके यह सूची खोलने के बाद किसी और ने उपयोगकर्ता %s को बदल दिया, इसलिए वह पंक्ति सहेजी नहीं गई।"
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "जिस ज़ोन के लिए आपने कोई कार्रवाई चुनी है, वह इस उपयोगकर्ता का नहीं है।"

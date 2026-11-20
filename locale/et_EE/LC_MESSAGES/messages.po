@@ -16278,3 +16278,7 @@ msgstr "Keegi teine muutis seda kasutajat pärast seda, kui vormi avasite. Vaada
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Keegi teine muutis kasutajat %s pärast seda, kui selle loendi avasite, seega seda rida ei salvestatud."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Tsoon, mille jaoks valisite toimingu, ei kuulu sellele kasutajale."

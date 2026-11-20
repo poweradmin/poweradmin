@@ -16625,3 +16625,7 @@ msgstr "Siz formu açtıktan sonra bu kullanıcıyı başka biri değiştirdi. G
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Siz bu listeyi açtıktan sonra %s kullanıcısını başka biri değiştirdi, bu yüzden o satır kaydedilmedi."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "İşlem seçtiğiniz bir zon bu kullanıcıya ait değil."

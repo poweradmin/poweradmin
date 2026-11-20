@@ -16776,3 +16776,7 @@ msgstr "Valaki más módosította ezt a felhasználót, miután megnyitotta az �
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Valaki más módosította a(z) %s felhasználót, miután megnyitotta ezt a listát, ezért az a sor nem lett mentve."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Egy zóna, amelyhez műveletet választott, nem ehhez a felhasználóhoz tartozik."

@@ -16646,3 +16646,7 @@ msgstr "Atidarius formą, šį naudotoją pakeitė kažkas kitas. Peržiūrėkit
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Atidarius šį sąrašą, naudotoją %s pakeitė kažkas kitas, todėl ta eilutė neišsaugota."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Zona, kuriai pasirinkote veiksmą, nepriklauso šiam naudotojui."

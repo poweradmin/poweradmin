@@ -15832,3 +15832,7 @@ msgstr "มีผู้อื่นเปลี่ยนผู้ใช้นี
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "มีผู้อื่นเปลี่ยนผู้ใช้ %s หลังจากที่คุณเปิดรายการนี้ จึงไม่ได้บันทึกแถวนั้น"
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "โซนที่คุณเลือกการดำเนินการไว้ไม่ได้เป็นของผู้ใช้นี้"

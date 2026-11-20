@@ -16495,3 +16495,7 @@ msgstr "Netko drugi promijenio je ovog korisnika nakon što ste otvorili obrazac
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "Netko drugi promijenio je korisnika %s nakon što ste otvorili ovaj popis, pa taj redak nije spremljen."
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "Zona za koju ste odabrali radnju ne pripada ovom korisniku."

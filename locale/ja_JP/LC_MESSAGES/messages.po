@@ -16570,3 +16570,7 @@ msgstr "このユーザーは、フォームを開いた後に別のユーザー
 #, php-format
 msgid "User %s was changed by someone else after you opened this list, so that row was not saved."
 msgstr "ユーザー %s は、この一覧を開いた後に別のユーザーによって変更されたため、その行は保存されませんでした。"
+
+#: lib/Application/Service/User/UserFormMessages.php:57
+msgid "A zone you chose an action for does not belong to this user."
+msgstr "操作を選択したゾーンのいずれかが、このユーザーに属していません。"
