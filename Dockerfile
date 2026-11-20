@@ -85,11 +85,12 @@ COPY . .
 # Copy and set permissions for entrypoint script, create directories
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 # The base image ships no php.ini, so warnings were printed into pages; 00-poweradmin.ini
-# loads first in conf.d, so any ini file mounted there still overrides it.
+# loads first in conf.d, so any ini file mounted there still overrides it. Exceptions drop
+# their call arguments so a logged trace cannot carry a password.
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /db /app/config \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php \
-    && printf 'display_errors = Off\nlog_errors = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
+    && printf 'display_errors = Off\nlog_errors = On\nzend.exception_ignore_args = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
 
 # Create Caddyfile for FrankenPHP
 # Uses RUN with single-quoted heredoc to preserve Caddy's {$ENV} syntax literally
