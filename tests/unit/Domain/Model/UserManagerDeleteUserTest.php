@@ -50,6 +50,7 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
                 "CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
+                "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
                 "INSERT INTO perm_templ (id, name) VALUES (" . self::PLAIN_PERM_TEMPL_ID . ", 'Plain')",
@@ -110,6 +111,80 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
 
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM password_reset_tokens")->fetchColumn());
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM username_recovery_requests")->fetchColumn());
+    }
+
+    #[Test]
+    public function testADecisionOnAZoneTheUserDoesNotOwnRefusesTheWholeRequest(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (6, 'other', " . self::PLAIN_PERM_TEMPL_ID . ")");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (1, 10, " . self::PLAIN_USER . "), (2, 11, " . self::ADMIN_USER_ID . ")");
+
+        $this->assertFalse($this->manager()->deleteUser(self::PLAIN_USER, [
+            ['zid' => 10, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+            ['zid' => 11, 'target' => 'new_owner', 'newowner' => 6],
+        ]));
+        $this->assertSame(1, $this->userRows(self::PLAIN_USER));
+        $this->assertSame(2, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+    }
+
+    #[Test]
+    public function testADeleteDecisionNeedsTheCallersZoneDeleteRight(): void
+    {
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (54, 'user_edit_others'), (55, 'zone_delete_own')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Editor')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (5, 54)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (5, 'editor', 5)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (1, 10, " . self::PLAIN_USER . ")");
+        $_SESSION['userid'] = 5;
+
+        $this->assertFalse($this->manager()->deleteUser(self::PLAIN_USER, [['zid' => 10, 'target' => 'delete']]));
+        $this->assertSame(1, $this->userRows(self::PLAIN_USER));
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones")->fetchColumn());
+    }
+
+    #[Test]
+    public function testANonArrayDecisionRowIsRefused(): void
+    {
+        $this->assertFalse($this->manager()->deleteUser(self::PLAIN_USER, ['11' => 'delete']));
+        $this->assertSame(1, $this->userRows(self::PLAIN_USER));
+    }
+
+    #[Test]
+    public function testALeaveRowOnAForeignZoneIsIgnored(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (2, 11, " . self::ADMIN_USER_ID . ")");
+
+        $this->assertTrue($this->manager()->deleteUser(self::PLAIN_USER, [['zid' => 11, 'target' => 'leave']]));
+        $this->assertSame(0, $this->userRows(self::PLAIN_USER));
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 11")->fetchColumn());
+    }
+
+    #[Test]
+    public function testAZoneHeldThroughAGroupCanBeHandedOver(): void
+    {
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (1, 'team')");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::PLAIN_USER . ", 1)");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (12, 1)");
+
+        $check = new \ReflectionMethod(UserManager::class, 'zoneDecisionsAllowed');
+
+        $this->assertTrue($check->invoke($this->manager(), self::PLAIN_USER, [
+            ['zid' => 12, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+        ]));
+    }
+
+    #[Test]
+    public function testOwnedZonesWithTheRightPassTheDecisionCheck(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner) VALUES (1, 10, " . self::PLAIN_USER . ")");
+
+        $check = new \ReflectionMethod(UserManager::class, 'zoneDecisionsAllowed');
+        $manager = $this->manager();
+
+        $this->assertTrue($check->invoke($manager, self::PLAIN_USER, [
+            ['zid' => 10, 'target' => 'delete'],
+            ['zid' => 10, 'target' => 'new_owner', 'newowner' => self::ADMIN_USER_ID],
+        ]));
     }
 
     private function manager(): UserManager

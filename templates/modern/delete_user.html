@@ -44,7 +44,9 @@
                                 <td><strong>{{ zone['name']}}</strong></td>
                                 <td class="text-center">
                                     <div class="form-check d-flex justify-content-center">
+                                        {% if zone['may_delete'] %}
                                         <input class="form-check-input" type="radio" id="delete_{{ zone['id']}}" name="zone[{{ zone['id']}}][target]" value="delete">
+                                        {% endif %}
                                     </div>
                                 </td>
                                 <td class="text-center">

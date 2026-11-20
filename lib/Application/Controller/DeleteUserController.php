@@ -200,6 +200,13 @@ class DeleteUserController extends BaseController
         // The reassignment list renders neither health badges nor record counts
         $zones = $domainRepository->getZones("own", (int)$uid, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC', false, null, null, false, false);
 
+        // The delete option is offered only for zones the caller may delete
+        $mayDeleteAll = $this->hasPermission('zone_delete_others');
+        $mayDeleteOwn = $this->hasPermission('zone_delete_own');
+        foreach ($zones as $key => $zoneRow) {
+            $zones[$key]['may_delete'] = $mayDeleteAll || ($mayDeleteOwn && $this->isZoneOwner((int)$zoneRow['id']));
+        }
+
         $users = [];
         if (count($zones) > 0) {
             $users = self::newOwnerCandidates($this->createUserRepository()->getUsersWithZoneCounts(), (int)$uid);

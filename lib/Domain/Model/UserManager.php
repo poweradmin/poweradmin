@@ -267,6 +267,11 @@ class UserManager
                 }
             }
 
+            // Every decision is checked before the first zone is touched
+            if (!$this->zoneDecisionsAllowed($uid, $zones)) {
+                return false;
+            }
+
             $domainManager = DnsServiceFactory::createDomainManager($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
@@ -321,6 +326,51 @@ class UserManager
                 (new DbUserRepository($this->db, $this->config))->deleteEmailRequestsIfUnused($email);
             }
         }
+        return true;
+    }
+
+    /**
+     * A decision may only name a zone the deleted user owns, and a delete needs the
+     * caller's own delete right for that zone.
+     *
+     * @param array<int|string, mixed> $zones
+     */
+    private function zoneDecisionsAllowed(int $uid, array $zones): bool
+    {
+        if ($zones === []) {
+            return true;
+        }
+
+        $callerId = (int)($_SESSION[SessionKeys::USERID] ?? 0);
+        $repository = new DbUserRepository($this->db, $this->config);
+
+        foreach ($zones as $zone) {
+            // The no-JS form posts a "leave" row for every listed zone; those need no check
+            if (!is_array($zone)) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+            if (!in_array($zone['target'] ?? null, ['delete', 'new_owner'], true)) {
+                continue;
+            }
+
+            $zid = (int)($zone['zid'] ?? 0);
+            if ($zid <= 0 || !$repository->userOwnsZone($uid, $zid)) {
+                $this->messageService->addSystemError(_('Invalid or unexpected input given.'));
+                return false;
+            }
+
+            if ($zone['target'] !== 'delete') {
+                continue;
+            }
+            $mayDelete = $this->hasPermission('zone_delete_others')
+                || ($this->hasPermission('zone_delete_own') && $repository->userOwnsZone($callerId, $zid));
+            if (!$mayDelete) {
+                $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+                return false;
+            }
+        }
+
         return true;
     }
 
