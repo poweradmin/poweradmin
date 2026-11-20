@@ -427,4 +427,34 @@ class BatchReverseRecordCreatorTest extends TestCase
 
         $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 3);
     }
+
+    public function testIPv6PtrChecksRunAgainstTheZoneEachHostIsWrittenInto(): void
+    {
+        // The /64 probe address (::1) lands in zone 42, ::10 - ::1f in the child /124 zone 77.
+        $childZone = substr(DnsRecord::convertIPv6AddrToPtrRec('2001:db8:1:1::10'), 2);
+        $resolver = fn(string $name): int => str_ends_with($name, '.' . $childZone) || $name === $childZone ? 77 : 42;
+        $dnsRecord = $this->createMock(DnsRecord::class);
+        $dnsRecord->method('getBestMatchingZoneIdFromName')->willReturnCallback($resolver);
+        $dnsRecord->method('addRecord')->willReturn(true);
+
+        $checked = [];
+        $editCheck = function (int $zoneId) use (&$checked): bool {
+            $checked[$zoneId] = true;
+            return $zoneId === 42;
+        };
+        $lookedUp = [];
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturnCallback(function ($zoneId) use (&$lookedUp) {
+            $lookedUp[$zoneId] = true;
+            return false;
+        });
+
+        $service = $this->createService($dnsRecord, null, $recordRepo, $editCheck);
+        $result = $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 0x12);
+
+        $this->assertArrayHasKey(77, $checked);
+        $this->assertArrayNotHasKey(77, $lookedUp, 'a zone the caller cannot edit is never looked up');
+        $this->assertArrayHasKey(42, $lookedUp);
+        $this->assertStringContainsString('2 failed', $result['message'] ?? '');
+    }
 }

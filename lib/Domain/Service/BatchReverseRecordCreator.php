@@ -550,7 +550,15 @@ class BatchReverseRecordCreator
                 // Convert IP to reverse notation with proper nibble expansion
                 $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
 
-                if (!$this->canEditReverseZone((int)$test_zone_rev_id)) {
+                // Hosts can fall into child reverse zones, so resolve the zone per host
+                $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($reverseDomain);
+                if ($zone_rev_id === -1) {
+                    $failCount++;
+                    $errors[] = "No matching reverse zone found for $reverseDomain";
+                    continue;
+                }
+
+                if (!$this->canEditReverseZone((int)$zone_rev_id)) {
                     $failCount++;
                     $errors[] = "Failed to create PTR record for $ip";
                     continue;
@@ -559,14 +567,14 @@ class BatchReverseRecordCreator
                 // Check if ANY PTR record already exists for this IP (if configured)
                 $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
                 if ($preventDuplicatePTR) {
-                    $ptr_exists = $this->recordRepository->hasPtrRecord($test_zone_rev_id, $reverseDomain);
+                    $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
                     if ($ptr_exists) {
                         $skipCount++;
                         continue;
                     }
                 } else {
                     // Check if exact record exists to prevent exact duplicates
-                    $record_exists = $this->dnsRecord->recordExists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                    $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
                     if ($record_exists) {
                         $skipCount++;
                         continue;
