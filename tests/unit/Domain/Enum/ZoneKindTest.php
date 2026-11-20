@@ -106,7 +106,7 @@ class ZoneKindTest extends TestCase
     public function testCreatableKindsDependOnCatalogSupport(): void
     {
         $this->assertSame(['MASTER', 'NATIVE'], ZoneKind::creatableValues(false, true));
-        $this->assertSame(['MASTER', 'NATIVE', 'PRODUCER'], ZoneKind::creatableValues(true, false));
+        $this->assertSame(['MASTER', 'NATIVE'], ZoneKind::creatableValues(true, false));
         $this->assertSame(['MASTER', 'NATIVE', 'PRODUCER', 'CONSUMER'], ZoneKind::creatableValues(true, true));
     }
 }

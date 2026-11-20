@@ -573,11 +573,11 @@ class PermissionServiceTest extends PermissionServiceTestCase
         }
         $this->assertTrue($this->service->canCreateZone(2, 'MASTER'));
         $this->assertTrue($this->service->canCreateZone(2, 'native'));
-        $this->assertTrue($this->service->canCreateZone(2, 'PRODUCER'));
+        $this->assertFalse($this->service->canCreateZone(2, 'PRODUCER'));
         $this->assertFalse($this->service->canCreateZone(2, 'SLAVE'));
         $this->assertFalse($this->service->canCreateZone(2, 'CONSUMER'));
         $this->assertTrue($this->service->canCreateZone(3, 'SLAVE'));
-        $this->assertTrue($this->service->canCreateZone(3, 'CONSUMER'));
+        $this->assertFalse($this->service->canCreateZone(3, 'CONSUMER'));
         $this->assertFalse($this->service->canCreateZone(3, 'MASTER'));
         $this->assertFalse($this->service->canCreateZone(1, 'BOGUS'));
     }

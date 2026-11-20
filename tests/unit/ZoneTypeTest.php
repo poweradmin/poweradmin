@@ -73,13 +73,13 @@ class ZoneTypeTest extends TestCase
     }
 
     #[Test]
-    public function getCreatableTypesOffersProducerWithoutSecondaryPermission(): void
+    public function getCreatableTypesWithholdsCatalogKindsFromANonSuperuser(): void
     {
-        $this->assertSame(['MASTER', 'NATIVE', 'PRODUCER'], ZoneType::getCreatableTypes(true, false));
+        $this->assertSame(['MASTER', 'NATIVE'], ZoneType::getCreatableTypes(true, false));
     }
 
     #[Test]
-    public function getCreatableTypesGatesConsumerOnSecondaryPermission(): void
+    public function getCreatableTypesOffersCatalogKindsToASuperuser(): void
     {
         $this->assertSame(['MASTER', 'NATIVE', 'PRODUCER', 'CONSUMER'], ZoneType::getCreatableTypes(true, true));
     }

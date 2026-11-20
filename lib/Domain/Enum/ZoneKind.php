@@ -93,22 +93,18 @@ enum ZoneKind: string
     }
 
     /**
-     * Kinds the caller may create, given server support and whether they may
-     * add a zone replicating from a remote primary.
+     * Kinds the caller may create, given server support and whether they are a
+     * superuser. Catalog kinds are superuser-only: a consumer makes the server
+     * create zones of any name its primary lists.
      *
      * @return array<string>
      */
-    public static function creatableValues(bool $catalogSupported, bool $mayAddSecondary): array
+    public static function creatableValues(bool $catalogSupported, bool $isSuperuser): array
     {
         $types = [self::MASTER->value, self::NATIVE->value];
 
-        if (!$catalogSupported) {
-            return $types;
-        }
-
-        $types[] = self::PRODUCER->value;
-
-        if ($mayAddSecondary) {
+        if ($catalogSupported && $isSuperuser) {
+            $types[] = self::PRODUCER->value;
             $types[] = self::CONSUMER->value;
         }
 
