@@ -61,7 +61,7 @@ class ZoneNameVisibilityTest extends TestCase
     public function testTheUnlinkConfirmationKeepsAnOwnedZone(): void
     {
         // Past the zone filter, the next step looks the template up
-        $this->assertSame('Template not found.', $this->unlinkConfirmationError(true, []));
+        $this->assertSame('Template not found.', $this->unlinkConfirmationError(true, ['zone_meta_edit_own']));
     }
 
     public function testTheUnlinkConfirmationKeepsAnyZoneForAnAdmin(): void

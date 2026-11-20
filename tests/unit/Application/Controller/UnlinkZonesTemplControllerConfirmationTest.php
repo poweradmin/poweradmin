@@ -92,7 +92,28 @@ class UnlinkZonesTemplControllerConfirmationTest extends SqliteIntegrationTestCa
         $this->assertNotSame('Template not found.', $this->confirmationError(self::FOREIGN_TEMPLATE));
     }
 
-    private function confirmationError(int $templateId): ?string
+    #[RunInSeparateProcess]
+    public function testContentEditAloneDoesNotAdmitAnOwnZone(): void
+    {
+        $this->assertSame('No valid zones selected.', $this->confirmationError(self::OWN_TEMPLATE, ['zone_content_edit_own']));
+    }
+
+    #[RunInSeparateProcess]
+    public function testMetaEditOthersAdmitsAZoneTheCallerDoesNotOwn(): void
+    {
+        $this->assertNotSame('No valid zones selected.', $this->confirmationError(self::GLOBAL_TEMPLATE, ['zone_meta_edit_others'], false));
+    }
+
+    #[RunInSeparateProcess]
+    public function testMetaEditOwnRefusesAZoneTheCallerDoesNotOwn(): void
+    {
+        $this->assertSame('No valid zones selected.', $this->confirmationError(self::GLOBAL_TEMPLATE, ['zone_meta_edit_own'], false));
+    }
+
+    /**
+     * @param list<string> $permissions
+     */
+    private function confirmationError(int $templateId, array $permissions = ['zone_meta_edit_own'], bool $ownsZone = true): ?string
     {
         $config = ConfigurationManager::getInstance();
         $controller = new class ([]) extends UnlinkZonesTemplController {
@@ -105,7 +126,8 @@ class UnlinkZonesTemplControllerConfirmationTest extends SqliteIntegrationTestCa
         };
         $controller->useDb($this->db);
         $controller->setConfig($config);
-        $controller->ownsZones = true;
+        $controller->ownsZones = $ownsZone;
+        $controller->permissions = $permissions;
 
         try {
             (new ReflectionMethod(UnlinkZonesTemplController::class, 'showConfirmation'))

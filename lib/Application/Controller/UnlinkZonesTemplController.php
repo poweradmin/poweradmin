@@ -77,7 +77,6 @@ class UnlinkZonesTemplController extends BaseController
         $failed = 0;
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig(), $this->createDnsBackendProvider());
         $auditService = new AuditService($this->db);
-        $perm_godlike = $this->hasPermission('user_is_ueberuser');
 
         foreach ($zone_ids as $zone_id) {
             $zone_id = filter_var($zone_id, FILTER_VALIDATE_INT);
@@ -86,8 +85,8 @@ class UnlinkZonesTemplController extends BaseController
                 continue;
             }
 
-            // Check if user has permission to edit this zone
-            if (!$perm_godlike && !$this->isZoneOwner($zone_id)) {
+            // Unlinking is a zone meta edit, like applying a template on the edit page
+            if (!$this->mayUnlinkZone($zone_id)) {
                 $failed++;
                 continue;
             }
@@ -135,7 +134,7 @@ class UnlinkZonesTemplController extends BaseController
         $perm_godlike = $this->hasPermission('user_is_ueberuser');
         $valid_zone_ids = array_values(array_filter(
             array_map('intval', $zone_ids),
-            fn(int $zone_id): bool => $zone_id > 0 && ($perm_godlike || $this->isZoneOwner($zone_id))
+            fn(int $zone_id): bool => $zone_id > 0 && $this->mayUnlinkZone($zone_id)
         ));
 
         if (empty($valid_zone_ids)) {
@@ -168,6 +167,13 @@ class UnlinkZonesTemplController extends BaseController
             'template_name' => $template_details['name'],
             'zone_count' => count($zones)
         ]);
+    }
+
+    private function mayUnlinkZone(int $zoneId): bool
+    {
+        return $this->hasPermission('user_is_ueberuser')
+            || $this->hasPermission('zone_meta_edit_others')
+            || ($this->hasPermission('zone_meta_edit_own') && $this->isZoneOwner($zoneId));
     }
 
     /**
