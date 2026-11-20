@@ -641,6 +641,11 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
 
+                foreach (['records_zone_templ', 'records_zone_templ_api'] as $table) {
+                    $stmt = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
+                    $stmt->execute(['domain_id' => $zoneId]);
+                }
+
                 SharedZoneIds::detachZoneHistory($this->db, $zoneId);
 
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
@@ -672,6 +677,14 @@ class DatabaseConsistencyService
             // Delete group ownership associations
             $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
+
+            // Metadata and keys are keyed to the id, which SQLite reuses for the next zone
+            $metadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+            $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+            foreach ([$metadata_table, $cryptokeys_table, 'records_zone_templ', 'records_zone_templ_api'] as $table) {
+                $stmt = $this->db->prepare("DELETE FROM $table WHERE domain_id = :domain_id");
+                $stmt->execute(['domain_id' => $zoneId]);
+            }
 
             SharedZoneIds::detachZoneHistory($this->db, $zoneId);
 

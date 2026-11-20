@@ -48,6 +48,14 @@ class DatabaseConsistencySlaveZoneDeleteTest extends TestCase
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER, group_id INTEGER)",
                 "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER, zone_id INTEGER, UNIQUE (api_key_id, zone_id))",
+                "CREATE TABLE domainmetadata (id INTEGER PRIMARY KEY, domain_id INTEGER, kind TEXT, content TEXT)",
+                "CREATE TABLE cryptokeys (id INTEGER PRIMARY KEY, domain_id INTEGER, flags INTEGER, active INTEGER, content TEXT)",
+                "CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)",
+                "CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER, record_id TEXT, zone_templ_id INTEGER)",
+                "INSERT INTO domainmetadata (domain_id, kind, content) VALUES (3, 'SOA-EDIT', 'x'), (4, 'SOA-EDIT', 'y')",
+                "INSERT INTO cryptokeys (domain_id, flags, active, content) VALUES (3, 257, 1, 'k'), (4, 257, 1, 'k')",
+                "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (3, 1, 1), (4, 2, 1)",
+                "INSERT INTO records_zone_templ_api (domain_id, record_id, zone_templ_id) VALUES (3, 'a', 1), (4, 'b', 1)",
                 "CREATE TABLE log_zones (id INTEGER PRIMARY KEY, zone_id INTEGER, event TEXT)",
                 "INSERT INTO log_zones (zone_id, event) VALUES (3, 'slave'), (4, 'other')",
                 "INSERT INTO domains VALUES (3, 'slave.example', 'SLAVE', ''), (4, 'other.example', 'MASTER', NULL)",
@@ -76,6 +84,21 @@ class DatabaseConsistencySlaveZoneDeleteTest extends TestCase
                 $this->db->query("SELECT api_key_id, zone_id FROM api_key_zones ORDER BY api_key_id, zone_id")->fetchAll(PDO::FETCH_NUM)
             )
         );
+    }
+
+    public function testDeletingTheSlaveZoneRemovesItsMetadataKeysAndTemplateRows(): void
+    {
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('isApiBackend')->willReturn(false);
+        $config = ConfigurationManager::getInstance();
+        $config->initialize();
+
+        $this->assertTrue((new DatabaseConsistencyService($this->db, $config, $provider))->deleteSlaveZone(3));
+
+        foreach (['domainmetadata', 'cryptokeys', 'records_zone_templ', 'records_zone_templ_api'] as $table) {
+            $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM $table WHERE domain_id = 3")->fetchColumn(), $table);
+            $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM $table WHERE domain_id = 4")->fetchColumn(), "$table of the other zone");
+        }
     }
 
     public function testDeletingTheSlaveZoneCutsItsHistoryLooseFromTheId(): void
