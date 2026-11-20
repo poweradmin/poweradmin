@@ -37,6 +37,34 @@ class SamlConfigurationServiceTest extends TestCase
         $this->service->generateOneLoginSettings('invalid_provider');
     }
 
+    public function testAssertionsMustBeSignedWhenOnlyMultiSigningCertsAreConfigured(): void
+    {
+        $pem = $this->generateSelfSignedPem();
+
+        $this->assertTrue($this->wantAssertionsSigned(['x509cert_multi' => ['signing' => [$pem]]]));
+        $this->assertTrue($this->wantAssertionsSigned(['x509cert' => $pem]));
+        $this->assertFalse($this->wantAssertionsSigned([]));
+    }
+
+    private function wantAssertionsSigned(array $certs): bool
+    {
+        $this->mockConfig = $this->createMock(ConfigurationManager::class);
+        $this->service = new SamlConfigurationService($this->mockConfig, $this->mockLogger);
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['saml', 'sp', [], ['x509cert' => 'cert', 'private_key' => 'key']],
+                ['saml', 'providers', [], [
+                    'idp' => array_merge([
+                        'entity_id' => 'https://idp.example.com/metadata',
+                        'sso_url' => 'https://idp.example.com/sso',
+                    ], $certs),
+                ]],
+                ['interface', 'application_url', '', 'https://canonical.example/poweradmin'],
+            ]);
+
+        return $this->service->generateOneLoginSettings('idp')['security']['wantAssertionsSigned'];
+    }
+
     public function testGenerateOneLoginSettingsPrefersApplicationUrlOverBaseUrl(): void
     {
         // Both keys set: application_url is the canonical setting and must win
