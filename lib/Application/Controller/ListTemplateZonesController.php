@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Domain\Service\SessionKeys;
@@ -57,6 +58,30 @@ class ListTemplateZonesController extends BaseController
         }
 
         $this->showZonesList($zone_templ_id);
+    }
+
+    /**
+     * Blanks the owner columns on rows the ownership view level hides, like the zone lists:
+     * every row at "none", the zones the caller does not own (directly or through a group) at "own".
+     *
+     * @param array<int, array<string, mixed>> $zones
+     * @return array<int, array<string, mixed>>
+     */
+    public static function withVisibleOwners(array $zones, string $level, callable $ownsZone): array
+    {
+        if ($level === 'all') {
+            return $zones;
+        }
+
+        foreach ($zones as $key => $zone) {
+            if ($level === 'own' && $ownsZone((int)($zone['id'] ?? 0))) {
+                continue;
+            }
+            $zones[$key]['owner_name'] = null;
+            $zones[$key]['owner_fullname'] = null;
+        }
+
+        return $zones;
     }
 
     private function showZonesList(int $zone_templ_id): void
@@ -94,7 +119,11 @@ class ListTemplateZonesController extends BaseController
         $totalZones = count($zones);
 
         // Apply pagination manually for now (ideally would be implemented in the model)
-        $paginatedZones = array_slice($zones, $offset, $itemsPerPage);
+        $paginatedZones = self::withVisibleOwners(
+            array_slice($zones, $offset, $itemsPerPage),
+            Permission::getZoneOwnershipViewPermission($this->db),
+            fn(int $zoneId): bool => $this->isZoneOwner($zoneId)
+        );
 
         // Create pagination object and presenter
         $pagination = $paginationService->createPagination($totalZones, $itemsPerPage, $currentPage);
