@@ -59,8 +59,10 @@ class UnlinkZonesTemplControllerConfirmationTest extends SqliteIntegrationTestCa
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (" . self::PERM_TEMPL_ID . ", 'Tester')");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (" . self::USER_ID . ", 'tester', " . self::PERM_TEMPL_ID . ")");
         $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (" . self::ZONE_ID . ", " . self::USER_ID . ")");
-        $this->db->exec("INSERT INTO perm_items (name) VALUES ('zone_content_edit_own')");
-        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::PERM_TEMPL_ID . ", " . $this->db->lastInsertId() . ")");
+        foreach (['zone_content_edit_own', 'zone_meta_edit_own'] as $permission) {
+            $this->db->exec("INSERT INTO perm_items (name) VALUES ('$permission')");
+            $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . self::PERM_TEMPL_ID . ", " . $this->db->lastInsertId() . ")");
+        }
 
         $_SESSION['userid'] = self::USER_ID;
     }

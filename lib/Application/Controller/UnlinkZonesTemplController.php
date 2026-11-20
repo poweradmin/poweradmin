@@ -76,9 +76,8 @@ class UnlinkZonesTemplController extends BaseController
                 continue;
             }
 
-            // Check if user has permission to edit this zone
-            $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-            if (!$perm_godlike && !UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id)) {
+            // Unlinking changes the zone's template, which the zone editor leaves to zone meta-edit
+            if (!$this->mayUnlinkZone($zone_id)) {
                 $failed++;
                 continue;
             }
@@ -128,7 +127,7 @@ class UnlinkZonesTemplController extends BaseController
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $valid_zone_ids = array_values(array_filter(
             array_map('intval', $zone_ids),
-            fn(int $zone_id): bool => $zone_id > 0 && ($perm_godlike || UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id))
+            fn(int $zone_id): bool => $zone_id > 0 && $this->mayUnlinkZone($zone_id)
         ));
 
         if (empty($valid_zone_ids)) {
@@ -161,6 +160,16 @@ class UnlinkZonesTemplController extends BaseController
             'template_name' => $template_details['name'],
             'zone_count' => count($zones)
         ]);
+    }
+
+    private function mayUnlinkZone(int $zone_id): bool
+    {
+        if (UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
+            return true;
+        }
+
+        return UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+            && UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
     }
 
     /**

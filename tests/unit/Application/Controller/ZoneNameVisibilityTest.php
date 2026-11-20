@@ -72,7 +72,7 @@ class ZoneNameVisibilityTest extends SqliteIntegrationTestCase
     #[RunInSeparateProcess]
     public function testTheUnlinkConfirmationKeepsAnOwnedZone(): void
     {
-        $this->grant(['zone_content_edit_own']);
+        $this->grant(['zone_content_edit_own', 'zone_meta_edit_own']);
         $this->own(self::ZONE_ID);
 
         // Past the zone filter, the next step looks the template up
