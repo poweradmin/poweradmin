@@ -52,7 +52,14 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
                 "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
                 "CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)",
                 "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
+                "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, created_by INTEGER)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER NOT NULL, zone_id INTEGER NOT NULL)",
+                "CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL)",
+                "CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL)",
                 "INSERT INTO perm_templ (id, name) VALUES (" . self::PLAIN_PERM_TEMPL_ID . ", 'Plain')",
                 "INSERT INTO users (id, username, perm_templ) VALUES (" . self::PLAIN_USER . ", 'plain', " . self::PLAIN_PERM_TEMPL_ID . ")",
             ] as $sql
@@ -111,6 +118,36 @@ class UserManagerDeleteUserTest extends SqliteIntegrationTestCase
 
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM password_reset_tokens")->fetchColumn());
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM username_recovery_requests")->fetchColumn());
+    }
+
+    #[Test]
+    public function testDeletingAUserClearsTheirLinkedRowsEvenWithoutTemplateEditRight(): void
+    {
+        $this->db->exec("INSERT INTO oidc_user_links (user_id) VALUES (" . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO saml_user_links (user_id) VALUES (" . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO user_mfa (user_id) VALUES (" . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO user_agreements (user_id) VALUES (" . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO user_group_members (user_id, group_id) VALUES (" . self::PLAIN_USER . ", 1)");
+        $this->db->exec("INSERT INTO api_keys (id, created_by) VALUES (10, " . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (10, 5)");
+        $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (20, 'mine', " . self::PLAIN_USER . ")");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id) VALUES (20)");
+        $this->db->exec("INSERT INTO records_zone_templ (zone_templ_id) VALUES (20)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES (30, 30, " . self::ADMIN_USER_ID . ", 20)");
+        // A caller who may delete users but holds no zone_templ_edit
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (54, 'user_edit_others')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Editor')");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (5, 54)");
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (5, 'editor', 5)");
+        $_SESSION['userid'] = 5;
+
+        $this->assertTrue($this->manager()->deleteUser(self::PLAIN_USER, []));
+
+        foreach (['oidc_user_links', 'saml_user_links', 'user_mfa', 'user_agreements', 'user_group_members', 'api_key_zones', 'zone_templ', 'zone_templ_records', 'records_zone_templ'] as $table) {
+            $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM $table")->fetchColumn(), $table);
+        }
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM api_keys")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT zone_templ_id FROM zones WHERE id = 30")->fetchColumn());
     }
 
     #[Test]

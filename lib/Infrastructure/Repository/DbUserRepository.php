@@ -639,20 +639,7 @@ class DbUserRepository implements UserRepository
             $stmt->execute([':userId' => $userId]);
             $email = $stmt->fetchColumn();
 
-            // Delete related OIDC/SAML authentication links first
-            $this->cleanupExternalAuthLinks($userId);
-
-            // Delete user preferences
-            $stmt = $this->db->prepare("DELETE FROM user_preferences WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete MFA settings
-            $stmt = $this->db->prepare("DELETE FROM user_mfa WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-
-            // Delete login attempts
-            $stmt = $this->db->prepare("DELETE FROM login_attempts WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
+            $this->deleteUserLinkedRows($userId);
 
             // Finally delete the user
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
@@ -682,6 +669,50 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Removes the rows keyed to a user id, which SQLite hands to the next account and
+     * which no FK cascade is guaranteed to clear: sign-in links, group memberships, API
+     * keys, MFA, preferences, login attempts, agreements and the user's own zone templates.
+     * Tables a schema lacks are skipped. Also called by UserManager::deleteUser().
+     */
+    public function deleteUserLinkedRows(int $userId): void
+    {
+        $queries = [
+            "api_key_zones" => "DELETE FROM api_key_zones WHERE api_key_id IN (SELECT id FROM api_keys WHERE created_by = :userId)",
+            "api_keys" => "DELETE FROM api_keys WHERE created_by = :userId",
+            "oidc_user_links" => "DELETE FROM oidc_user_links WHERE user_id = :userId",
+            "saml_user_links" => "DELETE FROM saml_user_links WHERE user_id = :userId",
+            "user_group_members" => "DELETE FROM user_group_members WHERE user_id = :userId",
+            "user_mfa" => "DELETE FROM user_mfa WHERE user_id = :userId",
+            "user_preferences" => "DELETE FROM user_preferences WHERE user_id = :userId",
+            "login_attempts" => "DELETE FROM login_attempts WHERE user_id = :userId",
+            "user_agreements" => "DELETE FROM user_agreements WHERE user_id = :userId",
+        ];
+        foreach ($queries as $table => $query) {
+            if (DbCompat::tableExists($this->db, $table)) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':userId' => $userId]);
+            }
+        }
+
+        // Templates the user owns, whatever the caller may edit; zones using one are unlinked so a reused id does not relink them
+        $owned = "SELECT id FROM zone_templ WHERE owner = :userId";
+        $templateQueries = [
+            "zone_templ_records" => "DELETE FROM zone_templ_records WHERE zone_templ_id IN ($owned)",
+            "records_zone_templ" => "DELETE FROM records_zone_templ WHERE zone_templ_id IN ($owned)",
+            "records_zone_templ_api" => "DELETE FROM records_zone_templ_api WHERE zone_templ_id IN ($owned)",
+            "zones" => "UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id IN ($owned)",
+            "zone_templ" => "DELETE FROM zone_templ WHERE owner = :userId",
+        ];
+        $hasTemplates = DbCompat::tableExists($this->db, 'zone_templ');
+        foreach ($templateQueries as $table => $query) {
+            if ($hasTemplates && DbCompat::tableExists($this->db, $table)) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute([':userId' => $userId]);
+            }
+        }
+    }
+
+    /**
      * Removes password reset tokens and username recovery requests for an address
      * no remaining account uses; while another account shares it, its rows stay.
      * Also called by UserManager::deleteUser(), the web UI delete path.
@@ -695,46 +726,6 @@ class DbUserRepository implements UserRepository
         foreach (['password_reset_tokens', 'username_recovery_requests'] as $table) {
             $stmt = $this->db->prepare("DELETE FROM $table WHERE $match");
             $stmt->execute([':email' => $email]);
-        }
-    }
-
-    /**
-     * Clean up external authentication links for a user
-     *
-     * This method removes all OIDC and SAML authentication links associated with a user.
-     * It's called during user deletion to ensure referential integrity.
-     *
-     * @param int $userId User ID
-     * @return void
-     */
-    private function cleanupExternalAuthLinks(int $userId): void
-    {
-        // Clean up OIDC links
-        $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :userId");
-        $stmt->execute([':userId' => $userId]);
-
-        // Clean up SAML links if the table exists
-        // Use database-agnostic approach: try the DELETE and catch table not found errors
-        try {
-            $stmt = $this->db->prepare("DELETE FROM saml_user_links WHERE user_id = :userId");
-            $stmt->execute([':userId' => $userId]);
-        } catch (\Exception $e) {
-            // saml_user_links table doesn't exist yet - this is expected until SAML user linking is fully implemented
-            // We silently ignore table-not-found errors but would still throw for other SQL errors
-            $errorMessage = $e->getMessage();
-            $isTableNotFound = (
-                strpos($errorMessage, 'saml_user_links') !== false && (
-                    strpos($errorMessage, "doesn't exist") !== false ||
-                    strpos($errorMessage, 'does not exist') !== false ||
-                    strpos($errorMessage, 'no such table') !== false ||
-                    strpos($errorMessage, 'Unknown table') !== false
-                )
-            );
-
-            if (!$isTableNotFound) {
-                // Re-throw if it's not a table-not-found error
-                throw $e;
-            }
         }
     }
 

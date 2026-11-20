@@ -303,9 +303,7 @@ class UserManager
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
                 $stmt->execute([':uid' => $uid]);
 
-                // Clean up external authentication links
-                $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
-                $stmt->execute([':uid' => $uid]);
+                (new DbUserRepository($this->db, $this->config))->deleteUserLinkedRows($uid);
 
                 $stmt = $this->db->prepare("SELECT email FROM users WHERE id = :uid");
                 $stmt->execute([':uid' => $uid]);
@@ -317,9 +315,6 @@ class UserManager
             } finally {
                 $lock?->endUberuserLock($lockOwned, $removed);
             }
-
-            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->deleteZoneTemplUserId($uid);
 
             // Last, so a failure here cannot skip the template cleanup above
             if (is_string($email) && $email !== '') {

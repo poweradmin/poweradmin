@@ -51,6 +51,14 @@ class DbUserRepositoryDeleteUserTest extends TestCase
                 "CREATE TABLE user_preferences (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE user_mfa (id INTEGER PRIMARY KEY, user_id INTEGER)",
                 "CREATE TABLE login_attempts (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)",
+                "CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)",
+                "CREATE TABLE api_keys (id INTEGER PRIMARY KEY, created_by INTEGER)",
+                "CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY, api_key_id INTEGER NOT NULL, zone_id INTEGER NOT NULL)",
+                "CREATE TABLE user_agreements (id INTEGER PRIMARY KEY, user_id INTEGER)",
+                "CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL)",
+                "CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, zone_templ_id INTEGER NOT NULL)",
                 "CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)",
                 "INSERT INTO users VALUES (1, 'gone', 'gone@example.com'), (2, 'stays', 'stays@example.com')",
@@ -82,6 +90,37 @@ class DbUserRepositoryDeleteUserTest extends TestCase
 
         $this->assertSame(1, $this->rows("password_reset_tokens WHERE email = 'stays@example.com'"));
         $this->assertSame(1, $this->rows("username_recovery_requests WHERE email = 'stays@example.com'"));
+    }
+
+    public function testDeleteUserClearsEveryRowKeyedToTheUserId(): void
+    {
+        foreach (['oidc_user_links', 'saml_user_links', 'user_preferences', 'user_mfa', 'login_attempts', 'user_group_members', 'user_agreements'] as $table) {
+            $this->db->exec("INSERT INTO $table (user_id) VALUES (1), (2)");
+        }
+        $this->db->exec("INSERT INTO api_keys (id, created_by) VALUES (10, 1), (11, 2)");
+        $this->db->exec("INSERT INTO api_key_zones (api_key_id, zone_id) VALUES (10, 5), (11, 5)");
+        $this->db->exec("INSERT INTO zone_templ (id, name, owner) VALUES (20, 'mine', 1), (21, 'theirs', 2)");
+        $this->db->exec("INSERT INTO zone_templ_records (zone_templ_id) VALUES (20), (21)");
+        $this->db->exec("INSERT INTO records_zone_templ (zone_templ_id) VALUES (20), (21)");
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_templ_id) VALUES (30, 30, 2, 20), (31, 31, 2, 21)");
+
+        $this->assertTrue($this->repository->deleteUser(1));
+
+        foreach (['oidc_user_links', 'saml_user_links', 'user_preferences', 'user_mfa', 'login_attempts', 'user_group_members', 'user_agreements'] as $table) {
+            $this->assertSame(0, $this->rows("$table WHERE user_id = 1"), $table);
+            $this->assertSame(1, $this->rows("$table WHERE user_id = 2"), "$table of the other user");
+        }
+        $this->assertSame(0, $this->rows("api_keys WHERE created_by = 1"));
+        $this->assertSame(1, $this->rows("api_keys WHERE created_by = 2"));
+        $this->assertSame(0, $this->rows("api_key_zones WHERE api_key_id = 10"));
+        $this->assertSame(1, $this->rows("api_key_zones WHERE api_key_id = 11"));
+        $this->assertSame(0, $this->rows("zone_templ WHERE owner = 1"));
+        $this->assertSame(1, $this->rows("zone_templ WHERE owner = 2"));
+        $this->assertSame(0, $this->rows("zone_templ_records WHERE zone_templ_id = 20"));
+        $this->assertSame(1, $this->rows("zone_templ_records WHERE zone_templ_id = 21"));
+        $this->assertSame(0, $this->rows("records_zone_templ WHERE zone_templ_id = 20"));
+        $this->assertSame(0, $this->rows("zones WHERE zone_templ_id = 20"));
+        $this->assertSame(1, $this->rows("zones WHERE zone_templ_id = 21"));
     }
 
     private function rows(string $fromWhere): int
