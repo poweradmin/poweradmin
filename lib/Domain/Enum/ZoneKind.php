@@ -93,12 +93,13 @@ enum ZoneKind: string
     }
 
     /**
-     * Kinds the caller may create, given server support and whether they may
-     * add a zone replicating from a remote primary.
+     * Kinds the caller may create, given server support and whether they are a
+     * super user: a consumer creates its member zones from a catalog, whatever
+     * their names, so it is not left to zone_slave_add.
      *
      * @return array<string>
      */
-    public static function creatableValues(bool $catalogSupported, bool $mayAddSecondary): array
+    public static function creatableValues(bool $catalogSupported, bool $mayAddConsumer): array
     {
         $types = [self::MASTER->value, self::NATIVE->value];
 
@@ -108,7 +109,7 @@ enum ZoneKind: string
 
         $types[] = self::PRODUCER->value;
 
-        if ($mayAddSecondary) {
+        if ($mayAddConsumer) {
             $types[] = self::CONSUMER->value;
         }
 

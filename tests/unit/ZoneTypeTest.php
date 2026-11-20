@@ -79,7 +79,7 @@ class ZoneTypeTest extends TestCase
     }
 
     #[Test]
-    public function getCreatableTypesGatesConsumerOnSecondaryPermission(): void
+    public function getCreatableTypesGatesConsumerOnSuperUser(): void
     {
         $this->assertSame(['MASTER', 'NATIVE', 'PRODUCER', 'CONSUMER'], ZoneType::getCreatableTypes(true, true));
     }

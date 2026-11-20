@@ -124,10 +124,10 @@ class AddZoneMasterController extends BaseController
      */
     private function getAvailableZoneTypes(): array
     {
-        // A consumer replicates from a remote primary, which is what zone_slave_add governs.
+        // A consumer makes its member zones from a catalog, so only a super user may add one.
         return ZoneType::getCreatableTypes(
             $this->supportsCatalogKinds(),
-            $this->hasPermission('zone_slave_add')
+            $this->hasPermission('user_is_ueberuser')
         );
     }
 

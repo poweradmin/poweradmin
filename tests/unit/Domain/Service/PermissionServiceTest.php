@@ -510,7 +510,7 @@ class PermissionServiceTest extends TestCase
         $this->assertFalse($this->service->canCreateZone(2, 'SLAVE'));
         $this->assertFalse($this->service->canCreateZone(2, 'CONSUMER'));
         $this->assertTrue($this->service->canCreateZone(3, 'SLAVE'));
-        $this->assertTrue($this->service->canCreateZone(3, 'CONSUMER'));
+        $this->assertFalse($this->service->canCreateZone(3, 'CONSUMER'), 'zone_slave_add alone does not create a consumer');
         $this->assertFalse($this->service->canCreateZone(3, 'MASTER'));
         $this->assertFalse($this->service->canCreateZone(1, 'BOGUS'));
     }

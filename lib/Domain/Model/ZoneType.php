@@ -67,13 +67,13 @@ class ZoneType
 
     /**
      * Kinds that may be created, given what the connected server supports and
-     * whether the caller may add a zone that replicates from a remote primary.
+     * whether the caller is a super user (who alone may add a consumer).
      *
      * @return array<string>
      */
-    public static function getCreatableTypes(bool $catalogSupported, bool $mayAddSecondary): array
+    public static function getCreatableTypes(bool $catalogSupported, bool $mayAddConsumer): array
     {
-        return ZoneKind::creatableValues($catalogSupported, $mayAddSecondary);
+        return ZoneKind::creatableValues($catalogSupported, $mayAddConsumer);
     }
 
     /**

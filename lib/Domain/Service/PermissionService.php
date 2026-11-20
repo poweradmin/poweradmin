@@ -348,8 +348,8 @@ class PermissionService
 
     /**
      * Whether the user may create (or convert a zone into) the given kind.
-     * Kinds that replicate from a primary (SLAVE, CONSUMER) are governed by
-     * zone_slave_add, the rest by zone_master_add; the add forms use the same split.
+     * SLAVE is governed by zone_slave_add and the rest by zone_master_add; CONSUMER
+     * creates member zones from a catalog, so it needs a super user.
      */
     public function canCreateZone(int $userId, string $zoneType): bool
     {
@@ -357,7 +357,10 @@ class PermissionService
         if ($kind === null) {
             return false;
         }
-        $grant = $kind->replicatesFromPrimary() ? 'zone_slave_add' : 'zone_master_add';
+        if ($kind === ZoneKind::CONSUMER) {
+            return $this->isAdmin($userId);
+        }
+        $grant = $kind === ZoneKind::SLAVE ? 'zone_slave_add' : 'zone_master_add';
 
         return $this->hasPermission($userId, $grant) || $this->isAdmin($userId);
     }
