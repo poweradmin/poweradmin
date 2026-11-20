@@ -905,10 +905,15 @@ class DnsRecord
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
             $this->db->query("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
             $this->db->query("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
+            // A reused domain id would otherwise inherit the zone's metadata and keys
+            $this->db->query("DELETE FROM $domainmetadata_table WHERE domain_id=" . $this->db->quote((string)$id, 'integer'));
+            $this->db->query("DELETE FROM $cryptokeys_table WHERE domain_id=" . $this->db->quote((string)$id, 'integer'));
             $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
             $this->db->query("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
             return true;
@@ -1996,6 +2001,8 @@ class DnsRecord
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
         $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
+        $domainmetadata_table = $pdns_db_name ? "$pdns_db_name.domainmetadata" : "domainmetadata";
+        $cryptokeys_table = $pdns_db_name ? "$pdns_db_name.cryptokeys" : "cryptokeys";
 
         $this->db->beginTransaction();
         $any_deleted = false;
@@ -2026,6 +2033,8 @@ class DnsRecord
 
                     $this->db->exec("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
                     $this->db->exec("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
+                    $this->db->exec("DELETE FROM $domainmetadata_table WHERE domain_id=" . $this->db->quote((string)$id, 'integer'));
+                    $this->db->exec("DELETE FROM $cryptokeys_table WHERE domain_id=" . $this->db->quote((string)$id, 'integer'));
                     $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
                     $this->db->exec("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
                 } else {
