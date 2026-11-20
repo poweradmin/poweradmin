@@ -458,6 +458,9 @@ class DatabaseConsistencyService
                 $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
                 $stmt->execute(['domain_id' => $zoneId]);
 
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :domain_id");
+                $stmt->execute(['domain_id' => $zoneId]);
+
                 $this->detachZoneLogs($zoneId);
 
                 $this->db->commit();
@@ -471,6 +474,8 @@ class DatabaseConsistencyService
 
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
 
         $this->db->beginTransaction();
         try {
@@ -490,6 +495,18 @@ class DatabaseConsistencyService
             // Delete zone ownership
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
+
+            // A reused domain id would otherwise inherit the zone's metadata, keys and template links
+            foreach (
+                [
+                    "DELETE FROM $domainmetadata_table WHERE domain_id = :domain_id",
+                    "DELETE FROM $cryptokeys_table WHERE domain_id = :domain_id",
+                    "DELETE FROM records_zone_templ WHERE domain_id = :domain_id",
+                ] as $query
+            ) {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute(['domain_id' => $zoneId]);
+            }
 
             // Delete domain
             $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");

@@ -224,6 +224,10 @@ class DbZoneTemplateRepository
             $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :id");
             $stmt->execute([':id' => $id]);
 
+            // A later template that reuses the id would otherwise be linked to these zones
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE zone_templ_id = :id");
+            $stmt->execute([':id' => $id]);
+
             $this->db->commit();
             return true;
         } catch (Exception $e) {
