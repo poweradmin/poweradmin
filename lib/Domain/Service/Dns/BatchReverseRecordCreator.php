@@ -239,9 +239,9 @@ class BatchReverseRecordCreator
                     $ip = $network->prefix . '::' . $hex;
                     $fqdn = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
 
-                    // The whole /64 lives in one reverse zone, so the probe lookup is reused for every host
+                    // A child reverse zone can sit under the /64, so each host resolves its own zone
                     $this->createPtrForHost(
-                        $zoneRevId,
+                        null,
                         DomainUtility::convertIPv6AddrToPtrRec($ip),
                         $ip,
                         $fqdn,

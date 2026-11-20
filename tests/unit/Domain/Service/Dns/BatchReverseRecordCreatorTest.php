@@ -67,6 +67,65 @@ class BatchReverseRecordCreatorTest extends TestCase
         }
     }
 
+    public function testIPv6HostsInAChildReverseZoneAreCheckedAgainstThatZone(): void
+    {
+        $lookups = 0;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        // The first lookup is the /64 probe (zone 42); every host lookup lands in a child /124 zone (99)
+        $domainRepository->method('getBestMatchingZoneIdFromName')
+            ->willReturnCallback(function () use (&$lookups): int {
+                return ++$lookups === 1 ? 42 : 99;
+            });
+
+        $duplicateLookups = [];
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturnCallback(function (int $zoneId) use (&$duplicateLookups): bool {
+            $duplicateLookups[] = $zoneId;
+            return false;
+        });
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));
+
+        $checked = [];
+        $canEdit = function (int $zoneId) use (&$checked): bool {
+            $checked[] = $zoneId;
+            return $zoneId === 42;
+        };
+
+        $result = $this->createService($domainRepository, $recordManager, null, $recordRepo)
+            ->createIPv6Network('2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 3, false, null, false, null, $canEdit);
+
+        $this->assertSame([99, 99], $checked, 'the edit check must run against the zone each host is written into');
+        $this->assertSame([], $duplicateLookups, 'a refused host is not looked up for duplicates');
+        $this->assertCount(2, $result['errors']);
+    }
+
+    public function testIPv6DuplicateLookupRunsAgainstTheChildReverseZone(): void
+    {
+        $lookups = 0;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')
+            ->willReturnCallback(function () use (&$lookups): int {
+                return ++$lookups === 1 ? 42 : 99;
+            });
+
+        $duplicateLookups = [];
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturnCallback(function (int $zoneId) use (&$duplicateLookups): bool {
+            $duplicateLookups[] = $zoneId;
+            return true;
+        });
+
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->expects($this->never())->method('addRecordGetId');
+
+        $this->createService($domainRepository, $recordManager, null, $recordRepo)
+            ->createIPv6Network('2001:db8:1:1', '', 'example.com', '1', 3600, 0, '', '', 3, false);
+
+        $this->assertSame([99, 99], $duplicateLookups);
+    }
+
     public function testCreateIPv6NetworkGeneratesCorrectPtrNames(): void
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
