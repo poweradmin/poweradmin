@@ -3,6 +3,7 @@
 namespace Poweradmin\Tests\Unit\Domain\Service;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -442,5 +443,36 @@ class BatchReverseRecordCreatorTest extends TestCase
         $service = $this->createService($domainRepository, $recordManager, null, $recordRepo, fn(int $zoneId): bool => false);
 
         $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 3);
+    }
+
+    public function testIPv6PtrChecksRunAgainstTheZoneEachHostIsWrittenInto(): void
+    {
+        // The /64 probe address (::1) lands in zone 42, ::10 - ::1f in the child /124 zone 77.
+        $childZone = substr(DomainUtility::convertIPv6AddrToPtrRec('2001:db8:1:1::10'), 2);
+        $resolver = fn(string $name): int => str_ends_with($name, '.' . $childZone) || $name === $childZone ? 77 : 42;
+        $domainRepository = $this->createMock(DomainRepositoryInterface::class);
+        $domainRepository->method('getBestMatchingZoneIdFromName')->willReturnCallback($resolver);
+        $recordManager = $this->createMock(RecordManagerInterface::class);
+        $recordManager->method('addRecord')->willReturn(true);
+
+        $checked = [];
+        $editCheck = function (int $zoneId) use (&$checked): bool {
+            $checked[$zoneId] = true;
+            return $zoneId === 42;
+        };
+        $lookedUp = [];
+        $recordRepo = $this->createMock(RecordRepositoryInterface::class);
+        $recordRepo->method('hasPtrRecord')->willReturnCallback(function ($zoneId) use (&$lookedUp) {
+            $lookedUp[$zoneId] = true;
+            return false;
+        });
+
+        $service = $this->createService($domainRepository, $recordManager, null, $recordRepo, $editCheck);
+        $result = $service->createIPv6Network('2001:db8:1:1', 'h', 'example.com', '1', 3600, 0, '', '', 0x12);
+
+        $this->assertArrayHasKey(77, $checked);
+        $this->assertArrayNotHasKey(77, $lookedUp, 'a zone the caller cannot edit is never looked up');
+        $this->assertArrayHasKey(42, $lookedUp);
+        $this->assertStringContainsString('2 failed', $result['message'] ?? '');
     }
 }
