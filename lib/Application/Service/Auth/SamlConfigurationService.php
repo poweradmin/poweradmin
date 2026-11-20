@@ -365,7 +365,7 @@ class SamlConfigurationService
                 'logoutRequestSigned' => !empty($spConfig['private_key']),
                 'logoutResponseSigned' => !empty($spConfig['private_key']),
                 'signMetadata' => !empty($spConfig['private_key']),
-                'wantAssertionsSigned' => !empty($providerConfig['x509cert']),
+                'wantAssertionsSigned' => !empty($providerConfig['x509cert']) || !empty($providerConfig['x509cert_multi']['signing']),
                 'wantNameId' => true,
                 'wantAssertionsEncrypted' => false,
                 'wantNameIdEncrypted' => false,

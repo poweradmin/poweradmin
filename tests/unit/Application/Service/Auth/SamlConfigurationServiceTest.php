@@ -294,6 +294,33 @@ class SamlConfigurationServiceTest extends TestCase
         $this->assertNotNull($this->service->getProviderConfig('azure'));
     }
 
+    private function wantAssertionsSignedFor(array $certificates): bool
+    {
+        $this->configure([
+            'saml' => [
+                'sp' => ['x509cert' => 'cert', 'private_key' => 'key'],
+                'providers' => [
+                    'azure' => [
+                        'entity_id' => 'https://login.microsoftonline.com/tenant/',
+                        'sso_url' => 'https://login.microsoftonline.com/tenant/saml2',
+                    ] + $certificates,
+                ],
+            ],
+            'interface' => ['application_url' => 'https://canonical.example/poweradmin'],
+        ]);
+
+        return $this->service->generateOneLoginSettings('azure')['security']['wantAssertionsSigned'];
+    }
+
+    public function testAssertionsMustBeSignedWhenOnlyAMultiCertSigningKeyIsConfigured(): void
+    {
+        $pem = $this->generateSelfSignedPem();
+
+        $this->assertTrue($this->wantAssertionsSignedFor(['x509cert_multi' => ['signing' => [$pem]]]));
+        $this->assertTrue($this->wantAssertionsSignedFor(['x509cert' => $pem]));
+        $this->assertFalse($this->wantAssertionsSignedFor([]));
+    }
+
     private function generateSelfSignedPem(): string
     {
         $key = openssl_pkey_new(['private_key_bits' => 2048, 'private_key_type' => OPENSSL_KEYTYPE_RSA]);
