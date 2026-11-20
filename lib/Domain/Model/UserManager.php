@@ -1193,11 +1193,17 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username, email, auth_method, perm_templ FROM users WHERE id = :id";
+            $query = "SELECT username, email, auth_method, perm_templ, active FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
             $userCheck = $stmt->fetch();
+
+            // Username and active flag are not self-service (#1327).
+            if ($details['uid'] == $_SESSION["userid"] && !$perm_edit_others) {
+                $details['username'] = $userCheck['username'];
+                $active = (int)$userCheck['active'];
+            }
 
             // Reject a changed email that another account already uses; unchanged
             // addresses stay editable even if existing data contains duplicates.

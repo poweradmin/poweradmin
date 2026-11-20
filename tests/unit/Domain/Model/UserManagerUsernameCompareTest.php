@@ -46,9 +46,9 @@ class UserManagerUsernameCompareTest extends TestCase
         $this->db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER, perm_id INTEGER)");
         $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, perm_templ INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (id INTEGER PRIMARY KEY, group_id INTEGER, user_id INTEGER)");
-        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'user_edit_own')");
+        $this->db->exec("INSERT INTO perm_items (id, name) VALUES (1, 'user_edit_own'), (2, 'user_edit_others')");
         $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (1, 'self')");
-        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1, 1)");
+        $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1, 1), (1, 2)");
         $this->db->exec("INSERT INTO users (id, username, email, active, perm_templ, use_ldap, auth_method) VALUES (2, '100', 'a@example.com', 1, 1, 0, 'sql')");
         $this->db->exec("INSERT INTO users (id, username, email, active, perm_templ, use_ldap, auth_method) VALUES (3, '1e2', 'b@example.com', 1, 1, 0, 'sql')");
     }
