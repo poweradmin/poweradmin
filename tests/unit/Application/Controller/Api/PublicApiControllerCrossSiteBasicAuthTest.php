@@ -103,12 +103,89 @@ class PublicApiControllerCrossSiteBasicAuthTest extends V2ControllerTestCase
         $this->assertSame(1, $this->actorBound);
     }
 
+    /** @return array<string, array{string}> */
+    public static function foreignOrigins(): array
+    {
+        return [
+            'other host' => ['https://evil.example'],
+            'other scheme' => ['http://pda.example.com'],
+            'other port' => ['https://pda.example.com:8443'],
+            'opaque' => ['null'],
+        ];
+    }
+
+    #[DataProvider('foreignOrigins')]
+    public function testBasicAuthFromAForeignOriginIsRefusedWithoutAChallenge(string $origin): void
+    {
+        $controller = $this->controller(['HTTP_ORIGIN' => $origin], false, 'https://pda.example.com/pda');
+
+        try {
+            $controller->authenticate();
+            $this->fail('The request was not refused');
+        } catch (RequestHalted $halted) {
+            $this->assertSame('403', $halted->target);
+        }
+
+        $this->assertSame(403, $controller->sent?->getStatusCode());
+        $this->assertFalse($controller->sent->headers->has('WWW-Authenticate'));
+        $this->assertSame(0, $this->actorBound);
+    }
+
+    /** @return array<string, array{array<string, string>, string}> */
+    public static function acceptedOrigins(): array
+    {
+        return [
+            'same origin' => [['HTTP_ORIGIN' => 'https://pda.example.com'], 'https://pda.example.com/pda'],
+            'default port spelled out' => [['HTTP_ORIGIN' => 'https://pda.example.com:443'], 'https://pda.example.com'],
+            'case differs' => [['HTTP_ORIGIN' => 'https://PDA.example.com'], 'https://pda.example.com'],
+            'uncompressed IPv6' => [['HTTP_ORIGIN' => 'https://[2001:db8::1]'], 'https://[2001:0db8:0000:0000:0000:0000:0000:0001]'],
+            'no origin' => [[], 'https://pda.example.com'],
+            'application_url unset' => [['HTTP_ORIGIN' => 'https://evil.example'], ''],
+        ];
+    }
+
+    /** @param array<string, string> $server */
+    #[DataProvider('acceptedOrigins')]
+    public function testBasicAuthIsAllowedWhenTheOriginMatchesOrCannotBeChecked(array $server, string $applicationUrl): void
+    {
+        $controller = $this->controller($server, false, $applicationUrl);
+
+        $controller->authenticate();
+
+        $this->assertNull($controller->sent);
+        $this->assertSame(1, $this->actorBound);
+    }
+
+    public function testAnIdnApplicationUrlMatchesItsPunycodeOrigin(): void
+    {
+        if (!function_exists('idn_to_ascii')) {
+            $this->markTestSkipped('ext-intl is not loaded');
+        }
+
+        $controller = $this->controller(['HTTP_ORIGIN' => 'https://xn--bcher-kva.example'], false, 'https://bücher.example');
+
+        $controller->authenticate();
+
+        $this->assertNull($controller->sent);
+        $this->assertSame(1, $this->actorBound);
+    }
+
+    public function testAnApiKeyIsNotAffectedByAForeignOrigin(): void
+    {
+        $controller = $this->controller(['HTTP_ORIGIN' => 'https://evil.example', 'HTTP_X_API_KEY' => 'pwa_test'], true, 'https://pda.example.com');
+
+        $controller->authenticate();
+
+        $this->assertNull($controller->sent);
+        $this->assertSame(1, $this->actorBound);
+    }
+
     private int $actorBound = 0;
 
     /**
      * @param array<string, string> $server
      */
-    private function controller(array $server, bool $keyAuthenticates): object
+    private function controller(array $server, bool $keyAuthenticates, string $applicationUrl = ''): object
     {
         $keys = $this->createMock(ApiKeyAuthenticationMiddleware::class);
         $keys->method('process')->willReturn($keyAuthenticates);
@@ -155,7 +232,7 @@ class PublicApiControllerCrossSiteBasicAuthTest extends V2ControllerTestCase
 
         $request = Request::create('/api/v2/zones', 'POST', [], [], [], $server);
         $this->inject($controller, 'request', $request);
-        $this->inject($controller, 'config', new FakeConfiguration(['api' => ['enabled' => true, 'basic_auth_enabled' => true]]));
+        $this->inject($controller, 'config', new FakeConfiguration(['api' => ['enabled' => true, 'basic_auth_enabled' => true], 'interface' => ['application_url' => $applicationUrl]]));
         $this->inject($controller, 'serviceFactory', $factory);
 
         return $controller;

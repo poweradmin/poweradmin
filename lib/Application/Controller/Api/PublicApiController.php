@@ -146,7 +146,7 @@ abstract class PublicApiController extends AbstractApiController
             $authenticated = ($this->authenticatedUserId > 0);
 
             // Browsers replay cached Basic credentials on a cross-site form post; scripts send no Fetch metadata.
-            if ($authenticated && $this->isCrossSiteBrowserRequest()) {
+            if ($authenticated && ($this->isCrossSiteBrowserRequest() || $this->isForeignOriginRequest())) {
                 $this->sendAndHalt($this->returnApiError('Cross-site requests are not allowed with Basic authentication', 403));
             }
         }
@@ -173,6 +173,58 @@ abstract class PublicApiController extends AbstractApiController
         $site = $this->request->headers->get('Sec-Fetch-Site');
 
         return $site !== null && !in_array(strtolower(trim($site)), ['same-origin', 'none'], true);
+    }
+
+    /**
+     * True when an Origin header names a different scheme, host or port than interface.application_url.
+     * Nothing is refused while application_url is unset.
+     */
+    private function isForeignOriginRequest(): bool
+    {
+        $origin = $this->request->headers->get('Origin');
+        if ($origin === null) {
+            return false;
+        }
+
+        $configured = $this->originOf((string)$this->getConfig()->get('interface', 'application_url', ''));
+        if ($configured === null) {
+            return false;
+        }
+
+        return $this->originOf($origin) !== $configured;
+    }
+
+    private function originOf(string $url): ?string
+    {
+        $parts = parse_url(trim($url));
+        if ($parts === false || empty($parts['scheme']) || empty($parts['host'])) {
+            return null;
+        }
+
+        $scheme = strtolower($parts['scheme']);
+        $port = $parts['port'] ?? ($scheme === 'https' ? 443 : 80);
+
+        return $scheme . '://' . $this->canonicalHost($parts['host']) . ':' . $port;
+    }
+
+    private function canonicalHost(string $host): string
+    {
+        $host = strtolower($host);
+
+        if (str_starts_with($host, '[') && str_ends_with($host, ']')) {
+            $packed = @inet_pton(substr($host, 1, -1));
+
+            return $packed === false ? $host : '[' . inet_ntop($packed) . ']';
+        }
+
+        if (function_exists('idn_to_ascii') && preg_match('/[^\x00-\x7F]/', $host) === 1) {
+            $ascii = idn_to_ascii($host, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            if (is_string($ascii)) {
+                return strtolower($ascii);
+            }
+        }
+
+        return $host;
     }
 
     /**
