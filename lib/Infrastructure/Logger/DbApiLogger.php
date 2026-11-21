@@ -146,18 +146,9 @@ class DbApiLogger
         }
 
         if (!empty($filters['event_type'])) {
-            $typePatterns = [
-                'api_key_create' => '%operation:api_key_create%',
-                'api_key_edit' => '%operation:api_key_edit%',
-                'api_key_delete' => '%operation:api_key_delete%',
-                'api_key_regenerate' => '%operation:api_key_regenerate%',
-                'api_key_toggle' => '%operation:api_key_toggle%',
-                'api_request' => '%operation:api_request%',
-                'api_violation' => '%operation:api_violation%',
-            ];
-            if (isset($typePatterns[$filters['event_type']])) {
-                $conditions[] = "log_api.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+            $types = ['api_key_create', 'api_key_edit', 'api_key_delete', 'api_key_regenerate', 'api_key_toggle', 'api_request', 'api_violation'];
+            if (in_array($filters['event_type'], $types, true)) {
+                $conditions[] = DbCompat::operationFieldCondition('log_api.event', $filters['event_type'], $params, 'event_type');
             }
         }
 

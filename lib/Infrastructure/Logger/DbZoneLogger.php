@@ -207,8 +207,7 @@ class DbZoneLogger
         }
 
         if (!empty($filters['operation'])) {
-            $conditions[] = "log_zones.event LIKE :operation ESCAPE '!'";
-            $params[':operation'] = ["%operation:" . DbCompat::escapeLike($filters['operation']) . " %", PDO::PARAM_STR];
+            $conditions[] = DbCompat::operationFieldCondition('log_zones.event', $filters['operation'], $params, 'operation');
         }
 
         if (!empty($filters['user'])) {

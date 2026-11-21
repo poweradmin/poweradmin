@@ -394,6 +394,27 @@ final class DbCompat
     }
 
     /**
+     * A condition matching the audit-line field `operation:<name>` as a whole field: at the
+     * start, in the middle or at the end of the event, so `password_reset` does not match
+     * `password_reset_request` and `logout` (which ends its line) is found. Binds four
+     * patterns named `:<prefix>0` to `:<prefix>3` into $params as [value, PDO type].
+     *
+     * @param array<string, array{0: string, 1: int}> $params
+     */
+    public static function operationFieldCondition(string $column, string $operation, array &$params, string $prefix = 'op'): string
+    {
+        $token = 'operation:' . self::escapeLike($operation);
+        $patterns = [$token, $token . ' %', '% ' . $token, '% ' . $token . ' %'];
+        $parts = [];
+        foreach ($patterns as $i => $pattern) {
+            $params[':' . $prefix . $i] = [$pattern, \PDO::PARAM_STR];
+            $parts[] = $column . ' LIKE :' . $prefix . $i . " ESCAPE '!'";
+        }
+
+        return '(' . implode(' OR ', $parts) . ')';
+    }
+
+    /**
      * Returns a collation clause that forces a byte-exact string comparison,
      * to be appended to a column reference in a WHERE clause (e.g.
      * "oidc_subject" . self::binaryCollation($db_type) . " = ?").

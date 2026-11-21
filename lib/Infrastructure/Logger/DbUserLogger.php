@@ -165,10 +165,14 @@ class DbUserLogger
             ];
             $allowed = array_flip($this->getDistinctEventTypes());
             if (isset($allowed[$eventType])) {
-                // Anchor on the trailing space so add_zone_template does not also
-                // match add_zone_template_record, nor password_reset its _request sibling.
-                $conditions[] = "log_users.event LIKE :event_type";
-                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType %", PDO::PARAM_STR];
+                // Match the operation as a whole field, so add_zone_template does not also match
+                // add_zone_template_record and logout, which ends its line, is found.
+                if (isset($exceptions[$eventType])) {
+                    $conditions[] = "log_users.event LIKE :event_type";
+                    $params[':event_type'] = [$exceptions[$eventType], PDO::PARAM_STR];
+                } else {
+                    $conditions[] = DbCompat::operationFieldCondition('log_users.event', $eventType, $params, 'event_type');
+                }
             }
         }
 

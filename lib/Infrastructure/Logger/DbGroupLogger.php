@@ -121,18 +121,9 @@ class DbGroupLogger
         }
 
         if (!empty($filters['event_type'])) {
-            $typePatterns = [
-                'create_group' => '%operation:create_group%',
-                'edit_group' => '%operation:edit_group%',
-                'delete_group' => '%operation:delete_group%',
-                'add_members' => '%operation:add_members%',
-                'remove_members' => '%operation:remove_members%',
-                'add_zones' => '%operation:add_zones%',
-                'remove_zones' => '%operation:remove_zones%',
-            ];
-            if (isset($typePatterns[$filters['event_type']])) {
-                $conditions[] = "log_groups.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+            $types = ['create_group', 'edit_group', 'delete_group', 'add_members', 'remove_members', 'add_zones', 'remove_zones'];
+            if (in_array($filters['event_type'], $types, true)) {
+                $conditions[] = DbCompat::operationFieldCondition('log_groups.event', $filters['event_type'], $params, 'event_type');
             }
         }
 

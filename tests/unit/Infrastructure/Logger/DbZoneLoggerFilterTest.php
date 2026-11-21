@@ -271,4 +271,14 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
 
         $this->assertNotContains('admin evil', $this->logger()->getDistinctUsersForZones([self::BETA]));
     }
+
+    #[Test]
+    public function theOperationFilterFindsAnOperationThatEndsTheLineButNotItsSiblings(): void
+    {
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:1.1.1.1 user:mia operation:zone_import', '2026-01-04 10:00:00', " . self::ALPHA . "),
+            ('client_ip:1.1.1.1 user:mia operation:zone_import_records zone_name:a', '2026-01-04 11:00:00', " . self::ALPHA . ")");
+
+        $this->assertSame(1, $this->logger()->countFilteredLogs(['operation' => 'zone_import'], null));
+    }
 }
