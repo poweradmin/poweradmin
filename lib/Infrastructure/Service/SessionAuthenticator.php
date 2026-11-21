@@ -236,6 +236,9 @@ class SessionAuthenticator extends LoggingService
                 if ($this->endSessionOfOtherInstance()) {
                     break;
                 }
+                if ($this->endSessionOfDisabledProvider('oidc')) {
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
@@ -246,6 +249,9 @@ class SessionAuthenticator extends LoggingService
                     break;
                 }
                 if ($this->endSessionOfOtherInstance()) {
+                    break;
+                }
+                if ($this->endSessionOfDisabledProvider('saml')) {
                     break;
                 }
                 $this->endSessionOfDisabledAccount();
@@ -480,6 +486,43 @@ class SessionAuthenticator extends LoggingService
         }
 
         $this->logWarning('Ending SSO session that does not belong to this instance');
+        $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+        return true;
+    }
+
+    /**
+     * An SSO session outlives the switch that allowed it, so turning the protocol
+     * off, or removing or disabling the provider it came from, ends it here. A
+     * session with no provider recorded only gets the protocol check.
+     */
+    private function endSessionOfDisabledProvider(string $protocol): bool
+    {
+        // A login that only left a username (a refused account) holds no identity to end.
+        if (!isset($_SESSION[SessionKeys::USERID]) && !isset($_SESSION[SessionKeys::PENDING_USERID])) {
+            return false;
+        }
+
+        $providerId = $_SESSION[$protocol === 'oidc' ? SessionKeys::OIDC_PROVIDER : SessionKeys::SAML_PROVIDER] ?? null;
+        $hasProvider = is_string($providerId) && $providerId !== '';
+
+        $disabled = !$this->configManager->get($protocol, 'enabled', false);
+        if (!$disabled && $hasProvider) {
+            $providers = $this->configManager->get($protocol, 'providers', []);
+            $provider = is_array($providers) ? ($providers[$providerId] ?? null) : null;
+            if (!is_array($provider)) {
+                $disabled = true;
+            } elseif (isset($provider['enabled']) && !$provider['enabled']) {
+                $disabled = true;
+            } elseif ($protocol === 'oidc') {
+                $disabled = empty($provider['client_id']) || empty($provider['client_secret']);
+            }
+        }
+
+        if (!$disabled) {
+            return false;
+        }
+
+        $this->logWarning('Ending {protocol} session as the protocol or its provider is disabled', ['protocol' => $protocol]);
         $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
         return true;
     }
