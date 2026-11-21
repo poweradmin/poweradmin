@@ -75,6 +75,36 @@ class KernelTest extends TestCase
         $this->assertStringContainsString('security.session_key', $written);
     }
 
+    public function testInvalidConfigurationIsReportedToTheLoggerAndCounted(): void
+    {
+        $logger = $this->createMock(LoggerInterface::class);
+        $messages = [];
+        $logger->method('error')->willReturnCallback(static function (string $message) use (&$messages): void {
+            $messages[] = $message;
+        });
+
+        $count = Kernel::reportInvalidConfiguration(new FakeConfiguration(['interface' => ['rows_per_page' => 'many']]), $logger);
+
+        $this->assertGreaterThan(0, $count);
+        $this->assertCount($count, $messages);
+        $this->assertContains('Invalid configuration [interface.rows_per_page]: rows_per_page must be a positive integer', $messages);
+    }
+
+    public function testInvalidConfigurationReachesTheErrorLogWhenLoggingIsOff(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'pa-errlog');
+        $previous = ini_set('error_log', $file);
+        try {
+            Kernel::reportInvalidConfiguration(new FakeConfiguration(['interface' => ['rows_per_page' => 'many']]), new NullLogger());
+            $written = (string) file_get_contents($file);
+        } finally {
+            ini_set('error_log', (string) $previous);
+            unlink($file);
+        }
+
+        $this->assertStringContainsString('Invalid configuration [interface.rows_per_page]', $written);
+    }
+
     public function testAUniqueSessionKeyLogsNothing(): void
     {
         $logger = $this->createMock(LoggerInterface::class);

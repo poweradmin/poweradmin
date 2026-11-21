@@ -38,6 +38,10 @@ class ConfigurationManager implements ConfigurationInterface
     private bool $defaultsFileLoaded = false;
     private string $defaultsFilePath = '';
     private LoggerInterface $logger;
+    private bool $loggerAttached = false;
+
+    /** @var list<array{string, array<string, mixed>}> messages raised by initialize(), before a logger exists */
+    private array $pendingMessages = [];
 
     /**
      * Private constructor to prevent direct instantiation
@@ -50,12 +54,26 @@ class ConfigurationManager implements ConfigurationInterface
     /**
      * Set the logger instance
      *
+     * Messages raised while loading the configuration are replayed through the logger given
+     * here, so logging.type decides whether they appear.
+     *
      * @param LoggerInterface $logger
+     * @param bool $flushPending false keeps them queued for a later call (a monitoring probe)
      * @return void
      */
-    public function setLogger(LoggerInterface $logger): void
+    public function setLogger(LoggerInterface $logger, bool $flushPending = true): void
     {
         $this->logger = $logger;
+        $this->loggerAttached = true;
+        if (!$flushPending) {
+            return;
+        }
+
+        $pending = $this->pendingMessages;
+        $this->pendingMessages = [];
+        foreach ($pending as [$message, $context]) {
+            $logger->warning($message, $context);
+        }
     }
 
     /**
@@ -154,7 +172,7 @@ class ConfigurationManager implements ConfigurationInterface
             return;
         }
 
-        $this->logger->warning('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
+        $this->warn('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
             'configured' => $configured,
             'min' => PaginationLimits::MIN_ROWS_PER_PAGE,
             'max' => PaginationLimits::MAX_ROWS_PER_PAGE,
@@ -302,20 +320,28 @@ class ConfigurationManager implements ConfigurationInterface
     private function validateConfiguration(): void
     {
         $validator = new ConfigValidator($this->settings);
-        if (!$validator->validate()) {
-            $errors = $validator->getErrors();
-            foreach ($errors as $key => $error) {
-                $this->logger->warning('Configuration validation error [{key}]: {error}', [
-                    'key' => $key,
-                    'error' => $error,
-                ]);
-            }
-        }
+        $validator->validate();
         foreach ($validator->getWarnings() as $key => $warning) {
-            $this->logger->warning('Configuration warning [{key}]: {warning}', [
+            $this->warn('Configuration warning [{key}]: {warning}', [
                 'key' => $key,
                 'warning' => $warning,
             ]);
         }
+    }
+
+    /**
+     * The logger is attached after initialize() runs, so these are queued until setLogger().
+     * Validation errors are not queued: Kernel reports them itself.
+     *
+     * @param array<string, mixed> $context
+     */
+    private function warn(string $message, array $context): void
+    {
+        if ($this->loggerAttached) {
+            $this->logger->warning($message, $context);
+            return;
+        }
+
+        $this->pendingMessages[] = [$message, $context];
     }
 }

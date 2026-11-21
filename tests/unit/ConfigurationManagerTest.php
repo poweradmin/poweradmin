@@ -502,6 +502,64 @@ class ConfigurationManagerTest extends TestCase
         }
     }
 
+    public function testConfigurationWarningsAreQueuedUntilTheLoggerIsAttached(): void
+    {
+        $logFile = tempnam(sys_get_temp_dir(), 'pa-errlog');
+        $previous = ini_set('error_log', $logFile);
+
+        try {
+            $messages = $this->loadWithWarnings(static function (ConfigurationManager $config, $logger): void {
+                $config->setLogger($logger);
+            });
+            $written = (string) file_get_contents($logFile);
+        } finally {
+            ini_set('error_log', (string) $previous);
+            @unlink($logFile);
+        }
+
+        $this->assertSame('', $written, 'nothing goes to the PHP error log');
+        $this->assertContains('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', $messages);
+        $this->assertContains('Configuration warning [{key}]: {warning}', $messages);
+        $this->assertCount(2, $messages);
+    }
+
+    public function testQueuedWarningsStayQueuedWhenTheFlushIsDeferred(): void
+    {
+        $messages = $this->loadWithWarnings(static function (ConfigurationManager $config, $logger): void {
+            $config->setLogger($logger, false);
+        });
+        $this->assertSame([], $messages);
+    }
+
+    /**
+     * @param callable(ConfigurationManager, \Psr\Log\LoggerInterface): void $attach
+     * @return list<string> messages the logger received
+     */
+    private function loadWithWarnings(callable $attach): array
+    {
+        $configFile = sys_get_temp_dir() . '/poweradmin_cw_settings.php';
+        file_put_contents($configFile, '<?php return ' . var_export(['interface' => ['rows_per_page' => 1000], 'api' => ['enabled' => 'false']], true) . ';');
+        putenv('PA_CONFIG_PATH=' . $configFile);
+
+        try {
+            $this->resetConfigurationManager();
+            $received = [];
+            $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+            $logger->method('warning')->willReturnCallback(static function (string $message) use (&$received): void {
+                $received[] = $message;
+            });
+            $config = ConfigurationManager::getInstance();
+            $config->initialize();
+            $this->assertSame([], $received, 'nothing is logged during initialize()');
+            $attach($config, $logger);
+
+            return $received;
+        } finally {
+            putenv('PA_CONFIG_PATH');
+            @unlink($configFile);
+        }
+    }
+
     /**
      * Test that empty PA_CONFIG_PATH falls back to default behavior
      */

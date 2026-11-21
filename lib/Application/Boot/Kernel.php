@@ -81,7 +81,11 @@ final class Kernel
         }
 
         $logger = Logger::fromConfig($config);
-        $config->setLogger($logger);
+        // Once per PHP process, and not for monitoring probes, which would repeat them on every scrape
+        static $configMessagesFlushed = false;
+        $isProbe = RequestContext::isHealthProbeRequest((string) $config->get('interface', 'base_url_prefix', ''));
+        $config->setLogger($logger, !$configMessagesFlushed && !$isProbe);
+        $configMessagesFlushed = $configMessagesFlushed || !$isProbe;
         ResponseHeaders::send($config, $logger);
 
         if ($options->guardsConfiguration()) {
@@ -91,6 +95,10 @@ final class Kernel
             if (!$warned && !RequestContext::isHealthProbeRequest((string) $config->get('interface', 'base_url_prefix', ''))) {
                 $warned = self::warnOnPlaceholderSessionKey($config, $logger);
             }
+        }
+
+        if (!$options->guardsConfiguration() && $options->connectsDatabase()) {
+            self::reportInvalidConfiguration($config, $logger);
         }
 
         $registry = new ModuleRegistry($config);
@@ -187,6 +195,32 @@ final class Kernel
             $logger->warning($message);
         }
         return true;
+    }
+
+    /**
+     * The scripts do not refuse to start on a broken configuration, so say what is wrong
+     * and carry on. A NullLogger sends it to the PHP error log, as for the session key.
+     *
+     * @return int the number of validation errors reported
+     */
+    public static function reportInvalidConfiguration(ConfigurationInterface $config, LoggerInterface $logger): int
+    {
+        $validator = new ConfigValidator($config->getAll());
+        if ($validator->validate()) {
+            return 0;
+        }
+
+        $errors = $validator->getErrors();
+        foreach ($errors as $key => $error) {
+            $message = sprintf('Invalid configuration [%s]: %s', $key, $error);
+            if ($logger instanceof NullLogger) {
+                error_log('Poweradmin: ' . $message);
+            } else {
+                $logger->error($message);
+            }
+        }
+
+        return count($errors);
     }
 
     /**

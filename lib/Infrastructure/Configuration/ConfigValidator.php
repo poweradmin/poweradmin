@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Configuration;
 
-use Poweradmin\Domain\Model\PaginationLimits;
 use Poweradmin\Infrastructure\Database\DbDriver;
 
 /**
@@ -136,13 +135,6 @@ final class ConfigValidator
         $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
         if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
             $this->errors['interface.rows_per_page'] = 'rows_per_page must be a positive integer';
-        } elseif ($rowsPerPage < PaginationLimits::MIN_ROWS_PER_PAGE || $rowsPerPage > PaginationLimits::MAX_ROWS_PER_PAGE) {
-            // Reported rather than silently clamped, so a mistyped value is visible.
-            $this->errors['interface.rows_per_page'] = sprintf(
-                'rows_per_page must be between %d and %d',
-                PaginationLimits::MIN_ROWS_PER_PAGE,
-                PaginationLimits::MAX_ROWS_PER_PAGE
-            );
         }
     }
 
