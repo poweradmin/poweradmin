@@ -9,6 +9,7 @@
 | 4.3.x, 4.2.x | Until 2027-01-31 |
 | 3.9.x | Yes, LTS until December 2027 |
 | 4.1.x, 4.0.x, 3.8.x and older | No, please upgrade |
+| 2.x | No. End of life with known unfixed security issues; upgrade to 4.4 LTS ([upgrading from 2.x](https://docs.poweradmin.org/upgrading/from-2x/)) |
 
 See [Version Support](https://docs.poweradmin.org/getting-started/lifecycle/) for the support rules and dates.
 
