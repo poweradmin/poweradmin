@@ -179,7 +179,7 @@ class DbPasswordResetTokenRepository
      * Delete expired tokens
      *
      * Current cleanup strategy:
-     * - Delete tokens that have passed their expiration time
+     * - Delete tokens that have passed their expiration time and are older than $retainFor seconds
      * - Delete used tokens that are older than 7 days (kept temporarily for audit trail)
      *
      * This method is called automatically:
@@ -187,11 +187,13 @@ class DbPasswordResetTokenRepository
      * - When validating tokens
      * - After successful password resets
      */
-    public function deleteExpired(): int
+    public function deleteExpired(int $retainFor = 0): int
     {
         $db_type = $this->config->get('database', 'type');
+        // The rate limits count these rows, so an expired row stays until its request leaves the window
+        $retained = $retainFor > 0 ? " AND created_at < " . DbCompat::dateSubtract($db_type, $retainFor) : '';
         $sql = "DELETE FROM password_reset_tokens 
-                WHERE expires_at < " . DbCompat::now($db_type) . " 
+                WHERE (expires_at < " . DbCompat::now($db_type) . $retained . ") 
                 OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
