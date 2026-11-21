@@ -124,20 +124,20 @@ class RecordLog
 
         return sprintf(
             'client_ip:%s user:%s operation:edit_record'
-            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+            . ' record_type:%s record:%s content:%s ttl:%s priority:%s'
+            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s',
             $this->ipAddressRetriever->getClientIp(),
             LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-            LegacyLogger::value($prior['type'] ?? ''),
-            LegacyLogger::value($prior['name'] ?? ''),
-            LegacyLogger::value($prior['content'] ?? ''),
-            $prior['ttl'] ?? '',
-            $prior['prio'] ?? '',
             LegacyLogger::value($after['type'] ?? ''),
             LegacyLogger::value($after['name'] ?? ''),
             LegacyLogger::value($after['content'] ?? ''),
             $after['ttl'] ?? '',
-            $after['prio'] ?? ''
+            $after['prio'] ?? '',
+            LegacyLogger::value($prior['type'] ?? ''),
+            LegacyLogger::value($prior['name'] ?? ''),
+            LegacyLogger::value($prior['content'] ?? ''),
+            $prior['ttl'] ?? '',
+            $prior['prio'] ?? ''
         );
     }
 }

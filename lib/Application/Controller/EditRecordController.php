@@ -267,20 +267,20 @@ class EditRecordController extends BaseController
         $this->auditLogger->logInfo(
             sprintf(
                 'client_ip:%s user:%s operation:edit_record'
-                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+                . ' record_type:%s record:%s content:%s ttl:%s priority:%s'
+                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                LegacyLogger::value($old_record_info['type']),
-                LegacyLogger::value($old_record_info['name']),
-                LegacyLogger::value($old_record_info['content']),
-                $old_record_info['ttl'],
-                $old_record_info['prio'],
                 LegacyLogger::value($new_record_info['type']),
                 LegacyLogger::value($new_record_info['name']),
                 LegacyLogger::value($new_record_info['content']),
                 $new_record_info['ttl'],
-                $new_record_info['prio']
+                $new_record_info['prio'],
+                LegacyLogger::value($old_record_info['type']),
+                LegacyLogger::value($old_record_info['name']),
+                LegacyLogger::value($old_record_info['content']),
+                $old_record_info['ttl'],
+                $old_record_info['prio']
             ),
             $zid
         );

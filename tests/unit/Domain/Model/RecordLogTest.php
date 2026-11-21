@@ -96,6 +96,20 @@ class RecordLogTest extends TestCase
         $this->assertStringContainsString('old_content:192.0.2.1', $message);
     }
 
+    public function testEditLineWritesTheNewValuesBeforeTheOldOnes(): void
+    {
+        $prior = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => str_repeat('o', 3000), 'ttl' => 60, 'prio' => 0];
+        $log = $this->makeRecordLog(['old-id' => $prior, 'new-id' => ['type' => 'TXT', 'name' => 'a.example.com', 'content' => 'brand-new', 'ttl' => 60, 'prio' => 0]]);
+        $log->logPrior('old-id', 5, '');
+        $log->logAfter('new-id');
+
+        $message = $this->buildMessage($log);
+
+        // The log column keeps the first 2048 characters, so the new value must come first
+        $this->assertLessThan(strpos($message, ' old_record_type:'), strpos($message, ' content:brand-new'));
+        $this->assertStringContainsString('content:brand-new', substr($message, 0, 2048));
+    }
+
     public function testHasChangedDoesNotWarnWhenNamesAreNull(): void
     {
         // With the API backend the prior record's encoded id no longer resolves,
