@@ -41,6 +41,7 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
     private ?SqlDnsBackendProvider $provider = null;
     private array $createdDomainIds = [];
     private array $createdSupermasters = [];
+    private bool $createdCommentLinks = false;
 
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
@@ -60,6 +61,11 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         } catch (PDOException $e) {
             $this->markTestSkipped('MariaDB not available: ' . $e->getMessage());
         }
+        // deleteRecord() and deleteZone() drop comment links as well
+        $this->createdCommentLinks = $this->db->query("SHOW TABLES LIKE 'record_comment_links'")->fetchColumn() === false;
+        if ($this->createdCommentLinks) {
+            $this->db->exec("CREATE TABLE record_comment_links (record_id VARCHAR(255) CHARACTER SET ascii NOT NULL PRIMARY KEY, comment_id INT NOT NULL, UNIQUE KEY (comment_id))");
+        }
 
         $config = new FakeConfiguration([
             'database' => [
@@ -72,6 +78,10 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
 
     protected function tearDown(): void
     {
+        if ($this->createdCommentLinks) {
+            $this->db->exec("DROP TABLE IF EXISTS record_comment_links");
+        }
+
         // Clean up created domains and their records
         foreach ($this->createdDomainIds as $id) {
             try {
