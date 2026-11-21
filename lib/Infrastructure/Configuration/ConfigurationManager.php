@@ -42,6 +42,9 @@ class ConfigurationManager implements ConfigurationInterface
     private string $defaultsFilePath = '';
     private LoggerInterface $logger;
 
+    /** @var array<int, array{0: string, 1: array}> */
+    private array $pendingWarnings = [];
+
     /**
      * Private constructor to prevent direct instantiation
      */
@@ -59,6 +62,12 @@ class ConfigurationManager implements ConfigurationInterface
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
+
+        $pending = $this->pendingWarnings;
+        $this->pendingWarnings = [];
+        foreach ($pending as [$message, $context]) {
+            $this->warn($message, $context);
+        }
     }
 
     /**
@@ -157,7 +166,7 @@ class ConfigurationManager implements ConfigurationInterface
             return;
         }
 
-        $this->logger->warning('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
+        $this->warn('interface.rows_per_page {configured} is outside {min}-{max}; using {clamped}', [
             'configured' => $configured,
             'min' => PaginationService::MIN_ROWS_PER_PAGE,
             'max' => PaginationService::MAX_ROWS_PER_PAGE,
@@ -302,13 +311,27 @@ class ConfigurationManager implements ConfigurationInterface
         return $base;
     }
 
+    /**
+     * initialize() runs before the real logger is attached, so its messages are
+     * held until setLogger() hands them to it.
+     */
+    private function warn(string $message, array $context): void
+    {
+        if ($this->logger instanceof NullLogger) {
+            $this->pendingWarnings[] = [$message, $context];
+            return;
+        }
+
+        $this->logger->warning($message, $context);
+    }
+
     private function validateConfiguration(): void
     {
         $validator = new ConfigValidator($this->settings);
         if (!$validator->validate()) {
             $errors = $validator->getErrors();
             foreach ($errors as $key => $error) {
-                $this->logger->warning('Configuration validation error [{key}]: {error}', [
+                $this->warn('Configuration validation error [{key}]: {error}', [
                     'key' => $key,
                     'error' => $error,
                 ]);

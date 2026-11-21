@@ -502,6 +502,54 @@ class ConfigurationManagerTest extends TestCase
         }
     }
 
+    public function testConfigurationMessagesAreHeldUntilTheLoggerIsAttached(): void
+    {
+        $configFile = sys_get_temp_dir() . '/poweradmin_cw_settings.php';
+        $errorLog = sys_get_temp_dir() . '/poweradmin_cw_error.log';
+        file_put_contents($configFile, '<?php return ' . var_export(['interface' => ['rows_per_page' => 1000]], true) . ';');
+        @unlink($errorLog);
+        putenv('PA_CONFIG_PATH=' . $configFile);
+        $previous = ini_set('error_log', $errorLog);
+
+        try {
+            $this->resetConfigurationManager();
+            $config = ConfigurationManager::getInstance();
+            $config->initialize();
+
+            $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+            $logger->expects($this->once())->method('warning')->with($this->stringContains('rows_per_page'));
+            $config->setLogger($logger);
+
+            $this->assertStringNotContainsString('rows_per_page', (string)@file_get_contents($errorLog));
+        } finally {
+            ini_set('error_log', (string)$previous);
+            putenv('PA_CONFIG_PATH');
+            @unlink($configFile);
+            @unlink($errorLog);
+        }
+    }
+
+    public function testHeldConfigurationMessagesAreFlushedOnlyOnce(): void
+    {
+        $configFile = sys_get_temp_dir() . '/poweradmin_cw_settings2.php';
+        file_put_contents($configFile, '<?php return ' . var_export(['interface' => ['rows_per_page' => 1000]], true) . ';');
+        putenv('PA_CONFIG_PATH=' . $configFile);
+
+        try {
+            $this->resetConfigurationManager();
+            $config = ConfigurationManager::getInstance();
+            $config->initialize();
+
+            $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+            $logger->expects($this->once())->method('warning');
+            $config->setLogger($logger);
+            $config->setLogger($logger);
+        } finally {
+            putenv('PA_CONFIG_PATH');
+            @unlink($configFile);
+        }
+    }
+
     /**
      * Test that empty PA_CONFIG_PATH falls back to default behavior
      */
