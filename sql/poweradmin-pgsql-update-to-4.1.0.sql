@@ -90,16 +90,19 @@ SELECT setval('perm_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_items), 1)
 -- Grant delete permissions to users with existing edit permissions
 -- This ensures backward compatibility - users who could edit can now delete
 -- Users with edit_own get delete_own
+-- Matched by name: databases created by 2.x on PostgreSQL number these permissions 1-21, not 41-61
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 67
-FROM perm_templ_items
-WHERE perm_id = 44; -- zone_content_edit_own
+SELECT DISTINCT pti.templ_id, 67
+FROM perm_templ_items pti
+JOIN perm_items pi ON pi.id = pti.perm_id
+WHERE pi.name = 'zone_content_edit_own';
 
 -- Users with edit_others get delete_others
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 68
-FROM perm_templ_items
-WHERE perm_id = 47; -- zone_content_edit_others
+SELECT DISTINCT pti.templ_id, 68
+FROM perm_templ_items pti
+JOIN perm_items pi ON pi.id = pti.perm_id
+WHERE pi.name = 'zone_content_edit_others';
 
 -- Note: Users with 'user_is_ueberuser' (id 53) automatically have all permissions
 

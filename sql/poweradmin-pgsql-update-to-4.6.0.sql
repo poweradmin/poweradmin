@@ -119,6 +119,22 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id)
   AND NOT EXISTS (SELECT 1 FROM users u WHERE u.perm_templ = pt.id)
   AND NOT EXISTS (SELECT 1 FROM user_groups ug WHERE ug.perm_templ = pt.id);
 
+-- Add the edit-as-client permission to databases upgraded from 2.x: 2.2.1 put it in the structure
+-- files only, so the 4.1.0 and 4.2.0 Editor grants found nothing. Grant it only where it was missing.
+DO $$
+DECLARE
+    new_id integer;
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_content_edit_own_as_client') THEN
+        INSERT INTO perm_items (name, descr)
+        VALUES ('zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.')
+        RETURNING id INTO new_id;
+        INSERT INTO perm_templ_items (templ_id, perm_id)
+        SELECT id, new_id FROM perm_templ
+        WHERE (name = 'Editor' AND template_type = 'user') OR (name = 'Editors' AND template_type = 'group');
+    END IF;
+END $$;
+
 -- Databases upgraded from 4.0.0-4.0.4 straight to 4.1.0 or later never ran the 4.0.5
 -- update (records_zone_templ primary key, #906), and no update added the zones indexes.
 DO $$
