@@ -43,6 +43,9 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
 {
     private string $viewLevel = 'all';
 
+    /** @var list<int> zone ids the stubbed zone service refuses to delete */
+    private array $failingIds = [];
+
     /** @var DomainRepositoryInterface&MockObject */
     private DomainRepositoryInterface $domains;
 
@@ -64,7 +67,9 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
         ]);
 
         $zoneManagement = $this->createMock(ZoneManagementService::class);
-        $zoneManagement->method('deleteZone')->willReturn(['success' => true]);
+        $zoneManagement->method('deleteZone')->willReturnCallback(
+            fn(int $zoneId): array => ['success' => !in_array($zoneId, $this->failingIds, true)]
+        );
 
         $this->audit = $this->createMock(AuditService::class);
 
@@ -97,6 +102,17 @@ class DeleteDomainsControllerViewLevelTest extends SeamControllerTestCase
         $this->assertSame('/zones/reverse', $halt->target);
         $this->assertSame([['success', 'Zones have been deleted successfully.']], $this->messagesFor('list_reverse_zones'));
         $this->assertSame([], $this->messagesFor('system'));
+    }
+
+    public function testAZoneThatFailsDoesNotHideTheAuditOfTheOnesThatWereDeleted(): void
+    {
+        $this->failingIds = [12];
+        $this->audit->expects($this->once())->method('logZoneDelete')->with('3.0.192.in-addr.arpa', 'MASTER');
+
+        $halt = $this->haltOfConfirmedPost();
+
+        $this->assertSame('/zones/reverse', $halt->target);
+        $this->assertSame([['error', 'Some zones could not be deleted.']], $this->messagesFor('list_reverse_zones'));
     }
 
     public function testWithoutAnyViewLevelTheZonesAreDeletedUnnamedAndTheRefusalIsFlashed(): void

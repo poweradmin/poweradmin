@@ -86,8 +86,11 @@ class DeleteDomainsController extends BaseController
         // the zone service deletes keys, comments, records and metadata with each zone.
         $zoneService = $this->createZoneManagementService();
         $failed = false;
+        $removedIds = [];
         foreach ($zone_ids as $zone_id) {
-            if (!$zoneService->deleteZone((int)$zone_id)['success']) {
+            if ($zoneService->deleteZone((int)$zone_id)['success']) {
+                $removedIds[(int)$zone_id] = true;
+            } else {
                 $failed = true;
             }
         }
@@ -103,14 +106,15 @@ class DeleteDomainsController extends BaseController
         $return_page = $all_reverse ? 'list_reverse_zones' : 'list_forward_zones';
         $route = $all_reverse ? '/zones/reverse' : '/zones/forward';
 
-        if (!$failed) {
-            $audit = $this->services()->auditService();
-            foreach ($deleted_zones as $deleted_zone) {
-                if (!empty($deleted_zone['name'])) {
-                    $audit->logZoneDelete((string)$deleted_zone['name'], (string)$deleted_zone['type']);
-                }
+        // A zone that was deleted is audited even when another zone in the batch failed.
+        $audit = $this->services()->auditService();
+        foreach ($deleted_zones as $deleted_zone) {
+            if (!empty($deleted_zone['name']) && isset($removedIds[(int)($deleted_zone['id'] ?? 0)])) {
+                $audit->logZoneDelete((string)$deleted_zone['name'], (string)$deleted_zone['type']);
             }
+        }
 
+        if (!$failed) {
             if (count($deleted_zones) == 1) {
                 $this->setMessage($return_page, 'success', _('Zone has been deleted successfully.'));
             } else {
