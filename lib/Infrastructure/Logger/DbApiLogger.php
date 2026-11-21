@@ -133,8 +133,11 @@ class DbApiLogger
                 'api_key_toggle' => '%operation:api_key_toggle%',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
-                $conditions[] = "log_api.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+                // Whole field only: "operation:password_reset" must not match password_reset_request
+                $operation = trim($typePatterns[$filters['event_type']], '%');
+                $conditions[] = "(log_api.event LIKE :event_type OR log_api.event LIKE :event_type_mid)";
+                $params[':event_type'] = ['% ' . $operation, PDO::PARAM_STR];
+                $params[':event_type_mid'] = ['% ' . $operation . ' %', PDO::PARAM_STR];
             }
         }
 

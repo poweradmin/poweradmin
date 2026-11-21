@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Logger;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\DbUserLogger;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use ReflectionClass;
@@ -79,6 +80,34 @@ class AuditUserFieldEncodingTest extends TestCase
         $this->addEvent(1, 'client_ip:10.0.0.1 user:admin operation:edit_record');
 
         $this->assertCount(0, (new DbZoneLogger($this->db))->getFilteredLogs(['user' => 'ad_in'], 50, 0));
+    }
+
+    public function testFiltersMatchWholeFieldsOnly(): void
+    {
+        $this->addEvent(1, 'client_ip:10.0.0.1 user:ann operation:edit_record target_user:admin old_operation:login_failed x');
+        $this->addEvent(1, 'client_ip:10.0.0.1 user:admin operation:delete_record');
+
+        $logger = new DbZoneLogger($this->db);
+
+        $this->assertCount(1, $logger->getFilteredLogs(['user' => 'admin'], 50, 0));
+        $this->assertCount(0, $logger->getFilteredLogs(['operation' => 'login_failed'], 50, 0));
+        $this->assertCount(1, $logger->getFilteredLogs(['operation' => 'edit_record'], 50, 0));
+    }
+
+    public function testUserLogTypeFilterMatchesTheWholeOperation(): void
+    {
+        $this->db->exec('CREATE TABLE log_users (id INTEGER PRIMARY KEY, event TEXT, priority INTEGER, created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $this->db->exec(
+            "INSERT INTO log_users (event, priority) VALUES "
+            . "('client_ip:1.1.1.1 operation:password_reset user_id:4', 6), "
+            . "('client_ip:1.1.1.1 operation:password_reset_request email:a', 6), "
+            . "('client_ip:1.1.1.1 user:ann operation:logout', 6)"
+        );
+
+        $logger = new DbUserLogger($this->db);
+
+        $this->assertCount(1, $logger->getFilteredLogs(['event_type' => 'password_reset'], 50, 0));
+        $this->assertCount(1, $logger->getFilteredLogs(['event_type' => 'logout'], 50, 0));
     }
 
     public function testOwnerDropdownListsOnlyRealAuthors(): void

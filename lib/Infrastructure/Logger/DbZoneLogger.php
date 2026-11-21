@@ -236,13 +236,14 @@ class DbZoneLogger
         $dbType = $this->config->get('database', 'type', 'mysql');
         $encoded = LegacyLogger::encodeUserSql('u.username');
         $escaped = "REPLACE(REPLACE(REPLACE($encoded, '!', '!!'), '%', '!%'), '_', '!_')";
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", $escaped, "' %'"]);
+        $userPattern = DbCompat::concat($dbType, ["'user:'", $escaped, "' %'"]);
+        $userPatternMid = DbCompat::concat($dbType, ["'% user:'", $escaped, "' %'"]);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
                     WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
-                      AND lz.event LIKE " . $userPattern . " ESCAPE '!'
+                      AND (lz.event LIKE " . $userPattern . " ESCAPE '!' OR lz.event LIKE " . $userPatternMid . " ESCAPE '!')
                 )
                 ORDER BY u.username";
 
@@ -332,13 +333,16 @@ class DbZoneLogger
         }
 
         if (!empty($filters['operation'])) {
-            $conditions[] = "log_zones.event LIKE :operation";
-            $params[':operation'] = ["%operation:" . $filters['operation'] . " %", PDO::PARAM_STR];
+            $conditions[] = "(log_zones.event LIKE :operation OR log_zones.event LIKE :operation_mid)";
+            $params[':operation'] = ["operation:" . $filters['operation'] . " %", PDO::PARAM_STR];
+            $params[':operation_mid'] = ["% operation:" . $filters['operation'] . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['user'])) {
-            $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
-            $params[':user_filter'] = ["%user:" . LegacyLogger::escapeLike(LegacyLogger::encodeUser($filters['user'])) . " %", PDO::PARAM_STR];
+            $conditions[] = "(log_zones.event LIKE :user_filter ESCAPE '!' OR log_zones.event LIKE :user_filter_mid ESCAPE '!')";
+            $encodedUser = LegacyLogger::escapeLike(LegacyLogger::encodeUser($filters['user']));
+            $params[':user_filter'] = ["user:" . $encodedUser . " %", PDO::PARAM_STR];
+            $params[':user_filter_mid'] = ["% user:" . $encodedUser . " %", PDO::PARAM_STR];
         }
 
         if (!empty($filters['date_from'])) {
