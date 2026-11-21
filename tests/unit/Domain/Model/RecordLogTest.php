@@ -192,4 +192,18 @@ class RecordLogTest extends TestCase
         $this->assertStringContainsString('client_ip%3A203.0.113.5 operation%3Alogin_failed', $message);
         $this->assertStringContainsString('content:"user%3Aadmin"', $message);
     }
+
+    public function testTheNewValuesPrecedeTheOldOnesSoALongOldValueCannotPushThemOutOfTheCap(): void
+    {
+        $prior = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => '"' . str_repeat('x', 1900) . '"', 'ttl' => 60, 'prio' => 0];
+        $after = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => '"new"', 'ttl' => 120, 'prio' => 0];
+
+        $log = $this->makeRecordLog(['old' => $prior, 'new' => $after]);
+        $log->logPrior('old', 5, '');
+        $log->logAfter('new');
+        $message = $this->buildMessage($log);
+
+        $this->assertLessThan(strpos($message, 'old_record_type:'), strpos($message, ' record_type:TXT'));
+        $this->assertStringContainsString('content:"new" ttl:120', substr($message, 0, 2048));
+    }
 }

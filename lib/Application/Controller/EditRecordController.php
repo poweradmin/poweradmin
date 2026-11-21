@@ -49,6 +49,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\ValueObject\RecordIdentifier;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
@@ -291,20 +292,20 @@ class EditRecordController extends BaseController
         $this->auditLogger->logInfo(
             sprintf(
                 'client_ip:%s user:%s operation:edit_record'
-                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-                . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+                . ' record_type:%s record:%s content:%s ttl:%s priority:%s'
+                . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->userContextService->getLoggedInUsername(),
-                $old_record_info['type'],
-                $old_record_info['name'],
-                $old_record_info['content'],
-                $old_record_info['ttl'],
-                $old_record_info['prio'],
-                $new_record_info['type'],
-                $new_record_info['name'],
-                $new_record_info['content'],
+                AuditLineValue::of($new_record_info['type']),
+                AuditLineValue::of($new_record_info['name']),
+                AuditLineValue::of($new_record_info['content']),
                 $new_record_info['ttl'],
-                $new_record_info['prio']
+                $new_record_info['prio'],
+                AuditLineValue::of($old_record_info['type']),
+                AuditLineValue::of($old_record_info['name']),
+                AuditLineValue::of($old_record_info['content']),
+                $old_record_info['ttl'],
+                $old_record_info['prio']
             ),
             $zid
         );

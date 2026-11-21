@@ -119,22 +119,23 @@ class RecordLog
         $prior = $this->record_prior ?? [];
         $after = $this->record_after ?? [];
 
+        // The new values come first: the zone log cuts a long line, and the cut must not drop them
         return sprintf(
             'client_ip:%s user:%s operation:edit_record'
-            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+            . ' record_type:%s record:%s content:%s ttl:%s priority:%s'
+            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s',
             $this->ipAddressRetriever->getClientIp(),
             $this->userContextService->getLoggedInUsername(),
-            AuditLineValue::of($prior['type'] ?? ''),
-            AuditLineValue::of($prior['name'] ?? ''),
-            AuditLineValue::of($prior['content'] ?? ''),
-            $prior['ttl'] ?? '',
-            $prior['prio'] ?? '',
             AuditLineValue::of($after['type'] ?? ''),
             AuditLineValue::of($after['name'] ?? ''),
             AuditLineValue::of($after['content'] ?? ''),
             $after['ttl'] ?? '',
-            $after['prio'] ?? ''
+            $after['prio'] ?? '',
+            AuditLineValue::of($prior['type'] ?? ''),
+            AuditLineValue::of($prior['name'] ?? ''),
+            AuditLineValue::of($prior['content'] ?? ''),
+            $prior['ttl'] ?? '',
+            $prior['prio'] ?? ''
         );
     }
 }
