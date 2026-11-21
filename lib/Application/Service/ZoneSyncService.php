@@ -92,8 +92,10 @@ class ZoneSyncService
     public function sync(): array
     {
         $this->logger->debug('Zone sync starting');
-        $apiZones = $this->backendProvider->getZones();
+        // Read before the PowerDNS list: a zone created in between then looks new rather than
+        // orphaned, so it is never deleted by this run
         $localZones = $this->getLocalZones();
+        $apiZones = $this->backendProvider->getZones();
         $this->logger->debug('Zone sync fetched {api} API zones, {local} local zones', [
             'api' => count($apiZones),
             'local' => count($localZones),
