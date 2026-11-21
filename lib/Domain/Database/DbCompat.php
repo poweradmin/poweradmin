@@ -394,16 +394,18 @@ final class DbCompat
     }
 
     /**
-     * A condition matching the audit-line field `operation:<name>` as a whole field: at the
+     * A condition matching the audit-line field `<field>:<value>` as a whole field: at the
      * start, in the middle or at the end of the event, so `password_reset` does not match
-     * `password_reset_request` and `logout` (which ends its line) is found. Binds four
-     * patterns named `:<prefix>0` to `:<prefix>3` into $params as [value, PDO type].
+     * `password_reset_request`, `user:alice` does not match `target_user:alice`, and a field
+     * that ends its line (`operation:logout`) is found. Binds four patterns named
+     * `:<prefix>0` to `:<prefix>3` into $params as [value, PDO type]. The value is escaped
+     * here; a caller encoding it for the line (AuditLineValue::user) does so first.
      *
      * @param array<string, array{0: string, 1: int}> $params
      */
-    public static function operationFieldCondition(string $column, string $operation, array &$params, string $prefix = 'op'): string
+    public static function fieldCondition(string $column, string $field, string $value, array &$params, string $prefix): string
     {
-        $token = 'operation:' . self::escapeLike($operation);
+        $token = $field . ':' . self::escapeLike($value);
         $patterns = [$token, $token . ' %', '% ' . $token, '% ' . $token . ' %'];
         $parts = [];
         foreach ($patterns as $i => $pattern) {
@@ -412,6 +414,38 @@ final class DbCompat
         }
 
         return '(' . implode(' OR ', $parts) . ')';
+    }
+
+    /**
+     * The same whole-field match as fieldCondition() for a value that is an SQL expression
+     * (a column), already escaped for LIKE with `!`. Binds nothing.
+     */
+    public static function fieldConditionForExpression(string $dbType, string $column, string $field, string $escapedValueSql): string
+    {
+        $token = "'" . $field . ":'";
+        $patterns = [
+            self::concat($dbType, [$token, $escapedValueSql]),
+            self::concat($dbType, [$token, $escapedValueSql, "' %'"]),
+            self::concat($dbType, ["'% '", $token, $escapedValueSql]),
+            self::concat($dbType, ["'% '", $token, $escapedValueSql, "' %'"]),
+        ];
+        $parts = [];
+        foreach ($patterns as $pattern) {
+            $parts[] = $column . ' LIKE ' . $pattern . " ESCAPE '!'";
+        }
+
+        return '(' . implode(' OR ', $parts) . ')';
+    }
+
+    /**
+     * The operation field as a whole field; see fieldCondition(). Placeholders are
+     * `:<prefix>0` to `:<prefix>3`.
+     *
+     * @param array<string, array{0: string, 1: int}> $params
+     */
+    public static function operationFieldCondition(string $column, string $operation, array &$params, string $prefix = 'op'): string
+    {
+        return self::fieldCondition($column, 'operation', $operation, $params, $prefix);
     }
 
     /**

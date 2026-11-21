@@ -150,8 +150,7 @@ class DbUserLogger
     {
         if (!empty($filters['name'])) {
             // Producers emit a bare "user:<name> "; quoting the value matched nothing.
-            $conditions[] = "log_users.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%user:" . DbCompat::escapeLike(AuditLineValue::user($filters['name'])) . " %", PDO::PARAM_STR];
+            $conditions[] = DbCompat::fieldCondition('log_users.event', 'user', AuditLineValue::user($filters['name']), $params, 'user_filter');
         }
 
         if (!empty($filters['event_type'])) {

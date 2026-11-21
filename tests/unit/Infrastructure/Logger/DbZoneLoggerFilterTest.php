@@ -165,7 +165,7 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
     public function theDistinctUserQueryUsesTheDriversConcatenation(): void
     {
         $replace = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')";
-        foreach (['mysql' => "CONCAT('%user:', {$replace}, ' %')", 'pgsql' => "CONCAT('%user:', {$replace}, ' %')", 'sqlite' => "'%user:' || {$replace} || ' %'"] as $driver => $pattern) {
+        foreach (['mysql' => "CONCAT('% ', 'user:', {$replace}, ' %')", 'pgsql' => "CONCAT('% ', 'user:', {$replace}, ' %')", 'sqlite' => "'% ' || 'user:' || {$replace} || ' %'"] as $driver => $pattern) {
             $statement = $this->createMock(PDOStatement::class);
             $statement->method('execute')->willReturn(true);
             $statement->method('fetchAll')->willReturn([]);
@@ -280,5 +280,39 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
             ('client_ip:1.1.1.1 user:mia operation:zone_import_records zone_name:a', '2026-01-04 11:00:00', " . self::ALPHA . ")");
 
         $this->assertSame(1, $this->logger()->countFilteredLogs(['operation' => 'zone_import'], null));
+    }
+
+    #[Test]
+    public function theUserFilterMatchesTheUserFieldAsAWholeField(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (42, 'alice', 1), (43, 'a b', 1), (44, 'a_b', 1), (45, 'axb', 1)");
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:1.1.1.1 user:admin operation:perm_template_change target_user:alice old_template:x', '2026-05-01 10:00:00', " . self::ALPHA . "),
+            ('client_ip:1.1.1.1 user:alice operation:edit_record zone:b', '2026-05-02 10:00:00', " . self::BETA . "),
+            ('operation:zone_hand_over user:a%20b', '2026-05-03 10:00:00', " . self::GAMMA . "),
+            ('client_ip:1.1.1.1 user:a_b operation:x', '2026-05-04 10:00:00', " . self::ALPHA . "),
+            ('client_ip:1.1.1.1 user:axb operation:x', '2026-05-05 10:00:00', " . self::BETA . ")");
+
+        $this->assertSame([self::BETA], $this->loggedZoneIds(['user' => 'alice'], null));
+        $this->assertSame([self::GAMMA], $this->loggedZoneIds(['user' => 'a b'], null));
+        $this->assertSame([self::ALPHA], $this->loggedZoneIds(['user' => 'a_b'], null));
+        $this->assertSame(1, $this->logger()->countFilteredLogs(['user' => 'a_b'], null));
+
+        $users = $this->logger()->getDistinctUsersForZones([self::ALPHA, self::BETA, self::GAMMA]);
+        $this->assertContains('alice', $users);
+        $this->assertContains('a b', $users);
+        $this->assertContains('a_b', $users);
+        $this->assertContains('axb', $users);
+        $this->assertContains('mia', $users);
+    }
+
+    #[Test]
+    public function theDropdownDoesNotListAUserNamedOnlyAsTheTargetOfAnEvent(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (42, 'alice', 1)");
+        $this->db->exec("INSERT INTO log_zones (event, created_at, zone_id) VALUES
+            ('client_ip:1.1.1.1 user:admin operation:perm_template_change target_user:alice old_template:x', '2026-05-01 10:00:00', " . self::ALPHA . ")");
+
+        $this->assertNotContains('alice', $this->logger()->getDistinctUsersForZones([self::ALPHA]));
     }
 }

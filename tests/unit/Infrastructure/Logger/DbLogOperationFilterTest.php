@@ -110,4 +110,38 @@ class DbLogOperationFilterTest extends TestCase
         $this->assertSame(['operation:a!_b!%', 'operation:a!_b!% %', '% operation:a!_b!%', '% operation:a!_b!% %'], array_column($params, 0));
         $this->assertStringContainsString("ESCAPE '!'", $sql);
     }
+
+    public function testTheUserFilterMatchesTheUserFieldAsAWholeField(): void
+    {
+        $events = [
+            'client_ip:192.0.2.1 user:admin operation:perm_template_change target_user:alice old_template:x',
+            'client_ip:192.0.2.1 user:alice operation:logout',
+            'operation:api_request status:200 user:alice',
+            'client_ip:192.0.2.1 user:a%20b operation:x',
+            'client_ip:192.0.2.1 user:a_b operation:x',
+            'client_ip:192.0.2.1 user:axb operation:x',
+        ];
+        $this->insert('log_users', $events);
+        $this->insert('log_api', $events);
+
+        foreach ([new DbUserLogger($this->db), new DbApiLogger($this->db)] as $logger) {
+            $name = $logger::class;
+            $this->assertSame(2, $logger->countFilteredLogs(['name' => 'alice']), $name);
+            $this->assertCount(2, $logger->getFilteredLogs(['name' => 'alice'], 50, 0), $name);
+            $this->assertSame(1, $logger->countFilteredLogs(['name' => 'a b']), $name);
+            $this->assertSame(1, $logger->countFilteredLogs(['name' => 'a_b']), $name);
+            $this->assertSame(1, $logger->countFilteredLogs(['name' => 'axb']), $name);
+            $this->assertSame(1, $logger->countFilteredLogs(['name' => 'admin']), $name);
+        }
+    }
+
+    public function testTheFieldConditionNamesTheFieldAndEscapesTheValue(): void
+    {
+        $params = [];
+        $sql = DbCompat::fieldCondition('event', 'user', 'a_b%', $params, 'u');
+
+        $this->assertSame(['user:a!_b!%', 'user:a!_b!% %', '% user:a!_b!%', '% user:a!_b!% %'], array_column($params, 0));
+        $this->assertSame(['u0', 'u1', 'u2', 'u3'], array_map(fn($k) => substr($k, 1), array_keys($params)));
+        $this->assertStringContainsString("ESCAPE '!'", $sql);
+    }
 }

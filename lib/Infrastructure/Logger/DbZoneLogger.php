@@ -115,13 +115,14 @@ class DbZoneLogger
 
         $dbType = $this->config->get('database', 'type', 'mysql');
         // The user: field stores colons as %3A and spaces as %20 (AuditLineValue::user); the % they add must not act as a wildcard
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')", "' %'"]);
+        $escapedUser = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')";
+        $userCondition = DbCompat::fieldConditionForExpression($dbType, 'lz.event', 'user', $escapedUser);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
                     WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
-                      AND lz.event LIKE " . $userPattern . " ESCAPE '!'
+                      AND " . $userCondition . "
                 )
                 ORDER BY u.username";
 
@@ -211,8 +212,7 @@ class DbZoneLogger
         }
 
         if (!empty($filters['user'])) {
-            $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
-            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike(AuditLineValue::user($filters['user'])) . " %", PDO::PARAM_STR];
+            $conditions[] = DbCompat::fieldCondition('log_zones.event', 'user', AuditLineValue::user($filters['user']), $params, 'user_filter');
         }
 
         if (!empty($filters['date_from'])) {
