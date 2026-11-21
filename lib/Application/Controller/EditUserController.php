@@ -148,9 +148,9 @@ class EditUserController extends BaseController
                 'client_ip:%s user:%s operation:edit_user target_user:%s perm_template:%s auth_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                $params['username'],
-                $params['perm_templ'],
-                $params['use_ldap'] ? 'ldap' : 'sql'
+                LegacyLogger::value($params['username']),
+                LegacyLogger::value($params['perm_templ']),
+                LegacyLogger::value($params['use_ldap'] ? 'ldap' : 'sql')
             ));
 
             if ($oldPermTempl !== (int)$params['perm_templ']) {
@@ -562,9 +562,9 @@ class EditUserController extends BaseController
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:1 members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                    str_replace(' ', '_', $groupInfo['name']),
+                    LegacyLogger::value(str_replace(' ', '_', $groupInfo['name'])),
                     $groupInfo['id'],
-                    $targetUsername
+                    LegacyLogger::value($targetUsername)
                 );
                 $this->auditLogger->logGroupInfo($logMessage, $groupInfo['id']);
             }

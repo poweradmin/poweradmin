@@ -239,7 +239,7 @@ class MfaVerifyController extends BaseController
                 'client_ip:%s user:%s operation:mfa_verify mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? $_SESSION['userlogin'] ?? 'unknown'),
-                $this->mfaService->getMfaType($userId) ?? 'unknown'
+                LegacyLogger::value($this->mfaService->getMfaType($userId) ?? 'unknown')
             ));
 
             // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)

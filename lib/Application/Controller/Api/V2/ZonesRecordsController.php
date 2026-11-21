@@ -611,9 +611,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $name,
-                $type,
-                $content
+                LegacyLogger::value($name),
+                LegacyLogger::value($type),
+                LegacyLogger::value($content)
             ), $zoneId);
 
             $message = 'Record created successfully' . $ptrMessage;
@@ -845,12 +845,12 @@ class ZonesRecordsController extends PublicApiController
                 . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $formattedRecord['name'],
-                $formattedRecord['type'],
-                $formattedRecord['content'],
-                DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName),
-                $existingRecord['type'],
-                $this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type']),
+                LegacyLogger::value($formattedRecord['name']),
+                LegacyLogger::value($formattedRecord['type']),
+                LegacyLogger::value($formattedRecord['content']),
+                LegacyLogger::value(DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName)),
+                LegacyLogger::value($existingRecord['type']),
+                LegacyLogger::value($this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type'])),
                 $formattedRecord['ttl'],
                 $formattedRecord['priority'],
                 $existingRecord['ttl'],
@@ -972,9 +972,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $existingRecord['name'] ?? '',
-                $existingRecord['type'] ?? '',
-                $existingRecord['content'] ?? ''
+                LegacyLogger::value($existingRecord['name'] ?? ''),
+                LegacyLogger::value($existingRecord['type'] ?? ''),
+                LegacyLogger::value($existingRecord['content'] ?? '')
             ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);

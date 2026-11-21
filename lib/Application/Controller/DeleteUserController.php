@@ -132,7 +132,7 @@ class DeleteUserController extends BaseController
                 'client_ip:%s user:%s operation:delete_user target_user:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                $targetUsername
+                LegacyLogger::value($targetUsername)
             ));
 
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));

@@ -350,8 +350,8 @@ class ReverseRecordCreator
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                 $this->ipAddressRetriever->getClientIp() ?: 'unknown',
                 LegacyLogger::encodeUser($username),
-                $content_rev,
-                $fqdn_name,
+                LegacyLogger::value($content_rev),
+                LegacyLogger::value($fqdn_name),
                 $ttl,
                 $prio
             ), $zone_id);

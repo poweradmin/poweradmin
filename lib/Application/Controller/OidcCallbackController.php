@@ -93,7 +93,7 @@ class OidcCallbackController extends BaseController
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s operation:oidc_login_failed error:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                self::logValue((string)$error)
+                LegacyLogger::value(self::logValue((string)$error))
             ));
             $this->logger->warning('OIDC provider returned error: {error} - {description}', [
                 'error' => $error,

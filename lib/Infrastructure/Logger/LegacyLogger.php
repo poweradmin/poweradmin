@@ -52,6 +52,28 @@ class LegacyLogger
         return "REPLACE(REPLACE($column, ':', '%3A'), ' ', '%20')";
     }
 
+    /** A free-text value (record content, name, zone) with control characters and a colon after a letter percent-encoded, so it cannot pass for another log field. */
+    public static function value(string|int|float|null $value): string
+    {
+        $value = (string)preg_replace('/[\x00-\x1F\x7F]/', '?', (string)$value);
+
+        return preg_replace('/(?<=[\p{L}_]):/u', '%3A', $value)
+            ?? (string)preg_replace('/(?<=[A-Za-z_]):/', '%3A', $value);
+    }
+
+    /** Safety net for every audit line: no control characters, and no client_ip, user or operation field after the operation token. */
+    public static function guardLine(string $message): string
+    {
+        if (!preg_match('/ operation:/', $message)) {
+            return $message;
+        }
+
+        $message = (string)preg_replace('/[\x00-\x1F\x7F]/', '?', $message);
+        preg_match('/^(.*? operation:\S*)(.*)$/s', $message, $m);
+
+        return $m[1] . (string)preg_replace('/(?<=[ ?])(client_ip|user|operation):/i', '$1%3A', $m[2]);
+    }
+
     /** Escapes LIKE wildcards with `!`; the query must say ESCAPE '!'. */
     public static function escapeLike(string $value): string
     {
@@ -60,6 +82,7 @@ class LegacyLogger
 
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
+        $message = self::guardLine($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -121,6 +144,7 @@ class LegacyLogger
 
     private function doLogWithApi(string $message, int $priority): void
     {
+        $message = self::guardLine($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -140,6 +164,7 @@ class LegacyLogger
 
     private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
     {
+        $message = self::guardLine($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');

@@ -91,9 +91,9 @@ class RecordManagerService
             'client_ip:%s user:%s operation:add_record record_type:%s record:%s content:%s ttl:%s priority:%s',
             $clientIp,
             LegacyLogger::encodeUser($userlogin),
-            $type,
-            DnsHelper::restoreZoneSuffix($name, $zone_name),
-            $content,
+            LegacyLogger::value($type),
+            LegacyLogger::value(DnsHelper::restoreZoneSuffix($name, $zone_name)),
+            LegacyLogger::value($content),
             $ttl,
             $prio
         ), $zone_id);

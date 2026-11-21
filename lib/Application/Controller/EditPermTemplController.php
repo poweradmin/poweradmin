@@ -118,8 +118,8 @@ class EditPermTemplController extends BaseController
             'client_ip:%s user:%s operation:edit_perm_template id:%s name:%s',
             $this->ipAddressRetriever->getClientIp(),
             LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-            $this->getSafeRequestValue('id'),
-            $this->getSafeRequestValue('templ_name')
+            LegacyLogger::value($this->getSafeRequestValue('id')),
+            LegacyLogger::value($this->getSafeRequestValue('templ_name'))
         ));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));

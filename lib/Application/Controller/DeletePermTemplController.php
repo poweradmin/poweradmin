@@ -83,8 +83,8 @@ class DeletePermTemplController extends BaseController
                 'client_ip:%s user:%s operation:delete_perm_template id:%s name:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                $id,
-                $templDetails['name'] ?? 'unknown'
+                LegacyLogger::value($id),
+                LegacyLogger::value($templDetails['name'] ?? 'unknown')
             ));
 
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));

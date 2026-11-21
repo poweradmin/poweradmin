@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -204,7 +204,7 @@ class ApiKeysController extends BaseController
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $apiKey->getId(),
-                    $apiKey->getName()
+                    LegacyLogger::value($apiKey->getName())
                 ));
 
                 // Show confirmation with the secret key - user needs to save it
@@ -271,7 +271,7 @@ class ApiKeysController extends BaseController
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
-                    $apiKey->getName()
+                    LegacyLogger::value($apiKey->getName())
                 ));
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
@@ -312,7 +312,7 @@ class ApiKeysController extends BaseController
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
-                    $keyName
+                    LegacyLogger::value($keyName)
                 ));
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
@@ -356,7 +356,7 @@ class ApiKeysController extends BaseController
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                     $id,
-                    $apiKey->getName()
+                    LegacyLogger::value($apiKey->getName())
                 ));
 
                 // Show confirmation with the new secret key
@@ -404,8 +404,8 @@ class ApiKeysController extends BaseController
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
                 $id,
-                $apiKey->getName(),
-                $status
+                LegacyLogger::value($apiKey->getName()),
+                LegacyLogger::value($status)
             ));
 
             $translatedStatus = $disable ? _('disabled') : _('enabled');

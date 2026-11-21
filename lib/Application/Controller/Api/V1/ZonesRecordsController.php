@@ -527,9 +527,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $name,
-                $type,
-                $content
+                LegacyLogger::value($name),
+                LegacyLogger::value($type),
+                LegacyLogger::value($content)
             ), $zoneId);
 
             return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
@@ -702,12 +702,12 @@ class ZonesRecordsController extends PublicApiController
                 . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $recordData['name'],
-                $recordData['type'],
-                $recordData['content'],
-                $existingRecord['name'],
-                $existingRecord['type'],
-                $existingRecord['content'],
+                LegacyLogger::value($recordData['name']),
+                LegacyLogger::value($recordData['type']),
+                LegacyLogger::value($recordData['content']),
+                LegacyLogger::value($existingRecord['name']),
+                LegacyLogger::value($existingRecord['type']),
+                LegacyLogger::value($existingRecord['content']),
                 $recordData['ttl'],
                 $recordData['prio'],
                 $existingRecord['ttl'],
@@ -830,9 +830,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $existingRecord['name'] ?? '',
-                $existingRecord['type'] ?? '',
-                $existingRecord['content'] ?? ''
+                LegacyLogger::value($existingRecord['name'] ?? ''),
+                LegacyLogger::value($existingRecord['type'] ?? ''),
+                LegacyLogger::value($existingRecord['content'] ?? '')
             ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);

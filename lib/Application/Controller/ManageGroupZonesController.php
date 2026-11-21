@@ -210,10 +210,10 @@ class ManageGroupZonesController extends BaseController
                     "client_ip:%s user:%s operation:add_zones group:%s group_id:%d count:%d zones:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    str_replace(' ', '_', $groupName),
+                    LegacyLogger::value(str_replace(' ', '_', $groupName)),
                     $groupId,
                     count($results['success']),
-                    implode(',', $displayNames)
+                    LegacyLogger::value(implode(',', $displayNames))
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);
@@ -296,10 +296,10 @@ class ManageGroupZonesController extends BaseController
                     "client_ip:%s user:%s operation:remove_zones group:%s group_id:%d count:%d zones:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    str_replace(' ', '_', $groupName),
+                    LegacyLogger::value(str_replace(' ', '_', $groupName)),
                     $groupId,
                     count($results['success']),
-                    implode(',', $displayNames)
+                    LegacyLogger::value(implode(',', $displayNames))
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);

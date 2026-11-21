@@ -104,7 +104,7 @@ class AddPermTemplController extends BaseController
             'client_ip:%s user:%s operation:add_perm_template name:%s',
             $this->ipAddressRetriever->getClientIp(),
             LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-            $this->getSafeRequestValue('templ_name')
+            LegacyLogger::value($this->getSafeRequestValue('templ_name'))
         ));
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));

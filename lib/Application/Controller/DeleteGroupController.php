@@ -130,7 +130,7 @@ class DeleteGroupController extends BaseController
                 "client_ip:%s user:%s operation:delete_group group:%s group_id:%d members_affected:%d zones_affected:%d",
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                str_replace(' ', '_', $groupName),
+                LegacyLogger::value(str_replace(' ', '_', $groupName)),
                 $groupId,
                 $memberCount,
                 $zoneCount

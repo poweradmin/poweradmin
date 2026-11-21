@@ -52,7 +52,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:perm_template_change target_user:%s old_template:%d new_template:%d',
             $this->getContext(),
-            $targetUser,
+            LegacyLogger::value($targetUser),
             $oldTemplateId,
             $newTemplateId
         ));
@@ -71,8 +71,8 @@ class AuditService
         $this->logger->logWarn(sprintf(
             '%s operation:access_denied permission:%s uri:%s',
             $this->getContext(),
-            $permission,
-            $requestUri
+            LegacyLogger::value($permission),
+            LegacyLogger::value($requestUri)
         ));
     }
 
@@ -83,7 +83,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:zone_owner_add zone:%s owner_id:%d',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $ownerId
         ), $zoneId);
     }
@@ -93,7 +93,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:zone_owner_remove zone:%s owner_id:%d',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $ownerId
         ), $zoneId);
     }
@@ -103,7 +103,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:zone_group_add zone:%s group_id:%d',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $groupId
         ), $zoneId);
     }
@@ -113,7 +113,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:zone_group_remove zone:%s group_id:%d',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $groupId
         ), $zoneId);
     }
@@ -125,10 +125,10 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:dnssec_add_key zone:%s key_type:%s bits:%s algorithm:%s',
             $this->getContext(),
-            $zoneName,
-            $keyType,
-            $bits,
-            $algorithm
+            LegacyLogger::value($zoneName),
+            LegacyLogger::value($keyType),
+            LegacyLogger::value($bits),
+            LegacyLogger::value($algorithm)
         ), $zoneId);
     }
 
@@ -137,7 +137,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:dnssec_delete_key zone:%s key_id:%d',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $keyId
         ), $zoneId);
     }
@@ -147,9 +147,9 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:dnssec_toggle_key zone:%s key_id:%d action:%s',
             $this->getContext(),
-            $zoneName,
+            LegacyLogger::value($zoneName),
             $keyId,
-            $action
+            LegacyLogger::value($action)
         ), $zoneId);
     }
 
@@ -158,7 +158,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:dnssec_sign_zone zone:%s',
             $this->getContext(),
-            $zoneName
+            LegacyLogger::value($zoneName)
         ), $zoneId);
     }
 
@@ -167,7 +167,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:dnssec_unsign_zone zone:%s',
             $this->getContext(),
-            $zoneName
+            LegacyLogger::value($zoneName)
         ), $zoneId);
     }
 
@@ -190,7 +190,7 @@ class AuditService
         $this->logger->logInfo(sprintf(
             '%s operation:add_zone_template template_name:%s',
             $this->getContext(),
-            str_replace(' ', '_', $templateName)
+            LegacyLogger::value(str_replace(' ', '_', $templateName))
         ));
     }
 
@@ -200,7 +200,7 @@ class AuditService
             '%s operation:edit_zone_template template_id:%d template_name:%s',
             $this->getContext(),
             $templateId,
-            str_replace(' ', '_', $templateName)
+            LegacyLogger::value(str_replace(' ', '_', $templateName))
         ));
     }
 

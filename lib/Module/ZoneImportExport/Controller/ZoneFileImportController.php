@@ -335,7 +335,7 @@ class ZoneFileImportController extends BaseController
                 'client_ip:%s user:%s operation:zone_import_records zone_name:%s',
                 $clientIp,
                 LegacyLogger::encodeUser($userLogin),
-                $zoneName
+                LegacyLogger::value($zoneName)
             ), $zone_id);
         } else {
             if (!UserManager::verifyPermission($this->db, 'zone_master_add')) {
@@ -424,7 +424,7 @@ class ZoneFileImportController extends BaseController
                 'client_ip:%s user:%s operation:zone_import zone_name:%s',
                 $clientIp,
                 LegacyLogger::encodeUser($userLogin),
-                $zoneName
+                LegacyLogger::value($zoneName)
             ), $zone_id);
 
             // New zone: no conflicts possible

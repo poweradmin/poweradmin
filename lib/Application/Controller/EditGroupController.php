@@ -175,9 +175,9 @@ class EditGroupController extends BaseController
                     "client_ip:%s user:%s operation:edit_group group:%s group_id:%d changes:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    str_replace(' ', '_', $name),
+                    LegacyLogger::value(str_replace(' ', '_', $name)),
                     $groupId,
-                    implode('; ', $changes)
+                    LegacyLogger::value(implode('; ', $changes))
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);

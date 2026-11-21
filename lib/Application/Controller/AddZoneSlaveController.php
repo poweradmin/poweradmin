@@ -220,8 +220,8 @@ class AddZoneSlaveController extends BaseController
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                    $zone,
-                    $master
+                    LegacyLogger::value($zone),
+                    LegacyLogger::value($master)
                 ), $zone_id);
 
                 // Check if the zone is a reverse zone and redirect accordingly

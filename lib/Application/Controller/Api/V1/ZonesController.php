@@ -515,8 +515,8 @@ class ZonesController extends PublicApiController
                 'client_ip:%s user:%s operation:api_add_zone zone_name:%s zone_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $domain,
-                $type
+                LegacyLogger::value($domain),
+                LegacyLogger::value($type)
             ), (int)$result['zone_id']);
 
             return $this->returnApiResponse(
@@ -758,7 +758,7 @@ class ZonesController extends PublicApiController
                 'client_ip:%s user:%s operation:api_delete_zone zone_name:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
-                $zoneName
+                LegacyLogger::value($zoneName)
             ), $zoneId);
 
             // The delete entry is written after the zone is gone, so detach it too

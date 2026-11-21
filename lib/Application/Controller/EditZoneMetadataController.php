@@ -165,8 +165,8 @@ class EditZoneMetadataController extends BaseController
                     'client_ip:%s user:%s operation:edit_zone_metadata zone:%s kinds:%s',
                     $ipRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    $zone['name'],
-                    implode(',', $kinds)
+                    LegacyLogger::value($zone['name']),
+                    LegacyLogger::value(implode(',', $kinds))
                 ), $zoneId);
 
                 $this->setMessage('zone_metadata', 'success', _('Zone metadata has been updated successfully.'));

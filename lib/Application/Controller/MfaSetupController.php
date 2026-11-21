@@ -427,7 +427,7 @@ class MfaSetupController extends BaseController
                 'client_ip:%s user:%s operation:mfa_failed mfa_type:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername() ?? 'unknown'),
-                $this->mfaService->getMfaType($userId) ?? 'unknown'
+                LegacyLogger::value($this->mfaService->getMfaType($userId) ?? 'unknown')
             ));
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
             return false;

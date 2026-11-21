@@ -119,7 +119,7 @@ class SamlCallbackController extends BaseController
             $this->auditLogger->logWarn(sprintf(
                 'client_ip:%s operation:saml_login_failed error:%s',
                 $this->ipAddressRetriever->getClientIp(),
-                $e->getMessage()
+                LegacyLogger::value($e->getMessage())
             ));
 
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');

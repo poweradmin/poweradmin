@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -148,9 +148,9 @@ class DeleteRecordsController extends BaseController
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $this->ipAddressRetriever->getClientIp(),
                         LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
+                        LegacyLogger::value($record_info['type']),
+                        LegacyLogger::value($record_info['name']),
+                        LegacyLogger::value($record_info['content']),
                         $record_info['ttl'],
                         $record_info['prio']
                     ), $zid);
@@ -159,9 +159,9 @@ class DeleteRecordsController extends BaseController
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                         $this->ipAddressRetriever->getClientIp(),
                         LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
+                        LegacyLogger::value($record_info['type']),
+                        LegacyLogger::value($record_info['name']),
+                        LegacyLogger::value($record_info['content']),
                         $record_info['ttl']
                     ), $zid);
                 }

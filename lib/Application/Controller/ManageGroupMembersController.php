@@ -180,10 +180,10 @@ class ManageGroupMembersController extends BaseController
                     "client_ip:%s user:%s operation:add_members group:%s group_id:%d count:%d members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    str_replace(' ', '_', $groupName),
+                    LegacyLogger::value(str_replace(' ', '_', $groupName)),
                     $groupId,
                     count($results['success']),
-                    implode(',', $addedUsernames)
+                    LegacyLogger::value(implode(',', $addedUsernames))
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);
@@ -253,10 +253,10 @@ class ManageGroupMembersController extends BaseController
                     "client_ip:%s user:%s operation:remove_members group:%s group_id:%d count:%d members:%s",
                     $this->ipAddressRetriever->getClientIp(),
                     LegacyLogger::encodeUser($this->getUserContextService()->getLoggedInUsername()),
-                    str_replace(' ', '_', $groupName),
+                    LegacyLogger::value(str_replace(' ', '_', $groupName)),
                     $groupId,
                     count($results['success']),
-                    implode(',', $removedUsernames)
+                    LegacyLogger::value(implode(',', $removedUsernames))
                 );
 
                 $this->auditLogger->logGroupInfo($logMessage, $groupId);

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -128,14 +128,14 @@ class RecordLog
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $this->ipAddressRetriever->getClientIp(),
             LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-            $prior['type'] ?? '',
-            $prior['name'] ?? '',
-            $prior['content'] ?? '',
+            LegacyLogger::value($prior['type'] ?? ''),
+            LegacyLogger::value($prior['name'] ?? ''),
+            LegacyLogger::value($prior['content'] ?? ''),
             $prior['ttl'] ?? '',
             $prior['prio'] ?? '',
-            $after['type'] ?? '',
-            $after['name'] ?? '',
-            $after['content'] ?? '',
+            LegacyLogger::value($after['type'] ?? ''),
+            LegacyLogger::value($after['name'] ?? ''),
+            LegacyLogger::value($after['content'] ?? ''),
             $after['ttl'] ?? '',
             $after['prio'] ?? ''
         );

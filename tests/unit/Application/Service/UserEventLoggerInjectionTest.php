@@ -37,6 +37,7 @@ use ReflectionMethod;
  */
 class UserEventLoggerInjectionTest extends TestCase
 {
+    private const FAIL2BAN = '/^.*\bpoweradmin(?:\[\d+\])?: client_ip:(\S+) user:\S* operation:(login_failed|mfa_failed)\b/';
     private const CRAFTED = "x client_ip:203.0.113.9 operation:login_failed\nforged";
 
     protected function setUp(): void
@@ -63,6 +64,29 @@ class UserEventLoggerInjectionTest extends TestCase
         $this->assertLineIsSafe($line);
     }
 
+    public function testNameWithASpaceStillMatchesTheFail2banFilter(): void
+    {
+        $_SESSION = ['userlogin' => 'a b'];
+        $line = $this->capture(UserEventLogger::class, static fn(UserEventLogger $l) => $l->logFailedAuth());
+
+        $this->assertStringContainsString('user:a%20b operation:login_failed', $line);
+        $this->assertSame(1, preg_match(self::FAIL2BAN, 'poweradmin: ' . $line, $m));
+        $this->assertSame('1.2.3.4', $m[1]);
+    }
+
+    public function testLdapLineForANameWithASpaceIsFoundByTheUsersLogNameFilter(): void
+    {
+        $_SESSION = ['userlogin' => 'john doe'];
+        $line = $this->capture(LdapUserEventLogger::class, static fn(LdapUserEventLogger $l) => $l->logFailedIncorrectPass());
+
+        $db = new \PDO('sqlite::memory:');
+        $db->exec('CREATE TABLE log_users (id INTEGER PRIMARY KEY, event TEXT, priority INTEGER, created_at TEXT DEFAULT CURRENT_TIMESTAMP)');
+        $db->prepare('INSERT INTO log_users (event, priority) VALUES (:e, 6)')->execute([':e' => $line]);
+
+        $this->assertStringContainsString("user 'john doe'", $line);
+        $this->assertSame(1, (new \Poweradmin\Infrastructure\Logger\DbUserLogger($db))->countFilteredLogs(['name' => 'john doe']));
+    }
+
     /** The OIDC callback logs the provider's error parameter, which anyone can send */
     public function testOidcErrorValueIsEscaped(): void
     {
@@ -76,7 +100,11 @@ class UserEventLoggerInjectionTest extends TestCase
         $this->assertStringContainsString('1.2.3.4', $line);
         $this->assertStringNotContainsString('client_ip:203.0.113.9', $line);
         $this->assertStringNotContainsString("\n", $line);
-        $this->assertStringContainsString('x client_ip%3A203.0.113.9 operation%3Alogin_failed?forged', $line);
+        $this->assertMatchesRegularExpression('/x(%20| )client_ip%3A203\.0\.113\.9(%20| )operation%3Alogin_failed\?forged/', $line);
+        if (str_contains($line, 'operation:login_failed')) {
+            $this->assertSame(1, preg_match(self::FAIL2BAN, 'poweradmin: ' . $line, $m));
+            $this->assertSame('1.2.3.4', $m[1], 'the filter must read the real client, not the planted address');
+        }
     }
 
     /**
