@@ -876,4 +876,26 @@ class PasswordResetSecurityTest extends TestCase
             $this->logger
         );
     }
+
+    public function testCleanupKeepsExpiredRowsForTheWholeThrottleWindow(): void
+    {
+        $this->mockConfigurationManager([
+            'security' => ['password_reset' => ['token_lifetime' => 900, 'rate_limit_window' => 3600]],
+        ]);
+
+        $this->tokenRepository->expects($this->once())->method('deleteExpired')->with(3600)->willReturn(0);
+
+        $this->passwordResetService->cleanupExpiredTokens();
+    }
+
+    public function testCleanupKeepsExpiredRowsForALongerTokenLifetime(): void
+    {
+        $this->mockConfigurationManager([
+            'security' => ['password_reset' => ['token_lifetime' => 7200, 'rate_limit_window' => 3600]],
+        ]);
+
+        $this->tokenRepository->expects($this->once())->method('deleteExpired')->with(7200)->willReturn(0);
+
+        $this->passwordResetService->cleanupExpiredTokens();
+    }
 }

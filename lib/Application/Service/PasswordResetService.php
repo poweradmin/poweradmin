@@ -430,7 +430,12 @@ class PasswordResetService
      */
     public function cleanupExpiredTokens(): void
     {
-        $deleted = $this->tokenRepository->deleteExpired();
+        // Expired rows still feed the request throttle, so keep them for its whole window
+        $retainFor = max(
+            (int)$this->config->get('security', 'password_reset.token_lifetime', 3600),
+            (int)$this->config->get('security', 'password_reset.rate_limit_window', 3600)
+        );
+        $deleted = $this->tokenRepository->deleteExpired($retainFor);
         if ($deleted > 0) {
             $this->logger->debug('Cleaned up expired password reset tokens', [
                 'count' => $deleted,
