@@ -27,36 +27,37 @@ test('deleting a zone cancels its pending requests, which no later zone inherits
   let fresh = null;
   try {
     expect(await pendingRequestIds(adminPage, old.id), 'a new zone started with pending requests').toEqual([]);
+    // The requester must outlive the checks: deleting a user cancels their open requests
     await withTempUser(adminPage, browser, baseURL, testInfo, 'Change Requester', async (owner, ownerPage) => {
       await assignZoneOwner(adminPage, old.id, owner.username);
       const token = await csrfTokenFrom(ownerPage, `/zones/${old.id}/edit`);
       await recordWrites(ownerPage, token, old.id).inlineAdd('gone', 'A', '192.0.2.70');
       await ownerPage.request.post(`/zones/${old.id}/delete`, { form: { _token: token, request_comment: 'remove it' } });
+      const requestIds = await pendingRequestIds(adminPage, old.id);
+      expect(requestIds, 'the owner could not file both requests').toHaveLength(2);
+
+      await deleteZoneById(adminPage, old.id);
+      oldDeleted = true;
+      for (const id of requestIds) {
+        expect(await requestStatus(adminPage, id)).toBe('cancelled');
+        await expect(adminPage.getByText('The zone was deleted.')).toBeVisible();
+      }
+
+      fresh = await createTempZone(adminPage, {
+        name: uniqueZoneName('cr-next', testInfo),
+        records: [{ name: 'www', type: 'A', content: '192.0.2.71' }],
+      });
+      expect(await pendingRequestIds(adminPage, fresh.id)).toEqual([]);
+
+      // Approving a cancelled request changes nothing, whichever zone now holds the id
+      const adminToken = await csrfTokenFrom(adminPage, `/zones/${fresh.id}/edit`);
+      for (const id of requestIds) {
+        await adminPage.request.post(`/zones/requests/${id}`, { form: { _token: adminToken, action: 'approve' } });
+        expect(await requestStatus(adminPage, id)).toBe('cancelled');
+      }
+      const aRecords = (await storedRecords(adminPage, fresh.id)).filter(r => r.type === 'A').map(r => r.content);
+      expect(aRecords).toEqual(['192.0.2.71']);
     });
-    const requestIds = await pendingRequestIds(adminPage, old.id);
-    expect(requestIds, 'the owner could not file both requests').toHaveLength(2);
-
-    await deleteZoneById(adminPage, old.id);
-    oldDeleted = true;
-    for (const id of requestIds) {
-      expect(await requestStatus(adminPage, id)).toBe('cancelled');
-      await expect(adminPage.getByText('The zone was deleted.')).toBeVisible();
-    }
-
-    fresh = await createTempZone(adminPage, {
-      name: uniqueZoneName('cr-next', testInfo),
-      records: [{ name: 'www', type: 'A', content: '192.0.2.71' }],
-    });
-    expect(await pendingRequestIds(adminPage, fresh.id)).toEqual([]);
-
-    // Approving a cancelled request changes nothing, whichever zone now holds the id
-    const token = await csrfTokenFrom(adminPage, `/zones/${fresh.id}/edit`);
-    for (const id of requestIds) {
-      await adminPage.request.post(`/zones/requests/${id}`, { form: { _token: token, action: 'approve' } });
-      expect(await requestStatus(adminPage, id)).toBe('cancelled');
-    }
-    const aRecords = (await storedRecords(adminPage, fresh.id)).filter(r => r.type === 'A').map(r => r.content);
-    expect(aRecords).toEqual(['192.0.2.71']);
   } finally {
     await cleanUp(
       () => oldDeleted || deleteZoneById(adminPage, old.id),
