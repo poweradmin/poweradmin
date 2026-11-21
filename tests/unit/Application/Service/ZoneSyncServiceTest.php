@@ -55,6 +55,27 @@ class ZoneSyncServiceTest extends TestCase
         $this->assertSame(0, $result['updated']);
     }
 
+    public function testSyncReadsLocalZonesBeforeTheBackendList(): void
+    {
+        $order = [];
+        $this->mockBackend->method('getZones')->willReturnCallback(function () use (&$order) {
+            $order[] = 'backend';
+            return [];
+        });
+
+        $localStmt = $this->createMock(PDOStatement::class);
+        $localStmt->method('fetch')->willReturn(false);
+        $this->mockDb->method('query')->willReturnCallback(function () use (&$order, $localStmt) {
+            $order[] = 'local';
+            return $localStmt;
+        });
+
+        $this->service->sync();
+
+        $this->assertSame('local', $order[0]);
+        $this->assertContains('backend', $order);
+    }
+
     public function testSyncRemovesOrphanedLocalZones(): void
     {
         $this->mockBackend->method('getZones')->willReturn([
