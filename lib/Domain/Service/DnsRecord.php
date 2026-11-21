@@ -784,6 +784,18 @@ class DnsRecord
         return $this->domainManager->deleteDomains($domains);
     }
 
+    /**
+     * Deletes domains and reports which ids were removed and which failed.
+     *
+     * @param int[] $domains Array of Domain IDs to delete
+     *
+     * @return array{deleted: int[], failed: int[]}
+     */
+    public function deleteDomainsReporting(array $domains): array
+    {
+        return $this->domainManager->deleteDomainsReporting($domains);
+    }
+
     /** Check if record exists
      *
      * @param string $name Record name

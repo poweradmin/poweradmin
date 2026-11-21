@@ -429,7 +429,20 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomains(array $domains): bool
     {
-        $allSucceeded = true;
+        return $this->deleteDomainsReporting($domains)['failed'] === [];
+    }
+
+    /**
+     * Like deleteDomains(), but reports which zones were removed so a partial batch can still be audited.
+     *
+     * @param int[] $domains Array of Domain IDs to delete
+     *
+     * @return array{deleted: int[], failed: int[]}
+     */
+    public function deleteDomainsReporting(array $domains): array
+    {
+        $deleted = [];
+        $failed = [];
 
         foreach ($domains as $id) {
             $perm_edit = Permission::getEditPermission($this->db);
@@ -444,7 +457,7 @@ class DomainManager implements DomainManagerInterface
                     // could roll back and leave metadata pointing to a deleted zone.
                     if (!$this->backendProvider->deleteZone($id, $zoneName)) {
                         $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
-                        $allSucceeded = false;
+                        $failed[] = $id;
                         continue;
                     }
                 } elseif (!$this->backendProvider->isApiBackend()) {
@@ -480,20 +493,21 @@ class DomainManager implements DomainManagerInterface
                     $this->detachZoneLogs($id);
 
                     $this->db->commit();
+                    $deleted[] = $id;
                 } catch (\Exception $e) {
                     if ($this->db->inTransaction()) {
                         $this->db->rollBack();
                     }
                     $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
-                    $allSucceeded = false;
+                    $failed[] = $id;
                 }
             } else {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
-                $allSucceeded = false;
+                $failed[] = $id;
             }
         }
 
-        return $allSucceeded;
+        return ['deleted' => $deleted, 'failed' => $failed];
     }
 
     /** Keeps the history for admins but stops a later zone that reuses the id from inheriting it. */

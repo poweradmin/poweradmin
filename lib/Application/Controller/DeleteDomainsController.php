@@ -127,24 +127,26 @@ class DeleteDomainsController extends BaseController
             }
         }
 
-        $delete_domains = $dnsRecord->deleteDomains($zone_ids);
+        $result = $dnsRecord->deleteDomainsReporting($zone_ids);
+        $delete_domains = $result['failed'] === [];
+
+        // Audit every zone that was removed, even when another zone in the batch failed
+        $zoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
+        foreach ($deleted_zones as $deleted_zone) {
+            if (!empty($deleted_zone['name']) && in_array((int)$deleted_zone['id'], array_map('intval', $result['deleted']), true)) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
+                    LegacyLogger::value($deleted_zone['name']),
+                    LegacyLogger::value($deleted_zone['type'])
+                ), $deleted_zone['id']);
+                // The delete entry is written after the zone is gone, so detach it too
+                $zoneLogger->detachZone((int)$deleted_zone['id']);
+            }
+        }
 
         if ($delete_domains) {
-            $zoneLogger = new DbZoneLogger($this->db, $this->createDnsBackendProvider());
-            foreach ($deleted_zones as $deleted_zone) {
-                if (!empty($deleted_zone['name'])) {
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        LegacyLogger::encodeUser($this->userContextService->getLoggedInUsername()),
-                        LegacyLogger::value($deleted_zone['name']),
-                        LegacyLogger::value($deleted_zone['type'])
-                    ), $deleted_zone['id']);
-                    // The delete entry is written after the zone is gone, so detach it too
-                    $zoneLogger->detachZone((int)$deleted_zone['id']);
-                }
-            }
-
             // Delete associated comments - wrapped in try-catch to prevent
             // comment deletion failures from breaking zone deletion
             foreach ($zone_ids as $zone_id) {
