@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 use Poweradmin\Infrastructure\Logger\DbApiLogger;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -470,7 +471,7 @@ abstract class PublicApiController extends AbstractApiController
                 'operation:%s method:%s path:%s status:%d key_id:%s user:%s client_ip:%s',
                 $operation,
                 $method,
-                $path,
+                AuditLineValue::of($path),
                 $status,
                 $keyId,
                 $user !== '' ? LegacyLogger::userField($user) : '-',

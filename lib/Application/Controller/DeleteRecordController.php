@@ -47,6 +47,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 class DeleteRecordController extends BaseController
 {
@@ -160,9 +161,9 @@ class DeleteRecordController extends BaseController
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $this->ipAddressRetriever->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
+                        AuditLineValue::of($record_info['type']),
+                        AuditLineValue::of($record_info['name']),
+                        AuditLineValue::of($record_info['content']),
                         $record_info['ttl'],
                         $record_info['prio']
                     ), $zid);
@@ -171,9 +172,9 @@ class DeleteRecordController extends BaseController
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                         $this->ipAddressRetriever->getClientIp(),
                         $this->userContextService->getLoggedInUsername(),
-                        $record_info['type'],
-                        $record_info['name'],
-                        $record_info['content'],
+                        AuditLineValue::of($record_info['type']),
+                        AuditLineValue::of($record_info['name']),
+                        AuditLineValue::of($record_info['content']),
                         $record_info['ttl']
                     ), $zid);
                 }

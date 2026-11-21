@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 class ReverseRecordCreator
 {
@@ -431,8 +432,8 @@ class ReverseRecordCreator
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                 $this->ipAddressRetriever->getClientIp() ?: 'unknown',
                 $username,
-                $content_rev,
-                $fqdn_name,
+                AuditLineValue::of($content_rev),
+                AuditLineValue::of($fqdn_name),
                 $ttl,
                 $prio
             ), (int)$zone_rev_id);

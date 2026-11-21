@@ -1527,6 +1527,7 @@ return array(
     'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => $baseDir . '/lib/Infrastructure/Database/SharedZoneIds.php',
     'Poweradmin\\Infrastructure\\Database\\TableNameService' => $baseDir . '/lib/Infrastructure/Database/TableNameService.php',
     'Poweradmin\\Infrastructure\\Database\\ZoneHealthSql' => $baseDir . '/lib/Infrastructure/Database/ZoneHealthSql.php',
+    'Poweradmin\\Infrastructure\\Logger\\AuditLineValue' => $baseDir . '/lib/Infrastructure/Logger/AuditLineValue.php',
     'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbApiLogger' => $baseDir . '/lib/Infrastructure/Logger/DbApiLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbGroupLogger' => $baseDir . '/lib/Infrastructure/Logger/DbGroupLogger.php',

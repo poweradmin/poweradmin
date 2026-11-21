@@ -1951,6 +1951,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Infrastructure\\Database\\SharedZoneIds' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/SharedZoneIds.php',
         'Poweradmin\\Infrastructure\\Database\\TableNameService' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/TableNameService.php',
         'Poweradmin\\Infrastructure\\Database\\ZoneHealthSql' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/ZoneHealthSql.php',
+        'Poweradmin\\Infrastructure\\Logger\\AuditLineValue' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/AuditLineValue.php',
         'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbApiLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbApiLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbGroupLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbGroupLogger.php',

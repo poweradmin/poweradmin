@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 class RecordLog
 {
@@ -124,14 +125,14 @@ class RecordLog
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $this->ipAddressRetriever->getClientIp(),
             $this->userContextService->getLoggedInUsername(),
-            $prior['type'] ?? '',
-            $prior['name'] ?? '',
-            $prior['content'] ?? '',
+            AuditLineValue::of($prior['type'] ?? ''),
+            AuditLineValue::of($prior['name'] ?? ''),
+            AuditLineValue::of($prior['content'] ?? ''),
             $prior['ttl'] ?? '',
             $prior['prio'] ?? '',
-            $after['type'] ?? '',
-            $after['name'] ?? '',
-            $after['content'] ?? '',
+            AuditLineValue::of($after['type'] ?? ''),
+            AuditLineValue::of($after['name'] ?? ''),
+            AuditLineValue::of($after['content'] ?? ''),
             $after['ttl'] ?? '',
             $after['prio'] ?? ''
         );

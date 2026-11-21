@@ -175,4 +175,21 @@ class RecordLogTest extends TestCase
         $this->assertStringContainsString('content:192.0.2.99', $message);
         $this->assertStringContainsString('ttl:7200', $message);
     }
+
+    public function testPlantedFieldsInContentAreEncodedInTheEditLine(): void
+    {
+        $planted = 'x client_ip:203.0.113.5 operation:login_failed';
+        $prior = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => '"' . $planted . '"', 'ttl' => 60, 'prio' => 0];
+        $after = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => '"user:admin"', 'ttl' => 60, 'prio' => 0];
+
+        $log = $this->makeRecordLog(['old' => $prior, 'new' => $after]);
+        $log->logPrior('old', 5, '');
+        $log->logAfter('new');
+        $message = $this->buildMessage($log);
+
+        $this->assertStringNotContainsString(' client_ip:203', $message);
+        $this->assertStringNotContainsString(' operation:login_failed', $message);
+        $this->assertStringContainsString('client_ip%3A203.0.113.5 operation%3Alogin_failed', $message);
+        $this->assertStringContainsString('content:"user%3Aadmin"', $message);
+    }
 }

@@ -74,9 +74,30 @@ class LegacyLogger
         return $prefix . self::userField($actor) . substr($message, strlen($prefix) + strlen($actor));
     }
 
+    /**
+     * After the leading "client_ip:.. user:.. operation:.." fields, a value must not pass for
+     * one of them or carry a control character, whichever call site built the line.
+     */
+    private function protectFields(string $message): string
+    {
+        if (preg_match('/^client_ip:\S* (?:user:\S* )?operation:\S+/', $message, $m) !== 1) {
+            return $message;
+        }
+
+        $tail = (string)preg_replace('/[\x00-\x1F\x7F]/', '?', substr($message, strlen($m[0])));
+        $tail = (string)preg_replace('/(?<=[ ?])(client_ip|user|operation):/i', '$1%3A', $tail);
+
+        return $m[0] . $tail;
+    }
+
+    private function prepare(string $message): string
+    {
+        return $this->protectFields($this->encodeActor($message));
+    }
+
     private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
-        $message = $this->encodeActor($message);
+        $message = $this->prepare($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -138,7 +159,7 @@ class LegacyLogger
 
     private function doLogWithApi(string $message, int $priority): void
     {
-        $message = $this->encodeActor($message);
+        $message = $this->prepare($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');
@@ -158,7 +179,7 @@ class LegacyLogger
 
     private function doLogWithGroup(string $message, int $priority, ?int $group_id): void
     {
-        $message = $this->encodeActor($message);
+        $message = $this->prepare($message);
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
         $syslog_facility = $this->config->get('logging', 'syslog_facility');

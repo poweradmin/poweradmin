@@ -43,6 +43,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
@@ -631,9 +632,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_add_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getAuthenticatedUsername(),
-                $name,
-                $type,
-                $content
+                AuditLineValue::of($name),
+                AuditLineValue::of($type),
+                AuditLineValue::of($content)
             ), $zoneId);
 
             $message = 'Record created successfully' . $ptrMessage;
@@ -957,12 +958,12 @@ class ZonesRecordsController extends PublicApiController
                 . ' ttl:%s priority:%s old_ttl:%s old_priority:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getAuthenticatedUsername(),
-                $formattedRecord['name'],
-                $formattedRecord['type'],
-                $formattedRecord['content'],
-                DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName),
-                $existingRecord['type'],
-                $this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type']),
+                AuditLineValue::of($formattedRecord['name']),
+                AuditLineValue::of($formattedRecord['type']),
+                AuditLineValue::of($formattedRecord['content']),
+                AuditLineValue::of(DnsHelper::stripZoneSuffix((string)$existingRecord['name'], $zoneName)),
+                AuditLineValue::of($existingRecord['type']),
+                AuditLineValue::of($this->stripTxtQuotes((string)$existingRecord['content'], (string)$existingRecord['type'])),
                 $formattedRecord['ttl'],
                 $formattedRecord['priority'],
                 $existingRecord['ttl'],
@@ -1088,9 +1089,9 @@ class ZonesRecordsController extends PublicApiController
                 'client_ip:%s user:%s operation:api_delete_record name:%s type:%s content:%s',
                 $this->ipAddressRetriever->getClientIp(),
                 $this->getAuthenticatedUsername(),
-                $existingRecord['name'] ?? '',
-                $existingRecord['type'] ?? '',
-                $existingRecord['content'] ?? ''
+                AuditLineValue::of($existingRecord['name'] ?? ''),
+                AuditLineValue::of($existingRecord['type'] ?? ''),
+                AuditLineValue::of($existingRecord['content'] ?? '')
             ), $zoneId);
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);

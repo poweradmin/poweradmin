@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use PDO;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Logger\AuditLineValue;
 
 class RecordManagerService
 {
@@ -96,8 +97,8 @@ class RecordManagerService
             $clientIp,
             $userlogin,
             $type,
-            DnsHelper::restoreZoneSuffix($name, $zone_name),
-            $content,
+            AuditLineValue::of(DnsHelper::restoreZoneSuffix($name, $zone_name)),
+            AuditLineValue::of($content),
             $ttl,
             $prio
         ), $zone_id);
