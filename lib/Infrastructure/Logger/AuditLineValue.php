@@ -36,7 +36,11 @@ final class AuditLineValue
     {
         $value = (string)preg_replace('/[\x00-\x1F\x7F]/', '?', $value);
 
-        return (string)preg_replace('/(?<=[A-Za-z_]):/', '%3A', $value);
+        // Unicode letters count too; the log viewer's collation matches "useŕ:" against "user:".
+        // Invalid UTF-8 makes the /u pattern fail, so fall back to the byte-wise one.
+        $encoded = preg_replace('/(?<=[\\p{L}_]):/u', '%3A', $value);
+
+        return $encoded ?? (string)preg_replace('/(?<=[A-Za-z_]):/', '%3A', $value);
     }
 
     /**

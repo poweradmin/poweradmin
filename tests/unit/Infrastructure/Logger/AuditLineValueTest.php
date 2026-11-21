@@ -39,6 +39,17 @@ class AuditLineValueTest extends TestCase
         $this->assertSame('2001:db8::1 at 12:30', AuditLineValue::of('2001:db8::1 at 12:30'));
     }
 
+    public function testAColonAfterANonAsciiLetterIsEncoded(): void
+    {
+        $this->assertSame("x use\u{0155}%3Aadmin y", AuditLineValue::of("x use\u{0155}:admin y"));
+        $this->assertSame("x \u{043F}%3A y", AuditLineValue::of("x \u{043F}: y"));
+    }
+
+    public function testInvalidUtf8IsNotDroppedAndStillEncodesAsciiFields(): void
+    {
+        $this->assertSame("a\xFF user%3Aadmin", AuditLineValue::of("a\xFF user:admin"));
+    }
+
     public function testAUsernameHasEveryColonEncoded(): void
     {
         $this->assertSame('urn%3A1%3Aann?', AuditLineValue::user("urn:1:ann\t"));
