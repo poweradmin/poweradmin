@@ -3483,7 +3483,7 @@ lug_setup() {
 
     # Permission ids from the perm_items seed: 41 zone_master_add, 43 content_view_own,
     # 44 content_edit_own, 54 user_view_others, 55 user_add_new, 57 user_edit_others,
-    # 60 templ_perm_add, 61 templ_perm_edit, 62 content_edit_own_as_client,
+    # 59 user_edit_templ_perm, 60 templ_perm_add, 61 templ_perm_edit, 62 content_edit_own_as_client,
     # 63 zone_templ_add, 64 zone_templ_edit.
     lug_make_identity "nobody" "[]" || return 1
     lug_make_identity "client" "[43,62,63,64]" || return 1
@@ -3491,6 +3491,7 @@ lug_setup() {
     lug_make_identity "useradd" "[54,55]" || return 1
     lug_make_identity "useredit" "[54,57]" || return 1
     lug_make_identity "templ" "[60,61]" || return 1
+    lug_make_identity "usertempl" "[59]" || return 1
 
     LUG_ADMIN_USER_ID=$(lug_lookup_user "admin")
     if [[ -n "$LUG_ADMIN_USER_ID" ]]; then
@@ -3763,7 +3764,8 @@ lug_test_templ() {
     if [[ -n "$created" ]]; then
         lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"x","permissions":[56,53]}' 403 "templ: adding ueberuser to own template rejected"
         lug_as lug_templ "PUT" "/permission-templates/${created}" '{"name":"lug_created_templ","descr":"y","permissions":[56,43]}' 200 "templ: may edit an ordinary template"
-        lug_as lug_templ "DELETE" "/permission-templates/${created}" "" 403 "templ: delete needs user_edit_templ_perm"
+        lug_as lug_usertempl "DELETE" "/permission-templates/${created}" "" 403 "templ: delete rejected with only user_edit_templ_perm"
+        lug_as lug_templ "DELETE" "/permission-templates/${created}" "" 200 "templ: delete allowed with templ_perm_edit"
     fi
     if [[ -n "$LUG_ADMIN_TEMPL_ID" ]]; then
         lug_as lug_templ "PUT" "/permission-templates/${LUG_ADMIN_TEMPL_ID}" '{"name":"lug_admin_renamed","descr":"x"}' 403 "templ: editing the superuser template rejected"
