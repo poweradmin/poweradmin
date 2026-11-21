@@ -135,6 +135,10 @@ class ZoneSyncService
         $apiStatusService = new ApiStatusService($this->session);
         $syncStartedAt = time();
 
+        // Read the local rows first: a zone created while the PowerDNS list is being
+        // fetched then shows up as missing locally (harmless) instead of as an orphan.
+        $localZones = $this->getLocalZones();
+
         // Only name/kind/master are mirrored, so the DNSSEC lookup is skipped
         // unless the caller is about to read the list with it anyway
         $apiZones = $this->backendProvider->getZones($withDnssec);
@@ -152,7 +156,6 @@ class ZoneSyncService
             );
         }
 
-        $localZones = $this->getLocalZones();
         $this->logger->debug('Zone sync fetched {api} API zones, {local} local zones', [
             'api' => count($apiZones),
             'local' => count($localZones),
