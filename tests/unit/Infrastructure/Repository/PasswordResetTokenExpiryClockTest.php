@@ -134,6 +134,36 @@ class PasswordResetTokenExpiryClockTest extends TestCase
         $this->assertNotNull($repo->findByToken(DbPasswordResetTokenRepository::hashToken('keep')));
     }
 
+    public function testDeleteExpiredKeepsAnExpiredRowThatIsStillInsideTheRetentionWindow(): void
+    {
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'recent',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() - 60),
+            'ip_address' => '203.0.113.1',
+        ]);
+
+        $this->assertSame(0, $repo->deleteExpired(3600), 'An expired row must keep counting toward the request throttle.');
+        $this->assertSame(1, $repo->countRecentAttempts('user@example.com', 3600));
+        $this->assertSame(1, $repo->countRecentAttemptsByIp('203.0.113.1', 3600));
+    }
+
+    public function testDeleteExpiredRemovesAnExpiredRowOnceTheRetentionWindowHasPassed(): void
+    {
+        $db = $this->makeDb();
+        $repo = $this->makeRepository($db);
+        $repo->create([
+            'email' => 'user@example.com',
+            'token' => 'old',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() - 7200),
+        ]);
+        $db->exec("UPDATE password_reset_tokens SET created_at = datetime('now', '-2 hours')");
+
+        $this->assertSame(1, $repo->deleteExpired(3600));
+    }
+
     public function testTokenCanBeClaimedOnlyOnce(): void
     {
         $db = $this->makeDb();

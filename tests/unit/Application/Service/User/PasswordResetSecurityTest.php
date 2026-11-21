@@ -85,6 +85,26 @@ class PasswordResetSecurityTest extends TestCase
         );
     }
 
+    public function testCleanupKeepsExpiredRowsForTheLongerOfTokenLifetimeAndThrottleWindow(): void
+    {
+        $this->config = new FakeConfiguration([
+            'security' => ['password_reset' => ['token_lifetime' => 900, 'rate_limit_window' => 3600]],
+        ]);
+        $service = new PasswordResetService(
+            $this->tokenRepository,
+            $this->userRepository,
+            $this->mailService,
+            $this->config,
+            $this->authService,
+            new ClientContext('192.168.1.1', 'phpunit', 'Unknown', false),
+            $this->logger,
+            new UrlService($this->config, new ProtocolDetector(), $this->logger)
+        );
+        $this->tokenRepository->expects($this->once())->method('deleteExpired')->with(3600)->willReturn(0);
+
+        $service->cleanupExpiredTokens();
+    }
+
     /**
      * Test that OIDC users cannot request password reset
      */

@@ -63,9 +63,11 @@ interface PasswordResetTokenRepositoryInterface
     /**
      * Delete expired tokens and used tokens past their retention window.
      *
+     * @param int $retainFor Seconds an expired row is kept after its creation, because the
+     *                       request throttle counts rows by created_at
      * @return int Number of deleted rows
      */
-    public function deleteExpired(): int;
+    public function deleteExpired(int $retainFor = 0): int;
 
     /**
      * Delete a specific token by ID.
