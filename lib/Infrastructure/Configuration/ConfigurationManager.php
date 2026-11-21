@@ -38,6 +38,7 @@ class ConfigurationManager implements ConfigurationInterface
     private bool $defaultsFileLoaded = false;
     private string $defaultsFilePath = '';
     private LoggerInterface $logger;
+    private array $defaultSettings = [];
     private bool $loggerAttached = false;
 
     /** @var list<array{string, array<string, mixed>}> messages raised by initialize(), before a logger exists */
@@ -126,6 +127,7 @@ class ConfigurationManager implements ConfigurationInterface
             $defaultSettings = require $defaultConfigFile;
             if (is_array($defaultSettings)) {
                 $this->settings = $this->mergeConfig($this->settings, $defaultSettings);
+                $this->defaultSettings = $defaultSettings;
                 $this->defaultsFileLoaded = true;
             }
         }
@@ -319,7 +321,7 @@ class ConfigurationManager implements ConfigurationInterface
 
     private function validateConfiguration(): void
     {
-        $validator = new ConfigValidator($this->settings);
+        $validator = new ConfigValidator($this->settings, $this->defaultSettings === [] ? null : $this->defaultSettings);
         $validator->validate();
         foreach ($validator->getWarnings() as $key => $warning) {
             $this->warn('Configuration warning [{key}]: {warning}', [

@@ -1529,4 +1529,119 @@ class ConfigValidatorTest extends TestCase
         $this->assertTrue($validator->validate());
         $this->assertSame($warns, array_key_exists('pdns_api.url', $validator->getWarnings()), $url);
     }
+
+    public function testQuotedBooleanTogglesWarnButNeverFail(): void
+    {
+        $validator = new ConfigValidator($this->validBase(['api' => ['enabled' => 'false'], 'oidc' => ['enabled' => 1], 'saml' => ['enabled' => true]]));
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayHasKey('api.enabled', $validator->getWarnings());
+        $this->assertStringContainsString("'false' is read as on", $validator->getWarnings()['api.enabled']);
+        $this->assertArrayHasKey('oidc.enabled', $validator->getWarnings());
+        $this->assertArrayNotHasKey('saml.enabled', $validator->getWarnings());
+    }
+
+    public function testUnsetBooleanTogglesDoNotWarn(): void
+    {
+        $validator = new ConfigValidator($this->validBase());
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayNotHasKey('api.enabled', $validator->getWarnings());
+    }
+
+    public function testKeysAbsentFromTheDefaultsWarn(): void
+    {
+        $defaults = ['api' => ['enabled' => false], 'dns' => ['custom_tlds' => []]];
+        $config = $this->validBase([
+            'api' => ['enabled' => false, 'enabeld' => true],
+            'dns' => ['custom_tlds' => ['lan']],
+            'extra_group' => ['a' => 1],
+            'modules' => ['third_party' => ['enabled' => true]],
+        ]);
+
+        $validator = new ConfigValidator($config, $defaults + ['interface' => $config['interface'], 'logging' => $config['logging'], 'modules' => []]);
+
+        $this->assertTrue($validator->validate());
+        $warnings = $validator->getWarnings();
+        $this->assertArrayHasKey('api.enabeld', $warnings);
+        $this->assertArrayHasKey('extra_group', $warnings);
+        $this->assertArrayNotHasKey('dns.custom_tlds', $warnings);
+        $this->assertArrayNotHasKey('modules.third_party', $warnings);
+    }
+
+    public function testMisspeltKeysInsideKnownModulesWarn(): void
+    {
+        $defaults = ['modules' => ['whois' => ['enabled' => false]]];
+        $config = $this->validBase(['modules' => ['whois' => ['enabled' => true, 'enabeld' => true], 'addon' => ['anything' => 1]]]);
+
+        $validator = new ConfigValidator($config, $defaults + ['interface' => $config['interface'], 'logging' => $config['logging']]);
+        $validator->validate();
+
+        $this->assertArrayHasKey('modules.whois.enabeld', $validator->getWarnings());
+        $this->assertArrayNotHasKey('modules.addon', $validator->getWarnings());
+    }
+
+    public function testKeysTheCodeStillReadsAreDeprecatedNotUnknown(): void
+    {
+        $defaults = ['interface' => ['application_url' => ''], 'misc' => ['display_errors' => false], 'modules' => ['whois' => ['enabled' => false]], 'dns' => ['ttl' => 1]];
+        $config = $this->validBase([
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN', 'base_url' => 'https://pa.example.com'],
+            'misc' => ['email_previews_enabled' => true],
+            'whois' => ['enabled' => true],
+            'dns' => ['domain' => 'x'],
+        ]);
+
+        $validator = new ConfigValidator($config, $defaults + ['logging' => $config['logging']]);
+        $validator->validate();
+        $warnings = $validator->getWarnings();
+
+        $this->assertSame('interface.base_url is deprecated, use interface.application_url', $warnings['interface.base_url']);
+        $this->assertSame('misc.email_previews_enabled is deprecated, use modules.email_previews.enabled', $warnings['misc.email_previews_enabled']);
+        $this->assertSame('whois is deprecated, use modules.whois', $warnings['whois']);
+        $this->assertArrayNotHasKey('dns.domain', $warnings);
+    }
+
+    public function testAnEmptyLegacyBaseUrlFromTheDockerImageDoesNotWarn(): void
+    {
+        $defaults = ['interface' => ['application_url' => '']];
+        $validator = new ConfigValidator(['interface' => ['base_url' => '', 'application_url' => '']], $defaults);
+        $validator->validate();
+
+        $this->assertArrayNotHasKey('interface.base_url', $validator->getWarnings());
+    }
+
+    public function testFreeFormMapsUnderOidcAndSamlProvidersAreNotWalked(): void
+    {
+        $defaults = require dirname(__DIR__, 2) . '/config/settings.defaults.php';
+        $config = $defaults;
+        $config['oidc']['providers'] = ['kc' => ['client_id' => 'a', 'custom' => 'x']];
+        $config['saml']['group_mapping'] = ['staff' => 'Staff'];
+
+        $validator = new ConfigValidator($config, $defaults);
+        $validator->validate();
+
+        $this->assertSame([], $validator->getWarnings());
+    }
+
+    public function testShippedDefaultsRaiseNoWarningsAgainstThemselves(): void
+    {
+        $defaults = require dirname(__DIR__, 2) . '/config/settings.defaults.php';
+
+        $validator = new ConfigValidator($defaults, $defaults);
+        $validator->validate();
+
+        $this->assertSame([], $validator->getWarnings());
+    }
+
+    /**
+     * @param array<string, mixed> $extra
+     * @return array<string, mixed>
+     */
+    private function validBase(array $extra = []): array
+    {
+        return array_merge([
+            'interface' => ['rows_per_page' => 10, 'language' => 'en_EN', 'enabled_languages' => 'en_EN'],
+            'logging' => ['syslog_enabled' => false, 'syslog_identity' => 'poweradmin', 'syslog_facility' => LOG_USER],
+        ], $extra);
+    }
 }

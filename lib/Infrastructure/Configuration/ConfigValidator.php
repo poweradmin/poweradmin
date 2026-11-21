@@ -33,8 +33,49 @@ final class ConfigValidator
     private array $errors;
     private array $warnings;
 
-    public function __construct(array $config)
+    /**
+     * Toggles read by plain truthiness, where a quoted 'false' counts as on. A fixed list;
+     * other booleans are not checked.
+     */
+    private const BOOLEAN_SETTINGS = [
+        'database.debug', 'database.ssl', 'database.ssl_verify',
+        'security.login_token_validation', 'security.global_token_validation',
+        'security.protect_last_admin_on_edit', 'security.strict_session_gates',
+        'security.account_lockout.enable_lockout', 'security.account_lockout.track_ip_address',
+        'security.account_lockout.clear_attempts_on_success',
+        'security.mfa.enabled', 'security.mfa.enforced', 'security.mfa.skip_for_external_auth',
+        'security.password_reset.enabled', 'security.username_recovery.enabled', 'security.recaptcha.enabled',
+        'interface.web_enabled', 'dns.strict_tld_check', 'dns.parent_zone_ownership_check',
+        'mail.enabled', 'approval.enabled', 'approval.allow_self_approval', 'dnssec.enabled',
+        'logging.database_enabled', 'misc.display_errors',
+        'ldap.enabled', 'ldap.debug', 'ldap.auto_provision', 'ldap.allow_superuser_provisioning',
+        'api.enabled', 'api.basic_auth_enabled', 'api.docs_enabled',
+        'health.enabled', 'health.ping_enabled', 'metrics.enabled', 'metrics.require_auth',
+        'user_agreement.enabled',
+        'oidc.enabled', 'oidc.auto_provision', 'oidc.link_by_email', 'oidc.require_verified_email', 'oidc.allow_superuser_provisioning',
+        'saml.enabled', 'saml.auto_provision', 'saml.link_by_email', 'saml.allow_superuser_provisioning',
+        'remote_user.enabled', 'remote_user.hide_login_form', 'remote_user.auto_provision', 'remote_user.allow_superuser_provisioning',
+    ];
+
+    /** Keys the code still reads although the defaults dropped them, with their replacement. */
+    private const LEGACY_KEYS = [
+        'interface.base_url' => 'interface.application_url',
+        'misc.email_previews_enabled' => 'modules.email_previews.enabled',
+    ];
+
+    /** Read by the code but undocumented and absent from the defaults, so never reported as unknown. */
+    private const UNDOCUMENTED_KEYS = ['dns.domain'];
+
+    /** @var array<string, mixed>|null the shipped defaults tree, for spotting keys it does not know */
+    private ?array $defaults;
+
+    /**
+     * @param array<string, mixed> $config merged settings
+     * @param array<string, mixed>|null $defaults settings.defaults.php; without it unknown keys are not reported
+     */
+    public function __construct(array $config, ?array $defaults = null)
     {
+        $this->defaults = $defaults;
         $this->config = $config;
         $this->errors = [];
         $this->warnings = [];
@@ -63,6 +104,8 @@ final class ConfigValidator
         $this->validatePermissions();
         $this->validateApproval();
         $this->validateZoneLimitDefaults();
+        $this->warnOnNonBooleanToggles();
+        $this->warnOnUnknownKeys();
 
         return empty($this->errors);
     }
@@ -91,6 +134,79 @@ final class ConfigValidator
     private function getSetting(string $group, string $key, mixed $default = null): mixed
     {
         return $this->config[$group][$key] ?? $default;
+    }
+
+    private function warnOnNonBooleanToggles(): void
+    {
+        foreach (self::BOOLEAN_SETTINGS as $path) {
+            $value = $this->config;
+            foreach (explode('.', $path) as $segment) {
+                if (!is_array($value) || !array_key_exists($segment, $value)) {
+                    continue 2;
+                }
+                $value = $value[$segment];
+            }
+
+            if (!is_bool($value)) {
+                $this->warnings[$path] = sprintf('%s should be an unquoted true or false; %s is read as %s', $path, var_export($value, true), $value ? 'on' : 'off');
+            }
+        }
+    }
+
+    /**
+     * A misspelt key is ignored and the default applies instead. Where the defaults hold a
+     * list or an empty array the contents are free-form (providers, mappings, claim and
+     * attribute maps, TLD and proxy lists) and are not walked. Unknown module names under
+     * modules are left alone because add-on modules keep their own settings there.
+     */
+    private function warnOnUnknownKeys(): void
+    {
+        if ($this->defaults === null) {
+            return;
+        }
+
+        $this->collectUnknownKeys($this->config, $this->defaults, '');
+    }
+
+    /**
+     * @param array<mixed> $config
+     * @param array<mixed> $defaults
+     */
+    private function collectUnknownKeys(array $config, array $defaults, string $prefix): void
+    {
+        foreach ($config as $key => $value) {
+            $path = $prefix . $key;
+            if (!array_key_exists($key, $defaults)) {
+                $this->reportAbsentKey($path, $value);
+                continue;
+            }
+
+            $known = $defaults[$key];
+            if (is_array($value) && is_array($known) && !array_is_list($known)) {
+                $this->collectUnknownKeys($value, $known, $path . '.');
+            }
+        }
+    }
+
+    private function reportAbsentKey(string $path, mixed $value): void
+    {
+        // modules.<name> with an unknown name is an add-on module; keys inside a known one are checked
+        $isAddOnModule = str_starts_with($path, 'modules.') && substr_count($path, '.') === 1;
+        if ($isAddOnModule || in_array($path, self::UNDOCUMENTED_KEYS, true)) {
+            return;
+        }
+
+        $replacement = self::LEGACY_KEYS[$path] ?? null;
+        if ($replacement === null && !str_contains($path, '.') && isset($this->defaults['modules'][$path]) && is_array($value)) {
+            $replacement = 'modules.' . $path;
+        }
+
+        if ($replacement === null) {
+            $this->warnings[$path] = sprintf('%s is not a known setting and is ignored; check the spelling', $path);
+        } elseif ($value !== '' && $value !== null) {
+            // An empty value is what the Docker image writes for an unset variable
+            $this->warnings[$path] = sprintf('%s is deprecated, use %s', $path, $replacement);
+        }
     }
 
     private function validateSyslogUse(): void
