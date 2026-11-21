@@ -266,6 +266,24 @@ class ListLogFiltersTest extends TestCase
         $this->assertArrayNotHasKey('key1', $parsed[0]);
     }
 
+    public function testNewValuesBeforeOldValuesParseIntoTheSameFields(): void
+    {
+        $parsed = $this->makeController()->parseLogEventsForTest([
+            [
+                'created_at' => '2026-01-01 10:00:00',
+                'event' => 'client_ip:192.0.2.10 user:alice operation:edit_record'
+                    . ' record_type:TXT record:t.example.com content:"foo key1:v  hello" ttl:600 priority:0'
+                    . ' old_record_type:TXT old_record:t.example.com old_content:"v=spf1 include:_spf.example.com -all" old_ttl:300 old_priority:0',
+            ],
+        ]);
+
+        $this->assertSame('"foo key1:v  hello"', $parsed[0]['content']);
+        $this->assertSame('"v=spf1 include:_spf.example.com -all"', $parsed[0]['old_content']);
+        $this->assertSame('600', $parsed[0]['ttl']);
+        $this->assertSame('300', $parsed[0]['old_ttl']);
+        $this->assertSame('TXT', $parsed[0]['old_record_type']);
+    }
+
     /**
      * Lines written by 4.3 to 4.5 put old_name after the new content.
      */

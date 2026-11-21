@@ -111,11 +111,24 @@ class AuditServiceTest extends TestCase
 
         $this->assertSame(
             'client_ip:192.0.2.10 user:alice operation:edit_record'
-            . ' old_record_type:A old_record:a.example.com old_content:192.0.2.1 old_ttl:300 old_priority:0'
-            . ' record_type:A record:a.example.com content:192.0.2.2 ttl:600 priority:',
+            . ' record_type:A record:a.example.com content:192.0.2.2 ttl:600 priority:'
+            . ' old_record_type:A old_record:a.example.com old_content:192.0.2.1 old_ttl:300 old_priority:0',
             $this->lines[0][1]
         );
         $this->assertSame(4, $this->lines[0][2]);
+    }
+
+    public function testALongOldContentCannotPushTheNewValuesOutOfTheCappedLine(): void
+    {
+        $this->makeService()->logRecordEdit(
+            4,
+            ['type' => 'TXT', 'name' => 't.example.com', 'content' => str_repeat('a', 3000), 'ttl' => 300, 'prio' => 0],
+            ['type' => 'TXT', 'name' => 't.example.com', 'content' => 'new-value', 'ttl' => 600, 'prio' => 0]
+        );
+
+        $line = $this->lines[0][1];
+        $this->assertLessThan(strpos($line, 'old_content:'), strpos($line, 'content:new-value'));
+        $this->assertLessThan(strpos($line, 'old_record_type:'), strpos($line, 'ttl:600'));
     }
 
     public function testApiRecordEditListsOldAndNewValuesLikeTheWebEdit(): void
@@ -128,8 +141,8 @@ class AuditServiceTest extends TestCase
 
         $this->assertSame(
             'client_ip:192.0.2.10 user:alice operation:api_edit_record'
-            . ' old_record_type:A old_record:a.example.com old_content:192.0.2.1 old_ttl:300 old_priority:0'
-            . ' record_type:A record:a.example.com content:192.0.2.2 ttl:600 priority:0',
+            . ' record_type:A record:a.example.com content:192.0.2.2 ttl:600 priority:0'
+            . ' old_record_type:A old_record:a.example.com old_content:192.0.2.1 old_ttl:300 old_priority:0',
             $this->lines[0][1]
         );
         $this->assertSame(4, $this->lines[0][2]);

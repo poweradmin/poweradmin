@@ -450,17 +450,18 @@ class AuditService implements AuditLoggerInterface
      */
     private function recordEditFields(array $before, array $after): array
     {
+        // New values first: the event column is capped, so a long old value must be the one cut.
         return [
-            'old_record_type' => $before['type'] ?? '',
-            'old_record' => $before['name'] ?? '',
-            'old_content' => $before['content'] ?? '',
-            'old_ttl' => $before['ttl'] ?? '',
-            'old_priority' => $before['prio'] ?? '',
             'record_type' => $after['type'] ?? '',
             'record' => $after['name'] ?? '',
             'content' => $after['content'] ?? '',
             'ttl' => $after['ttl'] ?? '',
             'priority' => $after['prio'] ?? '',
+            'old_record_type' => $before['type'] ?? '',
+            'old_record' => $before['name'] ?? '',
+            'old_content' => $before['content'] ?? '',
+            'old_ttl' => $before['ttl'] ?? '',
+            'old_priority' => $before['prio'] ?? '',
         ];
     }
 
