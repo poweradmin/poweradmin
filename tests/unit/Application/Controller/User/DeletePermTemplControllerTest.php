@@ -28,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\User\DeletePermTemplController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -46,6 +47,12 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
     /** @var PermissionTemplateRepositoryInterface&MockObject */
     private PermissionTemplateRepositoryInterface $templates;
 
+    /** @var PermissionService&MockObject */
+    private PermissionService $permissions;
+
+    /** @var list<string>|null permissions the caller holds; null grants everything */
+    private ?array $granted = null;
+
     /** @var AuditService&MockObject */
     private AuditService $audit;
 
@@ -53,15 +60,17 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
     {
         parent::setUp();
 
-        $permissions = $this->createMock(PermissionService::class);
-        $permissions->method('hasPermission')->willReturn(true);
+        $this->permissions = $this->createMock(PermissionService::class);
+        $this->permissions->method('hasPermission')->willReturnCallback(
+            fn(int $userId, string $permission): bool => $this->granted === null || in_array($permission, $this->granted, true)
+        );
 
         $this->templates = $this->createMock(PermissionTemplateRepositoryInterface::class);
         $this->templates->method('getPermissionTemplateDetails')->willReturn(['id' => self::TEMPLATE_ID, 'name' => 'Spare']);
 
         $this->audit = $this->createMock(AuditService::class);
 
-        $this->factory->method('permissionService')->willReturn($permissions);
+        $this->factory->method('permissionService')->willReturn($this->permissions);
         $this->factory->method('permissionTemplateRepository')->willReturn($this->templates);
         $this->factory->method('auditService')->willReturn($this->audit);
     }
@@ -139,5 +148,25 @@ class DeletePermTemplControllerTest extends SeamControllerTestCase
         $this->assertSame('/permissions/templates', $halt->target);
         $this->assertSame([['error', $expected]], $this->messagesFor('list_perm_templ'));
         $this->assertSame([], $this->messagesFor('system'));
+    }
+
+    public function testAnAssignmentDelegateWithoutTheEditPermissionIsRefusedBeforeAnyDelete(): void
+    {
+        $this->granted = [Permission::PERM_USER_EDIT_TEMPL_PERM];
+        $this->templates->expects($this->never())->method('deletePermissionTemplate');
+
+        $halt = $this->runConfirmedDelete();
+
+        $this->assertSame(RequestHalted::KIND_PERMISSION, $halt->kind);
+    }
+
+    public function testTheTemplateEditPermissionIsEnoughToDelete(): void
+    {
+        $this->granted = [Permission::PERM_TEMPL_PERM_EDIT];
+        $this->templates->method('deletePermissionTemplate')->willReturn(PermissionTemplateDeleteResult::DELETED);
+
+        $halt = $this->runConfirmedDelete();
+
+        $this->assertSame(RequestHalted::KIND_REDIRECT, $halt->kind);
     }
 }

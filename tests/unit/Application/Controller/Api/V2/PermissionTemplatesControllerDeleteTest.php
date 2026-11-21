@@ -28,6 +28,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\Api\V2\PermissionTemplatesController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\User\PermissionTemplateDeleteResult;
 use Poweradmin\Domain\Repository\PermissionTemplateRepositoryInterface;
@@ -65,10 +66,13 @@ class PermissionTemplatesControllerDeleteTest extends V2ControllerTestCase
         return $factory;
     }
 
-    private function invokeDelete(): JsonResponse
+    /** @param list<string>|null $granted permissions the caller holds; null grants everything */
+    private function invokeDelete(?array $granted = null): JsonResponse
     {
         $permissions = $this->createMock(ApiPermissionService::class);
-        $permissions->method('userHasPermission')->willReturn(true);
+        $permissions->method('userHasPermission')->willReturnCallback(
+            static fn(int $userId, string $permission): bool => $granted === null || in_array($permission, $granted, true)
+        );
 
         $controller = $this->bareController(PermissionTemplatesController::class);
         $this->injectBaseCollaborators($controller, 'DELETE');
@@ -111,5 +115,23 @@ class PermissionTemplatesControllerDeleteTest extends V2ControllerTestCase
 
         $this->assertSame(409, $response->getStatusCode());
         $this->assertSame('Cannot delete permission template - it is assigned to one or more users', $this->messageOf($response));
+    }
+
+    public function testAnAssignmentDelegateWithoutTheEditPermissionCannotDelete(): void
+    {
+        $this->templates->expects($this->never())->method('deletePermissionTemplate');
+
+        $response = $this->invokeDelete([Permission::PERM_USER_EDIT_TEMPL_PERM]);
+
+        $this->assertSame(403, $response->getStatusCode());
+    }
+
+    public function testTheTemplateEditPermissionIsEnoughToDelete(): void
+    {
+        $this->templates->method('deletePermissionTemplate')->willReturn(PermissionTemplateDeleteResult::DELETED);
+
+        $response = $this->invokeDelete([Permission::PERM_TEMPL_PERM_EDIT]);
+
+        $this->assertSame(200, $response->getStatusCode());
     }
 }

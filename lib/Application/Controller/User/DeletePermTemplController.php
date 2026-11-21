@@ -42,7 +42,7 @@ class DeletePermTemplController extends BaseController
 
     public function run(): void
     {
-        $this->checkPermission(Permission::PERM_USER_EDIT_TEMPL_PERM, _("You do not have the permission to delete permission templates."));
+        $this->checkPermission(Permission::PERM_TEMPL_PERM_EDIT, _("You do not have the permission to delete permission templates."));
 
         if ($this->httpRequest->getPostParam('confirm') !== null) {
             $this->handleFormSubmission();
