@@ -161,6 +161,30 @@ class DbZoneTemplateRepositoryTest extends TestCase
         $this->assertSame(1, $this->repository->countZoneTemplateRecords($templateId));
     }
 
+    public function testASoaRecordWithALiteralSerialIsStoredAsThePlaceholder(): void
+    {
+        $id = $this->repository->createZoneTemplate('soa', '', 0, 7);
+        $soaId = $this->repository->addRecord($id, '[ZONE]', 'SOA', 'ns.example.com. h.example.com. 2026119999 3600 600 86400 300', 3600, 0);
+        $this->repository->addRecord($id, 'x.[ZONE]', 'TXT', '2026119999', 300, 0);
+
+        $stored = $this->repository->getZoneTemplateRecordById($soaId, $id);
+        $this->assertSame('ns.example.com. h.example.com. [SERIAL] 3600 600 86400 300', $stored['content']);
+
+        $this->repository->updateRecord($soaId, '[ZONE]', 'SOA', 'ns.example.com. h.example.com. 2147483699 3600 600 86400 300', 3600, 0);
+        $stored = $this->repository->getZoneTemplateRecordById($soaId, $id);
+        $this->assertSame('ns.example.com. h.example.com. [SERIAL] 3600 600 86400 300', $stored['content']);
+
+        foreach (["ns.example.com.\th.example.com. 2026119999 3600 600 86400 300", "ns.example.com.  h.example.com.  2026119999 3600 600 86400 300"] as $spaced) {
+            $this->repository->updateRecord($soaId, '[ZONE]', 'SOA', $spaced, 3600, 0);
+            $stored = $this->repository->getZoneTemplateRecordById($soaId, $id);
+            $this->assertSame('ns.example.com. h.example.com. [SERIAL] 3600 600 86400 300', $stored['content']);
+        }
+
+        $this->repository->updateRecord($soaId, '[ZONE]', 'SOA', 'ns.example.com. h.example.com. 0 3600 600 86400 300', 3600, 0);
+        $stored = $this->repository->getZoneTemplateRecordById($soaId, $id);
+        $this->assertSame('ns.example.com. h.example.com. 0 3600 600 86400 300', $stored['content'], 'Serial 0 means autoserial and is kept.');
+    }
+
     public function testGetZoneTemplateRecordByIdScopesToTheTemplate(): void
     {
         $mine = $this->repository->createZoneTemplate('mine', '', 1, 1);

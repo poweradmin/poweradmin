@@ -33,6 +33,7 @@ use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Poweradmin\Domain\Database\CanonicalZoneSql;
 use Poweradmin\Domain\Database\DbCompat;
 use Poweradmin\Domain\Database\PdnsTable;
@@ -769,6 +770,9 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     public function addRecord(int $templateId, string $name, string $type, string $content, int $ttl, int $prio): int
     {
         $content = $this->dnsFormatter()->formatContent($type, $content);
+        if ($type === 'SOA') {
+            $content = ZoneTemplatePlaceholders::withSerialPlaceholder($content);
+        }
 
         $stmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
         $stmt->execute([
@@ -798,6 +802,9 @@ class DbZoneTemplateRepository implements ZoneTemplateRepositoryInterface
     public function updateRecord(int $id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
         $content = $this->dnsFormatter()->formatContent($type, $content);
+        if ($type === 'SOA') {
+            $content = ZoneTemplatePlaceholders::withSerialPlaceholder($content);
+        }
 
         $stmt = $this->db->prepare("UPDATE zone_templ_records SET name = :name, type = :type, content = :content, ttl = :ttl, prio = :prio WHERE id = :id");
         $stmt->execute([

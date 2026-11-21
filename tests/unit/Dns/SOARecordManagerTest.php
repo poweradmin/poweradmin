@@ -146,6 +146,39 @@ class SOARecordManagerTest extends SqliteDnsBackendTestCase
         ];
     }
 
+    #[DataProvider('unparseableDateSerialProvider')]
+    public function testGetNextSerialNeverGoesBackwardsForASerialWithoutARealDate(int $currentSerial): void
+    {
+        $next = (int)$this->soaRecordManager->getNextSerial($currentSerial);
+
+        // RFC 1982: greater than the input whatever today's date is
+        $diff = ($next - $currentSerial) & 0xFFFFFFFF;
+        $this->assertTrue($diff > 0 && $diff < 0x80000000, sprintf('serial %d produced %d', $currentSerial, $next));
+    }
+
+    public static function unparseableDateSerialProvider(): array
+    {
+        return [
+            'month 11, day 99' => [2026119999],
+            'invalid month' => [2026139999],
+            'future date past the signed range' => [2147483699],
+        ];
+    }
+
+    #[DataProvider('futureUnparseableSerialProvider')]
+    public function testGetNextSerialBumpsAFutureSerialWithoutARealDateByOne(int $currentSerial): void
+    {
+        $this->assertSame($currentSerial + 1, (int)$this->soaRecordManager->getNextSerial($currentSerial));
+    }
+
+    public static function futureUnparseableSerialProvider(): array
+    {
+        return [
+            'month 13 far in the future' => [4000139999],
+            'future date past the signed range' => [2147483699],
+        ];
+    }
+
     #[DataProvider('largeSerialProvider')]
     public function testGetNextSerialStaysWithin32Bits($currentSerial): void
     {

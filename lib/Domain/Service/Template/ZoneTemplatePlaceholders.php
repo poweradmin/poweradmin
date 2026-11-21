@@ -83,17 +83,27 @@ class ZoneTemplatePlaceholders
                 $parts[1] = '[HOSTMASTER]';
             }
 
-            // Any numeric serial becomes [SERIAL]; a literal serial in a template
-            // would only stamp stale values into zones created from it. Serial 0
-            // is kept: it means autoserial and getNextSerial() preserves it.
-            if (isset($parts[2]) && ctype_digit($parts[2]) && $parts[2] !== '0') {
-                $parts[2] = '[SERIAL]';
-            }
-
-            $content = implode(' ', $parts);
+            $content = self::withSerialPlaceholder(implode(' ', $parts));
         }
 
         return [$name, $content];
+    }
+
+    /**
+     * Replace a numeric serial in SOA content with [SERIAL]; a literal serial in a
+     * template would only stamp stale values into zones created from it. Serial 0
+     * is kept: it means autoserial and getNextSerial() preserves it.
+     */
+    public static function withSerialPlaceholder(string $soaContent): string
+    {
+        // Split like the SOA validator, so tabs and repeated spaces cannot shift the serial field
+        $parts = preg_split('/\s+/', trim($soaContent));
+        if ($parts === false || !isset($parts[2]) || !ctype_digit($parts[2]) || $parts[2] === '0') {
+            return $soaContent;
+        }
+        $parts[2] = '[SERIAL]';
+
+        return implode(' ', $parts);
     }
 
     /**
