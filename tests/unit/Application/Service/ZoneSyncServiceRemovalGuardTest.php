@@ -105,4 +105,23 @@ class ZoneSyncServiceRemovalGuardTest extends TestCase
         $this->assertSame(3, $result['removed']);
         $this->assertSame(0, $this->zoneCount());
     }
+
+    public function testAZoneCreatedWhilePowerDnsIsListedSurvivesTheSync(): void
+    {
+        $backend = $this->createMock(DnsBackendProvider::class);
+        $backend->method('getZones')->willReturnCallback(function (): array {
+            // The create finishes after PowerDNS built its list but before the sync would read the local rows
+            $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (4, 4, 4, 'new.example')");
+
+            return array_map(
+                static fn(string $name): array => ['name' => $name, 'type' => 'MASTER', 'master' => null],
+                ['a.example', 'b.example', 'c.example']
+            );
+        });
+
+        $result = (new ZoneSyncService($this->db, $backend))->syncIfStale();
+
+        $this->assertSame(0, $result['removed']);
+        $this->assertSame(4, $this->zoneCount());
+    }
 }
