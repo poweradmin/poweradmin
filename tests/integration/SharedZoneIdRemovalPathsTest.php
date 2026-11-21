@@ -44,13 +44,14 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0,
             comment TEXT, zone_name TEXT, zone_type TEXT, zone_master TEXT)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL)");
-        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
+        $this->db->exec("CREATE TABLE records_zone_templ_api (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE zone_template_sync (id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL, zone_templ_id INTEGER, needs_sync INTEGER DEFAULT 0)");
         $this->db->exec("CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL)");
         $this->db->exec("CREATE TABLE password_reset_tokens (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE username_recovery_requests (id INTEGER PRIMARY KEY, email TEXT NOT NULL)");
         $this->db->exec("CREATE TABLE zone_templ (id INTEGER PRIMARY KEY, owner INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE api_keys (id INTEGER PRIMARY KEY, created_by INTEGER)");
         $this->db->exec("CREATE TABLE api_key_zones (id INTEGER PRIMARY KEY AUTOINCREMENT, api_key_id INTEGER NOT NULL,
             zone_id INTEGER NOT NULL, UNIQUE (api_key_id, zone_id))");
 
@@ -206,7 +207,7 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
     }
 
     #[RunInSeparateProcess]
-    public function testAHandoverOnASharedIdMovesOnlyTheZoneTheIdOpens(): void
+    public function testAHandoverOnASharedIdOfAZoneItDoesNotOpenIsRefused(): void
     {
         // Id 70 opens q.example (user 20's); p.example of the deleted user shares it
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, 7, 'p.example'), (71, 70, 20, 'q.example')");
@@ -215,15 +216,15 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         $this->db->exec("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (20, 220), (20, 221)");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'limited', 20)");
         $_SESSION['userid'] = 20;
+        $zonesBefore = $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 
-        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+        $this->assertFalse((new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
             ['zid' => 70, 'target' => 'new_owner', 'newowner' => 20],
-        ]);
+        ]));
 
-        // Owning q.example does not hand the user p.example
-        $this->assertSame([71], $this->idsOf("SELECT id FROM zones WHERE id IN (70, 71) ORDER BY id"));
-        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE zone_name = 'p.example'")->fetchColumn());
-        $this->assertSame(20, (int)$this->db->query("SELECT owner FROM zones WHERE id = 71")->fetchColumn());
+        // The id opens another user's zone, so nothing is handed over and the user stays
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM users WHERE id = " . self::B_OWNER)->fetchColumn());
+        $this->assertSame($zonesBefore, $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC));
     }
 
     #[RunInSeparateProcess]
@@ -232,13 +233,15 @@ class SharedZoneIdRemovalPathsTest extends SqliteIntegrationTestCase
         // Id 70 opens q.example (user 20's); p.example of the deleted user shares it
         $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (70, NULL, 7, 'p.example'), (71, 70, 20, 'q.example')");
         $this->db->exec("INSERT INTO users (id, username, perm_templ) VALUES (20, 'qowner', 1)");
+        $zonesBefore = $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 
-        (new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
+        $this->assertFalse((new UserManager($this->db, $this->primeConfig('api')))->deleteUser(self::B_OWNER, [
             ['zid' => 70, 'target' => 'new_owner', 'newowner' => self::C_OWNER],
-        ]);
+        ]));
 
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zones WHERE domain_id = 70 AND owner = " . self::C_OWNER)->fetchColumn());
-        $this->assertSame(20, (int)$this->db->query("SELECT owner FROM zones WHERE id = 71")->fetchColumn());
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM users WHERE id = " . self::B_OWNER)->fetchColumn());
+        $this->assertSame($zonesBefore, $this->db->query("SELECT * FROM zones ORDER BY id")->fetchAll(PDO::FETCH_ASSOC));
     }
 
     #[RunInSeparateProcess]

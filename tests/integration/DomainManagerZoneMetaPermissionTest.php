@@ -54,6 +54,7 @@ class DomainManagerZoneMetaPermissionTest extends SqliteIntegrationTestCase
 
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER NOT NULL DEFAULT 0)");
         $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL, created_at TEXT)");
+        $this->db->exec("CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, record_id INTEGER NOT NULL, zone_templ_id INTEGER NOT NULL)");
 
         $this->seedZoneOwnedBy(self::META_EDIT_OWN_USER_ID);
         $this->seedAlternatePermSets();
