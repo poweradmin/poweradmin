@@ -569,7 +569,21 @@ class DomainManager implements DomainManagerInterface
      */
     public function deleteDomains(array $domains): bool
     {
-        $allSucceeded = true;
+        return $this->deleteDomainsReport($domains)['failed'] === [];
+    }
+
+    /**
+     * Delete array of domains and report each outcome, so a caller can audit the zones that
+     * went even when another one in the batch failed.
+     *
+     * @param int[] $domains Array of Domain IDs to delete
+     *
+     * @return array{deleted: int[], failed: int[]}
+     */
+    public function deleteDomainsReport(array $domains): array
+    {
+        $deleted = [];
+        $failed = [];
 
         foreach ($domains as $id) {
             $perm_delete = Permission::getDeletePermission($this->db);
@@ -589,7 +603,7 @@ class DomainManager implements DomainManagerInterface
                     // could roll back and leave metadata pointing to a deleted zone.
                     if (!$this->backendProvider->deleteZone($id, $zoneName)) {
                         $this->messageService->addSystemError(_('Failed to delete zone from DNS backend.'));
-                        $allSucceeded = false;
+                        $failed[] = $id;
                         continue;
                     }
                 } elseif (!$this->backendProvider->isApiBackend()) {
@@ -634,6 +648,7 @@ class DomainManager implements DomainManagerInterface
                     }
 
                     $this->db->commit();
+                    $deleted[] = $id;
 
                     $this->captureChange(function () use ($zoneSnapshot, $recordCountBefore): void {
                         $this->changeLogger->logZoneDelete($zoneSnapshot, $recordCountBefore);
@@ -643,15 +658,15 @@ class DomainManager implements DomainManagerInterface
                         $this->db->rollBack();
                     }
                     $this->messageService->addSystemError(sprintf(_('Failed to delete zone metadata: %s'), $e->getMessage()));
-                    $allSucceeded = false;
+                    $failed[] = $id;
                 }
             } else {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
-                $allSucceeded = false;
+                $failed[] = $id;
             }
         }
 
-        return $allSucceeded;
+        return ['deleted' => $deleted, 'failed' => $failed];
     }
 
     /**

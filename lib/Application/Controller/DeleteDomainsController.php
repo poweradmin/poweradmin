@@ -36,6 +36,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -134,26 +135,35 @@ class DeleteDomainsController extends BaseController
             array_map('intval', array_column($deleted_zones, 'id')),
             fn(int $id): bool => DnsBackendProviderFactory::isApiBackend($this->config) && SharedZoneIds::isShared($this->db, $id)
         );
-        $delete_domains = $this->createDomainManager()->deleteDomains($zone_ids);
+        $domainManager = $this->createDomainManager();
+        if ($domainManager instanceof DomainManager) {
+            $report = $domainManager->deleteDomainsReport($zone_ids);
+            $deletedIds = array_map('intval', $report['deleted']);
+            $delete_domains = $report['failed'] === [];
+        } else {
+            $delete_domains = $domainManager->deleteDomains($zone_ids);
+            $deletedIds = $delete_domains ? array_map('intval', $zone_ids) : [];
+        }
 
-        if ($delete_domains) {
-            foreach ($deleted_zones as $deleted_zone) {
-                if (!empty($deleted_zone['name'])) {
-                    $this->auditLogger->logInfo(sprintf(
-                        'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
-                        $this->ipAddressRetriever->getClientIp(),
-                        $this->userContextService->getLoggedInUsername(),
-                        $deleted_zone['name'],
-                        $deleted_zone['type']
-                    ), $deleted_zone['id']);
+        // Every zone that went is audited, also when another zone in the batch failed
+        foreach ($deleted_zones as $deleted_zone) {
+            if (!empty($deleted_zone['name']) && in_array((int)$deleted_zone['id'], $deletedIds, true)) {
+                $this->auditLogger->logInfo(sprintf(
+                    'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
+                    $this->ipAddressRetriever->getClientIp(),
+                    $this->userContextService->getLoggedInUsername(),
+                    $deleted_zone['name'],
+                    $deleted_zone['type']
+                ), $deleted_zone['id']);
 
-                    // The entry is written after the zone is gone, so cut it loose from the reusable id
-                    if (!in_array((int)$deleted_zone['id'], $sharedIds, true)) {
-                        SharedZoneIds::detachZoneHistory($this->db, (int)$deleted_zone['id']);
-                    }
+                // The entry is written after the zone is gone, so cut it loose from the reusable id
+                if (!in_array((int)$deleted_zone['id'], $sharedIds, true)) {
+                    SharedZoneIds::detachZoneHistory($this->db, (int)$deleted_zone['id']);
                 }
             }
+        }
 
+        if ($delete_domains) {
             // Delete associated comments - wrapped in try-catch to prevent
             // comment deletion failures from breaking zone deletion
             foreach ($zone_ids as $zone_id) {
