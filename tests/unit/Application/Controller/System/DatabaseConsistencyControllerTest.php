@@ -28,6 +28,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use Poweradmin\Application\Controller\RequestHalted;
 use Poweradmin\Application\Controller\System\DatabaseConsistencyController;
+use Poweradmin\Application\Service\ControllerServiceFactory;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Database\TableNameService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -54,12 +56,16 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
     /** @var SqlConsistencyChecks&MockObject */
     private SqlConsistencyChecks $checker;
 
+    /** @var PermissionService&MockObject */
+    private PermissionService $permissions;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        $permissions = $this->createMock(PermissionService::class);
-        $permissions->method('hasPermission')->willReturn(true);
+        $this->permissions = $this->createMock(PermissionService::class);
+        $this->permissions->method('hasPermission')->willReturn(true);
+        $permissions = $this->permissions;
 
         $db = new PDO('sqlite::memory:');
         $this->checker = $this->getMockBuilder(SqlConsistencyChecks::class)
@@ -148,6 +154,44 @@ class DatabaseConsistencyControllerTest extends SeamControllerTestCase
         $this->checker->method($method)->willReturn(false);
 
         $this->assertFlashed([['error', $failure]], $this->fixRequest($checkType, $action));
+    }
+
+    /** @return AuditService&MockObject */
+    private function auditSpy(): AuditService
+    {
+        $audit = $this->createMock(AuditService::class);
+        $this->factory = $this->createMock(ControllerServiceFactory::class);
+        $this->factory->method('permissionService')->willReturn($this->permissions);
+        $this->factory->method('consistencyChecker')->willReturn($this->checker);
+        $this->factory->method('auditService')->willReturn($audit);
+
+        return $audit;
+    }
+
+    public function testASingleItemRepairIsAuditedWithItsZoneAndAction(): void
+    {
+        $audit = $this->auditSpy();
+        $this->checker->method('deleteSlaveZone')->willReturn(true);
+        $audit->expects($this->once())->method('logConsistencyRepair')->with('slave_zones_without_masters', 'delete', 7, 'success');
+
+        $this->fixRequest('slave_zones_without_masters', 'delete');
+    }
+
+    public function testABulkRepairIsAuditedWithoutAZone(): void
+    {
+        $audit = $this->auditSpy();
+        $this->checker->method('fixAllZonesWithoutOwner')->willReturn(['assigned' => 2, 'failed' => 1]);
+        $audit->expects($this->once())->method('logConsistencyRepair')->with('zones_without_owners', 'fix_all', null, 'warning');
+
+        $this->fixRequest('zones_without_owners', 'fix_all', null);
+    }
+
+    public function testARefusedActionIsNotAudited(): void
+    {
+        $audit = $this->auditSpy();
+        $audit->expects($this->never())->method('logConsistencyRepair');
+
+        $this->fixRequest('zones_without_owners', 'delete');
     }
 
     public function testTheOwnerFixAssignsTheLoggedInUser(): void

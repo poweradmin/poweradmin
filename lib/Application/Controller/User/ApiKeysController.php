@@ -258,6 +258,12 @@ class ApiKeysController extends BaseController
                 }
             }
 
+            $scopeBefore = [
+                'read_only' => $apiKey->isReadonly(),
+                'operations' => $apiKey->getAllowedOperations(),
+                'zones' => $apiKey->getZoneIds(),
+            ];
+
             // Update the API key
             $updated = $this->apiKeyService()->updateApiKey(
                 $id,
@@ -270,7 +276,15 @@ class ApiKeysController extends BaseController
             );
 
             if ($updated->success) {
-                $this->services()->auditService()->logApiKeyEdit($id, $updated->key->getName());
+                $this->services()->auditService()->logApiKeyEdit(
+                    $id,
+                    $updated->key->getName(),
+                    self::scopeChanges($scopeBefore, [
+                        'read_only' => $updated->key->isReadonly(),
+                        'operations' => $updated->key->getAllowedOperations(),
+                        'zones' => $updated->key->getZoneIds(),
+                    ])
+                );
 
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
                 $this->redirect('/settings/api-keys');
@@ -290,6 +304,43 @@ class ApiKeysController extends BaseController
             'zone_scopes_ready' => $this->apiKeyService()->zoneScopesReady(),
             'zone_scope_unmapped' => ApiKeyService::hasUnmappedZoneScope($apiKey),
         ]);
+    }
+
+    /**
+     * The scope fields an edit changed, for the audit line; unchanged ones are left out.
+     *
+     * @param array{read_only: bool, operations: ?array, zones: ?array} $before
+     * @param array{read_only: bool, operations: ?array, zones: ?array} $after
+     * @return array<string, string>
+     */
+    public static function scopeChanges(array $before, array $after): array
+    {
+        $changes = [];
+        if ($before['read_only'] !== $after['read_only']) {
+            $changes['read_only'] = ($after['read_only'] ? 'yes' : 'no');
+        }
+        foreach (['operations', 'zones'] as $field) {
+            $old = self::scopeList($before[$field]);
+            $new = self::scopeList($after[$field]);
+            if ($old !== $new) {
+                $changes[$field . '_before'] = $old;
+                $changes[$field . '_after'] = $new;
+            }
+        }
+
+        return $changes;
+    }
+
+    /** @param array<mixed>|null $values Null or empty means the key is not restricted on that axis */
+    private static function scopeList(?array $values): string
+    {
+        if ($values === null || $values === []) {
+            return 'all';
+        }
+        $values = array_map('strval', $values);
+        sort($values);
+
+        return implode(',', $values);
     }
 
     /**

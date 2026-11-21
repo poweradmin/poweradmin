@@ -142,7 +142,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
             array_map(fn(array $call): array => array_slice($call, 0, 8), $this->createCalls)
         );
         $this->assertSame(
-            [['logZoneAdd', 1, 'one.example', 'NATIVE', '7', null], ['logZoneAdd', 2, 'two.example', 'NATIVE', '7', null]],
+            [['logZoneAdd', 1, 'one.example', 'NATIVE', '7', null, 4, [2]], ['logZoneAdd', 2, 'two.example', 'NATIVE', '7', null, 4, [2]]],
             $this->audited
         );
     }
@@ -163,7 +163,7 @@ class BulkRegistrationControllerTest extends ZoneCreateControllerTestCase
         $this->assertSame('bulk_registration.html', $template);
         $this->assertSame([['name' => 'one.example', 'reason' => 'There is already a zone with this name.']], $params['failed_domains']);
         $this->assertSame(['two.example'], $params['added_domains']);
-        $this->assertSame([['logZoneAdd', 2, 'two.example', 'MASTER', '7', null]], $this->audited);
+        $this->assertSame([['logZoneAdd', 2, 'two.example', 'MASTER', '7', null, 4, []]], $this->audited);
     }
 
     public function testMoreDomainsThanTheCapAreRefusedBeforeAnythingIsCreated(): void

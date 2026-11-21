@@ -118,16 +118,24 @@ class DatabaseConsistencyController extends BaseController
         $action = (string)$this->httpRequest->getPostParam('action', '');
         $currentUserId = (int)$this->getUserContextService()->getLoggedInUserId();
 
+        $itemId = null;
+        $attempted = true;
         try {
             if ($action === 'fix_all') {
                 $outcome = $service->fixAll($checkType, $currentUserId);
             } elseif ($action !== '' && $action === (self::SINGLE_ITEM_ACTIONS[$checkType] ?? null)) {
-                $outcome = $service->fixOne($checkType, (int)$this->httpRequest->getPostParam('item_id', 0), $currentUserId);
+                $itemId = (int)$this->httpRequest->getPostParam('item_id', 0);
+                $outcome = $service->fixOne($checkType, $itemId, $currentUserId);
             } else {
+                $attempted = false;
                 $outcome = ['status' => 'error', 'message' => _('Invalid action')];
             }
         } catch (Exception $e) {
             $outcome = ['status' => 'error', 'message' => $e->getMessage()];
+        }
+
+        if ($attempted) {
+            $this->services()->auditService()->logConsistencyRepair($checkType, $action, $itemId, $outcome['status']);
         }
 
         $this->setMessage('database_consistency', $outcome['status'], $outcome['message']);

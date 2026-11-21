@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\User;
 
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\User\UserFormMessages;
+use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 
@@ -105,10 +106,29 @@ class DeleteUserController extends BaseController
             return;
         }
 
-        $this->services()->auditService()->logUserDelete($targetUsername);
+        $audit = $this->services()->auditService();
+        $this->auditZoneHandOvers($audit, $uid, $zones);
+        $audit->logUserDelete($targetUsername);
 
         $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
         $this->redirect('/users');
+    }
+
+    /**
+     * One audit line per zone handed to a new owner; the zones stay, so their names resolve.
+     *
+     * @param array<mixed> $decisions
+     */
+    private function auditZoneHandOvers(AuditService $audit, int $deletedUserId, array $decisions): void
+    {
+        $domains = $this->services()->domainRepository();
+        foreach ($decisions as $decision) {
+            if (!is_array($decision) || ($decision['target'] ?? null) !== 'new_owner' || !isset($decision['zid'])) {
+                continue;
+            }
+            $zoneId = (int)$decision['zid'];
+            $audit->logZoneHandOver($zoneId, (string)$domains->getDomainNameById($zoneId), (int)($decision['newowner'] ?? 0), $deletedUserId);
+        }
     }
 
     /**

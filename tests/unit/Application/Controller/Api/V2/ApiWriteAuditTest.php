@@ -479,7 +479,8 @@ class ApiWriteAuditTest extends V2ControllerTestCase
 
     public function testUpdatingAPermissionTemplateIsAudited(): void
     {
-        $this->audit->expects($this->once())->method('logPermTemplateEdit')->with(9, 'Helpers');
+        $this->templates->method('getPermissionsByTemplateId')->willReturnOnConsecutiveCalls(['zone_content_view_own'], ['zone_content_view_own', 'zone_delete_own']);
+        $this->audit->expects($this->once())->method('logPermTemplateEdit')->with(9, 'Helpers', ['zone_content_view_own'], ['zone_content_view_own', 'zone_delete_own']);
 
         $response = $this->callTemplates('updatePermissionTemplate', 'PUT', ['name' => 'Helpers', 'descr' => 'd'], true);
 

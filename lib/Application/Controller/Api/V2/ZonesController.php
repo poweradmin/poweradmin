@@ -629,7 +629,7 @@ class ZonesController extends PublicApiController
                 $this->updateDomainAccount($zoneId, $account);
             }
 
-            $this->services()->auditService()->logApiZoneAdd($zoneId, $domain, $type);
+            $this->services()->auditService()->logApiZoneAdd($zoneId, $domain, $type, $owner, $groupIds);
 
             // Signing is best effort; the outcome tells a client whether it happened
             $payload = ['zone_id' => $zoneId];

@@ -83,4 +83,102 @@ class ApiKeysControllerRefusedEditTest extends SeamControllerTestCase
         $this->assertTrue($params['zone_scope_unmapped']);
         $this->assertSame([['error', 'Refused']], $this->messagesFor('api_key_edit'));
     }
+
+    public function testASuccessfulEditAuditsTheScopeItChanged(): void
+    {
+        $stored = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+        $stored->setZoneIds([42]);
+        $stored->setAllowedOperations(null);
+
+        $saved = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+        $saved->setIsReadonly(true);
+        $saved->setAllowedOperations(['zones.read']);
+        $saved->setZoneIds([43, 42]);
+
+        $service = $this->createMock(ApiKeyService::class);
+        $service->method('getApiKey')->with(7)->willReturn($stored);
+        $service->method('updateApiKey')->willReturn(ApiKeyWriteResult::ok($saved));
+        $this->factory->method('apiKeyService')->willReturn($service);
+
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('hasPermission')->willReturnCallback(
+            fn(int $userId, string $permission): bool => $permission === Permission::PERM_API_MANAGE_KEYS
+        );
+        $this->factory->method('permissionService')->willReturn($permissions);
+
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())->method('logApiKeyEdit')->with(7, 'key', [
+            'read_only' => 'yes',
+            'operations_before' => 'all',
+            'operations_after' => 'zones.read',
+            'zones_before' => '42',
+            'zones_after' => '42,43',
+        ]);
+        $this->factory->method('auditService')->willReturn($audit);
+
+        $this->post(['id' => '7', 'name' => 'key', 'is_readonly' => 'on', 'operations' => ['zones.read'], 'zones' => ['43', '42']]);
+        $config = $this->configure(['api' => ['enabled' => true]]);
+        $controller = new ApiKeysController(['page' => 'api_keys_edit'] + $this->requestData(), $this->environment($config));
+
+        try {
+            $controller->run();
+        } catch (\Poweradmin\Application\Controller\RequestHalted) {
+        }
+    }
+
+    /**
+     * @param list<int>|null $savedZones Zone ids the saved key carries; null when it ends up unrestricted
+     * @param array<string, string> $expectedScope
+     * @param array<string, mixed> $post
+     */
+    private function editWithZones(?array $savedZones, array $post, array $expectedScope): void
+    {
+        $stored = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+        $stored->setZoneIds([42]);
+
+        $saved = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+        $saved->setZoneIds($savedZones);
+
+        $service = $this->createMock(ApiKeyService::class);
+        $service->method('getApiKey')->with(7)->willReturn($stored);
+        $service->method('updateApiKey')->willReturn(ApiKeyWriteResult::ok($saved));
+        $this->factory->method('apiKeyService')->willReturn($service);
+
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('hasPermission')->willReturnCallback(
+            fn(int $userId, string $permission): bool => $permission === Permission::PERM_API_MANAGE_KEYS
+        );
+        $this->factory->method('permissionService')->willReturn($permissions);
+
+        $audit = $this->createMock(AuditService::class);
+        $audit->expects($this->once())->method('logApiKeyEdit')->with(7, 'key', $expectedScope);
+        $this->factory->method('auditService')->willReturn($audit);
+
+        $this->post(['id' => '7', 'name' => 'key'] + $post);
+        $config = $this->configure(['api' => ['enabled' => true]]);
+        $controller = new ApiKeysController(['page' => 'api_keys_edit'] + $this->requestData(), $this->environment($config));
+
+        try {
+            $controller->run();
+        } catch (\Poweradmin\Application\Controller\RequestHalted) {
+        }
+    }
+
+    public function testAZoneListTheServiceDidNotStoreIsNotAuditedAsAChange(): void
+    {
+        // A skipped write leaves the stored list on the saved key
+        $this->editWithZones([42], ['zones' => ['43']], []);
+    }
+
+    public function testClearingTheZoneRestrictionIsAudited(): void
+    {
+        $this->editWithZones(null, [], ['zones_before' => '42', 'zones_after' => 'all']);
+    }
+
+    public function testAnEditThatChangesNoScopeAddsNoScopeFields(): void
+    {
+        $same = ['read_only' => false, 'operations' => null, 'zones' => []];
+
+        $this->assertSame([], ApiKeysController::scopeChanges($same, ['read_only' => false, 'operations' => null, 'zones' => null]));
+    }
 }

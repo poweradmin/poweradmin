@@ -101,6 +101,14 @@ class AuditService implements AuditLoggerInterface
         return implode(' ', $parts);
     }
 
+    /**
+     * @param list<int|string>|null $values
+     */
+    private static function idList(?array $values): ?string
+    {
+        return $values === null ? null : ($values === [] ? '-' : implode(',', $values));
+    }
+
     private static function token(string $value): string
     {
         return str_replace(' ', '_', $value);
@@ -271,9 +279,12 @@ class AuditService implements AuditLoggerInterface
         $this->apiKeyEvent('api_key_create', $keyId, $keyName);
     }
 
-    public function logApiKeyEdit(int $keyId, string $keyName): void
+    /**
+     * @param array<string, int|string|null> $scope Scope fields that changed (read_only, operations, zones_before, zones_after)
+     */
+    public function logApiKeyEdit(int $keyId, string $keyName, array $scope = []): void
     {
-        $this->apiKeyEvent('api_key_edit', $keyId, $keyName);
+        $this->apiKeyEvent('api_key_edit', $keyId, $keyName, $scope);
     }
 
     public function logApiKeyDelete(int $keyId, string $keyName): void
@@ -340,6 +351,22 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($line, $zoneId);
     }
 
+    /**
+     * A repair run from the database consistency page.
+     *
+     * @param string $action fix, delete or fix_all
+     * @param int|null $itemId The zone (or record, for the record checks) repaired; null for fix_all
+     */
+    public function logConsistencyRepair(string $checkType, string $action, ?int $itemId, string $result): void
+    {
+        $this->logger->logInfo($this->line('consistency_repair', [
+            'check' => $checkType,
+            'action' => $action,
+            'item_id' => $itemId,
+            'result' => $result,
+        ]));
+    }
+
     // Permission templates
 
     public function logPermTemplateAdd(string $name): void
@@ -347,9 +374,19 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('add_perm_template', ['name' => $name]));
     }
 
-    public function logPermTemplateEdit(int $templateId, string $name): void
+    /**
+     * @param list<string>|null $permissionsBefore Permission names the template held before the edit
+     * @param list<string>|null $permissionsAfter Permission names it holds now; with the first, the line carries the difference
+     */
+    public function logPermTemplateEdit(int $templateId, string $name, ?array $permissionsBefore = null, ?array $permissionsAfter = null): void
     {
-        $this->logger->logInfo($this->line('edit_perm_template', ['id' => $templateId, 'name' => $name]));
+        $compared = $permissionsBefore !== null && $permissionsAfter !== null;
+        $this->logger->logInfo($this->line('edit_perm_template', [
+            'id' => $templateId,
+            'name' => $name,
+            'added' => $compared ? self::idList(array_values(array_diff($permissionsAfter, $permissionsBefore))) : null,
+            'removed' => $compared ? self::idList(array_values(array_diff($permissionsBefore, $permissionsAfter))) : null,
+        ]));
     }
 
     public function logPermTemplateDelete(int $templateId, string $name): void
@@ -359,13 +396,18 @@ class AuditService implements AuditLoggerInterface
 
     // Zones
 
-    public function logZoneAdd(int $zoneId, string $zoneName, string $zoneType, ?string $template = null, ?string $master = null): void
+    /**
+     * @param list<int>|null $groupIds Groups the new zone was assigned to
+     */
+    public function logZoneAdd(int $zoneId, string $zoneName, string $zoneType, ?string $template = null, ?string $master = null, ?int $ownerId = null, ?array $groupIds = null): void
     {
         $this->logger->logInfo($this->line('add_zone', [
             'zone' => $zoneName,
             'zone_type' => $zoneType,
             'zone_template' => $template,
             'zone_master' => $master,
+            'owner_id' => $ownerId,
+            'group_ids' => self::idList($groupIds),
         ]), $zoneId);
     }
 
@@ -402,9 +444,17 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('import_secondary_zone', ['zone' => $zoneName, 'zone_master' => $master]), $zoneId);
     }
 
-    public function logApiZoneAdd(int $zoneId, string $zoneName, string $zoneType): void
+    /**
+     * @param list<int>|null $groupIds Groups the new zone was assigned to
+     */
+    public function logApiZoneAdd(int $zoneId, string $zoneName, string $zoneType, ?int $ownerId = null, ?array $groupIds = null): void
     {
-        $this->logger->logInfo($this->line('api_add_zone', ['zone_name' => $zoneName, 'zone_type' => $zoneType]), $zoneId);
+        $this->logger->logInfo($this->line('api_add_zone', [
+            'zone_name' => $zoneName,
+            'zone_type' => $zoneType,
+            'owner_id' => $ownerId,
+            'group_ids' => self::idList($groupIds),
+        ]), $zoneId);
     }
 
     public function logApiZoneEdit(int $zoneId, string $zoneName, ?string $zoneType, ?string $zoneMaster): void
@@ -546,6 +596,18 @@ class AuditService implements AuditLoggerInterface
     public function logZoneCatalogClear(int $zoneId, string $zoneName, string $catalog): void
     {
         $this->logger->logInfo($this->line('zone_catalog_clear', ['zone' => $zoneName, 'catalog' => $catalog]), $zoneId);
+    }
+
+    /**
+     * One zone handed to a new owner when its previous owner is deleted.
+     */
+    public function logZoneHandOver(int $zoneId, string $zoneName, int $newOwnerId, int $deletedUserId): void
+    {
+        $this->logger->logInfo($this->line('zone_hand_over', [
+            'zone' => $zoneName,
+            'new_owner_id' => $newOwnerId,
+            'deleted_user_id' => $deletedUserId,
+        ]), $zoneId);
     }
 
     public function logZoneOwnerAdd(int $zoneId, string $zoneName, int $ownerId): void

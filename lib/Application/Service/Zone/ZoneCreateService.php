@@ -138,7 +138,9 @@ class ZoneCreateService
                 $zoneName,
                 $request->type,
                 ZoneType::replicatesFromPrimary($request->type) ? null : $request->template,
-                $request->slaveMaster !== '' ? $request->slaveMaster : null
+                $request->slaveMaster !== '' ? $request->slaveMaster : null,
+                $ownership->owner,
+                $ownership->groupIds
             );
         }
 

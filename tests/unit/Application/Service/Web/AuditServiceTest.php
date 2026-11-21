@@ -69,6 +69,49 @@ class AuditServiceTest extends TestCase
         );
     }
 
+    public function testZoneAddRecordsTheOwnerAndGroupsItWasAssignedTo(): void
+    {
+        $service = $this->makeService();
+        $service->logZoneAdd(7, 'example.com', 'MASTER', null, null, 4, [2, 3]);
+        $service->logZoneAdd(8, 'example.net', 'MASTER', null, null, null, []);
+        $service->logApiZoneAdd(9, 'example.org', 'NATIVE', 5, [1]);
+
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:add_zone zone:example.com zone_type:MASTER owner_id:4 group_ids:2,3', $this->lines[0][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:add_zone zone:example.net zone_type:MASTER group_ids:-', $this->lines[1][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:api_add_zone zone_name:example.org zone_type:NATIVE owner_id:5 group_ids:1', $this->lines[2][1]);
+    }
+
+    public function testPermTemplateEditCarriesThePermissionDifference(): void
+    {
+        $service = $this->makeService();
+        $service->logPermTemplateEdit(3, 'Helpers', ['a', 'b'], ['b', 'c']);
+        $service->logPermTemplateEdit(3, 'Helpers', ['a'], ['a']);
+        $service->logPermTemplateEdit(3, 'Helpers');
+
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:edit_perm_template id:3 name:Helpers added:c removed:a', $this->lines[0][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:edit_perm_template id:3 name:Helpers added:- removed:-', $this->lines[1][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:edit_perm_template id:3 name:Helpers', $this->lines[2][1]);
+    }
+
+    public function testApiKeyEditCarriesTheScopeChanges(): void
+    {
+        $this->makeService()->logApiKeyEdit(5, 'ci', ['read_only' => 'yes', 'zones_before' => 'all', 'zones_after' => '1,2']);
+
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:api_key_edit key_id:5 key_name:ci read_only:yes zones_before:all zones_after:1,2', $this->lines[0][1]);
+    }
+
+    public function testConsistencyRepairAndZoneHandOverAreAudited(): void
+    {
+        $service = $this->makeService();
+        $service->logConsistencyRepair('zones_without_owners', 'fix', 12, 'success');
+        $service->logConsistencyRepair('zones_without_owners', 'fix_all', null, 'warning');
+        $service->logZoneHandOver(12, 'example.com', 4, 9);
+
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:consistency_repair check:zones_without_owners action:fix item_id:12 result:success', $this->lines[0][1]);
+        $this->assertSame('client_ip:192.0.2.10 user:alice operation:consistency_repair check:zones_without_owners action:fix_all result:warning', $this->lines[1][1]);
+        $this->assertSame(['logInfo', 'client_ip:192.0.2.10 user:alice operation:zone_hand_over zone:example.com new_owner_id:4 deleted_user_id:9', 12], $this->lines[2]);
+    }
+
     public function testZoneDeleteLinesCarryNoZoneId(): void
     {
         $service = $this->makeService();

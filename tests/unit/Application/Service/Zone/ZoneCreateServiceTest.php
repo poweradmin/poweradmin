@@ -177,7 +177,7 @@ class ZoneCreateServiceTest extends TestCase
         $this->assertSame(['example.com', 'MASTER', 4, '192.0.2.53', '7', true, [2, 3], self::CALLER, 'EPOCH'], $this->createCalls[0]);
         $this->assertSame(9, $outcome->zoneId);
         $this->assertSame($signed, $outcome->dnssec);
-        $this->assertSame([['logZoneAdd', 9, 'example.com', 'MASTER', '7', '192.0.2.53']], $this->audited);
+        $this->assertSame([['logZoneAdd', 9, 'example.com', 'MASTER', '7', '192.0.2.53', 4, [2, 3]]], $this->audited);
     }
 
     public function testARefusedCreationIsWordedForTheFormAndNotAudited(): void
@@ -195,7 +195,7 @@ class ZoneCreateServiceTest extends TestCase
     {
         $this->service()->create(self::request(['type' => 'SLAVE', 'slaveMaster' => '192.0.2.53']));
 
-        $this->assertSame([['logZoneAdd', 1, 'example.com', 'SLAVE', null, '192.0.2.53']], $this->audited);
+        $this->assertSame([['logZoneAdd', 1, 'example.com', 'SLAVE', null, '192.0.2.53', 7, []]], $this->audited);
     }
 
     public function testAnImportIsAuditedAsOne(): void
@@ -220,7 +220,7 @@ class ZoneCreateServiceTest extends TestCase
         $this->assertSame([['name' => 'bad..example', 'reason' => 'Invalid hostname.']], $batch->failed());
         $this->assertSame(['good.example'], $batch->added());
         $this->assertSame([4, [2]], [$this->createCalls[1][2], $this->createCalls[1][6]]);
-        $this->assertSame([['logZoneAdd', 2, 'good.example', 'MASTER', '7', null]], $this->audited);
+        $this->assertSame([['logZoneAdd', 2, 'good.example', 'MASTER', '7', null, 4, [2]]], $this->audited);
     }
 
     public function testABatchIsStoppedByAnOwnershipRefusalBeforeAnyNameIsTried(): void

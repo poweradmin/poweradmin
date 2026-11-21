@@ -104,6 +104,7 @@ class EditPermTemplController extends BaseController
             return;
         }
 
+        $permissionsBefore = $this->permissionTemplate()->getPermissionsByTemplateId($templateId, true);
         $result = $this->permissionTemplateWriteService()->update($this->callerId(), $templateId, $request);
         if (!$result['success']) {
             $this->setMessage('edit_perm_templ', 'error', $this->translateWriteError($result['message']));
@@ -111,7 +112,12 @@ class EditPermTemplController extends BaseController
             return;
         }
 
-        $this->services()->auditService()->logPermTemplateEdit($templateId, $this->getSafeRequestValue('templ_name'));
+        $this->services()->auditService()->logPermTemplateEdit(
+            $templateId,
+            $this->getSafeRequestValue('templ_name'),
+            $permissionsBefore,
+            $this->permissionTemplate()->getPermissionsByTemplateId($templateId, true)
+        );
 
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
         $this->redirect('/permissions/templates');

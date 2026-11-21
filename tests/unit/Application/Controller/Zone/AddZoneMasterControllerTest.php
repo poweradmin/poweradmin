@@ -204,7 +204,7 @@ class AddZoneMasterControllerTest extends ZoneCreateControllerTestCase
             ['xn--bcher-kva.example', 'MASTER', 4, '', '7', false, [2, 3], self::USER_ID, 'EPOCH'],
             $this->createCalls[0]
         );
-        $this->assertSame([['logZoneAdd', 1, 'xn--bcher-kva.example', 'MASTER', '7', null]], $this->audited);
+        $this->assertSame([['logZoneAdd', 1, 'xn--bcher-kva.example', 'MASTER', '7', null, 4, [2, 3]]], $this->audited);
     }
 
     public function testTheReverseFormTurnsANetworkIntoTheReverseZone(): void

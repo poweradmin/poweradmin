@@ -522,13 +522,19 @@ class PermissionTemplatesController extends PublicApiController
                 $details['perm_id'] = $data['permissions'];
             }
 
+            $permissionsBefore = $this->permissionTemplateRepository->getPermissionsByTemplateId((int)$id, true);
             $result = $this->permissionTemplateWriteService->update($currentUserId, $id, $details);
 
             if (!$result['success']) {
                 return $this->returnApiError($result['message'], RefusalStatus::ofResult($result, 500));
             }
 
-            $this->services()->auditService()->logPermTemplateEdit((int)$id, (string)$data['name']);
+            $this->services()->auditService()->logPermTemplateEdit(
+                (int)$id,
+                (string)$data['name'],
+                $permissionsBefore,
+                $this->permissionTemplateRepository->getPermissionsByTemplateId((int)$id, true)
+            );
 
             return $this->returnApiResponse(null, true, $result['message'], $result['status'] ?? 200);
         } catch (\Throwable $e) {
