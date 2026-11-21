@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -500,9 +500,9 @@ class PermissionTemplatesController extends PublicApiController
             $currentUserId = $this->getAuthenticatedUserId();
 
             // Check if user has permission to delete permission templates
-            // Must match web UI requirement: user_edit_templ_perm permission
+            // Must match web UI requirement: templ_perm_edit permission
             $canDelete = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                         $this->apiPermissionService->userHasPermission($currentUserId, 'user_edit_templ_perm');
+                         $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
 
             if (!$canDelete) {
                 return $this->returnApiError('You do not have permission to delete permission templates', 403);

@@ -469,9 +469,9 @@ class PermissionTemplatesController extends PublicApiController
             $currentUserId = $this->getAuthenticatedUserId();
 
             // Check if user has permission to delete permission templates
-            // Must match web UI requirement: user_edit_templ_perm permission
+            // Must match web UI requirement: templ_perm_edit permission
             $canDelete = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
-                         $this->apiPermissionService->userHasPermission($currentUserId, 'user_edit_templ_perm');
+                         $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
 
             if (!$canDelete) {
                 return $this->returnApiError('You do not have permission to delete permission templates', 403);
