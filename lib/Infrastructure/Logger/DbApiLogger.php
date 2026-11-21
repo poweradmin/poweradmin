@@ -151,23 +151,29 @@ class DbApiLogger
     {
         if (!empty($filters['name'])) {
             // Producers emit a bare "user:<name> "; quoting the value matched nothing.
-            $conditions[] = "log_api.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])) . " %", PDO::PARAM_STR];
+            [$condition, $binds] = DbCompat::wholeFieldLike('log_api.event', 'search_by', "user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])));
+            $conditions[] = $condition;
+            foreach ($binds as $key => $value) {
+                $params[$key] = [$value, PDO::PARAM_STR];
+            }
         }
 
         if (!empty($filters['event_type'])) {
             $typePatterns = [
-                'api_key_create' => '%operation:api_key_create%',
-                'api_key_edit' => '%operation:api_key_edit%',
-                'api_key_delete' => '%operation:api_key_delete%',
-                'api_key_regenerate' => '%operation:api_key_regenerate%',
-                'api_key_toggle' => '%operation:api_key_toggle%',
-                'api_request' => '%operation:api_request%',
-                'api_violation' => '%operation:api_violation%',
+                'api_key_create' => 'operation:api_key_create',
+                'api_key_edit' => 'operation:api_key_edit',
+                'api_key_delete' => 'operation:api_key_delete',
+                'api_key_regenerate' => 'operation:api_key_regenerate',
+                'api_key_toggle' => 'operation:api_key_toggle',
+                'api_request' => 'operation:api_request',
+                'api_violation' => 'operation:api_violation',
             ];
             if (isset($typePatterns[$filters['event_type']])) {
-                $conditions[] = "log_api.event LIKE :event_type";
-                $params[':event_type'] = [$typePatterns[$filters['event_type']], PDO::PARAM_STR];
+                [$condition, $binds] = DbCompat::wholeFieldLike('log_api.event', 'event_type', $typePatterns[$filters['event_type']]);
+                $conditions[] = $condition;
+                foreach ($binds as $key => $value) {
+                    $params[$key] = [$value, PDO::PARAM_STR];
+                }
             }
         }
 

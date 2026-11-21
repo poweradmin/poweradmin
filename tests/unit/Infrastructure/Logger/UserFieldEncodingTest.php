@@ -50,7 +50,7 @@ class UserFieldEncodingTest extends TestCase
         $this->db = new PDO('sqlite::memory:');
         $this->db->exec('CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)');
         $this->db->exec('CREATE TABLE log_users (id INTEGER PRIMARY KEY, event TEXT, priority INTEGER, created_at TEXT)');
-        $this->db->exec('CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, priority INTEGER, zone_id INTEGER)');
+        $this->db->exec('CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT, priority INTEGER, zone_id INTEGER, created_at TEXT)');
         $_SESSION = [];
     }
 
@@ -119,6 +119,72 @@ class UserFieldEncodingTest extends TestCase
             ('client_ip:1.1.1.1 user:admin operation:add_record record:20evil x', 6, 5)");
 
         $this->assertSame([], (new DbZoneLogger($this->db))->getDistinctUsersForZones([5]));
+    }
+
+    public function testAValueThatMerelyContainsUserColonDoesNotMatchTheUserFilter(): void
+    {
+        $insert = $this->db->prepare('INSERT INTO log_users (event, priority) VALUES (:e, 6)');
+        $events = [
+            'client_ip:1.1.1.1 user:bob operation:add_record content:"user:admin x"',
+            'client_ip:1.1.1.1 user:bob operation:add_record content:xuser:admin y',
+            'client_ip:1.1.1.1 user:admin operation:add_user',
+        ];
+        foreach ($events as $event) {
+            $insert->execute([':e' => $event]);
+        }
+
+        $this->assertSame(1, (int)(new DbUserLogger($this->db))->countLogsByUser('admin'));
+    }
+
+    public function testAnOperationFilterNeedsTheWholeField(): void
+    {
+        $this->db->exec("INSERT INTO log_zones (event, priority, zone_id) VALUES
+            ('client_ip:1.1.1.1 user:bob operation:edit_record content:\"operation:delete_zone x\"', 6, 5),
+            ('operation:delete_zone zone:a', 6, 5),
+            ('client_ip:1.1.1.1 user:bob operation:delete_zone zone:a', 6, 5)");
+
+        $logs = (new DbZoneLogger($this->db))->getFilteredLogs(['operation' => 'delete_zone'], 10, 0);
+
+        $this->assertCount(2, $logs);
+    }
+
+    public function testOwnerDropdownIgnoresAQuotedUserValue(): void
+    {
+        $this->db->exec("INSERT INTO users (username) VALUES ('admin')");
+        $this->db->exec("INSERT INTO log_zones (event, priority, zone_id) VALUES
+            ('client_ip:1.1.1.1 user:bob operation:edit_record content:\"user:admin x\"', 6, 5)");
+
+        $this->assertSame([], (new DbZoneLogger($this->db))->getDistinctUsersForZones([5]));
+    }
+
+    public function testUserLogTypeFilterMatchesTheWholeOperation(): void
+    {
+        $insert = $this->db->prepare('INSERT INTO log_users (event, priority, created_at) VALUES (:e, 6, :t)');
+        $events = [
+            'client_ip:1.1.1.1 user:bob operation:logout',
+            'client_ip:1.1.1.1 user:bob operation:password_reset_request email:x',
+            'client_ip:1.1.1.1 user:bob operation:password_reset email:x',
+            'operation:logout',
+        ];
+        foreach ($events as $event) {
+            $insert->execute([':e' => $event, ':t' => '2026-01-01 00:00:00']);
+        }
+        $logger = new DbUserLogger($this->db);
+
+        $this->assertSame(2, $logger->countFilteredLogs(['event_type' => 'logout']));
+        $this->assertSame(1, $logger->countFilteredLogs(['event_type' => 'password_reset']));
+    }
+
+    public function testAMixedCaseFieldNameInAFreeTextValueDoesNotMatchTheUserFilter(): void
+    {
+        $logger = (new ReflectionClass(LegacyLogger::class))->newInstanceWithoutConstructor();
+        $line = (new ReflectionClass(LegacyLogger::class))->getMethod('protectFields')->invoke(
+            $logger,
+            'client_ip:1.1.1.1 user:bob operation:api_key_create key_id:9 key_name:my User:admin key'
+        );
+        $this->db->prepare('INSERT INTO log_users (event, priority) VALUES (:e, 6)')->execute([':e' => $line]);
+
+        $this->assertSame(0, (int)(new DbUserLogger($this->db))->countLogsByUser('admin'));
     }
 
     public function testAnEmptyClientIpStillEncodesTheActor(): void

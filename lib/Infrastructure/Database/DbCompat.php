@@ -393,6 +393,24 @@ final class DbCompat
     }
 
     /**
+     * LIKE condition for a log field token such as "user:bob" that must be a whole space
+     * separated field: at the start, in the middle or at the end of the line, so a value
+     * like "x user:bob y" cannot pass for it unless a space precedes it. Binds :$param and
+     * :{$param}_b to :{$param}_d.
+     *
+     * @return array{0: string, 1: array<string, string>} condition SQL and the values to bind
+     */
+    public static function wholeFieldLike(string $column, string $param, string $token): array
+    {
+        $like = static fn(string $suffix): string => "$column LIKE :{$param}$suffix ESCAPE '!'";
+
+        return [
+            '(' . implode(' OR ', [$like(''), $like('_b'), $like('_c'), $like('_d')]) . ')',
+            [":$param" => $token, ":{$param}_b" => "$token %", ":{$param}_c" => "% $token", ":{$param}_d" => "% $token %"],
+        ];
+    }
+
+    /**
      * Returns a collation clause that forces a byte-exact string comparison,
      * to be appended to a column reference in a WHERE clause (e.g.
      * "oidc_subject" . self::binaryCollation($db_type) . " = ?").

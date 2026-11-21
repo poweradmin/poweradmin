@@ -239,13 +239,15 @@ class DbZoneLogger
 
         $dbType = $this->config->get('database', 'type', 'mysql');
         // The user: field stores colon and space encoded (LegacyLogger::userField); the % they add must not act as a wildcard
-        $userPattern = DbCompat::concat($dbType, ["'%user:'", "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')", "' %'"]);
+        $escapedName = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(u.username, ':', '%3A'), ' ', '%20'), '!', '!!'), '%', '!%'), '_', '!_')";
+        $userPattern = DbCompat::concat($dbType, ["'user:'", $escapedName, "' %'"]);
+        $userPatternInner = DbCompat::concat($dbType, ["'% user:'", $escapedName, "' %'"]);
 
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
                     WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
-                      AND lz.event LIKE " . $userPattern . " ESCAPE '!'
+                      AND (lz.event LIKE " . $userPattern . " ESCAPE '!' OR lz.event LIKE " . $userPatternInner . " ESCAPE '!')
                 )
                 ORDER BY u.username";
 
@@ -335,13 +337,19 @@ class DbZoneLogger
         }
 
         if (!empty($filters['operation'])) {
-            $conditions[] = "log_zones.event LIKE :operation ESCAPE '!'";
-            $params[':operation'] = ["%operation:" . DbCompat::escapeLike($filters['operation']) . " %", PDO::PARAM_STR];
+            [$condition, $binds] = DbCompat::wholeFieldLike('log_zones.event', 'operation', "operation:" . DbCompat::escapeLike($filters['operation']));
+            $conditions[] = $condition;
+            foreach ($binds as $key => $value) {
+                $params[$key] = [$value, PDO::PARAM_STR];
+            }
         }
 
         if (!empty($filters['user'])) {
-            $conditions[] = "log_zones.event LIKE :user_filter ESCAPE '!'";
-            $params[':user_filter'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['user'])) . " %", PDO::PARAM_STR];
+            [$condition, $binds] = DbCompat::wholeFieldLike('log_zones.event', 'user_filter', "user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['user'])));
+            $conditions[] = $condition;
+            foreach ($binds as $key => $value) {
+                $params[$key] = [$value, PDO::PARAM_STR];
+            }
         }
 
         if (!empty($filters['date_from'])) {

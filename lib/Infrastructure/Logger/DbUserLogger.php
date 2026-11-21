@@ -65,13 +65,13 @@ class DbUserLogger
 
     public function countLogsByUser($user)
     {
+        [$condition, $binds] = DbCompat::wholeFieldLike('log_users.event', 'search_by', "user:" . DbCompat::escapeLike(LegacyLogger::userField($user)));
         $stmt = $this->db->prepare("
                     SELECT count(log_users.id) as number_of_logs
                     FROM log_users
-                    WHERE log_users.event LIKE :search_by ESCAPE '!'
+                    WHERE $condition
         ");
-        $name = "%user:" . DbCompat::escapeLike(LegacyLogger::userField($user)) . " %";
-        $stmt->execute(['search_by' => $name]);
+        $stmt->execute($binds);
         return $stmt->fetch()['number_of_logs'];
     }
 
@@ -97,15 +97,17 @@ class DbUserLogger
             return array();
         }
 
+        [$condition, $binds] = DbCompat::wholeFieldLike('log_users.event', 'search_by', "user:" . DbCompat::escapeLike(LegacyLogger::userField($user)));
         $stmt = $this->db->prepare("
             SELECT * FROM log_users
-            WHERE log_users.event LIKE :search_by ESCAPE '!'
+            WHERE $condition
             ORDER BY created_at DESC
             LIMIT :limit
             OFFSET :offset");
 
-        $user = "%user:" . DbCompat::escapeLike(LegacyLogger::userField($user)) . " %";
-        $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
+        foreach ($binds as $key => $value) {
+            $stmt->bindValue($key, $value, PDO::PARAM_STR);
+        }
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -217,8 +219,11 @@ class DbUserLogger
     {
         if (!empty($filters['name'])) {
             // Producers emit a bare "user:<name> "; quoting the value matched nothing.
-            $conditions[] = "log_users.event LIKE :search_by ESCAPE '!'";
-            $params[':search_by'] = ["%user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])) . " %", PDO::PARAM_STR];
+            [$condition, $binds] = DbCompat::wholeFieldLike('log_users.event', 'search_by', "user:" . DbCompat::escapeLike(LegacyLogger::userField($filters['name'])));
+            $conditions[] = $condition;
+            foreach ($binds as $key => $value) {
+                $params[$key] = [$value, PDO::PARAM_STR];
+            }
         }
 
         if (!empty($filters['event_type'])) {
@@ -227,15 +232,18 @@ class DbUserLogger
             // OIDC/SAML callback errors that share the generic login_error operation, and
             // retain a legacy oidc_login_failed pattern for rows logged before 4.4.0.
             $exceptions = [
-                'oidc_login_error' => '%operation:login_error%auth_method:oidc%',
-                'saml_login_error' => '%operation:login_error%auth_method:saml%',
+                'oidc_login_error' => 'operation:login_error%auth_method:oidc',
+                'saml_login_error' => 'operation:login_error%auth_method:saml',
             ];
             $allowed = array_flip($this->getDistinctEventTypes());
             if (isset($allowed[$eventType])) {
                 // Anchor on the trailing space so add_zone_template does not also
                 // match add_zone_template_record, nor password_reset its _request sibling.
-                $conditions[] = "log_users.event LIKE :event_type";
-                $params[':event_type'] = [$exceptions[$eventType] ?? "%operation:$eventType %", PDO::PARAM_STR];
+                [$condition, $binds] = DbCompat::wholeFieldLike('log_users.event', 'event_type', $exceptions[$eventType] ?? "operation:$eventType");
+                $conditions[] = $condition;
+                foreach ($binds as $key => $value) {
+                    $params[$key] = [$value, PDO::PARAM_STR];
+                }
             }
         }
 
