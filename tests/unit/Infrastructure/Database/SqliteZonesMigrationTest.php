@@ -69,6 +69,12 @@ class SqliteZonesMigrationTest extends TestCase
             templ_id integer NOT NULL,
             perm_id integer NOT NULL
         )");
+        $this->db->exec("CREATE TABLE perm_templ (
+            id integer PRIMARY KEY,
+            name VARCHAR(128) NOT NULL,
+            descr VARCHAR(1024) NOT NULL,
+            template_type VARCHAR(10) NOT NULL DEFAULT 'user'
+        )");
 
         // Migration ALTERs login_attempts to add the attempt_type column.
         $this->db->exec("CREATE TABLE login_attempts (
