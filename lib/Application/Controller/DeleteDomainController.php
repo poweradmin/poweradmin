@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -101,8 +101,8 @@ class DeleteDomainController extends BaseController
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $_SESSION["userlogin"],
-                $zone_info['name'],
-                $zone_info['type']
+                LegacyLogger::value($zone_info['name']),
+                LegacyLogger::value($zone_info['type'])
             ), $zone_id);
 
             $this->recordCommentService->deleteCommentsByDomainId($zone_id);

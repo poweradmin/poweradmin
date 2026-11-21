@@ -117,9 +117,9 @@ class AddZoneMasterController extends BaseController
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $_SESSION["userlogin"],
-                $zone_name,
-                $dom_type,
-                $zone_template
+                LegacyLogger::value($zone_name),
+                LegacyLogger::value($dom_type),
+                LegacyLogger::value($zone_template)
             ), $zone_id);
 
             if ($pdnssec_use) {

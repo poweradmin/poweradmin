@@ -92,8 +92,8 @@ class DeleteDomainsController extends BaseController
                     'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],
-                    $deleted_zone['name'],
-                    $deleted_zone['type']
+                    LegacyLogger::value($deleted_zone['name']),
+                    LegacyLogger::value($deleted_zone['type'])
                 ), $deleted_zone['id']);
             }
 

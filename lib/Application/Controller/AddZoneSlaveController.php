@@ -115,8 +115,8 @@ class AddZoneSlaveController extends BaseController
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],
-                    $zone,
-                    $master
+                    LegacyLogger::value($zone),
+                    LegacyLogger::value($master)
                 ), $zone_id);
 
                 $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));

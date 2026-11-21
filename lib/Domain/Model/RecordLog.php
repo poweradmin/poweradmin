@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -94,22 +94,27 @@ class RecordLog
 
     public function write(): void
     {
-        $this->logger->log_info(sprintf(
+        $this->logger->log_info($this->buildLogMessage(), $this->record_prior['zid']);
+    }
+
+    protected function buildLogMessage(): string
+    {
+        return sprintf(
             'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION["userlogin"],
-            $this->record_prior['type'],
-            $this->record_prior['name'],
-            $this->record_prior['content'],
+            LegacyLogger::value($this->record_prior['type']),
+            LegacyLogger::value($this->record_prior['name']),
+            LegacyLogger::value($this->record_prior['content']),
             $this->record_prior['ttl'],
             $this->record_prior['prio'],
-            $this->record_after['type'],
-            $this->record_after['name'],
-            $this->record_after['content'],
+            LegacyLogger::value($this->record_after['type']),
+            LegacyLogger::value($this->record_after['name']),
+            LegacyLogger::value($this->record_after['content']),
             $this->record_after['ttl'],
             $this->record_after['prio']
-        ), $this->record_prior['zid']);
+        );
     }
 }

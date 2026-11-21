@@ -162,7 +162,7 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_secure_zone zone:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName
+            LegacyLogger::value($zoneName)
         ));
 
         return true;
@@ -185,7 +185,7 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_unsecure_zone zone:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName
+            LegacyLogger::value($zoneName)
         ));
 
         return true;
@@ -288,8 +288,8 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_activate_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName,
-            $keyId
+            LegacyLogger::value($zoneName),
+            LegacyLogger::value($keyId)
         ));
 
         return true;
@@ -312,8 +312,8 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_deactivate_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName,
-            $keyId
+            LegacyLogger::value($zoneName),
+            LegacyLogger::value($keyId)
         ));
 
         return true;
@@ -372,10 +372,10 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_add_zone_key zone:%s type:%s bits:%s algorithm:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName,
-            $keyType,
-            $keySize,
-            $algorithm
+            LegacyLogger::value($zoneName),
+            LegacyLogger::value($keyType),
+            LegacyLogger::value($keySize),
+            LegacyLogger::value($algorithm)
         ));
 
         return true;
@@ -398,8 +398,8 @@ class PdnsUtilProvider implements DnssecProvider
             'client_ip:%s user:%s operation:dnssec_remove_zone_key zone:%s key_id:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION['userlogin'],
-            $zoneName,
-            $keyId
+            LegacyLogger::value($zoneName),
+            LegacyLogger::value($keyId)
         ));
 
         return true;
