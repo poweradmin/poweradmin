@@ -223,11 +223,17 @@ class SessionAuthenticator extends LoggingService
             case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
+                if ($this->endSessionOfDisabledProvider('oidc')) {
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
                 // SAML users are already authenticated, no need to verify password
+                if ($this->endSessionOfDisabledProvider('saml')) {
+                    break;
+                }
                 $this->endSessionOfDisabledAccount();
                 break;
             case UserProvisioningService::AUTH_METHOD_LDAP:
@@ -526,6 +532,43 @@ class SessionAuthenticator extends LoggingService
         $stmt->execute();
 
         return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * An SSO session outlives the switch that allowed it, so turning the protocol
+     * off, or removing or disabling the provider it came from, ends it here. A
+     * session with no provider recorded only gets the protocol check.
+     */
+    private function endSessionOfDisabledProvider(string $protocol): bool
+    {
+        // A login that only left a username (a refused account) holds no identity to end.
+        if (!isset($_SESSION['userid']) && !isset($_SESSION['pending_userid'])) {
+            return false;
+        }
+
+        $providerId = $_SESSION[$protocol . '_provider'] ?? null;
+        $hasProvider = is_string($providerId) && $providerId !== '';
+
+        $disabled = !$this->configManager->get($protocol, 'enabled', false);
+        if (!$disabled && $hasProvider) {
+            $providers = $this->configManager->get($protocol, 'providers', []);
+            $provider = is_array($providers) ? ($providers[$providerId] ?? null) : null;
+            if (!is_array($provider)) {
+                $disabled = true;
+            } elseif (isset($provider['enabled']) && !$provider['enabled']) {
+                $disabled = true;
+            } elseif ($protocol === 'oidc') {
+                $disabled = empty($provider['client_id']) || empty($provider['client_secret']);
+            }
+        }
+
+        if (!$disabled) {
+            return false;
+        }
+
+        $this->logWarning('Ending {protocol} session as the protocol or its provider is disabled', ['protocol' => $protocol]);
+        $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+        return true;
     }
 
     private function endSessionOfDisabledAccount(): void
