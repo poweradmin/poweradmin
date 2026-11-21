@@ -282,7 +282,7 @@ final class SessionAuthenticator
                     $this->refuseSsoAccountPasswordLogin($credentials);
                     break;
                 }
-                $this->endSessionOfForeignOrDisabledAccount();
+                $this->endSessionOfForeignOrDisabledAccount('oidc');
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
@@ -291,7 +291,7 @@ final class SessionAuthenticator
                     $this->refuseSsoAccountPasswordLogin($credentials);
                     break;
                 }
-                $this->endSessionOfForeignOrDisabledAccount();
+                $this->endSessionOfForeignOrDisabledAccount('saml');
                 break;
             case UserProvisioningService::AUTH_METHOD_REMOTE_USER:
                 if ($this->startedByWebServer()) {
@@ -593,7 +593,7 @@ final class SessionAuthenticator
         return $maxLifetime > 0 && time() - $signedInAt > $maxLifetime;
     }
 
-    private function endSessionOfForeignOrDisabledAccount(): void
+    private function endSessionOfForeignOrDisabledAccount(string $protocol): void
     {
         $guard = new ExternalSessionGuard($this->services->userRepository(), $this->session);
         $holdsAccount = $this->session->has(SessionKeys::USERID) || $this->session->has(SessionKeys::PENDING_USERID);
@@ -603,7 +603,41 @@ final class SessionAuthenticator
             return;
         }
 
+        if ($holdsAccount && !$this->ssoProviderStillEnabled($protocol)) {
+            $this->logger->warning('Ending {protocol} session of {username}: the sign-in provider is switched off', ['protocol' => $protocol, 'username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+            $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
+            return;
+        }
+
         $this->endSessionOfDisabledAccount();
+    }
+
+    /**
+     * False once the protocol is switched off, or the provider the session signed in
+     * through is gone, lost its OIDC credentials or has SAML enabled = false. A session
+     * without a recorded provider is only held to the protocol switch.
+     */
+    private function ssoProviderStillEnabled(string $protocol): bool
+    {
+        if (!$this->configManager->get($protocol, 'enabled', false)) {
+            return false;
+        }
+
+        $providerId = $this->session->get($protocol === 'oidc' ? SessionKeys::OIDC_PROVIDER : SessionKeys::SAML_PROVIDER);
+        if (!is_string($providerId) || $providerId === '') {
+            return true;
+        }
+
+        $provider = $this->configManager->get($protocol, 'providers', [])[$providerId] ?? null;
+        if (!is_array($provider)) {
+            return false;
+        }
+
+        if ($protocol === 'saml') {
+            return !isset($provider['enabled']) || (bool) $provider['enabled'];
+        }
+
+        return !empty($provider['client_id']) && !empty($provider['client_secret']);
     }
 
     private function endSessionOfDisabledAccount(): void

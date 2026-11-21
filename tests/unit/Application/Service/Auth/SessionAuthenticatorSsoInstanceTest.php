@@ -125,6 +125,8 @@ final class SessionAuthenticatorSsoInstanceTest extends TestCase
             'database' => ['type' => 'mysql', 'host' => 'db', 'port' => '3306', 'name' => $dbName, 'file' => $file, 'pdns_db_name' => ''],
             'security' => ['session_key' => $key],
             'interface' => ['session_timeout' => 1800, 'session_max_lifetime' => 0],
+            'oidc' => ['enabled' => true],
+            'saml' => ['enabled' => true],
         ]);
     }
 
