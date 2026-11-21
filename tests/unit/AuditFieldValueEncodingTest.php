@@ -89,4 +89,23 @@ class AuditFieldValueEncodingTest extends TestCase
         $this->assertStringNotContainsString(' operation:login_failed', $message);
         $this->assertStringContainsString('client_ip%3A203.0.113.5 operation%3Alogin_failed', $message);
     }
+
+    public function testEditRecordLineWritesTheNewValuesBeforeTheOldOnes(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+        $_SESSION['userlogin'] = 'ann';
+        $prior = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => str_repeat('o', 3000), 'ttl' => 60, 'prio' => 0];
+        $after = ['type' => 'TXT', 'name' => 'a.example.com', 'content' => 'brand-new', 'ttl' => 60, 'prio' => 0];
+
+        $reflection = new ReflectionClass(RecordLog::class);
+        $log = $reflection->newInstanceWithoutConstructor();
+        $reflection->getProperty('record_prior')->setValue($log, $prior);
+        $reflection->getProperty('record_after')->setValue($log, $after);
+
+        $message = (string)$reflection->getMethod('buildLogMessage')->invoke($log);
+
+        // The log column keeps the first 2048 characters, so the new value must come first
+        $this->assertLessThan(strpos($message, ' old_record_type:'), strpos($message, ' content:brand-new'));
+        $this->assertStringContainsString('content:brand-new', substr($message, 0, 2048));
+    }
 }

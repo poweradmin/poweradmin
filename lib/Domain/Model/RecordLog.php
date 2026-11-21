@@ -101,20 +101,20 @@ class RecordLog
     {
         return sprintf(
             'client_ip:%s user:%s operation:edit_record'
-            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
-            . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
+            . ' record_type:%s record:%s content:%s ttl:%s priority:%s'
+            . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s',
             $_SERVER['REMOTE_ADDR'],
             $_SESSION["userlogin"],
-            LegacyLogger::value($this->record_prior['type']),
-            LegacyLogger::value($this->record_prior['name']),
-            LegacyLogger::value($this->record_prior['content']),
-            $this->record_prior['ttl'],
-            $this->record_prior['prio'],
             LegacyLogger::value($this->record_after['type']),
             LegacyLogger::value($this->record_after['name']),
             LegacyLogger::value($this->record_after['content']),
             $this->record_after['ttl'],
-            $this->record_after['prio']
+            $this->record_after['prio'],
+            LegacyLogger::value($this->record_prior['type']),
+            LegacyLogger::value($this->record_prior['name']),
+            LegacyLogger::value($this->record_prior['content']),
+            $this->record_prior['ttl'],
+            $this->record_prior['prio']
         );
     }
 }
