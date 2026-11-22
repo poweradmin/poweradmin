@@ -64,7 +64,7 @@ INSERT OR REPLACE INTO users (id, username, password, fullname, email, descripti
 SELECT
     COALESCE((SELECT id FROM users WHERE username = 'admin'), 1),
     'admin',
-    '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi',
+    COALESCE((SELECT password FROM users WHERE username = 'admin'), '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi'),
     'System Administrator',
     'admin@example.com',
     'Full system administrator with full access',
