@@ -72,6 +72,7 @@ final class AuthServices
     private PDO $db;
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
+    private ?ApiKeyAuthenticationMiddleware $apiKeyMiddleware = null;
     private ControllerServiceFactory $services;
 
     private ?AuditService $auditService = null;
@@ -227,7 +228,7 @@ final class AuthServices
 
     public function apiKeyAuthenticationMiddleware(): ApiKeyAuthenticationMiddleware
     {
-        return new ApiKeyAuthenticationMiddleware($this->apiKeyService(), $this->config);
+        return $this->apiKeyMiddleware ??= new ApiKeyAuthenticationMiddleware($this->apiKeyService(), $this->config, $this->logger);
     }
 
     public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware

@@ -52,6 +52,14 @@ use OpenApi\Attributes as OA;
     name: 'X-API-Key',
     in: 'header'
 )]
+#[OA\SecurityScheme(
+    securityScheme: 'apiKeyQuery',
+    type: 'apiKey',
+    description: 'Deprecated since 4.6.0: the key is written to web server and proxy access logs. Send it in the X-API-Key header instead.',
+    name: 'api_key',
+    in: 'query',
+    x: ['deprecated' => true]
+)]
 class OpenApiSpec
 {
 }

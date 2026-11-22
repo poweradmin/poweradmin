@@ -25,6 +25,8 @@ namespace Poweradmin\Application\Service\Auth;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -36,9 +38,12 @@ class ApiKeyAuthenticationMiddleware
 {
     private ApiKeyService $apiKeyService;
     private ConfigurationInterface $config;
+    private LoggerInterface $logger;
+    private bool $queryParamWarned = false;
 
-    public function __construct(ApiKeyService $apiKeyService, ConfigurationInterface $config)
+    public function __construct(ApiKeyService $apiKeyService, ConfigurationInterface $config, ?LoggerInterface $logger = null)
     {
+        $this->logger = $logger ?? new NullLogger();
         $this->config = $config;
         $this->apiKeyService = $apiKeyService;
     }
@@ -146,12 +151,22 @@ class ApiKeyAuthenticationMiddleware
             }
         }
 
-        // Check for API key in api_key query parameter (not recommended but supported)
+        // Deprecated: the key ends up in web server and proxy access logs
         $apiKeyParam = $request->query->get('api_key');
         if (!empty($apiKeyParam)) {
+            $this->warnQueryParamDeprecated();
             return trim($apiKeyParam);
         }
 
         return null;
+    }
+
+    private function warnQueryParamDeprecated(): void
+    {
+        if ($this->queryParamWarned) {
+            return;
+        }
+        $this->queryParamWarned = true;
+        $this->logger->warning('The api_key query parameter is deprecated because the key is written to access logs; send it in the X-API-Key header instead');
     }
 }
