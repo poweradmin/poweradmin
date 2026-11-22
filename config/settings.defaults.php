@@ -483,6 +483,7 @@ return [
         'require_verified_email' => false,    // Only link by email when the provider sends email_verified (added in 4.5.0)
         'allow_superuser_provisioning' => false, // Let OIDC mappings grant user_is_ueberuser (added in 4.5.0)
         'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
+        'verify_id_token' => false,           // Verify the ID token signature, issuer, audience, expiry and nonce; a provider can override it (added in 4.6.0)
         'default_permission_template' => 'Guest',  // Default permission template for new OIDC users (minimal access until assigned proper role)
 
         // Only admit logins whose claims match, for every OIDC provider. Claims are read from the
@@ -717,6 +718,9 @@ return [
                 'userinfo_url' => '',                  // UserInfo endpoint URL
                 'logout_url' => '',                    // Logout endpoint URL (optional)
                 'emails_url' => '',                    // OAuth 2.0 email list such as GitHub's /user/emails (optional)
+                'verify_id_token' => true,             // Overrides oidc.verify_id_token for this provider (added in 4.6.0)
+                'jwks_url' => '',                      // Signing keys URL; required with verification unless auto_discovery finds it
+                'issuer' => '',                        // Expected iss; required with verification unless auto_discovery finds it
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',

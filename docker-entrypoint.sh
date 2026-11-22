@@ -1118,6 +1118,8 @@ generate_config() {
     oidc_require_verified_email=$(to_php_bool "${PA_OIDC_REQUIRE_VERIFIED_EMAIL:-false}")
     local oidc_sync_user_info
     oidc_sync_user_info=$(to_php_bool "${PA_OIDC_SYNC_USER_INFO:-true}")
+    local oidc_verify_id_token
+    oidc_verify_id_token=$(to_php_bool "${PA_OIDC_VERIFY_ID_TOKEN:-false}")
     local oidc_allow_superuser_provisioning
     oidc_allow_superuser_provisioning=$(to_php_bool "${PA_OIDC_ALLOW_SUPERUSER_PROVISIONING:-false}")
     local oidc_azure_enabled
@@ -1624,6 +1626,7 @@ return [
         'link_by_email' => ${oidc_link_by_email},
         'require_verified_email' => ${oidc_require_verified_email},
         'sync_user_info' => ${oidc_sync_user_info},
+        'verify_id_token' => ${oidc_verify_id_token},
         'allow_superuser_provisioning' => ${oidc_allow_superuser_provisioning},
         'default_permission_template' => $(php_sq "${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Guest}"),
         'required_claims' => ${oidc_required_claims},

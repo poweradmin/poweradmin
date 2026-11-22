@@ -1292,6 +1292,7 @@ return array(
     'Poweradmin\\Application\\Service\\Auth\\LoginCredentials' => $baseDir . '/lib/Application/Service/Auth/LoginCredentials.php',
     'Poweradmin\\Application\\Service\\Auth\\MfaVerificationMailer' => $baseDir . '/lib/Application/Service/Auth/MfaVerificationMailer.php',
     'Poweradmin\\Application\\Service\\Auth\\OidcConfigurationService' => $baseDir . '/lib/Application/Service/Auth/OidcConfigurationService.php',
+    'Poweradmin\\Application\\Service\\Auth\\OidcIdTokenVerifier' => $baseDir . '/lib/Application/Service/Auth/OidcIdTokenVerifier.php',
     'Poweradmin\\Application\\Service\\Auth\\OidcService' => $baseDir . '/lib/Application/Service/Auth/OidcService.php',
     'Poweradmin\\Application\\Service\\Auth\\RecaptchaService' => $baseDir . '/lib/Application/Service/Auth/RecaptchaService.php',
     'Poweradmin\\Application\\Service\\Auth\\RemoteUserIdentitySource' => $baseDir . '/lib/Application/Service/Auth/RemoteUserIdentitySource.php',

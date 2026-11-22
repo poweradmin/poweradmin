@@ -161,6 +161,21 @@ class OidcServiceFormPostTest extends TestCase
         $this->assertSame('pkce-verifier-456', $this->session->get('oidc_code_verifier'));
     }
 
+    public function testRestoreFlowFromCookieHydratesTheNonce(): void
+    {
+        $service = $this->makeService('https://dns.example.com');
+        $_COOKIE['__Host-oidc_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
+            'state' => 'state-123',
+            'provider' => 'keycloak',
+            'verifier' => 'pkce-verifier-456',
+            'nonce' => 'nonce-789',
+        ]));
+
+        $this->invoke($service, 'restoreFlowFromCookie');
+
+        $this->assertSame('nonce-789', $this->session->get('oidc_nonce'));
+    }
+
     public function testRestoreFlowIgnoresGarbageCookie(): void
     {
         $service = $this->makeService('https://dns.example.com');

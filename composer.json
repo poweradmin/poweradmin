@@ -47,6 +47,7 @@
     "zircote/swagger-php": "^6.0.5",
     "league/oauth2-client": "^2.8",
     "onelogin/php-saml": "^4.2",
+    "phpseclib/phpseclib": "^3.0.58",
     "symfony/security-bundle": "^7.4.4",
     "symfony/mailer": "^7.4.4",
     "twig/intl-extra": "^3.26"

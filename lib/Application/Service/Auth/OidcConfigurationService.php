@@ -97,7 +97,20 @@ class OidcConfigurationService
             return sprintf("provider '%s' is not defined in oidc.providers", $providerId);
         }
 
-        return $this->describeStaticConfigError($this->processUrlTemplates($providers[$providerId]));
+        $config = $this->processUrlTemplates($providers[$providerId]);
+        $error = $this->describeStaticConfigError($config);
+        if ($error !== null || !empty($config['auto_discovery']) || !$this->isIdTokenVerificationEnabled($config)) {
+            return $error;
+        }
+
+        // Discovery would supply these; without it a verified provider has no other source
+        foreach (['jwks_url', 'issuer'] as $field) {
+            if (empty($config[$field])) {
+                return sprintf("missing required field '%s' (verify_id_token is on and auto_discovery is disabled)", $field);
+            }
+        }
+
+        return null;
     }
 
     private function describeStaticConfigError(array $config): ?string
@@ -120,6 +133,18 @@ class OidcConfigurationService
         }
 
         return null;
+    }
+
+    /**
+     * Whether ID tokens of this provider are verified: its own verify_id_token wins over oidc.verify_id_token.
+     */
+    public function isIdTokenVerificationEnabled(array $providerConfig): bool
+    {
+        if (isset($providerConfig['verify_id_token'])) {
+            return (bool)$providerConfig['verify_id_token'];
+        }
+
+        return (bool)$this->configManager->get('oidc', 'verify_id_token', false);
     }
 
     public function getAllProviderConfigs(): array
@@ -186,6 +211,18 @@ class OidcConfigurationService
                 'scopes_supported' => $discoveredData['scopes_supported'] ?? [],
                 'response_types_supported' => $discoveredData['response_types_supported'] ?? [],
             ];
+
+            // A configured issuer or jwks_url overrides what the metadata advertises
+            foreach (['issuer' => 'issuer', 'jwks_url' => 'jwks_uri'] as $setting => $metadataKey) {
+                $configured = $config[$setting] ?? '';
+                $advertised = $discoveredData[$metadataKey] ?? '';
+                if ($configured !== '' && is_string($advertised) && $advertised !== '' && $configured !== $advertised) {
+                    $this->logger->warning('Configured {setting} {configured} differs from the discovered {advertised} for provider {provider}', [
+                        'setting' => $setting, 'configured' => $configured, 'advertised' => $advertised, 'provider' => $providerId,
+                    ]);
+                }
+                $discoveredConfig[$setting] = $configured !== '' ? $configured : (is_string($advertised) ? $advertised : '');
+            }
 
             // Cache the discovered configuration
             $this->discoveredConfigs[$providerId] = $discoveredConfig;

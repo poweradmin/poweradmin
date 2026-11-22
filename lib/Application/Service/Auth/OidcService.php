@@ -64,6 +64,8 @@ final class OidcService
     private AuditService $auditService;
     /** The provider to use instead of one built from the provider config, for tests */
     private ?GenericProvider $provider;
+    /** The verifier to use instead of one built for the provider, for tests */
+    private ?OidcIdTokenVerifier $idTokenVerifier;
 
     public function __construct(
         ConfigurationInterface $configManager,
@@ -75,7 +77,8 @@ final class OidcService
         MfaService $mfaService,
         SessionInterface $session,
         ?Request $request = null,
-        ?GenericProvider $provider = null
+        ?GenericProvider $provider = null,
+        ?OidcIdTokenVerifier $idTokenVerifier = null
     ) {
         $this->logger = ClassContextLogger::for($logger, self::class);
 
@@ -90,6 +93,7 @@ final class OidcService
         $this->auditService = $auditService;
         $this->mfaService = $mfaService;
         $this->provider = $provider;
+        $this->idTokenVerifier = $idTokenVerifier;
     }
 
 
@@ -191,9 +195,21 @@ final class OidcService
                 'scope' => $scopes,
             ];
 
+            // Sent only when the ID token is verified, so a provider without verification sees the same request as before
+            $nonce = null;
+            if ($this->oidcConfigurationService->isIdTokenVerificationEnabled($config)) {
+                $nonce = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+                $authParams['nonce'] = $nonce;
+            }
+            if ($nonce !== null) {
+                $this->setSessionValue('oidc_nonce', $nonce);
+            } else {
+                $this->unsetSessionValue('oidc_nonce');
+            }
+
             if ($this->shouldUseFormPost($config, $providerId)) {
                 $authParams['response_mode'] = 'form_post';
-                $this->setFlowCookie($state, $providerId, $codeVerifier);
+                $this->setFlowCookie($state, $providerId, $codeVerifier, $nonce);
             }
 
             $authUrl = $provider->getAuthorizationUrl($authParams);
@@ -238,6 +254,10 @@ final class OidcService
             $this->authenticationService->auth($sessionEntity);
             return null;
         }
+
+        // The nonce is single-use: taken out of the session whether or not this callback succeeds
+        $expectedNonce = $this->getSessionValue('oidc_nonce');
+        $this->unsetSessionValue('oidc_nonce');
 
         // Check for error parameter from OIDC provider
         $error = $this->request->getParam('error');
@@ -293,8 +313,10 @@ final class OidcService
             // Capture the id_token so logout can send it as id_token_hint (RP-initiated logout)
             $idToken = $token->getValues()['id_token'] ?? null;
 
+            $verifiedClaims = $this->verifyIdToken($provider, $providerId, $idToken, is_string($expectedNonce) ? $expectedNonce : null);
+
             // Get user information
-            $userInfo = $this->getUserInfo($provider, $token, $providerId);
+            $userInfo = $this->getUserInfo($provider, $token, $providerId, $verifiedClaims);
 
             // Log user info details
             $this->logger->info('OIDC User Info received: {userinfo}', [
@@ -484,6 +506,7 @@ final class OidcService
             $config['token_url'] ?? '',
             $config['userinfo_url'] ?? '',
             $config['emails_url'] ?? '',
+            $config['jwks_url'] ?? '',
         ], static fn(string $url): bool => $url !== '');
 
         foreach ($serverUrls as $serverUrl) {
@@ -503,7 +526,40 @@ final class OidcService
         return new GenericProvider($options, ['httpClient' => $httpClient]);
     }
 
-    private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo
+    /**
+     * Verifies the ID token when verification is on for the provider, and throws when it fails.
+     *
+     * @return array<string, mixed>|null the verified claims, null when verification is off
+     */
+    private function verifyIdToken(GenericProvider $provider, string $providerId, mixed $idToken, ?string $expectedNonce): ?array
+    {
+        $config = $this->oidcConfigurationService->getProviderConfig($providerId) ?? [];
+        if (!$this->oidcConfigurationService->isIdTokenVerificationEnabled($config)) {
+            return null;
+        }
+
+        if (!is_string($idToken) || $idToken === '') {
+            throw new RuntimeException('The token response carries no ID token');
+        }
+        $issuer = $config['issuer'] ?? '';
+        $jwksUrl = $config['jwks_url'] ?? '';
+        if (!is_string($issuer) || $issuer === '' || !is_string($jwksUrl) || $jwksUrl === '') {
+            throw new RuntimeException('No issuer or JWKS URL is known for provider ' . $providerId);
+        }
+
+        $verifier = $this->idTokenVerifier ?? new OidcIdTokenVerifier(
+            $this->logger,
+            static fn(string $url): string => (string)$provider->getHttpClient()->request('GET', $url, ['timeout' => 10, 'allow_redirects' => ['protocols' => ['https']]])->getBody(),
+            dirname(__DIR__, 4) . '/var/cache/oidc'
+        );
+
+        return $verifier->verify($idToken, $issuer, (string)$config['client_id'], $expectedNonce, $jwksUrl);
+    }
+
+    /**
+     * @param array<string, mixed>|null $verifiedClaims ID token claims already verified, null to read the unverified payload
+     */
+    private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId, ?array $verifiedClaims = null): OidcUserInfo
     {
         // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType - getAccessToken returns interface but getResourceOwner expects concrete class
         $resourceOwner = $provider->getResourceOwner($token);
@@ -526,9 +582,15 @@ final class OidcService
         // email_verified in the ID token only. Its claims fill what the userinfo
         // endpoint left out, so the userinfo response still wins on conflict.
         $tokenValues = $token->getValues();
-        $idTokenClaims = isset($tokenValues['id_token'])
+        $idTokenClaims = $verifiedClaims ?? (isset($tokenValues['id_token'])
             ? $this->decodeIdTokenPayload($tokenValues['id_token'])
-            : [];
+            : []);
+        // The verified token vouches for the user; userinfo must describe the same one (OIDC Core 5.3.2)
+        $userinfoSubject = $userData['sub'] ?? null;
+        if ($verifiedClaims !== null && $userinfoSubject !== null && (!is_scalar($userinfoSubject) || (string)$userinfoSubject !== (string)($verifiedClaims['sub'] ?? ''))) {
+            throw new RuntimeException('The userinfo subject does not match the ID token subject');
+        }
+
         $claims = $userData + $idTokenClaims;
 
         $groupsKey = $mapping['groups'] ?? 'groups';
@@ -600,11 +662,9 @@ final class OidcService
     }
 
     /**
-     * Decode the payload of a JWT ID token without signature verification.
-     *
-     * Signature verification is not required here because the token was received
-     * directly from the token endpoint over TLS during the authorization code
-     * exchange, not from an untrusted source like a browser redirect.
+     * Decode the payload of a JWT ID token without signature verification, used
+     * when verify_id_token is off. The token came straight from the token endpoint
+     * over TLS, not from a browser redirect.
      *
      * @return array<string, mixed>
      */
@@ -697,12 +757,13 @@ final class OidcService
         return in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true);
     }
 
-    private function setFlowCookie(string $state, string $providerId, string $codeVerifier): void
+    private function setFlowCookie(string $state, string $providerId, string $codeVerifier, ?string $nonce): void
     {
         $payload = json_encode([
             'state' => $state,
             'provider' => $providerId,
             'verifier' => $codeVerifier,
+            'nonce' => $nonce,
         ]);
 
         $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
@@ -730,6 +791,9 @@ final class OidcService
         $this->setSessionValue('oidc_state', $payload['state']);
         $this->setSessionValue('oidc_provider', $payload['provider']);
         $this->setSessionValue('oidc_code_verifier', $payload['verifier']);
+        if (is_string($payload['nonce'] ?? null)) {
+            $this->setSessionValue('oidc_nonce', $payload['nonce']);
+        }
 
         $this->logger->info('Restored OIDC flow state from flow cookie for form_post callback');
     }

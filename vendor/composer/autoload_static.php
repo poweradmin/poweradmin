@@ -1716,6 +1716,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Application\\Service\\Auth\\LoginCredentials' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/LoginCredentials.php',
         'Poweradmin\\Application\\Service\\Auth\\MfaVerificationMailer' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/MfaVerificationMailer.php',
         'Poweradmin\\Application\\Service\\Auth\\OidcConfigurationService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/OidcConfigurationService.php',
+        'Poweradmin\\Application\\Service\\Auth\\OidcIdTokenVerifier' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/OidcIdTokenVerifier.php',
         'Poweradmin\\Application\\Service\\Auth\\OidcService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/OidcService.php',
         'Poweradmin\\Application\\Service\\Auth\\RecaptchaService' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/RecaptchaService.php',
         'Poweradmin\\Application\\Service\\Auth\\RemoteUserIdentitySource' => __DIR__ . '/../..' . '/lib/Application/Service/Auth/RemoteUserIdentitySource.php',

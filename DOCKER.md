@@ -668,6 +668,7 @@ services:
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_REQUIRE_VERIFIED_EMAIL` | Only link by email when the provider sends `email_verified` | `false` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
+| `PA_OIDC_VERIFY_ID_TOKEN` | Verify the ID token signature against the provider's JWKS and check iss, aud, exp and a login nonce; refuse the login when it fails (providers can override it in settings.php) | `false` | No |
 | `PA_OIDC_ALLOW_SUPERUSER_PROVISIONING` | Let OIDC group mappings grant the superuser flag | `false` | No |
 | `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Permission template for auto-provisioned OIDC users when no mapping matches | `Guest` | No |
 | `PA_OIDC_REQUIRED_CLAIMS` | Only admit OIDC logins whose claims match, checked before account lookup (format: `claim1=value1,claim2=value2`; a list claim such as `groups` must contain the value; one value per name, a `|` list or an empty value is a configuration error that blocks every login) | Empty | No |

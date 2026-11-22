@@ -52,7 +52,7 @@ final class ConfigValidator
         'api.enabled', 'api.basic_auth_enabled', 'api.docs_enabled',
         'health.enabled', 'health.ping_enabled', 'metrics.enabled', 'metrics.require_auth',
         'user_agreement.enabled',
-        'oidc.enabled', 'oidc.auto_provision', 'oidc.link_by_email', 'oidc.require_verified_email', 'oidc.allow_superuser_provisioning',
+        'oidc.enabled', 'oidc.auto_provision', 'oidc.link_by_email', 'oidc.require_verified_email', 'oidc.allow_superuser_provisioning', 'oidc.verify_id_token',
         'saml.enabled', 'saml.auto_provision', 'saml.link_by_email', 'saml.allow_superuser_provisioning',
         'remote_user.enabled', 'remote_user.hide_login_form', 'remote_user.auto_provision', 'remote_user.allow_superuser_provisioning',
     ];
