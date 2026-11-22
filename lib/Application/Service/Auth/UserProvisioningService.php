@@ -82,10 +82,12 @@ class UserProvisioningService
      * Sync an already-matched user from external auth data. Identity fields,
      * template mapping and group membership are driven by the auth method's
      * config section; nothing is written when the data is unchanged.
+     *
+     * @return bool False when a provider-assigned template had to be revoked and could not be, so the sign-in must be refused
      */
-    public function syncExistingUser(int $userId, UserInfoInterface $userInfo): void
+    public function syncExistingUser(int $userId, UserInfoInterface $userInfo): bool
     {
-        $this->updateExistingUser($userId, $userInfo, $this->determineAuthMethodFromUserInfo($userInfo));
+        return $this->updateExistingUser($userId, $userInfo, $this->determineAuthMethodFromUserInfo($userInfo));
     }
 
     /**
@@ -133,8 +135,8 @@ class UserProvisioningService
                     'subject' => $userInfo->getSubject()
                 ]);
                 // A refused login must not write provider data onto the disabled account
-                if ($this->userRepository->isActiveUser($existingUserId)) {
-                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                if ($this->userRepository->isActiveUser($existingUserId) && !$this->updateExistingUser($existingUserId, $userInfo, $authMethod)) {
+                    return null;
                 }
                 return $existingUserId;
             }
@@ -190,7 +192,9 @@ class UserProvisioningService
                         );
                     }
                     $this->linkIdentity($existingUserId, $userInfo, $providerId, $authMethod);
-                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                    if (!$this->updateExistingUser($existingUserId, $userInfo, $authMethod)) {
+                        return null;
+                    }
                     return $existingUserId;
                 }
 
@@ -516,8 +520,10 @@ class UserProvisioningService
         }
     }
 
-    private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
+    private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): bool
     {
+        // Set once a revocation is due: failing to apply it then refuses the sign-in
+        $revocationDue = false;
         try {
             $updates = [];
 
@@ -566,6 +572,7 @@ class UserProvisioningService
                 // ('sso' is the legacy label from before per-method sources)
                 $currentSource = $current['perm_templ_source'] ?? null;
                 if ($currentSource === $authMethod || $currentSource === 'sso') {
+                    $revocationDue = true;
                     // User previously got template from SSO mapping but no longer matches any group
                     // Fall back to default permission template
                     $defaultTemplateId = $this->getDefaultPermissionTemplateId($authMethod);
@@ -574,10 +581,17 @@ class UserProvisioningService
                         $this->logger->info('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
                             'userId' => $userId
                         ]);
-                    } else {
-                        $this->logger->warning('SSO group-mapped template should be revoked for user {userId} but no default template configured - keeping current template', [
+                    } elseif ($this->isMappedTemplate((int)($current['perm_templ'] ?? 0), $authMethod)) {
+                        // A template the group mapping grants may not outlive the mapping match
+                        $this->logger->warning('Refusing sign-in of user {userId}: the group-mapped template must be revoked but no default template could be resolved', [
                             'userId' => $userId
                         ]);
+                        return false;
+                    } else {
+                        $this->logger->warning('SSO template should be revoked for user {userId} but no default template configured - keeping current template', [
+                            'userId' => $userId
+                        ]);
+                        $revocationDue = false;
                     }
                 } else {
                     $this->logger->info('No matching group mapping for user {userId}, keeping admin-assigned permissions unchanged', [
@@ -623,12 +637,19 @@ class UserProvisioningService
                 return true;
             });
 
+            // Applied: group cleanup below stays best-effort
+            $revocationDue = false;
+
             if ($groupPlan !== null) {
                 $this->removeMappedGroups($userId, $groupPlan);
             }
         } catch (\Exception $e) {
             $this->logger->error('Error updating existing user: {error}', ['error' => $e->getMessage()]);
+
+            return !$revocationDue;
         }
+
+        return true;
     }
 
     private function linkOidcToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
@@ -748,6 +769,30 @@ class UserProvisioningService
         );
 
         return null;
+    }
+
+    /**
+     * Whether the provider's permission_template_mapping can grant this template.
+     */
+    private function isMappedTemplate(int $templateId, string $authMethod): bool
+    {
+        if ($templateId === 0) {
+            return false;
+        }
+        // The raw lookup: a superuser template is still mapped when superuser provisioning is off
+        try {
+            foreach ((array)$this->configManager->get($authMethod, 'permission_template_mapping', []) as $templateName) {
+                if ($this->userRepository->findPermissionTemplateIdByName((string)$templateName) === $templateId) {
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logger->error('Error reading the mapped permission templates: {error}', ['error' => $e->getMessage()]);
+
+            return true;
+        }
+
+        return false;
     }
 
     private function getDefaultPermissionTemplateId(string $authMethod): ?int

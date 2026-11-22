@@ -256,8 +256,11 @@ final class LdapAuthenticator
             $rowObj = $this->userLookup->findActiveLdapUser($username);
             $this->logger->info('Auto-provisioned LDAP user {username}', ['username' => $username]);
         } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
-            $this->provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
-            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+            if ($this->provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo)) {
+                $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+            } else {
+                $rowObj = null;
+            }
         }
 
         if (!$rowObj) {

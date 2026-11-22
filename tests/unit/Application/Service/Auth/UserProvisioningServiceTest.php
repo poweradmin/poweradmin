@@ -1080,7 +1080,7 @@ class UserProvisioningServiceTest extends TestCase
 
         $applied = [];
         $repository = $this->createMock(UserRepositoryInterface::class);
-        $repository->method('getProvisioningProfile')->willReturn(['email' => 'old@example.com', 'fullname' => 'J', 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'oidc']);
+        $repository->method('getProvisioningProfile')->willReturn(['email' => 'old@example.com', 'fullname' => 'J', 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'manual']);
         $repository->method('emailUsedByOtherUser')->with(7, 'taken@example.com')->willReturn($heldByOther);
         $repository->method('templateGrantsUberuser')->willReturn(false);
         $repository->method('updateProvisionedUser')->willReturnCallback(function (int $id, array $updates) use (&$applied): void {
@@ -1104,7 +1104,7 @@ class UserProvisioningServiceTest extends TestCase
         $writes = 0;
         $repository = $this->createMock(UserRepositoryInterface::class);
         $repository->method('getProvisioningProfile')->willReturnCallback(function () use (&$stored): array {
-            return ['email' => 'jane@example.com', 'fullname' => $stored, 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'oidc'];
+            return ['email' => 'jane@example.com', 'fullname' => $stored, 'auth_method' => 'oidc', 'perm_templ' => 1, 'perm_templ_source' => 'manual'];
         });
         $repository->method('templateGrantsUberuser')->willReturn(false);
         $repository->method('updateProvisionedUser')->willReturnCallback(function (int $id, array $updates) use (&$writes): void {
