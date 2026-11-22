@@ -187,13 +187,18 @@ class SecondaryZoneImportController extends BaseController
             $this->showForm();
             return;
         }
-        if ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
+        if ($domainRepository->domainExists($zone)) {
             $this->setMessage('import', 'error', _('There is already a zone with this name.'));
             $this->showForm();
             return;
         }
         if (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
             $this->setMessage('import', 'error', $overlapError);
+            $this->showForm();
+            return;
+        }
+        if ($recordRepository->hasNonDelegationRecords($zone)) {
+            $this->setMessage('import', 'error', _('There is already a zone with this name.'));
             $this->showForm();
             return;
         }

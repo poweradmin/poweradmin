@@ -164,18 +164,18 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
-        // Check if non-delegation records exist (prevents zone hijacking)
-        // Only delegation-point data (NS, DS and the parent's NSEC/RRSIG) is allowed
-        if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
-            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
-        }
-
         // Block a zone that would overlap an existing zone owned by another user.
         if ($actingUserId !== null) {
             $overlapService = new ZoneOverlapService($this->db, $this->config);
             if ($overlapService->findConflictingZone($domain, $actingUserId) !== null) {
                 return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
             }
+        }
+
+        // Check if non-delegation records exist (prevents zone hijacking)
+        // Only delegation-point data (NS, DS and the parent's NSEC/RRSIG) is allowed
+        if ($repositoryFactory->createRecordRepository()->hasNonDelegationRecords($domain)) {
+            return ['success' => false, 'message' => 'Domain already exists', 'status' => 409];
         }
 
         // Validate zone type

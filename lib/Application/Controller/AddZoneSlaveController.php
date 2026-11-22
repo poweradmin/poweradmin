@@ -209,11 +209,14 @@ class AddZoneSlaveController extends BaseController
         } elseif ($dns_third_level_check && DomainUtility::getDomainLevel($zone) > 2 && $domainRepository->domainExists(DomainUtility::getSecondLevelDomain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($domainRepository->domainExists($zone) || $recordRepository->hasNonDelegationRecords($zone)) {
+        } elseif ($domainRepository->domainExists($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (($overlapError = $this->getZoneOverlapError($zone)) !== null) {
             $this->setMessage('add_zone_slave', 'error', $overlapError);
+            $this->showForm();
+        } elseif ($recordRepository->hasNonDelegationRecords($zone)) {
+            $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
