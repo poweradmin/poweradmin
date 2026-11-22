@@ -224,7 +224,28 @@ class SOARecordManager implements SOARecordManagerInterface
         // A serial above 1979999999 that is not a real date still lands in the branch
         // above and keeps growing. DNS serials are 32-bit unsigned (RFC 1982), so wrap
         // rather than hand PowerDNS a value it cannot store.
-        return (float)$next > self::MAX_SERIAL ? 1 : $next;
+        if ((float)$next > self::MAX_SERIAL) {
+            return 1;
+        }
+
+        // A serial whose date part is not a real date (2026119999) makes getNextDate() fall
+        // back to the epoch; never hand out a serial that secondaries read as older.
+        if (!self::isSerialAfter((int)$next, (int)$curr_serial)) {
+            $bumped = (int)$curr_serial + 1;
+            return $bumped > self::MAX_SERIAL ? 1 : $bumped;
+        }
+
+        return $next;
+    }
+
+    /**
+     * RFC 1982 serial number arithmetic: whether $candidate is greater than $current.
+     */
+    private static function isSerialAfter(int $candidate, int $current): bool
+    {
+        $diff = ($candidate - $current) & 0xFFFFFFFF;
+
+        return $diff > 0 && $diff < 0x80000000;
     }
 
     /**
