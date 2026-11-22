@@ -24,6 +24,10 @@ AddDefaultCharset UTF-8
     RewriteEngine On
     RewriteRule ^vendor/twbs/(bootstrap/dist|bootstrap-icons/font)/ - [L]
     RewriteRule ^(inc|lib|sql|db|tests|templates|locale|vendor)/ - [F,L]
+
+    # Any dot segment (.git/, .env) except .well-known/ for ACME challenges: the file rule
+    # above only matches file names, so a cloned repository's .git/config stayed reachable
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
 </IfModule>
 
 # Deny access to hidden files and directories
