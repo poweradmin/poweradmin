@@ -75,16 +75,17 @@ class ZoneOverlapService
      */
     private function findConflictingAncestor(string $zoneName, int $userId): ?string
     {
-        $ancestors = DnsHelper::ancestorNames($zoneName);
-        if ($ancestors === []) {
+        // A hosted root zone '.' is the last ancestor of every other name
+        if ($this->normalizeName($zoneName) === '') {
             return null;
         }
+        $ancestors = [...DnsHelper::ancestorNames($zoneName), '.'];
 
         // Key by the normalized name so a case-insensitive DB collation returning
         // a mixed-case row still matches the lowercased ancestor lookup.
         $existing = [];
         foreach ($this->zones->findZoneIdsByNames($ancestors) as $name => $id) {
-            $existing[$this->normalizeName((string)$name)] = $id;
+            $existing[$name === '.' ? '.' : $this->normalizeName((string)$name)] = $id;
         }
 
         // Closest-first, so the first existing ancestor is the one that shadows.

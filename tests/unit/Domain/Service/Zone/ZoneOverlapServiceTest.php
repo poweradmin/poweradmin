@@ -104,18 +104,42 @@ class ZoneOverlapServiceTest extends PermissionServiceTestCase
 
         $service->findConflictingZone('C.B.A.com.', self::USER_ID);
 
-        $this->assertSame([['b.a.com', 'a.com', 'com']], $this->ancestorLookups);
+        $this->assertSame([['b.a.com', 'a.com', 'com', '.']], $this->ancestorLookups);
         $this->assertSame(['c.b.a.com'], $this->descendantLookups);
     }
 
-    public function testTopLevelNameSkipsTheAncestorLookup(): void
+    public function testTopLevelNameLooksUpOnlyTheRoot(): void
     {
         $service = $this->makeService();
 
         $service->findConflictingZone('com', self::USER_ID);
 
-        $this->assertSame([], $this->ancestorLookups);
+        $this->assertSame([['.']], $this->ancestorLookups);
         $this->assertSame(['com'], $this->descendantLookups);
+    }
+
+    public function testBlocksZoneUnderAHostedRootZoneOwnedByAnother(): void
+    {
+        $service = $this->makeService(ancestorRows: ['.' => 5]);
+
+        $this->assertSame('.', $service->findConflictingZone('example.com', self::USER_ID));
+        $this->assertSame('.', $service->findConflictingZone('com', self::USER_ID));
+    }
+
+    public function testAllowsZoneUnderAHostedRootZoneOwnedBySelf(): void
+    {
+        $service = $this->makeService(ancestorRows: ['.' => 5], ownedZoneIds: [5]);
+
+        $this->assertNull($service->findConflictingZone('example.com', self::USER_ID));
+    }
+
+    public function testRootZoneHasNoAncestorLookup(): void
+    {
+        $service = $this->makeService(ancestorRows: ['.' => 5]);
+
+        $service->findConflictingZone('.', self::USER_ID);
+
+        $this->assertSame([], $this->ancestorLookups);
     }
 
     public function testClosestParentDecides(): void
