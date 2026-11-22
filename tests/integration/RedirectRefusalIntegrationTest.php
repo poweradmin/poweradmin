@@ -165,6 +165,11 @@ class RedirectRefusalIntegrationTest extends TestCase
                 $this->createMock(PDO::class)
             );
             $provider = (new ReflectionMethod($service, 'createProvider'))->invoke($service, 'test');
+            // Keep the client's redirect setting, add a timeout so a followed redirect fails fast
+            $provider->setHttpClient(new \GuzzleHttp\Client([
+                'allow_redirects' => $provider->getHttpClient()->getConfig('allow_redirects'),
+                'timeout' => 3,
+            ]));
 
             try {
                 $provider->getAccessToken('authorization_code', ['code' => 'abc']);
