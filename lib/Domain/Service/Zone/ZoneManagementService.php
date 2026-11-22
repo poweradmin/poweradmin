@@ -236,6 +236,15 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
         }
 
+        // Block a zone that would overlap an existing zone owned by another user.
+        // Runs before the record checks so a name under a foreign zone never reveals whether records exist.
+        if ($actingUserId !== null) {
+            $this->overlapService ??= new ZoneOverlapService($domainRepository, $this->config, $this->permissions);
+            if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
+                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_OVERLAP];
+            }
+        }
+
         if (
             $this->config->get('dns', 'third_level_check', false)
             && DomainUtility::getDomainLevel($domain) > 2
@@ -249,14 +258,6 @@ class ZoneManagementService
         $recordRepository = $this->repositoryFactory->createRecordRepository();
         if ($recordRepository->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_EXISTS];
-        }
-
-        // Block a zone that would overlap an existing zone owned by another user.
-        if ($actingUserId !== null) {
-            $this->overlapService ??= new ZoneOverlapService($domainRepository, $this->config, $this->permissions);
-            if ($this->overlapService->findConflictingZone($domain, $actingUserId) !== null) {
-                return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'refusal' => Refusal::CONFLICT, 'code' => self::ERR_OVERLAP];
-            }
         }
 
         // Catalog kinds need a server that has them; an unknown server counts as too old.

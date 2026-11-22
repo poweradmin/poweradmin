@@ -96,6 +96,7 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
     {
         foreach ($this->seeded as $id) {
             $this->db->prepare('DELETE FROM zones_groups WHERE domain_id = ?')->execute([$id]);
+            $this->db->prepare('DELETE FROM pdns.records WHERE domain_id = ?')->execute([$id]);
             $this->db->prepare('DELETE FROM pdns.domains WHERE id = ?')->execute([$id]);
         }
     }
@@ -167,5 +168,23 @@ class ZoneManagementServiceOverlapIntegrationTest extends TestCase
         $this->assertFalse($result['success']);
         $this->assertSame(Refusal::CONFLICT, $result['refusal']);
         $this->assertStringContainsString('overlaps', $result['message']);
+    }
+
+    public function testOverlapRefusalComesBeforeTheExistingRecordsRefusal(): void
+    {
+        $parent = self::PREFIX . 'order.example.test';
+        $this->seedGroupOwnedZone($parent);
+        $parentId = end($this->seeded);
+        $child = 'child.' . $parent;
+        $this->db->prepare("INSERT INTO pdns.records (domain_id, name, type, content, ttl, prio) VALUES (?, ?, 'A', '192.0.2.1', 3600, 0)")
+            ->execute([$parentId, $child]);
+
+        // The name already carries records in another owner's zone, yet the caller must only learn about the overlap.
+        $result = $this->makeService()->createZone($child, 'MASTER', self::CLIENT, '', 'none', false, [], self::CLIENT);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::CONFLICT, $result['refusal']);
+        $this->assertStringContainsString('overlaps', $result['message']);
+        $this->assertStringNotContainsString('already exists', $result['message']);
     }
 }
