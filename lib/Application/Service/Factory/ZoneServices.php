@@ -339,7 +339,9 @@ final class ZoneServices
             $this->zoneTemplateAccessPolicy(),
             $this->config,
             $this->logger,
-            $this->zoneTemplatePlaceholders()
+            $this->zoneTemplatePlaceholders(),
+            $this->services->dnsBackendProvider(),
+            fn() => $this->services->backend()->pdnsCapabilities()
         );
     }
 

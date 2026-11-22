@@ -57,7 +57,7 @@ final class ZoneTemplateServiceBuilder
         return new ZoneTemplateService(
             $repository,
             $access,
-            new ZoneTemplateWriteService($repository, $access, $config, $logger, $placeholders),
+            new ZoneTemplateWriteService($repository, $access, $config, $logger, $placeholders, $backend),
             new ZoneTemplateRecordService($repository, $access, $config, $backend)
         );
     }

@@ -251,6 +251,25 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM zone_templ_records WHERE type = 'RRSIG'")->fetchColumn());
     }
 
+    public function testSaveAsLeavesOutRecordsThatFailRecordValidationAndSaysSo(): void
+    {
+        $saved = $this->service()->addZoneTemplSaveAs('checked copy', '', self::ADMIN_USER_ID, [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'bad.example.com', 'type' => 'A', 'content' => 'not-an-address', 'ttl' => 3600, 'prio' => 0],
+            ['name' => 'alias.example.com', 'type' => 'CNAME', 'content' => "bad target\x01", 'ttl' => 3600, 'prio' => 0],
+        ], [], 'example.com');
+
+        $this->assertTrue($saved->success);
+        $this->assertSame(
+            'These records were left out of the template because they are not valid: bad.[ZONE] A, alias.[ZONE] CNAME',
+            $saved->message
+        );
+        $this->assertSame(
+            ['www.[ZONE]'],
+            $this->db->query("SELECT name FROM zone_templ_records WHERE type <> 'SOA' ORDER BY id")->fetchAll(\PDO::FETCH_COLUMN)
+        );
+    }
+
     private function service(): ZoneTemplateService
     {
         $backend = $this->dnsBackendStub(false);

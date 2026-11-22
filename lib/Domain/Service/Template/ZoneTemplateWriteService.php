@@ -22,11 +22,15 @@
 
 namespace Poweradmin\Domain\Service\Template;
 
+use Closure;
 use Exception;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\PdnsCapabilities;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\NIDRecordValidator;
 use Psr\Log\LoggerInterface;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -43,14 +47,25 @@ class ZoneTemplateWriteService
     private ConfigurationInterface $config;
     private LoggerInterface $logger;
     private ZoneTemplatePlaceholders $placeholders;
+    private ?DnsBackendProviderInterface $backendProvider;
+    /** @var (Closure(): PdnsCapabilities)|null */
+    private ?Closure $capabilities;
+    private ?ZoneTemplateRecordValidationService $recordValidation = null;
 
+    /**
+     * @param (Closure(): PdnsCapabilities)|null $capabilities Resolves the connected PowerDNS version
+     */
     public function __construct(
         ZoneTemplateRepositoryInterface $repository,
         ZoneTemplateAccessPolicy $access,
         ConfigurationInterface $config,
         LoggerInterface $logger,
-        ZoneTemplatePlaceholders $placeholders
+        ZoneTemplatePlaceholders $placeholders,
+        ?DnsBackendProviderInterface $backendProvider = null,
+        ?Closure $capabilities = null
     ) {
+        $this->backendProvider = $backendProvider;
+        $this->capabilities = $capabilities;
         $this->repository = $repository;
         $this->access = $access;
         $this->config = $config;
@@ -259,6 +274,7 @@ class ZoneTemplateWriteService
             $owner = $this->access->resolveTemplateOwner($isGlobal, $userid);
 
             $skippedTypes = [];
+            $invalidRecords = [];
             $templateRecords = [];
 
             foreach ($records as $record) {
@@ -286,6 +302,12 @@ class ZoneTemplateWriteService
                     ['name' => $record['name'], 'type' => $record['type'], 'content' => $content],
                     $options
                 );
+
+                // Applying a template writes its records as stored, so rows a form would refuse stay out
+                if (!$this->isStorable($name, (string)$record['type'], $content, $record['ttl'], $prio)) {
+                    $invalidRecords[] = $name . ' ' . strtoupper((string)$record['type']);
+                    continue;
+                }
 
                 $templateRecords[] = [
                     'name' => $name,
@@ -315,17 +337,47 @@ class ZoneTemplateWriteService
                 $templateRecords
             );
 
+            $notices = [];
             if ($skippedTypes !== []) {
-                return ZoneTemplateWriteResult::ok(sprintf(
+                $notices[] = sprintf(
                     _('These record types were left out of the template because you may not add them: %s'),
                     implode(', ', array_keys($skippedTypes))
-                ));
+                );
+            }
+            if ($invalidRecords !== []) {
+                $notices[] = sprintf(
+                    _('These records were left out of the template because they are not valid: %s'),
+                    implode(', ', $invalidRecords)
+                );
             }
 
-            return ZoneTemplateWriteResult::ok();
+            return $notices === [] ? ZoneTemplateWriteResult::ok() : ZoneTemplateWriteResult::ok(implode(' ', $notices));
         } catch (Exception $e) {
             // The repository already rolled its transaction back.
             return ZoneTemplateWriteResult::backendFailure(sprintf(_('Error creating zone template: %s'), $e->getMessage()));
         }
+    }
+
+    /**
+     * Built on demand: the validator registry instantiates every record-type validator.
+     */
+    private function isStorable(string $name, string $type, string $content, mixed $ttl, int $prio): bool
+    {
+        if ($this->backendProvider === null) {
+            return true;
+        }
+
+        $this->recordValidation ??= new ZoneTemplateRecordValidationService(
+            new DnsValidatorRegistry($this->config, $this->backendProvider, $this->capabilities)
+        );
+
+        return $this->recordValidation->validate(
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $prio,
+            (int)$this->config->get('dns', 'ttl', 3600)
+        )->isValid();
     }
 }
