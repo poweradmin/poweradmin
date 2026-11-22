@@ -1,4 +1,5 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
+import { isApiModeInstance, isSqliteInstance } from '../../helpers/instance.js';
 import users from '../../fixtures/users.json' with { type: 'json' };
 
 /**
@@ -33,7 +34,7 @@ const EXPECTED_COUNT = Object.keys(CONFIGURED_LANGUAGES).length;
 
 test.describe('Language Selector - Limited Configuration', () => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
-  test.skip(!baseUrl.includes('8082'), 'This test requires SQLite instance (port 8082) with limited languages configured');
+  test.skip(!isSqliteInstance(baseUrl) || isApiModeInstance(baseUrl), 'This test requires a SQLite SQL-mode instance with limited languages configured');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');

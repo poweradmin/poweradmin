@@ -13,7 +13,7 @@ rename it for the run (`mv install install.old`) and restore it afterwards
 BASE_URL=http://localhost:8080 npx playwright test playwright/tests/zones --project=chromium --workers=2
 ```
 
-`BASE_URL` picks the instance. `npm run test:e2e:mysql|pgsql|sqlite` run everything.
+`BASE_URL` picks the instance. Specs read its backend and database from `E2E_BACKEND` (`api`|`sql`) and `E2E_DB` (`sqlite`|`mysql`|`pgsql`); unset, they fall back to the devcontainer port map in `helpers/instance.js`. `npm run test:e2e:mysql|pgsql|sqlite` run everything.
 The multi-instance sweep script is maintainer-local; run one `npx` command per instance.
 Reset test data with `.devcontainer/scripts/import-test-data.sh --clean` if logins fail.
 

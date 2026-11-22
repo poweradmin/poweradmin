@@ -17,7 +17,7 @@ import users from '../../fixtures/users.json' with { type: 'json' };
 
 test.describe('Zone list in API backend mode', () => {
   test.beforeEach(async ({ page, baseURL }) => {
-    test.skip(!isApiModeInstance(baseURL), 'requires an API-backend instance (ports 8083-8085)');
+    test.skip(!isApiModeInstance(baseURL), 'requires an API-backend instance (E2E_BACKEND=api or the devcontainer API ports)');
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });
 

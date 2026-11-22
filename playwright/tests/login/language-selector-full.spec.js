@@ -1,4 +1,5 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
+import { isSqliteInstance } from '../../helpers/instance.js';
 
 /**
  * Tests for the full language configuration (all default languages enabled).
@@ -23,8 +24,8 @@ const SUPPORTED_LOCALES = [
 
 test.describe('Language Selector - Full Configuration', () => {
   const baseUrl = process.env.BASE_URL || 'http://localhost:8080';
-  // Both SQLite instances (8082 SQL mode, 8085 API mode) ship a reduced language list
-  test.skip(baseUrl.includes('8082') || baseUrl.includes('8085'), 'This test requires a non-SQLite instance with all languages enabled');
+  // The SQLite instances ship a reduced language list
+  test.skip(isSqliteInstance(baseUrl), 'This test requires a non-SQLite instance with all languages enabled');
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
