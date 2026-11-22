@@ -102,8 +102,8 @@ class UserProvisioningService extends LoggingService
                     'subject' => $userInfo->getSubject()
                 ]);
                 // A refused login must not write provider data onto the disabled account
-                if ($this->isActiveUser($existingUserId)) {
-                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                if ($this->isActiveUser($existingUserId) && !$this->updateExistingUser($existingUserId, $userInfo, $authMethod)) {
+                    return null;
                 }
                 return $existingUserId;
             }
@@ -155,7 +155,9 @@ class UserProvisioningService extends LoggingService
                     } else {
                         $this->linkOidcToExistingUser($existingUserId, $userInfo, $providerId);
                     }
-                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
+                    if (!$this->updateExistingUser($existingUserId, $userInfo, $authMethod)) {
+                        return null;
+                    }
                     return $existingUserId;
                 }
 
@@ -445,8 +447,13 @@ class UserProvisioningService extends LoggingService
         return (int)$stmt->fetchColumn() > 0;
     }
 
-    private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
+    /**
+     * @return bool false when the sign-in must be refused: a provider-assigned template had to
+     *              be revoked and the fallback could not be applied
+     */
+    private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): bool
     {
+        $revokePending = false;
         try {
             $updateFields = [];
             $updateValues = [];
@@ -507,7 +514,16 @@ class UserProvisioningService extends LoggingService
                         $this->logInfo('Revoked SSO group-mapped template for user {userId}, falling back to default template', [
                             'userId' => $userId
                         ]);
+                        $revokePending = true;
                     } else {
+                        // A template the mapping grants is the revoked access itself; one that came
+                        // from the default is not, so keeping it only repeats an earlier fallback
+                        if ($this->userHoldsMappedTemplate($userId, $authMethod)) {
+                            $this->logWarning('SSO group-mapped template should be revoked for user {userId} but no default template could be resolved - refusing sign-in', [
+                                'userId' => $userId
+                            ]);
+                            return false;
+                        }
                         $this->logWarning('SSO group-mapped template should be revoked for user {userId} but no default template configured - keeping current template', [
                             'userId' => $userId
                         ]);
@@ -526,6 +542,7 @@ class UserProvisioningService extends LoggingService
                     WHERE id = ?
                 ");
                 $stmt->execute($updateValues);
+                $revokePending = false;
 
                 $this->logInfo('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
             }
@@ -534,7 +551,13 @@ class UserProvisioningService extends LoggingService
             $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
         } catch (\Exception $e) {
             $this->logError('Error updating existing user: {error}', ['error' => $e->getMessage()]);
+            if ($revokePending) {
+                $this->logWarning('Revoking the group-mapped template of user {userId} failed - refusing sign-in', ['userId' => $userId]);
+                return false;
+            }
         }
+
+        return true;
     }
 
     private function linkOidcToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
@@ -748,6 +771,40 @@ class UserProvisioningService extends LoggingService
             ]);
             return null;
         }
+    }
+
+    /**
+     * Whether the user's current template is one of the templates the provider's group
+     * mapping grants. Fails closed: a lookup error counts as "holds".
+     */
+    private function userHoldsMappedTemplate(int $userId, string $authMethod): bool
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT perm_templ FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $current = (int)$stmt->fetchColumn();
+            if ($current <= 0) {
+                return false;
+            }
+
+            $check = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = ? AND name = ?");
+
+            $mapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
+            foreach (is_array($mapping) ? $mapping : [] as $templateName) {
+                if (!is_string($templateName)) {
+                    continue;
+                }
+                $check->execute([$current, $templateName]);
+                if ((int)$check->fetchColumn() > 0) {
+                    return true;
+                }
+            }
+        } catch (\Exception $e) {
+            $this->logError('Error checking whether the current template is group-mapped: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+
+        return false;
     }
 
     private function getDefaultPermissionTemplateId(string $authMethod): ?int
