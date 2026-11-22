@@ -974,6 +974,7 @@ class ZoneTemplate
                     VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
 
                 $skippedTypes = [];
+                $invalidRecords = [];
 
                 foreach ($records as $record) {
                     // Skip rather than fail: a saved zone legitimately carries records
@@ -983,11 +984,18 @@ class ZoneTemplate
                         continue;
                     }
 
+                    list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
+
+                    // A saved zone can hold rows written outside Poweradmin that its validators refuse
+                    $validation = $this->validateTemplateRecord($name, (string)$record['type'], (string)$content, $record['ttl'] ?? null, $record['prio'] ?? null);
+                    if (!$validation->isValid()) {
+                        $invalidRecords[] = $name . ' ' . $record['type'];
+                        continue;
+                    }
+
                     if ($record['type'] === 'SOA') {
                         $hasSOA = true;
                     }
-
-                    list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
                     $recordStmt->execute([
                         ':zone_templ_id' => $zone_templ_id,
@@ -1010,6 +1018,13 @@ class ZoneTemplate
                     $this->messageService->addSystemError(sprintf(
                         _('These record types were left out of the template because you may not add them: %s'),
                         implode(', ', array_keys($skippedTypes))
+                    ));
+                }
+
+                if ($invalidRecords !== []) {
+                    $this->messageService->addSystemError(sprintf(
+                        _('These records were left out of the template because they are not valid: %s'),
+                        implode(', ', array_slice($invalidRecords, 0, 10)) . (count($invalidRecords) > 10 ? sprintf(' (+%d)', count($invalidRecords) - 10) : '')
                     ));
                 }
 
