@@ -94,8 +94,10 @@ test.describe('Edit the SOA record', () => {
     // Re-resolve: on the API backend the record id encodes the content, which just changed
     const soa = (await storedRecords(adminPage, tempZone.id, tempZone.name)).find(r => r.type === 'SOA');
     const [primary, hostmaster, serial, refresh] = soa.content.split(/\s+/);
-    expect(primary).toBe('ns1.example.com');
-    expect(hostmaster).toBe('dnsadmin.example.net');
+    // PowerDNS canonicalises names with a trailing dot, and API mode shows them as stored
+    const undotted = name => name.replace(/\.$/, '');
+    expect(undotted(primary)).toBe('ns1.example.com');
+    expect(undotted(hostmaster)).toBe('dnsadmin.example.net');
     expect(refresh).toBe('14400');
     expect(Number(serial)).toBeGreaterThan(before);
   });
