@@ -13,6 +13,10 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # Any dot segment (.git/, .env) except .well-known/ for ACME challenges: the existing-file
+    # rule below would serve a cloned repository
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
     # Deny sensitive directories first: the existing-file rule below would otherwise
     # serve real files such as config/settings.php.bak. Bootstrap assets stay allowed;
     # the path is matched relative to this directory so subfolder installs work too.
