@@ -146,6 +146,10 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
 
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);
         $domainRepository->method('getDomainNameById')->willReturn(self::ZONE_NAME);
+        // This instance hosts example.com, which every SOA contact below sits under unless a test says otherwise
+        $domainRepository->method('findZoneIdsByNames')->willReturnCallback(
+            static fn(array $names): array => array_intersect_key(['example.com' => 1], array_flip($names))
+        );
 
         return new ChangeRequestNotificationService(
             $this->recipients(),
@@ -241,6 +245,22 @@ class ChangeRequestNotificationServiceTest extends PermissionServiceTestCase
         $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
         $this->assertContains('hostmaster@example.com', array_column($this->sent, 'to'));
         $this->assertCount(3, $this->sent);
+    }
+
+    public function testASoaContactOutsideTheHostedZonesIsNotMailed(): void
+    {
+        $soa = 'ns1.example.com. hostmaster.outsider.test. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+        $this->assertNotContains('hostmaster@outsider.test', array_column($this->sent, 'to'));
+    }
+
+    public function testASoaContactUnderAHostedZoneIsMailed(): void
+    {
+        $soa = 'ns1.example.com. hostmaster.mail.example.com. 2026092001 10800 3600 604800 3600';
+
+        $this->assertTrue($this->fileRequest($this->makeService(soaRecord: $soa, mailSoaContact: true)));
+        $this->assertContains('hostmaster@mail.example.com', array_column($this->sent, 'to'));
     }
 
     public function testAnEscapedDotInTheSoaMailboxIsKept(): void

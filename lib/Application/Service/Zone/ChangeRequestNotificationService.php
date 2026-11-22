@@ -26,6 +26,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\UserNotificationRecipientInterface;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Port\ChangeRequestNotifierInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
@@ -323,6 +324,11 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return null;
         }
+        // The hostmaster is whatever the zone data says, so a zone owner could aim mail at any third party
+        if (!$this->domainIsHosted($parts[2])) {
+            $this->logger->info("SOA contact of zone $zoneId not mailed: its domain '{$parts[2]}' is not hosted here");
+            return null;
+        }
         foreach ($reviewers as $reviewer) {
             if (strcasecmp($reviewer['email'], $email) === 0) {
                 return null;
@@ -330,6 +336,16 @@ class ChangeRequestNotificationService implements ChangeRequestNotifierInterface
         }
 
         return ['id' => 0, 'username' => $email, 'fullname' => '', 'email' => $email];
+    }
+
+    /**
+     * Whether the name is a zone this instance hosts or sits under one.
+     */
+    private function domainIsHosted(string $domain): bool
+    {
+        $name = strtolower(rtrim($domain, '.'));
+
+        return $this->domainRepository->findZoneIdsByNames([$name, ...DnsHelper::ancestorNames($name), '.']) !== [];
     }
 
     private function findReviewers(int $zoneId, int $requesterId): array
