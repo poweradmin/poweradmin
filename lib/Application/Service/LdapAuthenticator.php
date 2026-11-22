@@ -297,19 +297,29 @@ class LdapAuthenticator extends LoggingService
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        $syncRefused = false;
         if (!$rowObj && $ldap_auto_provision && $provisioningService->provisionUser($userInfo, 'ldap')) {
             $stmt->execute(['username' => $username]);
             $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->logInfo('Auto-provisioned LDAP user {username}', ['username' => $username]);
         } elseif ($rowObj && ($ldap_sync_user_info || $ldap_group_sync)) {
-            $provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo);
-            $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+            if ($provisioningService->syncExistingUser((int)$rowObj['id'], $userInfo)) {
+                $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
+            } else {
+                // The provider-assigned template could not be revoked, so this sign-in is refused
+                $rowObj = false;
+                $syncRefused = true;
+            }
         }
 
         if (!$rowObj) {
             $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->logFailedUserInactive();
+                if ($syncRefused) {
+                    $this->ldapUserEventLogger->logFailedReason('ldap_template_revocation');
+                } else {
+                    $this->ldapUserEventLogger->logFailedUserInactive();
+                }
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
