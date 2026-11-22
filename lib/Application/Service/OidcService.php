@@ -436,6 +436,9 @@ class OidcService extends LoggingService
             return null;
         }
 
+        // A 307 or 308 would re-send the token request, client secret included, to any Location
+        $httpClient = new \GuzzleHttp\Client(['allow_redirects' => false]);
+
         return new GenericProvider([
             'clientId' => $config['client_id'],
             'clientSecret' => $config['client_secret'],
@@ -443,7 +446,7 @@ class OidcService extends LoggingService
             'urlAuthorize' => $config['authorize_url'],
             'urlAccessToken' => $config['token_url'],
             'urlResourceOwnerDetails' => $config['userinfo_url'],
-        ]);
+        ], ['httpClient' => $httpClient]);
     }
 
     private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo

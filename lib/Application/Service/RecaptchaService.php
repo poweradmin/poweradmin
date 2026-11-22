@@ -72,6 +72,7 @@ class RecaptchaService
                 'method' => 'POST',
                 'content' => http_build_query($data),
                 'timeout' => 10,
+                'follow_location' => 0,
             ],
         ];
 

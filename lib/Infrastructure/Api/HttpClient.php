@@ -53,6 +53,7 @@ class HttpClient implements ApiClient
                     "X-API-Key: $this->apiKey\r\n",
                 'method' => strtoupper($method),
                 'ignore_errors' => true,
+                'follow_location' => 0,
                 'timeout' => $this->timeout,
             ]
         ];
@@ -144,6 +145,14 @@ class HttpClient implements ApiClient
             }
 
             $responseCode = $this->getResponseCode($responseHeaders);
+
+            // The key must not travel to a Location target, and the wrapper would turn a PUT into a GET
+            if ($responseCode !== null && $responseCode >= 300 && $responseCode < 400) {
+                $errorMessage = sprintf('The PowerDNS API answered with HTTP %d. Redirects are refused; set the API URL to the address it redirects to.', $responseCode);
+                $errorDetails = ['url' => $url, 'method' => $method, 'http_code' => $responseCode, 'error' => 'Redirect refused'];
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+            }
 
             // For 204 No Content responses, don't try to parse JSON
             if ($responseCode === 204) {
