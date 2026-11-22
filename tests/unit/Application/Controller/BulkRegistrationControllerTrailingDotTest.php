@@ -27,6 +27,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\BulkRegistrationController;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -62,6 +63,8 @@ class BulkRegistrationControllerTrailingDotTest extends TestCase
         $domains = $this->createMock(DomainRepositoryInterface::class);
         $domains->expects($this->once())->method('domainExists')->with('example.com')->willReturn(false);
         $domains->expects($this->once())->method('getZoneIdFromName')->with('example.com')->willReturn(9);
+        $records = $this->createMock(RecordRepositoryInterface::class);
+        $records->expects($this->once())->method('hasNonDelegationRecords')->with('example.com')->willReturn(false);
         $manager = $this->createMock(DomainManagerInterface::class);
         $manager->expects($this->once())->method('addDomain')->with($this->anything(), 'example.com')->willReturn(true);
 
@@ -114,6 +117,7 @@ class BulkRegistrationControllerTrailingDotTest extends TestCase
         $db->exec('CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)');
         $controller->wire($db, $config);
         $controller->domains = $domains;
+        $controller->records = $records;
         $controller->manager = $manager;
 
         (new ReflectionMethod(BulkRegistrationController::class, 'doBulkRegistration'))->invoke($controller);

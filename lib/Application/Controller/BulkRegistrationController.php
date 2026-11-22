@@ -215,6 +215,7 @@ class BulkRegistrationController extends BaseController
         $added_domains = [];
         $failed_domains = [];
         $domainRepository = $this->createDomainRepository();
+        $recordRepository = $this->createRecordRepository();
         $domainManager = $this->createDomainManager();
         $hostnameValidator = new HostnameValidator($this->config);
         foreach ($domains as $domain) {
@@ -229,6 +230,8 @@ class BulkRegistrationController extends BaseController
                 $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
             } elseif (($overlapError = $this->getZoneOverlapError($domain)) !== null) {
                 $failed_domains[] = ['name' => $domain, 'reason' => $overlapError];
+            } elseif ($recordRepository->hasNonDelegationRecords($domain)) {
+                $failed_domains[] = ['name' => $domain, 'reason' => _('There is already a zone with this name.')];
             } elseif ($domainManager->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template, $selected_groups)) {
                 $added_domains[] = $domain;
                 $zone_id = $domainRepository->getZoneIdFromName($domain);
