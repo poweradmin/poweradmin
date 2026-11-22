@@ -107,9 +107,10 @@ class ZoneTemplateApplier
      */
     public function applyTemplate(int $zoneId, int $templateId, int $defaultTtl, bool $writeRecords): ZoneWriteResult
     {
-        // Opened only when the backend joins it: on SQLite an open transaction holds the write lock,
-        // so a PowerDNS sharing the file would wait on it during the API calls below.
-        if ($this->backendProvider->supportsLocalWriteTransaction()) {
+        // On the API backend it opens only after the last PowerDNS call: on SQLite an open
+        // transaction holds the write lock, so PowerDNS sharing the file would wait on it.
+        $joinsBackend = $this->backendProvider->supportsLocalWriteTransaction();
+        if ($joinsBackend) {
             $this->transaction->begin();
         }
         try {
@@ -123,6 +124,9 @@ class ZoneTemplateApplier
                 }
             }
 
+            if (!$joinsBackend) {
+                $this->transaction->begin();
+            }
             $this->relinkZoneTemplate($zoneId, $templateId, $refused === [] && $conflicts === []);
             $this->finishTransaction(true);
 
@@ -163,7 +167,7 @@ class ZoneTemplateApplier
     }
 
     /**
-     * Commit or roll back whatever is still open; the API backend path never opens one.
+     * Commit or roll back whatever is still open; nothing is when the failure came before the local writes.
      */
     private function finishTransaction(bool $commit): void
     {

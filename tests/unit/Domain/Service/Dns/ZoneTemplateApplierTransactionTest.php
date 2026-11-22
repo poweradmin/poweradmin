@@ -37,8 +37,8 @@ use Poweradmin\Domain\Service\Template\ZoneTemplatePlaceholders;
 use Psr\Log\NullLogger;
 
 /**
- * The applier's local transaction only exists when the backend joins it: on the
- * API backend an open SQLite write lock would block PowerDNS's own write.
+ * On the API backend the local transaction opens only after the last PowerDNS
+ * call, so an open SQLite write lock never blocks PowerDNS's own write.
  */
 class ZoneTemplateApplierTransactionTest extends TestCase
 {
@@ -46,6 +46,9 @@ class ZoneTemplateApplierTransactionTest extends TestCase
     private DnsBackendProviderInterface&MockObject $backend;
     private TemplateRecordLinkRepositoryInterface&MockObject $links;
     private ZoneTemplateRepositoryInterface&MockObject $templates;
+
+    /** @var list<string> */
+    private array $events = [];
 
     protected function setUp(): void
     {
@@ -56,23 +59,41 @@ class ZoneTemplateApplierTransactionTest extends TestCase
         $this->templates->method('listZoneRowIds')->willReturn([7]);
     }
 
-    public function testApiBackendNeverOpensATransactionAndStillApplies(): void
+    public function testApiBackendBeginsOnlyAfterTheBackendCallsAndCommits(): void
     {
+        $domains = $this->createMock(DomainRepositoryInterface::class);
+        $domains->method('getDomainNameById')->willReturn('example.com');
+        $this->templates->method('getZoneTemplateRecords')->willReturn([
+            ['name' => '[ZONE]', 'type' => 'TXT', 'content' => 'hello', 'ttl' => 300, 'prio' => 0],
+        ]);
         $this->backend->method('supportsLocalWriteTransaction')->willReturn(false);
         $this->backend->method('recordIdsAreNumeric')->willReturn(false);
+        $this->backend->method('recordExists')->willReturn(false);
+        $this->backend->expects($this->once())->method('addRecordGetId')->willReturnCallback(function () {
+            $this->events[] = 'backend';
+            return 'rec-1';
+        });
         $this->links->method('listEncodedLinks')->willReturn([]);
-        $this->transaction->method('inTransaction')->willReturn(false);
-        $this->transaction->expects($this->never())->method('begin');
-        $this->transaction->expects($this->never())->method('commit');
+        $this->transaction->method('inTransaction')->willReturn(true);
+        $this->transaction->expects($this->once())->method('begin')->willReturnCallback(function () {
+            $this->events[] = 'begin';
+        });
+        $this->transaction->expects($this->once())->method('commit')->willReturnCallback(function () {
+            $this->events[] = 'commit';
+        });
         $this->transaction->expects($this->never())->method('rollBack');
-        $this->templates->expects($this->once())->method('assignTemplateToZone')->with(1, 5);
+        $this->templates->expects($this->once())->method('assignTemplateToZone')->with(1, 5)
+            ->willReturnCallback(function () {
+                $this->events[] = 'link';
+            });
 
-        $result = $this->applier()->applyTemplate(1, 5, 300, false);
+        $result = $this->applier($domains)->applyTemplate(1, 5, 300, true);
 
         $this->assertTrue($result->success);
+        $this->assertSame(['backend', 'begin', 'link', 'commit'], $this->events);
     }
 
-    public function testApiBackendFailureRollsNothingBack(): void
+    public function testApiBackendFailureBeforeTheLocalWritesOpensNothing(): void
     {
         $this->backend->method('supportsLocalWriteTransaction')->willReturn(false);
         $this->backend->method('recordIdsAreNumeric')->willReturn(false);
@@ -85,6 +106,22 @@ class ZoneTemplateApplierTransactionTest extends TestCase
 
         $this->assertFalse($result->success);
         $this->assertSame('Failed to update zone records: boom', $result->message);
+    }
+
+    public function testApiBackendRollsBackWhenTheLocalLinkWriteFails(): void
+    {
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(false);
+        $this->backend->method('recordIdsAreNumeric')->willReturn(false);
+        $this->links->method('listEncodedLinks')->willReturn([]);
+        $this->transaction->method('inTransaction')->willReturn(true);
+        $this->transaction->expects($this->once())->method('begin');
+        $this->transaction->expects($this->never())->method('commit');
+        $this->transaction->expects($this->once())->method('rollBack');
+        $this->templates->method('assignTemplateToZone')->willThrowException(new \RuntimeException('locked'));
+
+        $result = $this->applier()->applyTemplate(1, 5, 300, false);
+
+        $this->assertFalse($result->success);
     }
 
     public function testSqlBackendBeginsAndCommits(): void
@@ -117,13 +154,13 @@ class ZoneTemplateApplierTransactionTest extends TestCase
         $this->assertFalse($result->success);
     }
 
-    private function applier(): ZoneTemplateApplier
+    private function applier(?DomainRepositoryInterface $domains = null): ZoneTemplateApplier
     {
         return new ZoneTemplateApplier(
             $this->transaction,
             $this->backend,
             $this->createMock(SOARecordManagerInterface::class),
-            $this->createMock(DomainRepositoryInterface::class),
+            $domains ?? $this->createMock(DomainRepositoryInterface::class),
             $this->templates,
             $this->links,
             $this->createMock(ZoneTemplateSyncRepositoryInterface::class),
