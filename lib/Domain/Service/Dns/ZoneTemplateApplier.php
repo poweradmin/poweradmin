@@ -107,7 +107,11 @@ class ZoneTemplateApplier
      */
     public function applyTemplate(int $zoneId, int $templateId, int $defaultTtl, bool $writeRecords): ZoneWriteResult
     {
-        $this->transaction->begin();
+        // Opened only when the backend joins it: on SQLite an open transaction holds the write lock,
+        // so a PowerDNS sharing the file would wait on it during the API calls below.
+        if ($this->backendProvider->supportsLocalWriteTransaction()) {
+            $this->transaction->begin();
+        }
         try {
             $refused = [];
             $conflicts = [];
@@ -159,8 +163,7 @@ class ZoneTemplateApplier
     }
 
     /**
-     * Commit or roll back whatever is still open; the API backend path has
-     * already committed before its writes.
+     * Commit or roll back whatever is still open; the API backend path never opens one.
      */
     private function finishTransaction(bool $commit): void
     {
@@ -248,11 +251,6 @@ class ZoneTemplateApplier
         $domain = (string) $this->domainRepository->getDomainNameById($zoneId);
         $soaRecord = $this->soaRecordManager->getSOARecord($zoneId);
         $templateRecords = $this->zoneTemplateRepository->getZoneTemplateRecords($templateId);
-
-        // Backend writes outside this transaction would not see the rows above until it commits
-        if (!$this->backendProvider->supportsLocalWriteTransaction()) {
-            $this->transaction->commit();
-        }
 
         $typesByName = $templateRecords === [] ? [] : $this->recordTypesByName($zoneId);
         $templateEntriesByName = $this->templateEntriesByName($templateRecords, $domain);
