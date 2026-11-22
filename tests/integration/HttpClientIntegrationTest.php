@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Integration;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
+use TestHelpers\StubHttpServer;
 
 /**
  * Real HTTP calls through HttpClient against the API-mode PowerDNS devcontainer instance.
@@ -37,6 +38,8 @@ use Poweradmin\Infrastructure\Api\HttpClient;
  */
 class HttpClientIntegrationTest extends TestCase
 {
+    use StubHttpServer;
+
     private const DEFAULT_API_URL = 'http://127.0.0.1:8186';
     private const API_KEY = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
     private const ZONES = '/api/v1/servers/localhost/zones';
@@ -144,46 +147,6 @@ class HttpClientIntegrationTest extends TestCase
         }
     }
 
-    /**
-     * Serves one canned response from a child PHP process and returns [process, port].
-     *
-     * @return array{0: resource, 1: int}
-     */
-    private function startStubServer(string $response, int $stallSeconds = 0): array
-    {
-        $probe = stream_socket_server('tcp://127.0.0.1:0', $errno, $errstr);
-        if ($probe === false) {
-            $this->markTestSkipped('Cannot open a local socket: ' . $errstr);
-        }
-        $port = (int) substr((string) strrchr((string) stream_socket_get_name($probe, false), ':'), 1);
-        fclose($probe);
-
-        $code = '$s = stream_socket_server("tcp://127.0.0.1:" . $argv[1]);'
-            . 'echo "ready\n";'
-            . '$c = stream_socket_accept($s, 10);'
-            . 'fread($c, 8192);'
-            . 'fwrite($c, base64_decode($argv[2]));'
-            . 'sleep((int) $argv[3]);';
-        $process = proc_open(
-            [PHP_BINARY, '-r', $code, (string) $port, base64_encode($response), (string) $stallSeconds],
-            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
-            $pipes
-        );
-        if (!is_resource($process)) {
-            $this->markTestSkipped('Cannot start the stub server');
-        }
-        $ready = fgets($pipes[1]);
-        if ($ready !== "ready\n") {
-            proc_terminate($process);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
-            $this->fail('Stub server did not start: ' . var_export($ready, true));
-        }
-
-        return [$process, $port];
-    }
-
     public function testTruncatedBodyRaisesApiErrorWithoutEmittingWarnings(): void
     {
         [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: 100\r\nConnection: close\r\n\r\npartial");
@@ -207,56 +170,73 @@ class HttpClientIntegrationTest extends TestCase
         $this->assertSame([], $warnings);
     }
 
-    public function testWriteRewrittenToGetByRedirectRaisesApiError(): void
+    /**
+     * @return array{0: resource, 1: int}
+     */
+    private function startRedirectingServer(int $status): array
     {
-        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: 2\r\nConnection: close\r\n\r\n{}");
-        [$process, $port] = $this->startStubServer("HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+        return $this->startStubServer("HTTP/1.1 {$status} Redirect\r\nLocation: http://127.0.0.1:9/x?secret=1\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('redirectStatusProvider')]
+    public function testRedirectIsRefusedForEveryMethodAndNotFollowed(int $status, string $method): void
+    {
+        [$target, $targetPort] = $this->listenOnFreePort();
+        [$process, $port] = $this->startStubServer("HTTP/1.1 {$status} Redirect\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
 
         try {
-            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, false))->makeRequest('PUT', '/x', ['a' => 1]);
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, false))->makeRequest($method, '/x', ['a' => 1]);
             $this->fail('Expected ApiErrorException');
         } catch (ApiErrorException $e) {
             $this->assertSame(0, $e->getCode());
-            $this->assertStringContainsString('redirects', $e->getMessage());
+            $this->assertStringContainsString('Redirects are refused', $e->getMessage());
+            $this->assertStringContainsString((string) $status, $e->getMessage());
+            $this->assertStringNotContainsString((string) $targetPort, $e->getMessage());
+            $this->assertFalse(@stream_socket_accept($target, 0), 'the redirect target must never be contacted');
         } finally {
-            foreach ([$process, $target] as $p) {
+            fclose($target);
+            foreach ([$process] as $p) {
                 proc_terminate($p);
                 proc_close($p);
             }
         }
     }
 
-    public function testWriteThroughMethodKeepingRedirectSucceeds(): void
+    public static function redirectStatusProvider(): array
     {
-        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n");
-        [$process, $port] = $this->startStubServer("HTTP/1.1 308 Permanent Redirect\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
-
-        try {
-            $result = (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, true))->makeRequest('PUT', '/x', ['a' => 1]);
-            $this->assertSame(204, $result['responseCode']);
-        } finally {
-            foreach ([$process, $target] as $p) {
-                proc_terminate($p);
-                proc_close($p);
-            }
-        }
+        return [
+            '301 GET' => [301, 'GET'],
+            '302 PUT' => [302, 'PUT'],
+            '307 PATCH' => [307, 'PATCH'],
+            '308 POST' => [308, 'POST'],
+        ];
     }
 
-    public function testWriteThroughRedirectChainEndingIn308Succeeds(): void
+    public function testRefusedRedirectLogsStatusWithoutTheLocation(): void
     {
-        // The wrapper picks each hop's method from the previous status only, so the 308 restores the PUT
-        [$target, $targetPort] = $this->startStubServer("HTTP/1.1 204 No Content\r\nConnection: close\r\n\r\n");
-        [$middle, $middlePort] = $this->startStubServer("HTTP/1.1 308 Permanent Redirect\r\nLocation: http://127.0.0.1:" . $targetPort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
-        [$process, $port] = $this->startStubServer("HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:" . $middlePort . "/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+        [$process, $port] = $this->startRedirectingServer(301);
+        $logger = new class extends \Psr\Log\AbstractLogger {
+            /** @var list<string> */
+            public array $lines = [];
+
+            public function log($level, string|\Stringable $message, array $context = []): void
+            {
+                $this->lines[] = $level . ' ' . $message . ' ' . json_encode($context);
+            }
+        };
 
         try {
-            $result = (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, true))->makeRequest('PUT', '/x', ['a' => 1]);
-            $this->assertSame(204, $result['responseCode']);
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, $logger, 3, false))->makeRequest('GET', '/x');
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException) {
+            $log = implode("\n", $logger->lines);
+            $this->assertStringContainsString('301', $log);
+            $this->assertStringContainsString('Redirects are refused', $log);
+            $this->assertStringNotContainsString('secret=1', $log);
+            $this->assertStringNotContainsString(self::API_KEY, $log);
         } finally {
-            foreach ([$process, $middle, $target] as $p) {
-                proc_terminate($p);
-                proc_close($p);
-            }
+            proc_terminate($process);
+            proc_close($process);
         }
     }
 

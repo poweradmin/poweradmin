@@ -496,7 +496,11 @@ final class OidcService
             }
         }
 
-        return new GenericProvider($options);
+        // A 307 or 308 would re-send the token request, client secret included, to any Location.
+        // The provider's own client would take timeout and proxy from $options, so pass them on.
+        $httpClient = new \GuzzleHttp\Client(['allow_redirects' => false] + array_intersect_key($options, ['timeout' => true, 'proxy' => true]));
+
+        return new GenericProvider($options, ['httpClient' => $httpClient]);
     }
 
     private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo

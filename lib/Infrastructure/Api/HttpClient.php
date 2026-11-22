@@ -61,6 +61,7 @@ class HttpClient
                     "X-API-Key: $this->apiKey\r\n",
                 'method' => strtoupper($method),
                 'ignore_errors' => true,
+                'follow_location' => 0,
                 'timeout' => $this->timeout,
             ]
         ];
@@ -133,14 +134,6 @@ class HttpClient
                 $response = false;
             }
 
-            if ($method !== 'GET' && $this->wasRewrittenToGet($responseHeaders)) {
-                // No URL in the message, so it is safe to show without display_errors
-                $errorMessage = 'The PowerDNS API URL redirects, which turned this change into a read. Set the API URL to the address it redirects to.';
-                $errorDetails = ['url' => $url, 'method' => $method, 'error' => 'Redirect rewrote the request to GET'];
-                $this->logApiError($errorMessage, $errorDetails);
-                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
-            }
-
             if ($response === false) {
                 $error = error_get_last();
                 $errorDetails = [
@@ -158,6 +151,14 @@ class HttpClient
             }
 
             $responseCode = $this->getResponseCode($responseHeaders);
+
+            // The key must not travel to a Location target, and the wrapper would turn a PUT into a GET
+            if ($responseCode !== null && $responseCode >= 300 && $responseCode < 400) {
+                $errorMessage = sprintf('The PowerDNS API answered with HTTP %d. Redirects are refused; set the API URL to the address it redirects to.', $responseCode);
+                $errorDetails = ['url' => $url, 'method' => $method, 'http_code' => $responseCode, 'error' => 'Redirect refused'];
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+            }
 
             // For 204 No Content responses, don't try to parse JSON
             if ($responseCode === 204) {
@@ -249,24 +250,6 @@ class HttpClient
     private function logApiError(string $message, array $details = []): void
     {
         $this->logger->error('API Error: {message}', ['message' => $message, 'details' => $details]);
-    }
-
-    /**
-     * True when a redirect made the stream wrapper re-send the request as a body-less GET.
-     * The wrapper keeps the method and body only when the last redirect was a 307 or 308.
-     */
-    private function wasRewrittenToGet(array $headers): bool
-    {
-        $codes = [];
-        foreach ($headers as $header) {
-            if (is_string($header) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $header, $match)) {
-                $codes[] = (int)$match[1];
-            }
-        }
-        array_pop($codes);
-        $lastRedirect = end($codes);
-
-        return $lastRedirect !== false && !in_array($lastRedirect, [307, 308], true);
     }
 
     private function getResponseCode(array $headers): ?int
