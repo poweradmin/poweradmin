@@ -154,6 +154,22 @@ class ZoneTemplateApplierTransactionTest extends TestCase
         $this->assertFalse($result->success);
     }
 
+    public function testSqlBackendRollsBackWhenAnErrorIsThrown(): void
+    {
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->backend->method('recordIdsAreNumeric')->willReturn(true);
+        $this->links->method('removeLinkedRecords')->willThrowException(new \TypeError('bad type'));
+        $this->transaction->method('inTransaction')->willReturn(true);
+        $this->transaction->expects($this->once())->method('begin');
+        $this->transaction->expects($this->never())->method('commit');
+        $this->transaction->expects($this->once())->method('rollBack');
+
+        $result = $this->applier()->applyTemplate(1, 5, 300, false);
+
+        $this->assertFalse($result->success);
+        $this->assertSame('Failed to update zone records: bad type', $result->message);
+    }
+
     private function applier(?DomainRepositoryInterface $domains = null): ZoneTemplateApplier
     {
         return new ZoneTemplateApplier(

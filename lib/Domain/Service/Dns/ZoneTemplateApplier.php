@@ -140,7 +140,7 @@ class ZoneTemplateApplier
             }
 
             return ZoneWriteResult::ok($zoneId);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             $this->finishTransaction(false);
             return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
         }
