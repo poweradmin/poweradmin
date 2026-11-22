@@ -893,10 +893,11 @@ class UserProvisioningService extends LoggingService
 
             $mapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
             foreach (is_array($mapping) ? $mapping : [] as $templateName) {
-                if (!is_string($templateName)) {
+                // Numeric names are matched as the grant path coerces them
+                if (!is_scalar($templateName)) {
                     continue;
                 }
-                $check->execute([$current, $templateName]);
+                $check->execute([$current, (string)$templateName]);
                 if ((int)$check->fetchColumn() > 0) {
                     return true;
                 }
