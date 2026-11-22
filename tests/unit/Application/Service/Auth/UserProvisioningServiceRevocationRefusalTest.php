@@ -61,7 +61,7 @@ class UserProvisioningServiceRevocationRefusalTest extends TestCase
      * Signs in a user holding template 1 from the provider, matching no mapping.
      * Template 1 is the one the mapping grants ('Editors') unless $mapped is false.
      */
-    private function sync(string $templateSource, string $defaultTemplate, bool $mapped = true, bool $withGroupCleanup = false): bool
+    private function sync(string $templateSource, string $defaultTemplate, bool $mapped = true, bool $withGroupCleanup = false, array $extraMapping = []): bool
     {
         $this->users->method('getProvisioningProfile')
             ->willReturn(['perm_templ' => 1, 'perm_templ_source' => $templateSource, 'auth_method' => 'oidc']);
@@ -83,7 +83,7 @@ class UserProvisioningServiceRevocationRefusalTest extends TestCase
         $service = new UserProvisioningService(
             new FakeConfiguration(['oidc' => [
                 'default_permission_template' => $defaultTemplate,
-                'permission_template_mapping' => ['idp-editors' => $mapped ? 'Editors' : 'Other'],
+                'permission_template_mapping' => $extraMapping + ['idp-editors' => $mapped ? 'Editors' : 'Other'],
                 'group_mapping' => ['idp-editors' => 'Editors'],
             ]]),
             $logger,
@@ -108,6 +108,24 @@ class UserProvisioningServiceRevocationRefusalTest extends TestCase
         $this->users->expects($this->never())->method('updateProvisionedUser');
 
         $this->assertFalse($this->sync('oidc', 'Guest'));
+    }
+
+    public function testSkipsANonScalarMappingValueAndStillFindsTheMappedTemplate(): void
+    {
+        $this->templateIds(['Editors' => 1]);
+        $this->users->expects($this->never())->method('updateProvisionedUser');
+
+        $warnings = [];
+        set_error_handler(static function (int $errno, string $message) use (&$warnings): bool {
+            $warnings[] = $message;
+            return true;
+        }, E_WARNING);
+        try {
+            $this->assertFalse($this->sync('oidc', 'Guest', extraMapping: ['misconfigured' => ['Editors']]));
+        } finally {
+            restore_error_handler();
+        }
+        $this->assertSame([], $warnings);
     }
 
     public function testKeepsADefaultDerivedTemplateWithAWarningWhenTheDefaultCannotBeResolved(): void

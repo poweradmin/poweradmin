@@ -782,6 +782,9 @@ class UserProvisioningService
         // The raw lookup: a superuser template is still mapped when superuser provisioning is off
         try {
             foreach ((array)$this->configManager->get($authMethod, 'permission_template_mapping', []) as $templateName) {
+                if (!is_scalar($templateName)) {
+                    continue;
+                }
                 if ($this->userRepository->findPermissionTemplateIdByName((string)$templateName) === $templateId) {
                     return true;
                 }
