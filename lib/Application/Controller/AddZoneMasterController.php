@@ -178,11 +178,14 @@ class AddZoneMasterController extends BaseController
         } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->hasNonDelegationRecords($zone_name)) {
+        } elseif ($dnsRecord->domainExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (($overlapError = $this->getZoneOverlapError($zone_name)) !== null) {
             $this->setMessage('add_zone_master', 'error', $overlapError);
+            $this->showForm();
+        } elseif ($dnsRecord->hasNonDelegationRecords($zone_name)) {
+            $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template, $selected_groups)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);

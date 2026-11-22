@@ -95,14 +95,14 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Domain already exists'];
         }
 
+        if ($actingUserId !== null && $dnsRecord->isInsideForeignZone($domain, $actingUserId)) {
+            return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
+        }
+
         // Check if non-delegation records exist (prevents zone hijacking)
         // Only delegation records (NS, DS) are allowed
         if ($dnsRecord->hasNonDelegationRecords($domain)) {
             return ['success' => false, 'message' => 'Domain already exists'];
-        }
-
-        if ($actingUserId !== null && $dnsRecord->isInsideForeignZone($domain, $actingUserId)) {
-            return ['success' => false, 'message' => 'Cannot create this zone because it overlaps an existing zone owned by another user.', 'status' => 409];
         }
 
         // Validate zone type
