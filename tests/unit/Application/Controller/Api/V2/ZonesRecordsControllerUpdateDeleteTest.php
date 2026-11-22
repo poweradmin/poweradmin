@@ -39,6 +39,8 @@ use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Repository\ZoneReadRepositoryInterface;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
@@ -249,6 +251,55 @@ class ZonesRecordsControllerUpdateDeleteTest extends V2ControllerTestCase
         );
 
         $response = $this->update(['type' => 'ns', 'content' => 'ns1.example.net']);
+
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('You do not have permission to edit this record type', $this->messageOf($response));
+    }
+
+    /** The real permission rules for a user who owns the zone and holds only own_as_client content editing */
+    private function useRealClientPermissions(): void
+    {
+        $users = $this->createMock(UserRepositoryInterface::class);
+        $users->method('getUserPermissions')->willReturn([Permission::PERM_ZONE_CONTENT_EDIT_OWN_AS_CLIENT]);
+        $users->method('hasAdminPermission')->willReturn(false);
+        $users->method('userOwnsZone')->willReturn(true);
+        $users->method('getUserOwnedZoneIds')->willReturn([self::ZONE_ID]);
+        $users->method('getUserGroupIds')->willReturn([]);
+        $users->method('getUserById')->willReturn(['id' => self::USER_ID, 'perm_templ' => 1]);
+        $users->method('templateGrantsUberuser')->willReturn(false);
+        $users->method('getTemplatePermissionNames')->willReturn([]);
+
+        $real = new ApiPermissionService($users, new PermissionService($users));
+        $this->permissions = $this->createMock(ApiPermissionService::class);
+        $this->permissions->method('canEditZoneContent')->willReturnCallback($real->canEditZoneContent(...));
+        $this->permissions->method('canEditZoneRecord')->willReturnCallback($real->canEditZoneRecord(...));
+        $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_DIRECT);
+        $this->recordManager->expects($this->never())->method('editRecord');
+    }
+
+    /**
+     * @return array<string, array{array<string, mixed>, array<string, mixed>}> stored record overrides, request body
+     */
+    public static function luaEditProvider(): array
+    {
+        return [
+            'content of a stored LUA record' => [['type' => 'LUA', 'content' => 'A "return ifportup(80)"'], ['content' => 'A "return \'192.0.2.9\'"']],
+            'rename of a stored LUA record' => [['type' => 'LUA', 'content' => 'A "return \'192.0.2.9\'"'], ['name' => 'moved.example.com']],
+            'another type turned into LUA' => [[], ['type' => 'LUA', 'content' => 'A "return \'192.0.2.9\'"']],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $stored
+     * @param array<string, mixed> $body
+     */
+    #[DataProvider('luaEditProvider')]
+    public function testAnOwnAsClientKeyCannotTouchOrCreateALuaRecordThroughAPut(array $stored, array $body): void
+    {
+        $this->records->method('getRecordById')->willReturn($this->existingRecord($stored));
+        $this->useRealClientPermissions();
+
+        $response = $this->update($body);
 
         $this->assertSame(403, $response->getStatusCode());
         $this->assertSame('You do not have permission to edit this record type', $this->messageOf($response));
