@@ -104,6 +104,7 @@ class ZoneFileExportController extends BaseController
                     'header' => "X-API-Key: $apiKey\r\n",
                     'method' => 'GET',
                     'ignore_errors' => true,
+                    'follow_location' => 0,
                     'timeout' => 10,
                 ]
             ];
@@ -131,6 +132,11 @@ class ZoneFileExportController extends BaseController
                         $responseCode = (int)$matches[1];
                     }
                 }
+            }
+
+            if ($responseCode >= 300 && $responseCode < 400) {
+                $this->logger->error('PowerDNS API export answered with HTTP {code}; redirects are refused', ['code' => $responseCode]);
+                return null;
             }
 
             if ($responseCode === 200 && !empty(trim($response))) {

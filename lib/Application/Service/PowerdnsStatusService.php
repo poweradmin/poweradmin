@@ -539,7 +539,7 @@ class PowerdnsStatusService
 
         // Without an explicit timeout this falls back to default_socket_timeout,
         // typically 60s, which stalls the page when the metrics port is firewalled.
-        $options = ['http' => ['method' => 'GET', 'timeout' => $this->requestTimeout]];
+        $options = ['http' => ['method' => 'GET', 'timeout' => $this->requestTimeout, 'follow_location' => 0]];
 
         // PowerDNS webserver-password has no matching username, so the password
         // alone is enough to warrant sending credentials.
@@ -550,7 +550,29 @@ class PowerdnsStatusService
 
         $options = ProxyContext::applyTo($options, $url);
 
-        return @file_get_contents($url, false, stream_context_create($options));
+        // fopen + wrapper_data instead of $http_response_header, which PHP 8.5 deprecates
+        $stream = @fopen($url, 'r', false, stream_context_create($options));
+        if ($stream === false) {
+            return false;
+        }
+        $body = false;
+        $meta = [];
+        try {
+            $body = @stream_get_contents($stream);
+            $meta = stream_get_meta_data($stream);
+        } finally {
+            fclose($stream);
+        }
+
+        // The Basic credentials must not travel to a Location target
+        $headers = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+        $status = isset($headers[0]) && is_string($headers[0]) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $headers[0], $match) ? (int) $match[1] : 0;
+        if ($status >= 300 && $status < 400) {
+            $this->logger->error('PowerdnsStatusService: metrics endpoint answered with HTTP {code}; redirects are refused', ['code' => $status]);
+            return false;
+        }
+
+        return $body;
     }
 
     /**
