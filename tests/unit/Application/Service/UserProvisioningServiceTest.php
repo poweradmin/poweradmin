@@ -507,4 +507,23 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertFalse($invoker('1001', [1002]));
         $this->assertFalse($invoker('DnsAdmins', [['nested']]));
     }
+
+    public function testUserHoldsMappedTemplateMatchesNumericMappingValues(): void
+    {
+        $db = new \PDO('sqlite::memory:');
+        $db->exec('CREATE TABLE users (id INTEGER, perm_templ INTEGER)');
+        $db->exec('CREATE TABLE perm_templ (id INTEGER, name TEXT)');
+        $db->exec("INSERT INTO perm_templ VALUES (7, '2026')");
+        $db->exec('INSERT INTO users VALUES (1, 7)');
+
+        $configManager = $this->createMock(\Poweradmin\Infrastructure\Configuration\ConfigurationManager::class);
+        $configManager->method('get')->willReturnMap([
+            ['oidc', 'permission_template_mapping', [], ['admins' => 2026]],
+        ]);
+        $service = $this->createServiceWithMocks($db, $configManager);
+
+        $reflection = new ReflectionClass(UserProvisioningService::class);
+
+        $this->assertTrue($reflection->getMethod('userHoldsMappedTemplate')->invoke($service, 1, 'oidc'));
+    }
 }
