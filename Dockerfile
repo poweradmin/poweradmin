@@ -90,7 +90,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
     && mkdir -p /db /app/config \
     && cp /app/config/settings.defaults.php /usr/local/share/settings.defaults.php \
-    && printf 'display_errors = Off\nlog_errors = On\nzend.exception_ignore_args = On\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
+    && printf 'display_errors = Off\nlog_errors = On\nzend.exception_ignore_args = On\nexpose_php = Off\npost_max_size = 20M\nupload_max_filesize = 16M\n' > "$PHP_INI_DIR/conf.d/00-poweradmin.ini"
 
 # Create Caddyfile for FrankenPHP
 # Uses RUN with single-quoted heredoc to preserve Caddy's {$ENV} syntax literally
@@ -104,6 +104,11 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
 :{$SERVER_PORT:80} {
     root * /app
     encode gzip
+
+    # post_max_size does not bound JSON or PUT bodies, so cap them here; raise both together
+    request_body {
+        max_size {$REQUEST_BODY_MAX_SIZE:20MiB}
+    }
 
     # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /vendor* /bin/* /var/* /composer.json /composer.lock /package.json /package-lock.json /psalm.xml /phpcs.xml /phpstan*.neon /phpunit.xml* /phpdoc.dist.xml
@@ -120,7 +125,7 @@ RUN cat > /etc/caddy/Caddyfile <<'CADDYEOF'
     }
 
     # Security: Deny access to hidden files and sensitive file types
-    @hidden path .* *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml
+    @hidden path /.* */.* *.sql *.sqlite *.sqlite3 *.db *.md *.log *.yaml *.yml
     handle @hidden {
         respond "Forbidden" 403
     }
