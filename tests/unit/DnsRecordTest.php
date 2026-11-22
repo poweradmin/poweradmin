@@ -2,6 +2,7 @@
 
 namespace unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\AppConfiguration;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -115,6 +116,61 @@ class DnsRecordTest extends TestCase
         $expected = sprintf("%s00", date('Ymd', strtotime("+2 day")));
         $result = $this->dnsRecord->get_next_serial($given);
         $this->assertSame($expected, $result);
+    }
+
+    public function testGetNextSerialWrapsAtThe32BitCeiling()
+    {
+        $this->assertSame(1, $this->dnsRecord->get_next_serial(4294967295));
+    }
+
+    #[DataProvider('largeSerialProvider')]
+    public function testGetNextSerialStaysWithin32Bits(int $currentSerial)
+    {
+        $next = $this->dnsRecord->get_next_serial($currentSerial);
+
+        $this->assertLessThanOrEqual(4294967295, (float)$next, sprintf('serial %s produced %s', $currentSerial, $next));
+    }
+
+    public static function largeSerialProvider(): array
+    {
+        return [
+            'signed 32-bit maximum' => [2147483647],
+            'just below the ceiling' => [4294967290],
+            'at the ceiling' => [4294967295],
+            'plausible future date serial' => [4294123100],
+        ];
+    }
+
+    #[DataProvider('unparseableDateSerialProvider')]
+    public function testGetNextSerialNeverGoesBackwardsForASerialWithoutARealDate(int $currentSerial)
+    {
+        $next = (int)$this->dnsRecord->get_next_serial($currentSerial);
+
+        $diff = ($next - $currentSerial) & 0xFFFFFFFF;
+        $this->assertTrue($diff > 0 && $diff < 0x80000000, sprintf('serial %d produced %d', $currentSerial, $next));
+    }
+
+    public static function unparseableDateSerialProvider(): array
+    {
+        return [
+            'month 11, day 99' => [2026119999],
+            'invalid month' => [2026139999],
+            'future date past the signed range' => [2147483699],
+        ];
+    }
+
+    #[DataProvider('futureUnparseableSerialProvider')]
+    public function testGetNextSerialBumpsAFutureSerialWithoutARealDateByOne(int $currentSerial)
+    {
+        $this->assertSame($currentSerial + 1, (int)$this->dnsRecord->get_next_serial($currentSerial));
+    }
+
+    public static function futureUnparseableSerialProvider(): array
+    {
+        return [
+            'month 13 far in the future' => [4000139999],
+            'future date past the signed range' => [2147483699],
+        ];
     }
 
     public function testGetDomainLevel()

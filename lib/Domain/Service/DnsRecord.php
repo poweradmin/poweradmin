@@ -215,7 +215,31 @@ class DnsRecord
         }
 
         // Create new serial out of existing/updated date and revision
-        return $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+        $next = $today . str_pad($revision, 2, "0", STR_PAD_LEFT);
+
+        // DNS serials are 32-bit unsigned (RFC 1982); wrap rather than hand PowerDNS a value it cannot store.
+        if ((float)$next > 4294967295) {
+            return 1;
+        }
+
+        // A serial whose date part is not a real date (2026119999) makes the date helper fall
+        // back to the epoch; never hand out a serial that secondaries read as older.
+        if (!self::is_serial_after((int)$next, (int)$curr_serial)) {
+            $bumped = (int)$curr_serial + 1;
+            return $bumped > 4294967295 ? 1 : $bumped;
+        }
+
+        return $next;
+    }
+
+    /**
+     * RFC 1982 serial number arithmetic: whether $candidate is greater than $current.
+     */
+    private static function is_serial_after(int $candidate, int $current): bool
+    {
+        $diff = ($candidate - $current) & 0xFFFFFFFF;
+
+        return $diff > 0 && $diff < 0x80000000;
     }
 
     /** Update SOA record
