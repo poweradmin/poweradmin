@@ -7,6 +7,7 @@
 
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { isApiModeInstance, isSqliteInstance } from '../../helpers/instance.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Patterns rendered by PHP/PDO when a query, type assertion, or FK constraint
@@ -155,7 +156,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
     });
 
     test('should update zones from template without fatal error (issue #944/#945)', async ({ page, baseURL }) => {
-      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
+      test.skip(isApiModeInstance(baseURL) && isSqliteInstance(baseURL), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
       test.skip(!zoneId, 'Zone was not created');
@@ -189,7 +190,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
     });
 
     test('should verify zone records after template update', async ({ page, baseURL }) => {
-      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
+      test.skip(isApiModeInstance(baseURL) && isSqliteInstance(baseURL), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!zoneId, 'Zone was not created');
 
@@ -240,7 +241,7 @@ test.describe('Zone Template - Update Zones (Issues #944, #945, #1210)', () => {
     });
 
     test('should handle update with multiple zones linked to template', async ({ page, baseURL }) => {
-      test.skip((baseURL || '').includes(':8085'), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
+      test.skip(isApiModeInstance(baseURL) && isSqliteInstance(baseURL), 'the devcontainer SQLite API instance shares its database file with PowerDNS, which locks the update');
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       test.skip(!templateId, 'Template was not created');
 
