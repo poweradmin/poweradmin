@@ -415,12 +415,19 @@ class UserProvisioningService extends LoggingService
             $username = $this->ensureUniqueUsername($userInfo->getUsername());
             $this->logInfo('Final username for creation: {username}', ['username' => $username]);
 
+            // A directory or provider address another account holds would break its password reset
+            $email = $userInfo->getEmail();
+            if ($email !== '' && $this->emailHeldByAnotherUser($email, 0)) {
+                $this->logWarning('Not storing email for new user {username}: another account already holds the address', ['username' => $username]);
+                $email = '';
+            }
+
             // Log all the data that will be inserted
             $userData = [
                 'username' => $username,
                 'password' => '',
                 'fullname' => $userInfo->getDisplayName() ?: $userInfo->getFullName(),
-                'email' => $userInfo->getEmail(),
+                'email' => $email,
                 'description' => 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 'active' => 1,
                 'perm_templ' => $permissionTemplateId
@@ -437,7 +444,7 @@ class UserProvisioningService extends LoggingService
                 $username,
                 '', // No password for external auth users
                 UserManager::cleanFullname((string)($userInfo->getDisplayName() ?: $userInfo->getFullName())),
-                $userInfo->getEmail(),
+                $email,
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,
