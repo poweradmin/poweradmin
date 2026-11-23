@@ -147,4 +147,13 @@ class EditUserControllerIdentityFieldsTest extends TestCase
         $this->assertSame('', $result['fullname']);
         $this->assertSame('', $result['email']);
     }
+
+    public function testOnlyAChangedUsernameOrEmailCountsAsASignInChange(): void
+    {
+        $stored = ['username' => 'alice', 'email' => 'alice@example.com'];
+
+        $this->assertFalse(EditUserController::changesSignInIdentity($stored, ['username' => 'alice', 'email' => 'alice@example.com', 'fullname' => 'New Name']));
+        $this->assertTrue(EditUserController::changesSignInIdentity($stored, ['username' => 'alice', 'email' => 'attacker@example.net']));
+        $this->assertTrue(EditUserController::changesSignInIdentity($stored, ['username' => 'mallory', 'email' => 'alice@example.com']));
+    }
 }

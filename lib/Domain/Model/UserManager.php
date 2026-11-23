@@ -613,6 +613,12 @@ class UserManager
      */
     public function updateUserDetails(array $details): bool
     {
+        // A loose comparison with a non-numeric uid would miss the own row while the database still matched it
+        if (!isset($details['uid']) || !is_scalar($details['uid']) || !ctype_digit((string)$details['uid'])) {
+            return false;
+        }
+        $details['uid'] = (int)$details['uid'];
+
         $perm_edit_own = $this->hasPermission('user_edit_own');
         $perm_edit_others = $this->hasPermission('user_edit_others');
         $perm_edit_user_templ = $this->hasPermission('user_edit_templ_perm');
@@ -658,9 +664,16 @@ class UserManager
                 $active = (int)$userCheck['active'];
             }
 
+            // Your own sign-in identity and password change through the edit form, which asks for the current password
+            if ($details['uid'] == $_SESSION[SessionKeys::USERID]) {
+                $details['username'] = $userCheck['username'];
+                $details['email'] = (string)$userCheck['email'];
+                unset($details['password']);
+            }
+
             // Reject a changed email that another account already uses; unchanged
             // addresses stay editable even if existing data contains duplicates.
-            if (strcasecmp($details['email'], (string)$userCheck['email']) !== 0 && self::emailExists($this->db, $details['email'], (int)$details['uid'])) {
+            if (strcasecmp($details['email'], (string)$userCheck['email']) !== 0 && self::emailExists($this->db, $details['email'], $details['uid'])) {
                 $this->messageService->addSystemError(_('Email address already exists, please choose another one.'));
 
                 return false;
@@ -694,7 +707,7 @@ class UserManager
                     $this->templateAssignmentRejected(
                         (int)$userCheck['perm_templ'],
                         (int)$details['templ_id'],
-                        (int)$details['uid']
+                        $details['uid']
                     )
                 ) {
                     return false;
@@ -745,16 +758,16 @@ class UserManager
             $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
 
             $stmt->execute();
-            $this->resetEmailMfaWhenEditedByOther((int)$details['uid'], $userCheck['email'] ?? null, (string)$details['email']);
+            $this->resetEmailMfaWhenEditedByOther($details['uid'], $userCheck['email'] ?? null, (string)$details['email']);
             if ($perm_is_godlike == "1") {
                 $this->dropSsoLinksOnMoveToLdap(
-                    (int)$details['uid'],
+                    $details['uid'],
                     $userCheck['auth_method'] ?? null,
                     self::resolveAuthMethod((bool) $use_ldap, $userCheck['auth_method'] ?? null)
                 );
             }
             if ($hashedPassword !== null) {
-                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$details['uid']);
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($details['uid']);
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));

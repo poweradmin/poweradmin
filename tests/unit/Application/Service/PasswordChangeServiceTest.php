@@ -140,6 +140,41 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertSame('Too many failed attempts. Please try again later.', $message);
     }
 
+    public function testConfirmingTheCurrentPasswordChangesNothingAndClearsTheAttempt(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('reserveAttempt')->willReturn(true);
+        $attempts->expects($this->once())->method('recordAttempt')
+            ->with('victim', '203.0.113.5', true, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+        $this->users->expects($this->never())->method('updatePassword');
+
+        $result = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], true, $attempts)->confirmCurrentPassword('old');
+
+        $this->assertSame([true, ''], $result);
+    }
+
+    public function testConfirmingAWrongCurrentPasswordIsCountedOnTheReauthStage(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('reserveAttempt')
+            ->with('victim', '203.0.113.5', LoginAttemptService::STAGE_REAUTH, self::USER_ID)
+            ->willReturn(true);
+        $attempts->expects($this->never())->method('recordAttempt');
+
+        [$confirmed] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], false, $attempts)->confirmCurrentPassword('guess');
+
+        $this->assertFalse($confirmed);
+    }
+
+    public function testASessionWaitingForItsSecondFactorCannotConfirmThePassword(): void
+    {
+        [$confirmed] = $this->service([SessionKeys::PENDING_USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'])->confirmCurrentPassword('old');
+
+        $this->assertFalse($confirmed);
+    }
+
     /** @param array<string, mixed> $session */
     private function service(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): PasswordChangeService
     {
