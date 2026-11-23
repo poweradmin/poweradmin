@@ -1815,6 +1815,11 @@ msgstr "نوع البيانات الوصفية %s لا يسري إلا مع %s. 
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "لا يمكن تغيير نوع البيانات الوصفية %s إلا بواسطة مسؤول."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:510
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "ليس لديك صلاحية تغيير نوع بيانات DNSSEC الوصفية %s."
+
 #: lib/Application/Controller/EditZoneMetadataController.php:480
 #, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."

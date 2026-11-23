@@ -1752,6 +1752,11 @@ msgstr "ประเภทเมตาดาต้า %s จะมีผลก�
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "ประเภทเมตาดาต้า %s สามารถเปลี่ยนแปลงได้โดยผู้ดูแลระบบเท่านั้น."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:510
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "คุณไม่มีสิทธิ์เปลี่ยนประเภทเมทาดาทา DNSSEC %s"
+
 #: lib/Application/Controller/EditZoneMetadataController.php:480
 #, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."

@@ -1728,6 +1728,11 @@ msgstr "元資料類型 %s 僅在與 %s 一起使用時才生效。請同時新�
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "元資料類型 %s 只能由管理員變更。"
 
+#: lib/Application/Controller/EditZoneMetadataController.php:510
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "您沒有權限變更 DNSSEC 中繼資料類型 %s。"
+
 #: lib/Application/Controller/EditZoneMetadataController.php:480
 #, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
