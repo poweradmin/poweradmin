@@ -33,18 +33,22 @@ use Throwable;
  */
 class HttpClient
 {
+    /** Largest PowerDNS answer read into memory; a real zone list or RRset stays far below it. */
+    public const MAX_RESPONSE_BYTES = 64 * 1024 * 1024;
 
     private string $apiUrl;
     private string $apiKey;
     private int $timeout;
     private LoggerInterface $logger;
     private bool $displayErrors;
+    private int $maxResponseBytes;
 
     /**
      * @param bool $displayErrors Whether error messages carry the upstream detail (misc.display_errors)
      */
-    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null, int $timeout = 10, bool $displayErrors = false)
+    public function __construct(string $baseEndpoint, string $apiKey, ?LoggerInterface $logger = null, int $timeout = 10, bool $displayErrors = false, int $maxResponseBytes = self::MAX_RESPONSE_BYTES)
     {
+        $this->maxResponseBytes = max(1, $maxResponseBytes);
         $this->apiUrl = rtrim($baseEndpoint, '/');
         $this->apiKey = $apiKey;
         $this->timeout = $timeout > 0 ? $timeout : 10;
@@ -120,13 +124,21 @@ class HttpClient
             $readTimedOut = false;
             if ($stream !== false) {
                 try {
-                    $response = @stream_get_contents($stream);
+                    // One byte past the cap is enough to tell an oversized body from one that just fits
+                    $response = @stream_get_contents($stream, $this->maxResponseBytes + 1);
                     $meta = stream_get_meta_data($stream);
                     $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
                     $readTimedOut = !empty($meta['timed_out']);
                 } finally {
                     fclose($stream);
                 }
+            }
+
+            if (is_string($response) && strlen($response) > $this->maxResponseBytes) {
+                $errorMessage = 'The PowerDNS API response is larger than the supported size';
+                $errorDetails = ['url' => $url, 'method' => $method, 'error' => 'Response too large'];
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
             }
 
             // A read timeout leaves a partial body; treat it as a failed request, not a bad payload

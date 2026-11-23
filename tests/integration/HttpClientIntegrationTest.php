@@ -147,6 +147,31 @@ class HttpClientIntegrationTest extends TestCase
         }
     }
 
+    public function testAnOversizedResponseIsRefusedAndOneThatFitsIsParsed(): void
+    {
+        $body = '{"a":"' . str_repeat('x', 200) . '"}';
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+        try {
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, true, 100))->makeRequest('GET', '/x');
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException $e) {
+            $this->assertStringContainsString('larger than the supported size', $e->getMessage());
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+        try {
+            $result = (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY, null, 3, true, strlen($body)))->makeRequest('GET', '/x');
+            $this->assertSame(200, $result['responseCode']);
+            $this->assertSame(200, strlen($result['data']['a']));
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
     public function testTruncatedBodyRaisesApiErrorWithoutEmittingWarnings(): void
     {
         [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: 100\r\nConnection: close\r\n\r\npartial");

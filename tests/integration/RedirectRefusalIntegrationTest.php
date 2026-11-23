@@ -70,6 +70,30 @@ class RedirectRefusalIntegrationTest extends TestCase
         }
     }
 
+    public function testMetricsFetchIgnoresAnOversizedBody(): void
+    {
+        $body = str_repeat('# HELP x y' . "\n", 20);
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+
+        try {
+            $service = new class (new FakeConfiguration(['pdns_api' => [
+                'url' => 'http://127.0.0.1:' . $port,
+                'key' => 'secret',
+                'timeout' => 3,
+            ]]), new ArraySession()) extends PowerdnsStatusService {
+                protected function maxMetricsBytes(): int
+                {
+                    return 50;
+                }
+            };
+
+            $this->assertFalse((new ReflectionMethod($service, 'fetchMetricsWithAuth'))->invoke($service, 'http://127.0.0.1:' . $port . '/metrics'));
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
     public function testOidcTokenRequestIsNotFollowedToARedirectTarget(): void
     {
         [$target, $targetPort] = $this->listenOnFreePort();

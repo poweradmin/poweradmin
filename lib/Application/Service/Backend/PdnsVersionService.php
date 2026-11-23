@@ -44,6 +44,8 @@ class PdnsVersionService
     private const SESSION_KEY = 'pdns_server_info';
     private const TTL_SECONDS = 300;
     private const RETRY_SECONDS = 60;
+    private const MAX_FIELD_LENGTH = 64;
+    private const MAX_CONFIG_LENGTH = 256;
 
     private PowerdnsApiClient $apiClient;
     private LoggerInterface $logger;
@@ -77,10 +79,11 @@ class PdnsVersionService
             return null;
         }
 
+        // The values land in every user's session file, so a hostile server cannot make them large
         $info = [
-            'version' => (string) $serverInfo['version'],
-            'daemon_type' => (string) ($serverInfo['daemon_type'] ?? ''),
-            'id' => (string) ($serverInfo['id'] ?? ''),
+            'version' => substr((string) $serverInfo['version'], 0, self::MAX_FIELD_LENGTH),
+            'daemon_type' => substr((string) ($serverInfo['daemon_type'] ?? ''), 0, self::MAX_FIELD_LENGTH),
+            'id' => substr((string) ($serverInfo['id'] ?? ''), 0, self::MAX_FIELD_LENGTH),
         ];
 
         // Views need an LMDB backend and views=yes, neither of which the
@@ -88,8 +91,8 @@ class PdnsVersionService
         // spared the extra call.
         if (PdnsCapabilities::fromVersion($info['version'])->isAtLeast('5.0.0')) {
             $config = $this->apiClient->getServerConfig();
-            $info['backends'] = (string) ($config['launch'] ?? '');
-            $info['views'] = (string) ($config['views'] ?? '');
+            $info['backends'] = substr((string) ($config['launch'] ?? ''), 0, self::MAX_CONFIG_LENGTH);
+            $info['views'] = substr((string) ($config['views'] ?? ''), 0, self::MAX_CONFIG_LENGTH);
         }
 
         // Log the version once per session so operational issues can be
