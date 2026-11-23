@@ -2274,6 +2274,11 @@ msgstr "סוג המטא-נתונים %s ניתן לשינוי על ידי מנה
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "סוג המטא-נתונים %s דורש הרשאת ניהול DNSSEC באזור זה."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "סוג המטא-נתונים %s מנוהל על ידי PowerDNS ולא ניתן לשנותו כאן."
 

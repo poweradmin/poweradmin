@@ -2353,6 +2353,11 @@ msgstr "Druh metadát %s môže zmeniť iba administrátor."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Typ metaúdajov %s vyžaduje oprávnenie na správu DNSSEC pre túto zónu."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "Typ metadát %s spravuje PowerDNS a nedá sa tu zmeniť."
 

@@ -2336,6 +2336,11 @@ msgstr "%s meta veri türü yalnızca bir yönetici tarafından değiştirilebil
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "%s meta veri türü, bu bölgede DNSSEC yönetimi izni gerektirir."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "%s meta veri türü PowerDNS tarafından yönetilir ve burada değiştirilemez."

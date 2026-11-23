@@ -2357,6 +2357,11 @@ msgstr "Metaduomenų tipą %s gali pakeisti tik administratorius."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Metaduomenų tipui %s reikia DNSSEC valdymo teisės šioje zonoje."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "Metaduomenų tipą %s tvarko PowerDNS, todėl jo čia pakeisti negalima."
 

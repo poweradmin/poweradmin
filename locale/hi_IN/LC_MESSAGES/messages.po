@@ -2293,6 +2293,11 @@ msgstr "मेटाडेटा प्रकार %s को केवल ए�
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "मेटाडेटा प्रकार %s के लिए इस ज़ोन पर DNSSEC प्रबंधन अनुमति आवश्यक है।"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "मेटाडाटा प्रकार %s का रखरखाव PowerDNS द्वारा किया जाता है और इसे यहाँ नहीं बदला जा "

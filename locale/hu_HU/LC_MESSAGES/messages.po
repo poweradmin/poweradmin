@@ -2354,6 +2354,11 @@ msgstr "A %s metaadat-típust csak rendszergazda módosíthatja."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "A(z) %s metaadattípus módosításához DNSSEC-kezelési jogosultság szükséges ezen a zónán."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "A(z) %s metaadattípust a PowerDNS kezeli, itt nem módosítható."
 

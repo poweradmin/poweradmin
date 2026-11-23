@@ -2394,6 +2394,11 @@ msgstr "Ο τύπος μεταδεδομένων %s μπορεί να αλλάξ
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Ο τύπος μεταδεδομένων %s απαιτεί το δικαίωμα διαχείρισης DNSSEC σε αυτή τη ζώνη."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "Το είδος μεταδεδομένων %s συντηρείται από το PowerDNS και δεν μπορεί να "

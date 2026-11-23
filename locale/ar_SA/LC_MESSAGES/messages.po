@@ -2371,6 +2371,11 @@ msgstr "لا يمكن تغيير نوع البيانات الوصفية %s إل�
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "يتطلب نوع البيانات الوصفية %s صلاحية إدارة DNSSEC على هذه المنطقة."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "نوع البيانات الوصفية %s يديره PowerDNS ولا يمكن تغييره هنا."
 

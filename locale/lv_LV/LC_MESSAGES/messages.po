@@ -2343,6 +2343,11 @@ msgstr "Metadatu veidu %s var mainīt tikai administrators."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Metadatu veidam %s ir nepieciešama DNSSEC pārvaldības atļauja šajā zonā."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "Metadatu veidu %s uztur PowerDNS, un to šeit nevar mainīt."
 

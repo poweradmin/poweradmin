@@ -2330,6 +2330,11 @@ msgstr "Metadata kind %s can only be changed by an administrator."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Metadata kind %s needs the DNSSEC management permission on this zone."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 

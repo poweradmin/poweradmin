@@ -2307,6 +2307,11 @@ msgstr "نوع فراداده %s را تنها یک مدیر می‌تواند �
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "نوع فراداده %s به مجوز مدیریت DNSSEC در این منطقه نیاز دارد."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "نوع فراداده %s توسط PowerDNS مدیریت می‌شود و در اینجا قابل تغییر نیست."
 

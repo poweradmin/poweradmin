@@ -2325,6 +2325,11 @@ msgstr "Metatietolajia %s voi muuttaa vain ylläpitäjä."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Metatietotyyppi %s edellyttää DNSSEC-hallinnan oikeutta tällä vyöhykkeellä."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "Metatietotyyppiä %s ylläpitää PowerDNS, eikä sitä voi muuttaa täällä."
 

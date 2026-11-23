@@ -2427,6 +2427,11 @@ msgstr ""
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Le type de métadonnées %s nécessite l'autorisation de gestion DNSSEC sur cette zone."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "Le type de métadonnées %s est géré par PowerDNS et ne peut pas être modifié "

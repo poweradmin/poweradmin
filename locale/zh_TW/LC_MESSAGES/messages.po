@@ -2252,6 +2252,11 @@ msgstr "元資料類型 %s 只能由管理員變更。"
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "中繼資料類型 %s 需要此區域的 DNSSEC 管理權限。"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr "元資料類型 %s 由 PowerDNS 維護，無法在此處變更。"
 

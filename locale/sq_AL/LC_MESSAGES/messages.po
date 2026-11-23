@@ -2371,6 +2371,11 @@ msgstr "Lloji i metadatës %s mund të ndryshohet vetëm nga një administrator.
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Lloji i metadatave %s kërkon lejen e administrimit të DNSSEC në këtë zonë."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "Lloji i metadatës %s mirëmbahet nga PowerDNS dhe nuk mund të ndryshohet këtu."

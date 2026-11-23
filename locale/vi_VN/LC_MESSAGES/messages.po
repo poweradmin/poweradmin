@@ -2307,6 +2307,11 @@ msgstr "Chỉ quản trị viên mới có thể thay đổi loại siêu dữ l
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Loại siêu dữ liệu %s yêu cầu quyền quản lý DNSSEC trên vùng này."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "Loại siêu dữ liệu %s do PowerDNS quản lý và không thể thay đổi tại đây."

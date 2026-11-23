@@ -2436,6 +2436,11 @@ msgstr "Ní féidir ach le riarthóir an cineál meiteashonraí %s a athrú."
 
 #: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
 #, php-format
+msgid "Metadata kind %s needs the DNSSEC management permission on this zone."
+msgstr "Éilíonn an cineál meiteashonraí %s cead bainistíochta DNSSEC ar an gcrios seo."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:50
+#, php-format
 msgid "Metadata kind %s is maintained by PowerDNS and cannot be changed here."
 msgstr ""
 "Tá an cineál meiteashonraí %s á chothabháil ag PowerDNS agus ní féidir é a "
