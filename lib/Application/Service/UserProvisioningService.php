@@ -915,18 +915,14 @@ class UserProvisioningService extends LoggingService
                 return false;
             }
 
-            // Same accent-exact name match the grant path uses
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
-            $check = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = ? AND $match");
-
             $mapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
             foreach (is_array($mapping) ? $mapping : [] as $templateName) {
                 // Numeric names are matched as the grant path coerces them
                 if (!is_scalar($templateName)) {
                     continue;
                 }
-                $check->execute([$current, (string)$templateName]);
-                if ((int)$check->fetchColumn() > 0) {
+                // Resolved as the grant path resolves it, so a same-named duplicate does not count
+                if ($this->resolveTemplateIdByName((string)$templateName) === $current) {
                     return true;
                 }
             }
@@ -968,20 +964,31 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    /**
+     * Template names are not unique, so a user-type template wins over a group-type one
+     * and the lowest id wins among equals; the same name always resolves to the same row.
+     */
+    private function resolveTemplateIdByName(string $templateName): ?int
+    {
+        // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
+        $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
+        $stmt = $this->db->prepare(
+            "SELECT id FROM perm_templ WHERE $match ORDER BY CASE WHEN template_type = 'user' THEN 0 ELSE 1 END, id LIMIT 1"
+        );
+        $stmt->execute([$templateName]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
     private function findPermissionTemplateByName(string $templateName, string $authMethod): ?int
     {
         try {
-            // Accent-exact match, so an IdP-asserted claim cannot map to a look-alike template.
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'name');
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
-            $stmt->execute([$templateName]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$result) {
+            $templateId = $this->resolveTemplateIdByName($templateName);
+            if ($templateId === null) {
                 return null;
             }
 
-            $templateId = (int)$result['id'];
             if (!$this->superuserProvisioningAllowed($authMethod) && $this->templateGrantsSuperuser($templateId)) {
                 $this->logWarning(
                     'Refusing to provision superuser template {template} from {method}; '

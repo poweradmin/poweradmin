@@ -27,7 +27,7 @@ class UserProvisioningServiceTemplateRevocationTest extends TestCase
             perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1), use_ldap integer(1) NOT NULL,
             auth_method VARCHAR(20) NOT NULL DEFAULT 'sql')");
         $this->db->exec("CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL)");
-        $this->db->exec("CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL)");
+        $this->db->exec("CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user')");
         $this->db->exec("CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL)");
         $this->db->exec("CREATE TABLE user_groups (id integer PRIMARY KEY, name VARCHAR(255) NOT NULL, perm_templ integer NOT NULL)");
         $this->db->exec("CREATE TABLE user_group_members (id integer PRIMARY KEY, group_id integer NOT NULL, user_id integer NOT NULL)");
@@ -70,6 +70,23 @@ class UserProvisioningServiceTemplateRevocationTest extends TestCase
 
     public function testRevocationFallsBackToTheDefaultTemplate(): void
     {
+        $this->assertSame(1, $this->signIn('Viewer'));
+        $this->assertSame(5, $this->template());
+    }
+
+    public function testADuplicateNamedGroupTemplateDoesNotWinTheNameLookup(): void
+    {
+        $this->db->exec("INSERT INTO perm_templ (id, name, template_type) VALUES (3, 'Viewer', 'group')");
+
+        $this->assertSame(1, $this->signIn('Viewer'));
+        $this->assertSame(5, $this->template());
+    }
+
+    public function testADuplicateNamedUserTemplateWithAHigherIdDoesNotWinTheNameLookup(): void
+    {
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (9, 'Viewer')");
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (6, 'Viewer')");
+
         $this->assertSame(1, $this->signIn('Viewer'));
         $this->assertSame(5, $this->template());
     }
