@@ -878,7 +878,7 @@ class UsersController extends PublicApiController
             // Use the domain service to update user
             $result = UserCommandFactory::update($input);
             if (!is_array($result)) {
-                $result = $this->userManagementService->updateUser($targetUserId, $result);
+                $result = $this->userManagementService->updateUser($targetUserId, $result, $currentUserId);
             }
 
             if (!$result['success']) {
@@ -896,6 +896,9 @@ class UsersController extends PublicApiController
             }
 
             $this->auditUserEdit($targetUserId, $currentUser, $input);
+            if (!empty($result['mfa_reset'])) {
+                $this->services()->auditService()->logMfaResetByEmailChange((string)($currentUser['username'] ?? "ID: $targetUserId"));
+            }
 
             return $this->returnApiResponse(
                 ['user_id' => $result['user_id']],

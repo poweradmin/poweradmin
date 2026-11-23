@@ -175,11 +175,14 @@ class UsersController extends BaseController
 
         $updated = UserCommandFactory::update($input);
         if (!is_array($updated)) {
-            $updated = $this->services()->userManagementService()->updateUser($targetId, $updated);
+            $updated = $this->services()->userManagementService()->updateUser($targetId, $updated, $callerId);
         }
         if (!$updated['success']) {
             $this->setMessage('users', 'error', UserFormMessages::errorMessage($updated));
             return false;
+        }
+        if (!empty($updated['mfa_reset'])) {
+            $this->services()->auditService()->logMfaResetByEmailChange((string)($stored['username'] ?? $targetId));
         }
 
         return true;

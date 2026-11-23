@@ -134,7 +134,8 @@ final class UserServices
             $this->services->transaction(),
             new EmailChangeNotifier($this->services->mailService(), $this->config),
             $this->services->zoneAccountSyncService(),
-            $this->services->supermasterManager()
+            $this->services->supermasterManager(),
+            $this->services->userMfaRepository()
         );
     }
 

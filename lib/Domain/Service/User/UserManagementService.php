@@ -27,6 +27,8 @@ use Poweradmin\Domain\Port\EmailChangeNotifierInterface;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Port\PasswordPolicyInterface;
 use Poweradmin\Domain\Port\TransactionInterface;
+use Poweradmin\Domain\Model\UserMfa;
+use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\Service\Dns\DomainManagerInterface;
@@ -102,7 +104,8 @@ class UserManagementService
         private readonly ?TransactionInterface $transaction = null,
         private readonly ?EmailChangeNotifierInterface $emailChangeNotifier = null,
         private readonly ?ZoneAccountSyncService $accountSync = null,
-        private readonly ?SupermasterManager $supermasters = null
+        private readonly ?SupermasterManager $supermasters = null,
+        private readonly ?UserMfaRepositoryInterface $mfaRepository = null
     ) {
         $this->ownershipLimit = $ownershipLimit;
         $this->protectLastAdminOnEdit = $protectLastAdminOnEdit;
@@ -342,7 +345,7 @@ class UserManagementService
      * @param int $userId User ID to update
      * @return array Result with success status and message
      */
-    public function updateUser(int $userId, UpdateUserCommand $command): array
+    public function updateUser(int $userId, UpdateUserCommand $command, ?int $actingUserId = null): array
     {
         $user = $this->userRepository->getUserById($userId);
         if ($user === null) {
@@ -457,7 +460,8 @@ class UserManagementService
             }
 
             // The last-admin checks and the write share one transaction holding the super admin rows
-            $written = $this->underUberuserLock(function () use ($userId, $command) {
+            $mfaReset = false;
+            $written = $this->underUberuserLock(function () use ($userId, $command, $user, $actingUserId, &$mfaReset) {
                 // Check if trying to disable the last remaining uberuser
                 if ($command->active === false && $this->userRepository->isLastUberuser($userId)) {
                     return [
@@ -487,7 +491,12 @@ class UserManagementService
                     ];
                 }
 
-                return $this->userRepository->updateUser($userId, $command);
+                $saved = $this->userRepository->updateUser($userId, $command);
+                if ($saved) {
+                    $mfaReset = $this->resetEmailMfaAfterForeignEmailChange($userId, $user, $command, $actingUserId);
+                }
+
+                return $saved;
             });
             if (is_array($written)) {
                 return $written;
@@ -513,7 +522,8 @@ class UserManagementService
             return [
                 'success' => true,
                 'message' => 'User updated successfully',
-                'user_id' => $userId
+                'user_id' => $userId,
+                'mfa_reset' => $mfaReset,
             ];
         } catch (Exception $e) {
             $renamed = $command->username !== null && $command->username !== (string)($user['username'] ?? '');
@@ -528,6 +538,36 @@ class UserManagementService
                 'code' => self::ERR_WRITE,
             ];
         }
+    }
+
+    /**
+     * Email codes go to the stored address, so an address set by someone else would
+     * receive them. The user's own change already needs their password and is left alone.
+     *
+     * @param array<string, mixed> $before The stored row before the write
+     * @return bool True when an enabled email factor was switched off
+     */
+    private function resetEmailMfaAfterForeignEmailChange(int $userId, array $before, UpdateUserCommand $command, ?int $actingUserId): bool
+    {
+        if (
+            $this->mfaRepository === null
+            || $actingUserId === null
+            || $actingUserId === $userId
+            || $command->email === null
+            || strcasecmp((string)($before['email'] ?? ''), $command->email) === 0
+        ) {
+            return false;
+        }
+
+        $mfa = $this->mfaRepository->findByUserId($userId);
+        if ($mfa === null || !$mfa->isEnabled() || $mfa->getType() !== UserMfa::TYPE_EMAIL) {
+            return false;
+        }
+
+        $mfa->disable();
+        $this->mfaRepository->save($mfa);
+
+        return true;
     }
 
     /**

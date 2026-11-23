@@ -169,7 +169,7 @@ class EditUserController extends BaseController
             $this->remoteUserControlEditable($editId) ? $this->useRemoteUserAfterEdit($editId, $stored) : null
         );
         if (!is_array($updated)) {
-            $updated = $this->services()->userManagementService()->updateUser($editId, $updated);
+            $updated = $this->services()->userManagementService()->updateUser($editId, $updated, $callerId);
         }
         if ($updated['success']) {
             $username = (string)($input['username'] ?? $stored['username']);
@@ -180,6 +180,10 @@ class EditUserController extends BaseController
                 $this->useRemoteUserAfterEdit($editId, $stored) => 'remote_user',
                 default => 'sql',
             });
+
+            if (!empty($updated['mfa_reset'])) {
+                $this->auditService()->logMfaResetByEmailChange($username);
+            }
 
             if ($oldPermTempl !== $newPermTempl) {
                 $this->auditService()->logPermTemplateChange($username, $oldPermTempl, $newPermTempl);

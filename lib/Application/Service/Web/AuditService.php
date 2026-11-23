@@ -248,6 +248,11 @@ class AuditService implements AuditLoggerInterface
         $this->logger->logInfo($this->line('mfa_enable', ['mfa_type' => $mfaType]));
     }
 
+    public function logMfaResetByEmailChange(string $targetUser): void
+    {
+        $this->logger->logInfo($this->line('mfa_reset_email_change', ['target_user' => $targetUser]));
+    }
+
     public function logMfaDisable(): void
     {
         $this->logger->logInfo($this->line('mfa_disable'));
