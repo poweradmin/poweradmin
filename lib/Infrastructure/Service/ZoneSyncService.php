@@ -59,6 +59,9 @@ class ZoneSyncService
     /** @var string Session key for tracking last sync time */
     private const LAST_SYNC_KEY = 'zone_sync_last';
 
+    /** @var int Width of the zones.zone_name and zones.zone_master columns */
+    private const COLUMN_WIDTH = 255;
+
     /**
      * @param AccountOwnerLookup|null $accountOwners Gives a new zone to the user its PowerDNS account names (dns.adopt_zone_owner_from_account)
      */
@@ -242,16 +245,14 @@ class ZoneSyncService
             return 0;
         }
 
-        $insertStmt = $this->db->prepare(
-            "INSERT INTO zones (domain_id, owner, zone_templ_id, comment, zone_name, zone_type, zone_master)
-             VALUES (NULL, :owner, 0, '', :zone_name, :zone_type, :zone_master)"
-        );
+        $insertSql = "INSERT INTO zones (domain_id, owner, zone_templ_id, comment, zone_name, zone_type, zone_master)
+             VALUES (NULL, :owner, 0, '', :zone_name, :zone_type, :zone_master)";
 
         // Wrap in a single transaction so the initial sync on a large PowerDNS
         // (thousands of zones) completes in seconds instead of minutes. Without
         // this each insert and its canonical id would be auto-committed individually.
         $ownsTransaction = !$this->transaction->inTransaction();
-        $attempt = function () use ($missing, $insertStmt, $ownsTransaction): int {
+        $attempt = function () use ($missing, $insertSql, $ownsTransaction): int {
             // Before the transaction opens, and again on a retry, which resets the lookup's counters
             $adopters = $this->accountOwners?->limitedAdopters(array_map(static fn(array $zone): string => (string)($zone['account'] ?? ''), array_values($missing))) ?? [];
             if ($ownsTransaction) {
@@ -265,13 +266,22 @@ class ZoneSyncService
                 // Locks the backend marker row before any insert, so a concurrent zone create waits
                 $allocator = new CanonicalZoneIdAllocator($this->db);
                 foreach ($missing as $name => $zone) {
-                    $insertStmt->bindValue(':owner', $this->accountOwners?->adopterFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
-                    $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
-                    $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
-                    $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
-                    if ($insertStmt->execute()) {
-                        // The canonical id: the row id, unless another zone or grant already uses that number
-                        $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
+                    if (!$this->fitsColumns((string)$name, $zone['master'] ?? null)) {
+                        continue;
+                    }
+                    $stored = $this->storeRow($name, function () use ($insertSql, $allocator, $name, $zone): void {
+                        // A fresh statement per row: a refused execute leaves a reused one unusable on SQLite
+                        $insertStmt = $this->db->prepare($insertSql);
+                        $insertStmt->bindValue(':owner', $this->accountOwners?->adopterFor((string)($zone['account'] ?? '')) ?? 0, PDO::PARAM_INT);
+                        $insertStmt->bindValue(':zone_name', $name, PDO::PARAM_STR);
+                        $insertStmt->bindValue(':zone_type', $zone['type'] ?? null, PDO::PARAM_STR);
+                        $insertStmt->bindValue(':zone_master', $zone['master'] ?? null, PDO::PARAM_STR);
+                        if ($insertStmt->execute()) {
+                            // The canonical id: the row id, unless another zone or grant already uses that number
+                            $allocator->settle((int)$this->db->lastInsertId('zones_id_seq'));
+                        }
+                    });
+                    if ($stored) {
                         $count++;
                     }
                 }
@@ -366,17 +376,65 @@ class ZoneSyncService
             $apiMaster = $apiZone['master'] ?? null;
 
             if ($local['zone_type'] !== $apiType || $local['zone_master'] !== $apiMaster) {
-                $stmt = $this->db->prepare(
-                    "UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id"
-                );
-                $stmt->bindValue(':type', $apiType, PDO::PARAM_STR);
-                $stmt->bindValue(':master', $apiMaster, PDO::PARAM_STR);
-                $stmt->bindValue(':id', $local['id'], PDO::PARAM_INT);
-                $stmt->execute();
-                $count++;
+                if (!$this->fitsColumns((string)$name, $apiMaster)) {
+                    continue;
+                }
+                $stored = $this->storeRow($name, function () use ($apiType, $apiMaster, $local): void {
+                    $stmt = $this->db->prepare(
+                        "UPDATE zones SET zone_type = :type, zone_master = :master WHERE id = :id"
+                    );
+                    $stmt->bindValue(':type', $apiType, PDO::PARAM_STR);
+                    $stmt->bindValue(':master', $apiMaster, PDO::PARAM_STR);
+                    $stmt->bindValue(':id', $local['id'], PDO::PARAM_INT);
+                    $stmt->execute();
+                });
+                if ($stored) {
+                    $count++;
+                }
             }
         }
 
         return $count;
+    }
+
+    /** Logs and refuses a zone whose name or masters would not fit the mirror columns. */
+    private function fitsColumns(string $name, mixed $master): bool
+    {
+        if (strlen($name) <= self::COLUMN_WIDTH && (!is_string($master) || strlen($master) <= self::COLUMN_WIDTH)) {
+            return true;
+        }
+
+        $this->logger->warning('Zone sync skipped {zone}: its name or masters do not fit the zones table', ['zone' => $name]);
+        return false;
+    }
+
+    /**
+     * Runs one zone write so a row the database refuses is logged and skipped, not fatal to the sync.
+     * A savepoint keeps PostgreSQL's transaction usable; a lost lock race still propagates for the retry.
+     */
+    private function storeRow(string $name, callable $write): bool
+    {
+        $savepoint = $this->transaction->inTransaction();
+        if ($savepoint) {
+            $this->db->exec('SAVEPOINT zone_sync_row');
+        }
+        try {
+            $write();
+        } catch (\PDOException $e) {
+            if (DeadlockRetry::isRetryable($e)) {
+                throw $e;
+            }
+            if ($savepoint) {
+                $this->db->exec('ROLLBACK TO SAVEPOINT zone_sync_row');
+                $this->db->exec('RELEASE SAVEPOINT zone_sync_row');
+            }
+            $this->logger->warning('Zone sync skipped {zone}: {error}', ['zone' => $name, 'error' => $e->getMessage()]);
+            return false;
+        }
+        if ($savepoint) {
+            $this->db->exec('RELEASE SAVEPOINT zone_sync_row');
+        }
+
+        return true;
     }
 }
