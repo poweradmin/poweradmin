@@ -377,15 +377,13 @@ class UserManagementService
             }
         }
 
-        // Only a changed address is checked, so a client echoing back a stored value still passes
+        // Only a changed address is checked, so a client echoing back a stored value still passes,
+        // even where older data already holds the same address in another case
         if (!empty($userData['email']) && strcasecmp((string)$userData['email'], (string)($this->userRepository->getUserById($userId)['email'] ?? '')) !== 0) {
             if (($emailError = $this->invalidEmailError($userData['email'])) !== null) {
                 return $emailError;
             }
-        }
 
-        // Check if email already exists (exclude current user)
-        if (!empty($userData['email'])) {
             $existingUser = $this->userRepository->getUserByEmail($userData['email']);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [
