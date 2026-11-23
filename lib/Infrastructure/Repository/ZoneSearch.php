@@ -329,7 +329,8 @@ final class ZoneSearch extends BaseSearch implements ZoneSearchInterface
 
         $whereConditions .= ')';
 
-        if ($parameters['comments']) {
+        // Same gate as the row query, or the total counts comment matches the rows hide
+        if ($this->config->get('interface', 'show_zone_comments', true) && $parameters['comments']) {
             $whereConditions .= " OR z.comment LIKE :search_string_comment";
             $params[':search_string_comment'] = $this->buildRawSearchString($parameters);
         }

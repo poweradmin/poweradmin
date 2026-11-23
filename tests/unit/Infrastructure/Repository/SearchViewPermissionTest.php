@@ -27,6 +27,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Poweradmin\Infrastructure\Repository\RecordSearch;
 use Poweradmin\Infrastructure\Repository\ZoneSearch;
+use TestHelpers\FakeConfiguration;
 use TestHelpers\SqliteIntegrationTestCase;
 
 /**
@@ -195,6 +196,28 @@ class SearchViewPermissionTest extends SqliteIntegrationTestCase
     {
         $this->assertNotContains('test-other.example', $this->zoneNames('own', $userId));
         $this->assertNotContains('www.test-other.example', $this->recordNames('own', $userId));
+    }
+
+    #[Test]
+    #[DataProvider('zoneCommentSwitch')]
+    public function theZoneTotalCountsCommentMatchesOnlyWhileZoneCommentsAreShown(bool $shown, int $expected): void
+    {
+        $this->db->exec("UPDATE zones SET comment = 'hiddenword' WHERE domain_id = " . self::ORPHAN_ZONE);
+        $config = new FakeConfiguration([
+            'database' => ['type' => 'sqlite', 'pdns_db_name' => ''],
+            'interface' => ['show_zone_comments' => $shown],
+        ]);
+        $search = new ZoneSearch($this->db, $config, 'sqlite');
+
+        $count = $search->getFoundZones(['comments' => true, 'query' => 'hiddenword'], '%nomatch%', false, '', 'all', null);
+
+        $this->assertSame($expected, $count);
+    }
+
+    /** @return array<string, array{bool, int}> */
+    public static function zoneCommentSwitch(): array
+    {
+        return ['comments shown' => [true, 1], 'comments hidden' => [false, 0]];
     }
 
     /** @return array<string, array{int}> */
