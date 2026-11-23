@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Poweradmin\Tests\Unit\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Controller\Api\HealthController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 /**
@@ -309,5 +310,26 @@ class HealthControllerTest extends TestCase
             @unlink($link);
             @unlink($target);
         }
+    }
+
+    public function testCacheFileDiffersPerConfigPath(): void
+    {
+        $previous = getenv('PA_CONFIG_PATH');
+        $controller = new TestableHealthController($this->config([]));
+        $method = new \ReflectionMethod(HealthController::class, 'cacheFile');
+
+        try {
+            putenv('PA_CONFIG_PATH=/etc/poweradmin/a.php');
+            $a = $method->invoke($controller);
+            putenv('PA_CONFIG_PATH=/etc/poweradmin/b.php');
+            $b = $method->invoke($controller);
+            putenv('PA_CONFIG_PATH=/etc/poweradmin/a.php');
+            $aAgain = $method->invoke($controller);
+        } finally {
+            putenv($previous === false ? 'PA_CONFIG_PATH' : 'PA_CONFIG_PATH=' . $previous);
+        }
+
+        $this->assertNotSame($a, $b);
+        $this->assertSame($a, $aAgain);
     }
 }
