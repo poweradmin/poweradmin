@@ -68,6 +68,8 @@ class MfaSessionManager
             $this->session->remove(AuthFlowSessionKeys::MFA_BINDING);
         }
 
+        // A surviving token would let currentState() report VERIFIED again without a code
+        $this->session->remove(AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN);
         $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::PENDING->value);
         $this->session->set(AuthFlowSessionKeys::MFA_STATUS, 'required');
         $this->session->set(SessionKeys::AUTHENTICATED, false);

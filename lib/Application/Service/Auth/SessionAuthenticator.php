@@ -283,6 +283,7 @@ final class SessionAuthenticator
                     break;
                 }
                 $this->endSessionOfForeignOrDisabledAccount('oidc');
+                $this->challengeSessionVerifiedUnderEarlierEnrolment();
                 break;
             case UserProvisioningService::AUTH_METHOD_SAML:
                 $this->logger->info('User {username} uses SAML for authentication - skipping password verification', ['username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
@@ -292,11 +293,13 @@ final class SessionAuthenticator
                     break;
                 }
                 $this->endSessionOfForeignOrDisabledAccount('saml');
+                $this->challengeSessionVerifiedUnderEarlierEnrolment();
                 break;
             case UserProvisioningService::AUTH_METHOD_REMOTE_USER:
                 if ($this->startedByWebServer()) {
                     $this->endSessionOfAccountMovedOffWebServer();
                     $this->endSessionOfDisabledAccount();
+                    $this->challengeSessionVerifiedUnderEarlierEnrolment();
                     break;
                 }
                 // A posted password, or a session that predates switching the account to web
@@ -411,7 +414,7 @@ final class SessionAuthenticator
         if (
             !(new UserContextService($this->session))->isAuthenticated()
             || !(new MfaSessionManager($this->session, $this->logger))->isMfaRequired()
-            || $this->getCurrentRequestPath() === '/mfa/verify'
+            || in_array($this->getCurrentRequestPath(), ['/mfa/verify', '/logout'], true)
         ) {
             return;
         }
@@ -428,6 +431,37 @@ final class SessionAuthenticator
 
         $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
         $this->redirectService->redirectTo($baseUrlPrefix . '/mfa/verify');
+    }
+
+    /**
+     * Single sign-on sessions skip the per-request password check, so a re-enrolment of
+     * the second factor must end a session verified under the earlier one here.
+     */
+    private function challengeSessionVerifiedUnderEarlierEnrolment(): void
+    {
+        $userId = (int)$this->session->get(SessionKeys::USERID);
+        if ($userId === 0 || !$this->configManager->get('security', 'mfa.enabled', false)) {
+            return;
+        }
+
+        $mfaService = $this->services->mfaService();
+        if (!$mfaService->isMfaEnabled($userId)) {
+            return;
+        }
+
+        $mfaSession = new MfaSessionManager($this->session, $this->logger);
+        $mfaSession->setMfaRequired($userId, $mfaService->sessionBinding($userId));
+        if (!$mfaSession->isMfaRequired()) {
+            return;
+        }
+
+        // The verify page reads the challenged account from the pending keys;
+        // checkPendingMfaVerification() then turns the state into the redirect or API refusal
+        $this->session->set(SessionKeys::PENDING_USERID, $userId);
+        $this->session->set(SessionKeys::PENDING_NAME, $this->session->get(SessionKeys::NAME));
+        $this->session->set(SessionKeys::PENDING_EMAIL, $this->session->get(SessionKeys::EMAIL));
+        $this->session->set(SessionKeys::PENDING_AUTH_USED, $this->session->get(SessionKeys::AUTH_USED));
+        $this->session->set(SessionKeys::PENDING_AUTH_METHOD_USED, $this->session->get(SessionKeys::AUTH_METHOD_USED));
     }
 
     private function checkUserAgreementRequirements(): void

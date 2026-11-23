@@ -458,7 +458,7 @@ final class SamlService
                 $this->setSessionValue('pending_saml_session_index', $userInfo->getSessionIndex());
 
                 // Use our centralized MFA session manager to set MFA required
-                (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId);
+                (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId, $this->mfaService->sessionBinding($userId));
 
                 return '/mfa/verify';
             } else {

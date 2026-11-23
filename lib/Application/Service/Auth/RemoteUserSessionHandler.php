@@ -171,7 +171,7 @@ final class RemoteUserSessionHandler
             $this->session->set(SessionKeys::PENDING_EMAIL, $email);
             $this->session->set(SessionKeys::PENDING_AUTH_USED, AuthMethod::REMOTE_USER->value);
             $this->session->set(SessionKeys::PENDING_AUTH_METHOD_USED, AuthMethod::REMOTE_USER->value);
-            $mfa->setMfaRequired($userId);
+            $mfa->setMfaRequired($userId, $this->mfaService->sessionBinding($userId));
             $this->redirectToMfa();
             return;
         }

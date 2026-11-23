@@ -409,7 +409,7 @@ final class OidcService
                     }
 
                     // Use our centralized MFA session manager to set MFA required
-                    (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId);
+                    (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($userId, $this->mfaService->sessionBinding($userId));
 
                     // Clean up temporary session data
                     $this->unsetSessionValue('oidc_state');
