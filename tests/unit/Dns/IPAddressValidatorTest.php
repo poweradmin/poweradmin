@@ -421,4 +421,34 @@ class IPAddressValidatorTest extends TestCase
         $this->assertFalse($this->validator->areMultipleValidIPs("192.0.2.1:99999"));
         $this->assertFalse($this->validator->areMultipleValidIPs("invalid:5300"));
     }
+
+    public function testPrimaryListKeepsAcceptingWellFormedEntries(): void
+    {
+        $result = $this->validator->validateMultipleIPs('1.2.3.4, 1.2.3.4:5353, [2001:db8::1]:53');
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame(['1.2.3.4', '1.2.3.4:5353', '[2001:db8::1]:53'], $result->getData());
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function malformedPrimaryProvider(): array
+    {
+        return [
+            'trailing letters' => ['1.2.3.4:53abc'],
+            'space after colon' => ['1.2.3.4: 53'],
+            'second token' => ['1.2.3.4:53 evil'],
+            'newline inside' => ["1.2.3.4:53\n9"],
+            'exponent' => ['1.2.3.4:1e1'],
+            'plus sign' => ['1.2.3.4:+53'],
+            'tab inside' => ["1.2.3.4\t:53"],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('malformedPrimaryProvider')]
+    public function testPrimaryListRefusesMalformedPortEntries(string $entry): void
+    {
+        $this->assertFalse($this->validator->validateMultipleIPs($entry)->isValid());
+    }
 }

@@ -291,6 +291,12 @@ class IPAddressValidator
                 continue; // Skip empty entries
             }
 
+            // Entries are only trimmed at the ends; anything inside would be stored verbatim
+            if (preg_match('/[\s\x00-\x1f\x7f]/', $server) === 1) {
+                $errors[] = sprintf(_('Invalid server format: %s (expected IP:port or [IPv6]:port)'), $server);
+                continue;
+            }
+
             // Check for IPv6 with port: [2001:db8::1]:5300
             if (preg_match('/^\[([^\]]+)\]:(\d+)$/', $server, $matches)) {
                 $ip = $matches[1];
@@ -330,6 +336,11 @@ class IPAddressValidator
                 $parts = explode(':', $server);
 
                 if (count($parts) != 2) {
+                    $errors[] = sprintf(_('Invalid server format: %s (expected IP:port or [IPv6]:port)'), $server);
+                    continue;
+                }
+
+                if (!ctype_digit($parts[1]) || strlen($parts[1]) > 5) {
                     $errors[] = sprintf(_('Invalid server format: %s (expected IP:port or [IPv6]:port)'), $server);
                     continue;
                 }
