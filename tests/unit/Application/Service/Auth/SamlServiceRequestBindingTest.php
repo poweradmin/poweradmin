@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 use OneLogin\Saml2\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\Auth\AuthenticationService;
@@ -114,6 +115,41 @@ final class SamlServiceRequestBindingTest extends TestCase
         $this->assertFalse($this->session->has(SessionKeys::USERID));
     }
 
+    /** @return array<string, array{int|string|null}> */
+    public static function staleIssueTimes(): array
+    {
+        return [
+            'older than the ttl' => [-601],
+            'a day old' => [-86400],
+            'far in the future' => [3600],
+            'missing' => [null],
+            'not a number' => ['yesterday'],
+        ];
+    }
+
+    #[DataProvider('staleIssueTimes')]
+    public function testAFlowCookieOutsideItsLifetimeIsRefused(int|string|null $issuedAt): void
+    {
+        $this->setFlowCookie('corp', 'request-123', $issuedAt);
+        $auth = $this->authenticatedAuth();
+        $auth->expects($this->never())->method('processResponse');
+
+        $this->handle($auth, ['corp' => []], 'corp');
+
+        $this->assertFalse($this->session->has(SessionKeys::USERID));
+    }
+
+    public function testAFlowCookieNearTheEndOfItsLifetimeIsAccepted(): void
+    {
+        $this->setFlowCookie('corp', 'request-123', -590);
+        $auth = $this->authenticatedAuth();
+        $auth->expects($this->once())->method('processResponse')->with('request-123');
+
+        $this->handle($auth, ['corp' => []]);
+
+        $this->assertSame(7, $this->session->get(SessionKeys::USERID));
+    }
+
     public function testAProviderAllowingIdpInitiatedSignInAcceptsAnUnboundResponse(): void
     {
         $auth = $this->authenticatedAuth();
@@ -135,12 +171,13 @@ final class SamlServiceRequestBindingTest extends TestCase
         $this->assertSame('corp', $this->session->get(SessionKeys::SAML_PROVIDER));
     }
 
-    private function setFlowCookie(string $provider, string $requestId): void
+    private function setFlowCookie(string $provider, string $requestId, int|string|null $issuedAt = 0): void
     {
-        $_COOKIE['__Host-saml_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
-            'provider' => $provider,
-            'request_id' => $requestId,
-        ]));
+        $payload = ['provider' => $provider, 'request_id' => $requestId];
+        if ($issuedAt !== null) {
+            $payload['iat'] = is_int($issuedAt) ? time() + $issuedAt : $issuedAt;
+        }
+        $_COOKIE['__Host-saml_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode($payload));
     }
 
     private function authenticatedAuth(): Auth&MockObject

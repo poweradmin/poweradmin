@@ -51,6 +51,7 @@ final class OidcService
     // __Host- stops a sibling host planting one.
     private const FLOW_COOKIE_NAME = '__Host-oidc_flow';
     private const FLOW_COOKIE_TTL = 300;
+    private const FLOW_COOKIE_CLOCK_SKEW = 30;
 
     private LoggerInterface $logger;
     private ConfigurationInterface $configManager;
@@ -781,6 +782,7 @@ final class OidcService
             'provider' => $providerId,
             'verifier' => $codeVerifier,
             'nonce' => $nonce,
+            'iat' => time(),
         ]);
 
         $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
@@ -802,6 +804,14 @@ final class OidcService
 
         if (!is_array($payload) || empty($payload['state']) || empty($payload['provider']) || empty($payload['verifier'])) {
             $this->logger->warning('OIDC flow cookie has an invalid payload');
+            return;
+        }
+
+        // The cookie expiry is only advice to the browser, so the age is enforced here
+        $issuedAt = $payload['iat'] ?? null;
+        $age = is_int($issuedAt) ? time() - $issuedAt : null;
+        if ($age === null || $age > self::FLOW_COOKIE_TTL || $age < -self::FLOW_COOKIE_CLOCK_SKEW) {
+            $this->logger->warning('OIDC flow cookie is expired or has no valid issue time');
             return;
         }
 

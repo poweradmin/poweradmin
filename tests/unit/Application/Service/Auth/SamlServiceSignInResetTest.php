@@ -66,6 +66,7 @@ final class SamlServiceSignInResetTest extends TestCase
         $_COOKIE = ['__Host-saml_flow' => (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
             'provider' => 'test',
             'request_id' => 'request-1',
+            'iat' => time(),
         ]))];
     }
 

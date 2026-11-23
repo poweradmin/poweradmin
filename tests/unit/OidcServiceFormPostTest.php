@@ -24,6 +24,7 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Service\Auth\OidcConfigurationService;
@@ -152,6 +153,7 @@ class OidcServiceFormPostTest extends TestCase
             'state' => 'state-123',
             'provider' => 'keycloak',
             'verifier' => 'pkce-verifier-456',
+            'iat' => time(),
         ]));
 
         $this->invoke($service, 'restoreFlowFromCookie');
@@ -169,6 +171,7 @@ class OidcServiceFormPostTest extends TestCase
             'provider' => 'keycloak',
             'verifier' => 'pkce-verifier-456',
             'nonce' => 'nonce-789',
+            'iat' => time(),
         ]));
 
         $this->invoke($service, 'restoreFlowFromCookie');
@@ -219,5 +222,35 @@ class OidcServiceFormPostTest extends TestCase
 
         $session = $this->session->all();
         $this->assertArrayNotHasKey('oidc_state', $session);
+    }
+
+    /** @return array<string, array{int|string|null, bool}> */
+    public static function issueTimes(): array
+    {
+        return [
+            'fresh' => [0, true],
+            'just inside the ttl' => [-290, true],
+            'older than the ttl' => [-301, false],
+            'a day old' => [-86400, false],
+            'slightly ahead' => [20, true],
+            'far in the future' => [3600, false],
+            'missing' => [null, false],
+            'not a number' => ['yesterday', false],
+        ];
+    }
+
+    #[DataProvider('issueTimes')]
+    public function testRestoreFlowEnforcesTheCookieAge(int|string|null $offset, bool $restored): void
+    {
+        $service = $this->makeService('https://dns.example.com');
+        $payload = ['state' => 'state-123', 'provider' => 'keycloak', 'verifier' => 'pkce-verifier-456'];
+        if ($offset !== null) {
+            $payload['iat'] = is_int($offset) ? time() + $offset : $offset;
+        }
+        $_COOKIE['__Host-oidc_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode($payload));
+
+        $this->invoke($service, 'restoreFlowFromCookie');
+
+        $this->assertSame($restored, $this->session->has('oidc_state'));
     }
 }

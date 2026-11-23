@@ -51,6 +51,7 @@ final class SamlService
     private const FLOW_COOKIE_NAME = '__Host-saml_flow';
     // Longer than OIDC's 300 s: an IdP sign-in with its own second factor often takes a while
     private const FLOW_COOKIE_TTL = 600;
+    private const FLOW_COOKIE_CLOCK_SKEW = 30;
     // Used when the assertion carries no NotOnOrAfter; php-saml accepts a response up to 180 s late,
     // so the remembered ID outlives the assertion by a margin
     private const ASSERTION_FALLBACK_TTL = 600;
@@ -716,7 +717,7 @@ final class SamlService
             );
         }
 
-        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId], JSON_THROW_ON_ERROR);
+        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId, 'iat' => time()], JSON_THROW_ON_ERROR);
         $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
     }
 
@@ -746,6 +747,14 @@ final class SamlService
         $requestId = is_array($payload) ? ($payload['request_id'] ?? null) : null;
         if (!is_string($provider) || $provider === '' || !is_string($requestId) || $requestId === '') {
             $this->logger->warning('SAML flow cookie has an invalid payload');
+            return null;
+        }
+
+        // The cookie expiry is only advice to the browser, so the age is enforced here
+        $issuedAt = $payload['iat'] ?? null;
+        $age = is_int($issuedAt) ? time() - $issuedAt : null;
+        if ($age === null || $age > self::FLOW_COOKIE_TTL || $age < -self::FLOW_COOKIE_CLOCK_SKEW) {
+            $this->logger->warning('SAML flow cookie is expired or has no valid issue time');
             return null;
         }
 
