@@ -65,7 +65,68 @@ class UserManagerUsernameRenameTest extends TestCase
         ]));
     }
 
-    private function db(): PDOLayer
+    public function testUpdateUserDetailsKeepsOwnUsernameAndEmail(): void
+    {
+        $writes = [];
+        $db = $this->db($writes);
+        $manager = new UserManager($db, $this->createMock(AppConfiguration::class));
+
+        $manager->update_user_details([
+            'uid' => self::CALLER_ID,
+            'username' => 'mallory',
+            'fullname' => 'Full',
+            'email' => 'attacker@example.net',
+            'templ_id' => 1,
+            'descr' => '',
+        ]);
+
+        $this->assertSame('100', $writes[':username'] ?? null);
+        $this->assertSame('stored@example.com', $writes[':email'] ?? null);
+    }
+
+    /** @return list<array{0: mixed}> */
+    public static function invalidUids(): array
+    {
+        return [['1abc'], ['1 '], [[1]], [''], ['-1'], [null]];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUids')]
+    public function testUpdateUserDetailsRefusesANonNumericUidAndWritesNothing(mixed $uid): void
+    {
+        $binds = [];
+        $manager = new UserManager($this->db($binds), $this->createMock(AppConfiguration::class));
+
+        $result = $manager->update_user_details([
+            'uid' => $uid,
+            'username' => 'mallory',
+            'fullname' => 'Full',
+            'email' => 'attacker@example.net',
+            'templ_id' => 1,
+            'descr' => '',
+        ]);
+
+        $this->assertFalse($result);
+        $this->assertSame([], $binds);
+    }
+
+    public function testANumericStringOwnUidIsStillTheOwnRow(): void
+    {
+        $binds = [];
+        $manager = new UserManager($this->db($binds), $this->createMock(AppConfiguration::class));
+
+        $manager->update_user_details([
+            'uid' => (string)self::CALLER_ID,
+            'username' => 'mallory',
+            'fullname' => 'Full',
+            'email' => 'attacker@example.net',
+            'templ_id' => 1,
+            'descr' => '',
+        ]);
+
+        $this->assertSame('stored@example.com', $binds[':email'] ?? null);
+    }
+
+    private function db(array &$binds = []): PDOLayer
     {
         $_SESSION['userid'] = self::CALLER_ID;
 
@@ -73,7 +134,12 @@ class UserManagerUsernameRenameTest extends TestCase
         $permissions->method('fetchAll')->willReturn(['user_edit_others' => [[]], 'user_edit_own' => [[]]]);
 
         $current = $this->createMock(PDOStatement::class);
-        $current->method('fetch')->willReturn(['username' => '100', 'perm_templ' => 1, 'active' => 1, 'use_ldap' => 0]);
+        $current->method('fetch')->willReturn(['username' => '100', 'email' => 'stored@example.com', 'perm_templ' => 1, 'active' => 1, 'use_ldap' => 0]);
+
+        $current->method('bindValue')->willReturnCallback(function ($key, $value) use (&$binds): bool {
+            $binds[$key] = $value;
+            return true;
+        });
 
         $db = $this->createMock(PDOLayer::class);
         $db->method('quote')->willReturnCallback(fn($value): string => "'" . $value . "'");

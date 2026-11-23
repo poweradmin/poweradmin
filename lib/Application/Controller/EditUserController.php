@@ -119,6 +119,16 @@ class EditUserController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
+        if ($edit_id == $_SESSION["userid"]) {
+            // Your own password goes through the change password page, which asks for the current one
+            $i_password = "";
+            $error = $this->ownIdentityChangeError($edit_id, $i_username, $i_email);
+            if ($error !== null) {
+                $this->setMessage('edit_user', 'error', $error);
+                return;
+            }
+        }
+
         if ($i_username != "" && $i_perm_templ > "0" && $i_fullname) {
             $legacyUsers = new UserManager($this->db, $this->getConfig());
             if ($legacyUsers->edit_user($edit_id, $i_username, $i_fullname, $i_email, $i_perm_templ, $i_description, $i_active, $i_password, $i_use_ldap)) {
@@ -130,6 +140,40 @@ class EditUserController extends BaseController
         } else {
             $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
         }
+    }
+
+    /**
+     * A borrowed session must not redirect the account's mail or rename it without the
+     * password. LDAP accounts have no local password to confirm.
+     */
+    private function ownIdentityChangeError(int $edit_id, string $username, string $email): ?string
+    {
+        $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
+        $stored = $users[0] ?? null;
+        if ($stored === null || !empty($stored['use_ldap'])) {
+            return null;
+        }
+
+        // The username is only editable with user_edit_others; otherwise the stored one is kept
+        $checkUsername = UserManager::verify_permission($this->db, 'user_edit_others');
+        if (!self::changesSignInIdentity($stored, $checkUsername ? $username : (string)$stored['username'], $email)) {
+            return null;
+        }
+
+        $current = isset($_POST['current_password']) && is_string($_POST['current_password']) ? $_POST['current_password'] : '';
+        if (!UserManager::verify_user_password($this->db, $edit_id, $current)) {
+            return _('You did not enter the correct current password.');
+        }
+
+        return null;
+    }
+
+    /**
+     * Whether the submitted username or email differs from the stored one.
+     */
+    public static function changesSignInIdentity(array $stored, string $username, string $email): bool
+    {
+        return $username !== (string)($stored['username'] ?? '') || $email !== (string)($stored['email'] ?? '');
     }
 
     public function showUserEditForm(int $edit_id): void

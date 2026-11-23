@@ -462,6 +462,27 @@ class UserManager
     }
 
     /**
+     * Whether the given password matches the stored one of a local (non-LDAP) user.
+     *
+     * For account changes that must not ride on a borrowed session.
+     */
+    public static function verify_user_password($db, int $id, string $password): bool
+    {
+        $response = $db->queryRow("SELECT password, use_ldap FROM users WHERE id = " . $db->quote($id, 'integer'));
+        if (!$response || $response['use_ldap'] || $password === '' || (string)$response['password'] === '') {
+            return false;
+        }
+
+        $config = new AppConfiguration();
+        $userAuthService = new UserAuthenticationService(
+            $config->get('password_encryption'),
+            $config->get('password_encryption_cost')
+        );
+
+        return $userAuthService->verifyPassword($password, $response['password']);
+    }
+
+    /**
      * Change User Password
      *
      * Change the pass of the user.
@@ -816,6 +837,12 @@ class UserManager
 
     public function update_user_details(array $details): bool
     {
+        // A loose comparison with a non-numeric uid would miss the own row while the database still matched it
+        if (!isset($details['uid']) || !is_scalar($details['uid']) || !ctype_digit((string)$details['uid'])) {
+            return false;
+        }
+        $details['uid'] = (int)$details['uid'];
+
         $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
         $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
         $perm_edit_user_templ = self::verify_permission($this->db, 'user_edit_templ_perm');
@@ -823,7 +850,7 @@ class UserManager
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
             // A delegated manager may not touch a superuser account, whatever the field.
-            if ($details['uid'] != $_SESSION["userid"] && self::is_user_superuser($this->db, (int)$details['uid']) && !$perm_is_godlike) {
+            if ($details['uid'] != $_SESSION["userid"] && self::is_user_superuser($this->db, $details['uid']) && !$perm_is_godlike) {
                 $error = new ErrorMessage(_('You do not have permission to edit a superuser account.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -840,7 +867,7 @@ class UserManager
                 return false;
             }
 
-            if (self::email_exists($this->db, $details['email'], (int)$details['uid'])) {
+            if (self::email_exists($this->db, $details['email'], $details['uid'])) {
                 $error = new ErrorMessage(_('Email address already exists, please choose another one.'));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
@@ -868,7 +895,7 @@ class UserManager
             // current username is not the same as the username that was given by the
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
-            $query = "SELECT username, perm_templ, active FROM users WHERE id = :id";
+            $query = "SELECT username, email, perm_templ, active FROM users WHERE id = :id";
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':id', $details['uid'], PDO::PARAM_INT);
             $stmt->execute();
@@ -878,6 +905,13 @@ class UserManager
             if ($details['uid'] == $_SESSION["userid"] && !$perm_edit_others) {
                 $details['username'] = $userCheck['username'];
                 $active = (int)$userCheck['active'];
+            }
+
+            // Your own sign-in identity and password change through the edit form, which asks for the current password
+            if ($details['uid'] == $_SESSION["userid"]) {
+                $details['username'] = $userCheck['username'];
+                $details['email'] = (string)$userCheck['email'];
+                unset($details['password']);
             }
 
             if ((string)$userCheck['username'] !== (string)$details['username']) {
@@ -910,7 +944,7 @@ class UserManager
                     : self::permission_template_assignment_error(
                         $this->db,
                         (int)$details['templ_id'],
-                        (int)$details['uid'],
+                        $details['uid'],
                         $perm_is_godlike == "1",
                         $perm_edit_others
                     );
