@@ -231,6 +231,27 @@ class SymfonyRouterTest extends TestCase
         $this->assertFalse($method->invoke($router));
     }
 
+    public function testEncodedApiPathIsAnApiRoute(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/%61pi/v2/zones/1';
+
+        $router = new SymfonyRouter();
+        $method = (new \ReflectionClass($router))->getMethod('isApiRoute');
+
+        $this->assertTrue($method->invoke($router));
+        $this->assertSame(['id' => '1'], $router->match()['parameters']);
+    }
+
+    public function testEncodedWebPathIsNotAnApiRoute(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/%75sers';
+
+        $router = new SymfonyRouter();
+        $method = (new \ReflectionClass($router))->getMethod('isApiRoute');
+
+        $this->assertFalse($method->invoke($router));
+    }
+
     public function testUrlGeneration(): void
     {
         $router = new SymfonyRouter();
