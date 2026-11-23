@@ -144,13 +144,21 @@ class GroupsController extends PublicApiController
             $enrichedGroups = [];
             foreach ($groups as $group) {
                 $details = $this->groupService->getGroupDetails($group->getId());
+                $zoneCount = $details['zoneCount'];
+                // A member counts only the zones the caller may view, as the group detail does.
+                if (!$isAdmin) {
+                    $zoneCount = count(array_filter(
+                        $this->zoneGroupService->listGroupZones($group->getId()),
+                        fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())
+                    ));
+                }
                 $enrichedGroups[] = [
                     'id' => $group->getId(),
                     'name' => $group->getName(),
                     'description' => $group->getDescription(),
                     'perm_templ_id' => $group->getPermTemplId(),
                     'member_count' => $details['memberCount'],
-                    'zone_count' => $details['zoneCount'],
+                    'zone_count' => $zoneCount,
                     'created_at' => $group->getCreatedAt(),
                 ];
             }

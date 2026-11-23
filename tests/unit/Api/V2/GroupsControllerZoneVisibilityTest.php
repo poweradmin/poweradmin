@@ -53,7 +53,21 @@ class GroupsControllerZoneVisibilityTest extends TestCase
         $this->assertSame(2, $body['data']['group']['zone_count']);
     }
 
-    private function invokeGetGroup(bool $isAdmin): array
+    public function testListCountsOnlyViewableZonesForAMember(): void
+    {
+        $body = $this->invokeGetGroup(false, 'listGroups');
+
+        $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
+    public function testListCountsEveryZoneForAnUeberuser(): void
+    {
+        $body = $this->invokeGetGroup(true, 'listGroups');
+
+        $this->assertSame(2, $body['data']['groups'][0]['zone_count']);
+    }
+
+    private function invokeGetGroup(bool $isAdmin, string $method = 'getGroup'): array
     {
         $controller = new TestableGroupsController();
 
@@ -66,6 +80,7 @@ class GroupsControllerZoneVisibilityTest extends TestCase
 
         $groupService = $this->createMock(GroupService::class);
         $groupService->method('getGroupById')->willReturn($group);
+        $groupService->method('listGroups')->willReturn([$group]);
         $groupService->method('getGroupDetails')->willReturn(['memberCount' => 2, 'zoneCount' => 2]);
 
         $membershipService = $this->createMock(GroupMembershipService::class);
@@ -92,7 +107,7 @@ class GroupsControllerZoneVisibilityTest extends TestCase
             (new ReflectionProperty(GroupsController::class, $name))->setValue($controller, $value);
         }
 
-        $response = (new ReflectionMethod(GroupsController::class, 'getGroup'))->invoke($controller);
+        $response = (new ReflectionMethod(GroupsController::class, $method))->invoke($controller);
 
         return json_decode($response->getContent(), true);
     }
