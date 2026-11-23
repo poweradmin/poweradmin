@@ -1210,6 +1210,14 @@ msgstr ""
 "Uređivanje šablona dozvola sa administratorskim pravima zahtijeva "
 "administratorska prava."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Uklanjanje obavezne MFA dozvole iz šablona dozvola koji koristi "
+"administrator zahtijeva administratorska prava."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Šablon dozvola nije moguće ažurirati."

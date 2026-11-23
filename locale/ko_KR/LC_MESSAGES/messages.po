@@ -1209,6 +1209,12 @@ msgid ""
 msgstr ""
 "관리자 권한이 포함된 권한 템플릿을 수정하려면 관리자 권한이 필요합니다."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr "관리자가 사용 중인 권한 템플릿에서 MFA 강제 권한을 제거하려면 관리자 권한이 필요합니다."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "권한 템플릿을 업데이트할 수 없습니다."

@@ -1226,6 +1226,14 @@ msgstr ""
 "Det kræver administratorrettigheder at redigere en tilladelsesskabelon med "
 "administratorrettigheder."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Fjernelse af den påkrævede MFA-tilladelse fra en tilladelsesskabelon, som "
+"en administrator har, kræver administratorrettigheder."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Tilladelsesskabelonen kunne ikke opdateres."

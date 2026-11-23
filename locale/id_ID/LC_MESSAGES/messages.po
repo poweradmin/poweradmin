@@ -1224,6 +1224,14 @@ msgstr ""
 "Mengedit templat izin yang memiliki hak administrator memerlukan hak "
 "administrator."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Menghapus izin MFA wajib dari templat izin yang dipegang administrator "
+"memerlukan hak administrator."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Templat izin tidak dapat diperbarui."

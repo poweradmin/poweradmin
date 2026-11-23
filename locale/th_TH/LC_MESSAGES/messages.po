@@ -1000,6 +1000,14 @@ msgid ""
 "administrator rights."
 msgstr "การให้สิทธิ์ผู้ดูแลระบบในเทมเพลตสิทธิ์ต้องใช้สิทธิ์ผู้ดูแลระบบ."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"การลบสิทธิ์บังคับ MFA ออกจากเทมเพลตสิทธิ์ที่ผู้ดูแลระบบใช้อยู่ "
+"ต้องมีสิทธิ์ผู้ดูแลระบบ"
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "ไม่สามารถเพิ่มเทมเพลตสิทธิ์ได้."

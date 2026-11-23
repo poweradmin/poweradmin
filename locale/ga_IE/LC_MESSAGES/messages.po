@@ -1243,6 +1243,14 @@ msgstr ""
 "Teastaíonn cearta riarthóra chun teimpléad ceadanna a bhfuil cearta "
 "riarthóra aige a chur in eagar."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Éilíonn sé cearta riarthóra an cead éigeantach MFA a bhaint de theimpléad "
+"ceadanna atá ag riarthóir."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Níorbh fhéidir an teimpléad ceadanna a nuashonrú."

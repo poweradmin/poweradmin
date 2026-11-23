@@ -1223,6 +1223,14 @@ msgstr ""
 "Penyuntingan templat kebenaran yang mempunyai hak pentadbir memerlukan hak "
 "pentadbir."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Mengalih keluar kebenaran MFA wajib daripada templat kebenaran yang "
+"dipegang oleh pentadbir memerlukan hak pentadbir."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Templat kebenaran tidak dapat dikemas kini."

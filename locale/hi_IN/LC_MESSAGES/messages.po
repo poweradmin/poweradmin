@@ -1195,6 +1195,14 @@ msgid ""
 msgstr ""
 "प्रशासक अधिकारों वाले अनुमति टेम्पलेट को संपादित करने के लिए प्रशासक अधिकार आवश्यक हैं।"
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"किसी व्यवस्थापक के पास मौजूद अनुमति टेम्पलेट से अनिवार्य MFA अनुमति हटाने "
+"के लिए व्यवस्थापक अधिकार आवश्यक हैं।"
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "अनुमति टेम्पलेट अद्यतन नहीं किया जा सका।"

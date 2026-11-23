@@ -1238,6 +1238,14 @@ msgstr ""
 "Het bewerken van een rechtensjabloon met beheerdersrechten vereist "
 "beheerdersrechten."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Het verwijderen van de afgedwongen MFA-machtiging uit een "
+"machtigingssjabloon dat een beheerder heeft, vereist beheerdersrechten."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Het rechtensjabloon kon niet worden bijgewerkt."

@@ -1249,6 +1249,14 @@ msgstr ""
 "Per modificare un modello di permessi con diritti di amministratore sono "
 "necessari i diritti di amministratore."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Rimuovere il permesso MFA obbligatorio da un modello di permessi assegnato "
+"a un amministratore richiede diritti di amministratore."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Non è stato possibile aggiornare il modello di permessi."

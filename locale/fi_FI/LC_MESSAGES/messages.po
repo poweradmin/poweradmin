@@ -1208,6 +1208,14 @@ msgstr ""
 "Ylläpitäjän oikeudet sisältävän käyttöoikeusmallin muokkaaminen vaatii "
 "ylläpitäjän oikeudet."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Pakotetun MFA-oikeuden poistaminen järjestelmänvalvojan käyttämästä "
+"oikeuspohjasta vaatii järjestelmänvalvojan oikeudet."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Käyttöoikeusmallin päivittäminen ei onnistunut."

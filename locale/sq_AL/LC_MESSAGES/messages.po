@@ -1243,6 +1243,14 @@ msgstr ""
 "Ndryshimi i një modeli lejeve që ka të drejta administratori kërkon të "
 "drejta administratori."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Heqja e lejes së detyrueshme MFA nga një shabllon lejesh që e ka një "
+"administrator kërkon të drejta administratori."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Modeli i lejeve nuk mund të përditësohej."

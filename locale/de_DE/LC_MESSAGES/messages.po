@@ -1265,6 +1265,15 @@ msgstr ""
 "Das Bearbeiten einer Berechtigungsvorlage mit Administratorrechten erfordert "
 "Administratorrechte."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Das Entfernen der erzwungenen MFA-Berechtigung aus einer "
+"Berechtigungsvorlage, die ein Administrator verwendet, erfordert "
+"Administratorrechte."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Die Berechtigungsvorlage konnte nicht aktualisiert werden."

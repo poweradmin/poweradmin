@@ -1021,6 +1021,14 @@ msgid ""
 "administrator rights."
 msgstr "اعطای دسترسی مدیریتی در یک قالب مجوز، نیازمند دسترسی مدیریتی است."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"حذف مجوز اجباری MFA از قالب مجوزی که یک مدیر از آن استفاده می‌کند، به "
+"دسترسی مدیر نیاز دارد."
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "قالب مجوز اضافه نشد."

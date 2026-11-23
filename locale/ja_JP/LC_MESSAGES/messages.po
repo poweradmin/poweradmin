@@ -1030,6 +1030,12 @@ msgid ""
 "administrator rights."
 msgstr "権限テンプレートで管理者権限を付与するには、管理者権限が必要です。"
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr "管理者が使用している権限テンプレートから MFA 必須の権限を削除するには、管理者権限が必要です。"
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "権限テンプレートを追加できませんでした。"

@@ -1226,6 +1226,14 @@ msgstr ""
 "Rendszergazdai jogokkal rendelkező engedélysablon szerkesztése "
 "rendszergazdai jogosultságot igényel."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"A kötelező MFA-engedély eltávolítása egy rendszergazda által használt "
+"jogosultsági sablonból rendszergazdai jogosultságot igényel."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Az engedélysablont nem sikerült frissíteni."

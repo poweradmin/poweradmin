@@ -1255,6 +1255,14 @@ msgstr ""
 "Η επεξεργασία ενός προτύπου άδειας με δικαιώματα διαχειριστή απαιτεί "
 "δικαιώματα διαχειριστή."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Η αφαίρεση της υποχρεωτικής άδειας MFA από ένα πρότυπο αδειών που έχει "
+"διαχειριστής απαιτεί δικαιώματα διαχειριστή."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Το πρότυπο άδειας δεν μπόρεσε να ενημερωθεί."

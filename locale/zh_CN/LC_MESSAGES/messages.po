@@ -997,6 +997,12 @@ msgid ""
 "administrator rights."
 msgstr "在权限模板中授予管理员权限需要管理员权限。"
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr "从管理员持有的权限模板中移除强制 MFA 权限需要管理员权限。"
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "无法添加权限模板。"

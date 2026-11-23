@@ -1228,6 +1228,14 @@ msgstr ""
 "Редактирането на шаблон за права с администраторски права изисква "
 "администраторски права."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Премахването на задължителното разрешение за MFA от шаблон за разрешения, "
+"зададен на администратор, изисква администраторски права."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Шаблонът за права не може да бъде обновен."

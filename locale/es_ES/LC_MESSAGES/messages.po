@@ -1249,6 +1249,14 @@ msgstr ""
 "Editar una plantilla de permisos que tiene permisos de administrador "
 "requiere permisos de administrador."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Quitar el permiso de MFA obligatorio de una plantilla de permisos que usa "
+"un administrador requiere derechos de administrador."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "No se ha podido actualizar la plantilla de permisos."

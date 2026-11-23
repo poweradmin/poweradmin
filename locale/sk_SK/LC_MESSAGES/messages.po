@@ -1219,6 +1219,14 @@ msgstr ""
 "Úprava šablóny oprávnení s administrátorskými právami vyžaduje "
 "administrátorské práva."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Odstránenie vynúteného oprávnenia MFA zo šablóny oprávnení, ktorú má "
+"správca, vyžaduje práva správcu."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Šablónu oprávnení nebolo možné aktualizovať."

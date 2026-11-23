@@ -1218,6 +1218,14 @@ msgstr ""
 "Att redigera en behörighetsmall med administratörsrättigheter kräver "
 "administratörsrättigheter."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Att ta bort den påtvingade MFA-behörigheten från en behörighetsmall som en "
+"administratör har kräver administratörsrättigheter."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Behörighetsmallen kunde inte uppdateras."

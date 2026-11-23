@@ -1217,6 +1217,14 @@ msgstr ""
 "Yönetici haklarına sahip bir izin şablonunu düzenlemek için yönetici hakları "
 "gerekir."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Bir yöneticinin sahip olduğu izin şablonundan zorunlu MFA iznini kaldırmak "
+"yönetici hakları gerektirir."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "İzin şablonu güncellenemedi."

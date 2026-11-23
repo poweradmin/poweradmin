@@ -1030,6 +1030,14 @@ msgid ""
 "administrator rights."
 msgstr "منح صلاحيات المسؤول في قالب صلاحيات يتطلب صلاحيات مسؤول."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"إزالة صلاحية فرض المصادقة متعددة العوامل من قالب أذونات يملكه مدير تتطلب "
+"صلاحيات المدير."
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "تعذر إضافة قالب الصلاحيات."

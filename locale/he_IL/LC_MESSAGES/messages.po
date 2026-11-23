@@ -1013,6 +1013,14 @@ msgid ""
 "administrator rights."
 msgstr "הענקת הרשאות מנהל בתבנית הרשאות מחייבת הרשאות מנהל."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"הסרת הרשאת האכיפה של MFA מתבנית הרשאות שמחזיק מנהל מערכת מחייבת הרשאות מנהל "
+"מערכת."
+
 #: lib/Application/Controller/User/AddPermTemplController.php:128
 msgid "The permission template could not be added."
 msgstr "לא ניתן היה להוסיף את תבנית ההרשאות."

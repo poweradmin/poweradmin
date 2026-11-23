@@ -1238,6 +1238,14 @@ msgstr ""
 "Edycja szablonu uprawnień z uprawnieniami administratora wymaga uprawnień "
 "administratora."
 
+#: lib/Application/Controller/User/EditPermTemplController.php:203
+msgid ""
+"Removing the enforced MFA permission from a permission template held by an "
+"administrator requires administrator rights."
+msgstr ""
+"Usunięcie wymuszonego uprawnienia MFA z szablonu uprawnień przypisanego "
+"administratorowi wymaga uprawnień administratora."
+
 #: lib/Application/Controller/User/EditPermTemplController.php:167
 msgid "The permission template could not be updated."
 msgstr "Nie udało się zaktualizować szablonu uprawnień."
