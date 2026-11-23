@@ -558,10 +558,21 @@ class PowerdnsStatusService
             $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
             $context = stream_context_create([
                 'http' => [
-                    'header' => "Authorization: Basic $auth"
+                    'header' => "Authorization: Basic $auth",
+                    'follow_location' => 0,
                 ]
             ]);
-            return @file_get_contents($url, false, $context);
+            $body = @file_get_contents($url, false, $context);
+
+            // The Basic credentials must not travel to a Location target
+            $statusLine = $http_response_header[0] ?? '';
+            $status = preg_match('/^HTTP\/\S+\s+(\d{3})/', $statusLine, $match) ? (int) $match[1] : 0;
+            if ($status >= 300 && $status < 400) {
+                $this->logger->error('PowerdnsStatusService: metrics endpoint answered with HTTP {code}; redirects are refused', ['code' => $status]);
+                return false;
+            }
+
+            return $body;
         }
 
         // Fall back to simple file_get_contents without auth
