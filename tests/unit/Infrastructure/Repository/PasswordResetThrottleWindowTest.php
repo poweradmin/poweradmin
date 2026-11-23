@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 
 use PDO;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordResetService;
@@ -64,6 +65,7 @@ class PasswordResetThrottleWindowTest extends TestCase
                 $group === 'database' && $key === 'type' => 'sqlite',
                 $key === 'password_reset.token_lifetime' => 900,
                 $key === 'password_reset.rate_limit_window' => 3600,
+                $key === 'password_reset.enabled' => true,
                 default => $default,
             }
         );
@@ -117,5 +119,57 @@ class PasswordResetThrottleWindowTest extends TestCase
         $service->cleanupExpiredTokens();
 
         $this->assertSame(['recent'], $this->remaining());
+    }
+
+    private function makeService(?UserRepository $users = null): PasswordResetService
+    {
+        return new PasswordResetService(
+            $this->repo,
+            $users ?? $this->createMock(UserRepository::class),
+            $this->createMock(MailService::class),
+            $this->config,
+            $this->createMock(UserAuthenticationService::class),
+            $this->createMock(IpAddressRetriever::class),
+            $this->createMock(LoggerInterface::class)
+        );
+    }
+
+    private function rateLimitAllows(PasswordResetService $service): bool
+    {
+        $method = new \ReflectionMethod($service, 'checkRateLimit');
+
+        return $method->invoke($service, 'user@example.com', '203.0.113.1');
+    }
+
+    #[RunInSeparateProcess]
+    public function testMinimumSpacingIgnoresThePhpTimeZone(): void
+    {
+        // Parsing the DB-written created_at in PHP's zone read it hours in the future here
+        date_default_timezone_set('Etc/GMT+8');
+        $this->addRow('old-enough', 600);
+
+        $this->assertTrue($this->rateLimitAllows($this->makeService()));
+    }
+
+    public function testMinimumSpacingStillBlocksARequestMadeJustNow(): void
+    {
+        $this->addRow('just-now', 10);
+
+        $this->assertFalse($this->rateLimitAllows($this->makeService()));
+    }
+
+    #[RunInSeparateProcess]
+    public function testTokenExpiryIsReadAsUtcWhateverThePhpTimeZone(): void
+    {
+        date_default_timezone_set('Etc/GMT-8');
+        $users = $this->createMock(UserRepository::class);
+        $users->method('countUsersByEmail')->willReturn(1);
+        $users->method('getUserByEmail')->willReturn(['id' => 7, 'email' => 'user@example.com', 'auth_method' => 'sql']);
+        $this->addRow('fresh-token', 60);
+
+        $result = $this->makeService($users)->validateToken('fresh-token');
+
+        $this->assertNotNull($result);
+        $this->assertSame(7, $result['user']['id']);
     }
 }

@@ -60,13 +60,13 @@ class DbPasswordResetTokenRepository
      */
     public function findActiveTokens(): array
     {
-        $db_type = $this->config->get('database', 'type');
+        // expires_at is written as UTC by PHP, so it is compared against PHP's UTC clock
         $sql = "SELECT * FROM password_reset_tokens 
-                WHERE expires_at > " . DbCompat::now($db_type) . " 
+                WHERE expires_at > :now
                 ORDER BY created_at DESC";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => gmdate('Y-m-d H:i:s')]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -79,12 +79,12 @@ class DbPasswordResetTokenRepository
         $db_type = $this->config->get('database', 'type');
         $sql = "SELECT * FROM password_reset_tokens 
                 WHERE token = :token 
-                AND expires_at > " . DbCompat::now($db_type) . " 
+                AND expires_at > :now
                 AND used = " . DbCompat::boolFalse($db_type) . " 
                 LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':token' => $token]);
+        $stmt->execute([':token' => $token, ':now' => gmdate('Y-m-d H:i:s')]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
@@ -193,11 +193,11 @@ class DbPasswordResetTokenRepository
         // The rate limits count these rows, so an expired row stays until its request leaves the window
         $retained = $retainFor > 0 ? " AND created_at < " . DbCompat::dateSubtract($db_type, $retainFor) : '';
         $sql = "DELETE FROM password_reset_tokens 
-                WHERE (expires_at < " . DbCompat::now($db_type) . $retained . ") 
+                WHERE (expires_at < :now" . $retained . ")
                 OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+        $stmt->execute([':now' => gmdate('Y-m-d H:i:s')]);
 
         return $stmt->rowCount();
     }

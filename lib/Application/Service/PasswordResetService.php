@@ -191,7 +191,8 @@ class PasswordResetService
         $success = $this->tokenRepository->create([
             'email' => $storedEmail,
             'token' => $token,
-            'expires_at' => date('Y-m-d H:i:s', $expiresAt),
+            // UTC, so the expiry check does not depend on the PHP or database time zone
+            'expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
             'ip_address' => $ip
         ]);
 
@@ -202,7 +203,7 @@ class PasswordResetService
                 'user_id' => $user['id'],
                 'email' => $email,
                 'ip' => $ip,
-                'token_expires_at' => date('Y-m-d H:i:s', $expiresAt),
+                'token_expires_at' => gmdate('Y-m-d H:i:s', $expiresAt),
                 'email_sent' => $emailSent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
@@ -233,8 +234,8 @@ class PasswordResetService
         }
 
         // Check minimum time between requests
-        $lastAttempt = $this->tokenRepository->getLastAttemptTime($email);
-        if ($lastAttempt && (time() - strtotime($lastAttempt)) < $minTime) {
+        // Counted by the database clock that stamped created_at, not by parsing it in PHP
+        if ($minTime > 0 && $this->tokenRepository->countRecentAttempts($email, $minTime) > 0) {
             return false;
         }
 
@@ -305,7 +306,7 @@ class PasswordResetService
                 }
 
                 // Check expiration
-                if (time() > strtotime($tokenData['expires_at'])) {
+                if (time() > strtotime($tokenData['expires_at'] . ' UTC')) {
                     $this->logger->info('Expired password reset token used', [
                         'email' => $tokenData['email'],
                         'token_id' => $tokenData['id'],
