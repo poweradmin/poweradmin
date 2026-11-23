@@ -5,6 +5,9 @@ namespace Poweradmin\Tests\Unit\Domain\Service\Auth;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
 use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
@@ -333,5 +336,32 @@ class DynamicDnsAuthenticationServiceTest extends TestCase
         $this->assertInstanceOf(User::class, $result);
         $this->assertEquals(456, $result->getId());
         $this->assertTrue($result->isLdapUser());
+    }
+
+    /** The web sign-in's failed line, so the fail2ban filter counts DDNS guessing too */
+    public function testRefusedCredentialsWriteTheWebLoginFailureLines(): void
+    {
+        $audit = $this->createMock(AuditLoggerInterface::class);
+        $logged = [];
+        $audit->method('logLoginFailedFor')->willReturnCallback(function (string $user, AuthMethod $method, ?LoginFailureReason $reason) use (&$logged): void {
+            $logged[] = [$user, $method, $reason];
+        });
+        $audit->expects($this->once())->method('logLoginLockedFor')->with('locked', AuthMethod::SQL);
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturnCallback(fn(string $name): bool => $name === 'locked');
+        $this->mockUserAuthService->method('dummyVerificationHash')->willReturn('$2y$04$dummy');
+        $this->mockUserAuthService->method('verifyPassword')->willReturn(false);
+        $this->mockRepository->method('findUserByUsernameWithDynamicDnsPermissions')
+            ->willReturnCallback(fn(string $name): ?User => $name === 'known' ? new User(9, self::STORED_HASH, false) : null);
+        $service = new DynamicDnsAuthenticationService($this->mockRepository, $this->mockUserAuthService, $attempts, $audit);
+
+        foreach (['unknown', 'locked', 'known'] as $name) {
+            $this->assertNull($service->authenticateUser(new DynamicDnsRequest($name, 'pw', 'example.com', '192.168.1.1', '', false, 'UA'), '198.51.100.3'));
+        }
+
+        $this->assertSame([
+            ['unknown', AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER],
+            ['known', AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD],
+        ], $logged);
     }
 }

@@ -68,7 +68,8 @@ class DynamicDnsRequestFactory
             new DynamicDnsAuthenticationService(
                 $repository,
                 UserAuthenticationService::fromConfig($config),
-                new LoginAttemptService(new DbLoginAttemptRepository($db, $config), $config)
+                new LoginAttemptService(new DbLoginAttemptRepository($db, $config), $config),
+                $auditService
             ),
             $repository,
             $auditService,

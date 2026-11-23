@@ -24,7 +24,10 @@ namespace Poweradmin\Application\Service\Auth;
 
 use PDO;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Repository\UserRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
@@ -44,15 +47,18 @@ class BasicAuthenticationMiddleware
     private LoginAttemptService $loginAttemptService;
     private ?UserRepositoryInterface $userRepository = null;
     private ?UserAuthenticationService $authService = null;
+    private ?AuditLoggerInterface $audit = null;
 
     /**
      * Constructor
      *
      * @param PDO $db Database connection
      * @param ConfigurationInterface $config Configuration manager
+     * @param AuditLoggerInterface|null $audit Receives the failed-sign-in lines the web login writes
      */
-    public function __construct(PDO $db, ConfigurationInterface $config)
+    public function __construct(PDO $db, ConfigurationInterface $config, ?AuditLoggerInterface $audit = null)
     {
+        $this->audit = $audit;
         $this->db = $db;
         $this->config = $config;
         $this->loginAttemptService = new LoginAttemptService(new DbLoginAttemptRepository($db, $this->config), $this->config);
@@ -130,12 +136,6 @@ class BasicAuthenticationMiddleware
      */
     private function authenticateAndGetUserId(string $username, #[\SensitiveParameter] string $password): int
     {
-        if ($this->userRepository()->findByUsername($username) === null) {
-            // Answering without a hash check would tell the caller which usernames exist.
-            $this->verifyAgainstDummyHash($password);
-            return 0;
-        }
-
         // Refuse brute-force guesses once account_lockout thresholds trip. Without
         // this, Basic Auth bypasses the throttling that the browser login already
         // enforces via SqlAuthenticator.
@@ -143,6 +143,14 @@ class BasicAuthenticationMiddleware
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
             // A locked real account must cost what an unknown name costs.
             $this->verifyAgainstDummyHash($password);
+            $this->audit?->logLoginLockedFor($username, AuthMethod::SQL);
+            return 0;
+        }
+
+        if ($this->userRepository()->findByUsername($username) === null) {
+            // Answering without a hash check would tell the caller which usernames exist.
+            $this->verifyAgainstDummyHash($password);
+            $this->audit?->logLoginFailedFor($username, AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER);
             return 0;
         }
 
@@ -153,6 +161,7 @@ class BasicAuthenticationMiddleware
             $this->verifyAgainstDummyHash($password);
             // Disabled account: still record so probing inactive users contributes to lockout.
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            $this->audit?->logLoginFailedFor($username, AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             return 0;
         }
 
@@ -161,11 +170,16 @@ class BasicAuthenticationMiddleware
 
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
-            if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
+            $failure = $this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password);
+            if ($failure === null) {
                 return $this->onAuthSuccess($userModel->getId());
             }
-            // LDAP users should not fall back to SQL authentication
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            // LDAP users should not fall back to SQL authentication. Only a bad credential counts
+            // towards lockout, as on the web login: a directory outage must not lock accounts.
+            if ($failure === LoginFailureReason::WRONG_PASSWORD) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            }
+            $this->logLdapFailure($username, $failure);
             return 0;
         }
 
@@ -175,6 +189,7 @@ class BasicAuthenticationMiddleware
         }
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+        $this->audit?->logLoginFailedFor($username, AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD);
         return 0;
     }
 
@@ -231,17 +246,31 @@ class BasicAuthenticationMiddleware
     }
 
     /**
+     * Directory outages are login_error lines, which the fail2ban filter ignores, as on the web
+     * sign-in; only a bad credential is a login_failed line.
+     */
+    private function logLdapFailure(string $username, LoginFailureReason $reason): void
+    {
+        $credentialFailure = in_array($reason, [LoginFailureReason::WRONG_PASSWORD, LoginFailureReason::NO_SUCH_USER, LoginFailureReason::DUPLICATE_USERS], true);
+        if ($credentialFailure) {
+            $this->audit?->logLoginFailedFor($username, AuthMethod::LDAP, $reason);
+        } else {
+            $this->audit?->logLoginErrorFor($username, AuthMethod::LDAP, $reason);
+        }
+    }
+
+    /**
      * Authenticate a user with the LDAP authenticator for API access
      *
      * @param int $userId The user ID
      * @param string $username The username
      * @param string $password The password
-     * @return bool True if authentication succeeded, false otherwise
+     * @return LoginFailureReason|null Why the authentication failed, null when it succeeded
      */
-    private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): bool
+    private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): ?LoginFailureReason
     {
         if (!LdapBindPassword::isUsable($password)) {
-            return false;
+            return LoginFailureReason::WRONG_PASSWORD;
         }
 
         // Get LDAP connection settings from config
@@ -254,13 +283,13 @@ class BasicAuthenticationMiddleware
         $ldapProto = $this->config->get('ldap', 'protocol_version', 3);
 
         if (empty($ldapUri) || empty($ldapBaseDn)) {
-            return false;
+            return LoginFailureReason::LDAP_CONNECT_FAILED;
         }
 
         // Connect to LDAP server
         $ldapConn = @ldap_connect($ldapUri);
         if (!$ldapConn) {
-            return false;
+            return LoginFailureReason::LDAP_CONNECT_FAILED;
         }
 
         // Set LDAP options
@@ -269,7 +298,7 @@ class BasicAuthenticationMiddleware
 
         // Bind with admin credentials
         if (!@ldap_bind($ldapConn, $ldapBindDn, $ldapBindPassword)) {
-            return false;
+            return LoginFailureReason::LDAP_BIND_FAILED;
         }
 
         // Search for the user, escaping the username as the web login path does -
@@ -282,19 +311,19 @@ class BasicAuthenticationMiddleware
         $attributes = array($ldapUserAttribute, 'dn');
         $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);
         if (!$search) {
-            return false;
+            return LoginFailureReason::LDAP_SEARCH_FAILED;
         }
 
         // Check if we found exactly one user
         $entries = ldap_get_entries($ldapConn, $search);
-        if ((int)$entries["count"] !== 1) {
-            return false;
+        $count = (int)$entries["count"];
+        if ($count !== 1) {
+            return $count === 0 ? LoginFailureReason::NO_SUCH_USER : LoginFailureReason::DUPLICATE_USERS;
         }
 
         // Try to bind with the user's DN and password
         $userDn = $entries[0]["dn"];
-        $authenticated = @ldap_bind($ldapConn, $userDn, $password);
 
-        return $authenticated;
+        return @ldap_bind($ldapConn, $userDn, $password) ? null : LoginFailureReason::WRONG_PASSWORD;
     }
 }

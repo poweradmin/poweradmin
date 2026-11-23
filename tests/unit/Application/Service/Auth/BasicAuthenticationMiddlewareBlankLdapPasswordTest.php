@@ -19,6 +19,7 @@ use Poweradmin\Application\Service\Auth\BasicAuthenticationMiddleware;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use RuntimeException;
 use TestHelpers\FakeConfiguration;
 
@@ -29,7 +30,7 @@ use TestHelpers\FakeConfiguration;
  */
 class BasicAuthenticationMiddlewareBlankLdapPasswordTest extends TestCase
 {
-    private function ldapAuth(string $password): bool
+    private function ldapAuth(string $password): ?LoginFailureReason
     {
         // Reading any LDAP setting means the method went on towards a bind
         $config = new class ([]) extends FakeConfiguration {
@@ -51,12 +52,12 @@ class BasicAuthenticationMiddlewareBlankLdapPasswordTest extends TestCase
 
     public function testEmptyPasswordIsRefusedBeforeTheDirectoryIsContacted(): void
     {
-        $this->assertFalse($this->ldapAuth(''));
+        $this->assertSame(LoginFailureReason::WRONG_PASSWORD, $this->ldapAuth(''));
     }
 
     public function testPasswordWithANulByteIsRefusedBeforeTheDirectoryIsContacted(): void
     {
-        $this->assertFalse($this->ldapAuth("\0secret"));
+        $this->assertSame(LoginFailureReason::WRONG_PASSWORD, $this->ldapAuth("\0secret"));
     }
 
     public function testNonEmptyPasswordStillGoesToTheDirectory(): void

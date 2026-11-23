@@ -364,6 +364,21 @@ class AuditServiceTest extends TestCase
         $this->assertSame('client_ip:192.0.2.10 user:alice operation:login_locked auth_method:ldap', $this->lines[2][1]);
     }
 
+    /** API Basic auth and dynamic DNS have no session, so the name comes from the credentials */
+    public function testSessionlessLoginFailuresUseTheWebLineShapeAndEncodeTheUser(): void
+    {
+        $service = $this->makeService(null);
+        $service->logLoginFailedFor('bob', AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD);
+        $service->logLoginFailedFor("x client_ip:203.0.113.9\nforged", AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER);
+        $service->logLoginLockedFor('bob', AuthMethod::SQL);
+        $service->logLoginErrorFor('bob', AuthMethod::LDAP, LoginFailureReason::LDAP_BIND_FAILED);
+
+        $this->assertSame(['logWarn', 'client_ip:192.0.2.10 user:bob operation:login_failed auth_method:sql reason:wrong_password', null], $this->lines[0]);
+        $this->assertSame(['logWarn', 'client_ip:192.0.2.10 user:x%20client_ip%3A203.0.113.9?forged operation:login_failed auth_method:sql reason:no_such_user', null], $this->lines[1]);
+        $this->assertSame(['logWarn', 'client_ip:192.0.2.10 user:bob operation:login_locked auth_method:sql', null], $this->lines[2]);
+        $this->assertSame(['logError', 'client_ip:192.0.2.10 user:bob operation:login_error auth_method:ldap reason:ldap_bind', null], $this->lines[3]);
+    }
+
     public function testLoginLineLeavesTheUserEmptyWhenNothingWasPosted(): void
     {
         $this->makeService(null)->logLoginFailed(AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER);

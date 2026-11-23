@@ -22,7 +22,10 @@
 
 namespace Poweradmin\Domain\Service\Auth;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\User;
+use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\LoginThrottleInterface;
 use Poweradmin\Domain\Port\PasswordHasherInterface;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -36,7 +39,8 @@ readonly class DynamicDnsAuthenticationService
     public function __construct(
         private DynamicDnsRepositoryInterface $repository,
         private PasswordHasherInterface $userAuthService,
-        private ?LoginThrottleInterface $loginAttemptService = null
+        private ?LoginThrottleInterface $loginAttemptService = null,
+        private ?AuditLoggerInterface $audit = null
     ) {
     }
 
@@ -58,6 +62,7 @@ readonly class DynamicDnsAuthenticationService
         if ($this->loginAttemptService !== null && $this->loginAttemptService->isAccountLocked($username, $clientIp)) {
             // A locked real account must cost what an unknown name costs.
             $this->verifyAgainstDummyHash($request->getPassword());
+            $this->audit?->logLoginLockedFor($username, AuthMethod::SQL);
             return null;
         }
 
@@ -65,6 +70,7 @@ readonly class DynamicDnsAuthenticationService
         if (!$user) {
             // Answering without a hash check would tell the caller which usernames hold the permission.
             $this->verifyAgainstDummyHash($request->getPassword());
+            $this->audit?->logLoginFailedFor($username, AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER);
             return null;
         }
 
@@ -79,6 +85,7 @@ readonly class DynamicDnsAuthenticationService
         // would otherwise wipe an attacker's failures with clear_attempts_on_success
         if (!$passwordValid) {
             $this->loginAttemptService?->recordAttempt($username, $clientIp, false);
+            $this->audit?->logLoginFailedFor($username, AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD);
         }
 
         return $passwordValid ? $user : null;

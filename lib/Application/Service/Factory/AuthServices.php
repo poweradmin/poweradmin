@@ -233,7 +233,7 @@ final class AuthServices
 
     public function basicAuthenticationMiddleware(): BasicAuthenticationMiddleware
     {
-        return new BasicAuthenticationMiddleware($this->db, $this->config);
+        return new BasicAuthenticationMiddleware($this->db, $this->config, $this->auditService());
     }
 
     public function passwordResetTokenRepository(): PasswordResetTokenRepositoryInterface

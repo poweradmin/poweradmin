@@ -22,6 +22,9 @@
 
 namespace Poweradmin\Domain\Port;
 
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
+
 /**
  * The audit events domain services record; the Application layer owns the line format and the actor context.
  */
@@ -90,4 +93,20 @@ interface AuditLoggerInterface
      * @param int $records Number of records the new set holds
      */
     public function logApiRrsetReplace(int $zoneId, string $name, string $type, int $records): void;
+
+    /**
+     * A failed credential check by a client with no session (API Basic auth, dynamic DNS), in the
+     * format of a failed web sign-in.
+     */
+    public function logLoginFailedFor(string $username, AuthMethod $authMethod, ?LoginFailureReason $reason = null): void;
+
+    /**
+     * A credential check refused because the account is locked out, as the web sign-in logs it.
+     */
+    public function logLoginLockedFor(string $username, AuthMethod $authMethod): void;
+
+    /**
+     * A directory outage during a sessionless credential check; logged as login_error so an outage does not feed fail2ban.
+     */
+    public function logLoginErrorFor(string $username, AuthMethod $authMethod, LoginFailureReason $reason): void;
 }

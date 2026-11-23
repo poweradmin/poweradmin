@@ -185,9 +185,9 @@ class AuditService implements AuditLoggerInterface
      * Login lines name the username the form posted, empty when there is none; the
      * fail2ban filter documented in poweradmin-docs keys on client_ip and operation.
      */
-    private function loginLine(string $operation, AuthMethod $authMethod, ?LoginFailureReason $reason = null): string
+    private function loginLine(string $operation, AuthMethod $authMethod, ?LoginFailureReason $reason = null, ?string $username = null): string
     {
-        return $this->lineAs($this->actor->username() ?? '', $operation, [
+        return $this->lineAs($username ?? $this->actor->username() ?? '', $operation, [
             'auth_method' => $authMethod->value,
             'reason' => $reason?->value,
         ]);
@@ -200,8 +200,26 @@ class AuditService implements AuditLoggerInterface
 
     public function logLoginFailed(AuthMethod $authMethod, ?LoginFailureReason $reason = null): void
     {
-        $line = $this->loginLine('login_failed', $authMethod, $reason);
+        $this->writeLoginFailed($this->loginLine('login_failed', $authMethod, $reason), $reason);
+    }
 
+    public function logLoginFailedFor(string $username, AuthMethod $authMethod, ?LoginFailureReason $reason = null): void
+    {
+        $this->writeLoginFailed($this->loginLine('login_failed', $authMethod, $reason, $username), $reason);
+    }
+
+    public function logLoginErrorFor(string $username, AuthMethod $authMethod, LoginFailureReason $reason): void
+    {
+        $this->logger->logError($this->loginLine('login_error', $authMethod, $reason, $username));
+    }
+
+    public function logLoginLockedFor(string $username, AuthMethod $authMethod): void
+    {
+        $this->logger->logWarn($this->loginLine('login_locked', $authMethod, null, $username));
+    }
+
+    private function writeLoginFailed(string $line, ?LoginFailureReason $reason): void
+    {
         // Two directory entries for one login is a data defect, not a bad credential
         if ($reason === LoginFailureReason::DUPLICATE_USERS) {
             $this->logger->logError($line);
