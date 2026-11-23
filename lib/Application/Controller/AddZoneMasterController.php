@@ -77,7 +77,7 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config('pdnssec_use');
         $dns_third_level_check = $this->config('dns_third_level_check');
 
-        $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $zone_name = strtolower((string)idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII));
         $dom_type = $_POST["dom_type"];
         // The form offers only these; without the check zone_master_add could create a SLAVE zone
         $this->checkCondition(!in_array($dom_type, ['MASTER', 'NATIVE'], true), _('Invalid or unexpected input given.'));

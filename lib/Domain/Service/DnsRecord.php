@@ -1066,16 +1066,31 @@ class DnsRecord
             return false;
         }
 
+        $id = $this->find_zone_id_by_lowered_name($name);
+        return $id !== null ? $id : false;
+    }
+
+    /** Look up a zone id by name, exact lowercase match first (indexed), case-insensitive on a miss.
+     *
+     * @return mixed|null zone id or null when no zone matches
+     */
+    private function find_zone_id_by_lowered_name(string $name): mixed
+    {
         $pdns_db_name = $this->config->get('pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $lower = strtolower($name);
 
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $name);
-        $stmt->execute();
+        foreach (["name = :name", "LOWER(name) = :name"] as $condition) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $condition ORDER BY id");
+            $stmt->bindValue(':name', $lower);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($result) {
+                return $result['id'];
+            }
+        }
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? $result['id'] : false;
+        return null;
     }
 
     /** Get zone id from name
@@ -1086,12 +1101,9 @@ class DnsRecord
     public function get_zone_id_from_name(string $zname): bool|int
     {
         if (!empty($zname)) {
-            $pdns_db_name = $this->config->get('pdns_db_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
-            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($zname, 'text'));
-            if ($result) {
-                return $result["id"];
+            $id = $this->find_zone_id_by_lowered_name($zname);
+            if ($id !== null) {
+                return $id;
             } else {
                 $error = new ErrorMessage("Zone does not exist.");
                 $errorPresenter = new ErrorPresenter();
@@ -1299,12 +1311,8 @@ class DnsRecord
     {
         $dns = new Dns($this->db, $this->config);
 
-        $pdns_db_name = $this->config->get('pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
         if ($dns->is_valid_hostname_fqdn($domain, 0)) {
-            $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($domain, 'text'));
-            return (bool)$result;
+            return $this->find_zone_id_by_lowered_name($domain) !== null;
         } else {
             $error = new ErrorMessage(_('This is an invalid zone name.'));
             $errorPresenter = new ErrorPresenter();

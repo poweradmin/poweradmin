@@ -88,7 +88,7 @@ class AddZoneSlaveController extends BaseController
             return;
         }
         $master = $_POST['slave_master'];
-        $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $zone = strtolower((string)idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII));
 
         $dns = new Dns($this->db, $this->getConfig());
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
