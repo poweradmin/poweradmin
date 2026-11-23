@@ -407,4 +407,13 @@ class DynamicDnsHelperTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function testCrossSiteFetchMetadataIsRefused(): void
+    {
+        $this->assertTrue(DynamicDnsHelper::isCrossSiteRequest('cross-site'));
+        $this->assertTrue(DynamicDnsHelper::isCrossSiteRequest(' Cross-Site '));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest('same-origin'));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest('none'));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest(null));
+    }
 }

@@ -86,6 +86,13 @@ $updateService = new DynamicDnsUpdateService(
     }
 );
 
+// Credentials in the URL or Basic auth must not be usable by a page on another site
+if (DynamicDnsHelper::isCrossSiteRequest($request->headers->get('Sec-Fetch-Site'))) {
+    http_response_code(403);
+    DynamicDnsHelper::statusExit('badauth2');
+    exit;
+}
+
 // Create request value object and process update
 $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
 $result = $updateService->processUpdate($dynamicDnsRequest, (new IpAddressRetriever($_SERVER))->getClientIp());
