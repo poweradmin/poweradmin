@@ -74,10 +74,19 @@ class GroupListsTest extends V2ControllerTestCase
             return ['memberCount' => self::COUNTS[$id][0], 'zoneCount' => self::COUNTS[$id][1]];
         });
 
+        $zoneGroups = $this->createMock(ZoneGroupService::class);
+        $zoneGroups->method('listGroupZones')->willReturnCallback(
+            fn(int $id): array => array_map(
+                fn(int $n): ZoneGroup => new ZoneGroup($n, 100 + $n, $id, '2026-03-01 10:00:00', "z$n.example", 'MASTER'),
+                range(1, self::COUNTS[$id][1])
+            )
+        );
+
         $controller = $this->bareController(GroupsController::class);
         $this->injectBaseCollaborators($controller, 'GET', null, $query);
         $this->inject($controller, 'apiPermissionService', $this->permissions());
         $this->inject($controller, 'groupService', $groups);
+        $this->inject($controller, 'zoneGroupService', $zoneGroups);
         $this->inject($controller, 'authenticatedUserId', 1);
 
         return $this->callHandler($controller, 'listGroups');
@@ -133,7 +142,7 @@ class GroupListsTest extends V2ControllerTestCase
     /**
      * @param int[] $viewable Zone ids the caller may open
      */
-    private function listGroupsAsMember(array $viewable, ?ApiKeyScope $scope, bool $sortOnZones = false): JsonResponse
+    private function listGroupsAsMember(array $viewable, ?ApiKeyScope $scope, bool $sortOnZones = false, bool $admin = false): JsonResponse
     {
         $groups = $this->createMock(GroupService::class);
         $groups->method('listGroups')->willReturn([new UserGroup(7, 'ops', null, 2, null, '2026-01-03 10:00:00')]);
@@ -147,7 +156,7 @@ class GroupListsTest extends V2ControllerTestCase
         ]);
 
         $permissions = $this->createMock(ApiPermissionService::class);
-        $permissions->method('userHasPermission')->willReturn(false);
+        $permissions->method('userHasPermission')->willReturn($admin);
         $permissions->method('canViewZone')->willReturnCallback(static fn(int $user, int $zone): bool => in_array($zone, $viewable, true));
 
         $controller = $this->bareController(GroupsController::class);
@@ -176,6 +185,20 @@ class GroupListsTest extends V2ControllerTestCase
         $body = $this->decode($this->listGroupsAsMember([30, 20, 10], new ApiKeyScope([30], null, false)));
 
         $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
+    public function testAZoneScopedKeyNarrowsTheZoneCountOfAnAdministratorToo(): void
+    {
+        $body = $this->decode($this->listGroupsAsMember([], new ApiKeyScope([30], null, false), admin: true));
+
+        $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
+    public function testAnAdministratorWithoutAScopeSeesEveryZoneInTheCount(): void
+    {
+        $body = $this->decode($this->listGroupsAsMember([], null, admin: true));
+
+        $this->assertSame(3, $body['data']['groups'][0]['zone_count']);
     }
 
     public function testSortingOnZoneCountUsesTheNarrowedCount(): void

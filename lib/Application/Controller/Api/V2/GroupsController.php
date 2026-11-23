@@ -238,8 +238,8 @@ class GroupsController extends PublicApiController
     {
         $details = $this->groupService->getGroupDetails($row['id']);
         $row['member_count'] = $details['memberCount'];
-        // A member counts only the zones the group detail would list for the caller
-        $row['zone_count'] = $isAdmin ? $details['zoneCount'] : count($this->visibleGroupZones($row['id'], $userId, false));
+        // Every caller counts only the zones the group detail would list for them
+        $row['zone_count'] = count($this->visibleGroupZones($row['id'], $userId, $isAdmin));
 
         return $row;
     }
