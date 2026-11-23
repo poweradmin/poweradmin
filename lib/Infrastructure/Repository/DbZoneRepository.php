@@ -972,13 +972,19 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
+        // Indexed exact match first so a lowercase row wins; LOWER() only on a miss for legacy rows.
+        foreach (['name', 'LOWER(name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $column = :name");
+            $stmt->bindValue(':name', strtolower($zoneName), PDO::PARAM_STR);
+            $stmt->execute();
 
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
+            $result = $stmt->fetchColumn();
+            if ($result) {
+                return (int)$result;
+            }
+        }
+
+        return null;
     }
 
     /**

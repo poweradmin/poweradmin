@@ -92,13 +92,8 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $name);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? (int)$result['id'] : null;
+        $id = $this->findDomainIdByLowerName($domains_table, strtolower($name));
+        return $id !== false ? $id : null;
     }
 
     public function getZoneIdFromName(string $zname): ?int
@@ -109,11 +104,9 @@ class SqlDomainRepository implements DomainRepositoryInterface
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $zname]);
-        $result = $stmt->fetch();
+        $id = $this->findDomainIdByLowerName($domains_table, strtolower($zname));
 
-        return $result ? (int)$result["id"] : null;
+        return $id !== false ? $id : null;
     }
 
     public function getDomainType(int $id): string
@@ -152,9 +145,25 @@ class SqlDomainRepository implements DomainRepositoryInterface
         }
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $domain]);
-        return (bool)$stmt->fetch();
+        return $this->findDomainIdByLowerName($domains_table, strtolower($domain)) !== false;
+    }
+
+    /**
+     * Indexed exact match first so a lowercase row wins; the LOWER() scan only runs on a miss
+     * to find legacy mixed-case rows.
+     */
+    private function findDomainIdByLowerName(string $domains_table, string $lowerName): int|false
+    {
+        foreach (['name', 'LOWER(name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $column = :name");
+            $stmt->execute([':name' => $lowerName]);
+            $id = $stmt->fetchColumn();
+            if ($id !== false && (int)$id > 0) {
+                return (int)$id;
+            }
+        }
+
+        return false;
     }
 
     /**

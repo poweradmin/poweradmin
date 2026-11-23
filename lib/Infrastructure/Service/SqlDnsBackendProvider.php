@@ -443,10 +443,17 @@ class SqlDnsBackendProvider implements DnsBackendProvider
             return null;
         }
         $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE name = :name");
-        $stmt->execute([':name' => $zoneName]);
-        $id = $stmt->fetchColumn();
-        return $id !== false ? (int)$id : null;
+        // Indexed exact match first so a lowercase row wins; LOWER() only on a miss for legacy rows.
+        foreach (['name', 'LOWER(name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT id FROM $domainsTable WHERE $column = :name");
+            $stmt->execute([':name' => strtolower($zoneName)]);
+            $id = $stmt->fetchColumn();
+            if ($id !== false && (int)$id > 0) {
+                return (int)$id;
+            }
+        }
+
+        return null;
     }
 
     public function getZoneTypeById(int $domainId): string
