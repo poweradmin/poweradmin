@@ -465,6 +465,38 @@ class UserProvisioningService
         }
     }
 
+    /**
+     * The address stored on a new account: blank when another account already holds it, or
+     * when require_verified_email is on and the provider did not confirm it. The sign-in proceeds.
+     */
+    private function emailForNewUser(UserInfoInterface $userInfo, string $authMethod): string
+    {
+        $email = (string)$userInfo->getEmail();
+        if ($email === '') {
+            return '';
+        }
+
+        if (($this->getAuthMethodConfig($authMethod)['require_verified_email'] ?? false) && !$this->claimsEmailVerified($userInfo)) {
+            $this->logger->warning('Not storing email {email} on the new {method} account {username}: require_verified_email is on and the provider did not confirm it', [
+                'email' => $email,
+                'method' => strtoupper($authMethod),
+                'username' => $userInfo->getUsername()
+            ]);
+            return '';
+        }
+
+        if ($this->userRepository->emailUsedByOtherUser(0, $email)) {
+            $this->logger->warning('Not storing email {email} on the new {method} account {username}: another account already uses it', [
+                'email' => $email,
+                'method' => strtoupper($authMethod),
+                'username' => $userInfo->getUsername()
+            ]);
+            return '';
+        }
+
+        return $email;
+    }
+
     private function createNewUser(UserInfoInterface $userInfo, string $providerId, string $authMethod = self::AUTH_METHOD_OIDC): ?int
     {
         try {
@@ -513,12 +545,14 @@ class UserProvisioningService
             }
             $this->logger->info('Final username for creation: {username}', ['username' => $username]);
 
+            $email = $this->emailForNewUser($userInfo, $authMethod);
+
             // Log all the data that will be inserted
             $userData = [
                 'username' => $username,
                 'password' => '',
                 'fullname' => $userInfo->getDisplayName() ?: $userInfo->getFullName(),
-                'email' => $userInfo->getEmail(),
+                'email' => $email,
                 'description' => 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 'active' => 1,
                 'perm_templ' => $permissionTemplateId
