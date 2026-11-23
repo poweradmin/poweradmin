@@ -87,6 +87,10 @@
               {% else %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   {{ macros.csrf_field() }}
+                  {% if confirm_password %}
+                  <input type="password" class="form-control form-control-sm mb-2" name="current_password" autocomplete="current-password"
+                         placeholder="{{ 'Current password'|trans }}" aria-label="{{ 'Current password'|trans }}" required>
+                  {% endif %}
                   <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
                 </form>
               {% endif %}
@@ -122,6 +126,10 @@
               {% else %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   {{ macros.csrf_field() }}
+                  {% if confirm_password %}
+                  <input type="password" class="form-control form-control-sm mb-2" name="current_password" autocomplete="current-password"
+                         placeholder="{{ 'Current password'|trans }}" aria-label="{{ 'Current password'|trans }}" required>
+                  {% endif %}
                   <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
                 </form>
               {% endif %}

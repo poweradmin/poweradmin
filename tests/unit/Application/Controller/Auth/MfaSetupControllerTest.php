@@ -27,6 +27,7 @@ namespace Poweradmin\Tests\Unit\Application\Controller\Auth;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Poweradmin\Application\Controller\Auth\MfaSetupController;
 use Poweradmin\Domain\Service\Auth\MfaService;
+use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 
 /**
@@ -39,6 +40,8 @@ class MfaSetupControllerTest extends SeamControllerTestCase
 {
     public function testAppSetupUsesTheSharedMfaService(): void
     {
+        // A single sign-on account has no local password to confirm
+        $this->session->set(SessionKeys::AUTH_USED, 'oidc');
         $config = $this->configure(['security' => ['mfa' => ['enabled' => true]]]);
 
         $mfa = $this->createMock(MfaService::class);

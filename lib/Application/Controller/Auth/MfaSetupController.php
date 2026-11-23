@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Controller\Auth;
 
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
+use Poweradmin\Application\Service\Auth\UserAuthenticationService;
+use Poweradmin\Application\Service\User\PasswordChangeService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
@@ -131,6 +133,11 @@ class MfaSetupController extends BaseController
         // Mirrors handleEmailSetup(): refuse the POST, not just hide the button.
         if (!$this->isAppMfaEnabled()) {
             $this->addSystemMessage('error', _('Authenticator app method is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if (!$this->confirmsPasswordForEnrolment()) {
             $this->displayMfaSetup();
             return;
         }
@@ -251,6 +258,11 @@ class MfaSetupController extends BaseController
         // Check if email MFA is specifically enabled in security settings
         if (!$this->config->get('security', 'mfa.email_enabled', true)) {
             $this->addSystemMessage('error', _('Email verification method is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if (!$this->confirmsPasswordForEnrolment()) {
             $this->displayMfaSetup();
             return;
         }
@@ -455,6 +467,32 @@ class MfaSetupController extends BaseController
     }
 
     /**
+     * Whether the posted current password allows starting an enrolment, so a stolen session
+     * cannot bind its own factor to the account. Accounts without a local password (LDAP,
+     * single sign-on, web server) have none to ask for and pass.
+     */
+    private function confirmsPasswordForEnrolment(): bool
+    {
+        if (!$this->getUserContextService()->getAuthMethodEnum()->allowsLocalPassword()) {
+            return true;
+        }
+
+        $passwords = new PasswordChangeService(
+            $this->services()->userRepository(),
+            UserAuthenticationService::fromConfig($this->config),
+            $this->getUserContextService(),
+            $this->services()->loginAttemptService(),
+            $this->services()->clientContext()->ip
+        );
+        [$confirmed, $message] = $passwords->confirmCurrentPassword($this->httpRequest->getPostString('current_password'));
+        if (!$confirmed) {
+            $this->addSystemMessage('error', $message);
+        }
+
+        return $confirmed;
+    }
+
+    /**
      * Sends a code only when none is pending, so repeated submits cannot flood the inbox or
      * replace a code a login in progress is waiting for.
      */
@@ -509,7 +547,8 @@ class MfaSetupController extends BaseController
             'email_mfa_enabled' => $emailMfaEnabled,
             'app_mfa_enabled' => $appMfaEnabled,
             'mfa_enforced' => $mfaEnforced,
-            'setup_enforced' => $setupEnforced
+            'setup_enforced' => $setupEnforced,
+            'confirm_password' => $this->getUserContextService()->getAuthMethodEnum()->allowsLocalPassword(),
         ]);
     }
 
