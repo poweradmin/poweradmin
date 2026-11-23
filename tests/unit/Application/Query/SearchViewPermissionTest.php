@@ -125,7 +125,10 @@ class SearchViewPermissionTest extends TestCase
             return 0;
         });
 
-        $search = new ZoneSearch($db, $this->config(), 'mysql');
+        $config = $this->createMock(AppConfiguration::class);
+        $config->method('get')->willReturnCallback(static fn(string $key) => $key === 'iface_zone_comments' ? true : '');
+
+        $search = new ZoneSearch($db, $config, 'mysql');
         $parameters = ['reverse' => false, 'comments' => true, 'wildcard' => true];
         $search->getFoundZones($parameters, '%test%', '', 'own');
 
