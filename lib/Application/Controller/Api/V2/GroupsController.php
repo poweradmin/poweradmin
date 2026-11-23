@@ -145,13 +145,17 @@ class GroupsController extends PublicApiController
             $enrichedGroups = [];
             foreach ($groups as $group) {
                 $details = $this->groupService->getGroupDetails($group->getId());
+                // A member gets the count the detail endpoint would show, not the raw total
+                $zoneCount = $isAdmin
+                    ? $details['zoneCount']
+                    : count($this->visibleGroupZones($group->getId(), $userId, false));
                 $enrichedGroups[] = [
                     'id' => $group->getId(),
                     'name' => $group->getName(),
                     'description' => $group->getDescription(),
                     'perm_templ_id' => $group->getPermTemplId(),
                     'member_count' => $details['memberCount'],
-                    'zone_count' => $details['zoneCount'],
+                    'zone_count' => $zoneCount,
                     'created_at' => $group->getCreatedAt(),
                 ];
             }
@@ -162,6 +166,24 @@ class GroupsController extends PublicApiController
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
+    }
+
+    /**
+     * The group's zones this caller may see: a member only the zones they may view, and
+     * nobody outside a zone-scoped key's allowlist (matches GroupZonesController::listZones).
+     *
+     * @return array<int, object>
+     */
+    private function visibleGroupZones(int $groupId, int $userId, bool $isAdmin): array
+    {
+        $zones = $this->zoneGroupService->listGroupZones($groupId);
+        if (!$isAdmin) {
+            $zones = array_values(array_filter($zones, fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())));
+        }
+
+        $scope = $this->getApiKeyScope();
+
+        return array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
     }
 
     /**
@@ -260,16 +282,7 @@ class GroupsController extends PublicApiController
             $details = $this->groupService->getGroupDetails($groupId);
             // Only administrators see the member roster, matching listMembers and the web UI.
             $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
-            $zones = $this->zoneGroupService->listGroupZones($groupId);
-            // A member sees only the group's zones the caller may view, as the zone list does.
-            if (!$isAdmin) {
-                $zones = array_values(array_filter($zones, fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())));
-            }
-
-            // Do not disclose zones outside a zone-scoped key's allowlist (matches
-            // GroupZonesController::listZones); keep the count consistent with it.
-            $scope = $this->getApiKeyScope();
-            $zones = array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
+            $zones = $this->visibleGroupZones($groupId, $userId, $isAdmin);
 
             $data = [
                 'id' => $group->getId(),

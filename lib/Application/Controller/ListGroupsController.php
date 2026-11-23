@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,18 +25,21 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\GroupService;
+use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\PermissionService;
 
 class ListGroupsController extends BaseController
 {
     private GroupService $groupService;
+    private ZoneGroupService $zoneGroupService;
 
     public function __construct(array $request)
     {
@@ -44,6 +47,7 @@ class ListGroupsController extends BaseController
 
         $groupRepository = $this->createUserGroupRepository();
         $this->groupService = new GroupService($groupRepository);
+        $this->zoneGroupService = new ZoneGroupService($this->createZoneGroupRepository(), $groupRepository);
     }
 
     public function run(): void
@@ -70,16 +74,22 @@ class ListGroupsController extends BaseController
         $groups = $this->groupService->listGroups($userId, $isAdmin);
 
         // Enrich groups with member and zone counts
+        $permissionService = $this->createPermissionService();
+        $viewLevel = $permissionService->getViewPermissionLevel($userId);
         $enrichedGroups = [];
         foreach ($groups as $group) {
             $details = $this->groupService->getGroupDetails($group->getId());
+            // A member counts only the zones they may view, as the group detail lists them
+            $zoneCount = $isAdmin || $viewLevel === 'all'
+                ? $details['zoneCount']
+                : $this->countViewableZones($group->getId(), $userId, $viewLevel, $permissionService);
             $enrichedGroups[] = [
                 'id' => $group->getId(),
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
-                'zone_count' => $details['zoneCount'],
+                'zone_count' => $zoneCount,
                 'created_at' => $group->getCreatedAt(),
             ];
         }
@@ -92,5 +102,21 @@ class ListGroupsController extends BaseController
             'perm_group_logs_view' => $this->hasPermission('group_logs_view'),
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
         ]);
+    }
+
+    private function countViewableZones(int $groupId, int $userId, string $viewLevel, PermissionService $permissionService): int
+    {
+        if ($viewLevel !== 'own') {
+            return 0;
+        }
+
+        $count = 0;
+        foreach ($this->zoneGroupService->listGroupZones($groupId) as $zone) {
+            if ($permissionService->userOwnsZone($userId, $zone->getDomainId())) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }
