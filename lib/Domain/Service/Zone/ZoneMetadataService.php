@@ -45,6 +45,9 @@ class ZoneMetadataService
     public const SUPPORT_UNKNOWN = ZoneMetadataStoreInterface::SUPPORT_UNKNOWN;
     public const MAX_KIND_LENGTH = 32;
 
+    /** Kinds that change DNSSEC state, so they need the DNSSEC permission as well as metadata edit */
+    private const DNSSEC_KINDS = ['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'];
+
     private LoggerInterface $logger;
 
     public function __construct(
@@ -187,7 +190,7 @@ class ZoneMetadataService
         }
 
         foreach (self::changedKinds($rows, $before) as $kind) {
-            $refusal = $this->kindRefusal($kind, $actingUserId);
+            $refusal = $this->kindRefusal($zoneId, $kind, $actingUserId);
             if ($refusal !== null) {
                 return $refusal;
             }
@@ -211,7 +214,7 @@ class ZoneMetadataService
     public function replaceKind(int $zoneId, string $zoneName, string $kind, array $values, int $actingUserId): ZoneMetadataResult
     {
         $kind = self::normalizeKind($kind);
-        $refusal = $this->kindRefusal($kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
+        $refusal = $this->kindRefusal($zoneId, $kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
         if ($refusal !== null) {
             return $refusal;
         }
@@ -250,7 +253,7 @@ class ZoneMetadataService
     public function deleteKind(int $zoneId, string $zoneName, string $kind, int $actingUserId): ZoneMetadataResult
     {
         $kind = self::normalizeKind($kind);
-        $refusal = $this->kindRefusal($kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
+        $refusal = $this->kindRefusal($zoneId, $kind, $actingUserId) ?? self::kindCharsetRefusal($kind);
         if ($refusal !== null) {
             return $refusal;
         }
@@ -368,9 +371,9 @@ class ZoneMetadataService
     /**
      * Whether this kind may be written at all, and by this user: the backend must
      * be able to store it, and operator-only kinds (Lua reaching every zone the
-     * server hosts) are for superusers.
+     * server hosts) are for superusers, and DNSSEC kinds need the zone DNSSEC right.
      */
-    private function kindRefusal(string $kind, int $actingUserId): ?ZoneMetadataResult
+    private function kindRefusal(int $zoneId, string $kind, int $actingUserId): ?ZoneMetadataResult
     {
         $refusal = self::kindShapeRefusal($kind);
         if ($refusal !== null) {
@@ -389,6 +392,10 @@ class ZoneMetadataService
 
         if (MetadataDefinitions::isOperatorOnly($kind) && !$this->permissions->isAdmin($actingUserId)) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::OPERATOR_ONLY, $kind);
+        }
+
+        if (in_array($kind, self::DNSSEC_KINDS, true) && !$this->permissions->canManageDnssecForZone($actingUserId, $zoneId)) {
+            return new ZoneMetadataResult(ZoneMetadataOutcome::DNSSEC_REQUIRED, $kind);
         }
 
         return null;

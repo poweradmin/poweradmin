@@ -47,6 +47,7 @@ final class ZoneMetadataFormMessages
                 (string)$result->companion
             ),
             ZoneMetadataOutcome::OPERATOR_ONLY => sprintf(_('Metadata kind %s can only be changed by an administrator.'), $kind),
+            ZoneMetadataOutcome::DNSSEC_REQUIRED => sprintf(_('Metadata kind %s needs the DNSSEC management permission on this zone.'), $kind),
             ZoneMetadataOutcome::SERVER_MANAGED => sprintf(_('Metadata kind %s is maintained by PowerDNS and cannot be changed here.'), $kind),
             ZoneMetadataOutcome::NO_API_ROUTE => sprintf(_('Metadata kind %s cannot be changed while the PowerDNS API backend is in use.'), $kind),
             ZoneMetadataOutcome::CUSTOM_PREFIX => sprintf(

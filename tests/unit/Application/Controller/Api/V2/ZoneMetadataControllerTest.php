@@ -103,6 +103,7 @@ class ZoneMetadataControllerTest extends TestCase
             [new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, 'SOA-EDIT-API', ['DEFAULT', 'INCREASE']), 422, 'Invalid value for SOA-EDIT-API. Allowed values: DEFAULT, INCREASE'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, 'NSEC3NARROW', null, 'NSEC3PARAM'), 422, 'Metadata kind NSEC3NARROW only takes effect together with NSEC3PARAM'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::OPERATOR_ONLY, 'LUA-AXFR-SCRIPT'), 403, 'Metadata kind LUA-AXFR-SCRIPT can only be set by an administrator'],
+            [new ZoneMetadataResult(ZoneMetadataOutcome::DNSSEC_REQUIRED, 'PRESIGNED'), 403, 'Metadata kind PRESIGNED needs the DNSSEC management permission on this zone'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::SERVER_MANAGED, 'CATALOG-HASH'), 403, 'Metadata kind CATALOG-HASH is maintained by PowerDNS'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::NO_API_ROUTE, 'PRESIGNED'), 403, 'Metadata kind PRESIGNED is read-only'],
             [new ZoneMetadataResult(ZoneMetadataOutcome::CUSTOM_PREFIX, 'MY-KIND'), 422, 'Custom metadata kind MY-KIND must start with X-'],

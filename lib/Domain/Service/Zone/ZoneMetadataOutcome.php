@@ -35,6 +35,7 @@ enum ZoneMetadataOutcome: string
     case INVALID_VALUE = 'invalid_value';
     case COMPANION_REQUIRED = 'companion_required';
     case OPERATOR_ONLY = 'operator_only';
+    case DNSSEC_REQUIRED = 'dnssec_required';
     case SERVER_MANAGED = 'server_managed';
     case NO_API_ROUTE = 'no_api_route';
     case CUSTOM_PREFIX = 'custom_prefix';

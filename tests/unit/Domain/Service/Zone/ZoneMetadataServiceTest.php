@@ -202,6 +202,31 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $changed, self::ADMIN)->isOk());
     }
 
+    public function testDnssecKindsNeedTheDnssecRightAsWellAsMetadataEdit(): void
+    {
+        $this->store->method('load')->willReturn([['kind' => 'PRESIGNED', 'content' => '0']]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
+        $withoutRight = $this->dnssecService([]);
+        $withRight = $this->dnssecService(['zone_dnssec_manage_own']);
+
+        foreach (['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'] as $kind) {
+            $value = $kind === 'NSEC3PARAM' ? '1 0 0 -' : '1';
+            $this->assertSame(ZoneMetadataOutcome::DNSSEC_REQUIRED, $withoutRight->replaceKind(self::ZONE_ID, self::ZONE, $kind, [$value], self::EDITOR)->outcome, $kind);
+            $this->assertSame(ZoneMetadataOutcome::DNSSEC_REQUIRED, $withoutRight->deleteKind(self::ZONE_ID, self::ZONE, $kind, self::EDITOR)->outcome, $kind);
+        }
+
+        $rows = [['kind' => 'PRESIGNED', 'content' => '1']];
+        $this->assertSame(ZoneMetadataOutcome::DNSSEC_REQUIRED, $withoutRight->replaceAll(self::ZONE_ID, self::ZONE, $rows, self::EDITOR)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::DNSSEC_REQUIRED, $withoutRight->replaceAll(self::ZONE_ID, self::ZONE, [], self::EDITOR)->outcome);
+        // An unchanged stored row echoed back by the editor does not lock the user out
+        $this->assertTrue($withoutRight->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'PRESIGNED', 'content' => '0'], ['kind' => 'X-NOTE', 'content' => 'x']], self::EDITOR)->isOk());
+
+        $this->assertTrue($withRight->replaceAll(self::ZONE_ID, self::ZONE, $rows, self::EDITOR)->isOk());
+        $this->assertTrue($withRight->replaceKind(self::ZONE_ID, self::ZONE, 'PUBLISH-CDS', ['2'], self::EDITOR)->isOk());
+        $this->assertTrue($this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, $rows, self::ADMIN)->isOk());
+    }
+
     public function testDnsUpdateKindsAreOperatorOnlyAndStoredRowsAreKeptForOwners(): void
     {
         $this->store->method('load')->willReturn([['kind' => 'ALLOW-DNSUPDATE-FROM', 'content' => '192.0.2.1/32']]);
@@ -502,6 +527,24 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
     private function apiService(PowerdnsApiClient $apiClient): ZoneMetadataService
     {
         return $this->service(new ApiZoneMetadataStore($apiClient), $this->config);
+    }
+
+    /**
+     * @param string[] $editorPermissions
+     */
+    private function dnssecService(array $editorPermissions): ZoneMetadataService
+    {
+        return new ZoneMetadataService(
+            $this->store,
+            $this->config,
+            $this->buildPermissionService(
+                permissionsByUser: [self::EDITOR => array_merge(['zone_meta_edit_own'], $editorPermissions)],
+                adminUserIds: [self::ADMIN],
+                ownedZonesByUser: [self::EDITOR => [self::ZONE_ID]]
+            ),
+            $this->audit,
+            $this->changeLogger
+        );
     }
 
     private function service(ZoneMetadataStoreInterface $store, ConfigurationInterface $config, ?ZoneCacheFlusherInterface $flusher = null): ZoneMetadataService

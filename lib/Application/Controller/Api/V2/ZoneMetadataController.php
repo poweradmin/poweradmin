@@ -416,6 +416,7 @@ class ZoneMetadataController extends PublicApiController
             ZoneMetadataOutcome::INVALID_VALUE => $this->returnApiError('Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $result->options ?? []), 422),
             ZoneMetadataOutcome::COMPANION_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' only takes effect together with ' . (string)$result->companion, 422),
             ZoneMetadataOutcome::OPERATOR_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403),
+            ZoneMetadataOutcome::DNSSEC_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' needs the DNSSEC management permission on this zone', 403),
             ZoneMetadataOutcome::SERVER_MANAGED => $this->returnApiError('Metadata kind ' . $kind . ' is maintained by PowerDNS', 403),
             ZoneMetadataOutcome::NO_API_ROUTE => $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403),
             ZoneMetadataOutcome::CUSTOM_PREFIX => $this->returnApiError('Custom metadata kind ' . $kind . ' must start with ' . MetadataDefinitions::CUSTOM_KIND_API_PREFIX, 422),
