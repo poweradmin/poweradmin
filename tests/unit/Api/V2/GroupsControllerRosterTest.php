@@ -30,6 +30,7 @@ use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Model\UserGroupMember;
+use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -61,7 +62,25 @@ class GroupsControllerRosterTest extends TestCase
         $this->assertSame(['alice', 'bob'], array_column($members, 'username'));
     }
 
-    private function invokeGetGroup(bool $isAdmin): array
+    public function testNonUeberuserSeesOnlyTheGroupZonesTheyMayView(): void
+    {
+        $body = $this->invokeGetGroup(isAdmin: false, viewable: [101]);
+
+        $this->assertSame([101], array_column($body['data']['group']['zones'], 'zone_id'));
+        $this->assertSame(1, $body['data']['group']['zone_count']);
+    }
+
+    public function testUeberuserSeesEveryGroupZone(): void
+    {
+        $body = $this->invokeGetGroup(isAdmin: true, viewable: []);
+
+        $this->assertSame([101, 102], array_column($body['data']['group']['zones'], 'zone_id'));
+    }
+
+    /**
+     * @param int[] $viewable Zone ids the caller may view when not an ueberuser
+     */
+    private function invokeGetGroup(bool $isAdmin, array $viewable = []): array
     {
         $controller = new TestableGroupsController();
 
@@ -83,12 +102,14 @@ class GroupsControllerRosterTest extends TestCase
         ]);
 
         $zoneGroupService = $this->createMock(ZoneGroupService::class);
-        $zoneGroupService->method('listGroupZones')->willReturn([]);
+        $zoneGroupService->method('listGroupZones')->willReturn([$this->zone(101, 'a.example'), $this->zone(102, 'b.example')]);
 
         $apiPermissionService = $this->createMock(ApiPermissionService::class);
         $apiPermissionService->method('userHasPermission')
             ->with(self::CALLER_ID, Permission::PERM_USER_IS_UEBERUSER)
             ->willReturn($isAdmin);
+        $apiPermissionService->method('canViewZone')
+            ->willReturnCallback(fn(int $userId, int $zoneId): bool => $userId === self::CALLER_ID && in_array($zoneId, $viewable, true));
 
         $this->setProperty($controller, 'groupService', $groupService);
         $this->setProperty($controller, 'membershipService', $membershipService);
@@ -101,6 +122,15 @@ class GroupsControllerRosterTest extends TestCase
         $response = $method->invoke($controller);
 
         return json_decode($response->getContent(), true);
+    }
+
+    private function zone(int $id, string $name): ZoneGroup
+    {
+        $zone = $this->createMock(ZoneGroup::class);
+        $zone->method('getDomainId')->willReturn($id);
+        $zone->method('getName')->willReturn($name);
+
+        return $zone;
     }
 
     private function member(int $id, string $username): UserGroupMember
