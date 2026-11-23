@@ -438,26 +438,40 @@ class UserProvisioningService extends LoggingService
         return (bool)$stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Accounts whose emails differ only in case can coexist on PostgreSQL and SQLite; with
+     * several matches no account is picked, so the identity neither links nor is handed back.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     */
+    private function singleEmailMatch(array $rows): ?int
+    {
+        if (count($rows) > 1) {
+            $this->logWarning('Refusing to match an account by email: {count} accounts share that address apart from its case', ['count' => count($rows)]);
+            return null;
+        }
+
+        return $rows ? (int)$rows[0]['id'] : null;
+    }
+
     private function findInactiveUserIdByEmail(string $email): ?int
     {
-        $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+        $match = DbCompat::caseInsensitiveEquals($this->dbType, 'email');
         $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND (active IS NULL OR active <> 1)");
         $stmt->execute([$email]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $result ? (int)$result['id'] : null;
+        return $this->singleEmailMatch($stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
     private function findUserByEmail(string $email): ?int
     {
         try {
-            // Accent-exact match, so a look-alike email cannot link to another account.
-            $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+            // Case-insensitive but accent-exact, so a look-alike email cannot link to another account.
+            $match = DbCompat::caseInsensitiveEquals($this->dbType, 'email');
             $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
             $stmt->execute([$email]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            return $result ? (int)$result['id'] : null;
+            return $this->singleEmailMatch($stmt->fetchAll(PDO::FETCH_ASSOC));
         } catch (\Exception $e) {
             $this->logError('Error finding user by email: {error}', ['error' => $e->getMessage()]);
             return null;
@@ -568,7 +582,7 @@ class UserProvisioningService extends LoggingService
             return false;
         }
 
-        $match = DbCompat::accentSensitiveEquals($this->dbType, 'email');
+        $match = DbCompat::caseInsensitiveEquals($this->dbType, 'email');
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE $match AND id <> ?");
         $stmt->execute([$email, $userId]);
         if ((int)$stmt->fetchColumn() > 0) {

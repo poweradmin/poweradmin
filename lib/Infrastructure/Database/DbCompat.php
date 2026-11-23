@@ -455,6 +455,23 @@ final class DbCompat
     }
 
     /**
+     * Case-insensitive, accent-exact equality, so User@x and user@x are one address
+     * on every database while a look-alike address still cannot match.
+     *
+     * @param string|null $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param string $column The column reference to compare
+     * @param string $placeholder The bound-parameter placeholder (e.g. "?" or ":name")
+     * @return string The WHERE-clause predicate
+     */
+    public static function caseInsensitiveEquals(?string $db_type, string $column, string $placeholder = '?'): string
+    {
+        return match ($db_type) {
+            'mysql', 'mysqli' => self::accentSensitiveEquals($db_type, $column, $placeholder),
+            default => "LOWER($column) = LOWER($placeholder)",
+        };
+    }
+
+    /**
      * Whether the table exists, read from the catalog so a missing table never raises an error
      * (which would abort an open PostgreSQL transaction). Covers MySQL, PostgreSQL and SQLite.
      */
