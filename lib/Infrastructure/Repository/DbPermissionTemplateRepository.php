@@ -75,6 +75,47 @@ class DbPermissionTemplateRepository
     }
 
     /**
+     * Whether a superuser has this template in force, as their own template or as the
+     * template of a group they belong to.
+     */
+    public function isHeldBySuperuser(int $templateId): bool
+    {
+        $holders = $this->db->prepare(
+            "SELECT id AS user_id FROM users WHERE perm_templ = :templId
+             UNION
+             SELECT ugm.user_id FROM user_group_members ugm
+             JOIN user_groups ug ON ug.id = ugm.group_id
+             WHERE ug.perm_templ = :templId2"
+        );
+        $holders->execute([':templId' => $templateId, ':templId2' => $templateId]);
+
+        $viaOwnTemplate = $this->db->prepare(
+            "SELECT 1 FROM users u
+             JOIN perm_templ_items pti ON pti.templ_id = u.perm_templ
+             JOIN perm_items pi ON pi.id = pti.perm_id
+             WHERE u.id = :userId AND pi.name = 'user_is_ueberuser'"
+        );
+        $viaGroup = $this->db->prepare(
+            "SELECT 1 FROM user_group_members ugm
+             JOIN user_groups ug ON ug.id = ugm.group_id
+             JOIN perm_templ_items pti ON pti.templ_id = ug.perm_templ
+             JOIN perm_items pi ON pi.id = pti.perm_id
+             WHERE ugm.user_id = :userId AND pi.name = 'user_is_ueberuser'"
+        );
+
+        foreach ($holders->fetchAll(\PDO::FETCH_COLUMN) as $userId) {
+            foreach ([$viaOwnTemplate, $viaGroup] as $check) {
+                $check->execute([':userId' => (int)$userId]);
+                if ($check->fetchColumn() !== false) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Get List of Permissions
      *
      * Get a list of permissions that are available. If first argument is "0", it

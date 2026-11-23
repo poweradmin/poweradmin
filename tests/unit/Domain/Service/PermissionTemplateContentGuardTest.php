@@ -100,4 +100,76 @@ class PermissionTemplateContentGuardTest extends TestCase
             PermissionTemplateContentGuard::filterOfferedPermissions(self::ALL_PERMISSIONS, true)
         );
     }
+
+    private const MFA_PERMISSIONS = [
+        ['id' => 53, 'name' => 'user_is_ueberuser'],
+        ['id' => 69, 'name' => 'user_enforce_mfa'],
+        ['id' => 4, 'name' => 'zone_content_view_own'],
+    ];
+
+    public function testDelegatedEditorMayNotDropMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $this->assertSame(
+            PermissionTemplateContentGuard::ENFORCE_MFA_REMOVAL_DENIED,
+            PermissionTemplateContentGuard::apply(
+                false,
+                self::MFA_PERMISSIONS,
+                [['id' => 69, 'name' => 'user_enforce_mfa']],
+                [4],
+                true
+            )
+        );
+    }
+
+    public function testDelegatedEditorMayKeepMfaEnforcementOnASuperuserTemplate(): void
+    {
+        $this->assertNull(
+            PermissionTemplateContentGuard::apply(
+                false,
+                self::MFA_PERMISSIONS,
+                [['id' => 69, 'name' => 'user_enforce_mfa']],
+                ['4', '69'],
+                true
+            )
+        );
+    }
+
+    public function testDelegatedEditorMayDropMfaEnforcementWhenNoSuperuserHoldsTheTemplate(): void
+    {
+        $this->assertNull(
+            PermissionTemplateContentGuard::apply(
+                false,
+                self::MFA_PERMISSIONS,
+                [['id' => 69, 'name' => 'user_enforce_mfa']],
+                [4],
+                false
+            )
+        );
+    }
+
+    public function testSuperuserMayDropMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $this->assertNull(
+            PermissionTemplateContentGuard::apply(
+                true,
+                self::MFA_PERMISSIONS,
+                [['id' => 69, 'name' => 'user_enforce_mfa']],
+                [4],
+                true
+            )
+        );
+    }
+
+    public function testATemplateWithoutMfaEnforcementIsNotAffected(): void
+    {
+        $this->assertNull(
+            PermissionTemplateContentGuard::apply(
+                false,
+                self::MFA_PERMISSIONS,
+                [['id' => 4, 'name' => 'zone_content_view_own']],
+                [],
+                true
+            )
+        );
+    }
 }

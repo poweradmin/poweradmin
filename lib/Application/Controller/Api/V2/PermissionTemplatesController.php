@@ -441,7 +441,8 @@ class PermissionTemplatesController extends PublicApiController
                 $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser'),
                 $this->permissionTemplateRepository->getPermissionsByTemplateId(),
                 $this->permissionTemplateRepository->getPermissionsByTemplateId($id),
-                $details['perm_id'] ?? []
+                $details['perm_id'] ?? [],
+                array_key_exists('perm_id', $details) && $this->permissionTemplateRepository->isHeldBySuperuser((int)$id)
             );
             if ($guardError !== null) {
                 return $this->returnApiError($this->guardMessage($guardError), 403);
@@ -533,8 +534,10 @@ class PermissionTemplatesController extends PublicApiController
 
     private function guardMessage(string $code): string
     {
-        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
-            ? 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser'
-            : 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
+        return match ($code) {
+            PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED => 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser',
+            PermissionTemplateContentGuard::ENFORCE_MFA_REMOVAL_DENIED => 'Removing user_enforce_mfa from a permission template held by a superuser requires user_is_ueberuser',
+            default => 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser',
+        };
     }
 }

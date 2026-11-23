@@ -104,7 +104,8 @@ class EditPermTemplController extends BaseController
             $this->callerIsSuperuser(),
             $this->permissionTemplate->getPermissionsByTemplateId(),
             $this->permissionTemplate->getPermissionsByTemplateId($templateId),
-            $request['perm_id']
+            $request['perm_id'],
+            $this->permissionTemplate->isHeldBySuperuser($templateId)
         );
         if ($guardError !== null) {
             $this->setMessage('list_perm_templ', 'error', $this->guardMessage($guardError));
@@ -171,8 +172,11 @@ class EditPermTemplController extends BaseController
 
     private function guardMessage(string $code): string
     {
-        return $code === PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED
-            ? _('Editing a permission template with administrator rights requires administrator rights.')
-            : _('Granting administrator rights in a permission template requires administrator rights.');
+        return match ($code) {
+            PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED,
+            PermissionTemplateContentGuard::ENFORCE_MFA_REMOVAL_DENIED =>
+                _('Editing a permission template with administrator rights requires administrator rights.'),
+            default => _('Granting administrator rights in a permission template requires administrator rights.'),
+        };
     }
 }

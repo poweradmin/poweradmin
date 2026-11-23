@@ -37,6 +37,9 @@ class PermissionTemplateContentGuard
     public const CONTENT_SUPERUSER_DENIED = 'content_superuser_denied';
     public const EDIT_SUPERUSER_DENIED = 'edit_superuser_denied';
 
+    public const ENFORCE_MFA_PERMISSION = 'user_enforce_mfa';
+    public const ENFORCE_MFA_REMOVAL_DENIED = 'enforce_mfa_removal_denied';
+
     /**
      * The request validator drops its rules for a key that is absent, so the type is checked here.
      */
@@ -49,13 +52,15 @@ class PermissionTemplateContentGuard
      * @param array<int, array<string, mixed>> $allPermissions Every row of perm_items
      * @param array<int, array<string, mixed>> $currentPermissions Rows the template holds now; empty when creating
      * @param ?array<mixed> $submittedPermIds Ids the write would persist; null leaves contents untouched
+     * @param bool $templateHeldBySuperuser Whether a superuser has the edited template in force; only for writes that replace its contents
      * @return ?string One of the denial constants, or null when the write is allowed
      */
     public static function apply(
         bool $callerIsSuperuser,
         array $allPermissions,
         array $currentPermissions,
-        ?array $submittedPermIds
+        ?array $submittedPermIds,
+        bool $templateHeldBySuperuser = false
     ): ?string {
         if ($callerIsSuperuser) {
             return null;
@@ -67,6 +72,10 @@ class PermissionTemplateContentGuard
 
         if ($submittedPermIds === null) {
             return null;
+        }
+
+        if ($templateHeldBySuperuser && self::dropsMfaEnforcement($allPermissions, $currentPermissions, $submittedPermIds)) {
+            return self::ENFORCE_MFA_REMOVAL_DENIED;
         }
 
         $uberuserIds = self::uberuserPermissionIds($allPermissions);
@@ -96,6 +105,40 @@ class PermissionTemplateContentGuard
             $permissions,
             static fn(array $permission): bool => ($permission['name'] ?? '') !== self::UBERUSER_PERMISSION
         ));
+    }
+
+    /**
+     * MFA enforcement for a superuser lives in a template a delegate may be allowed to edit,
+     * so unticking it there would switch the enforcement off for the superuser.
+     *
+     * @param array<int, array<string, mixed>> $allPermissions
+     * @param array<int, array<string, mixed>> $currentPermissions
+     * @param array<mixed> $submittedPermIds
+     */
+    private static function dropsMfaEnforcement(array $allPermissions, array $currentPermissions, array $submittedPermIds): bool
+    {
+        $held = false;
+        foreach ($currentPermissions as $permission) {
+            if (($permission['name'] ?? '') === self::ENFORCE_MFA_PERMISSION) {
+                $held = true;
+            }
+        }
+        if (!$held) {
+            return false;
+        }
+
+        foreach ($allPermissions as $permission) {
+            if (($permission['name'] ?? '') !== self::ENFORCE_MFA_PERMISSION) {
+                continue;
+            }
+            foreach ($submittedPermIds as $permId) {
+                if (is_scalar($permId) && (int)$permId === (int)$permission['id']) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
