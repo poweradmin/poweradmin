@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\GroupReferenceResolver;
 use Poweradmin\Domain\Service\PermissionService;
@@ -858,6 +859,17 @@ class UsersController extends PublicApiController
                         'timestamp' => date('Y-m-d H:i:s')
                     ]
                 ]);
+            }
+
+            if ($currentUser !== null && $targetUserId !== $currentUserId) {
+                // Compare with the stored value: the update may leave an IdP-managed address alone
+                UserManager::resetEmailMfaAfterForeignEmailChange(
+                    $this->db,
+                    $targetUserId,
+                    $currentUser['email'] ?? null,
+                    (string)($this->userRepository->getUserById($targetUserId)['email'] ?? ''),
+                    $this->getAuthenticatedUsername()
+                );
             }
 
             return $this->returnApiResponse(

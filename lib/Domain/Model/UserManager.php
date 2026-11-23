@@ -37,7 +37,10 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Service\SessionKeys;
 use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -206,6 +209,40 @@ class UserManager
         return $at !== false
             && filter_var($email, FILTER_VALIDATE_EMAIL) !== false
             && $validation->isValidEmail('a' . substr($email, $at));
+    }
+
+    /**
+     * Switch off email MFA on an account whose address was changed by someone else.
+     *
+     * Email codes follow users.email, so an editor who sets the address would receive the
+     * target's codes. The owner has to enrol again; other factors are left alone.
+     *
+     * @return bool True when an email MFA enrolment was disabled
+     */
+    public static function resetEmailMfaAfterForeignEmailChange(PDO $db, int $userId, ?string $oldEmail, string $newEmail, string $actorName): bool
+    {
+        if (strcasecmp((string)$oldEmail, $newEmail) === 0) {
+            return false;
+        }
+
+        $dbType = (string)$db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $stmt = $db->prepare(
+            "UPDATE user_mfa SET enabled = " . DbCompat::boolFalse($dbType) . ", verification_data = NULL, updated_at = :now
+             WHERE user_id = :id AND type = 'email' AND enabled = " . DbCompat::boolTrue($dbType)
+        );
+        $stmt->execute([':now' => date('Y-m-d H:i:s'), ':id' => $userId]);
+        if ($stmt->rowCount() === 0) {
+            return false;
+        }
+
+        (new LegacyLogger($db))->logInfo(sprintf(
+            'client_ip:%s user:%s operation:mfa_disable mfa_type:email target_user_id:%d reason:email_changed_by_other',
+            (new IpAddressRetriever($_SERVER))->getClientIp(),
+            $actorName,
+            $userId
+        ));
+
+        return true;
     }
 
     /**
@@ -516,6 +553,7 @@ class UserManager
                 $stmt->execute();
                 $saved = true;
                 $this->dropSsoLinksOnMoveToLdap($id, $usercheck['auth_method'] ?? null, $newAuthMethod);
+                $this->resetEmailMfaWhenEditedByOther((int)$id, $usercheck['email'] ?? null, $email);
             } finally {
                 $lock?->endUberuserLock($lockOwned, $saved);
             }
@@ -527,6 +565,21 @@ class UserManager
             return false;
         }
         return true;
+    }
+
+    private function resetEmailMfaWhenEditedByOther(int $userId, ?string $oldEmail, string $newEmail): void
+    {
+        if ($userId === (int)($_SESSION[SessionKeys::USERID] ?? 0)) {
+            return;
+        }
+
+        self::resetEmailMfaAfterForeignEmailChange(
+            $this->db,
+            $userId,
+            $oldEmail,
+            $newEmail,
+            (string)(new UserContextService())->getLoggedInUsername()
+        );
     }
 
     /**
@@ -692,6 +745,7 @@ class UserManager
             $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
 
             $stmt->execute();
+            $this->resetEmailMfaWhenEditedByOther((int)$details['uid'], $userCheck['email'] ?? null, (string)$details['email']);
             if ($perm_is_godlike == "1") {
                 $this->dropSsoLinksOnMoveToLdap(
                     (int)$details['uid'],
