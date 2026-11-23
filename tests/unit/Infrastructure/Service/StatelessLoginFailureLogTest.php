@@ -175,6 +175,18 @@ final class StatelessLoginFailureLogTest extends TestCase
         $this->assertSame('(&(uid=bob)(objectClass=person))', $filter->invoke(null, 'uid', 'bob', '(objectClass=person)'));
     }
 
+    #[Test]
+    public function aPasswordWithANulByteIsAWrongPasswordNotAServerError(): void
+    {
+        $logger = $this->createMock(UserEventLogger::class);
+        $logger->expects($this->once())->method('logFailedAuth')->with(AuthMethod::LDAP, 'ldapuser');
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('recordAttempt')->with('ldapuser', $this->anything(), false);
+
+        $this->assertSame(0, $this->basicAuth('ldapuser', "pw\0x", $logger, ldapUri: 'ldap://127.0.0.1:1', attempts: $attempts));
+    }
+
     private function basicAuth(string $username, string $password, UserEventLogger $logger, ?string $ldapUri = null, ?LoginAttemptService $attempts = null): int
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
