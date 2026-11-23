@@ -691,7 +691,7 @@ class DomainManagerUpdateZoneRecordsTest extends PermissionServiceTestCase
 
         $this->assertFalse($result->success);
         $this->assertSame(Refusal::BACKEND_FAILURE, $result->refusal);
-        $this->assertSame('Failed to update zone records: disk full', $result->message);
+        $this->assertSame('An error occurred. Please try again.', $result->message);
         $this->assertSame([['id' => 101]], $this->rows('SELECT id FROM records'));
         $this->assertSame([['zone_templ_id' => self::OLD_TEMPLATE_ID]], $this->rows('SELECT zone_templ_id FROM zones'));
         $this->assertFalse((new PdoTransaction($this->db))->inTransaction());

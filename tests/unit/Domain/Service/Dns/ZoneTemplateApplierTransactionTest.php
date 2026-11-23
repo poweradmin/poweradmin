@@ -105,7 +105,7 @@ class ZoneTemplateApplierTransactionTest extends TestCase
         $result = $this->applier()->applyTemplate(1, 5, 300, false);
 
         $this->assertFalse($result->success);
-        $this->assertSame('Failed to update zone records: boom', $result->message);
+        $this->assertSame('An error occurred. Please try again.', $result->message);
     }
 
     public function testApiBackendRollsBackWhenTheLocalLinkWriteFails(): void
@@ -167,10 +167,29 @@ class ZoneTemplateApplierTransactionTest extends TestCase
         $result = $this->applier()->applyTemplate(1, 5, 300, false);
 
         $this->assertFalse($result->success);
-        $this->assertSame('Failed to update zone records: bad type', $result->message);
+        $this->assertSame('An error occurred. Please try again.', $result->message);
+        $this->assertStringNotContainsString('bad type', (string)$result->message);
     }
 
-    private function applier(?DomainRepositoryInterface $domains = null): ZoneTemplateApplier
+    public function testTheThrownMessageIsLoggedNotShown(): void
+    {
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->backend->method('recordIdsAreNumeric')->willReturn(true);
+        $this->links->method('removeLinkedRecords')->willThrowException(new \PDOException('SQLSTATE[HY000]: /var/www/secret/path'));
+        $this->transaction->method('inTransaction')->willReturn(true);
+
+        $logger = $this->createMock(\Psr\Log\LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with(
+            $this->anything(),
+            $this->callback(static fn(array $context): bool => str_contains((string)$context['error'], '/var/www/secret/path'))
+        );
+
+        $result = $this->applier(null, $logger)->applyTemplate(1, 5, 300, false);
+
+        $this->assertSame('An error occurred. Please try again.', $result->message);
+    }
+
+    private function applier(?DomainRepositoryInterface $domains = null, ?\Psr\Log\LoggerInterface $logger = null): ZoneTemplateApplier
     {
         return new ZoneTemplateApplier(
             $this->transaction,
@@ -182,7 +201,7 @@ class ZoneTemplateApplierTransactionTest extends TestCase
             $this->createMock(ZoneTemplateSyncRepositoryInterface::class),
             $this->createMock(ZoneTemplatePlaceholders::class),
             $this->createMock(RecordChangeWriterInterface::class),
-            new NullLogger()
+            $logger ?? new NullLogger()
         );
     }
 }

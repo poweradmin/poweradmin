@@ -142,7 +142,9 @@ class ZoneTemplateApplier
             return ZoneWriteResult::ok($zoneId);
         } catch (Throwable $e) {
             $this->finishTransaction(false);
-            return ZoneWriteResult::backendFailure(sprintf(_('Failed to update zone records: %s'), $e->getMessage()));
+            // The message can name paths, SQL or classes, so it goes to the log and the user gets generic text
+            $this->logger->error('Applying template {template} to zone {zone} failed: {error}', ['template' => $templateId, 'zone' => $zoneId, 'error' => $e->getMessage()]);
+            return ZoneWriteResult::backendFailure(_('An error occurred. Please try again.'));
         }
     }
 
