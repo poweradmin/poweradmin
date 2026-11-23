@@ -171,6 +171,16 @@ class UserProvisioningService
                     $existingUserId = null;
                 }
 
+                if ($existingUserId !== null && $this->accountSignsInExternally($existingUserId)) {
+                    // An LDAP or header account keeps its own sign-in; an address the user may control in the
+                    // directory is not proof of the identity, and linking would let both sign-ins share the account.
+                    $this->logger->warning(
+                        'Refusing {method} sign-in: its email matches account {id}, which signs in through LDAP or a remote-user header; link it by deleting the account or clearing its address',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    return null;
+                }
+
                 if ($existingUserId !== null && $this->accountHasLocalPassword($existingUserId)) {
                     // Whoever set this address on a password account (its owner, or a user creator) could sign in
                     // with that password as this identity; auto-provisioning instead would duplicate the address.
@@ -418,6 +428,19 @@ class UserProvisioningService
             $this->logger->error('Error checking superuser permission: {error}', ['error' => $e->getMessage()]);
             return true;
         }
+    }
+
+    private function accountSignsInExternally(int $userId): bool
+    {
+        try {
+            $method = $this->userRepository->getProvisioningProfile($userId)['auth_method'] ?? null;
+        } catch (\Exception $e) {
+            // Fail closed: an unreadable account must not be linked
+            $this->logger->error('Error checking account auth method: {error}', ['error' => $e->getMessage()]);
+            return true;
+        }
+
+        return in_array($method, [self::AUTH_METHOD_LDAP, self::AUTH_METHOD_REMOTE_USER], true);
     }
 
     private function accountHasLocalPassword(int $userId): bool

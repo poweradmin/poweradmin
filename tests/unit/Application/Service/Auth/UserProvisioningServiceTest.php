@@ -771,6 +771,44 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertNull($service->provisionUser($userInfo, 'adfs'));
     }
 
+    #[DataProvider('externalAuthMethodProvider')]
+    public function testEmailMatchDoesNotLinkAnLdapOrRemoteUserAccount(string $method): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->never())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->method('getProvisioningProfile')->willReturn(['auth_method' => $method]);
+        $repository->expects($this->never())->method('updateProvisionedUser');
+        $repository->expects($this->never())->method('createProvisionedUser');
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertNull($service->provisionUser($userInfo, 'okta'));
+    }
+
+    public static function externalAuthMethodProvider(): array
+    {
+        return ['ldap' => ['ldap'], 'remote_user' => ['remote_user']];
+    }
+
+    public function testEmailMatchStillLinksAnSqlAccount(): void
+    {
+        $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
+        $identities->method('findOidcSubjectByUserId')->willReturn(null);
+        $identities->expects($this->once())->method('linkOidc');
+
+        $repository = $this->emailMatchRepository();
+        $repository->method('getProvisioningProfile')->willReturn(['auth_method' => 'sql']);
+
+        $service = $this->createServiceWithMocks($this->emailLinkConfig(), $repository, null, $identities);
+        $userInfo = new OidcUserInfo(username: 'john', email: 'john@example.com', subject: 'sub-1', rawData: ['email_verified' => true]);
+
+        $this->assertSame(42, $service->provisionUser($userInfo, 'okta'));
+    }
+
     public function testEmailMatchLinksAnAccountWithoutALinkAtTheProvider(): void
     {
         $identities = $this->createMock(ExternalIdentityRepositoryInterface::class);
