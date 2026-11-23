@@ -1574,24 +1574,38 @@ class DbUserRepository implements UserRepositoryInterface
         return $result ?: null;
     }
 
+    /**
+     * The one account an email guard matched. Emails differing only in case can match two
+     * accounts, and guessing between them could link or hand back the wrong one, so none is returned.
+     *
+     * @param list<mixed> $ids
+     */
+    private function singleUserId(array $ids): ?int
+    {
+        if (count($ids) > 1) {
+            $this->logger->warning('Several accounts share one email address apart from case, so none is matched');
+            return null;
+        }
+
+        return $ids === [] ? null : (int)$ids[0];
+    }
+
     public function findActiveUserIdByEmail(string $email): ?int
     {
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $match = $this->emailEquals('email', ':email');
         $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND active = 1");
-        $stmt->execute([$email]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([':email' => $email]);
 
-        return $result ? (int)$result['id'] : null;
+        return $this->singleUserId($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function findInactiveUserIdByEmail(string $email): ?int
     {
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email');
+        $match = $this->emailEquals('email', ':email');
         $stmt = $this->db->prepare("SELECT id FROM users WHERE $match AND (active IS NULL OR active <> 1)");
-        $stmt->execute([$email]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([':email' => $email]);
 
-        return $result ? (int)$result['id'] : null;
+        return $this->singleUserId($stmt->fetchAll(PDO::FETCH_COLUMN));
     }
 
     public function getProvisioningProfile(int $userId): array

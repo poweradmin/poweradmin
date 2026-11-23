@@ -222,6 +222,24 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->assertNull($this->repository->findActiveUserIdByEmail('nobody@example.org'));
     }
 
+    public function testEmailGuardLookupsIgnoreCase(): void
+    {
+        $this->assertSame(1, $this->repository->findActiveUserIdByEmail('Shared@Example.ORG'));
+        $this->assertSame(2, $this->repository->findInactiveUserIdByEmail('SHARED@example.org'));
+        $this->assertNull($this->repository->findActiveUserIdByEmail('shared@example.com'));
+    }
+
+    public function testEmailGuardLookupsMatchNoAccountWhenTwoDifferOnlyInCase(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap)
+            VALUES (8, 'upper', 'h', '', 'Twin@Example.org', '', 5, 1, 0), (9, 'lower', 'h', '', 'twin@example.org', '', 5, 1, 0),
+                   (10, 'off-a', 'h', '', 'Off@Example.org', '', 5, 0, 0), (11, 'off-b', 'h', '', 'off@example.org', '', 5, 0, 0)");
+
+        $this->assertNull($this->repository->findActiveUserIdByEmail('twin@example.org'));
+        $this->assertNull($this->repository->findInactiveUserIdByEmail('OFF@example.org'));
+        $this->assertSame(1, $this->repository->findActiveUserIdByEmail('shared@example.org'));
+    }
+
     public function testFindPermissionTemplateIdByNameIsExact(): void
     {
         $this->assertSame(5, $this->repository->findPermissionTemplateIdByName('Guest'));
