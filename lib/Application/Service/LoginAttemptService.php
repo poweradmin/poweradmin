@@ -31,6 +31,9 @@ class LoginAttemptService
     private ConfigurationManager $configManager;
     private PDO $connection;
 
+    /** @var array<string, int> Row ids of the failures reserveAttempt() inserted, by user and address */
+    private array $reservedAttempts = [];
+
     public function __construct(PDO $connection, ?ConfigurationManager $configManager = null)
     {
         $this->connection = $connection;
@@ -89,9 +92,64 @@ class LoginAttemptService
             return false;
         }
 
+        return $this->failedAttemptCount($userId, $ipAddress) >= $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
+    }
+
+    /**
+     * Counts a failure before the credential is checked and reports whether it is
+     * still within the limit, so parallel guesses each see the others' rows. A
+     * whitelisted address is counted but never refused. Call confirmAttempt() when
+     * the credential turns out correct.
+     */
+    public function reserveAttempt(string $username, string $ipAddress): bool
+    {
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+            return true;
+        }
+
+        $userId = $this->getUserId($username);
+        if ($userId === null) {
+            return true;
+        }
+
+        $this->recordAttempt($username, $ipAddress, false);
+        $this->reservedAttempts[$username . '|' . $ipAddress] = (int)$this->connection->lastInsertId('login_attempts_id_seq');
+
+        $whitelistedIps = $this->configManager->get('security', 'account_lockout.whitelist_ip_addresses', []);
+        if (!empty($whitelistedIps) && $this->isIpInList($ipAddress, $whitelistedIps)) {
+            return true;
+        }
+
+        // The reserved row is this attempt's own, so only a count past the limit refuses it
+        return $this->failedAttemptCount($userId, $ipAddress) <= $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
+    }
+
+    /**
+     * Settles an attempt counted by reserveAttempt() whose credential was correct:
+     * its own reserved row is removed and the success goes through recordAttempt(),
+     * so clear_attempts_on_success governs earlier failures as it does at sign-in.
+     */
+    public function confirmAttempt(string $username, string $ipAddress): void
+    {
+        if (!$this->configManager->get('security', 'account_lockout.enable_lockout', false)) {
+            return;
+        }
+
+        $key = $username . '|' . $ipAddress;
+        $reservedId = $this->reservedAttempts[$key] ?? 0;
+        unset($this->reservedAttempts[$key]);
+        if ($reservedId > 0) {
+            $stmt = $this->connection->prepare('DELETE FROM login_attempts WHERE id = :id');
+            $stmt->execute(['id' => $reservedId]);
+        }
+
+        $this->recordAttempt($username, $ipAddress, true);
+    }
+
+    private function failedAttemptCount(int $userId, string $ipAddress): int
+    {
         $lockoutDuration = $this->configManager->get('security', 'account_lockout.lockout_duration', 30) * 60;
         $cutoffTime = time() - $lockoutDuration;
-        $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
         $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
         $db_type = $this->configManager->get('database', 'type');
@@ -115,7 +173,7 @@ class LoginAttemptService
         $stmt->execute($params);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return (int)$result['attempts'] >= $maxAttempts;
+        return (int)$result['attempts'];
     }
 
     /**

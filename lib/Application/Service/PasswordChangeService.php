@@ -64,11 +64,16 @@ class PasswordChangeService
             return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
 
+        // Counted before the check so parallel guesses cannot all read an empty counter
+        if ($this->loginAttempts !== null && !$this->loginAttempts->reserveAttempt($username, $this->clientIp)) {
+            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+        }
+
         $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
-        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches);
         if (!$matches) {
             return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
+        $this->loginAttempts?->confirmAttempt($username, $this->clientIp);
 
         $hashedPassword = $this->authService->hashPassword($newPassword);
         $updated = $this->userRepository->updatePassword($user->getId(), $hashedPassword);

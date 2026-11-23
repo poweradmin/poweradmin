@@ -83,10 +83,12 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertFalse($changed);
     }
 
-    public function testAWrongCurrentPasswordIsRecordedAsAFailedSignIn(): void
+    public function testAWrongCurrentPasswordStaysCountedAsAFailedSignIn(): void
     {
         $attempts = $this->createMock(LoginAttemptService::class);
-        $attempts->expects($this->once())->method('recordAttempt')->with('victim', '203.0.113.9', false);
+        $attempts->expects($this->once())->method('reserveAttempt')->with('victim', '203.0.113.9')->willReturn(true);
+        $attempts->expects($this->never())->method('confirmAttempt');
+        $attempts->expects($this->never())->method('recordAttempt');
         $this->users->expects($this->never())->method('updatePassword');
 
         [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], false, $attempts);
@@ -94,10 +96,11 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertFalse($changed);
     }
 
-    public function testARightCurrentPasswordIsRecordedAsASuccessfulSignIn(): void
+    public function testARightCurrentPasswordClearsTheReservedAttempt(): void
     {
         $attempts = $this->createMock(LoginAttemptService::class);
-        $attempts->expects($this->once())->method('recordAttempt')->with('victim', '203.0.113.9', true);
+        $attempts->expects($this->once())->method('reserveAttempt')->with('victim', '203.0.113.9')->willReturn(true);
+        $attempts->expects($this->once())->method('confirmAttempt')->with('victim', '203.0.113.9');
         $this->users->method('updatePassword')->willReturn(true);
 
         [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
@@ -105,11 +108,23 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertTrue($changed);
     }
 
+    public function testAnExhaustedReservationRefusesEvenTheRightPassword(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->once())->method('reserveAttempt')->willReturn(false);
+        $attempts->expects($this->never())->method('confirmAttempt');
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
+
+        $this->assertFalse($changed);
+    }
+
     public function testALockedAccountIsRefusedEvenWithTheRightPassword(): void
     {
         $attempts = $this->createMock(LoginAttemptService::class);
         $attempts->method('isAccountLocked')->with('victim', '203.0.113.9')->willReturn(true);
-        $attempts->expects($this->never())->method('recordAttempt');
+        $attempts->expects($this->never())->method('reserveAttempt');
         $this->users->expects($this->never())->method('updatePassword');
 
         [$changed] = $this->changePassword(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
