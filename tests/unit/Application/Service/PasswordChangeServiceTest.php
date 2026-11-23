@@ -88,13 +88,43 @@ class PasswordChangeServiceTest extends TestCase
     {
         $attempts = $this->createMock(LoginAttemptService::class);
         $attempts->method('isAccountLocked')->willReturn(false);
-        $attempts->expects($this->once())->method('recordAttempt')
-            ->with('victim', '203.0.113.5', false, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+        $attempts->expects($this->once())->method('reserveAttempt')
+            ->with('victim', '203.0.113.5', LoginAttemptService::STAGE_REAUTH, self::USER_ID)
+            ->willReturn(true);
+        $attempts->expects($this->never())->method('recordAttempt');
         $this->users->expects($this->never())->method('updatePassword');
 
         [$changed] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], false, $attempts)->changePassword('guess', 'new');
 
         $this->assertFalse($changed);
+    }
+
+    public function testACorrectCurrentPasswordClearsTheReservedAttempt(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('reserveAttempt')->willReturn(true);
+        $attempts->expects($this->once())->method('recordAttempt')
+            ->with('victim', '203.0.113.5', true, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+        $this->users->expects($this->once())->method('updatePassword')->willReturn(true);
+
+        [$changed] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], true, $attempts)->changePassword('old', 'new');
+
+        $this->assertTrue($changed);
+    }
+
+    public function testAnExhaustedReservationRefusesEvenACorrectPassword(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->method('isAccountLocked')->willReturn(false);
+        $attempts->expects($this->once())->method('reserveAttempt')->willReturn(false);
+        $attempts->expects($this->never())->method('recordAttempt');
+        $this->users->expects($this->never())->method('updatePassword');
+
+        [$changed, $message] = $this->service([SessionKeys::USERID => self::USER_ID, SessionKeys::USERLOGIN => 'victim'], true, $attempts)->changePassword('old', 'new');
+
+        $this->assertFalse($changed);
+        $this->assertSame('Too many failed attempts. Please try again later.', $message);
     }
 
     public function testALockedReauthStageRefusesWithoutCheckingThePassword(): void

@@ -65,11 +65,16 @@ readonly class PasswordChangeService
             return [false, _('Too many failed attempts. Please try again later.')];
         }
 
+        // Counted before the check so parallel guesses cannot all read an empty counter
+        if ($this->loginAttempts !== null && !$this->loginAttempts->reserveAttempt($username, $this->clientIp, $stage, $userId)) {
+            return [false, _('Too many failed attempts. Please try again later.')];
+        }
+
         $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
-        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches, $stage, $userId);
         if (!$matches) {
             return [false, _(self::ERROR_MESSAGES['invalid_password'])];
         }
+        $this->loginAttempts?->recordAttempt($username, $this->clientIp, true, $stage, $userId);
 
         $hashedPassword = $this->authService->hashPassword($newPassword);
         $updated = $this->userRepository->updatePassword($user->getId(), $hashedPassword);
