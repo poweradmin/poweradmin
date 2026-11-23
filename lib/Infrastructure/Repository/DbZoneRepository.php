@@ -621,12 +621,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // First find the zone ID
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        $zoneId = $stmt->fetchColumn();
+        $zoneId = $this->findZoneIdByLowerName($zoneName);
 
         if (!$zoneId) {
             return null;
@@ -952,15 +947,29 @@ class DbZoneRepository implements ZoneRepositoryInterface
     public function getZoneIdByName(string $zoneName): ?int
     {
 
+        return $this->findZoneIdByLowerName($zoneName);
+    }
+
+    /**
+     * Exact (indexed) match on the lowercased name first, so a lowercase row wins over a
+     * mixed-case twin; the case-insensitive scan runs only on a miss.
+     */
+    private function findZoneIdByLowerName(string $name): ?int
+    {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $lower = strtolower($name);
 
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
+        foreach (['name = :name', 'LOWER(name) = :name'] as $condition) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $condition ORDER BY id LIMIT 1");
+            $stmt->bindValue(':name', $lower, PDO::PARAM_STR);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return (int)$row['id'];
+            }
+        }
 
-        $result = $stmt->fetchColumn();
-        return $result ? (int)$result : null;
+        return null;
     }
 
     /**

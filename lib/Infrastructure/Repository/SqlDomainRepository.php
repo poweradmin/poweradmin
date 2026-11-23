@@ -87,15 +87,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             return null;
         }
 
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $name);
-        $stmt->execute();
-
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? (int)$result['id'] : null;
+        return $this->findZoneIdByLowerName($name);
     }
 
     public function getZoneIdFromName(string $zname): ?int
@@ -104,13 +96,7 @@ class SqlDomainRepository implements DomainRepositoryInterface
             return null;
         }
 
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $zname]);
-        $result = $stmt->fetch();
-
-        return $result ? (int)$result["id"] : null;
+        return $this->findZoneIdByLowerName($zname);
     }
 
     public function getDomainType(int $id): string
@@ -148,10 +134,29 @@ class SqlDomainRepository implements DomainRepositoryInterface
             $domain = preg_replace('/\.$/D', '', $domain);
         }
 
+        return $this->findZoneIdByLowerName($domain) !== null;
+    }
+
+    /**
+     * Exact (indexed) match on the lowercased name first, so a lowercase row wins over a
+     * mixed-case twin; the case-insensitive scan runs only on a miss.
+     */
+    private function findZoneIdByLowerName(string $name): ?int
+    {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $domain]);
-        return (bool)$stmt->fetch();
+        $lower = strtolower($name);
+
+        foreach (['name = :name', 'LOWER(name) = :name'] as $condition) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $condition ORDER BY id LIMIT 1");
+            $stmt->bindValue(':name', $lower, PDO::PARAM_STR);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($row) {
+                return (int)$row['id'];
+            }
+        }
+
+        return null;
     }
 
     public function getZones(
