@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\Permission;
 
@@ -55,6 +56,32 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('soa', 'own_as_client'));
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('ns', 'own_as_client'));
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
+    }
+
+    /** @return array<string, array{string}> */
+    public static function numericAliases(): array
+    {
+        return ['NS' => ['TYPE2'], 'SOA' => ['TYPE6'], 'LUA' => ['TYPE65402'], 'lowercase' => ['type65402'], 'zero padded' => ['TYPE0002']];
+    }
+
+    #[DataProvider('numericAliases')]
+    public function testNumericAliasesOfRestrictedTypesAreRestrictedForOwnAsClient(string $alias): void
+    {
+        $this->assertTrue(Permission::isRecordTypeRestrictedForClient($alias, 'own_as_client'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient($alias, 'own'));
+    }
+
+    public function testOtherNumericTypesAreNotRestricted(): void
+    {
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('TYPE1', 'own_as_client'));
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('TYPE65403', 'own_as_client'));
+    }
+
+    public function testTheLuaAliasIsRestrictedInTemplatesBelowOwnEdit(): void
+    {
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'none'));
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('type65402', 'own_as_client'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'own'));
     }
 
     public function testNonRestrictedTypesArePermitted(): void

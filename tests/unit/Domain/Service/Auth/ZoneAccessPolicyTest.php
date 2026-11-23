@@ -125,4 +125,21 @@ class ZoneAccessPolicyTest extends TestCase
             ZoneAccessPolicy::isRecordLocked($zoneReadOnly, $type, $permEdit, $nsLocked)
         );
     }
+
+    /** @return array<string, array{string, string}> */
+    public static function lockedAliases(): array
+    {
+        return [
+            'LUA alias' => ['TYPE65402', 'own_as_client'],
+            'lowercase LUA alias' => ['type65402', 'own_as_client'],
+            'SOA alias' => ['TYPE6', 'own_as_client'],
+        ];
+    }
+
+    #[DataProvider('lockedAliases')]
+    public function testNumericAliasesOfLockedTypesAreLocked(string $type, string $level): void
+    {
+        $this->assertTrue(ZoneAccessPolicy::isRecordLocked(false, $type, $level, false));
+        $this->assertFalse(ZoneAccessPolicy::isRecordLocked(false, $type, 'all', false));
+    }
 }

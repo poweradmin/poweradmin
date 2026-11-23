@@ -81,6 +81,8 @@ final class ZoneAccessPolicy
         string $permEdit,
         bool $nsRecordLocked
     ): bool {
+        $recordType = Permission::canonicalRecordType($recordType);
+
         return $zoneIsReadOnly
             || ($recordType === 'SOA' && !in_array($permEdit, ['all', 'own'], true))
             || ($recordType === 'LUA' && $permEdit === 'own_as_client')
