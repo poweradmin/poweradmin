@@ -43,6 +43,8 @@ class BindZoneFileParser
         'MX', 'NS', 'CNAME', 'PTR', 'DNAME', 'SRV', 'AFSDB', 'KX',
     ];
 
+    private const MAX_TTL = 2147483647;
+
     private int $autoTtlValue;
 
     public function __construct(int $autoTtlValue = 300)
@@ -539,7 +541,7 @@ class BindZoneFileParser
         $value = strtolower(trim($value));
 
         if (is_numeric($value)) {
-            return (int)$value;
+            return $this->capTtl((float)$value);
         }
 
         $total = 0;
@@ -551,7 +553,7 @@ class BindZoneFileParser
             if (ctype_digit($char)) {
                 $current .= $char;
             } else {
-                $num = $current !== '' ? (int)$current : 0;
+                $num = $current !== '' ? min((int)$current, self::MAX_TTL) : 0;
                 $current = '';
 
                 switch ($char) {
@@ -579,9 +581,18 @@ class BindZoneFileParser
 
         // Handle trailing number without suffix
         if ($current !== '') {
-            $total += (int)$current;
+            $total += min((int)$current, self::MAX_TTL);
         }
 
-        return $total;
+        return $this->capTtl((float)$total);
+    }
+
+    /**
+     * An oversized TTL is clamped to the 32-bit maximum PowerDNS accepts; a float result
+     * would otherwise fail the int return type.
+     */
+    private function capTtl(float $ttl): int
+    {
+        return (int)max(-self::MAX_TTL, min($ttl, self::MAX_TTL));
     }
 }

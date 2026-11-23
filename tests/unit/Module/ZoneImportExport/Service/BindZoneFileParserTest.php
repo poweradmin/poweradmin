@@ -2167,4 +2167,23 @@ ZONE;
         $this->assertCount(1, $records);
         $this->assertSame('"a\\\\" "b;c"', $records[0]->content);
     }
+
+    public function testOversizedTtlIsCappedInsteadOfFailing(): void
+    {
+        $this->assertSame(2147483647, $this->parser->parseTtl('9999999999999y'));
+        $this->assertSame(2147483647, $this->parser->parseTtl('99999999999999999999'));
+        $this->assertSame(2147483647, $this->parser->parseTtl('9999999999w9999999999d'));
+        $this->assertSame(2147483647, $this->parser->parseTtl('1e30'));
+        $this->assertSame(31536000, $this->parser->parseTtl('1y'));
+    }
+
+    public function testOversizedTtlInAFileParsesWithoutAnError(): void
+    {
+        $content = "\$TTL 9999999999999y\nwww 9999999999999y IN A 192.0.2.1\n";
+
+        $result = $this->parser->parse($content);
+
+        $this->assertSame(2147483647, $result->getDefaultTtl());
+        $this->assertSame(2147483647, $result->getRecords()[0]->ttl);
+    }
 }
