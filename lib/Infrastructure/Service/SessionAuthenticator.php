@@ -571,6 +571,18 @@ class SessionAuthenticator extends LoggingService
         return true;
     }
 
+    /**
+     * Whether the stored auth method of the account is LDAP; an SSO session must not outlive a move to it.
+     */
+    private function accountSignsInThroughLdap(int $userId): bool
+    {
+        $stmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
+        $stmt->bindValue(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() === 'ldap';
+    }
+
     private function endSessionOfDisabledAccount(): void
     {
         if (self::isForeignSsoSession($_SESSION, self::instanceFingerprint($this->configManager))) {
@@ -588,6 +600,12 @@ class SessionAuthenticator extends LoggingService
             if (!self::isActiveAccount($this->db, (int)$userId, (string)($_SESSION['userlogin'] ?? ''))) {
                 $this->logWarning('Ending session of disabled account {userId}', ['userId' => (int)$userId]);
                 $this->authService->logout(new SessionEntity(_('The user account is disabled.'), 'danger'));
+                return;
+            }
+
+            if ($this->accountSignsInThroughLdap((int)$userId)) {
+                $this->logWarning('Ending SSO session of account {userId}, which now signs in through LDAP', ['userId' => (int)$userId]);
+                $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
                 return;
             }
         }

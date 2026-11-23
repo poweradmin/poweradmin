@@ -380,13 +380,11 @@ class DbUserRepositoryTest extends TestCase
             }))
             ->willReturn(true);
 
-        $this->db->expects($this->once())
-            ->method('prepare')
-            ->with($this->logicalAnd(
-                $this->stringContains('UPDATE users SET'),
-                $this->stringContains('auth_method')
-            ))
-            ->willReturn($stmt);
+        $selectStmt = $this->createMock(PDOStatement::class);
+        $selectStmt->method('execute')->willReturn(true);
+        $selectStmt->method('fetchColumn')->willReturn('ldap');
+
+        $this->db->method('prepare')->willReturnOnConsecutiveCalls($selectStmt, $stmt);
 
         $this->assertTrue($this->repository->updateUser(1, ['use_ldap' => 1]));
     }

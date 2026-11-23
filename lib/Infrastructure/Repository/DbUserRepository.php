@@ -413,12 +413,13 @@ class DbUserRepository implements UserRepository
      * Clean up external authentication links for a user
      *
      * This method removes all OIDC and SAML authentication links associated with a user.
-     * It's called during user deletion to ensure referential integrity.
+     * It's called during user deletion to ensure referential integrity, and when an
+     * account is moved to LDAP sign-in.
      *
      * @param int $userId User ID
      * @return void
      */
-    private function cleanupExternalAuthLinks(int $userId): void
+    public function cleanupExternalAuthLinks(int $userId): void
     {
         // Clean up OIDC links
         $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :userId");
@@ -633,12 +634,13 @@ class DbUserRepository implements UserRepository
         // when LDAP is being disabled.
         if (array_key_exists('use_ldap', $userData)) {
             $setFields[] = 'auth_method = :auth_method';
+            $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
+            $currentStmt->execute([':id' => $userId]);
+            $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
             if ((int)$userData['use_ldap'] === 1) {
                 $params[':auth_method'] = 'ldap';
+                $movedToLdap = $currentAuthMethod !== 'ldap';
             } else {
-                $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
-                $currentStmt->execute([':id' => $userId]);
-                $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
                 $params[':auth_method'] = in_array($currentAuthMethod, ['oidc', 'saml'], true)
                     ? $currentAuthMethod
                     : 'sql';
@@ -653,6 +655,9 @@ class DbUserRepository implements UserRepository
         $stmt = $this->db->prepare($query);
 
         $updated = $stmt->execute($params);
+        if ($updated && ($movedToLdap ?? false)) {
+            $this->cleanupExternalAuthLinks($userId);
+        }
         if ($updated && array_key_exists(':password', $params)) {
             $this->expireResetTokensForUser($userId);
         }

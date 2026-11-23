@@ -650,6 +650,7 @@ class UserManager
             }
 
             $stmt->execute();
+            $this->dropSsoLinksOnMoveToLdap($id, $usercheck['auth_method'] ?? null, $newAuthMethod);
             if ($passwordHash !== null) {
                 (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($id);
             }
@@ -917,6 +918,16 @@ class UserManager
             );
         }
         return $userList;
+    }
+
+    /**
+     * An account moved to LDAP sign-in keeps no provider identity linked to it.
+     */
+    private function dropSsoLinksOnMoveToLdap(int $userId, ?string $oldMethod, string $newMethod): void
+    {
+        if ($newMethod === 'ldap' && $oldMethod !== 'ldap') {
+            (new DbUserRepository($this->db, $this->config))->cleanupExternalAuthLinks($userId);
+        }
     }
 
     /**
@@ -1296,6 +1307,13 @@ class UserManager
             $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
 
             $stmt->execute();
+            if ($perm_is_godlike == "1") {
+                $this->dropSsoLinksOnMoveToLdap(
+                    (int)$details['uid'],
+                    $userCheck['auth_method'] ?? null,
+                    self::resolveAuthMethod((bool) $use_ldap, $userCheck['auth_method'] ?? null)
+                );
+            }
             if ($hashedPassword !== null) {
                 (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$details['uid']);
             }
