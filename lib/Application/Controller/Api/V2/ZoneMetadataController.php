@@ -319,6 +319,13 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403);
         }
 
+        if (
+            MetadataDefinitions::isDnssecState($kind)
+            && !$this->apiPermissionService->canEditZone($this->authenticatedUserId, $zoneId)
+        ) {
+            return $this->returnApiError('You do not have permission to change DNSSEC metadata kind ' . $kind, 403);
+        }
+
         try {
             $data = json_decode($this->request->getContent(), true);
 
@@ -411,6 +418,13 @@ class ZoneMetadataController extends PublicApiController
 
         if (!MetadataDefinitions::isApiWritable($kind)) {
             return $this->returnApiError('Metadata kind ' . $kind . ' is read-only', 403);
+        }
+
+        if (
+            MetadataDefinitions::isDnssecState($kind)
+            && !$this->apiPermissionService->canEditZone($this->authenticatedUserId, $zoneId)
+        ) {
+            return $this->returnApiError('You do not have permission to change DNSSEC metadata kind ' . $kind, 403);
         }
 
         try {

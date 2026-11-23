@@ -26,6 +26,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\MetadataDefinitions;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -151,6 +152,17 @@ class EditZoneMetadataController extends BaseController
             );
             if (!empty($restrictionErrors)) {
                 $this->setMessage('zone_metadata', 'error', $restrictionErrors[0]);
+                $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
+                return;
+            }
+
+            $dnssecErrors = $this->dnssecStateViolations(
+                $submittedMetadata,
+                fn(): array => $this->loadMetadata($zoneId, $zone['name']),
+                $zoneId
+            );
+            if (!empty($dnssecErrors)) {
+                $this->setMessage('zone_metadata', 'error', $dnssecErrors[0]);
                 $this->renderPage($zoneId, $zone, $submittedMetadata, $canEditMetadata);
                 return;
             }
@@ -488,6 +500,59 @@ class EditZoneMetadataController extends BaseController
                     _('Metadata kind %s can only be changed by an administrator.'),
                     $kind
                 );
+            }
+        }
+
+        return $errors;
+    }
+
+    /**
+     * The right that gates DNSSEC key management on this branch: content edit on the zone.
+     */
+    protected function canManageDnssecState(int $zoneId): bool
+    {
+        $edit = Permission::getEditPermission($this->db);
+
+        return $edit === 'all' || ($edit === 'own' && UserManager::verifyUserIsOwnerZoneId($this->db, $zoneId));
+    }
+
+    /**
+     * Reject changes to DNSSEC state kinds by users who may not manage DNSSEC on the zone.
+     *
+     * Existing rows are compared, so a stored value does not lock the editor out of saving other kinds.
+     *
+     * @param array<int, array<string, string>> $submitted
+     * @param callable $loadCurrent Returns the stored metadata rows; skipped when the caller may manage DNSSEC
+     * @return array<int, string>
+     */
+    protected function dnssecStateViolations(array $submitted, callable $loadCurrent, int $zoneId): array
+    {
+        if ($this->canManageDnssecState($zoneId)) {
+            return [];
+        }
+
+        $collect = static function (array $rows): array {
+            $byKind = [];
+            foreach ($rows as $row) {
+                $kind = strtoupper((string)($row['kind'] ?? ''));
+                if ($kind !== '' && MetadataDefinitions::isDnssecState($kind)) {
+                    $byKind[$kind][] = (string)($row['content'] ?? '');
+                }
+            }
+            foreach ($byKind as $kind => $values) {
+                sort($values);
+                $byKind[$kind] = $values;
+            }
+            return $byKind;
+        };
+
+        $before = $collect($loadCurrent());
+        $after = $collect($submitted);
+
+        $errors = [];
+        foreach (array_keys($before + $after) as $kind) {
+            if (($before[$kind] ?? []) !== ($after[$kind] ?? [])) {
+                $errors[] = sprintf(_('You do not have the permission to change the DNSSEC metadata kind %s.'), $kind);
             }
         }
 

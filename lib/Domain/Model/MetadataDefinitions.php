@@ -270,6 +270,16 @@ class MetadataDefinitions
     }
 
     /**
+     * Whether a kind carries DNSSEC state (presigned, NSEC3 setup, CDS/CDNSKEY publishing).
+     *
+     * Changing it affects the zone's chain of trust, so it needs the right that gates DNSSEC key management.
+     */
+    public static function isDnssecState(string $kind): bool
+    {
+        return in_array(strtoupper(trim($kind)), ['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'], true);
+    }
+
+    /**
      * Check if a metadata kind may only be set by an administrator.
      */
     public static function isOperatorOnly(string $kind): bool
