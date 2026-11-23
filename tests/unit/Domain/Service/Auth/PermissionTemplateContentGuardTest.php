@@ -267,6 +267,70 @@ class PermissionTemplateContentGuardTest extends TestCase
         $this->assertSame($permissions, PermissionTemplateContentGuard::filterOfferedPermissions($permissions, true));
     }
 
+    public function testDelegatedEditorMayNotRemoveMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->mfaRepository(callerIsSuperuser: false, holderIsSuperuser: true),
+            self::CALLER_ID,
+            9,
+            [4]
+        );
+
+        $this->assertSame(PermissionTemplateContentGuard::MFA_ENFORCEMENT_DENIED, $error);
+    }
+
+    public function testDelegatedEditorMayRemoveMfaEnforcementWhenNoSuperuserHoldsTheTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->mfaRepository(callerIsSuperuser: false, holderIsSuperuser: false),
+            self::CALLER_ID,
+            9,
+            [4]
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testDelegatedEditorMayKeepMfaEnforcementOnASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->mfaRepository(callerIsSuperuser: false, holderIsSuperuser: true),
+            self::CALLER_ID,
+            9,
+            [4, 61]
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testSuperuserMayRemoveMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->mfaRepository(callerIsSuperuser: true, holderIsSuperuser: true),
+            self::CALLER_ID,
+            9,
+            [4]
+        );
+
+        $this->assertNull($error);
+    }
+
+    private function mfaRepository(bool $callerIsSuperuser, bool $holderIsSuperuser): UserRepositoryInterface
+    {
+        $repository = $this->createMock(UserRepositoryInterface::class);
+        $repository->method('hasAdminPermission')->willReturnCallback(
+            static fn(int $userId): bool => $userId === self::CALLER_ID ? $callerIsSuperuser : $holderIsSuperuser
+        );
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('getPermissionIdsByName')->willReturnCallback(
+            static fn(string $name): array => $name === Permission::PERM_USER_ENFORCE_MFA ? [61] : [self::UBERUSER_PERM_ID]
+        );
+        $repository->method('getTemplatePermissionNames')->willReturn([Permission::PERM_USER_ENFORCE_MFA, 'zone_content_view_own']);
+        $repository->method('getUserIdsHoldingTemplate')->willReturn([55]);
+
+        return $repository;
+    }
+
     private function userRepository(
         bool $isSuperuser,
         bool $templateGrantsUberuser = false,

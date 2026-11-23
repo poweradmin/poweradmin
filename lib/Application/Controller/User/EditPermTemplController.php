@@ -199,6 +199,8 @@ class EditPermTemplController extends BaseController
                 _('Granting administrator rights in a permission template requires administrator rights.'),
             PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED =>
                 _('Editing a permission template with administrator rights requires administrator rights.'),
+            PermissionTemplateContentGuard::MFA_ENFORCEMENT_DENIED =>
+                _('Removing the enforced MFA permission from a permission template held by an administrator requires administrator rights.'),
             LastSuperAdminGuard::MESSAGE => _('Cannot remove super admin from the last remaining super admin user.'),
             default => _('The permission template could not be updated.'),
         };

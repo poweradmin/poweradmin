@@ -54,6 +54,14 @@ interface UserPermissionReadInterface
     public function templateGrantsUberuser(int $permTemplId): bool;
 
     /**
+     * Ids of the users a permission template applies to, directly or through a group
+     *
+     * @param int $permTemplId Permission template ID
+     * @return array<int, int>
+     */
+    public function getUserIdsHoldingTemplate(int $permTemplId): array;
+
+    /**
      * Names of the permissions a permission template grants
      *
      * @return array<int, string>

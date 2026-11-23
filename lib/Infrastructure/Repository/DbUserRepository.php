@@ -1402,6 +1402,23 @@ class DbUserRepository implements UserRepositoryInterface
         return (bool)$stmt->fetchColumn();
     }
 
+    public function getUserIdsHoldingTemplate(int $permTemplId): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM users WHERE perm_templ = :direct
+             UNION
+             SELECT ugm.user_id
+             FROM user_group_members ugm
+             JOIN user_groups ug ON ugm.group_id = ug.id
+             WHERE ug.perm_templ = :viaGroup"
+        );
+        $stmt->bindValue(':direct', $permTemplId, PDO::PARAM_INT);
+        $stmt->bindValue(':viaGroup', $permTemplId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     public function getTemplatePermissionNames(int $permTemplId): array
     {
         $stmt = $this->db->prepare("SELECT DISTINCT perm_items.name

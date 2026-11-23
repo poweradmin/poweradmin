@@ -42,6 +42,7 @@ class PermissionTemplateContentGuard
 
     public const CONTENT_SUPERUSER_DENIED = 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     public const EDIT_SUPERUSER_DENIED = 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser';
+    public const MFA_ENFORCEMENT_DENIED = 'Removing user_enforce_mfa from a permission template held by a superuser requires user_is_ueberuser';
     public const INVALID_PERMISSION_ID = 'Permission ids must be positive integers';
     private const MAX_PERMISSION_ID = 2147483647;
 
@@ -82,7 +83,40 @@ class PermissionTemplateContentGuard
             return self::CONTENT_SUPERUSER_DENIED;
         }
 
+        if ($templateId !== null && self::dropsMfaEnforcementFromSuperuser($userRepository, $templateId, $normalizedIds)) {
+            return self::MFA_ENFORCEMENT_DENIED;
+        }
+
         return null;
+    }
+
+    /**
+     * Superusers get no exemption from MFA enforcement, so it lives only in the templates
+     * they hold; a delegate must not be able to switch it off there.
+     *
+     * @param list<int> $newPermIds
+     */
+    private static function dropsMfaEnforcementFromSuperuser(
+        UserPermissionReadInterface $userRepository,
+        int $templateId,
+        array $newPermIds
+    ): bool {
+        if (!in_array(Permission::PERM_USER_ENFORCE_MFA, $userRepository->getTemplatePermissionNames($templateId), true)) {
+            return false;
+        }
+
+        $enforcePermIds = $userRepository->getPermissionIdsByName(Permission::PERM_USER_ENFORCE_MFA);
+        if (array_intersect($newPermIds, $enforcePermIds) !== []) {
+            return false;
+        }
+
+        foreach ($userRepository->getUserIdsHoldingTemplate($templateId) as $holderId) {
+            if ($userRepository->hasAdminPermission($holderId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
