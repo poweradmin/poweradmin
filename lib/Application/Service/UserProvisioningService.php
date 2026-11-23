@@ -816,16 +816,14 @@ class UserProvisioningService extends LoggingService
                 return false;
             }
 
-            $check = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = ? AND name = ?");
-
             $mapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
             foreach (is_array($mapping) ? $mapping : [] as $templateName) {
                 // Numeric names are matched as the grant path coerces them
                 if (!is_scalar($templateName)) {
                     continue;
                 }
-                $check->execute([$current, (string)$templateName]);
-                if ((int)$check->fetchColumn() > 0) {
+                // Resolved as the grant path resolves it, so a same-named duplicate does not count
+                if ($this->resolveTemplateIdByName((string)$templateName) === $current) {
                     return true;
                 }
             }
@@ -867,14 +865,25 @@ class UserProvisioningService extends LoggingService
         }
     }
 
+    /**
+     * Template names are not unique, so a user-type template wins over a group-type one
+     * and the lowest id wins among equals; the same name always resolves to the same row.
+     */
+    private function resolveTemplateIdByName(string $templateName): ?int
+    {
+        $stmt = $this->db->prepare(
+            "SELECT id FROM perm_templ WHERE name = ? ORDER BY CASE WHEN template_type = 'user' THEN 0 ELSE 1 END, id LIMIT 1"
+        );
+        $stmt->execute([$templateName]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? (int)$result['id'] : null;
+    }
+
     private function findPermissionTemplateByName(string $templateName): ?int
     {
         try {
-            $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE name = ?");
-            $stmt->execute([$templateName]);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            return $result ? (int)$result['id'] : null;
+            return $this->resolveTemplateIdByName($templateName);
         } catch (\Exception $e) {
             $this->logError('Error finding permission template by name: {error}', ['error' => $e->getMessage()]);
             return null;
