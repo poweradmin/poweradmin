@@ -234,7 +234,8 @@ final class SymfonyRouter
      */
     private function isApiRoute(): bool
     {
-        return str_starts_with($this->request->getPathInfo(), '/api/');
+        // The matcher decodes the path, so an encoded /api must be recognised the same way
+        return str_starts_with(rawurldecode($this->request->getPathInfo()), '/api/');
     }
 
     /**

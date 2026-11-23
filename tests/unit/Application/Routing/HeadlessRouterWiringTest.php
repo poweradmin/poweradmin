@@ -45,6 +45,26 @@ class HeadlessRouterWiringTest extends TestCase
         $this->assertStringContainsString('Api\V2\ZonesController', $this->controllerFor('/api/v2/zones', false));
     }
 
+    public function testAnEncodedApiPathIsStillAnApiRoute(): void
+    {
+        $this->assertTrue($this->isApiRoute('/api/v2/zones'));
+        $this->assertTrue($this->isApiRoute('/%61pi/v2/zones'));
+        $this->assertFalse($this->isApiRoute('/login'));
+        $this->assertFalse($this->isApiRoute('/apix/v2'));
+    }
+
+    private function isApiRoute(string $path): bool
+    {
+        $_SERVER['REQUEST_URI'] = $path;
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
+        $_SERVER['HTTP_HOST'] = 'localhost';
+
+        $router = new SymfonyRouter(BootContexts::over(new FakeConfiguration([])));
+
+        return (new \ReflectionMethod($router, 'isApiRoute'))->invoke($router);
+    }
+
     public function testWebInterfaceIsUnaffectedByDefault(): void
     {
         $this->assertStringContainsString('LoginController', $this->controllerFor('/login', true));
