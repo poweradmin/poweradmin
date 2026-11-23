@@ -68,6 +68,40 @@ class UserProvisioningServiceDisabledAccountTest extends TestCase
         $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM oidc_user_links')->fetchColumn(), 'and the disabled account is not linked');
     }
 
+    public function testDisabledEmailMatchIgnoresTheCaseOfTheAssertedAddress(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'jane.doe', email: 'Jane@Example.ORG', providerId: 'okta', subject: 'sub-jane');
+
+        $this->assertSame(3, $this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame(4, (int)$this->db->query('SELECT COUNT(*) FROM users')->fetchColumn(), 'no duplicate account is created');
+    }
+
+    public function testActiveEmailLookupIgnoresTheCaseOfTheAssertedAddress(): void
+    {
+        $lookup = new \ReflectionMethod(UserProvisioningService::class, 'findUserByEmail');
+
+        $this->assertSame(1, $lookup->invoke($this->service, 'ACTIVE@example.org'));
+        $this->assertNull($lookup->invoke($this->service, 'actlve@example.org'));
+    }
+
+    public function testSeveralActiveAccountsDifferingOnlyInEmailCaseMatchNone(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES
+            (5, 'active.two', '', 'Active Two', 'Active@example.org', '', 5, 1, 0, 'sql')");
+        $lookup = new \ReflectionMethod(UserProvisioningService::class, 'findUserByEmail');
+
+        $this->assertNull($lookup->invoke($this->service, 'active@example.org'));
+    }
+
+    public function testSeveralDisabledAccountsDifferingOnlyInEmailCaseMatchNone(): void
+    {
+        $this->db->exec("INSERT INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES
+            (5, 'old.jane2', 'h', 'Old Jane 2', 'Jane@Example.org', '', 5, 0, 0, 'sql')");
+        $lookup = new \ReflectionMethod(UserProvisioningService::class, 'findInactiveUserIdByEmail');
+
+        $this->assertNull($lookup->invoke($this->service, 'jane@example.org'));
+    }
+
     /**
      * PostgreSQL allows users.active to be NULL, which every login check treats as disabled.
      */
