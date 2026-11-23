@@ -398,7 +398,8 @@ class RecordSearch extends BaseSearch
             $params[':reverse_search_string2'] = $reverse_search_string;
         }
 
-        if ($parameters['comments']) {
+        // Same gate as the row query, so the total cannot count comment matches the rows hide
+        if ($this->config->get('interface', 'show_record_comments', false) && $parameters['comments']) {
             $tableNameService = new TableNameService($this->config);
             $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
             $links_table = 'record_comment_links';
