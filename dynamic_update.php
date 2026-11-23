@@ -25,6 +25,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 $request = Request::createFromGlobals();
 
+if (DynamicDnsHelper::isCrossSiteRequest($request->headers->get('Sec-Fetch-Site'))) {
+    http_response_code(403);
+    DynamicDnsHelper::statusExit('badauth', $request->query->has('verbose'));
+    exit;
+}
+
 $config = ConfigurationManager::getInstance();
 $config->initialize();
 CanonicalZoneSql::setRowIdFallback(DnsBackendProviderFactory::isApiBackend($config));

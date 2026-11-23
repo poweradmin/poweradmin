@@ -390,4 +390,13 @@ class DynamicDnsHelperTest extends TestCase
 
         $this->assertTrue($result);
     }
+
+    public function testIsCrossSiteRequest(): void
+    {
+        $this->assertTrue(DynamicDnsHelper::isCrossSiteRequest('cross-site'));
+        $this->assertTrue(DynamicDnsHelper::isCrossSiteRequest(' Same-Site '));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest(null));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest('same-origin'));
+        $this->assertFalse(DynamicDnsHelper::isCrossSiteRequest('none'));
+    }
 }

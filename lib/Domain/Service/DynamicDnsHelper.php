@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -35,6 +35,15 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
  */
 class DynamicDnsHelper
 {
+    /**
+     * True when a browser marks the request as coming from another site.
+     * DDNS clients are not browsers and send no Sec-Fetch-Site header.
+     */
+    public static function isCrossSiteRequest(?string $secFetchSite): bool
+    {
+        return $secFetchSite !== null
+            && !in_array(strtolower(trim($secFetchSite)), ['same-origin', 'none'], true);
+    }
 
     /**
      * Get exit status message
