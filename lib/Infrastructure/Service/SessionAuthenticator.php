@@ -33,6 +33,7 @@ use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
@@ -531,7 +532,8 @@ class SessionAuthenticator extends LoggingService
      * SQL and LDAP sessions re-check the account on every request; OIDC and SAML
      * sessions would not, so a disabled or deleted account ends here. Both ids are
      * checked, as a signed-in user may start another login that needs MFA. The
-     * username must still match, as a deleted account's id can be reused.
+     * username must still match, as a deleted account's id can be reused. An account
+     * switched to LDAP sign-in ends its provider sessions too.
      */
     private function endSessionOfDisabledAccount(): void
     {
@@ -541,13 +543,21 @@ class SessionAuthenticator extends LoggingService
                 continue;
             }
 
-            $stmt = $this->db->prepare('SELECT id FROM users WHERE id = :id AND active = 1 AND username = :username');
+            $stmt = $this->db->prepare('SELECT id, auth_method FROM users WHERE id = :id AND active = 1 AND username = :username');
             $stmt->bindValue(':id', (int)$userId, PDO::PARAM_INT);
             $stmt->bindValue(':username', (string)($_SESSION[SessionKeys::USERLOGIN] ?? ''));
             $stmt->execute();
-            if (!$stmt->fetch(PDO::FETCH_ASSOC)) {
+            $account = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$account) {
                 $this->logWarning('Ending session of disabled account {userId}', ['userId' => (int)$userId]);
                 $this->authService->logout(new SessionEntity(_('The user account is disabled.'), 'danger'));
+                return;
+            }
+
+            // An account moved to LDAP sign-in no longer accepts a provider session.
+            if (($account['auth_method'] ?? null) === AuthMethod::LDAP->value) {
+                $this->logWarning('Ending SSO session of account {userId}, which now signs in through LDAP', ['userId' => (int)$userId]);
+                $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
                 return;
             }
         }

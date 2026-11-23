@@ -669,6 +669,20 @@ class DbUserRepository implements UserRepository
     }
 
     /**
+     * Removes the OIDC and SAML sign-in links of an account, so a provider identity
+     * cannot keep reaching an account that was moved to LDAP sign-in.
+     */
+    public function deleteSsoLinks(int $userId): void
+    {
+        foreach (['oidc_user_links', 'saml_user_links'] as $table) {
+            if (DbCompat::tableExists($this->db, $table)) {
+                $stmt = $this->db->prepare("DELETE FROM {$table} WHERE user_id = :userId");
+                $stmt->execute([':userId' => $userId]);
+            }
+        }
+    }
+
+    /**
      * Removes the rows keyed to a user id, which SQLite hands to the next account and
      * which no FK cascade is guaranteed to clear: sign-in links, group memberships, API
      * keys, MFA, preferences, login attempts, agreements and the user's own zone templates.
@@ -976,16 +990,14 @@ class DbUserRepository implements UserRepository
             $setFields[] = 'auth_method = :auth_method';
             $useLdap = (int)$userData['use_ldap'] === 1;
 
-            // The current method is only needed to avoid downgrading an SSO
-            // account to sql when LDAP is switched off.
-            $currentAuthMethod = null;
-            if (!$useLdap) {
-                $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
-                $currentStmt->execute([':id' => $userId]);
-                $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
-            }
+            // The current method keeps an SSO account from being downgraded to sql when
+            // LDAP is switched off, and tells whether the account is being moved to LDAP.
+            $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
+            $currentStmt->execute([':id' => $userId]);
+            $currentAuthMethod = (string)($currentStmt->fetchColumn() ?: 'sql');
 
-            $params[':auth_method'] = AuthMethod::resolve($useLdap, $currentAuthMethod)->value;
+            $params[':auth_method'] = AuthMethod::resolve($useLdap, $useLdap ? null : $currentAuthMethod)->value;
+            $movedToLdap = $useLdap && $currentAuthMethod !== AuthMethod::LDAP->value;
         }
 
         if (empty($setFields)) {
@@ -995,6 +1007,9 @@ class DbUserRepository implements UserRepository
         $query = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
         $stmt = $this->db->prepare($query);
         $written = $stmt->execute($params);
+        if ($written && ($movedToLdap ?? false)) {
+            $this->deleteSsoLinks($userId);
+        }
         if ($written && array_key_exists('password', $userData)) {
             $this->expireResetTokensForUser($userId);
         }

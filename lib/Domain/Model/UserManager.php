@@ -515,6 +515,7 @@ class UserManager
 
                 $stmt->execute();
                 $saved = true;
+                $this->dropSsoLinksOnMoveToLdap($id, $usercheck['auth_method'] ?? null, $newAuthMethod);
             } finally {
                 $lock?->endUberuserLock($lockOwned, $saved);
             }
@@ -526,6 +527,16 @@ class UserManager
             return false;
         }
         return true;
+    }
+
+    /**
+     * An account moved to LDAP sign-in keeps no provider identity linked to it.
+     */
+    private function dropSsoLinksOnMoveToLdap(int $userId, ?string $oldMethod, string $newMethod): void
+    {
+        if ($newMethod === AuthMethod::LDAP->value && $oldMethod !== AuthMethod::LDAP->value) {
+            (new DbUserRepository($this->db, $this->config))->deleteSsoLinks($userId);
+        }
     }
 
     /**
@@ -681,6 +692,13 @@ class UserManager
             $stmt->bindValue(':uid', $details['uid'], PDO::PARAM_INT);
 
             $stmt->execute();
+            if ($perm_is_godlike == "1") {
+                $this->dropSsoLinksOnMoveToLdap(
+                    (int)$details['uid'],
+                    $userCheck['auth_method'] ?? null,
+                    self::resolveAuthMethod((bool) $use_ldap, $userCheck['auth_method'] ?? null)
+                );
+            }
             if ($hashedPassword !== null) {
                 (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$details['uid']);
             }
