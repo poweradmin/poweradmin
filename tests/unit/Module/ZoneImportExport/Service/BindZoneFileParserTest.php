@@ -2186,4 +2186,24 @@ ZONE;
         $this->assertSame(2147483647, $result->getDefaultTtl());
         $this->assertSame(2147483647, $result->getRecords()[0]->ttl);
     }
+
+    public function testWarningsAreCappedWithAnExactCountOfTheRest(): void
+    {
+        $content = "example.com. IN A 192.0.2.1\n" . str_repeat("\$INCLUDE other.zone\n", 250);
+
+        $warnings = $this->parser->parse($content)->getWarnings();
+
+        $this->assertCount(101, $warnings);
+        $this->assertSame('... and 150 more warnings', $warnings[100]);
+    }
+
+    public function testWarningsAtTheLimitAreKeptWhole(): void
+    {
+        $content = str_repeat("\$INCLUDE other.zone\n", 100);
+
+        $warnings = $this->parser->parse($content)->getWarnings();
+
+        $this->assertCount(100, $warnings);
+        $this->assertStringNotContainsString('more warnings', end($warnings));
+    }
 }
