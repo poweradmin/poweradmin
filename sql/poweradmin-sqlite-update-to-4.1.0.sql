@@ -147,6 +147,7 @@ SELECT pt.id, pi.id
 FROM perm_templ pt
 CROSS JOIN perm_items pi
 WHERE pt.name = 'Zone Manager'
+AND NOT EXISTS (SELECT 1 FROM perm_templ_items pt0 WHERE pt0.templ_id = pt.id)
 AND pi.name IN ('zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                 'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
                 'api_manage_keys', 'zone_delete_own')
@@ -161,6 +162,7 @@ SELECT pt.id, pi.id
 FROM perm_templ pt
 CROSS JOIN perm_items pi
 WHERE pt.name = 'DNS Editor'
+AND NOT EXISTS (SELECT 1 FROM perm_templ_items pt0 WHERE pt0.templ_id = pt.id)
 AND pi.name IN ('zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client')
 AND NOT EXISTS (
     SELECT 1 FROM perm_templ_items pti
@@ -173,6 +175,7 @@ SELECT pt.id, pi.id
 FROM perm_templ pt
 CROSS JOIN perm_items pi
 WHERE pt.name = 'Read Only'
+AND NOT EXISTS (SELECT 1 FROM perm_templ_items pt0 WHERE pt0.templ_id = pt.id)
 AND pi.name IN ('zone_content_view_own', 'search')
 AND NOT EXISTS (
     SELECT 1 FROM perm_templ_items pti
