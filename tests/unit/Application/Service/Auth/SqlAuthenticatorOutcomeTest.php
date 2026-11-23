@@ -152,8 +152,18 @@ class SqlAuthenticatorOutcomeTest extends TestCase
 
         $outcome = $this->authenticator($this->userRow(['active' => 0]))->authenticate($this->login('alice', self::PASSWORD));
 
-        $this->assertFailure($outcome, 'The user account is disabled.');
+        $this->assertFailure($outcome, 'The user account is disabled.', true);
         $this->assertFalse($this->session->has(SessionKeys::USERID));
+    }
+
+    public function testDisabledAccountOnALaterRequestEndsTheSession(): void
+    {
+        $this->storeCredentials('alice', self::PASSWORD);
+        $this->audit->expects($this->never())->method('logLoginFailed');
+
+        $outcome = $this->authenticator($this->userRow(['active' => 0]))->authenticate();
+
+        $this->assertFailure($outcome, 'The user account is disabled.', true);
     }
 
     public function testLockedAccountIsRefusedBeforeThePasswordIsChecked(): void
@@ -247,11 +257,11 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
     }
 
-    private function assertFailure(AuthOutcome $outcome, string $message): void
+    private function assertFailure(AuthOutcome $outcome, string $message, bool $endSession = false): void
     {
         $this->assertSame(AuthOutcomeStatus::Failure, $outcome->status);
         $this->assertSame($message, $outcome->message);
-        $this->assertFalse($outcome->endSession);
+        $this->assertSame($endSession, $outcome->endSession);
         $this->assertNull($outcome->redirectPath);
     }
 

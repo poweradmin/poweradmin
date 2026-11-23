@@ -147,7 +147,8 @@ final class SqlAuthenticator
                 $this->auditService->logLoginFailed(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             }
             $this->logger->info('Authentication process ended due to disabled user account.');
-            return AuthOutcome::failure(_('The user account is disabled.'));
+            // Ending the session stops a later re-enable from reviving a cookie kept alive while disabled
+            return AuthOutcome::failure(_('The user account is disabled.'), endSession: true);
         }
 
         // bcrypt verify ignores everything after a NUL byte but bcrypt hashing throws on it
