@@ -91,6 +91,20 @@ class PowerdnsStatusService
         return $this->collectServerStatus(true);
     }
 
+    /**
+     * A metric is usable when its name is a string and its value is numeric; anything else
+     * from the API would break the status templates.
+     */
+    private static function scalarText(mixed $value, string $default): string
+    {
+        return is_string($value) || is_int($value) || is_float($value) ? (string)$value : $default;
+    }
+
+    private static function isUsableMetric(mixed $name, mixed $value): bool
+    {
+        return is_string($name) && $name !== '' && (is_int($value) || is_float($value) || (is_string($value) && is_numeric($value)));
+    }
+
     private function collectServerStatus(bool $includeMetricInfo): array
     {
         if (!$this->apiEnabled) {
@@ -115,7 +129,7 @@ class PowerdnsStatusService
                 // Process metrics data from the API
                 if (!empty($metricsData)) {
                     foreach ($metricsData as $metric) {
-                        if (isset($metric['name'], $metric['value'])) {
+                        if (is_array($metric) && self::isUsableMetric($metric['name'] ?? null, $metric['value'] ?? null)) {
                             $metrics[$metric['name']] = $metric['value'];
                         }
                     }
@@ -149,12 +163,12 @@ class PowerdnsStatusService
             // Extract essential information
             $status = [
                 'running' => $pdnsServerRunning,
-                'daemon_type' => $serverInfo['daemon_type'] ?? 'unknown',
-                'version' => $serverInfo['version'] ?? 'unknown',
+                'daemon_type' => self::scalarText($serverInfo['daemon_type'] ?? null, 'unknown'),
+                'version' => self::scalarText($serverInfo['version'] ?? null, 'unknown'),
                 'configured' => true,
                 'display_name' => $this->displayName,
                 'server_name' => $this->serverName,
-                'id' => $serverInfo['id'] ?? $this->serverName,
+                'id' => self::scalarText($serverInfo['id'] ?? null, $this->serverName),
                 'metrics' => $metrics,
                 'metric_categories' => $metricCategories
             ];
