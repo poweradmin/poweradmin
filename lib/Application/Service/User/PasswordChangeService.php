@@ -97,17 +97,19 @@ readonly class PasswordChangeService
             return [null, _(self::ERROR_MESSAGES['ldap_user'])];
         }
 
-        // Counted apart from login, so a borrowed session cannot guess the password unthrottled
+        // Counted apart from login, and before the check so parallel guesses cannot all read an empty counter
         $stage = LoginAttemptService::STAGE_REAUTH;
         if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp, $stage, $userId)) {
             return [null, _('Too many failed attempts. Please try again later.')];
         }
+        if ($this->loginAttempts !== null && !$this->loginAttempts->reserveAttempt($username, $this->clientIp, $stage, $userId)) {
+            return [null, _('Too many failed attempts. Please try again later.')];
+        }
 
-        $matches = $this->authService->verifyPassword($password, $user->getPassword());
-        $this->loginAttempts?->recordAttempt($username, $this->clientIp, $matches, $stage, $userId);
-        if (!$matches) {
+        if (!$this->authService->verifyPassword($password, $user->getPassword())) {
             return [null, _(self::ERROR_MESSAGES['invalid_password'])];
         }
+        $this->loginAttempts?->recordAttempt($username, $this->clientIp, true, $stage, $userId);
 
         return [$user, null];
     }

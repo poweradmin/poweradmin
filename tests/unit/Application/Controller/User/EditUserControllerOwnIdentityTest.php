@@ -104,9 +104,9 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
     {
         $controller = $this->submit(self::USER_ID, ['email' => 'mallory@example.org']);
         $this->users->expects($this->never())->method('updateUser');
-        $this->attempts->method('isAccountLocked')->willReturn(false);
-        $this->attempts->expects($this->once())->method('recordAttempt')
-            ->with(self::USERNAME, '203.0.113.5', false, LoginAttemptService::STAGE_REAUTH, self::USER_ID);
+        $this->attempts->expects($this->once())->method('reserveAttempt')
+            ->with(self::USERNAME, '203.0.113.5', LoginAttemptService::STAGE_REAUTH, self::USER_ID)->willReturn(true);
+        $this->attempts->expects($this->never())->method('recordAttempt');
         $controller->expects($this->once())->method('showUserEditForm');
 
         $this->update($controller, self::USER_ID);
@@ -118,7 +118,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
     {
         $controller = $this->submit(self::USER_ID, ['username' => 'mallory', 'current_password' => 'guess']);
         $this->users->expects($this->never())->method('updateUser');
-        $this->attempts->method('isAccountLocked')->willReturn(false);
+        $this->attempts->method('reserveAttempt')->willReturn(true);
 
         $this->update($controller, self::USER_ID);
 
@@ -128,7 +128,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
     public function testTheCorrectCurrentPasswordLetsTheChangeThrough(): void
     {
         $controller = $this->submit(self::USER_ID, ['email' => 'new@example.org', 'current_password' => self::PASSWORD]);
-        $this->attempts->method('isAccountLocked')->willReturn(false);
+        $this->attempts->method('reserveAttempt')->willReturn(true);
         $this->attempts->expects($this->once())->method('recordAttempt')->with(self::USERNAME, '203.0.113.5', true);
         $this->users->expects($this->once())->method('updateUser')->willReturn(['success' => true]);
 
@@ -140,7 +140,7 @@ class EditUserControllerOwnIdentityTest extends SeamControllerTestCase
     public function testALockedReauthStageRefusesTheChange(): void
     {
         $controller = $this->submit(self::USER_ID, ['email' => 'new@example.org', 'current_password' => self::PASSWORD]);
-        $this->attempts->method('isAccountLocked')->willReturn(true);
+        $this->attempts->method('reserveAttempt')->willReturn(false);
         $this->users->expects($this->never())->method('updateUser');
 
         $this->update($controller, self::USER_ID);
