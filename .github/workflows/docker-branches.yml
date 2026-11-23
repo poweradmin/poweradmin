@@ -40,6 +40,9 @@ on:
   schedule:
     - cron: '30 4 * * 1'
 
+permissions:
+  contents: read
+
 jobs:
   plan:
     if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
@@ -88,6 +91,9 @@ jobs:
     concurrency:
       group: docker-publish-${{ matrix.tag }}
       cancel-in-progress: true
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/docker-native.yml
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

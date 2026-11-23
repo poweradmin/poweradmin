@@ -30,6 +30,9 @@ on:
         description: 'Docker Hub token for the manifest push. GITHUB_TOKEN is provided automatically.'
         required: true
 
+permissions:
+  contents: read
+
 env:
   GHCR_IMAGE: ghcr.io/poweradmin/poweradmin
   DOCKERHUB_IMAGE: poweradmin/poweradmin
