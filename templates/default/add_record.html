@@ -443,7 +443,7 @@
         if (!typeSelect || !nameField || !warningDiv) return;
         
         const isType = typeSelect.value === 'CNAME';
-        const zoneName = "{{ zone_name }}";
+        const zoneName = {{ zone_name|json_encode|raw }};
         const name = nameField.value.trim();
         const isAtRoot = (name === "" || name === zoneName || name === "@");
         
