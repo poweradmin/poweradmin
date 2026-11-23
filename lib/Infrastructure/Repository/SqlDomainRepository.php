@@ -94,15 +94,27 @@ final class SqlDomainRepository implements DomainRepositoryInterface
             return null;
         }
 
+        return $this->findDomainIdByLowerName(strtolower($name));
+    }
+
+    /**
+     * The indexed exact match goes first so a lowercase row wins; only a miss falls back to
+     * LOWER(name), which finds a legacy mixed-case row but cannot use the name index.
+     */
+    private function findDomainIdByLowerName(string $lower): ?int
+    {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT id FROM $domains_table WHERE name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $name);
-        $stmt->execute();
+        foreach (['name', 'LOWER(name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE $column = :name ORDER BY id");
+            $stmt->execute([':name' => $lower]);
+            $id = $stmt->fetchColumn();
+            if ($id !== false) {
+                return (int)$id;
+            }
+        }
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $result ? (int)$result['id'] : null;
+        return null;
     }
 
     public function getDomainType(int $id): string
@@ -132,10 +144,7 @@ final class SqlDomainRepository implements DomainRepositoryInterface
             return false;
         }
 
-        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
-        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-        $stmt->execute([':name' => $domain]);
-        return (bool)$stmt->fetch();
+        return $this->findDomainIdByLowerName(strtolower($domain)) !== null;
     }
 
     /**

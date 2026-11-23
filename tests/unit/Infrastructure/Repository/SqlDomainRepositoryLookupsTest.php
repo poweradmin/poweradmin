@@ -48,7 +48,10 @@ class SqlDomainRepositoryLookupsTest extends TestCase
             (2, 'slave.example.com', '192.0.2.1', 'SLAVE'),
             (3, 'consumer.example.com', '192.0.2.2', 'CONSUMER'),
             (4, 'empty-master.example.com', '', 'MASTER'),
-            (5, 'untyped.example.com', NULL, '')");
+            (5, 'untyped.example.com', NULL, ''),
+            (6, 'Mixed.Example.com', NULL, 'NATIVE'),
+            (7, 'Both.Example.com', NULL, 'NATIVE'),
+            (8, 'both.example.com', NULL, 'NATIVE')");
 
         $this->repository = new SqlDomainRepository($db, new FakeConfiguration());
     }
@@ -91,5 +94,24 @@ class SqlDomainRepositoryLookupsTest extends TestCase
         $this->assertNull($this->repository->getDomainMaster(1));
         $this->assertNull($this->repository->getDomainMaster(4));
         $this->assertNull($this->repository->getDomainMaster(99));
+    }
+
+    #[Test]
+    public function nameLookupsIgnoreCaseOnTheStoredAndTheSubmittedName(): void
+    {
+        $this->assertSame(6, $this->repository->getDomainIdByName('mixed.example.com'));
+        $this->assertSame(6, $this->repository->getDomainIdByName('MIXED.example.COM'));
+        $this->assertSame(1, $this->repository->getDomainIdByName('Native.Example.com'));
+        $this->assertTrue($this->repository->domainExists('mixed.example.com'));
+        $this->assertTrue($this->repository->domainExists('Native.Example.com'));
+        $this->assertFalse($this->repository->domainExists('other.example.com'));
+    }
+
+    #[Test]
+    public function theExactLowercaseRowWinsWhenBothCaseVariantsExist(): void
+    {
+        $this->assertSame(8, $this->repository->getDomainIdByName('both.example.com'));
+        $this->assertSame(8, $this->repository->getDomainIdByName('BOTH.example.com'));
+        $this->assertTrue($this->repository->domainExists('Both.Example.com'));
     }
 }
