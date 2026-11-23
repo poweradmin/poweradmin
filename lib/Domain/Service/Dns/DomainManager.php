@@ -306,6 +306,7 @@ final class DomainManager implements DomainManagerInterface
             }
             $zoneLog['owner'] = $owner;
 
+            $this->pushOwnerAccount($domain_id, $owner);
             $this->captureChange(function () use ($zoneLog): void {
                 $this->changeLogger->logZoneCreate($zoneLog);
             });
@@ -323,6 +324,24 @@ final class DomainManager implements DomainManagerInterface
     }
 
     /**
+     * Push the owner account once the creation has committed, so the HTTP call to the backend
+     * holds none of its locks. The zone exists by now, so a failed push is logged, not reported.
+     * Ownerless zones keep their default empty account.
+     */
+    private function pushOwnerAccount(int $domain_id, ?int $owner): void
+    {
+        if ($owner === null) {
+            return;
+        }
+
+        try {
+            $this->accountSync->syncZoneAccount($domain_id);
+        } catch (\Throwable $e) {
+            $this->logger->error('Zone account sync for zone {zone} failed after creation: {error}', ['zone' => $domain_id, 'error' => $e->getMessage()]);
+        }
+    }
+
+    /**
      * Write the native zones row for a freshly created backend zone.
      *
      * @return int|string The zones.id the template sync rows key on
@@ -335,17 +354,12 @@ final class DomainManager implements DomainManagerInterface
     }
 
     /**
-     * Push the owner account, register the template sync state and add the group owners.
+     * Register the template sync state and add the group owners.
      *
      * @param int[] $groupIds
      */
     private function assignInitialOwnership(int $domain_id, int|string $zone_id, ?int $owner, int|string $zone_template, array $groupIds): void
     {
-        // Ownerless zones keep their default empty account; no push needed on create
-        if ($owner !== null) {
-            $this->accountSync->syncZoneAccount($domain_id);
-        }
-
         if ($zone_template != "none" && is_numeric($zone_template)) {
             $this->templateSync->createSyncRecord((int)$zone_id, (int)$zone_template);
             // Mark as synced since we're creating from template

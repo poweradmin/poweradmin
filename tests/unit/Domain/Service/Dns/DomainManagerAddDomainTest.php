@@ -687,6 +687,37 @@ class DomainManagerAddDomainTest extends PermissionServiceTestCase
         $this->assertCount(1, $this->rows('SELECT id FROM zones'));
     }
 
+    public function testOwnerAccountIsPushedAfterTheCreationCommits(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->method('addRecord')->willReturn(true);
+        $this->backend->expects($this->once())->method('updateZoneAccount')->willReturnCallback(function (): bool {
+            $this->assertFalse((new PdoTransaction($this->db))->inTransaction());
+            $this->assertSame([['domain_id' => self::DOMAIN_ID]], $this->rows('SELECT domain_id FROM zones'));
+            return true;
+        });
+
+        $this->assertTrue($this->manager()->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none')->success);
+    }
+
+    public function testAFailedAccountPushIsLoggedAndKeepsTheCreatedZone(): void
+    {
+        $this->backend = $this->sqlBackend();
+        $this->backend->method('createZone')->willReturn(self::DOMAIN_ID);
+        $this->backend->method('addRecord')->willReturn(true);
+        $this->backend->method('updateZoneAccount')->willThrowException(new \RuntimeException('powerdns timeout'));
+        $this->backend->expects($this->never())->method('deleteZone');
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')
+            ->with($this->stringContains('account sync'), $this->callback(fn(array $c): bool => $c['error'] === 'powerdns timeout'));
+
+        $result = $this->manager(logger: $logger)->addDomain('new.example', self::CALLER_ID, 'MASTER', '', 'none');
+
+        $this->assertTrue($result->success);
+        $this->assertCount(1, $this->rows('SELECT id FROM zones'));
+    }
+
     /**
      * @param string[] $callerPermissions
      */
