@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use PDO;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Domain\ValueObject\SamlUserInfo;
@@ -135,6 +136,16 @@ class UserProvisioningService extends LoggingService
                         ['method' => strtoupper($authMethod), 'id' => $existingUserId, 'provider' => $providerId]
                     );
                     $existingUserId = null;
+                }
+
+                if ($existingUserId !== null && $this->accountSignsInThroughDirectory($existingUserId)) {
+                    // An LDAP account takes its email from a directory attribute the user may control,
+                    // so a matching address must not hand it to a provider identity.
+                    $this->logWarning(
+                        'Refusing {method} sign-in: its email matches account {id}, which signs in through LDAP; switch the account off LDAP first',
+                        ['method' => strtoupper($authMethod), 'id' => $existingUserId]
+                    );
+                    return null;
                 }
 
                 if ($existingUserId !== null && $this->accountHasLocalPassword($existingUserId)) {
@@ -317,6 +328,24 @@ class UserProvisioningService extends LoggingService
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ? (int)$result['id'] : null;
+    }
+
+    /**
+     * Whether the account's stored auth method is LDAP. Fails closed: a lookup error counts as LDAP.
+     */
+    private function accountSignsInThroughDirectory(int $userId): bool
+    {
+        try {
+            $stmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = ?');
+            $stmt->bindValue(1, $userId, PDO::PARAM_INT);
+            $stmt->execute();
+            $method = $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            $this->logError('Error checking auth method for user {id}: {error}', ['id' => $userId, 'error' => $e->getMessage()]);
+            return true;
+        }
+
+        return $method === AuthMethod::LDAP->value;
     }
 
     private function accountHasLocalPassword(int $userId): bool
