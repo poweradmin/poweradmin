@@ -142,6 +142,7 @@ class EditZoneMetadataController extends BaseController
             $restrictionErrors = array_merge(
                 $this->invalidKindViolations($changedKinds, array_column($submittedMetadata, 'kind')),
                 $this->operatorOnlyViolations($changedKinds),
+                $this->dnssecStateViolations($changedKinds, $zoneId),
                 $this->restrictedKindViolations($changedKinds)
             );
             if (!empty($restrictionErrors)) {
@@ -490,6 +491,25 @@ class EditZoneMetadataController extends BaseController
         }
 
         return $errors;
+    }
+
+    /**
+     * Reject changes to DNSSEC state kinds without the DNSSEC permission on the zone.
+     *
+     * @param array<int, string> $changedKinds
+     * @return array<int, string>
+     */
+    private function dnssecStateViolations(array $changedKinds, int $zoneId): array
+    {
+        $kinds = array_filter($changedKinds, static fn($kind) => MetadataDefinitions::isDnssecState((string)$kind));
+        if ($kinds === [] || $this->createPermissionService()->canManageDnssecForZone($this->db, $this->getCurrentUserId(), $zoneId)) {
+            return [];
+        }
+
+        return array_map(
+            static fn($kind) => sprintf(_('You do not have the permission to change the DNSSEC metadata kind %s.'), $kind),
+            array_values($kinds)
+        );
     }
 
     /**

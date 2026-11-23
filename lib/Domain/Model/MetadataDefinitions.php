@@ -269,6 +269,16 @@ class MetadataDefinitions
     }
 
     /**
+     * Whether a kind carries DNSSEC state (presigned, NSEC3 setup, CDS/CDNSKEY publishing).
+     *
+     * Changing it affects the zone's chain of trust, so it needs the DNSSEC permission on top of metadata edit.
+     */
+    public static function isDnssecState(string $kind): bool
+    {
+        return in_array(strtoupper(trim($kind)), ['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'], true);
+    }
+
+    /**
      * Check whether a metadata kind may only be set by a superuser.
      *
      * These kinds make PowerDNS evaluate operator-supplied Lua, so a zone-level

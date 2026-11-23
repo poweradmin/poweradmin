@@ -330,6 +330,13 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403);
         }
 
+        if (
+            MetadataDefinitions::isDnssecState($kind)
+            && !$this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId)
+        ) {
+            return $this->returnApiError('You do not have permission to change DNSSEC metadata kind ' . $kind, 403);
+        }
+
         try {
             $data = json_decode($this->request->getContent(), true);
 
@@ -443,6 +450,13 @@ class ZoneMetadataController extends PublicApiController
             && !$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')
         ) {
             return $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403);
+        }
+
+        if (
+            MetadataDefinitions::isDnssecState($kind)
+            && !$this->apiPermissionService->canManageDnssec($this->authenticatedUserId, $zoneId)
+        ) {
+            return $this->returnApiError('You do not have permission to change DNSSEC metadata kind ' . $kind, 403);
         }
 
         try {
