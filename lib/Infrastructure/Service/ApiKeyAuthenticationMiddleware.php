@@ -142,8 +142,9 @@ class ApiKeyAuthenticationMiddleware
         }
 
         // Check for API key in api_key query parameter (not recommended but supported)
-        $apiKeyParam = $request->query->get('api_key');
-        if (!empty($apiKeyParam)) {
+        // all() because get() throws on an array value (?api_key[]=x), which must count as absent
+        $apiKeyParam = $request->query->all()['api_key'] ?? null;
+        if (is_string($apiKeyParam) && $apiKeyParam !== '') {
             return trim($apiKeyParam);
         }
 
