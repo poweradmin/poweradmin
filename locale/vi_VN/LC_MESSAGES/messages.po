@@ -1776,6 +1776,11 @@ msgstr ""
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Chỉ quản trị viên mới có thể thay đổi loại siêu dữ liệu %s."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:555
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "Bạn không có quyền thay đổi loại siêu dữ liệu DNSSEC %s."
+
 #: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""

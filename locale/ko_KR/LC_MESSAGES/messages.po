@@ -1755,6 +1755,11 @@ msgstr ""
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "메타데이터 종류 %s은(는) 관리자만 변경할 수 있습니다."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:555
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "DNSSEC 메타데이터 종류 %s을(를) 변경할 권한이 없습니다."
+
 #: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""

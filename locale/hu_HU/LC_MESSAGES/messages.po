@@ -1664,6 +1664,11 @@ msgstr "%s csak egy értéket fogad el. Egy sor."
 msgid "Metadata kind %s can only be changed by an administrator."
 msgstr "Metadata kind %s can only be changed by an administrator."
 
+#: lib/Application/Controller/EditZoneMetadataController.php:555
+#, php-format
+msgid "You do not have the permission to change the DNSSEC metadata kind %s."
+msgstr "Nincs jogosultsága a(z) %s DNSSEC metaadat-típus módosítására."
+
 #: lib/Application/Controller/EditZoneMetadataController.php:559
 #: templates/modern/edit_zone_metadata.html:155
 msgid ""
