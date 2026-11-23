@@ -223,4 +223,20 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame('A', $result['type']);
         $this->assertSame('192.168.1.1', $result['content']);
     }
+
+    public function testTxtWithEscapedQuotesRoundTripsThroughTheCsvExportFormat(): void
+    {
+        $content = '"say \\"hi\\""';
+        $stream = fopen('php://memory', 'w+');
+        fputcsv($stream, ['www.example.com', 'TXT', $content, 0, 3600], ',', '"', '');
+        rewind($stream);
+        $line = rtrim((string)stream_get_contents($stream), "\n");
+        fclose($stream);
+
+        $parsed = (new BulkRecordParser())->parseLine($line);
+
+        $this->assertIsArray($parsed);
+        $this->assertSame($content, $parsed['content']);
+        $this->assertSame(3600, $parsed['ttl']);
+    }
 }
