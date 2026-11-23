@@ -11,6 +11,14 @@ use Symfony\Component\HttpFoundation\Request;
 
 $request = Request::createFromGlobals();
 
+// A browser replaying cached credentials on a cross-site GET sends Fetch metadata; DDNS clients send none
+$fetchSite = $request->headers->get('Sec-Fetch-Site');
+if ($fetchSite !== null && !in_array(strtolower(trim($fetchSite)), ['same-origin', 'none'], true)) {
+    http_response_code(403);
+    echo DynamicDnsHelper::statusMessage('badauth', $request->query->has('verbose'));
+    exit;
+}
+
 // Booted like the web app (same credentials, same db_ssl* settings) but without a session
 $context = Kernel::boot(BootOptions::Script);
 $config = $context->config;
