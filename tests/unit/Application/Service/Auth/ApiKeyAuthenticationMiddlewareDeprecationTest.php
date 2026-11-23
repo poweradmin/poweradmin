@@ -80,4 +80,13 @@ class ApiKeyAuthenticationMiddlewareDeprecationTest extends TestCase
         $this->assertTrue($this->middleware()->process($request));
         $this->assertSame([], $this->logger->lines);
     }
+
+    public function testAnArrayQueryValueIsNoKeyAndDoesNotThrow(): void
+    {
+        $middleware = $this->middleware();
+        $request = new Request(['api_key' => ['a', 'b']]);
+
+        $this->assertFalse($middleware->process($request));
+        $this->assertSame([], $this->logger->lines);
+    }
 }

@@ -152,8 +152,9 @@ class ApiKeyAuthenticationMiddleware
         }
 
         // Deprecated: the key ends up in web server and proxy access logs
-        $apiKeyParam = $request->query->get('api_key');
-        if (!empty($apiKeyParam)) {
+        // An array value (api_key[]=x) is no key; get() would throw on it
+        $apiKeyParam = $request->query->all()['api_key'] ?? null;
+        if (is_string($apiKeyParam) && $apiKeyParam !== '') {
             $this->warnQueryParamDeprecated();
             return trim($apiKeyParam);
         }
