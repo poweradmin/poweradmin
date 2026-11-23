@@ -159,6 +159,23 @@ class ZoneGroupService
     }
 
     /**
+     * Count the group's zones that pass a per-zone view check.
+     *
+     * @param \Closure(int): bool $canViewZone Takes a domain id
+     */
+    public function countViewableZones(int $groupId, \Closure $canViewZone): int
+    {
+        $count = 0;
+        foreach ($this->listGroupZones($groupId) as $zone) {
+            if ($canViewZone($zone->getDomainId())) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
      * Add multiple zones to a group
      *
      * @param int $groupId Group ID

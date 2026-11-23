@@ -75,6 +75,17 @@ class ZoneGroupServiceZoneLimitTest extends TestCase
         $this->assertSame([7], $this->grantedZoneIds);
     }
 
+    public function testCountViewableZonesSkipsTheZonesTheViewerCannotOpen(): void
+    {
+        $this->zoneGroups->method('findByGroupId')->willReturn([
+            ZoneGroup::create(7, self::GROUP_ID),
+            ZoneGroup::create(8, self::GROUP_ID),
+            ZoneGroup::create(9, self::GROUP_ID),
+        ]);
+
+        $this->assertSame(2, $this->service(null)->countViewableZones(self::GROUP_ID, static fn(int $id): bool => $id !== 8));
+    }
+
     private function grantsExist(bool ...$answers): void
     {
         $this->existsConfigured = true;

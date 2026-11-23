@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\Zone\ZoneGroupService;
 use Poweradmin\Application\Service\Zone\ZoneLimitInput;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserGroup;
+use Poweradmin\Domain\Model\ZoneGroup;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipLimit;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -212,11 +213,11 @@ class GroupsController extends PublicApiController
             // The counts cost a lookup per group, so only a sort on them loads them for every group
             $sortsOnCounts = array_intersect(array_column($sort->fields(), 'field'), ['member_count', 'zone_count']) !== [];
             if ($sortsOnCounts) {
-                $rows = array_map($this->withCounts(...), $rows);
+                $rows = array_map(fn(array $row): array => $this->withCounts($row, $userId, $isAdmin), $rows);
             }
             [$rows, $extra] = ListPaging::paginate($sort->sortRows($rows), $page, $perPage);
             if (!$sortsOnCounts) {
-                $rows = array_map($this->withCounts(...), $rows);
+                $rows = array_map(fn(array $row): array => $this->withCounts($row, $userId, $isAdmin), $rows);
             }
 
             return $this->returnApiResponse(['groups' => $rows], true, 'Groups retrieved successfully', 200, $extra);
@@ -233,13 +234,32 @@ class GroupsController extends PublicApiController
      * @param array<string, mixed> $row
      * @return array<string, mixed>
      */
-    private function withCounts(array $row): array
+    private function withCounts(array $row, int $userId, bool $isAdmin): array
     {
         $details = $this->groupService->getGroupDetails($row['id']);
         $row['member_count'] = $details['memberCount'];
-        $row['zone_count'] = $details['zoneCount'];
+        // A member counts only the zones the group detail would list for the caller
+        $row['zone_count'] = $isAdmin ? $details['zoneCount'] : count($this->visibleGroupZones($row['id'], $userId, false));
 
         return $row;
+    }
+
+    /**
+     * The group's zones the caller may see: a member only those they could open anyway,
+     * and nothing outside a zone-scoped key's allowlist (as GroupZonesController::listZones).
+     *
+     * @return ZoneGroup[]
+     */
+    private function visibleGroupZones(int $groupId, int $userId, bool $isAdmin): array
+    {
+        $zones = $this->zoneGroupService->listGroupZones($groupId);
+        if (!$isAdmin) {
+            $zones = array_values(array_filter($zones, fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())));
+        }
+
+        $scope = $this->getApiKeyScope();
+
+        return array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
     }
 
     /**
@@ -339,16 +359,7 @@ class GroupsController extends PublicApiController
             $details = $this->groupService->getGroupDetails($groupId);
             // Only administrators see the member roster, matching listMembers and the web UI.
             $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
-            $zones = $this->zoneGroupService->listGroupZones($groupId);
-            // A member sees only the group's zones the caller could open anyway
-            if (!$isAdmin) {
-                $zones = array_values(array_filter($zones, fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())));
-            }
-
-            // Do not disclose zones outside a zone-scoped key's allowlist (matches
-            // GroupZonesController::listZones); keep the count consistent with it.
-            $scope = $this->getApiKeyScope();
-            $zones = array_values(array_filter($zones, fn($z) => $scope->isZoneAllowed($z->getDomainId())));
+            $zones = $this->visibleGroupZones($groupId, $userId, $isAdmin);
 
             $data = [
                 'id' => $group->getId(),

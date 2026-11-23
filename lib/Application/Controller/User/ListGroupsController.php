@@ -74,7 +74,11 @@ class ListGroupsController extends BaseController
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
-                'zone_count' => $details['zoneCount'],
+                // A member counts only the zones they could open, as the API group detail does
+                'zone_count' => $isAdmin ? $details['zoneCount'] : $this->services()->zoneGroupService()->countViewableZones(
+                    $group->getId(),
+                    fn(int $domainId): bool => $this->services()->permissionService()->canViewZone($userId, $domainId)
+                ),
                 'zone_limit' => $showZoneLimit ? $zoneLimits->groupLimit($group->getId()) : null,
                 'created_at' => $group->getCreatedAt(),
             ];

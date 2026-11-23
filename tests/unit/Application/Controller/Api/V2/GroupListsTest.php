@@ -130,6 +130,61 @@ class GroupListsTest extends V2ControllerTestCase
         return $this->callHandler($controller, 'listZones');
     }
 
+    /**
+     * @param int[] $viewable Zone ids the caller may open
+     */
+    private function listGroupsAsMember(array $viewable, ?ApiKeyScope $scope, bool $sortOnZones = false): JsonResponse
+    {
+        $groups = $this->createMock(GroupService::class);
+        $groups->method('listGroups')->willReturn([new UserGroup(7, 'ops', null, 2, null, '2026-01-03 10:00:00')]);
+        $groups->method('getGroupDetails')->willReturn(['memberCount' => 2, 'zoneCount' => 3]);
+
+        $zoneGroups = $this->createMock(ZoneGroupService::class);
+        $zoneGroups->method('listGroupZones')->willReturn([
+            new ZoneGroup(1, 30, 7, '2026-03-03 10:00:00', 'a.example', 'MASTER'),
+            new ZoneGroup(2, 20, 7, '2026-03-02 10:00:00', 'b.example', 'MASTER'),
+            new ZoneGroup(3, 10, 7, '2026-03-01 10:00:00', 'c.example', 'MASTER'),
+        ]);
+
+        $permissions = $this->createMock(ApiPermissionService::class);
+        $permissions->method('userHasPermission')->willReturn(false);
+        $permissions->method('canViewZone')->willReturnCallback(static fn(int $user, int $zone): bool => in_array($zone, $viewable, true));
+
+        $controller = $this->bareController(GroupsController::class);
+        $this->injectBaseCollaborators($controller, 'GET', null, $sortOnZones ? ['sort' => 'zone_count'] : []);
+        $this->inject($controller, 'apiPermissionService', $permissions);
+        $this->inject($controller, 'groupService', $groups);
+        $this->inject($controller, 'zoneGroupService', $zoneGroups);
+        $this->inject($controller, 'authenticatedUserId', 5);
+        if ($scope !== null) {
+            $this->inject($controller, 'apiKeyScope', $scope);
+        }
+
+        return $this->callHandler($controller, 'listGroups');
+    }
+
+    public function testAMemberSeesTheZoneCountTheGroupDetailWouldShow(): void
+    {
+        $body = $this->decode($this->listGroupsAsMember([30, 20], null));
+
+        $this->assertSame(2, $body['data']['groups'][0]['zone_count']);
+        $this->assertSame(2, $body['data']['groups'][0]['member_count']);
+    }
+
+    public function testAZoneScopedKeyNarrowsTheListedZoneCount(): void
+    {
+        $body = $this->decode($this->listGroupsAsMember([30, 20, 10], new ApiKeyScope([30], null, false)));
+
+        $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
+    public function testSortingOnZoneCountUsesTheNarrowedCount(): void
+    {
+        $body = $this->decode($this->listGroupsAsMember([10], null, true));
+
+        $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
     public function testTheGroupListIsUnchangedWithoutTheNewParameters(): void
     {
         $body = $this->decode($this->listGroups());
