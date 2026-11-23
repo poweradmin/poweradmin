@@ -184,7 +184,8 @@ class EditPermTemplController extends BaseController
         return match ($message) {
             PermissionTemplateContentGuard::CONTENT_SUPERUSER_DENIED =>
                 _('Granting administrator rights in a permission template requires administrator rights.'),
-            PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED =>
+            PermissionTemplateContentGuard::EDIT_SUPERUSER_DENIED,
+            PermissionTemplateContentGuard::ENFORCE_MFA_REMOVAL_DENIED =>
                 _('Editing a permission template with administrator rights requires administrator rights.'),
             default => _('The permission template could not be updated.'),
         };

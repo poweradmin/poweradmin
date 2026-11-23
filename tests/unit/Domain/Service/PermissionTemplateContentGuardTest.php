@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionTemplateContentGuard;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * A template's permission list is itself an authority grant: ticking user_is_ueberuser
@@ -34,6 +35,7 @@ class PermissionTemplateContentGuardTest extends TestCase
 {
     private const CALLER_ID = 7;
     private const UBERUSER_PERM_ID = 53;
+    private const ENFORCE_MFA_PERM_ID = 69;
 
     public function testSuperuserMaySubmitTheUberuserPermission(): void
     {
@@ -217,6 +219,81 @@ class PermissionTemplateContentGuardTest extends TestCase
         $permissions = [['id' => self::UBERUSER_PERM_ID, 'name' => 'user_is_ueberuser']];
 
         $this->assertSame($permissions, PermissionTemplateContentGuard::filterOfferedPermissions($permissions, true));
+    }
+
+    public function testDelegatedEditorMayNotDropMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->enforcementRepository(isSuperuser: false, heldBySuperuser: true),
+            self::CALLER_ID,
+            9,
+            [4, 5]
+        );
+
+        $this->assertSame(PermissionTemplateContentGuard::ENFORCE_MFA_REMOVAL_DENIED, $error);
+    }
+
+    public function testDelegatedEditorMayKeepMfaEnforcementOnASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->enforcementRepository(isSuperuser: false, heldBySuperuser: true),
+            self::CALLER_ID,
+            9,
+            ['4', (string)self::ENFORCE_MFA_PERM_ID]
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testDelegatedEditorMayDropMfaEnforcementFromATemplateNoSuperuserHolds(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->enforcementRepository(isSuperuser: false, heldBySuperuser: false),
+            self::CALLER_ID,
+            9,
+            [4]
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testSuperuserMayDropMfaEnforcementFromASuperuserTemplate(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->enforcementRepository(isSuperuser: true, heldBySuperuser: true),
+            self::CALLER_ID,
+            9,
+            [4]
+        );
+
+        $this->assertNull($error);
+    }
+
+    public function testCreatingATemplateIsNotAffectedByTheMfaEnforcementRule(): void
+    {
+        $error = PermissionTemplateContentGuard::apply(
+            $this->enforcementRepository(isSuperuser: false, heldBySuperuser: true),
+            self::CALLER_ID,
+            null,
+            [4]
+        );
+
+        $this->assertNull($error);
+    }
+
+    private function enforcementRepository(bool $isSuperuser, bool $heldBySuperuser): DbUserRepository
+    {
+        $repository = $this->createMock(DbUserRepository::class);
+        $repository->method('hasAdminPermission')->willReturn($isSuperuser);
+        $repository->method('templateGrantsUberuser')->willReturn(false);
+        $repository->method('getPermissionIdsByName')->willReturnCallback(
+            fn (string $name): array => $name === PermissionTemplateContentGuard::ENFORCE_MFA_PERMISSION
+                ? [self::ENFORCE_MFA_PERM_ID]
+                : [self::UBERUSER_PERM_ID]
+        );
+        $repository->method('templateGrantsToSuperuser')->willReturn($heldBySuperuser);
+
+        return $repository;
     }
 
     private function userRepository(

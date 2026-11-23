@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 /**
  * Gates what a permission template may contain.
@@ -41,6 +42,9 @@ class PermissionTemplateContentGuard
 
     public const CONTENT_SUPERUSER_DENIED = 'Granting user_is_ueberuser in a permission template requires user_is_ueberuser';
     public const EDIT_SUPERUSER_DENIED = 'Editing a permission template that grants user_is_ueberuser requires user_is_ueberuser';
+
+    public const ENFORCE_MFA_PERMISSION = 'user_enforce_mfa';
+    public const ENFORCE_MFA_REMOVAL_DENIED = 'Removing user_enforce_mfa from a permission template held by a superuser requires user_is_ueberuser';
 
     /**
      * Apply the rule to a template create or update.
@@ -69,6 +73,10 @@ class PermissionTemplateContentGuard
             return null;
         }
 
+        if ($templateId !== null && self::dropsMfaEnforcementFromSuperuser($userRepository, $templateId, $permIds)) {
+            return self::ENFORCE_MFA_REMOVAL_DENIED;
+        }
+
         $uberuserPermIds = $userRepository->getPermissionIdsByName(self::UBERUSER_PERMISSION);
         if ($uberuserPermIds === []) {
             return null;
@@ -82,6 +90,28 @@ class PermissionTemplateContentGuard
         }
 
         return null;
+    }
+
+    /**
+     * MFA enforcement for a superuser lives in a template a delegate may be allowed to edit,
+     * so unticking it there would switch the enforcement off for the superuser.
+     *
+     * @param array<mixed> $permIds Permission ids the write would persist
+     */
+    private static function dropsMfaEnforcementFromSuperuser(UserRepository $userRepository, int $templateId, array $permIds): bool
+    {
+        if (!$userRepository instanceof DbUserRepository) {
+            return false;
+        }
+
+        $enforcePermIds = $userRepository->getPermissionIdsByName(self::ENFORCE_MFA_PERMISSION);
+        foreach ($permIds as $permId) {
+            if (is_scalar($permId) && in_array((int)$permId, $enforcePermIds, true)) {
+                return false;
+            }
+        }
+
+        return $userRepository->templateGrantsToSuperuser($templateId, self::ENFORCE_MFA_PERMISSION);
     }
 
     /**

@@ -872,6 +872,39 @@ class DbUserRepository implements UserRepository
         return (bool)$stmt->fetchColumn();
     }
 
+    /**
+     * Whether the template carries the named permission and is in force for a superuser,
+     * either as their own template or as the template of a group they belong to.
+     */
+    public function templateGrantsToSuperuser(int $permTemplId, string $permissionName): bool
+    {
+        $stmt = $this->db->prepare(
+            "SELECT 1 FROM perm_templ_items pti
+             JOIN perm_items pi ON pi.id = pti.perm_id
+             WHERE pti.templ_id = :templId AND pi.name = :name"
+        );
+        $stmt->execute([':templId' => $permTemplId, ':name' => $permissionName]);
+        if ($stmt->fetchColumn() === false) {
+            return false;
+        }
+
+        $holders = $this->db->prepare(
+            "SELECT id AS user_id FROM users WHERE perm_templ = :templId
+             UNION
+             SELECT ugm.user_id FROM user_group_members ugm
+             JOIN user_groups ug ON ug.id = ugm.group_id
+             WHERE ug.perm_templ = :templId2"
+        );
+        $holders->execute([':templId' => $permTemplId, ':templId2' => $permTemplId]);
+        foreach ($holders->fetchAll(PDO::FETCH_COLUMN) as $userId) {
+            if ($this->hasAdminPermission((int)$userId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getPermissionIdsByName(string $name): array
     {
         // Every row with this name grants it, matching templateGrantsUberuser()
