@@ -509,12 +509,22 @@ class UserProvisioningService extends LoggingService
             }
             $this->logInfo('Final username for creation: {username}', ['username' => $username]);
 
+            // Provisioning stays allowed, but the address must not duplicate another account's.
+            $email = (string)$userInfo->getEmail();
+            if ($email !== '' && !$this->emailSyncAllowed(0, $email, $userInfo, $this->getAuthMethodConfig($authMethod))) {
+                $this->logWarning('Not storing email {email} for new user {username}: held by another account or unverified', [
+                    'email' => $email,
+                    'username' => $username,
+                ]);
+                $email = '';
+            }
+
             // Log all the data that will be inserted
             $userData = [
                 'username' => $username,
                 'password' => '',
                 'fullname' => $userInfo->getDisplayName() ?: $userInfo->getFullName(),
-                'email' => $userInfo->getEmail(),
+                'email' => $email,
                 'description' => 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 'active' => 1,
                 'perm_templ' => $permissionTemplateId
@@ -531,7 +541,7 @@ class UserProvisioningService extends LoggingService
                 $username,
                 '', // No password for external auth users
                 UserManager::cleanFullname((string)($userInfo->getDisplayName() ?: $userInfo->getFullName())),
-                $userInfo->getEmail(),
+                $email,
                 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,

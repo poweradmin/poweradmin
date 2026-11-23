@@ -29,7 +29,7 @@ class UserProvisioningServiceRelinkTest extends TestCase
             perm_templ_source VARCHAR(20) NOT NULL DEFAULT 'admin', active integer(1), use_ldap integer(1) NOT NULL,
             auth_method VARCHAR(20) NOT NULL DEFAULT 'sql')");
         $this->db->exec("CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL)");
-        $this->db->exec("CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL)");
+        $this->db->exec("CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user')");
         $this->db->exec("CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL)");
         $this->db->exec("CREATE TABLE user_groups (id integer PRIMARY KEY, name VARCHAR(255) NOT NULL, perm_templ integer NOT NULL)");
         $this->db->exec("CREATE TABLE user_group_members (id integer PRIMARY KEY, group_id integer NOT NULL, user_id integer NOT NULL)");
@@ -121,6 +121,45 @@ class UserProvisioningServiceRelinkTest extends TestCase
 
         $this->assertSame(1, $this->service->provisionUser($userInfo, 'google'));
         $this->assertSame('sub-owner', $this->db->query("SELECT oidc_subject FROM oidc_user_links WHERE provider_id = 'okta'")->fetchColumn());
+    }
+
+    private function createService(bool $requireVerified): UserProvisioningService
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['link_by_email' => false, 'auto_provision' => true, 'require_verified_email' => $requireVerified]);
+        $config->method('get')->willReturnCallback(fn(string $group, string $key, mixed $default = null): mixed => $key === 'default_permission_template' ? 'Viewer' : $default);
+        $this->db->exec("INSERT INTO perm_templ (id, name) VALUES (5, 'Viewer')");
+
+        return new UserProvisioningService($this->db, $config, $this->createMock(Logger::class));
+    }
+
+    public function testCreatedUserDoesNotStoreAnEmailHeldByAnotherAccount(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'newbie', email: 'JANE@example.org', providerId: 'okta', subject: 'sub-new', rawData: ['email_verified' => true]);
+
+        $id = $this->createService(false)->provisionUser($userInfo, 'okta');
+
+        $this->assertNotNull($id);
+        $this->assertSame('', $this->db->query("SELECT email FROM users WHERE id = " . (int)$id)->fetchColumn());
+    }
+
+    public function testCreatedUserDoesNotStoreAnUnverifiedEmailWhenVerifiedEmailIsRequired(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'newbie', email: 'free@example.org', providerId: 'okta', subject: 'sub-new', rawData: ['email_verified' => false]);
+
+        $id = $this->createService(true)->provisionUser($userInfo, 'okta');
+
+        $this->assertNotNull($id);
+        $this->assertSame('', $this->db->query("SELECT email FROM users WHERE id = " . (int)$id)->fetchColumn());
+    }
+
+    public function testCreatedUserStoresAFreeVerifiedEmail(): void
+    {
+        $userInfo = new OidcUserInfo(username: 'newbie', email: 'free@example.org', providerId: 'okta', subject: 'sub-new', rawData: ['email_verified' => true]);
+
+        $id = $this->createService(true)->provisionUser($userInfo, 'okta');
+
+        $this->assertSame('free@example.org', $this->db->query("SELECT email FROM users WHERE id = " . (int)$id)->fetchColumn());
     }
 
     private function syncService(bool $requireVerified): UserProvisioningService
