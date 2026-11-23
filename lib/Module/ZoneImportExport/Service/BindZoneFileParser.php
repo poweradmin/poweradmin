@@ -44,7 +44,11 @@ final class BindZoneFileParser
     // Fits the comments.comment column on every supported database
     private const MAX_COMMENT_BYTES = 65535;
 
+    // Largest TTL PowerDNS accepts (signed 32-bit)
+    private const MAX_TTL = 2147483647;
+
     private int $autoTtlValue;
+    private int $cappedTtls = 0;
 
     public function __construct(int $autoTtlValue = 300)
     {
@@ -100,7 +104,11 @@ final class BindZoneFileParser
                 }
 
                 if ($directive === '$TTL') {
+                    $cappedBefore = $this->cappedTtls;
                     $defaultTtl = isset($parts[1]) ? $this->parseTtl($parts[1]) : 86400;
+                    if ($this->cappedTtls > $cappedBefore) {
+                        $warnings[] = sprintf('Line %d: TTL is too large, capped at %d', $lineNum + 1, self::MAX_TTL);
+                    }
                     continue;
                 }
 
@@ -110,7 +118,11 @@ final class BindZoneFileParser
             }
 
             // Parse record line
+            $cappedBefore = $this->cappedTtls;
             $parsed = $this->parseRecordLine($line, $origin, $defaultTtl, $previousName);
+            if ($parsed !== null && $this->cappedTtls > $cappedBefore) {
+                $warnings[] = sprintf('Line %d: TTL is too large, capped at %d', $lineNum + 1, self::MAX_TTL);
+            }
             if ($parsed === null) {
                 $warnings[] = sprintf('Line %d: Could not parse record, skipped', $lineNum + 1);
                 $pendingComment = null;
@@ -589,11 +601,17 @@ final class BindZoneFileParser
         $value = strtolower(trim($value));
 
         if (is_numeric($value)) {
+            if ((float)$value > self::MAX_TTL) {
+                $this->cappedTtls++;
+                return self::MAX_TTL;
+            }
+
             return (int)$value;
         }
 
         $total = 0;
         $current = '';
+        $multipliers = ['s' => 1, 'm' => 60, 'h' => 3600, 'd' => 86400, 'w' => 604800, 'y' => 31536000];
 
         for ($i = 0; $i < strlen($value); $i++) {
             $char = $value[$i];
@@ -601,37 +619,42 @@ final class BindZoneFileParser
             if (ctype_digit($char)) {
                 $current .= $char;
             } else {
-                $num = $current !== '' ? (int)$current : 0;
-                $current = '';
-
-                switch ($char) {
-                    case 's':
-                        $total += $num;
-                        break;
-                    case 'm':
-                        $total += $num * 60;
-                        break;
-                    case 'h':
-                        $total += $num * 3600;
-                        break;
-                    case 'd':
-                        $total += $num * 86400;
-                        break;
-                    case 'w':
-                        $total += $num * 604800;
-                        break;
-                    case 'y':
-                        $total += $num * 31536000;
-                        break;
+                if (isset($multipliers[$char])) {
+                    $total += $this->capTtl($current, $multipliers[$char]);
                 }
+                $current = '';
+            }
+            if ($total > self::MAX_TTL) {
+                $this->cappedTtls++;
+                return self::MAX_TTL;
             }
         }
 
         // Handle trailing number without suffix
-        if ($current !== '') {
-            $total += (int)$current;
+        $total += $this->capTtl($current, 1);
+
+        if ($total > self::MAX_TTL) {
+            $this->cappedTtls++;
+            return self::MAX_TTL;
         }
 
         return $total;
+    }
+
+    /**
+     * Digits times a unit as an int, held at the TTL ceiling so the arithmetic never reaches float.
+     */
+    private function capTtl(string $digits, int $multiplier): int
+    {
+        $digits = ltrim($digits, '0');
+        if ($digits === '') {
+            return 0;
+        }
+        if (strlen($digits) > 10 || (int)$digits > intdiv(self::MAX_TTL, $multiplier) + 1) {
+            $this->cappedTtls++;
+            return self::MAX_TTL;
+        }
+
+        return (int)$digits * $multiplier;
     }
 }

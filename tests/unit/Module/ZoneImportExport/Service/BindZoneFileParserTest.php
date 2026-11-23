@@ -76,6 +76,37 @@ ZONE;
         $this->assertEquals(90000, $this->parser->parseTtl('1d1h'));
     }
 
+    public function testOversizedTtlDirectiveIsCappedWithAWarning(): void
+    {
+        foreach (['$TTL 9999999999999y', '$TTL 99999999999999999999', '$TTL 2147483648', '$TTL 69y'] as $directive) {
+            $result = $this->parser->parse($directive . "\nexample.com. IN A 192.0.2.1\n");
+
+            $this->assertSame(2147483647, $result->getDefaultTtl(), $directive);
+            $this->assertSame(2147483647, $result->getRecords()[0]->ttl, $directive);
+            $this->assertCount(1, $result->getWarnings(), $directive);
+            $this->assertStringContainsString('TTL is too large', $result->getWarnings()[0]);
+        }
+    }
+
+    public function testOversizedRecordTtlIsCappedWithAWarning(): void
+    {
+        $result = $this->parser->parse("www 9999999999999y IN A 192.0.2.1\nmail 300 IN A 192.0.2.2\n");
+
+        $records = $result->getRecords();
+        $this->assertSame(2147483647, $records[0]->ttl);
+        $this->assertSame(300, $records[1]->ttl);
+        $this->assertCount(1, $result->getWarnings());
+        $this->assertStringContainsString('Line 1: TTL is too large', $result->getWarnings()[0]);
+    }
+
+    public function testTtlAtTheCeilingIsNotCapped(): void
+    {
+        $this->assertSame(2147483647, $this->parser->parseTtl('2147483647'));
+        $this->assertSame(86400, $this->parser->parseTtl('1d'));
+        $result = $this->parser->parse("\$TTL 2147483647\nexample.com. IN A 192.0.2.1\n");
+        $this->assertSame([], $result->getWarnings());
+    }
+
     public function testParseRecordWithExplicitTtl(): void
     {
         $content = <<<ZONE
