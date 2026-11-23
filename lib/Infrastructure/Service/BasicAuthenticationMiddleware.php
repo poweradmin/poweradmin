@@ -275,8 +275,9 @@ class BasicAuthenticationMiddleware
     {
         $this->ldapFailure = LoginFailureReason::WRONG_PASSWORD;
 
-        // A zero-length credential would be an unauthenticated bind, which some directories accept
-        if ($password === '') {
+        // A zero-length credential would be an unauthenticated bind, which some directories accept,
+        // and a NUL byte makes ldap_bind() throw a TypeError
+        if ($password === '' || str_contains($password, "\0")) {
             return false;
         }
 
