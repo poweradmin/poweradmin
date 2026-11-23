@@ -26,6 +26,7 @@ use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use phpseclib3\Crypt\RSA;
 use Poweradmin\Application\Http\Request;
@@ -157,6 +158,32 @@ final class OidcServiceIdTokenVerificationTest extends TestCase
         $this->service(['verify_id_token' => true], $this->token(['nonce' => 'n-1', 'sub' => 'someone-else']))->handleCallback();
 
         $this->assertNull($this->provisioned);
+    }
+
+    #[DataProvider('jwksUrlProvider')]
+    public function testTheJwksUrlMustBeHttpsExceptForLoopback(string $jwksUrl, bool $accepted): void
+    {
+        $this->session->set('oidc_nonce', 'n-1');
+        $token = $this->token(['nonce' => 'n-1']);
+
+        $this->service(['verify_id_token' => true], $token, ['jwks_url' => $jwksUrl])->handleCallback();
+
+        $this->assertSame($accepted, $this->provisioned !== null);
+    }
+
+    /** @return array<string, array{0: string, 1: bool}> */
+    public static function jwksUrlProvider(): array
+    {
+        return [
+            'https' => ['https://idp.example/jwks', true],
+            'plain http' => ['http://idp.example/jwks', false],
+            'ftp' => ['ftp://idp.example/jwks', false],
+            'no scheme' => ['//idp.example/jwks', false],
+            'http localhost' => ['http://localhost:8080/jwks', true],
+            'http loopback' => ['http://127.0.0.1/jwks', true],
+            'http ipv6 loopback' => ['http://[::1]/jwks', true],
+            'http lookalike' => ['http://localhost.evil.example/jwks', false],
+        ];
     }
 
     public function testWithVerificationOffTheUnverifiedPayloadIsStillRead(): void

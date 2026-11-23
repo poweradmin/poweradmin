@@ -526,6 +526,19 @@ final class OidcService
         return new GenericProvider($options, ['httpClient' => $httpClient]);
     }
 
+    private static function jwksUrlIsSecure(string $url): bool
+    {
+        $parts = parse_url($url);
+        $scheme = strtolower((string)($parts['scheme'] ?? ''));
+        if ($scheme === 'https') {
+            return true;
+        }
+
+        $host = strtolower(trim((string)($parts['host'] ?? ''), '[]'));
+
+        return $scheme === 'http' && in_array($host, ['localhost', '127.0.0.1', '::1'], true);
+    }
+
     /**
      * Verifies the ID token when verification is on for the provider, and throws when it fails.
      *
@@ -546,10 +559,14 @@ final class OidcService
         if (!is_string($issuer) || $issuer === '' || !is_string($jwksUrl) || $jwksUrl === '') {
             throw new RuntimeException('No issuer or JWKS URL is known for provider ' . $providerId);
         }
+        if (!self::jwksUrlIsSecure($jwksUrl)) {
+            // The keys that vouch for the token must not travel in clear text, or be swapped by whoever sits on the path
+            throw new RuntimeException('The JWKS URL of provider ' . $providerId . ' must use https (http is allowed only for localhost)');
+        }
 
         $verifier = $this->idTokenVerifier ?? new OidcIdTokenVerifier(
             $this->logger,
-            static fn(string $url): string => (string)$provider->getHttpClient()->request('GET', $url, ['timeout' => 10, 'allow_redirects' => ['protocols' => ['https']]])->getBody(),
+            static fn(string $url): string => (string)$provider->getHttpClient()->request('GET', $url, ['timeout' => 10])->getBody(),
             dirname(__DIR__, 4) . '/var/cache/oidc'
         );
 
