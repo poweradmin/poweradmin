@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -48,7 +48,20 @@ class Permission
             return false;
         }
 
-        return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+        return in_array(self::canonicalType($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+    }
+
+    /**
+     * Map the RFC 3597 spellings of the gated types to their mnemonic, as PowerDNS does.
+     */
+    private static function canonicalType(string $type): string
+    {
+        $type = strtoupper(trim($type));
+        if (preg_match('/^TYPE0*(\d+)$/D', $type, $m) !== 1) {
+            return $type;
+        }
+
+        return ['2' => 'NS', '6' => 'SOA', '65402' => 'LUA'][$m[1]] ?? $type;
     }
 
     /**
@@ -69,7 +82,7 @@ class Permission
             return true;
         }
 
-        return strtoupper($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
+        return self::canonicalType($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
     }
 
     /**

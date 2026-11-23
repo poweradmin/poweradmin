@@ -274,7 +274,7 @@ class ApiPermissionService
             return false;
         }
 
-        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+        if (!Permission::isRecordTypeRestrictedForClient($recordType, 'own_as_client')) {
             return true;
         }
 

@@ -123,6 +123,11 @@ class RecordManager implements RecordManagerInterface
             throw new Exception(_("You do not have the permission to add LUA record."));
         }
 
+        // Numeric spellings of the types above (TYPE2, TYPE6, TYPE65402)
+        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+            throw new Exception(_("You do not have the permission to add a record to this zone."));
+        }
+
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
@@ -214,6 +219,11 @@ class RecordManager implements RecordManagerInterface
         // the zone the client-level editor administers.
         if ($type == 'LUA' && $perm_edit == "own_as_client") {
             throw new Exception(_("You do not have the permission to add LUA record."));
+        }
+
+        // Numeric spellings of the types above (TYPE2, TYPE6, TYPE65402)
+        if (Permission::isRecordTypeRestrictedForClient($type, $perm_edit)) {
+            throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -390,6 +400,11 @@ class RecordManager implements RecordManagerInterface
 
             return false;
         }
+        if (Permission::isRecordTypeRestrictedForClient($affectedTypes[0], $perm_edit) || Permission::isRecordTypeRestrictedForClient($affectedTypes[1], $perm_edit)) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+
+            return false;
+        }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
@@ -480,6 +495,11 @@ class RecordManager implements RecordManagerInterface
 
             if ($record['type'] == "LUA" && $perm_edit == "own_as_client") {
                 $this->messageService->addSystemError(_('You do not have the permission to delete LUA records.'));
+                return false;
+            }
+
+            if (Permission::isRecordTypeRestrictedForClient((string)$record['type'], $perm_edit)) {
+                $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
                 return false;
             }
 

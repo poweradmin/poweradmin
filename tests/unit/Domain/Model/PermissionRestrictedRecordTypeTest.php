@@ -91,4 +91,28 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertFalse(Permission::isTemplateRecordTypeRestricted('A', 'own_as_client'));
         $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TXT', 'none'));
     }
+
+    public function testNumericSpellingsOfGatedTypesAreRestricted(): void
+    {
+        foreach (['TYPE2', 'type6', 'TYPE65402', 'TYPE002'] as $type) {
+            $this->assertTrue(
+                Permission::isRecordTypeRestrictedForClient($type, 'own_as_client'),
+                "Type {$type} must be restricted for own_as_client"
+            );
+            $this->assertFalse(Permission::isRecordTypeRestrictedForClient($type, 'own'));
+        }
+    }
+
+    public function testOtherNumericTypesAreNotRestricted(): void
+    {
+        foreach (['TYPE1', 'TYPE20', 'TYPE65401', 'TYPE65402X'] as $type) {
+            $this->assertFalse(Permission::isRecordTypeRestrictedForClient($type, 'own_as_client'), $type);
+        }
+    }
+
+    public function testTemplateGateCoversNumericLua(): void
+    {
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'none'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'own'));
+    }
 }
