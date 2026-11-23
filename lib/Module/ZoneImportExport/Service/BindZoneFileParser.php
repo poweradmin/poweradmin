@@ -39,6 +39,8 @@ class BindZoneFileParser
         'SVCB', 'TKEY', 'TLSA', 'TSIG', 'TXT', 'URI', 'ZONEMD',
     ];
 
+    private const MAX_WARNINGS = 100;
+
     private const MAX_TTL = 2147483647;
 
     private int $autoTtlValue;
@@ -106,6 +108,12 @@ class BindZoneFileParser
         // If no $ORIGIN directive was found, try to infer it from record names
         if ($origin === null && !empty($records)) {
             $origin = $this->inferOrigin($records);
+        }
+
+        if (count($warnings) > self::MAX_WARNINGS) {
+            $extra = count($warnings) - self::MAX_WARNINGS;
+            $warnings = array_slice($warnings, 0, self::MAX_WARNINGS);
+            $warnings[] = sprintf('... and %d more warnings', $extra);
         }
 
         return new ParsedZoneFile($origin, $defaultTtl, $records, $warnings);
