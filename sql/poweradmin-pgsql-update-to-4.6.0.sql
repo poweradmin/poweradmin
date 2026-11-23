@@ -120,7 +120,8 @@ WHERE NOT EXISTS (SELECT 1 FROM perm_templ_items pti WHERE pti.templ_id = pt.id)
   AND NOT EXISTS (SELECT 1 FROM user_groups ug WHERE ug.perm_templ = pt.id);
 
 -- Add the edit-as-client permission to databases upgraded from 2.x: 2.2.1 put it in the structure
--- files only, so the 4.1.0 and 4.2.0 Editor grants found nothing. Grant it only where it was missing.
+-- files only, so the 4.1.0 and 4.2.0 Editor grants found nothing. Grant it only where it was missing,
+-- and only to the stock Editor templates (name, type and description), not a custom one.
 DO $$
 DECLARE
     new_id integer;
@@ -131,7 +132,8 @@ BEGIN
         RETURNING id INTO new_id;
         INSERT INTO perm_templ_items (templ_id, perm_id)
         SELECT id, new_id FROM perm_templ
-        WHERE (name = 'Editor' AND template_type = 'user') OR (name = 'Editors' AND template_type = 'group');
+        WHERE (name = 'Editor' AND template_type = 'user' AND descr = 'Edit own zone records but cannot modify SOA and NS records.')
+           OR (name = 'Editors' AND template_type = 'group' AND descr = 'Edit zone records (no SOA/NS) for group members.');
     END IF;
 END $$;
 

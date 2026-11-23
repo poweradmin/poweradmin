@@ -48,7 +48,8 @@ SELECT 'zone_change_approve_others', 'User is allowed to review change requests 
 WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_change_approve_others');
 
 -- Add the edit-as-client permission to databases upgraded from 2.x: 2.2.1 put it in the structure
--- files only, so the 4.1.0 and 4.2.0 Editor grants found nothing. Grant it only where it was missing.
+-- files only, so the 4.1.0 and 4.2.0 Editor grants found nothing. Grant it only where it was missing,
+-- and only to the stock Editor templates (name, type and description), not a custom one.
 CREATE TEMP TABLE pa_add_client_edit AS
 SELECT COUNT(*) = 0 AS missing FROM perm_items WHERE name = 'zone_content_edit_own_as_client';
 
@@ -61,7 +62,8 @@ SELECT pt.id, pi.id
 FROM perm_templ pt
 JOIN perm_items pi ON pi.name = 'zone_content_edit_own_as_client'
 WHERE (SELECT missing FROM pa_add_client_edit) = 1
-  AND ((pt.name = 'Editor' AND pt.template_type = 'user') OR (pt.name = 'Editors' AND pt.template_type = 'group'));
+  AND ((pt.name = 'Editor' AND pt.template_type = 'user' AND pt.descr = 'Edit own zone records but cannot modify SOA and NS records.')
+    OR (pt.name = 'Editors' AND pt.template_type = 'group' AND pt.descr = 'Edit zone records (no SOA/NS) for group members.'));
 
 DROP TABLE pa_add_client_edit;
 

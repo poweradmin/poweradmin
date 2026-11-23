@@ -131,7 +131,8 @@ SELECT 'No Access', 'Template with no permissions assigned. Suitable for inactiv
 WHERE NOT EXISTS (SELECT 1 FROM "perm_templ" WHERE "name" = 'No Access');
 
 -- Assign permissions to Zone Manager template
--- Only insert if the template exists and permission doesn't already exist
+-- Grant only to a template that has no permissions yet (the one created above),
+-- so a custom template with a stock name keeps its own permissions.
 INSERT INTO "perm_templ_items" ("templ_id", "perm_id")
 SELECT pt.id, pi.id
 FROM "perm_templ" pt
@@ -142,7 +143,7 @@ AND pi.name IN ('zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'z
                 'api_manage_keys', 'zone_delete_own')
 AND NOT EXISTS (
     SELECT 1 FROM "perm_templ_items" pti
-    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+    WHERE pti.templ_id = pt.id
 );
 
 -- Assign permissions to DNS Editor template
@@ -154,7 +155,7 @@ WHERE pt.name = 'DNS Editor'
 AND pi.name IN ('zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client')
 AND NOT EXISTS (
     SELECT 1 FROM "perm_templ_items" pti
-    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+    WHERE pti.templ_id = pt.id
 );
 
 -- Assign permissions to Read Only template
@@ -166,7 +167,7 @@ WHERE pt.name = 'Read Only'
 AND pi.name IN ('zone_content_view_own', 'search')
 AND NOT EXISTS (
     SELECT 1 FROM "perm_templ_items" pti
-    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+    WHERE pti.templ_id = pt.id
 );
 
 -- No Access template intentionally has no permissions assigned

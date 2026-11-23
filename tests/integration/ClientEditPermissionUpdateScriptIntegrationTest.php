@@ -85,7 +85,7 @@ class ClientEditPermissionUpdateScriptIntegrationTest extends TestCase
 
     /**
      * Permission tables of a 2.x database after the 4.2.0 update, with the 2.x PostgreSQL ids (1-21)
-     * on every engine; the user template named Editors stands for a custom one that must not gain the grant
+     * on every engine; templates that share a stock name but are custom (other type or description) must not gain the grant
      */
     private function createTables(PDO $db, string $engine): void
     {
@@ -101,8 +101,10 @@ class ClientEditPermissionUpdateScriptIntegrationTest extends TestCase
         $db->exec("INSERT INTO perm_items (name, descr) VALUES
             ('zone_content_view_own', 'x'), ('zone_content_edit_own', 'x'), ('zone_content_edit_others', 'x')");
         $db->exec("INSERT INTO perm_templ (name, descr, template_type) VALUES
-            ('Editor', 'x', 'user'), ('Editors', 'x', 'group'), ('Client', 'x', 'user'), ('Editors', 'x', 'user'),
-            ('Editor', 'x', 'group')");
+            ('Editor', 'Edit own zone records but cannot modify SOA and NS records.', 'user'),
+            ('Editors', 'Edit zone records (no SOA/NS) for group members.', 'group'),
+            ('Client', 'x', 'user'), ('Editors', 'x', 'user'), ('Editor', 'x', 'group'),
+            ('Editor', 'Custom editor made by an admin', 'user'), ('Editors', 'Custom group editor', 'group')");
         $db->exec('INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (1, 1), (2, 3), (3, 1), (3, 2)');
     }
 
