@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserEventLogger;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -52,6 +53,9 @@ class BasicAuthenticationMiddleware
     private MessageService $messageService;
     private SqlAuthenticator $sqlAuthenticator;
     private LoginAttemptService $loginAttemptService;
+    private ?UserEventLogger $userEventLogger = null;
+    /** Why the last LDAP check failed: 'infra' (directory unreachable), 'user' (not exactly one match) or 'password' */
+    private string $ldapFailure = 'password';
 
     /**
      * Constructor
@@ -72,7 +76,7 @@ class BasicAuthenticationMiddleware
         );
 
         // Create minimal dependencies required for authenticators
-        $userEventLogger = new UserEventLogger($db);
+        $userEventLogger = $this->userEventLogger = new UserEventLogger($db);
         $csrfTokenService = new CsrfTokenService();
 
         // Create a simple NullLogHandler and Logger
@@ -179,6 +183,7 @@ class BasicAuthenticationMiddleware
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
             $this->spendDummyVerification($password);
+            $this->logFailure($username);
             return 0;
         }
 
@@ -197,6 +202,7 @@ class BasicAuthenticationMiddleware
         if (!$user) {
             // Disabled account: still record so probing inactive users contributes to lockout
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            $this->logFailure($username);
             return 0;
         }
 
@@ -212,7 +218,14 @@ class BasicAuthenticationMiddleware
                 return $userModel->getId();
             }
             // LDAP users should not fall back to SQL authentication
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            // Like the web LDAP sign-in, only a wrong password counts towards lockout, so a directory outage cannot lock out API clients
+            if ($this->ldapFailure === 'password') {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            }
+            // A directory outage is not a bad guess; logging it as login_failed would let fail2ban ban every API client
+            if ($this->ldapFailure !== 'infra') {
+                $this->logFailure($username, AuthMethod::LDAP);
+            }
             return 0;
         }
 
@@ -227,7 +240,15 @@ class BasicAuthenticationMiddleware
         // No recordAttempt(true) on success: Basic Auth runs on every API call, so with
         // clear_attempts_on_success it would wipe an attacker's accumulating failures
         $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+        $this->logFailure($username);
         return 0;
+    }
+
+    /** Same login_failed line the web sign-in writes, so the fail2ban filter matches Basic auth too */
+    private function logFailure(string $username, AuthMethod $method = AuthMethod::SQL): void
+    {
+        $this->userEventLogger ??= new UserEventLogger($this->db);
+        $this->userEventLogger->logFailedAuth($method, $username);
     }
 
     /**
@@ -271,6 +292,8 @@ class BasicAuthenticationMiddleware
      */
     private function ldapAuthenticatorApiAuth(int $userId, string $username, string $password): bool
     {
+        $this->ldapFailure = 'password';
+
         // A zero-length credential would be an unauthenticated bind, which some directories accept
         if ($password === '') {
             return false;
@@ -286,12 +309,14 @@ class BasicAuthenticationMiddleware
         $ldapProto = $this->config->get('ldap', 'protocol_version', 3);
 
         if (empty($ldapUri) || empty($ldapBaseDn)) {
+            $this->ldapFailure = 'infra';
             return false;
         }
 
         // Connect to LDAP server
         $ldapConn = @ldap_connect($ldapUri);
         if (!$ldapConn) {
+            $this->ldapFailure = 'infra';
             return false;
         }
 
@@ -301,6 +326,7 @@ class BasicAuthenticationMiddleware
 
         // Bind with admin credentials
         if (!@ldap_bind($ldapConn, $ldapBindDn, $ldapBindPassword)) {
+            $this->ldapFailure = 'infra';
             return false;
         }
 
@@ -312,12 +338,14 @@ class BasicAuthenticationMiddleware
         $attributes = array($ldapUserAttribute, 'dn');
         $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);
         if (!$search) {
+            $this->ldapFailure = 'infra';
             return false;
         }
 
         // Check if we found exactly one user
         $entries = ldap_get_entries($ldapConn, $search);
         if ((int)$entries["count"] !== 1) {
+            $this->ldapFailure = 'user';
             return false;
         }
 

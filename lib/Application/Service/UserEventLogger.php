@@ -48,12 +48,13 @@ class UserEventLogger
         ));
     }
 
-    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL): void
+    /** @param string|null $user login name for stateless callers (Basic auth, DDNS) that have no session */
+    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?string $user = null): void
     {
         $this->logger->logWarn(sprintf(
             'client_ip:%s user:%s operation:login_failed auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            self::logName($_SESSION['userlogin'] ?? ''),
+            self::logName($user ?? $_SESSION['userlogin'] ?? ''),
             LegacyLogger::value($authMethod->value)
         ));
     }

@@ -6,6 +6,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -68,7 +69,7 @@ $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption', 'bcrypt'),
     $config->get('security', 'password_cost', 12)
 );
-$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config));
+$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config), new UserEventLogger($db));
 
 $updateService = new DynamicDnsUpdateService(
     $validationService,
