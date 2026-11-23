@@ -44,7 +44,7 @@ class UserMfa
         private ?string $recoveryCodes,
         private string $type,
         private ?DateTime $lastUsedAt,
-        private readonly DateTime $createdAt,
+        private DateTime $createdAt,
         private ?DateTime $updatedAt,
         private ?string $verificationData = null
     ) {
@@ -90,7 +90,17 @@ class UserMfa
     public function enable(): void
     {
         $this->enabled = true;
-        $this->updatedAt = new DateTime();
+        // Doubles as the enrolment stamp, so sessions verified under an earlier enrolment can tell
+        $this->createdAt = new DateTime();
+        $this->updatedAt = $this->createdAt;
+    }
+
+    /**
+     * Identifies this enrolment, and changes whenever the factor is enrolled again.
+     */
+    public function sessionBinding(): string
+    {
+        return hash('sha256', $this->id . '|' . $this->userId . '|' . $this->createdAt->format('Y-m-d H:i:s'));
     }
 
     /**

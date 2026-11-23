@@ -188,6 +188,7 @@ final class DbUserMfaRepository implements UserMfaRepositoryInterface
                 recovery_codes = :recovery_codes,
                 type = :type,
                 last_used_at = :last_used_at,
+                created_at = :created_at,
                 updated_at = :updated_at,
                 verification_data = :verification_data
             WHERE id = :id
@@ -200,6 +201,7 @@ final class DbUserMfaRepository implements UserMfaRepositoryInterface
             'recovery_codes' => $userMfa->getRecoveryCodes(),
             'type' => $userMfa->getType(),
             'last_used_at' => $userMfa->getLastUsedAt() ? $userMfa->getLastUsedAt()->format('Y-m-d H:i:s') : null,
+            'created_at' => $userMfa->getCreatedAt()->format('Y-m-d H:i:s'),
             'updated_at' => $userMfa->getUpdatedAt() ? $userMfa->getUpdatedAt()->format('Y-m-d H:i:s') : null,
             'verification_data' => $userMfa->getVerificationData(),
         ];

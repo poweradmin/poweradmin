@@ -44,9 +44,10 @@ class MfaSessionManager
      * Flags a user as requiring MFA verification
      *
      * @param int $userId The user ID
+     * @param string|null $binding The user's current enrolment, to end a session verified under an earlier one
      * @return void
      */
-    public function setMfaRequired(int $userId): void
+    public function setMfaRequired(int $userId, ?string $binding = null): void
     {
         // SQL auth re-runs on every request, so this is called again long after
         // the factor was accepted. Downgrading the same user's verified session
@@ -54,7 +55,17 @@ class MfaSessionManager
         // user signing in on the same session must still be challenged.
         $verifiedUserId = $this->session->get(SessionKeys::USERID);
         if ($this->currentState() === MfaSessionState::VERIFIED && (int)$verifiedUserId === $userId) {
-            return;
+            $verifiedUnder = $this->session->get(AuthFlowSessionKeys::MFA_BINDING);
+            // A session verified before bindings existed adopts the current one
+            if ($binding !== null && $verifiedUnder === null) {
+                $this->session->set(AuthFlowSessionKeys::MFA_BINDING, $binding);
+                return;
+            }
+            // Enrolling the factor afresh ends the sessions the earlier one verified
+            if ($binding === null || $verifiedUnder === $binding) {
+                return;
+            }
+            $this->session->remove(AuthFlowSessionKeys::MFA_BINDING);
         }
 
         $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::PENDING->value);
@@ -73,10 +84,14 @@ class MfaSessionManager
     /**
      * Marks MFA as completed and sets the user as fully authenticated
      *
+     * @param string|null $binding The user's current enrolment, remembered for setMfaRequired()
      * @return void
      */
-    public function setMfaVerified(): void
+    public function setMfaVerified(?string $binding = null): void
     {
+        if ($binding !== null) {
+            $this->session->set(AuthFlowSessionKeys::MFA_BINDING, $binding);
+        }
         $this->session->set(AuthFlowSessionKeys::MFA_STATE, MfaSessionState::VERIFIED->value);
         $this->session->set(AuthFlowSessionKeys::MFA_STATUS, 'verified');
         $this->session->set(SessionKeys::AUTHENTICATED, true);
@@ -159,6 +174,7 @@ class MfaSessionManager
         $this->session->remove(AuthFlowSessionKeys::MFA_STATUS);
         $this->session->remove(AuthFlowSessionKeys::MFA_REQUIRED);
         $this->session->remove(AuthFlowSessionKeys::MFA_VERIFICATION_TOKEN);
+        $this->session->remove(AuthFlowSessionKeys::MFA_BINDING);
 
         $userId = $this->session->get(SessionKeys::USERID, 0);
         $this->logger->debug('[MfaSessionManager] Session variables reset for user: {user_id}', ['user_id' => $userId]);

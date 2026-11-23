@@ -740,6 +740,19 @@ class MfaService
     }
 
     /**
+     * The binding of the user's enabled enrolment, or null without one. A session verified
+     * under one binding must be challenged again once the user enrols afresh.
+     *
+     * @throws PDOException when the state cannot be read
+     */
+    public function sessionBinding(int $userId): ?string
+    {
+        $userMfa = $this->userMfaRepository->findByUserId($userId);
+
+        return $userMfa !== null && $userMfa->isEnabled() ? $userMfa->sessionBinding() : null;
+    }
+
+    /**
      * Get MFA type for a user
      */
     public function getMfaType(int $userId): ?string

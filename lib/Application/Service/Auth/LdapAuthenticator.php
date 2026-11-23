@@ -123,6 +123,21 @@ final class LdapAuthenticator
                 return AuthOutcome::failure(_('LDAP Authentication failed!'), endSession: true);
             }
 
+            // A re-enrolment must end a session verified under the earlier factor even while the cache is warm
+            $cachedUserId = (int) $this->userContextService->getSessionData(SessionKeys::USERID);
+            if ($this->configManager->get('security', 'mfa.enabled', false) && $this->mfaService->isMfaEnabled($cachedUserId)) {
+                $binding = $this->mfaService->sessionBinding($cachedUserId);
+                $mfaSession = new MfaSessionManager($this->session, $this->logger);
+                $this->userContextService->setSessionData(SessionKeys::PENDING_USERID, $cachedUserId);
+                $this->userContextService->setSessionData(SessionKeys::PENDING_NAME, $this->userContextService->getSessionData(SessionKeys::NAME));
+                $this->userContextService->setSessionData(SessionKeys::PENDING_EMAIL, $this->userContextService->getSessionData(SessionKeys::EMAIL));
+                $this->userContextService->setSessionData(SessionKeys::PENDING_AUTH_USED, 'ldap');
+                $mfaSession->setMfaRequired($cachedUserId, $binding);
+                if ($mfaSession->isMfaRequired()) {
+                    return AuthOutcome::mfaRequired();
+                }
+            }
+
             $this->logger->info('Using cached LDAP authentication for user {username}', ['username' => $username]);
             return AuthOutcome::success();
         }
@@ -307,7 +322,7 @@ final class LdapAuthenticator
             $this->userContextService->setSessionData(SessionKeys::PENDING_AUTH_USED, 'ldap');
 
             // Use our centralized MFA session manager to set MFA required
-            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id']);
+            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id'], $this->mfaService->sessionBinding((int)$rowObj['id']));
 
             if (!$isLogin) {
                 return AuthOutcome::mfaRequired();

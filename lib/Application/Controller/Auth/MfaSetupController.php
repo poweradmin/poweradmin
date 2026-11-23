@@ -191,7 +191,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService()->enableMfa($userId);
             // The code just entered proves the new factor, so this session needs no second prompt
-            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified($this->mfaService()->sessionBinding($userId));
 
             $this->services()->auditService()->logMfaEnable('app');
 
@@ -339,7 +339,7 @@ class MfaSetupController extends BaseController
             // Enable MFA
             $this->mfaService()->enableMfa($userId, UserMfa::TYPE_EMAIL);
             // The code just entered proves the new factor, so this session needs no second prompt
-            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified($this->mfaService()->sessionBinding($userId));
 
             $this->services()->auditService()->logMfaEnable('email');
 

@@ -190,7 +190,7 @@ final class SqlAuthenticator
             $this->session->set(SessionKeys::PENDING_AUTH_USED, 'internal');
 
             // Use our centralized MFA session manager to set MFA required
-            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id']);
+            (new MfaSessionManager($this->session, $this->logger))->setMfaRequired($rowObj['id'], $this->mfaService->sessionBinding((int)$rowObj['id']));
 
             if (!$isLogin) {
                 return AuthOutcome::mfaRequired();

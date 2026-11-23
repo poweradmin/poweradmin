@@ -247,7 +247,7 @@ class MfaVerifyController extends BaseController
             }
 
             // Use the centralized session manager to mark MFA as verified
-            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified();
+            (new MfaSessionManager($this->session(), $this->logger))->setMfaVerified($this->mfaService()->sessionBinding($userId));
 
             $this->services()->auditService()->logMfaVerify($this->mfaService()->getMfaType($userId) ?? 'unknown');
 

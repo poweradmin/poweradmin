@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Auth\SessionKeys;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
 
 /**
  * Pins what SqlAuthenticator decides for good, wrong, unknown, disabled, locked
@@ -213,6 +214,36 @@ class SqlAuthenticatorOutcomeTest extends TestCase
         $this->assertSame('internal', $this->session->get(SessionKeys::PENDING_AUTH_USED));
         $this->assertFalse($this->session->has(SessionKeys::USERID));
         $this->assertFalse($this->session->get(SessionKeys::AUTHENTICATED));
+    }
+
+    public function testASessionVerifiedUnderAnEarlierEnrolmentIsParkedAsPending(): void
+    {
+        $this->mfaEnabled = true;
+        $this->storeCredentials('alice', self::PASSWORD);
+        $this->session->set(SessionKeys::USERID, 7);
+        (new MfaSessionManager($this->session))->setMfaVerified('old-enrolment');
+        $this->mfa->method('isMfaEnabled')->with(7)->willReturn(true);
+        $this->mfa->method('sessionBinding')->with(7)->willReturn('new-enrolment');
+
+        $outcome = $this->authenticator($this->userRow())->authenticate();
+
+        $this->assertSame(AuthOutcomeStatus::MfaRequired, $outcome->status);
+        $this->assertTrue((new MfaSessionManager($this->session))->isMfaRequired());
+    }
+
+    public function testASessionVerifiedUnderTheCurrentEnrolmentStaysVerified(): void
+    {
+        $this->mfaEnabled = true;
+        $this->storeCredentials('alice', self::PASSWORD);
+        $this->session->set(SessionKeys::USERID, 7);
+        (new MfaSessionManager($this->session))->setMfaVerified('enrolment');
+        $this->mfa->method('isMfaEnabled')->with(7)->willReturn(true);
+        $this->mfa->method('sessionBinding')->with(7)->willReturn('enrolment');
+
+        $outcome = $this->authenticator($this->userRow())->authenticate();
+
+        $this->assertFalse((new MfaSessionManager($this->session))->isMfaRequired());
+        $this->assertSame(AuthOutcomeStatus::MfaRequired, $outcome->status);
     }
 
     public function testMfaEnrolledUserOnTheLoginPostIsSentToTheVerificationForm(): void

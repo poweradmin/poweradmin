@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\Auth\UserContextService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Psr\Log\NullLogger;
 use Poweradmin\Infrastructure\Session\ArraySession;
+use Poweradmin\Infrastructure\Session\MfaSessionManager;
 
 /**
  * Pins what LdapAuthenticator decides on the paths that never reach the
@@ -111,6 +112,33 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $this->assertTrue($this->session->get(SessionKeys::AUTHENTICATED));
     }
 
+    public function testAWarmCacheDoesNotKeepASessionVerifiedUnderAnEarlierEnrolment(): void
+    {
+        $this->cacheBind('alice');
+        (new MfaSessionManager($this->session))->setMfaVerified('old-enrolment');
+        $mfa = $this->createMock(MfaService::class);
+        $mfa->method('isMfaEnabled')->with(7)->willReturn(true);
+        $mfa->method('sessionBinding')->with(7)->willReturn('new-enrolment');
+
+        $outcome = $this->authenticator(userRow: ['id' => 7, 'fullname' => 'Alice'], mfa: $mfa)->authenticate();
+
+        $this->assertSame(AuthOutcomeStatus::MfaRequired, $outcome->status);
+        $this->assertTrue((new MfaSessionManager($this->session))->isMfaRequired());
+    }
+
+    public function testAWarmCacheKeepsASessionVerifiedUnderTheCurrentEnrolment(): void
+    {
+        $this->cacheBind('alice');
+        (new MfaSessionManager($this->session))->setMfaVerified('enrolment');
+        $mfa = $this->createMock(MfaService::class);
+        $mfa->method('isMfaEnabled')->with(7)->willReturn(true);
+        $mfa->method('sessionBinding')->with(7)->willReturn('enrolment');
+
+        $outcome = $this->authenticator(userRow: ['id' => 7, 'fullname' => 'Alice'], mfa: $mfa)->authenticate();
+
+        $this->assertSame(AuthOutcomeStatus::Success, $outcome->status);
+    }
+
     public function testCachedBindIsCheckedAgainstTheSessionUserId(): void
     {
         $this->cacheBind('alice');
@@ -153,7 +181,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
     /**
      * @param array|false|null $userRow The users-table row the active-status check returns; null when it must not run
      */
-    private function authenticator(array|false|null $userRow): LdapAuthenticator
+    private function authenticator(array|false|null $userRow, ?MfaService $mfa = null): LdapAuthenticator
     {
         $userLookup = $this->createMock(AuthUserLookupInterface::class);
         $userLookup->expects($userRow === null ? $this->never() : $this->once())
@@ -167,6 +195,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(fn(string $section, string $key, $default = null) => match ("$section.$key") {
             'ldap.session_cache_timeout' => 300,
+            'security.mfa.enabled' => $mfa !== null,
             default => $default,
         });
 
@@ -179,7 +208,7 @@ class LdapAuthenticatorOutcomeTest extends TestCase
             $this->attempts,
             new UserContextService($this->session),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
-            $this->createMock(MfaService::class),
+            $mfa ?? $this->createMock(MfaService::class),
             $this->createMock(UserProvisioningService::class),
             $this->session
         );

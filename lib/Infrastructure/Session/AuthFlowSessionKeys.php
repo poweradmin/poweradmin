@@ -40,6 +40,8 @@ final class AuthFlowSessionKeys
     public const MFA_STATUS = 'mfa_status';
     public const MFA_TOKEN = 'mfa_token';
     public const MFA_VERIFICATION_TOKEN = 'mfa_verification_token';
+    /** Which enrolment the session's verification belongs to; see MfaSessionManager::setMfaRequired(). */
+    public const MFA_BINDING = 'mfa_binding';
     public const MFA_SETUP_ENFORCED = 'mfa_setup_enforced';
 
     // OIDC / SAML logout round trips
