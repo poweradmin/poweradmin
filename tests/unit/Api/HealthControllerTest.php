@@ -335,4 +335,26 @@ class HealthControllerTest extends TestCase
             @unlink($target);
         }
     }
+
+    public function testInstallsWithDifferentSettingsFilesDoNotShareACacheFile(): void
+    {
+        $method = new \ReflectionMethod(TestableHealthController::class, 'cacheFile');
+        $previous = getenv('PA_CONFIG_PATH');
+        try {
+            $controller = new TestableHealthController($this->config([]));
+            putenv('PA_CONFIG_PATH=/etc/poweradmin/a.php');
+            $first = $method->invoke($controller);
+            putenv('PA_CONFIG_PATH=/etc/poweradmin/b.php');
+            $second = $method->invoke($controller);
+            putenv('PA_CONFIG_PATH');
+            $default = $method->invoke($controller);
+            $again = $method->invoke($controller);
+        } finally {
+            $previous === false ? putenv('PA_CONFIG_PATH') : putenv('PA_CONFIG_PATH=' . $previous);
+        }
+
+        $this->assertNotSame($first, $second);
+        $this->assertNotSame($first, $default);
+        $this->assertSame($default, $again);
+    }
 }

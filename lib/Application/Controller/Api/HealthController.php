@@ -155,10 +155,14 @@ class HealthController
 
     /**
      * Per-installation file in the system temp directory, so concurrent probes share one result.
+     * The settings file is part of the key: installs sharing this code differ in database and PowerDNS.
      */
     protected function cacheFile(): string
     {
-        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'poweradmin-health-' . hash('sha256', __DIR__) . '.json';
+        $settings = getenv('PA_CONFIG_PATH');
+        $key = __DIR__ . "\0" . ($settings !== false ? $settings : '');
+
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'poweradmin-health-' . hash('sha256', $key) . '.json';
     }
 
     /**
