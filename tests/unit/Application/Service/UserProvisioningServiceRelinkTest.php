@@ -99,11 +99,20 @@ class UserProvisioningServiceRelinkTest extends TestCase
         $this->assertSame('4', (string) $this->db->query("SELECT COUNT(*) FROM users")->fetchColumn());
     }
 
-    public function testEmailMatchStillLinksAnAccountWithTheLdapPlaceholderPassword(): void
+    public function testEmailMatchDoesNotLinkAnLdapAccount(): void
     {
-        $userInfo = new OidcUserInfo(username: 'lena', email: 'lena@example.org', providerId: 'okta', subject: 'sub-lena', rawData: ['email_verified' => true]);
+        $userInfo = new OidcUserInfo(username: 'mallory', email: 'lena@example.org', providerId: 'okta', subject: 'sub-lena', rawData: ['email_verified' => true]);
 
-        $this->assertSame(4, $this->service->provisionUser($userInfo, 'okta'));
+        $this->assertNull($this->service->provisionUser($userInfo, 'okta'));
+        $this->assertSame('0', (string) $this->db->query("SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 4")->fetchColumn());
+    }
+
+    public function testSamlEmailMatchDoesNotLinkAnLdapAccount(): void
+    {
+        $userInfo = new SamlUserInfo(username: 'mallory', email: 'lena@example.org', providerId: 'adfs', nameId: 'name-lena');
+
+        $this->assertNull($this->service->provisionUser($userInfo, 'adfs'));
+        $this->assertSame('0', (string) $this->db->query("SELECT COUNT(*) FROM saml_user_links WHERE user_id = 4")->fetchColumn());
     }
 
     public function testALinkAtAnotherProviderDoesNotBlockEmailLinking(): void
