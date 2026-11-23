@@ -145,10 +145,8 @@ class GroupsController extends PublicApiController
             $enrichedGroups = [];
             foreach ($groups as $group) {
                 $details = $this->groupService->getGroupDetails($group->getId());
-                // A member gets the count the detail endpoint would show, not the raw total
-                $zoneCount = $isAdmin
-                    ? $details['zoneCount']
-                    : count($this->visibleGroupZones($group->getId(), $userId, false));
+                // Same count the detail endpoint would show to this caller and key scope
+                $zoneCount = count($this->visibleGroupZones($group->getId(), $userId, $isAdmin));
                 $enrichedGroups[] = [
                     'id' => $group->getId(),
                     'name' => $group->getName(),

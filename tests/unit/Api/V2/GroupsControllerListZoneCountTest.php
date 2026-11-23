@@ -26,6 +26,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Controller\Api\V2\GroupsController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\UserGroup;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use ReflectionMethod;
@@ -33,7 +34,7 @@ use ReflectionProperty;
 
 /**
  * GET /v2/groups reports the same zone_count the detail endpoint would show to the caller,
- * not the raw total of the group's zones. An ueberuser keeps the raw total.
+ * not the raw total of the group's zones. An ueberuser sees the raw total unless the API key is scoped to fewer zones.
  */
 class GroupsControllerListZoneCountTest extends TestCase
 {
@@ -51,9 +52,23 @@ class GroupsControllerListZoneCountTest extends TestCase
         $this->assertSame(2, $body['data']['groups'][0]['zone_count']);
     }
 
-    private function invokeListGroups(bool $isAdmin): array
+    public function testUeberuserWithAZoneScopedKeyCountsOnlyZonesInScope(): void
     {
-        $controller = new TestableGroupsController();
+        $body = $this->invokeListGroups(true, true);
+
+        $this->assertSame(1, $body['data']['groups'][0]['zone_count']);
+    }
+
+    private function invokeListGroups(bool $isAdmin, bool $scopedToZone10 = false): array
+    {
+        $controller = $scopedToZone10
+            ? new class extends TestableGroupsController {
+                protected function getApiKeyScope(): ApiKeyScope
+                {
+                    return new ApiKeyScope([10], null, false);
+                }
+            }
+            : new TestableGroupsController();
 
         $group = $this->createMock(UserGroup::class);
         $group->method('getId')->willReturn(5);
