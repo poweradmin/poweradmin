@@ -36,6 +36,7 @@ use Poweradmin\Domain\Service\Zone\ZoneOwnershipResolution;
 use Poweradmin\Application\Service\Zone\ZoneCreateFormMessages;
 use Poweradmin\Module\ZoneImportExport\ImportSessionKeys;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
+use Poweradmin\Module\ZoneImportExport\Service\ImportWarningLimiter;
 use Poweradmin\Module\ZoneImportExport\Service\ParsedRecord;
 use Poweradmin\Domain\Enum\ZoneKind;
 use Poweradmin\Application\Service\Zone\ChangeRequestMessages;
@@ -201,7 +202,8 @@ class ZoneFileImportController extends BaseController
             return;
         }
 
-        $warnings = $parsed->getWarnings();
+        $parserWarnings = ImportWarningLimiter::cap($parsed->getWarnings(), _('... and %d more warnings'));
+        $warnings = $parserWarnings;
         if ($dnssecSkipped > 0) {
             $warnings[] = $this->dnssecSkippedMessage($dnssecSkipped);
         }
@@ -227,7 +229,7 @@ class ZoneFileImportController extends BaseController
                 'comment' => $r->comment,
                 'disabled' => $r->disabled,
             ], $filteredRecords)),
-            'warnings' => $parsed->getWarnings(),
+            'warnings' => $parserWarnings,
             'filename' => $_FILES['zone_file']['name'],
             'dnssec_skipped' => $dnssecSkipped,
             'presigned_zone_id' => $presignedZoneId,

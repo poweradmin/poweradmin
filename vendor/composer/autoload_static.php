@@ -2281,6 +2281,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileImportController' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php',
         'Poweradmin\\Module\\ZoneImportExport\\ImportSessionKeys' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/ImportSessionKeys.php',
         'Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/BindZoneFileParser.php',
+        'Poweradmin\\Module\\ZoneImportExport\\Service\\ImportWarningLimiter' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/ImportWarningLimiter.php',
         'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedRecord' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/ParsedRecord.php',
         'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedZoneFile' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/Service/ParsedZoneFile.php',
         'Poweradmin\\Module\\ZoneImportExport\\ZoneImportExportModule' => __DIR__ . '/../..' . '/lib/Module/ZoneImportExport/ZoneImportExportModule.php',

@@ -1857,6 +1857,7 @@ return array(
     'Poweradmin\\Module\\ZoneImportExport\\Controller\\ZoneFileImportController' => $baseDir . '/lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php',
     'Poweradmin\\Module\\ZoneImportExport\\ImportSessionKeys' => $baseDir . '/lib/Module/ZoneImportExport/ImportSessionKeys.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\BindZoneFileParser' => $baseDir . '/lib/Module/ZoneImportExport/Service/BindZoneFileParser.php',
+    'Poweradmin\\Module\\ZoneImportExport\\Service\\ImportWarningLimiter' => $baseDir . '/lib/Module/ZoneImportExport/Service/ImportWarningLimiter.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedRecord' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedRecord.php',
     'Poweradmin\\Module\\ZoneImportExport\\Service\\ParsedZoneFile' => $baseDir . '/lib/Module/ZoneImportExport/Service/ParsedZoneFile.php',
     'Poweradmin\\Module\\ZoneImportExport\\ZoneImportExportModule' => $baseDir . '/lib/Module/ZoneImportExport/ZoneImportExportModule.php',
