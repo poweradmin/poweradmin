@@ -118,7 +118,8 @@ class PowerdnsStatusService
                 // Process metrics data from the API
                 if (!empty($metricsData)) {
                     foreach ($metricsData as $metric) {
-                        if (isset($metric['name'], $metric['value'])) {
+                        // An odd entry from the API is dropped; the page and API read these as strings and numbers
+                        if (is_array($metric) && isset($metric['name'], $metric['value']) && is_string($metric['name']) && (is_scalar($metric['value']) || is_array($metric['value']))) {
                             $metrics[$metric['name']] = $metric['value'];
                         }
                     }

@@ -184,7 +184,7 @@
                                             <div>
                                                 <div class="small text-muted">{% trans %}Latency{% endtrans %}</div>
                                                 <div class="fw-bold">
-                                                    {{ server_status.metrics['latency'] ?? '0' }}&micro;s
+                                                    {% set latency_raw = server_status.metrics['latency'] ?? '0' %}{{ latency_raw is iterable ? '0' : latency_raw }}&micro;s
                                                 </div>
                                             </div>
                                         </div>
@@ -194,8 +194,9 @@
                                             <div>
                                                 <div class="small text-muted">{% trans %}CPU Usage{% endtrans %}</div>
                                                 <div class="fw-bold">
-                                                    User: {{ server_status.metrics['pdns_auth_user_msec'] ?? server_status.metrics['user-msec'] ?? '0' }}ms / 
-                                                    Sys: {{ server_status.metrics['pdns_auth_sys_msec'] ?? server_status.metrics['sys-msec'] ?? '0' }}ms
+                                                    {% set user_msec = server_status.metrics['pdns_auth_user_msec'] ?? server_status.metrics['user-msec'] ?? '0' %}{% set sys_msec = server_status.metrics['pdns_auth_sys_msec'] ?? server_status.metrics['sys-msec'] ?? '0' %}
+                                                    User: {{ user_msec is iterable ? '0' : user_msec }}ms /
+                                                    Sys: {{ sys_msec is iterable ? '0' : sys_msec }}ms
                                                 </div>
                                             </div>
                                         </div>
@@ -217,7 +218,8 @@
                                                         <div class="progress-bar bg-primary" role="progressbar" style="width: 100%"></div>
                                                     </div>
                                                     <div class="text-end" style="min-width: 100px;">
-                                                        {% set udp_queries = server_status.metrics['udp-queries'] ?? server_status.metrics['pdns_auth_udp_queries'] ?? 0 %}
+                                                        {% set udp_queries_raw = server_status.metrics['udp-queries'] ?? server_status.metrics['pdns_auth_udp_queries'] ?? 0 %}
+                                                        {% set udp_queries = (udp_queries_raw is not iterable and (udp_queries_raw ~ '') matches '/^-?[0-9]+(\\.[0-9]+)?([eE][-+]?[0-9]+)?$/') ? udp_queries_raw + 0 : 0 %}
                                                         {% if udp_queries > 1000000 %}
                                                             {{ (udp_queries / 1000000)|round(2) }}M
                                                         {% elseif udp_queries > 1000 %}
@@ -234,7 +236,8 @@
                                                         <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
                                                     </div>
                                                     <div class="text-end" style="min-width: 100px;">
-                                                        {% set tcp_queries = server_status.metrics['tcp-queries'] ?? server_status.metrics['pdns_auth_tcp_queries'] ?? 0 %}
+                                                        {% set tcp_queries_raw = server_status.metrics['tcp-queries'] ?? server_status.metrics['pdns_auth_tcp_queries'] ?? 0 %}
+                                                        {% set tcp_queries = (tcp_queries_raw is not iterable and (tcp_queries_raw ~ '') matches '/^-?[0-9]+(\\.[0-9]+)?([eE][-+]?[0-9]+)?$/') ? tcp_queries_raw + 0 : 0 %}
                                                         {% if tcp_queries > 1000000 %}
                                                             {{ (tcp_queries / 1000000)|round(2) }}M
                                                         {% elseif tcp_queries > 1000 %}
@@ -253,7 +256,8 @@
                                                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
                                                     </div>
                                                     <div class="text-end" style="min-width: 100px;">
-                                                        {% set cache_hits = server_status.metrics['packetcache-hit'] ?? 0 %}
+                                                        {% set cache_hits_raw = server_status.metrics['packetcache-hit'] ?? 0 %}
+                                                        {% set cache_hits = (cache_hits_raw is not iterable and (cache_hits_raw ~ '') matches '/^-?[0-9]+(\\.[0-9]+)?([eE][-+]?[0-9]+)?$/') ? cache_hits_raw + 0 : 0 %}
                                                         {% if cache_hits > 1000000 %}
                                                             {{ (cache_hits / 1000000)|round(2) }}M
                                                         {% elseif cache_hits > 1000 %}
@@ -270,7 +274,8 @@
                                                         <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
                                                     </div>
                                                     <div class="text-end" style="min-width: 100px;">
-                                                        {% set cache_misses = server_status.metrics['packetcache-miss'] ?? 0 %}
+                                                        {% set cache_misses_raw = server_status.metrics['packetcache-miss'] ?? 0 %}
+                                                        {% set cache_misses = (cache_misses_raw is not iterable and (cache_misses_raw ~ '') matches '/^-?[0-9]+(\\.[0-9]+)?([eE][-+]?[0-9]+)?$/') ? cache_misses_raw + 0 : 0 %}
                                                         {% if cache_misses > 1000000 %}
                                                             {{ (cache_misses / 1000000)|round(2) }}M
                                                         {% elseif cache_misses > 1000 %}

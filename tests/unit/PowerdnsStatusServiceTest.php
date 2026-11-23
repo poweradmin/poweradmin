@@ -207,6 +207,27 @@ class PowerdnsStatusServiceTest extends TestCase
         return new FakeConfiguration(['pdns_api' => ['url' => 'http://127.0.0.1:8081', 'key' => 'secret']]);
     }
 
+    public function testOddMetricEntriesFromTheApiAreIgnored(): void
+    {
+        $service = new PowerdnsStatusService(self::apiConfig(), new ArraySession());
+        $client = $this->createMock(PowerdnsApiClient::class);
+        $client->method('getServerInfo')->willReturn(['id' => 'localhost', 'daemon_type' => 'authoritative', 'version' => '4.9.4']);
+        $client->method('getMetrics')->willReturn([
+            ['name' => ['x'], 'value' => '1'],
+            ['name' => 7, 'value' => '1'],
+            ['name' => 'object-value', 'value' => new \stdClass()],
+            'not-an-entry',
+            ['name' => 'udp-queries', 'value' => '42'],
+            ['name' => 'by-qtype', 'value' => [['name' => 'A', 'value' => '3']]],
+        ]);
+        (new ReflectionClass(PowerdnsStatusService::class))->getProperty('apiClient')->setValue($service, $client);
+
+        $status = $service->getServerStatus();
+
+        $this->assertTrue($status['running']);
+        $this->assertSame(['udp-queries' => '42', 'by-qtype' => [['name' => 'A', 'value' => '3']]], $status['metrics']);
+    }
+
     public function testServerStatusSkipsThePrometheusEndpoint(): void
     {
         $service = new class (self::apiConfig(), new ArraySession()) extends PowerdnsStatusService {
