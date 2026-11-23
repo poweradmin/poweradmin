@@ -52,13 +52,56 @@ class DbApiLoggerTest extends TestCase
     #[Test]
     public function pruneOlderThanDeletesOnlyRowsPastRetention(): void
     {
-        $this->insertRow('old', date('Y-m-d H:i:s', time() - 40 * 86400));
-        $this->insertRow('recent', date('Y-m-d H:i:s', time() - 5 * 86400));
+        $this->insertRow('old', gmdate('Y-m-d H:i:s', time() - 40 * 86400));
+        $this->insertRow('recent', gmdate('Y-m-d H:i:s', time() - 5 * 86400));
 
         (new DbApiLogger($this->db))->pruneOlderThan(30);
 
         $remaining = $this->db->query('SELECT event FROM log_api')->fetchAll(PDO::FETCH_COLUMN);
         $this->assertSame(['recent'], $remaining);
+    }
+
+    /** The cutoff must come from the same clock that wrote created_at, whatever the PHP time zone is */
+    #[Test]
+    public function pruneOlderThanComparesAgainstTheDatabaseClock(): void
+    {
+        $previous = date_default_timezone_get();
+        date_default_timezone_set('Pacific/Auckland');
+        try {
+            $this->db->exec("INSERT INTO log_api (event, created_at, priority) VALUES ('old', datetime('now', '-30 days', '-1 hour'), 6)");
+            $this->db->exec("INSERT INTO log_api (event, created_at, priority) VALUES ('recent', datetime('now', '-30 days', '+1 hour'), 6)");
+
+            (new DbApiLogger($this->db))->pruneOlderThan(30);
+        } finally {
+            date_default_timezone_set($previous);
+        }
+
+        $this->assertSame(['recent'], $this->db->query('SELECT event FROM log_api')->fetchAll(PDO::FETCH_COLUMN));
+    }
+
+    #[Test]
+    public function pruneOlderThanSendsNoPhpClockValueToTheDatabase(): void
+    {
+        $db = new class ('sqlite::memory:') extends PDO {
+            /** @var list<string> */
+            public array $executed = [];
+
+            public function exec(string $statement): int|false
+            {
+                $this->executed[] = $statement;
+
+                return parent::exec($statement);
+            }
+        };
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec('CREATE TABLE log_api (id INTEGER PRIMARY KEY, event TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, priority INTEGER)');
+
+        (new DbApiLogger($db))->pruneOlderThan(30);
+
+        $deletes = array_values(array_filter($db->executed, fn(string $sql): bool => str_starts_with($sql, 'DELETE')));
+        $this->assertCount(1, $deletes);
+        $this->assertStringContainsString("datetime('now'", $deletes[0]);
+        $this->assertDoesNotMatchRegularExpression('/\d{4}-\d{2}-\d{2}/', $deletes[0]);
     }
 
     #[Test]
