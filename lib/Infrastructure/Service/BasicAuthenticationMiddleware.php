@@ -25,6 +25,9 @@ namespace Poweradmin\Infrastructure\Service;
 use PDO;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\UserEventLogger;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -46,6 +49,8 @@ class BasicAuthenticationMiddleware
     private ConfigurationManager $config;
     private LoginAttemptService $loginAttemptService;
     private ?UserAuthenticationService $authService = null;
+    private ?UserEventLogger $userEventLogger;
+    private LoginFailureReason $ldapFailure = LoginFailureReason::WRONG_PASSWORD;
 
     /**
      * Constructor
@@ -53,8 +58,9 @@ class BasicAuthenticationMiddleware
      * @param PDO $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDO $db, ConfigurationManager $config)
+    public function __construct(PDO $db, ConfigurationManager $config, ?UserEventLogger $userEventLogger = null)
     {
+        $this->userEventLogger = $userEventLogger;
         $this->db = $db;
         $this->config = $config;
         $this->loginAttemptService = new LoginAttemptService($db, $this->config);
@@ -147,6 +153,7 @@ class BasicAuthenticationMiddleware
         if (!UserEntity::exists($this->db, $username)) {
             // Answering without a hash check would tell the caller which usernames exist.
             $this->verifyAgainstDummyHash($password);
+            $this->logFailure($username, LoginFailureReason::NO_SUCH_USER);
             return 0;
         }
 
@@ -167,6 +174,7 @@ class BasicAuthenticationMiddleware
         if (!$user) {
             // Disabled account: still record so probing inactive users contributes to lockout.
             $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            $this->logFailure($username, LoginFailureReason::ACCOUNT_DISABLED);
             return 0;
         }
 
@@ -178,8 +186,12 @@ class BasicAuthenticationMiddleware
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
                 return $this->onAuthSuccess($userModel->getId());
             }
-            // LDAP users should not fall back to SQL authentication
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            // LDAP users should not fall back to SQL authentication.
+            // Like the web LDAP sign-in, only a wrong password counts towards lockout, so a directory outage cannot lock out API clients.
+            if ($this->ldapFailure === LoginFailureReason::WRONG_PASSWORD) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+            }
+            $this->logFailure($username, $this->ldapFailure, AuthMethod::LDAP);
             return 0;
         }
 
@@ -189,7 +201,20 @@ class BasicAuthenticationMiddleware
         }
 
         $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
+        $this->logFailure($username, LoginFailureReason::WRONG_PASSWORD);
         return 0;
+    }
+
+    /** Same login_failed line the web sign-in writes, so the fail2ban filter matches Basic auth too */
+    private function logFailure(string $username, LoginFailureReason $reason, AuthMethod $method = AuthMethod::SQL): void
+    {
+        $this->userEventLogger ??= new UserEventLogger($this->db);
+        // A directory outage is not a bad guess, so it must stay out of the brute-force counters (as on the web sign-in)
+        if ($reason === LoginFailureReason::LDAP_SEARCH_FAILED) {
+            $this->userEventLogger->logAuthError($method, $reason, $username);
+            return;
+        }
+        $this->userEventLogger->logFailedAuth($method, $reason, $username);
     }
 
     /**
@@ -248,6 +273,8 @@ class BasicAuthenticationMiddleware
      */
     private function ldapAuthenticatorApiAuth(int $userId, string $username, #[\SensitiveParameter] string $password): bool
     {
+        $this->ldapFailure = LoginFailureReason::WRONG_PASSWORD;
+
         // A zero-length credential would be an unauthenticated bind, which some directories accept
         if ($password === '') {
             return false;
@@ -262,6 +289,7 @@ class BasicAuthenticationMiddleware
         $ldapUserAttribute = $this->config->get('ldap', 'user_attribute', 'uid');
         $ldapProto = $this->config->get('ldap', 'protocol_version', 3);
 
+        $this->ldapFailure = LoginFailureReason::LDAP_SEARCH_FAILED;
         if (empty($ldapUri) || empty($ldapBaseDn)) {
             return false;
         }
@@ -297,8 +325,11 @@ class BasicAuthenticationMiddleware
         // Check if we found exactly one user
         $entries = ldap_get_entries($ldapConn, $search);
         if ((int)$entries["count"] !== 1) {
+            $this->ldapFailure = (int)$entries["count"] === 0 ? LoginFailureReason::NO_SUCH_USER : LoginFailureReason::DUPLICATE_USERS;
             return false;
         }
+
+        $this->ldapFailure = LoginFailureReason::WRONG_PASSWORD;
 
         // Try to bind with the user's DN and password
         $userDn = $entries[0]["dn"];

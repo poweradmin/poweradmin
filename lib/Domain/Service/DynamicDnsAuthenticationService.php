@@ -24,6 +24,9 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\UserEventLogger;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
@@ -33,7 +36,8 @@ readonly class DynamicDnsAuthenticationService
     public function __construct(
         private DynamicDnsRepositoryInterface $repository,
         private UserAuthenticationService $userAuthService,
-        private ?LoginAttemptService $loginAttemptService = null
+        private ?LoginAttemptService $loginAttemptService = null,
+        private ?UserEventLogger $userEventLogger = null
     ) {
     }
 
@@ -61,6 +65,7 @@ readonly class DynamicDnsAuthenticationService
         if (!$user) {
             // Answering without a hash check would tell the caller which usernames hold the permission.
             $this->verifyAgainstDummyHash($request->getPassword());
+            $this->userEventLogger?->logFailedAuth(AuthMethod::SQL, LoginFailureReason::NO_SUCH_USER, $username);
             return null;
         }
 
@@ -69,6 +74,10 @@ readonly class DynamicDnsAuthenticationService
         $hash = $user->getPassword();
         $passwordValid = $hash !== '' && $this->userAuthService->verifyPassword($request->getPassword(), $hash);
         $this->loginAttemptService?->recordAttempt($username, $clientIp, $passwordValid);
+
+        if (!$passwordValid) {
+            $this->userEventLogger?->logFailedAuth(AuthMethod::SQL, LoginFailureReason::WRONG_PASSWORD, $username);
+        }
 
         return $passwordValid ? $user : null;
     }

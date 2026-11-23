@@ -50,17 +50,24 @@ class UserEventLogger
         $this->logger->logWarn($this->format('login_locked', $authMethod));
     }
 
-    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?LoginFailureReason $reason = null): void
+    /** @param string|null $user login name for stateless callers (Basic auth, DDNS) that have no session */
+    public function logFailedAuth(AuthMethod $authMethod = AuthMethod::SQL, ?LoginFailureReason $reason = null, ?string $user = null): void
     {
-        $this->logger->logWarn($this->format('login_failed', $authMethod, $reason?->value));
+        $this->logger->logWarn($this->format('login_failed', $authMethod, $reason?->value, $user));
     }
 
-    private function format(string $operation, AuthMethod $authMethod, ?string $reason = null): string
+    /** Backend failure (directory outage): operation:login_error, which the fail2ban filter does not count */
+    public function logAuthError(AuthMethod $authMethod, LoginFailureReason $reason, ?string $user = null): void
+    {
+        $this->logger->logError($this->format('login_error', $authMethod, $reason->value, $user));
+    }
+
+    private function format(string $operation, AuthMethod $authMethod, ?string $reason = null, ?string $user = null): string
     {
         $base = sprintf(
             'client_ip:%s user:%s operation:%s auth_method:%s',
             $this->ipRetriever->getClientIp(),
-            self::logName($_SESSION[SessionKeys::USERLOGIN] ?? ''),
+            self::logName($user ?? $_SESSION[SessionKeys::USERLOGIN] ?? ''),
             $operation,
             $authMethod->value
         );

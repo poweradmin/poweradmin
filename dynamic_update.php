@@ -6,6 +6,7 @@ use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Application\Service\RepositoryFactory;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DatabaseCredentialMapper;
@@ -48,7 +49,7 @@ $userAuthService = new UserAuthenticationService(
 
 $updateService = new DynamicDnsUpdateService(
     new DynamicDnsValidationService($config),
-    new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config)),
+    new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($db, $config), new UserEventLogger($db)),
     $repository,
     new LegacyLogger($db),
     new IpAddressRetriever($_SERVER),

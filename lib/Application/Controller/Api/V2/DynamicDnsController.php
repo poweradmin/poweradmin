@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Service\ApiPermissionService;
@@ -62,7 +63,7 @@ class DynamicDnsController extends PublicApiController
         $this->validationService = new DynamicDnsValidationService($config);
         $this->updateService = new DynamicDnsUpdateService(
             $this->validationService,
-            new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config)),
+            new DynamicDnsAuthenticationService($repository, $userAuthService, new LoginAttemptService($this->db, $config), new UserEventLogger($this->db)),
             $repository,
             new LegacyLogger($this->db),
             new IpAddressRetriever($_SERVER),
