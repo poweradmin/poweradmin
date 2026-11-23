@@ -84,10 +84,12 @@ docker run -d --name poweradmin -p 80:80 \
 
 Poweradmin Docker image is based on [FrankenPHP](https://frankenphp.dev/), a modern application server for PHP that provides:
 
-- **High Performance**: Persistent worker mode for better performance than traditional PHP-FPM
+- **High Performance**: Efficient PHP execution in the web server process, without a separate PHP-FPM service
 - **Modern HTTP**: Native HTTP/2 and HTTP/3 support
 - **Built-in Features**: Automatic HTTPS, real-time capabilities, and more
 - **Caddy Integration**: Built on Caddy web server with powerful configuration
+
+The image runs FrankenPHP in classic mode: each request starts from a clean state. FrankenPHP's persistent worker mode is not enabled and is not supported, because Poweradmin keeps per-request state (user, permissions, change sets) in static properties that a worker would carry over to the next request.
 
 ## Database Configuration
 
