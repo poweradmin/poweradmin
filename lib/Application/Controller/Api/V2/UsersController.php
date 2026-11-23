@@ -751,6 +751,17 @@ class UsersController extends PublicApiController
                 ]);
             }
 
+            if ($currentUser !== null && $targetUserId !== $currentUserId) {
+                // Compare with the stored value: the update may leave an IdP-managed address alone
+                UserManager::resetEmailMfaAfterForeignEmailChange(
+                    $this->db,
+                    $targetUserId,
+                    $currentUser['email'] ?? null,
+                    (string)($this->userRepository->getUserById($targetUserId)['email'] ?? ''),
+                    $this->getAuthenticatedUsername()
+                );
+            }
+
             return $this->returnApiResponse(
                 ['user_id' => $result['user_id']],
                 true,
