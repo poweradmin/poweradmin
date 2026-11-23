@@ -52,8 +52,8 @@ class DbApiLoggerTest extends TestCase
     #[Test]
     public function pruneOlderThanDeletesOnlyRowsPastRetention(): void
     {
-        $this->insertRow('old', date('Y-m-d H:i:s', time() - 40 * 86400));
-        $this->insertRow('recent', date('Y-m-d H:i:s', time() - 5 * 86400));
+        $this->insertRow('old', gmdate('Y-m-d H:i:s', time() - 40 * 86400));
+        $this->insertRow('recent', gmdate('Y-m-d H:i:s', time() - 5 * 86400));
 
         (new DbApiLogger($this->db))->pruneOlderThan(30);
 
@@ -62,9 +62,37 @@ class DbApiLoggerTest extends TestCase
     }
 
     #[Test]
+    public function pruneOlderThanComparesAgainstTheDatabaseClock(): void
+    {
+        $db = new class ('sqlite::memory:') extends PDO {
+            /** @var string[] */
+            public array $statements = [];
+
+            public function exec(string $statement): int|false
+            {
+                $this->statements[] = $statement;
+                return parent::exec($statement);
+            }
+
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                $this->statements[] = $query;
+                return parent::prepare($query, $options);
+            }
+        };
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $db->exec('CREATE TABLE log_api (id INTEGER PRIMARY KEY AUTOINCREMENT, event VARCHAR(2048) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, priority INTEGER NOT NULL)');
+        $db->statements = [];
+
+        (new DbApiLogger($db))->pruneOlderThan(30);
+
+        $this->assertStringContainsString("datetime('now'", implode(';', $db->statements));
+    }
+
+    #[Test]
     public function pruneOlderThanIsNoOpForZeroOrNegativeDays(): void
     {
-        $this->insertRow('old', date('Y-m-d H:i:s', time() - 400 * 86400));
+        $this->insertRow('old', gmdate('Y-m-d H:i:s', time() - 400 * 86400));
 
         $logger = new DbApiLogger($this->db);
         $logger->pruneOlderThan(0);

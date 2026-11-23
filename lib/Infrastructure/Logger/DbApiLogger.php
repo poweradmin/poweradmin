@@ -62,10 +62,9 @@ class DbApiLogger
     }
 
     /**
-     * Delete API log rows older than the given number of days. The cutoff is
-     * computed in PHP (UTC) so the comparison is portable across
-     * MySQL/PostgreSQL/SQLite; created_at is written by the DB in UTC (SQLite
-     * always, and the common UTC-configured MySQL/PostgreSQL deployment).
+     * Delete API log rows older than the given number of days. The cutoff comes
+     * from the database clock, the same one that stamps created_at by default,
+     * so it holds whatever time zone the database session runs in.
      */
     public function pruneOlderThan(int $days): void
     {
@@ -73,10 +72,10 @@ class DbApiLogger
             return;
         }
 
-        $cutoff = gmdate('Y-m-d H:i:s', time() - $days * 86400);
+        $dbType = (string) $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $cutoff = DbCompat::dateSubtract($dbType, $days * 86400);
         try {
-            $stmt = $this->db->prepare('DELETE FROM log_api WHERE created_at < :cutoff');
-            $stmt->execute([':cutoff' => $cutoff]);
+            $this->db->exec('DELETE FROM log_api WHERE created_at < ' . $cutoff);
         } catch (\PDOException $e) {
             // Silently fail if table doesn't exist yet (during upgrade before migration)
             return;
