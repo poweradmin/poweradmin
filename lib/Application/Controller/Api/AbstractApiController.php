@@ -150,7 +150,11 @@ abstract class AbstractApiController extends BaseController
             return $response;
         }
 
-        return new JsonResponse($data, $status, $headers);
+        // Stored text may hold invalid UTF-8; substitute it rather than fail the whole response.
+        $response = new JsonResponse(null, $status, $headers);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_INVALID_UTF8_SUBSTITUTE);
+
+        return $response->setData($data ?? new \ArrayObject());
     }
 
     /**
