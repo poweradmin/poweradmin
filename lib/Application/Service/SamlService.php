@@ -646,7 +646,7 @@ class SamlService extends LoggingService
             );
         }
 
-        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId], JSON_THROW_ON_ERROR);
+        $payload = json_encode(['provider' => $providerId, 'request_id' => $requestId, 'iat' => time()], JSON_THROW_ON_ERROR);
         $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
     }
 
@@ -676,6 +676,13 @@ class SamlService extends LoggingService
         $requestId = is_array($payload) ? ($payload['request_id'] ?? null) : null;
         if (!is_string($provider) || $provider === '' || !is_string($requestId) || $requestId === '') {
             $this->logWarning('SAML flow cookie has an invalid payload');
+            return null;
+        }
+
+        // The cookie Expires is only a browser hint, so the server enforces the TTL itself.
+        $age = time() - (is_int($payload['iat'] ?? null) ? $payload['iat'] : PHP_INT_MIN);
+        if ($age > self::FLOW_COOKIE_TTL || $age < -60) {
+            $this->logWarning('SAML flow cookie is expired or not yet valid');
             return null;
         }
 

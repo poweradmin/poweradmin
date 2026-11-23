@@ -150,6 +150,7 @@ class OidcServiceFormPostTest extends TestCase
             'state' => 'state-123',
             'provider' => 'keycloak',
             'verifier' => 'pkce-verifier-456',
+            'iat' => time(),
         ]));
 
         $this->invoke($service, 'restoreFlowFromCookie');
@@ -157,6 +158,33 @@ class OidcServiceFormPostTest extends TestCase
         $this->assertSame('state-123', $_SESSION['oidc_state']);
         $this->assertSame('keycloak', $_SESSION['oidc_provider']);
         $this->assertSame('pkce-verifier-456', $_SESSION['oidc_code_verifier']);
+    }
+
+    /**
+     * @return array<string, array{0: int|null}>
+     */
+    public static function unusableIssueTimes(): array
+    {
+        return [
+            'older than the TTL' => [time() - 301],
+            'in the future' => [time() + 3600],
+            'missing' => [null],
+        ];
+    }
+
+    #[\PHPUnit\Framework\Attributes\DataProvider('unusableIssueTimes')]
+    public function testRestoreFlowIgnoresCookieWithUnusableIssueTime(?int $issuedAt): void
+    {
+        $service = $this->makeService('https://dns.example.com');
+        $payload = ['state' => 'state-123', 'provider' => 'keycloak', 'verifier' => 'pkce-verifier-456'];
+        if ($issuedAt !== null) {
+            $payload['iat'] = $issuedAt;
+        }
+        $_COOKIE['__Host-oidc_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode($payload));
+
+        $this->invoke($service, 'restoreFlowFromCookie');
+
+        $this->assertArrayNotHasKey('oidc_state', $_SESSION ?? []);
     }
 
     public function testRestoreFlowIgnoresGarbageCookie(): void

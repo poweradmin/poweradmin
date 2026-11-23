@@ -648,6 +648,7 @@ class OidcService extends LoggingService
             'state' => $state,
             'provider' => $providerId,
             'verifier' => $codeVerifier,
+            'iat' => time(),
         ]);
 
         $this->writeFlowCookie($this->flowEncryptionService()->encrypt($payload), time() + self::FLOW_COOKIE_TTL);
@@ -669,6 +670,13 @@ class OidcService extends LoggingService
 
         if (!is_array($payload) || empty($payload['state']) || empty($payload['provider']) || empty($payload['verifier'])) {
             $this->logWarning('OIDC flow cookie has an invalid payload');
+            return;
+        }
+
+        // The cookie Expires is only a browser hint, so the server enforces the TTL itself.
+        $age = time() - (is_int($payload['iat'] ?? null) ? $payload['iat'] : PHP_INT_MIN);
+        if ($age > self::FLOW_COOKIE_TTL || $age < -60) {
+            $this->logWarning('OIDC flow cookie is expired or not yet valid');
             return;
         }
 

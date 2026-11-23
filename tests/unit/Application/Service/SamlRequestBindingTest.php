@@ -159,6 +159,30 @@ class SamlRequestBindingTest extends TestCase
         $this->assertStringContainsString(self::REFUSED, $this->handle(['corp' => ['allow_idp_initiated' => false]], null, 'corp')['message']);
     }
 
+    public function testWithIdpInitiatedOffAnExpiredFlowCookieIsRefused(): void
+    {
+        $this->setFlowCookie('corp', 'request-123', time() - 601);
+
+        $this->assertStringContainsString(self::REFUSED, $this->handle(['corp' => ['allow_idp_initiated' => false]], 'request-123', 'corp')['message']);
+    }
+
+    public function testWithIdpInitiatedOffAFlowCookieIssuedInTheFutureIsRefused(): void
+    {
+        $this->setFlowCookie('corp', 'request-123', time() + 3600);
+
+        $this->assertStringContainsString(self::REFUSED, $this->handle(['corp' => ['allow_idp_initiated' => false]], 'request-123', 'corp')['message']);
+    }
+
+    public function testWithIdpInitiatedOffAFlowCookieWithoutAnIssueTimeIsRefused(): void
+    {
+        $_COOKIE['__Host-saml_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
+            'provider' => 'corp',
+            'request_id' => 'request-123',
+        ]));
+
+        $this->assertStringContainsString(self::REFUSED, $this->handle(['corp' => ['allow_idp_initiated' => false]], 'request-123', 'corp')['message']);
+    }
+
     public function testWithIdpInitiatedOffAResponseToTheBoundRequestPassesTheBindingCheck(): void
     {
         $this->setFlowCookie('corp', 'request-123');
@@ -212,11 +236,12 @@ class SamlRequestBindingTest extends TestCase
         $this->assertStringNotContainsString('InResponseTo', implode(' ', $result['reasons']));
     }
 
-    private function setFlowCookie(string $provider, string $requestId): void
+    private function setFlowCookie(string $provider, string $requestId, ?int $issuedAt = null): void
     {
         $_COOKIE['__Host-saml_flow'] = (new PasswordEncryptionService(self::SESSION_KEY))->encrypt(json_encode([
             'provider' => $provider,
             'request_id' => $requestId,
+            'iat' => $issuedAt ?? time(),
         ]));
     }
 
