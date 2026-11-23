@@ -16854,3 +16854,11 @@ msgstr "Outra pessoa alterou o utilizador %s depois de ter aberto esta lista, po
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "Uma zona para a qual escolheu uma ação não pertence a este utilizador."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "O campo %s contém caracteres inválidos."

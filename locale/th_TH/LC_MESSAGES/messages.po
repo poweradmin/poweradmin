@@ -15853,3 +15853,11 @@ msgstr "มีผู้อื่นเปลี่ยนผู้ใช้ %s �
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "โซนที่คุณเลือกการดำเนินการไว้ไม่ได้เป็นของผู้ใช้นี้"
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "ฟิลด์ %s มีอักขระที่ไม่ถูกต้อง"

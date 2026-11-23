@@ -16366,3 +16366,11 @@ msgstr "이 목록을 연 후 다른 사람이 사용자 %s을(를) 변경하여
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "작업을 선택한 존 중 이 사용자에게 속하지 않는 존이 있습니다."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "%s 필드에 유효하지 않은 문자가 포함되어 있습니다."

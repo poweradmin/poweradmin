@@ -15525,3 +15525,11 @@ msgstr "您開啟此清單後，其他人修改了使用者 %s，因此該列未
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "您為其選擇了操作的區域不屬於此使用者。"
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "%s 欄位包含無效字元。"

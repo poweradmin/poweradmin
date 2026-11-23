@@ -16797,3 +16797,11 @@ msgstr "Valaki más módosította a(z) %s felhasználót, miután megnyitotta ez
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "Egy zóna, amelyhez műveletet választott, nem ehhez a felhasználóhoz tartozik."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "A(z) %s mező érvénytelen karaktereket tartalmaz."

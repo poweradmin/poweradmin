@@ -16941,3 +16941,11 @@ msgstr "Dikush tjetër e ndryshoi përdoruesin %s pasi hapët këtë listë, pra
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "Një zonë për të cilën zgjodhët një veprim nuk i përket këtij përdoruesi."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "Fusha %s përmban karaktere të pavlefshme."

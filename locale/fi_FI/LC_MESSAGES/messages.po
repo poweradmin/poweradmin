@@ -16421,3 +16421,11 @@ msgstr "Joku muu muutti käyttäjää %s sen jälkeen, kun avasit tämän luette
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "Alue, jolle valitsit toiminnon, ei kuulu tälle käyttäjälle."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "Kenttä %s sisältää virheellisiä merkkejä."

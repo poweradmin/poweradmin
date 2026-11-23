@@ -17072,3 +17072,11 @@ msgstr "D'athraigh duine eile an t-úsáideoir %s tar éis duit an liosta seo a 
 #: lib/Application/Service/User/UserFormMessages.php:57
 msgid "A zone you chose an action for does not belong to this user."
 msgstr "Ní leis an úsáideoir seo crios ar roghnaigh tú gníomh dó."
+
+#: lib/Application/Service/Record/RecordAddService.php:114
+#: lib/Domain/Service/Dns/RecordManager.php:770
+#: lib/Domain/Service/Zone/ZoneChangeRequestService.php:765
+#: lib/Domain/Service/Zone/ZoneEditService.php:120
+#, php-format
+msgid "The %s field contains invalid characters."
+msgstr "Tá carachtair neamhbhailí sa réimse %s."
