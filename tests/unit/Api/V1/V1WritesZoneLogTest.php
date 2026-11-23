@@ -166,6 +166,25 @@ class V1WritesZoneLogTest extends TestCase
         $this->assertLogged('api_add_record', 3);
     }
 
+    public function testCreateRecordStoresTheValidatorsCanonicalContent(): void
+    {
+        $provider = $this->createMock(DnsBackendProvider::class);
+        $provider->method('isApiBackend')->willReturn(false);
+        $provider->expects($this->once())->method('createRecordAtomic')
+            ->with(3, 'a.example', 'SOA', 'ns1.a.example hostmaster.a.example 1 7200 3600 1209600 3600', 3600, 0, 0)
+            ->willReturn(99);
+
+        $controller = $this->recordsController(
+            ['name' => '@', 'type' => 'SOA', 'content' => 'ns1.a.example. hostmaster@a.example 1 7200 3600 1209600 3600'],
+            [],
+            $provider,
+        );
+
+        $this->assertSame(201, $this->call($controller, 'createRecord'));
+        $this->assertStringContainsString('hostmaster.a.example', $this->logged[0][0]);
+        $this->assertStringNotContainsString('hostmaster@', $this->logged[0][0]);
+    }
+
     public function testUpdateRecordIsLogged(): void
     {
         $controller = $this->recordsController(
@@ -189,7 +208,7 @@ class V1WritesZoneLogTest extends TestCase
      * @param array<string, mixed> $body
      * @param array<string, mixed> $unused
      */
-    private function recordsController(array $body, array $unused): object
+    private function recordsController(array $body, array $unused, ?DnsBackendProvider $provider = null): object
     {
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canEditZoneContent')->willReturn(true);
@@ -207,9 +226,11 @@ class V1WritesZoneLogTest extends TestCase
         $manager->method('editRecord')->willReturn(true);
         $manager->method('deleteRecord')->willReturn(true);
 
-        $provider = $this->createMock(DnsBackendProvider::class);
-        $provider->method('isApiBackend')->willReturn(false);
-        $provider->method('createRecordAtomic')->willReturn(99);
+        if ($provider === null) {
+            $provider = $this->createMock(DnsBackendProvider::class);
+            $provider->method('isApiBackend')->willReturn(false);
+            $provider->method('createRecordAtomic')->willReturn(99);
+        }
 
         return $this->build(ZonesRecordsController::class, [
             'backendProvider' => $provider,

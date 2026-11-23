@@ -484,6 +484,9 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($errorMessage, 400);
             }
 
+            // Store the validator's canonical values, as the v2 create does
+            $validatedData = $validationResult->getData();
+
             // Insert record via backend provider
             // Wrap insert + SOA update in a transaction for atomicity (SQL backend only).
             // API backend polls the DB for the new record ID after the HTTP call;
@@ -493,8 +496,10 @@ class ZonesRecordsController extends PublicApiController
                 $this->db->beginTransaction();
             }
 
-            $content = DnsFormatter::quoteEch($type, $content);
-            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
+            $storedContent = DnsFormatter::quoteEch($type, $validatedData['content'] ?? $content);
+            $storedTtl = $validatedData['ttl'] ?? $ttl;
+            $storedPriority = $validatedData['prio'] ?? $priority;
+            $newRecordId = $this->insertRecordViaBackend($zoneId, $normalizedName, $type, $storedContent, $storedTtl, $storedPriority, $disabled);
 
             if ($newRecordId === null) {
                 if ($useTransaction) {
@@ -517,9 +522,9 @@ class ZonesRecordsController extends PublicApiController
                 'record_id' => $newRecordId,
                 'name' => $name,
                 'type' => $type,
-                'content' => $content,
-                'ttl' => $ttl,
-                'priority' => $priority,
+                'content' => $storedContent,
+                'ttl' => $storedTtl,
+                'priority' => $storedPriority,
                 'disabled' => $disabled
             ];
 
@@ -529,7 +534,7 @@ class ZonesRecordsController extends PublicApiController
                 LegacyLogger::encodeUser($this->getAuthenticatedUsername()),
                 LegacyLogger::value($name),
                 LegacyLogger::value($type),
-                LegacyLogger::value($content)
+                LegacyLogger::value($storedContent)
             ), $zoneId);
 
             return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
