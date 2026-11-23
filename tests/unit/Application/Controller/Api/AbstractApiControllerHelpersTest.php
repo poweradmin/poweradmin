@@ -100,6 +100,30 @@ class AbstractApiControllerHelpersTest extends TestCase
         $this->assertSame(['name' => 'www'], $controller->callGetValidatedJsonBody());
     }
 
+    public function testFormBodyWithBytesThatAreNotUtf8IsRefused(): void
+    {
+        $controller = $this->makeController(new Request([], ['description' => "caf\xE9"], [], [], [], ['CONTENT_TYPE' => 'application/x-www-form-urlencoded']));
+
+        $this->assertNull($controller->callGetJsonInput());
+    }
+
+    public function testFormBodyWithValidTextIsStillAccepted(): void
+    {
+        $controller = $this->makeController(new Request([], ['description' => 'café'], [], [], [], ['CONTENT_TYPE' => 'application/x-www-form-urlencoded']));
+
+        $this->assertSame(['description' => 'café'], $controller->callGetJsonInput());
+    }
+
+    public function testStoredBytesThatAreNotUtf8DoNotBreakTheResponse(): void
+    {
+        $controller = $this->makeController(new Request());
+
+        $response = $controller->callReturnJsonResponse(['comment' => "caf\xE9 <b>&'\""]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame('{"comment":"caf\ufffd \u003Cb\u003E\u0026\u0027\u0022"}', $response->getContent());
+    }
+
     public function testMethodNotAllowedCarriesTheAllowHeader(): void
     {
         $controller = $this->makeController(new Request());

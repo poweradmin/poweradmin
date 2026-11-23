@@ -255,10 +255,23 @@ class ChangeRequestsControllerTest extends TestCase
         );
     }
 
+    public function testAFormBodyThatIsNotUtf8IsRefusedInsteadOfDecidingWithoutTheComment(): void
+    {
+        $pending = $this->request(12, self::OWNED_ZONE);
+        $this->requests->method('find')->with(12)->willReturn($pending);
+        $this->permissions->method('canReviewChangeRequests')->willReturn(true);
+        $this->service->expects($this->never())->method('approve');
+        $this->service->expects($this->never())->method('reject');
+
+        foreach (['approveChangeRequest', 'rejectChangeRequest'] as $method) {
+            $this->assertSame(400, $this->call($method, id: 12, form: ['comment' => "caf\xE9"])->getStatusCode(), $method);
+        }
+    }
+
     /**
      * @param array<string, mixed>|null $body
      */
-    private function call(string $method, bool $enabled = true, ?int $id = null, ?array $body = null, array $query = [], ?ApiKeyScope $scope = null): JsonResponse
+    private function call(string $method, bool $enabled = true, ?int $id = null, ?array $body = null, array $query = [], ?ApiKeyScope $scope = null, array $form = []): JsonResponse
     {
         $config = $this->createMock(ConfigurationInterface::class);
         $config->method('get')->willReturnCallback(
@@ -277,7 +290,7 @@ class ChangeRequestsControllerTest extends TestCase
         $this->inject($controller, 'serviceFactory', $factory);
         $this->inject($controller, 'pathParameters', $id === null ? [] : ['id' => $id]);
         $this->inject($controller, 'authenticatedUserId', self::USER_ID);
-        $this->inject($controller, 'request', new Request($query, [], [], [], [], [], $body === null ? '' : json_encode($body)));
+        $this->inject($controller, 'request', new Request($query, $form, [], [], [], [], $body === null ? '' : json_encode($body)));
         $this->inject($controller, 'apiKeyScope', $scope);
 
         return (new ReflectionClass($controller))->getMethod($method)->invoke($controller);

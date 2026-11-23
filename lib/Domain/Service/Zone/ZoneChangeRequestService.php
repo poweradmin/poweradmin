@@ -749,12 +749,38 @@ class ZoneChangeRequestService
     /** The comment is mailed to reviewers and the SOA contact, so its size is bounded. */
     private function refuseLongComment(?string $comment): ?ZoneChangeRequestResult
     {
+        if ($comment !== null && !mb_check_encoding($comment, 'UTF-8')) {
+            return $this->refuseInvalidText('comment');
+        }
         if ($comment === null || mb_strlen($comment) <= self::MAX_COMMENT_LENGTH) {
             return null;
         }
 
         $error = sprintf(_('The %s field must be at most %d characters.'), 'comment', self::MAX_COMMENT_LENGTH);
         return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
+    }
+
+    private function refuseInvalidText(string $field): ZoneChangeRequestResult
+    {
+        $error = sprintf(_('The %s field contains invalid characters.'), $field);
+        return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
+    }
+
+    /** The stored payload is JSON, which cannot carry bytes that are not UTF-8. */
+    private function refuseInvalidPayload(array $actions, ?string $zoneComment): ?ZoneChangeRequestResult
+    {
+        if ($zoneComment !== null && !mb_check_encoding($zoneComment, 'UTF-8')) {
+            return $this->refuseInvalidText('comment');
+        }
+
+        $valid = true;
+        array_walk_recursive($actions, static function ($value) use (&$valid): void {
+            if (is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                $valid = false;
+            }
+        });
+
+        return $valid ? null : $this->refuseInvalidText('record');
     }
 
     /**
@@ -770,6 +796,9 @@ class ZoneChangeRequestService
         if ($comment === null && $this->config->get('logging', 'require_change_comment', false)) {
             $error = 'A reason for this change is required.';
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_VALIDATION, $error, Refusal::INVALID_INPUT, [$error]);
+        }
+        if ($invalid = $this->refuseInvalidPayload($actions, $zoneComment)) {
+            return $invalid;
         }
         if (strlen(ZoneChangeRequest::encodePayload($actions, $zoneComment)) > self::MAX_PAYLOAD_BYTES) {
             return ZoneChangeRequestResult::failure(ZoneChangeRequestResult::CODE_PAYLOAD_TOO_LARGE, 'The request is too large to store; submit it as several smaller changes.', Refusal::PAYLOAD_TOO_LARGE);

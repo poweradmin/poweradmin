@@ -337,6 +337,10 @@ class ZoneMetadataService
                 return new ZoneMetadataResult(ZoneMetadataOutcome::SINGLE_VALUE_ONLY, $kind);
             }
 
+            if (!mb_check_encoding($row['content'], 'UTF-8')) {
+                return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_TEXT, $kind);
+            }
+
             // PowerDNS stores an unknown policy string without complaint and then
             // ignores it, so the vocabulary has to be enforced here.
             $options = MetadataDefinitions::getAllowedValues($kind, $this->config);

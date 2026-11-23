@@ -158,6 +158,21 @@ class ZoneEditServiceTest extends TestCase
         $this->assertTrue($result->serialBumped);
     }
 
+    public function testACommentWithBytesThatAreNotUtf8IsRefusedAndNothingIsWritten(): void
+    {
+        $this->zones->expects($this->never())->method('updateZoneComment');
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+        $service = $this->makeService();
+
+        foreach ([$this->submission(zoneComment: "caf\xE9"), $this->submission([$this->row('5', 'www', '192.0.2.1', comment: "caf\xE9")])] as $submission) {
+            $result = $service->save($submission);
+
+            $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+            $this->assertSame(['The comment field contains invalid characters.'], $result->errors);
+        }
+    }
+
     public function testAnAbsentZoneCommentKeepsTheStoredOne(): void
     {
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);

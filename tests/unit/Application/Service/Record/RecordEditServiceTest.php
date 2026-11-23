@@ -197,6 +197,17 @@ class RecordEditServiceTest extends TestCase
         $this->assertSame([], $result->record);
     }
 
+    public function testACommentWithBytesThatAreNotUtf8IsRefusedBeforeAnyWrite(): void
+    {
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+
+        $result = $this->service()->edit($this->request(['comment' => "caf\xE9"]));
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame('The comment field contains invalid characters.', $result->write->message);
+    }
+
     public function testTheEditIsAuditedWithTheRowBeforeAndTheRereadRowAfter(): void
     {
         $this->audit->expects($this->once())->method('logRecordEdit')->with(self::ZONE_ID, $this->current, $this->reread);

@@ -1210,6 +1210,14 @@ class UserManagementService
     {
         $limits = ['username' => [$username, 64], 'fullname' => [$fullname, 255], 'email' => [$email, 255], 'description' => [$description, 1024]];
         foreach ($limits as $field => [$value, $max]) {
+            if ($value !== null && !mb_check_encoding($value, 'UTF-8')) {
+                return [
+                    'success' => false,
+                    'message' => ucfirst($field) . ' contains invalid characters',
+                    'refusal' => Refusal::INVALID_INPUT,
+                    'code' => self::ERR_FIELD_LENGTH,
+                ];
+            }
             if ($value !== null && mb_strlen($value) > $max) {
                 return [
                     'success' => false,

@@ -100,6 +100,15 @@ class RecordManagerEditZoneCommentTest extends PermissionServiceTestCase
         $this->assertSame([], $this->rows());
     }
 
+    public function testACommentWithBytesThatAreNotUtf8IsRefusedBeforeAnyWrite(): void
+    {
+        $result = $this->manager()->editZoneComment(self::ZONE_ID, "caf\xE9");
+
+        $this->assertFalse($result->success);
+        $this->assertSame(Refusal::INVALID_INPUT, $result->refusal);
+        $this->assertSame([], $this->rows());
+    }
+
     private function manager(string $zoneType = 'MASTER'): RecordManager
     {
         $domainRepository = $this->createMock(DomainRepositoryInterface::class);

@@ -117,6 +117,23 @@ class UserManagementServiceCredentialsTest extends TestCase
     }
 
     #[Test]
+    public function testADescriptionWithBytesThatAreNotUtf8IsRefusedOnCreateAndUpdate(): void
+    {
+        $this->passwordPolicy->method('validatePassword')->willReturn([]);
+        $this->userRepository->expects($this->never())->method('createUser');
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $created = $this->createUser(false, ['username' => 'newuser', 'password' => 'Secret123!', 'perm_templ' => 3, 'description' => "caf\xE9"]);
+        $updated = $this->updateUser(false, 7, ['description' => "caf\xE9"]);
+
+        foreach ([$created, $updated] as $result) {
+            $this->assertFalse($result['success']);
+            $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+            $this->assertSame('Description contains invalid characters', $result['message']);
+        }
+    }
+
+    #[Test]
     public function testCreateUserHashesWithConfiguredHasher(): void
     {
         $this->passwordPolicy->method('validatePassword')->willReturn([]);

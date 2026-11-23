@@ -101,6 +101,18 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertContains('INCREASE', $result->options);
     }
 
+    public function testAValueWithBytesThatAreNotUtf8IsRefused(): void
+    {
+        $service = $this->sqlService();
+        $this->store->method('load')->willReturn([]);
+        $this->store->expects($this->never())->method('replaceAll');
+
+        $result = $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'GSS-ACCEPTOR-PRINCIPAL', 'content' => "host/\xE9@EXAMPLE.COM"]], self::ADMIN);
+
+        $this->assertSame(ZoneMetadataOutcome::INVALID_TEXT, $result->outcome);
+        $this->assertSame('GSS-ACCEPTOR-PRINCIPAL', $result->kind);
+    }
+
     public function testConfiguredVocabularyNarrowsAcceptedValues(): void
     {
         $this->config = $this->createMock(ConfigurationInterface::class);

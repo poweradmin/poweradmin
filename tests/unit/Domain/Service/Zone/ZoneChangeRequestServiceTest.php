@@ -305,6 +305,27 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertSame(0, $this->repository->count([]));
     }
 
+    public function testACommentWithBytesThatAreNotUtf8IsRefusedOnEveryFilingPath(): void
+    {
+        $service = $this->makeService();
+        $bad = "caf\xE9";
+
+        $result = $service->fileZoneDelete(self::ZONE_ID, self::REQUESTER, 'alice', $bad);
+        $this->assertFalse($result->success);
+        $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $result->code);
+        $this->assertSame('The comment field contains invalid characters.', $result->message);
+
+        $record = ['name' => 'new', 'type' => 'TXT', 'content' => 'x', 'ttl' => 300, 'prio' => 0, 'comment' => $bad];
+        $this->assertSame(ZoneChangeRequestResult::CODE_VALIDATION, $service->fileRecordAdd(self::ZONE_ID, self::ZONE, $record, self::REQUESTER, 'alice')->code);
+        $this->assertSame(0, $this->repository->count([]));
+
+        $record['comment'] = 'ok';
+        $record['content'] = "caf\xE9";
+        $result = $service->fileRecordAdd(self::ZONE_ID, self::ZONE, $record, self::REQUESTER, 'alice');
+        $this->assertFalse($result->success);
+        $this->assertSame('The record field contains invalid characters.', $result->message);
+    }
+
     public function testARequestCommentAtTheCapIsFiled(): void
     {
         $comment = str_repeat('é', ZoneChangeRequestService::MAX_COMMENT_LENGTH);

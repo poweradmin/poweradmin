@@ -414,6 +414,7 @@ class ZoneMetadataController extends PublicApiController
             ZoneMetadataOutcome::EMPTY_VALUES => $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400),
             ZoneMetadataOutcome::SINGLE_VALUE_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400),
             ZoneMetadataOutcome::INVALID_VALUE => $this->returnApiError('Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $result->options ?? []), 422),
+            ZoneMetadataOutcome::INVALID_TEXT => $this->returnApiError('The ' . $kind . ' field contains invalid characters.', 422),
             ZoneMetadataOutcome::COMPANION_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' only takes effect together with ' . (string)$result->companion, 422),
             ZoneMetadataOutcome::OPERATOR_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' can only be set by an administrator', 403),
             ZoneMetadataOutcome::DNSSEC_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' needs the DNSSEC management permission on this zone', 403),

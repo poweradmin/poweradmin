@@ -41,6 +41,16 @@ class TestableAbstractApiHelpersController extends AbstractApiController
         return $this->getValidatedJsonBody();
     }
 
+    public function callGetJsonInput(): ?array
+    {
+        return $this->getJsonInput();
+    }
+
+    public function callReturnJsonResponse(mixed $data, int $status = 200): JsonResponse
+    {
+        return $this->returnJsonResponse($data, $status);
+    }
+
     public function callMethodNotAllowed(array $allowedMethods): JsonResponse
     {
         return $this->methodNotAllowed($allowedMethods);

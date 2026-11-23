@@ -40,6 +40,7 @@ final class ZoneMetadataFormMessages
             ZoneMetadataOutcome::EMPTY_VALUES => sprintf(_('Metadata kind %s needs a value.'), $kind),
             ZoneMetadataOutcome::SINGLE_VALUE_ONLY => sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind),
             ZoneMetadataOutcome::INVALID_VALUE => sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $result->options ?? [])),
+            ZoneMetadataOutcome::INVALID_TEXT => sprintf(_('The %s field contains invalid characters.'), $kind),
             ZoneMetadataOutcome::COMPANION_REQUIRED => sprintf(
                 _('Metadata kind %s only takes effect together with %s. Add a %s row as well.'),
                 $kind,

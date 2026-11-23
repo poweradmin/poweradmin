@@ -766,6 +766,10 @@ class RecordManager implements RecordManagerInterface
             return RecordWriteResult::forbidden(_("You do not have the permission to edit this comment."));
         }
 
+        if (!mb_check_encoding($comment, 'UTF-8')) {
+            return RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment'));
+        }
+
         $this->repositoryFactory->createZoneRepository()->saveZoneComment($zone_id, $comment);
 
         return RecordWriteResult::ok();

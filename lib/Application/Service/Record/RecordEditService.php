@@ -35,6 +35,7 @@ use Poweradmin\Domain\Repository\RecordLookupInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\RecordWriteResult;
 use Poweradmin\Domain\Service\Dns\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -70,6 +71,10 @@ class RecordEditService
 
     public function edit(RecordEditRequest $request): RecordEditResult
     {
+        if ($request->comment !== null && !mb_check_encoding($request->comment, 'UTF-8')) {
+            return RecordEditResult::refused(RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment')));
+        }
+
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($request->name), $request->zoneName);
         $content = DnsIdnService::convertContentToPunycode($request->type, $request->content);
 

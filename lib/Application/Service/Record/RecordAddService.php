@@ -110,6 +110,10 @@ class RecordAddService
         string $origin = AuditLoggerInterface::ORIGIN_WEB,
         ?Closure $companionZoneAllowed = null
     ): RecordAddResult {
+        if (!mb_check_encoding($comment, 'UTF-8')) {
+            return RecordAddResult::refused(RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment')));
+        }
+
         $ttl ??= $this->ttlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName));
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($name), $zoneName);
         $content = DnsIdnService::convertContentToPunycode($type, $content);

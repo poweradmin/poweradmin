@@ -125,8 +125,17 @@ abstract class AbstractApiController extends BaseController
             return is_array($decoded) ? $decoded : null;
         }
 
-        // Fall back to POST data if no valid JSON in the body
-        return $this->request->request->all() ?: null;
+        // Fall back to POST data if no valid JSON in the body; a JSON body cannot carry
+        // invalid UTF-8, so a form body that does is refused like a malformed one
+        $form = $this->request->request->all();
+        $valid = true;
+        array_walk_recursive($form, static function ($value, $key) use (&$valid): void {
+            if (!mb_check_encoding((string)$key, 'UTF-8') || (is_string($value) && !mb_check_encoding($value, 'UTF-8'))) {
+                $valid = false;
+            }
+        });
+
+        return $valid ? ($form ?: null) : null;
     }
 
     /**
@@ -161,7 +170,11 @@ abstract class AbstractApiController extends BaseController
             return $response;
         }
 
-        return new JsonResponse($data, $status, $headers);
+        // Stored bytes that are not UTF-8 must not turn the whole response into a 500
+        $response = new JsonResponse(null, $status, $headers);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_INVALID_UTF8_SUBSTITUTE);
+
+        return $response->setData($data);
     }
 
     /**

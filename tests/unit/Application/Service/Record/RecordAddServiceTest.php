@@ -220,6 +220,18 @@ class RecordAddServiceTest extends TestCase
         $this->assertTrue($result->isOk());
     }
 
+    public function testRefusesACommentWithBytesThatAreNotUtf8(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->never())->method('createRecord');
+
+        $result = $this->makeService($records)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, "caf\xE9", 7, 'alice');
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame(Refusal::INVALID_INPUT, $result->record->refusal);
+    }
+
     public function testRefusesTheWriteWhenTheUserMayNotEditTheZone(): void
     {
         $records = $this->createMock(RecordManagerService::class);

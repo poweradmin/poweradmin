@@ -420,7 +420,12 @@ class ChangeRequestsController extends PublicApiController
                 return $this->returnApiError('Forbidden: this API key is not permitted to perform this operation', 403);
             }
 
-            $comment = $this->inputString($this->getJsonInput() ?? [], 'comment');
+            // No body means no comment; a body that was refused (malformed JSON, invalid UTF-8) must not pass for one
+            $input = $this->getJsonInput();
+            if ($input === null && ($this->request->getContent() !== '' || $this->request->request->count() > 0)) {
+                return $this->returnApiError('Invalid JSON in request body', 400);
+            }
+            $comment = $this->inputString($input ?? [], 'comment');
             $reviewer = $this->getAuthenticatedUsername();
             $result = $decision === 'approve'
                 ? $this->changeRequests->approve($request->id, $userId, $reviewer, $comment)

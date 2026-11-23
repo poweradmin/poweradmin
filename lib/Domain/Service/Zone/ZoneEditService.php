@@ -116,6 +116,10 @@ class ZoneEditService
             return new ZoneSaveResult(ZoneSaveOutcome::READ_ONLY);
         }
 
+        if (!$this->commentsAreValidText($submission)) {
+            return new ZoneSaveResult(ZoneSaveOutcome::WRITE_FAILED, errors: [sprintf(_('The %s field contains invalid characters.'), 'comment')]);
+        }
+
         // A truncated submission lost its trailing fields, so the zone comment must
         // not be processed either: it would be saved as empty
         $truncated = $submission->truncated;
@@ -491,6 +495,21 @@ class ZoneEditService
         }
 
         return $edited;
+    }
+
+    /** Comments are stored and listed as text, so bytes that are not UTF-8 are refused up front. */
+    private function commentsAreValidText(ZoneEditSubmission $submission): bool
+    {
+        if ($submission->zoneComment !== null && !mb_check_encoding($submission->zoneComment, 'UTF-8')) {
+            return false;
+        }
+        foreach ($submission->rows as $row) {
+            if ($row->comment !== null && !mb_check_encoding($row->comment, 'UTF-8')) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function saveZoneComment(ZoneEditSubmission $submission): bool

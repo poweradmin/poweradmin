@@ -38,6 +38,10 @@ class ZoneMetadataFormMessagesTest extends TestCase
             ZoneMetadataFormMessages::errorMessage(new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_VALUE, 'SOA-EDIT-API', ['DEFAULT', 'INCREASE']))
         );
         $this->assertSame(
+            'The GSS-ACCEPTOR-PRINCIPAL field contains invalid characters.',
+            ZoneMetadataFormMessages::errorMessage(new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_TEXT, 'GSS-ACCEPTOR-PRINCIPAL'))
+        );
+        $this->assertSame(
             'Metadata kind NSEC3NARROW only takes effect together with NSEC3PARAM. Add a NSEC3PARAM row as well.',
             ZoneMetadataFormMessages::errorMessage(new ZoneMetadataResult(ZoneMetadataOutcome::COMPANION_REQUIRED, 'NSEC3NARROW', null, 'NSEC3PARAM'))
         );
