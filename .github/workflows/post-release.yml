@@ -5,35 +5,40 @@ on:
     types: [published]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   version-bump:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           ref: ${{ github.event.release.target_commitish }}
-          # The built-in token cannot pass the required status check on the release
-          # branches, and its pushes start no other workflows. A maintainer token can.
-          token: ${{ secrets.RELEASE_BUMP_TOKEN || github.token }}
+          persist-credentials: false
 
       - name: Get released version
         id: released
+        env:
+          TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
+          if ! [[ "$TAG_NAME" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Unexpected release tag format"
+            exit 1
+          fi
           # Remove 'v' prefix from tag
-          VERSION="${{ github.event.release.tag_name }}"
-          VERSION="${VERSION#v}"
+          VERSION="${TAG_NAME#v}"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Released version: $VERSION"
 
       - name: Calculate next version
         id: next_version
+        env:
+          CURRENT: ${{ steps.released.outputs.version }}
         run: |
-          CURRENT="${{ steps.released.outputs.version }}"
-
           # Always bump patch version after release
           NEXT=$(echo "$CURRENT" | awk -F. '{print $1"."$2"."$3+1}')
 
@@ -42,8 +47,9 @@ jobs:
 
       - name: Resolve branch name
         id: branch
+        env:
+          TARGET: ${{ github.event.release.target_commitish }}
         run: |
-          TARGET="${{ github.event.release.target_commitish }}"
           # If target_commitish is a SHA, resolve the branch name from the tag
           if [[ "$TARGET" =~ ^[0-9a-f]{40}$ ]]; then
             BRANCH=$(git branch -r --contains "$TARGET" | grep -v HEAD | head -1 | sed 's|^ *origin/||')
@@ -53,6 +59,10 @@ jobs:
             fi
           else
             BRANCH="$TARGET"
+          fi
+          if ! [[ "$BRANCH" =~ ^[0-9A-Za-z][0-9A-Za-z._/-]*$ ]]; then
+            echo "::error::Unexpected branch name format"
+            exit 1
           fi
           echo "name=$BRANCH" >> "$GITHUB_OUTPUT"
           echo "Resolved branch: $BRANCH"
@@ -67,16 +77,23 @@ jobs:
 
       - name: Update version file
         if: steps.branch.outputs.skip != 'true'
+        env:
+          BRANCH: ${{ steps.branch.outputs.name }}
+          NEXT_VERSION: ${{ steps.next_version.outputs.version }}
+          # The built-in token cannot pass the required status check on the release
+          # branches, and its pushes start no other workflows. A maintainer token can.
+          PUSH_TOKEN: ${{ secrets.RELEASE_BUMP_TOKEN || github.token }}
+          REPO: ${{ github.repository }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Ensure we're on the branch, not detached HEAD
-          git checkout "${{ steps.branch.outputs.name }}"
+          git checkout "$BRANCH"
 
           # Update version in lib/Version.php
-          sed -i "s/VERSION = '[^']*'/VERSION = '${{ steps.next_version.outputs.version }}'/" lib/Version.php
+          sed -i "s/VERSION = '[^']*'/VERSION = '${NEXT_VERSION}'/" lib/Version.php
 
           git add lib/Version.php
-          git commit -m "chore(release): bump version to ${{ steps.next_version.outputs.version }}"
-          git push origin "${{ steps.branch.outputs.name }}"
+          git commit -m "chore(release): bump version to ${NEXT_VERSION}"
+          git push "https://x-access-token:${PUSH_TOKEN}@github.com/${REPO}.git" "HEAD:refs/heads/${BRANCH}"

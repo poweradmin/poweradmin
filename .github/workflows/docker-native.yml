@@ -30,6 +30,9 @@ on:
         description: 'Docker Hub token for the manifest push. GITHUB_TOKEN is provided automatically.'
         required: true
 
+permissions:
+  contents: read
+
 env:
   GHCR_IMAGE: ghcr.io/poweradmin/poweradmin
   DOCKERHUB_IMAGE: poweradmin/poweradmin
@@ -54,6 +57,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ inputs.ref }}
+          persist-credentials: false
 
       - name: Lint Dockerfile with hadolint
         if: matrix.platform == 'linux/amd64'
@@ -117,6 +121,7 @@ jobs:
           path: .workflow-src
           sparse-checkout: .github/scripts/docker-smoke.sh
           sparse-checkout-cone-mode: false
+          persist-credentials: false
 
       - name: Smoke test
         env:
