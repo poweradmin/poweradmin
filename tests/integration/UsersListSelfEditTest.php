@@ -77,13 +77,17 @@ class UsersListSelfEditTest extends TestCase
     }
 
     #[RunInSeparateProcess]
-    public function testOwnRowMayChangeUsernameWithEditOthers(): void
+    public function testOwnRowKeepsUsernameEmailAndPasswordEvenWithEditOthers(): void
     {
-        $this->db->exec("UPDATE users SET perm_templ = 2 WHERE id = " . self::SELF);
+        $this->db->exec("UPDATE users SET perm_templ = 2, password = 'stored-hash' WHERE id = " . self::SELF);
 
-        $this->assertTrue($this->save(['uid' => self::SELF, 'username' => 'alice2', 'fullname' => 'Alice', 'email' => 'alice@example.com', 'active' => 'on']));
+        $this->assertTrue($this->save(['uid' => self::SELF, 'username' => 'alice2', 'fullname' => 'Alice B', 'email' => 'attacker@example.net', 'password' => 'NewPass123!x', 'active' => 'on']));
 
-        $this->assertSame('alice2', $this->row(self::SELF)['username']);
+        $row = $this->row(self::SELF);
+        $this->assertSame('alice', $row['username']);
+        $this->assertSame('alice@example.com', $row['email']);
+        $this->assertSame('stored-hash', $row['password']);
+        $this->assertSame('Alice B', $row['fullname']);
     }
 
     #[RunInSeparateProcess]
@@ -96,6 +100,36 @@ class UsersListSelfEditTest extends TestCase
         $row = $this->row(self::OTHER);
         $this->assertSame('bobby', $row['username']);
         $this->assertSame(0, (int)$row['active']);
+    }
+
+    /** @return list<array{0: mixed}> */
+    public static function invalidUids(): array
+    {
+        return [['1abc'], ['5abc'], [[5]], [''], ['-5'], [null]];
+    }
+
+    #[RunInSeparateProcess]
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUids')]
+    public function testNonNumericUidIsRefusedAndNothingIsWritten(mixed $uid): void
+    {
+        $this->db->exec("UPDATE users SET perm_templ = 2, password = 'stored-hash' WHERE id = " . self::SELF);
+
+        $this->assertFalse($this->save(['uid' => $uid, 'username' => 'alice', 'fullname' => 'Alice B', 'email' => 'attacker@example.net', 'password' => 'NewPass123!x', 'active' => 'on']));
+
+        $row = $this->row(self::SELF);
+        $this->assertSame('alice@example.com', $row['email']);
+        $this->assertSame('Alice', $row['fullname']);
+        $this->assertSame('stored-hash', $row['password']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testNumericStringOwnUidIsStillTheOwnRow(): void
+    {
+        $this->db->exec("UPDATE users SET perm_templ = 2 WHERE id = " . self::SELF);
+
+        $this->assertTrue($this->save(['uid' => (string)self::SELF, 'username' => 'alice', 'fullname' => 'Alice', 'email' => 'attacker@example.net', 'active' => 'on']));
+
+        $this->assertSame('alice@example.com', $this->row(self::SELF)['email']);
     }
 
     /** @param array<string, mixed> $details */

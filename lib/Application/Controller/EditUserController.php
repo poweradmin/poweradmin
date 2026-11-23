@@ -25,15 +25,18 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\LoginAttemptService;
+use Poweradmin\Application\Service\PasswordChangeService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
+use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -44,6 +47,7 @@ use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
@@ -58,6 +62,7 @@ class EditUserController extends BaseController
     private LegacyLogger $auditLogger;
     private IpAddressRetriever $ipAddressRetriever;
     private AuditService $auditService;
+    private ?PasswordChangeService $passwordChangeService = null;
 
     public function __construct(
         array $request
@@ -122,6 +127,17 @@ class EditUserController extends BaseController
             $this->setMessage('edit_user', 'error', $e->getMessage());
             $this->showUserEditForm($editId, $policyConfig);
             return;
+        }
+
+        if ($editId === $this->userContextService->getLoggedInUserId()) {
+            // Your own password goes through the change password page, which asks for the current one
+            $params['password'] = '';
+            $stepUpError = $this->ownIdentityChangeError($editId, $params);
+            if ($stepUpError !== null) {
+                $this->setMessage('edit_user', 'error', $stepUpError);
+                $this->showUserEditForm($editId, $policyConfig);
+                return;
+            }
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
@@ -218,8 +234,68 @@ class EditUserController extends BaseController
         return true;
     }
 
+    /**
+     * A borrowed session must not redirect the account's mail or rename it without the
+     * password. Accounts without a local password have nothing to confirm.
+     */
+    private function ownIdentityChangeError(int $editId, array $params): ?string
+    {
+        $stored = $this->getUserDetails($editId);
+        if (!self::changesSignInIdentity($stored, $params)) {
+            return null;
+        }
+        if (in_array($stored['auth_type'] ?? 'sql', self::EXTERNAL_AUTH_METHODS, true)) {
+            return null;
+        }
+
+        [$confirmed, $message] = $this->passwordChangeService()->confirmCurrentPassword(
+            $this->currentPasswordInput()
+        );
+
+        return $confirmed ? null : $message;
+    }
+
+    /**
+     * Whether the submitted username or email differs from the stored one.
+     */
+    public static function changesSignInIdentity(array $stored, array $params): bool
+    {
+        return (string)($params['username'] ?? '') !== (string)($stored['username'] ?? '')
+            || (string)($params['email'] ?? '') !== (string)($stored['email'] ?? '');
+    }
+
+    private function currentPasswordInput(): string
+    {
+        $value = $this->request->getPostParam('current_password', '');
+
+        return is_string($value) ? $value : '';
+    }
+
+    private function passwordChangeService(): PasswordChangeService
+    {
+        if ($this->passwordChangeService === null) {
+            $this->passwordChangeService = new PasswordChangeService(
+                new DbUserRepository($this->db, $this->config),
+                new UserAuthenticationService(
+                    $this->config->get('security', 'password_encryption', 'bcrypt'),
+                    (int)$this->config->get('security', 'password_cost', 12)
+                ),
+                $this->userContextService,
+                new LoginAttemptService($this->db, $this->config),
+                $this->ipAddressRetriever->getClientIp() ?: '0.0.0.0'
+            );
+        }
+
+        return $this->passwordChangeService;
+    }
+
     private function validatePasswordPolicy(int $editId): bool
     {
+        // An own password posted here is dropped, so there is nothing to check
+        if ($editId === $this->userContextService->getLoggedInUserId()) {
+            return true;
+        }
+
         $password = $this->request->getPostParam('password');
         if (empty($password)) {
             return true;

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\UserContextService;
 
@@ -43,7 +44,38 @@ class PasswordChangeService
     ) {
     }
 
+    /**
+     * Proves the signed-in user knows their current password, counted like the change
+     * itself; for account changes that must not ride on a borrowed session.
+     *
+     * @return array{0: bool, 1: string} success flag and, on failure, the message to show
+     */
+    public function confirmCurrentPassword(string $password): array
+    {
+        [$user, $error] = $this->reauthenticate($password);
+
+        return $user === null ? [false, (string)$error] : [true, ''];
+    }
+
     public function changePassword(string $oldPassword, string $newPassword): array
+    {
+        [$user, $error] = $this->reauthenticate($oldPassword);
+        if ($user === null) {
+            return [false, (string)$error];
+        }
+
+        $hashedPassword = $this->authService->hashPassword($newPassword);
+        $updated = $this->userRepository->updatePassword($user->getId(), $hashedPassword);
+
+        return $updated
+            ? [true, _(self::ERROR_MESSAGES['password_changed'])]
+            : [false, _('Failed to update password')];
+    }
+
+    /**
+     * @return array{0: ?User, 1: ?string} the verified account, or null with the message to show
+     */
+    private function reauthenticate(string $password): array
     {
         // The signed-in account, not the login name: a session past the password but still
         // waiting for its second factor carries the name without a user id
@@ -52,34 +84,28 @@ class PasswordChangeService
         $user = $userId !== null && $username !== null ? $this->userRepository->findByUsername($username) : null;
 
         if ($user === null || $user->getId() !== $userId) {
-            return [false, _(self::ERROR_MESSAGES['user_not_found'])];
+            return [null, _(self::ERROR_MESSAGES['user_not_found'])];
         }
 
         if ($user->isLdapUser()) {
-            return [false, _(self::ERROR_MESSAGES['ldap_user'])];
+            return [null, _(self::ERROR_MESSAGES['ldap_user'])];
         }
 
         // Counted with sign-in, so a borrowed session cannot guess the password unthrottled
         if ($this->loginAttempts?->isAccountLocked($username, $this->clientIp)) {
-            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+            return [null, _(self::ERROR_MESSAGES['invalid_password'])];
         }
 
         // Counted before the check so parallel guesses cannot all read an empty counter
         if ($this->loginAttempts !== null && !$this->loginAttempts->reserveAttempt($username, $this->clientIp)) {
-            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+            return [null, _(self::ERROR_MESSAGES['invalid_password'])];
         }
 
-        $matches = $this->authService->verifyPassword($oldPassword, $user->getPassword());
-        if (!$matches) {
-            return [false, _(self::ERROR_MESSAGES['invalid_password'])];
+        if (!$this->authService->verifyPassword($password, $user->getPassword())) {
+            return [null, _(self::ERROR_MESSAGES['invalid_password'])];
         }
         $this->loginAttempts?->confirmAttempt($username, $this->clientIp);
 
-        $hashedPassword = $this->authService->hashPassword($newPassword);
-        $updated = $this->userRepository->updatePassword($user->getId(), $hashedPassword);
-
-        return $updated
-            ? [true, _(self::ERROR_MESSAGES['password_changed'])]
-            : [false, _('Failed to update password')];
+        return [$user, null];
     }
 }

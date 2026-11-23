@@ -132,6 +132,44 @@ class PasswordChangeServiceTest extends TestCase
         $this->assertFalse($changed);
     }
 
+    public function testConfirmingTheCurrentPasswordChangesNothingAndClearsTheAttempt(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->once())->method('reserveAttempt')->with('victim', '203.0.113.9')->willReturn(true);
+        $attempts->expects($this->once())->method('confirmAttempt')->with('victim', '203.0.113.9');
+        $this->users->expects($this->never())->method('updatePassword');
+        $result = $this->confirm(['userid' => self::USER_ID, 'userlogin' => 'victim'], true, $attempts);
+
+        $this->assertSame([true, ''], $result);
+    }
+
+    public function testConfirmingAWrongCurrentPasswordStaysCountedAsAFailedSignIn(): void
+    {
+        $attempts = $this->createMock(LoginAttemptService::class);
+        $attempts->expects($this->once())->method('reserveAttempt')->with('victim', '203.0.113.9')->willReturn(true);
+        $attempts->expects($this->never())->method('confirmAttempt');
+
+        [$confirmed] = $this->confirm(['userid' => self::USER_ID, 'userlogin' => 'victim'], false, $attempts);
+
+        $this->assertFalse($confirmed);
+    }
+
+    public function testASessionWaitingForItsSecondFactorCannotConfirmThePassword(): void
+    {
+        [$confirmed] = $this->confirm(['pending_userid' => self::USER_ID, 'userlogin' => 'victim'], true, null);
+
+        $this->assertFalse($confirmed);
+    }
+
+    private function confirm(array $session, bool $passwordMatches, ?LoginAttemptService $attempts): array
+    {
+        $_SESSION = $session;
+        $auth = $this->createMock(UserAuthenticationService::class);
+        $auth->method('verifyPassword')->willReturn($passwordMatches);
+
+        return (new PasswordChangeService($this->users, $auth, new UserContextService(), $attempts, '203.0.113.9'))->confirmCurrentPassword('old');
+    }
+
     private function changePassword(array $session, bool $passwordMatches = true, ?LoginAttemptService $attempts = null): array
     {
         $_SESSION = $session;

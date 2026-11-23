@@ -81,7 +81,8 @@ class UserManagerUsernameCompareTest extends TestCase
     #[RunInSeparateProcess]
     public function testUpdateUserDetailsRefusesRenameToANumericallyEqualTakenName(): void
     {
-        $_SESSION['userid'] = 2;
+        // Another account's row: the own row no longer takes a new username
+        $_SESSION['userid'] = 3;
 
         $result = $this->manager()->updateUserDetails([
             'uid' => 2,
