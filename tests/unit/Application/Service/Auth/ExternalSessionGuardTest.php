@@ -23,6 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Service\Auth;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Auth\ExternalSessionGuard;
 use Poweradmin\Domain\Repository\AuthUserLookupInterface;
@@ -107,5 +108,39 @@ class ExternalSessionGuardTest extends TestCase
         $lookup->expects($this->never())->method('isActiveUser');
 
         $this->assertTrue((new ExternalSessionGuard($lookup, new ArraySession()))->accountIsActive());
+    }
+
+    #[DataProvider('movedAuthMethodProvider')]
+    public function testAccountMovedToDirectorySignInEndsTheSession(string $method, bool $expected): void
+    {
+        $session = new ArraySession();
+        $session->set(SessionKeys::USERLOGIN, 'alice');
+
+        $lookup = $this->createMock(AuthUserLookupInterface::class);
+        $lookup->method('findAuthMethodRow')->with('alice')->willReturn(['auth_method' => $method]);
+
+        $this->assertSame($expected, (new ExternalSessionGuard($lookup, $session))->accountMovedToDirectorySignIn());
+    }
+
+    public static function movedAuthMethodProvider(): array
+    {
+        return [
+            'ldap' => ['ldap', true],
+            'remote_user' => ['remote_user', true],
+            'sql with SSO' => ['sql', false],
+            'oidc' => ['oidc', false],
+            'saml' => ['saml', false],
+        ];
+    }
+
+    public function testMissingAccountRowIsNotTreatedAsMoved(): void
+    {
+        $session = new ArraySession();
+        $session->set(SessionKeys::USERLOGIN, 'gone');
+
+        $lookup = $this->createMock(AuthUserLookupInterface::class);
+        $lookup->method('findAuthMethodRow')->willReturn(null);
+
+        $this->assertFalse((new ExternalSessionGuard($lookup, $session))->accountMovedToDirectorySignIn());
     }
 }

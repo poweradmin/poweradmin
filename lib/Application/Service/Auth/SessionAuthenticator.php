@@ -609,6 +609,12 @@ final class SessionAuthenticator
             return;
         }
 
+        if ($holdsAccount && $guard->accountMovedToDirectorySignIn()) {
+            $this->logger->warning('Ending {protocol} session of {username}: the account now signs in through LDAP or the web server', ['protocol' => $protocol, 'username' => $this->session->get(SessionKeys::USERLOGIN, 'unknown')]);
+            $this->authService->logout(new FlashMessage(_('Session expired, please login again.'), 'danger'));
+            return;
+        }
+
         $this->endSessionOfDisabledAccount();
     }
 

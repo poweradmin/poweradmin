@@ -48,6 +48,8 @@ class DbUserRepositoryProvisioningTest extends TestCase
                 "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, password TEXT NOT NULL, fullname TEXT NOT NULL,
                     email TEXT NOT NULL, description TEXT NOT NULL, perm_templ INTEGER NOT NULL, perm_templ_source TEXT NOT NULL DEFAULT 'admin',
                     active INTEGER, use_ldap INTEGER NOT NULL, auth_method TEXT NOT NULL DEFAULT 'sql')",
+                "CREATE TABLE oidc_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, oidc_subject TEXT NOT NULL)",
+                "CREATE TABLE saml_user_links (id INTEGER PRIMARY KEY, user_id INTEGER NOT NULL, saml_subject TEXT NOT NULL)",
                 "CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT NOT NULL, descr TEXT, template_type TEXT NOT NULL DEFAULT 'user')",
                 "INSERT INTO perm_templ (id, name) VALUES (1, 'Administrator'), (5, 'Guest')",
                 "INSERT INTO users (id, username, password, fullname, email, description, perm_templ, perm_templ_source, active, use_ldap, auth_method)
@@ -109,6 +111,45 @@ class DbUserRepositoryProvisioningTest extends TestCase
 
         $this->repository->updateUser(1, new UpdateUserCommand(useRemoteUser: false));
         $this->assertSame(['sql', 0], $this->authColumns(1));
+    }
+
+    public function testSwitchingAnSsoAccountToLdapOrWebServerDeletesItsSsoLinks(): void
+    {
+        foreach (['useLdap', 'useRemoteUser'] as $switch) {
+            $this->db->exec("UPDATE users SET auth_method = 'oidc' WHERE id = 1");
+            $this->db->exec("DELETE FROM oidc_user_links; DELETE FROM saml_user_links");
+            $this->db->exec("INSERT INTO oidc_user_links (user_id, oidc_subject) VALUES (1, 'sub-a'), (2, 'sub-b')");
+            $this->db->exec("INSERT INTO saml_user_links (user_id, saml_subject) VALUES (1, 'name-a')");
+
+            $this->repository->updateUser(1, new UpdateUserCommand(...[$switch => true]));
+
+            $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 1')->fetchColumn(), $switch);
+            $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM saml_user_links WHERE user_id = 1')->fetchColumn(), $switch);
+            $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 2')->fetchColumn(), 'other accounts keep their links');
+        }
+    }
+
+    public function testEditingAnSsoAccountWithoutSwitchingItKeepsItsLinks(): void
+    {
+        $this->db->exec("INSERT INTO oidc_user_links (user_id, oidc_subject) VALUES (1, 'sub-a')");
+
+        $this->repository->updateUser(1, new UpdateUserCommand(useLdap: false));
+        $this->repository->updateUser(1, new UpdateUserCommand(fullname: 'Renamed'));
+
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 1')->fetchColumn());
+    }
+
+    public function testResavingAnLdapOrWebServerAccountKeepsItsLinks(): void
+    {
+        foreach ([['ldap', 'useLdap'], ['remote_user', 'useRemoteUser']] as [$method, $switch]) {
+            $this->db->exec("UPDATE users SET auth_method = '$method' WHERE id = 1");
+            $this->db->exec("DELETE FROM oidc_user_links");
+            $this->db->exec("INSERT INTO oidc_user_links (user_id, oidc_subject) VALUES (1, 'sub-a')");
+
+            $this->repository->updateUser(1, new UpdateUserCommand(...[$switch => true]));
+
+            $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM oidc_user_links WHERE user_id = 1')->fetchColumn(), $method);
+        }
     }
 
     /** @return array{0: string, 1: int} */

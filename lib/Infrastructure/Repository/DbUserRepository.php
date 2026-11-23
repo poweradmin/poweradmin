@@ -1655,16 +1655,15 @@ class DbUserRepository implements UserRepositoryInterface
 
         // auth_method and the legacy use_ldap flag change together; switching LDAP off
         // keeps an OIDC, SAML or web server account as it is.
+        $movedToDirectory = false;
         if ($changes->useLdap !== null || $changes->useRemoteUser !== null) {
-            // Only switching a method off depends on the method the account has now
-            $current = AuthMethod::SQL;
-            if ($changes->useLdap !== true && $changes->useRemoteUser !== true) {
-                $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
-                $currentStmt->execute([':id' => $userId]);
-                $current = AuthMethod::fromDb((string)($currentStmt->fetchColumn() ?: 'sql'));
-            }
+            $currentStmt = $this->db->prepare('SELECT auth_method FROM users WHERE id = :id');
+            $currentStmt->execute([':id' => $userId]);
+            $current = AuthMethod::fromDb((string)($currentStmt->fetchColumn() ?: 'sql'));
 
             $target = $changes->authMethodAfter($current);
+            $movedToDirectory = $target !== null && $target !== $current
+                && ($target === AuthMethod::LDAP || $target === AuthMethod::REMOTE_USER);
             if ($target !== null) {
                 $setFields[] = 'auth_method = :auth_method';
                 $setFields[] = 'use_ldap = :use_ldap';
@@ -1694,6 +1693,10 @@ class DbUserRepository implements UserRepositoryInterface
         }
         if ($written && $changes->passwordGiven()) {
             $this->expireResetTokensForUser($userId);
+        }
+        // A subject linked while the account signed in through SSO must not keep reaching it
+        if ($written && $movedToDirectory) {
+            $this->cleanupExternalAuthLinks($userId);
         }
 
         return $written;

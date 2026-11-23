@@ -393,24 +393,28 @@ class DbUserRepositoryTest extends TestCase
     #[Test]
     public function testUpdateUserSetsAuthMethodToLdapWhenUseLdapEnabled(): void
     {
+        $updateParams = null;
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->once())
-            ->method('execute')
-            ->with($this->callback(function ($params) {
-                return ($params[':use_ldap'] ?? null) === 1
-                    && ($params[':auth_method'] ?? null) === 'ldap';
-            }))
-            ->willReturn(true);
+        $stmt->method('execute')->willReturnCallback(function ($params) use (&$updateParams) {
+            if (isset($params[':auth_method'])) {
+                $updateParams = $params;
+            }
+            return true;
+        });
 
-        $this->db->expects($this->once())
-            ->method('prepare')
-            ->with($this->logicalAnd(
-                $this->stringContains('UPDATE users SET'),
-                $this->stringContains('auth_method')
-            ))
-            ->willReturn($stmt);
+        // The UPDATE, then the SSO link cleanup that switching to LDAP triggers
+        $queries = [];
+        $this->db->method('prepare')->willReturnCallback(function ($sql) use (&$queries, $stmt) {
+            $queries[] = $sql;
+            return $stmt;
+        });
 
         $this->assertTrue($this->repository->updateUser(1, new UpdateUserCommand(useLdap: true)));
+        $this->assertStringContainsString('SELECT auth_method', $queries[0]);
+        $this->assertStringContainsString('UPDATE users SET', $queries[1]);
+        $this->assertSame(1, $updateParams[':use_ldap']);
+        $this->assertSame('ldap', $updateParams[':auth_method']);
+        $this->assertStringContainsString('DELETE FROM oidc_user_links', $queries[2]);
     }
 
     #[Test]

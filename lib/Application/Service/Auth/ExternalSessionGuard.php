@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Auth;
 
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Port\SessionInterface;
 use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -84,5 +85,22 @@ final class ExternalSessionGuard
         }
 
         return true;
+    }
+
+    /**
+     * True once an administrator moved the session's account to LDAP or web server
+     * sign-in; an SSO session must not outlive that. An SQL account that also signs
+     * in through SSO keeps its session.
+     */
+    public function accountMovedToDirectorySignIn(): bool
+    {
+        $login = $this->session->get(SessionKeys::USERLOGIN);
+        if (!is_string($login) || $login === '') {
+            return false;
+        }
+
+        $method = $this->userLookup->findAuthMethodRow($login)['auth_method'] ?? null;
+
+        return in_array($method, [AuthMethod::LDAP->value, AuthMethod::REMOTE_USER->value], true);
     }
 }
