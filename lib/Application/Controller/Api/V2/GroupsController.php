@@ -252,6 +252,10 @@ class GroupsController extends PublicApiController
             // Only administrators see the member roster, matching listMembers and the web UI.
             $members = $isAdmin ? $this->membershipService->listGroupMembers($groupId) : [];
             $zones = $this->zoneGroupService->listGroupZones($groupId);
+            // A member sees only the group's zones the caller may view, as the zone list does.
+            if (!$isAdmin) {
+                $zones = array_values(array_filter($zones, fn($z) => $this->apiPermissionService->canViewZone($userId, $z->getDomainId())));
+            }
 
             $data = [
                 'id' => $group->getId(),
@@ -259,7 +263,7 @@ class GroupsController extends PublicApiController
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
                 'member_count' => $details['memberCount'],
-                'zone_count' => $details['zoneCount'],
+                'zone_count' => $isAdmin ? $details['zoneCount'] : count($zones),
                 'members' => array_map(fn($m) => [
                     'user_id' => $m->getUserId(),
                     'username' => $m->getUsername(),
