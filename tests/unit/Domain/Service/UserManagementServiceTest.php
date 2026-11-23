@@ -705,6 +705,36 @@ class UserManagementServiceTest extends TestCase
     }
 
     #[Test]
+    public function testUpdateUserAllowsEchoingOwnEmailWhenAnotherAccountHoldsItInAnotherCase(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 2, 'email' => 'Alice@example.com', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByEmail')
+            ->willReturn(['id' => 1]);
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $result = $this->service->updateUser(2, ['email' => 'Alice@example.com']);
+
+        $this->assertNotSame('Email already exists', $result['message'] ?? '');
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testUpdateUserRefusesChangingEmailToAnotherAccountsAddress(): void
+    {
+        $this->userRepository->method('getUserById')
+            ->willReturn(['id' => 2, 'email' => 'bob@example.com', 'auth_method' => 'sql']);
+        $this->userRepository->method('getUserByEmail')
+            ->willReturn(['id' => 1]);
+
+        $result = $this->service->updateUser(2, ['email' => 'ALICE@example.com']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Email already exists', $result['message']);
+        $this->assertSame(409, $result['status']);
+    }
+
+    #[Test]
     public function testUpdateUserFailsWhenDisablingLastUberuser(): void
     {
         $this->userRepository->method('getUserById')

@@ -127,7 +127,7 @@ class DbPasswordResetTokenRepository
         $db_type = $this->config->get('database', 'type');
         $sql = "SELECT COUNT(*) 
                 FROM password_reset_tokens 
-                WHERE email = :email 
+                WHERE " . DbCompat::caseInsensitiveEquals($db_type, 'email', ':email') . "
                 AND created_at > " . DbCompat::dateSubtract($db_type, $seconds);
 
         $stmt = $this->db->prepare($sql);

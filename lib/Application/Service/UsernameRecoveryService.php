@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Psr\Log\LoggerInterface;
 use PDO;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class UsernameRecoveryService
 {
@@ -121,12 +122,17 @@ class UsernameRecoveryService
             return true; // Return true to not reveal if email exists
         }
 
-        // Extract usernames from all user records
-        $usernames = array_column($users, 'username');
-        $fullname = $users[0]['fullname'] ?? '';
-
-        // Send recovery email with all usernames
-        $emailSent = $this->sendRecoveryEmail($email, $usernames, $fullname);
+        // Mail each stored address its own accounts: a collation-folded match must not
+        // send the typed address a username registered to someone else's spelling.
+        $byStoredEmail = [];
+        foreach ($users as $user) {
+            $byStoredEmail[(string)$user['email']][] = $user;
+        }
+        $emailSent = true;
+        foreach ($byStoredEmail as $storedEmail => $accounts) {
+            $sent = $this->sendRecoveryEmail((string)$storedEmail, array_column($accounts, 'username'), $accounts[0]['fullname'] ?? '');
+            $emailSent = $emailSent && $sent;
+        }
 
         // Record the recovery request
         $success = $this->recoveryRepository->create([
@@ -162,7 +168,7 @@ class UsernameRecoveryService
     {
         $query = "SELECT id, username, fullname, email, auth_method, active
                   FROM users
-                  WHERE email = :email
+                  WHERE " . DbCompat::caseInsensitiveEquals($this->config->get('database', 'type'), 'email', ':email') . "
                   AND active = 1
                   ORDER BY username ASC";
 

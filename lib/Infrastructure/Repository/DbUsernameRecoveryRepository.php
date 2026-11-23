@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ class DbUsernameRecoveryRepository
         $db_type = $this->config->get('database', 'type');
         $sql = "SELECT COUNT(*)
                 FROM username_recovery_requests
-                WHERE email = :email
+                WHERE " . DbCompat::caseInsensitiveEquals($db_type, 'email', ':email') . "
                 AND created_at > " . DbCompat::dateSubtract($db_type, $seconds);
 
         $stmt = $this->db->prepare($sql);

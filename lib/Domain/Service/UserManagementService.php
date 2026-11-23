@@ -362,8 +362,9 @@ class UserManagementService
             }
         }
 
-        // Check if email already exists (exclude current user)
-        if (!empty($userData['email'])) {
+        // Only a changed address is checked, so an unchanged one stays editable even where
+        // older data already holds the same address in another case
+        if (!empty($userData['email']) && strcasecmp((string)$userData['email'], (string)($this->userRepository->getUserById($userId)['email'] ?? '')) !== 0) {
             $existingUser = $this->userRepository->getUserByEmail($userData['email']);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return [

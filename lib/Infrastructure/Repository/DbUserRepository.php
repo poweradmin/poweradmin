@@ -94,7 +94,7 @@ class DbUserRepository implements UserRepository
         }
 
         $dbType = (string)$this->config->get('database', 'type');
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $match = DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
         $stmt = $this->db->prepare('UPDATE password_reset_tokens SET used = ' . DbCompat::boolTrue($dbType)
             . ' WHERE used = ' . DbCompat::boolFalse($dbType) . " AND $match");
         $stmt->execute([':email' => $email]);
@@ -402,7 +402,7 @@ class DbUserRepository implements UserRepository
         if ($this->countUsersByEmail($email) > 0) {
             return;
         }
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $match = DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
         foreach (['password_reset_tokens', 'username_recovery_requests'] as $table) {
             $stmt = $this->db->prepare("DELETE FROM $table WHERE $match");
             $stmt->execute([':email' => $email]);
@@ -581,8 +581,8 @@ class DbUserRepository implements UserRepository
 
     public function getUserByEmail(string $email): ?array
     {
-        // Accent-exact match, so a look-alike email cannot resolve to another account.
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'users.email', ':email');
+        // Case-insensitive but accent-exact, so a look-alike email cannot resolve to another account.
+        $match = DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'users.email', ':email');
         $query = "SELECT * FROM users WHERE $match LIMIT 1";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
@@ -593,7 +593,7 @@ class DbUserRepository implements UserRepository
 
     public function countUsersByEmail(string $email): int
     {
-        $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $match = DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
         $query = "SELECT COUNT(*) FROM users WHERE $match";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':email' => $email]);
