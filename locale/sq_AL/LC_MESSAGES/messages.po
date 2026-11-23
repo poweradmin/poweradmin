@@ -10360,6 +10360,10 @@ msgstr ""
 "Komente regjistrimesh të anashkaluara: %d. Komentet e regjistrimeve janë "
 "çaktivizuar në konfigurim."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... dhe edhe %d paralajmërime"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

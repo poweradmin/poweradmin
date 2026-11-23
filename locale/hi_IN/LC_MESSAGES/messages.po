@@ -9889,6 +9889,10 @@ msgid ""
 "configuration."
 msgstr "छोड़ी गई रिकॉर्ड टिप्पणियाँ: %d. कॉन्फ़िगरेशन में रिकॉर्ड टिप्पणियाँ अक्षम हैं।"
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... और %d चेतावनियाँ"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

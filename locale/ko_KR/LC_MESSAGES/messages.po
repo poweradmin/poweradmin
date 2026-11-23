@@ -9950,6 +9950,10 @@ msgid ""
 "configuration."
 msgstr "건너뛴 레코드 주석: %d. 설정에서 레코드 주석이 비활성화되어 있습니다."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... 외 %d개의 경고"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

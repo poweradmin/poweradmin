@@ -10211,6 +10211,10 @@ msgstr ""
 "Komentar rekaman yang dilewati: %d. Komentar rekaman dinonaktifkan dalam "
 "konfigurasi."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... dan %d peringatan lainnya"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

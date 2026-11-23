@@ -10181,6 +10181,10 @@ msgid ""
 msgstr ""
 "Komen rekod yang dilangkau: %d. Komen rekod dinyahdayakan dalam konfigurasi."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... dan %d amaran lagi"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

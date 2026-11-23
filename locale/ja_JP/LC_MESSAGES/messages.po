@@ -10098,6 +10098,10 @@ msgstr ""
 "スキップされたレコードコメント: %d。設定でレコードコメントが無効になっていま"
 "す。"
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... ほか %d 件の警告"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

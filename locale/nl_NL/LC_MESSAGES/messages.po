@@ -10226,6 +10226,10 @@ msgstr ""
 "Overgeslagen recordopmerkingen: %d. Recordopmerkingen zijn uitgeschakeld in "
 "de configuratie."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... en nog %d waarschuwingen"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

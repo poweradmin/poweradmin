@@ -9241,6 +9241,10 @@ msgid ""
 "configuration."
 msgstr "已跳过的记录备注：%d。配置中已禁用记录备注。"
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... 以及另外 %d 条警告"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

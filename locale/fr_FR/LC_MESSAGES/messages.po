@@ -10526,6 +10526,10 @@ msgstr ""
 "Commentaires d'enregistrements ignorés : %d. Les commentaires "
 "d'enregistrements sont désactivés dans la configuration."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... et %d autres avertissements"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

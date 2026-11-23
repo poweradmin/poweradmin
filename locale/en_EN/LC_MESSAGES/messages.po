@@ -10021,6 +10021,10 @@ msgstr ""
 "Record comments skipped: %d. Record comments are disabled in the "
 "configuration."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... and %d more warnings"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

@@ -9746,6 +9746,10 @@ msgid ""
 "configuration."
 msgstr "הערות רשומות שדולגו: %d. הערות רשומות מושבתות בתצורה."
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... ועוד %d אזהרות"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

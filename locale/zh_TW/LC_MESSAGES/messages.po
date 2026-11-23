@@ -9258,6 +9258,10 @@ msgid ""
 "configuration."
 msgstr "已略過的記錄備註：%d。設定中已停用記錄備註。"
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... 以及另外 %d 則警告"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "

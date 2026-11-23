@@ -9524,6 +9524,10 @@ msgid ""
 "configuration."
 msgstr "หมายเหตุของบันทึกที่ข้าม: %d รายการ หมายเหตุของบันทึกถูกปิดใช้งานในการกำหนดค่า"
 
+#: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:205
+msgid "... and %d more warnings"
+msgstr "... และคำเตือนอื่นอีก %d รายการ"
+
 #: lib/Module/ZoneImportExport/Controller/ZoneFileImportController.php:282
 msgid ""
 "Cannot import a new zone: zone_ownership_mode is groups_only but no groups "
