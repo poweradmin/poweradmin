@@ -1434,7 +1434,8 @@ class DbUserRepository implements UserRepositoryInterface
     public function findPermissionTemplateIdByName(string $name): ?int
     {
         $match = DbCompat::accentSensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'name');
-        $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match");
+        // Names are not unique: a user template wins over a group one, then the oldest row
+        $stmt = $this->db->prepare("SELECT id FROM perm_templ WHERE $match ORDER BY CASE WHEN template_type = 'user' THEN 0 ELSE 1 END, id");
         $stmt->execute([$name]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

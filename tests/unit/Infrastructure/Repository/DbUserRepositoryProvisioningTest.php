@@ -228,6 +228,15 @@ class DbUserRepositoryProvisioningTest extends TestCase
         $this->assertNull($this->repository->findPermissionTemplateIdByName('Guests'));
     }
 
+    public function testFindPermissionTemplateIdByNamePrefersTheUserTemplateThenTheOldestRow(): void
+    {
+        $this->db->exec("INSERT INTO perm_templ (id, name, template_type) VALUES (2, 'Guest', 'group'), (8, 'Guest', 'user'), (9, 'Dup', 'group'), (4, 'Dup', 'group')");
+
+        // Id 2 is the lowest but a group template; 5 is the oldest user template
+        $this->assertSame(5, $this->repository->findPermissionTemplateIdByName('Guest'));
+        $this->assertSame(4, $this->repository->findPermissionTemplateIdByName('Dup'));
+    }
+
     private const DIRTY_NAME = "Jane\r\nBcc: x@example.org\u{200B}\u{202E} Doe\t";
 
     private function fullnameOf(int $id): string
