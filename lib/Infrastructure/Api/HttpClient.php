@@ -32,6 +32,10 @@ use Throwable;
 class HttpClient implements ApiClient
 {
 
+    /** Largest response body read from the API; a bigger one is treated as a failed request */
+    public const MAX_RESPONSE_BYTES = 64 * 1024 * 1024;
+
+    private int $maxResponseBytes = self::MAX_RESPONSE_BYTES;
     private string $apiUrl;
     private string $apiKey;
     private int $timeout;
@@ -111,9 +115,13 @@ class HttpClient implements ApiClient
             $response = false;
             $responseHeaders = [];
             $readTimedOut = false;
+            $tooLarge = false;
             if ($stream !== false) {
                 try {
-                    $response = @stream_get_contents($stream);
+                    $response = @stream_get_contents($stream, $this->maxResponseBytes + 1);
+                    if (is_string($response) && strlen($response) > $this->maxResponseBytes) {
+                        $tooLarge = true;
+                    }
                     $meta = stream_get_meta_data($stream);
                     $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
                     $readTimedOut = !empty($meta['timed_out']);
@@ -123,7 +131,7 @@ class HttpClient implements ApiClient
             }
 
             // A read timeout leaves a partial body; treat it as a failed request, not a bad payload
-            if ($readTimedOut) {
+            if ($readTimedOut || $tooLarge) {
                 $response = false;
             }
 
@@ -134,8 +142,8 @@ class HttpClient implements ApiClient
                 $errorDetails = [
                     'url' => $url,
                     'method' => $method,
-                    'error' => $readTimedOut ? 'Read timed out' : ($error['message'] ?? 'Unknown error'),
-                    'code' => $readTimedOut ? 0 : ($error['type'] ?? 0)
+                    'error' => $readTimedOut ? 'Read timed out' : ($tooLarge ? 'Response body too large' : ($error['message'] ?? 'Unknown error')),
+                    'code' => $readTimedOut || $tooLarge ? 0 : ($error['type'] ?? 0)
                 ];
 
                 // Detect common misconfigurations and provide helpful error messages

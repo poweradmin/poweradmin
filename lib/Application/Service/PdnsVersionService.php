@@ -40,6 +40,9 @@ class PdnsVersionService
     private const SESSION_KEY = 'pdns_server_info';
     private const TTL_SECONDS = 300;
 
+    /** Server info strings are stored in every session, so a hostile server cannot bloat them */
+    private const MAX_FIELD_LENGTH = 64;
+
     private PowerdnsApiClient $apiClient;
     private LoggerInterface $logger;
 
@@ -68,10 +71,13 @@ class PdnsVersionService
         }
 
         $info = [
-            'version' => (string) $serverInfo['version'],
-            'daemon_type' => (string) ($serverInfo['daemon_type'] ?? ''),
-            'id' => (string) ($serverInfo['id'] ?? ''),
+            'version' => self::cap($serverInfo['version']),
+            'daemon_type' => self::cap($serverInfo['daemon_type'] ?? ''),
+            'id' => self::cap($serverInfo['id'] ?? ''),
         ];
+        if ($info['version'] === '') {
+            return null;
+        }
 
         // Views need an LMDB backend and views=yes, neither of which the
         // version reveals. Only 5.0+ can have them, so older servers are
@@ -135,5 +141,10 @@ class PdnsVersionService
         }
         $info = $cached['info'] ?? null;
         return is_array($info) ? $info : null;
+    }
+
+    private static function cap(mixed $value): string
+    {
+        return is_scalar($value) ? substr((string) $value, 0, self::MAX_FIELD_LENGTH) : '';
     }
 }

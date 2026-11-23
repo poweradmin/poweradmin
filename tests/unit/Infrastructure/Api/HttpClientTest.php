@@ -3,9 +3,11 @@
 namespace Poweradmin\Tests\Unit\Infrastructure\Api;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use ReflectionClass;
 use ReflectionMethod;
+use TestHelpers\StubHttpServer;
 
 /**
  * Tests for HttpClient error handling improvements
@@ -18,6 +20,8 @@ use ReflectionMethod;
  */
 class HttpClientTest extends TestCase
 {
+    use StubHttpServer;
+
     private HttpClient $httpClient;
 
     protected function setUp(): void
@@ -217,5 +221,38 @@ class HttpClientTest extends TestCase
         $reflection = new ReflectionClass(HttpClient::class);
         $method = $reflection->getMethod($methodName);
         return $method;
+    }
+
+    public function testResponseBodyOverTheCapIsRefused(): void
+    {
+        $body = '{"a":"' . str_repeat('x', 100) . '"}';
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+
+        try {
+            $client = new HttpClient('http://127.0.0.1:' . $port, 'key', null, 2);
+            $limit = new ReflectionClass(HttpClient::class);
+            $limit->getProperty('maxResponseBytes')->setValue($client, 50);
+            $client->makeRequest('GET', '/x');
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException $e) {
+            $this->assertStringContainsString('too large', strtolower((string) $e->getDetail('error')));
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
+    public function testResponseBodyWithinTheCapIsRead(): void
+    {
+        $body = '{"a":"b"}';
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: " . strlen($body) . "\r\nConnection: close\r\n\r\n" . $body);
+
+        try {
+            $result = (new HttpClient('http://127.0.0.1:' . $port, 'key', null, 2))->makeRequest('GET', '/x');
+            $this->assertSame(['a' => 'b'], $result['data'] ?? $result);
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
     }
 }

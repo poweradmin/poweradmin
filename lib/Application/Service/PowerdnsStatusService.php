@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Exception;
 use Poweradmin\Domain\Utility\IpHelper;
+use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Domain\Error\ApiErrorException;
@@ -572,8 +573,11 @@ class PowerdnsStatusService
         $body = false;
         $meta = [];
         try {
-            $body = @stream_get_contents($stream);
+            $body = @stream_get_contents($stream, HttpClient::MAX_RESPONSE_BYTES + 1);
             $meta = stream_get_meta_data($stream);
+            if (is_string($body) && strlen($body) > HttpClient::MAX_RESPONSE_BYTES) {
+                $body = false;
+            }
         } finally {
             fclose($stream);
         }

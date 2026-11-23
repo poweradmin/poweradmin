@@ -127,6 +127,23 @@ class PdnsVersionServiceTest extends TestCase
         $this->assertSame('4.9.12', $info['version']);
     }
 
+    public function testDetectCapsServerInfoStringsStoredInTheSession(): void
+    {
+        $this->mockClient->method('getServerInfo')->willReturn([
+            'version' => '4.9.12' . str_repeat('x', 5000),
+            'daemon_type' => str_repeat('d', 5000),
+            'id' => ['not', 'a', 'string'],
+        ]);
+
+        $info = (new PdnsVersionService($this->mockClient, $this->mockLogger))->detect();
+
+        $this->assertSame(64, strlen($info['version']));
+        $this->assertStringStartsWith('4.9.12', $info['version']);
+        $this->assertSame(64, strlen($info['daemon_type']));
+        $this->assertSame('', $info['id']);
+        $this->assertLessThan(400, strlen(serialize($_SESSION)));
+    }
+
     public function testDetectReturnsNullAndDoesNotCacheOnEmptyResponse(): void
     {
         $this->mockClient->method('getServerInfo')->willReturn([]);
