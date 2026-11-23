@@ -90,6 +90,9 @@ class ZoneAccessPolicyTest extends TestCase
             'plain record editable' => [false, 'A', 'own', false, false],
             'LUA locked for client-level editors' => [false, 'LUA', 'own_as_client', false, true],
             'LUA editable with own' => [false, 'LUA', 'own', false, false],
+            'numeric LUA locked for client-level editors' => [false, 'TYPE65402', 'own_as_client', false, true],
+            'numeric SOA locked without edit right' => [false, 'type6', 'none', false, true],
+            'numeric SOA editable with own' => [false, 'TYPE6', 'own', false, false],
         ];
     }
 

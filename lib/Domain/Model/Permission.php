@@ -63,6 +63,17 @@ class Permission
     }
 
     /**
+     * Upper-cased type with the RFC 3597 numeric forms of NS, SOA and LUA mapped to their names,
+     * because PowerDNS treats TYPE2, TYPE6 and TYPE65402 as those types.
+     */
+    public static function canonicalType(string $type): string
+    {
+        $type = strtoupper($type);
+
+        return ['TYPE2' => 'NS', 'TYPE6' => 'SOA', 'TYPE65402' => 'LUA'][$type] ?? $type;
+    }
+
+    /**
      * Check whether the given record type is off-limits for a client-level editor.
      *
      * Returns true only when the user is limited to zone_content_edit_own_as_client
@@ -77,7 +88,7 @@ class Permission
             return false;
         }
 
-        return in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
+        return in_array(self::canonicalType($type), self::RESTRICTED_TYPES_FOR_CLIENT, true);
     }
 
     /**
@@ -98,7 +109,7 @@ class Permission
             return true;
         }
 
-        return strtoupper($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
+        return self::canonicalType($type) === 'LUA' && !in_array($permEdit, ['all', 'own'], true);
     }
 
     /**
@@ -157,7 +168,7 @@ class Permission
      */
     public static function restrictedRecordTypeMessage(string $type, string $action): string
     {
-        $type = strtoupper($type);
+        $type = self::canonicalType($type);
 
         return match ($action) {
             'add' => match ($type) {

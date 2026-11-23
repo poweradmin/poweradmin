@@ -53,7 +53,7 @@ final class ZoneAccessPolicy
         string $recordName,
         ?string $zoneName
     ): bool {
-        return $recordType === 'NS'
+        return Permission::canonicalType($recordType) === 'NS'
             && $permEdit === 'own_as_client'
             && !($permEditNsSubzone && Permission::isSubzoneNsRecord($recordType, $recordName, $zoneName));
     }
@@ -71,8 +71,8 @@ final class ZoneAccessPolicy
         bool $nsRecordLocked
     ): bool {
         return $zoneIsReadOnly
-            || ($recordType === 'SOA' && !in_array($permEdit, ['all', 'own'], true))
-            || ($recordType === 'LUA' && $permEdit === 'own_as_client')
+            || (Permission::canonicalType($recordType) === 'SOA' && !in_array($permEdit, ['all', 'own'], true))
+            || (Permission::canonicalType($recordType) === 'LUA' && $permEdit === 'own_as_client')
             || $nsRecordLocked;
     }
 }

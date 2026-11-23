@@ -57,6 +57,21 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertTrue(Permission::isRecordTypeRestrictedForClient('lua', 'own_as_client'));
     }
 
+    public function testNumericAliasesOfRestrictedTypesStayRestricted(): void
+    {
+        foreach (['TYPE2', 'type6', 'Type65402'] as $type) {
+            $this->assertTrue(Permission::isRecordTypeRestrictedForClient($type, 'own_as_client'), $type);
+            $this->assertFalse(Permission::isRecordTypeRestrictedForClient($type, 'own'), $type);
+        }
+        $this->assertFalse(Permission::isRecordTypeRestrictedForClient('TYPE16', 'own_as_client'));
+    }
+
+    public function testLuaAliasIsRestrictedInTemplatesForNonFullEditors(): void
+    {
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'none'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'own'));
+    }
+
     public function testNonRestrictedTypesArePermitted(): void
     {
         foreach (['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'PTR', 'SRV'] as $type) {
@@ -208,5 +223,11 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertFalse(
             Permission::isRecordRestrictedForClient('A', 'own_as_client', 'example.com', 'example.com', false)
         );
+    }
+
+    public function testRefusalMessageNamesTheCanonicalTypeForNumericAliases(): void
+    {
+        $this->assertSame(Permission::restrictedRecordTypeMessage('LUA', 'add'), Permission::restrictedRecordTypeMessage('TYPE65402', 'add'));
+        $this->assertSame(Permission::restrictedRecordTypeMessage('NS', 'edit'), Permission::restrictedRecordTypeMessage('type2', 'edit'));
     }
 }

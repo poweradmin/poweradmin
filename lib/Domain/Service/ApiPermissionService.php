@@ -301,7 +301,7 @@ class ApiPermissionService
             return false;
         }
 
-        if (!in_array(strtoupper($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
+        if (!in_array(Permission::canonicalType($recordType), Permission::RESTRICTED_TYPES_FOR_CLIENT, true)) {
             return true;
         }
 
