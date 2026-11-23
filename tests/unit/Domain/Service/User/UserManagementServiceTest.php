@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service\User;
 
 use Exception;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -369,6 +370,64 @@ class UserManagementServiceTest extends TestCase
     }
 
     /** Runs the request through the controllers' mapping so the wire outcomes stay pinned. */
+    /** @return array<string, array{string}> */
+    public static function uncleanUsernames(): array
+    {
+        return [
+            'trailing space' => ['bob '],
+            'leading space' => [' bob'],
+            'trailing tab' => ["bob\t"],
+            'trailing no-break space' => ["bob\u{00A0}"],
+            'newline inside' => ["bo\nb"],
+            'nul byte' => ["bo\0b"],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('uncleanUsernames')]
+    public function testCreateUserRefusesAUsernameWithSurroundingWhitespaceOrControlCharacters(string $username): void
+    {
+        $this->userRepository->expects($this->never())->method('createUser');
+
+        $result = $this->createUser(['username' => $username, 'password' => 'secret123']);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(Refusal::INVALID_INPUT, $result['refusal']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_REQUIRED, $result['code']);
+    }
+
+    #[Test]
+    #[DataProvider('uncleanUsernames')]
+    public function testRenamingToAUsernameWithSurroundingWhitespaceOrControlCharactersIsRefused(string $username): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'bob', 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->never())->method('updateUser');
+
+        $result = $this->updateUser(1, ['username' => $username]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_REQUIRED, $result['code']);
+    }
+
+    #[Test]
+    public function testAnUnchangedLegacyUsernameCanStillBeEchoedBackOnUpdate(): void
+    {
+        $this->userRepository->method('getUserById')->willReturn(['id' => 1, 'username' => 'bob ', 'auth_method' => 'sql']);
+        $this->userRepository->expects($this->once())->method('updateUser')->willReturn(true);
+
+        $result = $this->updateUser(1, ['username' => 'bob ', 'fullname' => 'Bob']);
+
+        $this->assertTrue($result['success']);
+    }
+
+    #[Test]
+    public function testInnerSpacesInAUsernameStayAllowed(): void
+    {
+        $this->assertTrue(UserManagementService::isCleanUsername('bob smith'));
+        $this->assertSame('bob smith', UserManagementService::cleanUsername(" \tbob\0 smith\u{00A0}"));
+        $this->assertSame('', UserManagementService::cleanUsername(" \n "));
+    }
+
     private function createUser(array $input): array
     {
         $command = UserCommandFactory::create($input);

@@ -267,6 +267,10 @@ class UserManagementService
             return $lengthError;
         }
 
+        if (!self::isCleanUsername($command->username)) {
+            return $this->usernameUnclean();
+        }
+
         // Check if username already exists
         if ($this->userRepository->getUserByUsername($command->username)) {
             return $this->usernameExists();
@@ -426,6 +430,9 @@ class UserManagementService
         // A changed username must be free; an unchanged one is not looked up, since
         // legacy data may hold it twice and the lookup could land on the other row.
         if ($command->username !== null && $command->username !== (string)($user['username'] ?? '')) {
+            if (!self::isCleanUsername($command->username)) {
+                return $this->usernameUnclean();
+            }
             $existingUser = $this->userRepository->getUserByUsername($command->username);
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return $this->usernameExists();
@@ -1080,6 +1087,37 @@ class UserManagementService
             'message' => $message,
             'refusal' => Refusal::INVALID_INPUT,
             'code' => self::ERR_INVALID_AUTH_METHOD,
+        ];
+    }
+
+    /**
+     * Whether a username has no leading or trailing whitespace and no control characters.
+     * Such names look like another account's and fall outside what lookups match.
+     */
+    public static function isCleanUsername(string $username): bool
+    {
+        return preg_match('/^[\s\p{Z}]|[\s\p{Z}]$|\p{Cc}/u', $username) === 0;
+    }
+
+    /**
+     * A username with the characters isCleanUsername() refuses taken out of it: control
+     * characters everywhere, whitespace at both ends.
+     */
+    public static function cleanUsername(string $username): string
+    {
+        $stripped = preg_replace('/\p{Cc}/u', '', $username);
+
+        return (string)preg_replace('/^[\s\p{Z}]+|[\s\p{Z}]+$/u', '', (string)$stripped);
+    }
+
+    /** @return array{success: false, message: string, refusal: Refusal, code: string} */
+    private function usernameUnclean(): array
+    {
+        return [
+            'success' => false,
+            'message' => 'Username must not start or end with whitespace or contain control characters',
+            'refusal' => Refusal::INVALID_INPUT,
+            'code' => self::ERR_USERNAME_REQUIRED,
         ];
     }
 

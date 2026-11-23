@@ -34,6 +34,7 @@ use Poweradmin\Domain\Enum\AuthMethod;
 use Poweradmin\Domain\Model\UberuserChange;
 use Poweradmin\Domain\Service\User\FullName;
 use Poweradmin\Domain\Service\User\LastSuperAdminGuard;
+use Poweradmin\Domain\Service\User\UserManagementService;
 
 /**
  * Creates or updates the local user for an LDAP, OIDC or SAML login and maps their groups to a permission template.
@@ -486,6 +487,14 @@ class UserProvisioningService
             // variant would never be matched again - fail instead of uniquifying.
             $username = $userInfo->getUsername();
             if ($authMethod === self::AUTH_METHOD_LDAP || $authMethod === self::AUTH_METHOD_REMOTE_USER) {
+                // Sign-in matches the name exactly, so a cleaned copy would never be found again
+                if (!UserManagementService::isCleanUsername($username)) {
+                    $this->logger->error('Cannot auto-provision {method} user {username}: the username has surrounding whitespace or control characters', [
+                        'method' => strtoupper($authMethod),
+                        'username' => $username
+                    ]);
+                    return null;
+                }
                 if ($this->usernameExists($username)) {
                     $this->logger->error('Cannot auto-provision {method} user {username}: username is taken by another account', [
                         'method' => strtoupper($authMethod),
@@ -494,6 +503,12 @@ class UserProvisioningService
                     return null;
                 }
             } else {
+                // Single sign-on accounts are found by the provider's subject, so the name only needs cleaning
+                $username = UserManagementService::cleanUsername($username);
+                if ($username === '') {
+                    $this->logger->error('Cannot auto-provision {method} user: the username is empty once cleaned', ['method' => strtoupper($authMethod)]);
+                    return null;
+                }
                 $username = $this->ensureUniqueUsername($username);
             }
             $this->logger->info('Final username for creation: {username}', ['username' => $username]);
