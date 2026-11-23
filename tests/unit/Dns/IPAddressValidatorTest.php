@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -419,5 +419,36 @@ class IPAddressValidatorTest extends TestCase
         $this->assertTrue($this->validator->areMultipleValidIPs("192.0.2.1, 192.0.2.2:5300"));
         $this->assertFalse($this->validator->areMultipleValidIPs("192.0.2.1:99999"));
         $this->assertFalse($this->validator->areMultipleValidIPs("invalid:5300"));
+    }
+
+    /**
+     * @dataProvider malformedIpv4PortProvider
+     */
+    public function testIpv4PortMustBeDigitsOnly(string $entry): void
+    {
+        $this->assertFalse($this->validator->validateMultipleIPs($entry)->isValid());
+    }
+
+    public static function malformedIpv4PortProvider(): array
+    {
+        return [
+            'trailing letters' => ['1.2.3.4:53abc'],
+            'trailing text after space' => ['1.2.3.4:53 evil'],
+            'newline inside entry' => ["1.2.3.4:53\n9"],
+            'second address after space' => ['1.2.3.4:53 5.6.7.8'],
+            'exponent' => ['1.2.3.4:1e1'],
+            'plus sign' => ['1.2.3.4:+53'],
+            'leading space in port' => ['1.2.3.4: 53'],
+            'empty port' => ['1.2.3.4:'],
+            'port zero' => ['1.2.3.4:0'],
+            'port too large' => ['1.2.3.4:65536'],
+        ];
+    }
+
+    public function testValidServerFormsStillPass(): void
+    {
+        foreach (['1.2.3.4:53', '1.2.3.4:65535', '1.2.3.4', '[2001:db8::1]:5300', '2001:db8::1', "1.2.3.4:53, 5.6.7.8:5353"] as $entry) {
+            $this->assertTrue($this->validator->validateMultipleIPs($entry)->isValid(), $entry);
+        }
     }
 }
