@@ -166,6 +166,15 @@ final class StatelessLoginFailureLogTest extends TestCase
         );
     }
 
+    #[Test]
+    public function theLdapSearchFilterEscapesTheLoginName(): void
+    {
+        $filter = new ReflectionMethod(BasicAuthenticationMiddleware::class, 'ldapUserFilter');
+
+        $this->assertSame('(uid=a\2a\29\28uid=b)', $filter->invoke(null, 'uid', 'a*)(uid=b', ''));
+        $this->assertSame('(&(uid=bob)(objectClass=person))', $filter->invoke(null, 'uid', 'bob', '(objectClass=person)'));
+    }
+
     private function basicAuth(string $username, string $password, UserEventLogger $logger, ?string $ldapUri = null, ?LoginAttemptService $attempts = null): int
     {
         $db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);

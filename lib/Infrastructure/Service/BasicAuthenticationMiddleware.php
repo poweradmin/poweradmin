@@ -283,6 +283,17 @@ class BasicAuthenticationMiddleware
     }
 
     /**
+     * The LDAP search filter for a login name. Names are not character-restricted, so the
+     * value is escaped as the web login path does.
+     */
+    private static function ldapUserFilter(string $attribute, string $username, string $extraFilter): string
+    {
+        $escaped = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
+
+        return $extraFilter !== '' ? "(&($attribute=$escaped)$extraFilter)" : "($attribute=$escaped)";
+    }
+
+    /**
      * Authenticate a user with the LDAP authenticator for API access
      *
      * @param int $userId The user ID
@@ -330,10 +341,7 @@ class BasicAuthenticationMiddleware
             return false;
         }
 
-        // Search for the user
-        $filter = $ldapSearchFilter
-            ? "(&($ldapUserAttribute=$username)$ldapSearchFilter)"
-            : "($ldapUserAttribute=$username)";
+        $filter = self::ldapUserFilter($ldapUserAttribute, $username, $ldapSearchFilter);
 
         $attributes = array($ldapUserAttribute, 'dn');
         $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);
