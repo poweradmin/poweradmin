@@ -23,6 +23,20 @@ class DynamicUpdateEntryPointTest extends TestCase
         $this->assertSame('', $stderr);
     }
 
+    /**
+     * The CLI never emits headers, so check the entry point sends the header before anything it can answer with.
+     */
+    public function testEveryAnswerIsSentWithNoStore(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 2) . '/dynamic_update.php');
+
+        $header = strpos($source, "header('Cache-Control: no-store')");
+        $this->assertNotFalse($header);
+        $this->assertLessThan(strpos($source, 'http_response_code('), $header);
+        $this->assertLessThan(strpos($source, 'echo '), $header);
+        $this->assertLessThan(strpos($source, 'Kernel::boot('), $header);
+    }
+
     public function testARequestWithoutAUsernameIsRejectedAsBadAuth(): void
     {
         [$exitCode, $stdout, $stderr] = $this->runDynamicUpdate(['HTTP_USER_AGENT' => 'curl/8']);

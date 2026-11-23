@@ -9,6 +9,9 @@ use Poweradmin\Domain\Service\Dns\DynamicDnsHelper;
 use Poweradmin\Infrastructure\Session\SessionActor;
 use Symfony\Component\HttpFoundation\Request;
 
+// Every answer is a per-request status word; a shared cache must not replay it
+header('Cache-Control: no-store');
+
 $request = Request::createFromGlobals();
 
 // A browser replaying cached credentials on a cross-site GET sends Fetch metadata; DDNS clients send none
