@@ -62,6 +62,15 @@ class UserAuthenticationService implements PasswordHasherInterface
     }
 
     /**
+     * The configured cost within what password_hash() accepts, so an out-of-range
+     * setting hashes at the nearest valid cost instead of throwing.
+     */
+    private function bcryptCost(): int
+    {
+        return max(self::BCRYPT_MIN_COST, min(31, $this->passwordEncryptionCost));
+    }
+
+    /**
      * A well-formed bcrypt hash that no submitted password is expected to match,
      * at the configured cost.
      *
@@ -112,7 +121,7 @@ class UserAuthenticationService implements PasswordHasherInterface
     public function hashPassword(#[\SensitiveParameter] string $password): string
     {
         if ($this->passwordEncryption === 'bcrypt') {
-            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $this->passwordEncryptionCost));
+            return password_hash($password, PASSWORD_BCRYPT, array('cost' => $this->bcryptCost()));
         }
 
         if ($this->passwordEncryption === 'argon2i') {
@@ -178,7 +187,7 @@ class UserAuthenticationService implements PasswordHasherInterface
         }
 
         if ($hash_type == 'bcrypt') {
-            return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $this->passwordEncryptionCost]);
+            return password_needs_rehash($hash, PASSWORD_BCRYPT, ['cost' => $this->bcryptCost()]);
         }
 
         if ($hash_type == 'argon2i') {

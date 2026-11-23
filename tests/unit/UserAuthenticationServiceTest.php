@@ -74,6 +74,16 @@ class UserAuthenticationServiceTest extends TestCase
         $userAuthService->hashPassword('test_password');
     }
 
+    public function testBcryptCostOutsideTheValidRangeHashesAtTheNearestValidCost(): void
+    {
+        $tooLow = new UserAuthenticationService('bcrypt', 1);
+        $this->assertStringStartsWith('$2y$04$', $tooLow->hashPassword('secret'));
+
+        $valid = new UserAuthenticationService('bcrypt', 13);
+        $this->assertStringStartsWith('$2y$13$', $valid->hashPassword('secret'));
+        $this->assertFalse($valid->requiresRehash($valid->hashPassword('secret')));
+    }
+
     public function testHashBcrypt(): void
     {
         $password = 'test_password';
