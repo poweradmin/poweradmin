@@ -167,7 +167,8 @@ class SqlAuthenticator extends LoggingService
                 $this->userEventLogger->logFailedAuth(AuthMethod::SQL, LoginFailureReason::ACCOUNT_DISABLED);
             }
             $sessionEntity = new SessionEntity(_('The user account is disabled.'), 'danger');
-            $this->authService->auth($sessionEntity);
+            // End the session so re-enabling the account later does not revive it
+            $this->authService->logout($sessionEntity);
 
             $this->logInfo('Authentication process ended due to disabled user account.');
             return;
