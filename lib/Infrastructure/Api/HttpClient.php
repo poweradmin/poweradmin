@@ -62,7 +62,19 @@ class HttpClient implements ApiClient
 
         try {
             $context = stream_context_create($options);
-            $response = @file_get_contents($url, false, $context);
+            // fopen + wrapper_data instead of file_get_contents + $http_response_header, which PHP 8.5 deprecates
+            $stream = @fopen($url, 'r', false, $context);
+            $response = false;
+            $responseHeaders = [];
+            if ($stream !== false) {
+                try {
+                    $response = @stream_get_contents($stream);
+                    $meta = stream_get_meta_data($stream);
+                    $responseHeaders = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+                } finally {
+                    fclose($stream);
+                }
+            }
 
             if ($response === false) {
                 $error = error_get_last();
@@ -82,7 +94,7 @@ class HttpClient implements ApiClient
                 throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
             }
 
-            $responseCode = $this->getResponseCode($http_response_header);
+            $responseCode = $this->getResponseCode($responseHeaders);
 
             // The key must not travel to a Location target, and the wrapper would turn a PUT into a GET
             if ($responseCode !== null && $responseCode >= 300 && $responseCode < 400) {

@@ -562,11 +562,24 @@ class PowerdnsStatusService
                     'follow_location' => 0,
                 ]
             ]);
-            $body = @file_get_contents($url, false, $context);
+
+            // fopen + wrapper_data instead of $http_response_header, which PHP 8.5 deprecates
+            $stream = @fopen($url, 'r', false, $context);
+            if ($stream === false) {
+                return false;
+            }
+            $body = false;
+            $meta = [];
+            try {
+                $body = @stream_get_contents($stream);
+                $meta = stream_get_meta_data($stream);
+            } finally {
+                fclose($stream);
+            }
 
             // The Basic credentials must not travel to a Location target
-            $statusLine = $http_response_header[0] ?? '';
-            $status = preg_match('/^HTTP\/\S+\s+(\d{3})/', $statusLine, $match) ? (int) $match[1] : 0;
+            $headers = is_array($meta['wrapper_data'] ?? null) ? $meta['wrapper_data'] : [];
+            $status = isset($headers[0]) && is_string($headers[0]) && preg_match('/^HTTP\/\S+\s+(\d{3})/', $headers[0], $match) ? (int) $match[1] : 0;
             if ($status >= 300 && $status < 400) {
                 $this->logger->error('PowerdnsStatusService: metrics endpoint answered with HTTP {code}; redirects are refused', ['code' => $status]);
                 return false;
