@@ -1925,13 +1925,17 @@ class DnsRecord
 
         if ($zone_template_id != 0) {
             if ($db_type == 'pgsql') {
-                $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id AND r.domain_id = rzt.domain_id";
             } elseif ($db_type == 'sqlite') {
-                $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id)";
             } else {
-                $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                $query = "DELETE r, rzt FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id";
             }
             $stmt = $this->db->prepare($query);
+            $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
+
+            // A link whose record id now belongs to another zone is stale: drop the link, keep the record
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id");
             $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
 
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
@@ -1945,6 +1949,8 @@ class DnsRecord
                         $name = $zoneTemplate->parse_template_value($r["name"], $domain);
                         $type = $r["type"];
                         if ($type == "SOA") {
+                            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id IN (SELECT id FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA')");
+                            $stmt->execute(array(':zone_id' => $zone_id));
                             $this->db->exec("DELETE FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                             $content = $this->get_updated_soa_record($soa_rec);
                             if ($content == "") {
