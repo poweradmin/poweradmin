@@ -90,6 +90,7 @@ interface ModuleInterface
      * - 'url_pattern' (string): URL with {id} placeholder (e.g., '/zones/{id}/export/csv')
      * - 'icon' (string): Bootstrap Icons class name (without 'bi-' prefix)
      * - 'supports_comments' (string, optional): '1' when the URL accepts ?comments=1 to include record comments
+     * - 'supports_disabled' (string, optional): '1' when the URL accepts ?disabled=1 to include disabled records
      *
      * @param string $capability The capability identifier
      * @return array<array<string, string>>

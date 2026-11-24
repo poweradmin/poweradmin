@@ -31,6 +31,7 @@ use Poweradmin\Domain\Utility\DnsHelper;
 /**
  * GET /zones/{id}/export/zonefile - downloads the zone in BIND format, from the API or the records table.
  * With ?comments=1 and record comments enabled, record comments are written above their records.
+ * With ?disabled=1, disabled records are written as marker lines the zone import reads back as disabled.
  */
 class ZoneFileExportController extends BaseController
 {
@@ -84,12 +85,14 @@ class ZoneFileExportController extends BaseController
     }
 
     /**
-     * The PowerDNS export cannot carry Poweradmin comments, so a request for them always generates the file.
+     * The PowerDNS export carries neither Poweradmin comments nor disabled records, so a request for them always generates the file.
      */
     private function zoneFileContent(int $zone_id, string $zone_name): ?string
     {
-        if ($this->includeComments()) {
-            return $this->generateFromDb($zone_id, $zone_name, true);
+        $withComments = $this->includeComments();
+        $withDisabled = $this->includeDisabled();
+        if ($withComments || $withDisabled) {
+            return $this->generateFromDb($zone_id, $zone_name, $withComments, $withDisabled);
         }
 
         return $this->tryApiExport($zone_name) ?? $this->generateFromDb($zone_id, $zone_name, false);
@@ -99,6 +102,11 @@ class ZoneFileExportController extends BaseController
     {
         return $this->httpRequest->getQueryParam('comments') === '1'
             && (bool)$this->getConfig()->get('interface', 'show_record_comments', false);
+    }
+
+    private function includeDisabled(): bool
+    {
+        return $this->httpRequest->getQueryParam('disabled') === '1';
     }
 
     private function tryApiExport(string $zone_name): ?string
@@ -169,7 +177,7 @@ class ZoneFileExportController extends BaseController
         return null;
     }
 
-    private function generateFromDb(int $zone_id, string $zone_name, bool $withComments): ?string
+    private function generateFromDb(int $zone_id, string $zone_name, bool $withComments, bool $withDisabled = false): ?string
     {
         $records = $this->moduleServices()->recordRepository()->getRecordsFromDomainId(
             $zone_id,
@@ -185,7 +193,7 @@ class ZoneFileExportController extends BaseController
         }
 
         $generator = new BindZoneFileGenerator();
-        $content = $generator->generate($zone_name, $records, $withComments);
+        $content = $generator->generate($zone_name, $records, $withComments, $withDisabled);
         return $content === '' ? null : $content;
     }
 }

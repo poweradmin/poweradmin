@@ -29,6 +29,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Module\ZoneImportExport\Controller\ZoneFileExportController;
+use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileParser;
 use Poweradmin\Tests\Unit\Application\Controller\SeamControllerTestCase;
 use ReflectionMethod;
 
@@ -142,5 +143,26 @@ class ZoneFileExportControllerTest extends SeamControllerTestCase
             $this->assertSame(_('You do not have permission to export this zone.'), $halt->target);
         }
         $this->assertSame([], $this->fetchedComments);
+    }
+
+    public function testDisabledRecordsAreWrittenWhenAskedAndReadBackAsDisabled(): void
+    {
+        $this->query(['id' => (string)self::ZONE_ID, 'disabled' => '1']);
+
+        $content = $this->exportContent(false);
+
+        $this->assertStringContainsString('; poweradmin-disabled: old.example.com. 3600 IN A 192.0.2.9', $content);
+        $records = (new BindZoneFileParser(300))->parse($content)->getRecords();
+        $disabled = array_filter($records, fn($r): bool => $r->disabled);
+        $this->assertCount(1, $disabled);
+        $this->assertSame('192.0.2.9', array_values($disabled)[0]->content);
+    }
+
+    public function testZoneWithOnlyDisabledRecordsIsExportedWhenDisabledIsAsked(): void
+    {
+        $this->allDisabled = true;
+        $this->query(['id' => (string)self::ZONE_ID, 'disabled' => '1']);
+
+        $this->assertStringContainsString('; poweradmin-disabled: www.example.com.', (string)$this->exportContent(false));
     }
 }
