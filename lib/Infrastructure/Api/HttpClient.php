@@ -189,7 +189,7 @@ class HttpClient implements ApiClient
     private function getResponseCode(array $headers): ?int
     {
         if (isset($headers[0])) {
-            preg_match('/\s(\d{3})\s/', $headers[0], $match);
+            preg_match('/^HTTP\/\S+\s+(\d{3})/', (string)$headers[0], $match);
             return isset($match[1]) ? (int)$match[1] : null;
         }
 

@@ -77,6 +77,21 @@ class RedirectRefusalIntegrationTest extends TestCase
         }
     }
 
+    public function testRedirectWithoutAReasonPhraseIsRefusedWithTheExplanation(): void
+    {
+        [$process, $port] = $this->startStubServer("HTTP/1.1 302\r\nLocation: http://127.0.0.1:9/x\r\nContent-Length: 0\r\nConnection: close\r\n\r\n");
+
+        try {
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY))->makeRequest('GET', '/x');
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException $e) {
+            $this->assertStringContainsString('Redirects are refused', $e->getMessage());
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
     public static function redirectStatusProvider(): array
     {
         return [
