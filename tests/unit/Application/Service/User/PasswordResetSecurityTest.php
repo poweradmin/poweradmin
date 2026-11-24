@@ -569,6 +569,35 @@ class PasswordResetSecurityTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testDisabledAccountGetsNoResetLink(): void
+    {
+        $email = 'off@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'fullname' => 'Off', 'auth_method' => 'sql', 'active' => 0,
+        ]);
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testTokenOfDisabledAccountIsRejected(): void
+    {
+        $token = str_repeat('b', 64);
+        $email = 'off@example.com';
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 11, 'token' => DbPasswordResetTokenRepository::hashToken($token), 'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600), 'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => 0,
+        ]);
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
+    }
+
     /**
      * Valid SQL-user token must successfully validate.
      */
@@ -884,5 +913,34 @@ class PasswordResetSecurityTest extends TestCase
 
         $this->assertTrue($this->serviceWithSingleUseClaim()->resetPassword($token, 'N3w-Passw0rd!'));
         $this->assertSame(['claim', 'update'], $calls);
+    }
+
+    public function testDisabledAccountGetsNoResetLinkWhenActiveIsNull(): void
+    {
+        $email = 'off@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'fullname' => 'Off', 'auth_method' => 'sql', 'active' => null,
+        ]);
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testTokenOfDisabledAccountIsRejectedWhenActiveIsNull(): void
+    {
+        $token = str_repeat('b', 64);
+        $email = 'off@example.com';
+        $this->tokenRepository->method('findByToken')->willReturn([
+            'id' => 11, 'token' => DbPasswordResetTokenRepository::hashToken($token), 'email' => $email,
+            'expires_at' => date('Y-m-d H:i:s', time() + 3600), 'used' => 0,
+        ]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => null,
+        ]);
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
     }
 }

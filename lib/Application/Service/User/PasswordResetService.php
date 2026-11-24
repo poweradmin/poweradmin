@@ -168,6 +168,16 @@ class PasswordResetService
             return true; // Return true to not reveal if email exists
         }
 
+        // A disabled account gets no link; the answer matches the unknown-address case
+        if (array_key_exists('active', $user) && (int)$user['active'] !== 1) {
+            $this->logger->info('Password reset requested for disabled account', [
+                'user_id' => $user['id'],
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true;
+        }
+
         // Multiple accounts share this email, so we can't tell which one to reset;
         // decline rather than risk targeting the wrong account.
         if ($this->userRepository->countUsersByEmail($email) > 1) {
@@ -322,6 +332,11 @@ class PasswordResetService
 
         $user = $this->userRepository->getUserByEmail($tokenData['email']);
         if (!$user) {
+            return null;
+        }
+
+        // The account may have been disabled after the token was issued
+        if (array_key_exists('active', $user) && (int)$user['active'] !== 1) {
             return null;
         }
 
