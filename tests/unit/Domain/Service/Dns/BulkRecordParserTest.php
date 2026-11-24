@@ -281,4 +281,14 @@ class BulkRecordParserTest extends TestCase
 
         $this->assertSame(['@,TXT,"v=spf1 -all', '_dmarc,TXT,"v=DMARC1; p=reject"'], $rows);
     }
+
+    public function testABackslashInsideAQuotedCellIsPlainData(): void
+    {
+        $rows = $this->parser->splitRecords("a,A,1.1.1.1,0,300,No,\"x\\\"\nb,A,2.2.2.2,0,300,No,\"\ny\"");
+
+        $this->assertSame(['a,A,1.1.1.1,0,300,No,"x\\"', "b,A,2.2.2.2,0,300,No,\"\ny\""], $rows);
+        $parsed = $this->parser->parseLine($rows[0]);
+        $this->assertIsArray($parsed);
+        $this->assertSame('x\\', $parsed['comment']);
+    }
 }
