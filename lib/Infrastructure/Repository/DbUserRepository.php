@@ -88,9 +88,10 @@ class DbUserRepository implements UserRepositoryInterface
 
     public function findActiveUsersByEmail(string $email): array
     {
+        $match = $this->emailEquals('email', ':email');
         $query = "SELECT id, username, fullname, email, auth_method, active
                   FROM users
-                  WHERE email = :email
+                  WHERE $match
                   AND active = 1
                   ORDER BY username ASC";
 

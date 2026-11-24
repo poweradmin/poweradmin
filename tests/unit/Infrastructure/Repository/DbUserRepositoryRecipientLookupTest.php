@@ -83,4 +83,11 @@ class DbUserRepositoryRecipientLookupTest extends TestCase
         $this->assertSame(['aaron', 'alice'], array_column($rows, 'username'));
         $this->assertSame([], $this->repository->findActiveUsersByEmail('carol@example.test'));
     }
+
+    public function testActiveUsersByEmailMatchesRegardlessOfCase(): void
+    {
+        $rows = $this->repository->findActiveUsersByEmail('Shared@Example.TEST');
+
+        $this->assertSame(['aaron', 'alice'], array_column($rows, 'username'));
+    }
 }
