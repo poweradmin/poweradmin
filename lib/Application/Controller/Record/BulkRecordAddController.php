@@ -125,7 +125,7 @@ class BulkRecordAddController extends BaseController
 
         $records_text = $this->httpRequest->getPostParam('records');
         $records_text = is_string($records_text) ? $records_text : '';
-        $lines = explode("\n", trim($records_text));
+        $lines = (new BulkRecordParser())->splitRecords($records_text);
 
         $lineCount = count(array_filter($lines, static fn(string $line): bool => trim($line) !== ''));
         if ($lineCount > self::MAX_LINES) {

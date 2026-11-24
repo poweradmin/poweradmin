@@ -239,4 +239,46 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame($content, $parsed['content']);
         $this->assertSame(3600, $parsed['ttl']);
     }
+
+    public function testSplitRecordsKeepsNewlineInsideQuotedComment(): void
+    {
+        $text = "a,A,1.1.1.1,0,300,No,\"x\nwww,A,6.6.6.6\"\nb,A,2.2.2.2";
+
+        $records = $this->parser->splitRecords($text);
+
+        $this->assertCount(2, $records);
+        $parsed = $this->parser->parseLine($records[0]);
+        $this->assertIsArray($parsed);
+        $this->assertSame("x\nwww,A,6.6.6.6", $parsed['comment']);
+        $this->assertSame('b,A,2.2.2.2', $records[1]);
+    }
+
+    public function testSplitRecordsPlainInputSplitsPerLine(): void
+    {
+        $this->assertSame(['a,A,1.1.1.1', 'b,A,2.2.2.2', ''], $this->parser->splitRecords("a,A,1.1.1.1\nb,A,2.2.2.2\n"));
+    }
+
+    public function testSplitRecordsStrayQuoteMidFieldDoesNotJoinLines(): void
+    {
+        $this->assertSame(['a,TXT,say "hi', 'b,A,2.2.2.2'], $this->parser->splitRecords("a,TXT,say \"hi\nb,A,2.2.2.2"));
+    }
+
+    public function testSplitRecordsUnterminatedQuoteFallsBackToLines(): void
+    {
+        $this->assertSame(['a,TXT,"open', 'b,A,2.2.2.2'], $this->parser->splitRecords("a,TXT,\"open\nb,A,2.2.2.2"));
+    }
+
+    public function testADoubledQuoteInsideAQuotedCommentKeepsTheCellOpen(): void
+    {
+        $rows = $this->parser->splitRecords("a,A,1.1.1.1,0,300,No,\"x \"\"q\"\" y\nz\"\nb,A,2.2.2.2");
+
+        $this->assertSame(['a,A,1.1.1.1,0,300,No,"x ""q"" y' . "\n" . 'z"', 'b,A,2.2.2.2'], $rows);
+    }
+
+    public function testAMissingClosingQuoteDoesNotSwallowTheNextLine(): void
+    {
+        $rows = $this->parser->splitRecords("@,TXT,\"v=spf1 -all\n_dmarc,TXT,\"v=DMARC1; p=reject\"");
+
+        $this->assertSame(['@,TXT,"v=spf1 -all', '_dmarc,TXT,"v=DMARC1; p=reject"'], $rows);
+    }
 }
