@@ -284,11 +284,18 @@ class DynamicDnsHelperTest extends TestCase
             ->method('execute')
             ->with([':id' => 1]);
 
-        $mockDb->expects($this->exactly(2))
+        $mockUnlinkStatement = $this->createMock(PDOStatement::class);
+        $mockUnlinkStatement->expects($this->once())
+            ->method('execute')
+            ->with([':id' => 1]);
+
+        $mockDb->expects($this->exactly(3))
             ->method('prepare')
-            ->willReturnCallback(function ($sql) use ($mockSelectStatement, $mockDeleteStatement) {
+            ->willReturnCallback(function ($sql) use ($mockSelectStatement, $mockDeleteStatement, $mockUnlinkStatement) {
                 if (str_contains($sql, 'SELECT')) {
                     return $mockSelectStatement;
+                } elseif (str_contains($sql, 'records_zone_templ')) {
+                    return $mockUnlinkStatement;
                 } else {
                     return $mockDeleteStatement;
                 }
@@ -338,13 +345,20 @@ class DynamicDnsHelperTest extends TestCase
             ->method('execute')
             ->with([':id' => 2]);
 
-        $mockDb->expects($this->exactly(3))
+        $mockUnlinkStatement = $this->createMock(PDOStatement::class);
+        $mockUnlinkStatement->expects($this->once())
+            ->method('execute')
+            ->with([':id' => 2]);
+
+        $mockDb->expects($this->exactly(4))
             ->method('prepare')
-            ->willReturnCallback(function ($sql) use ($mockSelectStatement, $mockInsertStatement, $mockDeleteStatement) {
+            ->willReturnCallback(function ($sql) use ($mockSelectStatement, $mockInsertStatement, $mockDeleteStatement, $mockUnlinkStatement) {
                 if (str_contains($sql, 'SELECT')) {
                     return $mockSelectStatement;
                 } elseif (str_contains($sql, 'INSERT')) {
                     return $mockInsertStatement;
+                } elseif (str_contains($sql, 'records_zone_templ')) {
+                    return $mockUnlinkStatement;
                 } else {
                     return $mockDeleteStatement;
                 }

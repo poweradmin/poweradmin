@@ -157,6 +157,8 @@ class DynamicDnsHelper
         }
 
         foreach ($existing as $ip => $record_id) {
+            $unlink = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = :id");
+            $unlink->execute([':id' => $record_id]);
             $delete = $db->prepare("DELETE FROM $records_table WHERE id = :id");
             $delete->execute([':id' => $record_id]);
             $zone_updated = true;

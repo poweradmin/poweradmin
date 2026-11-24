@@ -253,6 +253,11 @@ class SqlDnsBackendProvider implements DnsBackendProvider
             [(string)$recordId]
         );
 
+        if (ctype_digit((string)$recordId)) {
+            $unlink = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
+            $unlink->execute([(int)$recordId]);
+        }
+
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
 

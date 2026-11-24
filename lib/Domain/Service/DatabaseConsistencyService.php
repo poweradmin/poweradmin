@@ -549,6 +549,8 @@ class DatabaseConsistencyService
 
         if ($deleted) {
             $this->deleteRecordComments('?', [(string)$recordId]);
+            $unlink = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
+            $unlink->execute([$recordId]);
         }
 
         return $deleted;
@@ -596,6 +598,8 @@ class DatabaseConsistencyService
             array_shift($soaRecords); // Remove the first ID from the array
             $placeholders = implode(',', array_fill(0, count($soaRecords), '?'));
             $this->deleteRecordComments($placeholders, array_map('strval', $soaRecords));
+            $unlink = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id IN ($placeholders)");
+            $unlink->execute($soaRecords);
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
             $stmt->execute($soaRecords);
 

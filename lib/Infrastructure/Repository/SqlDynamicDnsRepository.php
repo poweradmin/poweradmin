@@ -139,6 +139,11 @@ class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
         // SQLite reuses ids, so a left-over link would show this comment on the next record
         DbCompat::deleteRecordComments($this->db, $this->commentsTable, ':id', [':id' => (string)$recordId]);
 
+        if (ctype_digit((string)$recordId)) {
+            $unlink = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = :id");
+            $unlink->execute([':id' => (int)$recordId]);
+        }
+
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
     }

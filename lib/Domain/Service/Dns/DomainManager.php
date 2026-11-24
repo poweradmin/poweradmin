@@ -794,17 +794,21 @@ class DomainManager implements DomainManagerInterface
                     // Delete the template-applied records. Only MySQL can drop the
                     // record and its mapping in one statement; the other backends
                     // delete records here and the mapping is cleared uniformly below.
+                    // A link whose record id now belongs to another zone must not reach that record
                     $this->deleteRecordComments(
-                        'SELECT ' . DbCompat::castToString($db_type, 'record_id') . ' FROM records_zone_templ WHERE domain_id = :zone_id AND zone_templ_id = :zone_template_id',
+                        'SELECT ' . DbCompat::castToString($db_type, 'rzt.record_id')
+                        . " FROM records_zone_templ rzt INNER JOIN $records_table r ON r.id = rzt.record_id"
+                        . ' WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id',
                         [':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]
                     );
 
                     if ($db_type == 'pgsql') {
-                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id AND r.domain_id = rzt.domain_id";
                     } elseif ($db_type == 'sqlite') {
-                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id"
+                            . " WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id)";
                     } else {
-                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id";
                     }
                     $stmt = $this->db->prepare($query);
                     $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
@@ -850,6 +854,9 @@ class DomainManager implements DomainManagerInterface
                                     'SELECT ' . DbCompat::castToString($db_type, 'id') . " FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'",
                                     [':zone_id' => $zone_id]
                                 );
+                                // SQLite reuses ids, so a left-over link could later resolve to another record
+                                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id IN (SELECT id FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA')");
+                                $stmt->execute([':zone_id' => $zone_id]);
                                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
                                 $stmt->execute([':zone_id' => $zone_id]);
                                 $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
