@@ -243,12 +243,12 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
         $protocol = strtolower($fields[1]);
 
         // Validate service name according to RFC 2782
-        if (!preg_match('/^_[\w\-]+$/i', $service)) {
+        if (!preg_match('/^_[\w\-]+$/', $service)) {
             return ValidationResult::failure(_('Invalid service value in SRV record. Service name must start with an underscore followed by alphanumeric characters.'));
         }
 
         // Validate protocol according to RFC 2782
-        if (!preg_match('/^_[\w]+$/i', $protocol)) {
+        if (!preg_match('/^_[\w]+$/', $protocol)) {
             return ValidationResult::failure(_('Invalid protocol value in SRV record. Protocol must start with an underscore followed by alphanumeric characters.'));
         }
 

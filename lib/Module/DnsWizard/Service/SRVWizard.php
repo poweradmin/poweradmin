@@ -257,7 +257,7 @@ class SRVWizard extends AbstractDnsWizard
             $customService = $formData['custom_service'] ?? '';
             if (empty($customService)) {
                 $errors[] = _('Custom service name is required');
-            } elseif (!preg_match('/^_?[a-z0-9-]+$/i', $customService)) {
+            } elseif (!preg_match('/^_?[a-zA-Z0-9-]+$/', $customService)) {
                 $errors[] = _('Service name must contain only alphanumeric characters and hyphens');
             }
         }
@@ -329,7 +329,7 @@ class SRVWizard extends AbstractDnsWizard
         $protocol = '_tcp';
         $domain = '';
 
-        if (preg_match('/^(_[^.]+)\.(_[^.]+)(?:\.(.+))?$/i', $name, $matches)) {
+        if (preg_match('/^(_[^.]+)\.(_[^.]+)(?:\.(.+))?$/', $name, $matches)) {
             $service = $matches[1];
             $protocol = $matches[2];
             $domain = $matches[3] ?? '';

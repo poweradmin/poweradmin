@@ -237,7 +237,7 @@ final class SearchCriteria
         ];
 
         // Match patterns like "type:txt" or "type: txt" or "type:TXT" (case insensitive)
-        if (preg_match('/\btype:\s*([a-z0-9_]+)\b/i', $query, $matches)) {
+        if (preg_match('/\btype:\s*([a-zA-Z0-9_]+)\b/i', $query, $matches)) {
             $filters['type'] = strtoupper($matches[1]); // Convert to uppercase for consistency
             $query = str_replace($matches[0], '', $query); // Remove from query
         }

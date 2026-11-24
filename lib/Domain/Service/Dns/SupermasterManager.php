@@ -282,7 +282,7 @@ class SupermasterManager
      */
     public static function validateAccount(string $account): bool
     {
-        if (preg_match("/^[A-Z0-9._-]+$/i", $account)) {
+        if (preg_match("/^[A-Za-z0-9._-]+$/", $account)) {
             return true;
         } else {
             return false;

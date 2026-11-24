@@ -175,7 +175,7 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
         if (count($parts) >= 2) {
             $hash = $parts[0];
             // Check if the first label looks like a Base32hex encoded hash
-            if (preg_match('/^[A-V0-9]+$/i', $hash)) {
+            if (preg_match('/^[A-Va-v0-9]+$/', $hash)) {
                 return true;
             }
         }
@@ -261,7 +261,7 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
         // Validate next hashed owner name (Base32hex encoding)
         $nextHashedOwner = $parts[4];
         // Base32hex alphabet: 0-9, A-V (case insensitive) per RFC 4648
-        if (!preg_match('/^[A-V0-9]+$/i', $nextHashedOwner)) {
+        if (!preg_match('/^[A-Va-v0-9]+$/', $nextHashedOwner)) {
             return ValidationResult::failure(_('NSEC3 next hashed owner name must be a valid Base32hex encoded value (using characters 0-9 and A-V).'));
         }
 

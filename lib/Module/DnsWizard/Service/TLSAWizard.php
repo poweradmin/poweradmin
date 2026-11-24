@@ -294,7 +294,7 @@ class TLSAWizard extends AbstractDnsWizard
         $protocol = '_tcp';
         $hostname = '';
 
-        if (preg_match('/^_(\d+)\.(_[a-z]+)(?:\.(.+))?$/i', $name, $matches)) {
+        if (preg_match('/^_(\d+)\.(_[a-zA-Z]+)(?:\.(.+))?$/', $name, $matches)) {
             $port = (int) $matches[1];
             $protocol = $matches[2];
             $hostname = $matches[3] ?? '';

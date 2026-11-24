@@ -212,7 +212,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
 
         foreach ($paramsList as $param) {
             // key=value, except the flag keys PowerDNS only reads bare
-            if (!preg_match('/^([a-z0-9_-]+)(=(.*))?$/i', $param, $matches)) {
+            if (!preg_match('/^([a-zA-Z0-9_-]+)(=(.*))?$/', $param, $matches)) {
                 return ValidationResult::failure(_('SVCB parameters must be in key=value format separated by spaces.'));
             }
 
@@ -245,7 +245,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
             switch ($key) {
                 case 'alpn':
                     // ALPN values should be a comma-separated list of protocol identifiers
-                    if (!preg_match('/^[a-z0-9,_-]+$/i', $value) || !self::alpnEntriesValid($value)) {
+                    if (!preg_match('/^[a-zA-Z0-9,_-]+$/', $value) || !self::alpnEntriesValid($value)) {
                         $errors[] = _('ALPN value must be a comma-separated list of protocol identifiers.');
                     }
                     break;

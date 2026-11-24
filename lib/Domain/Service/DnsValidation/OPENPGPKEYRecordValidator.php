@@ -153,7 +153,7 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
     {
         // RFC 7929 specifies the format: <hash>._openpgpkey.<domain>
         // The hash should be a 56-character hex string (28 bytes of SHA-256)
-        if (preg_match('/^[0-9a-f]{56}\._openpgpkey\..+$/i', $name)) {
+        if (preg_match('/^[0-9a-fA-F]{56}\._openpgpkey\..+$/i', $name)) {
             return true;
         }
 
@@ -164,7 +164,7 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
             if (!empty($parts[0])) {
                 $hashPart = $parts[0];
                 // If hash part exists but doesn't match 56 chars, it might be non-standard
-                if (strlen($hashPart) != 56 || !preg_match('/^[0-9a-f]+$/i', $hashPart)) {
+                if (strlen($hashPart) != 56 || !preg_match('/^[0-9a-fA-F]+$/', $hashPart)) {
                     return false;
                 }
             }

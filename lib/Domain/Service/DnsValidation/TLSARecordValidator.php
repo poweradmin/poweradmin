@@ -110,14 +110,14 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
             // Accept the test case directly
         } elseif (strpos($name, '_') === 0) {
             // Check for SRV record format followed by TLSA (RFC 7673)
-            if (preg_match('/^_[a-z]+\._[a-z]+\..*?$/i', $name) && !preg_match('/^_\d+\._[a-z]+\..+$/i', $name)) {
+            if (preg_match('/^_[a-zA-Z]+\._[a-zA-Z]+\..*?$/', $name) && !preg_match('/^_\d+\._[a-zA-Z]+\..+$/', $name)) {
                 // This might be an SRV record name pattern (not a standard TLSA pattern)
                 // RFC 7673 specifies how to use TLSA with SRV records
                 $warnings[] = _('Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), ensure:');
                 $warnings[] = _('1. The entire chain of SRV lookups must be DNSSEC-signed');
                 $warnings[] = _('2. TLSA records should be found at _$port._$protocol.$hostname where $port, $protocol, and $hostname are from the target of SRV lookup');
                 $warnings[] = _('3. Both SRV and TLSA records must have DNSSEC validation status "secure"');
-            } elseif (!preg_match('/^_\d+\._[a-z]+\..+$/i', $name)) {
+            } elseif (!preg_match('/^_\d+\._[a-zA-Z]+\..+$/', $name)) {
                 // Not a standard TLSA format
                 $warnings[] = _('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).');
                 // This is just a warning, still allow the record
@@ -128,7 +128,7 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
                 }
 
                 // Extract port to provide protocol-specific guidance
-                if (preg_match('/^_(\d+)\._([a-z]+)\..+$/i', $name, $matches)) {
+                if (preg_match('/^_(\d+)\._([a-zA-Z]+)\..+$/', $name, $matches)) {
                     $port = (int)$matches[1];
                     $protocol = strtolower($matches[2]);
 
