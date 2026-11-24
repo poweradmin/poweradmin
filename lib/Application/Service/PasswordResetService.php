@@ -100,6 +100,15 @@ class PasswordResetService
     }
 
     /**
+     * @param array<string, mixed> $user
+     */
+    private function isAccountActive(array $user): bool
+    {
+        // Login requires active = 1, so a NULL (allowed on PostgreSQL) counts as disabled
+        return !array_key_exists('active', $user) || (int)$user['active'] === 1;
+    }
+
+    /**
      * Generate a cryptographically secure token
      */
     private function generateToken(): string
@@ -164,6 +173,16 @@ class PasswordResetService
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             return true; // Return true to not reveal account details
+        }
+
+        // A disabled account gets no token; the reply stays the same as for an unknown address.
+        if (!$this->isAccountActive($user)) {
+            $this->logger->info('Password reset skipped for disabled account', [
+                'user_id' => $user['id'],
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true;
         }
 
         // Check if user's authentication method allows password reset
@@ -320,6 +339,11 @@ class PasswordResetService
                 'token_id' => $tokenData['id'],
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
+            return null;
+        }
+
+        // The account may have been disabled after the token was issued.
+        if (!$this->isAccountActive($user)) {
             return null;
         }
 

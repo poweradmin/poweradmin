@@ -898,4 +898,66 @@ class PasswordResetSecurityTest extends TestCase
 
         $this->passwordResetService->cleanupExpiredTokens();
     }
+
+    public function testNoResetTokenIsIssuedForADisabledAccount(): void
+    {
+        $email = 'off@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'fullname' => 'Off', 'auth_method' => 'sql', 'active' => 0,
+        ]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testATokenIssuedBeforeTheAccountWasDisabledIsRefused(): void
+    {
+        $token = str_repeat('c', 64);
+        $email = 'off@example.com';
+        $this->tokenRepository->method('findByToken')->willReturn($this->tokenRow(21, $token, $email));
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => 0,
+        ]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->userRepository->expects($this->never())->method('updatePassword');
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
+        $this->assertFalse($this->passwordResetService->resetPassword($token, 'N3w-Passw0rd!'));
+    }
+
+    public function testNoResetTokenIsIssuedForADisabledAccountWhenActiveIsNull(): void
+    {
+        $email = 'off@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('getLastAttemptTime')->willReturn(null);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'fullname' => 'Off', 'auth_method' => 'sql', 'active' => null,
+        ]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testATokenIssuedBeforeTheAccountWasDisabledIsRefusedWhenActiveIsNull(): void
+    {
+        $token = str_repeat('c', 64);
+        $email = 'off@example.com';
+        $this->tokenRepository->method('findByToken')->willReturn($this->tokenRow(21, $token, $email));
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 9, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => null,
+        ]);
+        $this->userRepository->method('countUsersByEmail')->willReturn(1);
+        $this->userRepository->expects($this->never())->method('updatePassword');
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
+        $this->assertFalse($this->passwordResetService->resetPassword($token, 'N3w-Passw0rd!'));
+    }
 }
