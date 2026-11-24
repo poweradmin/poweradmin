@@ -96,6 +96,10 @@ class RecordManagerService
         bool $finalizeZone = true,
         ?Closure $syncZoneAllowed = null
     ): RecordWriteResult {
+        if (!mb_check_encoding($comment, 'UTF-8')) {
+            return RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment'));
+        }
+
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);
 
         // All creates go through RecordManager so permission gates and record
