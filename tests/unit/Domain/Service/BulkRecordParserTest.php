@@ -224,4 +224,54 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame('A', $result['type']);
         $this->assertSame('192.168.1.1', $result['content']);
     }
+
+    public function testSplitRecordsKeepsNewlineInsideQuotedCell(): void
+    {
+        $text = "www,A,1.2.3.4,0,300,\"x\nwww2,A,6.6.6.6\"\nmail,A,5.6.7.8";
+
+        $records = $this->parser->splitRecords($text);
+
+        $this->assertCount(2, $records);
+        $parsed = $this->parser->parseLine($records[0], $this->defaultTtl);
+        $this->assertIsArray($parsed);
+        $this->assertSame("x\nwww2,A,6.6.6.6", $parsed['comment']);
+    }
+
+    public function testSplitRecordsSplitsPlainLinesAsBefore(): void
+    {
+        $this->assertSame(['a,A,1.1.1.1', 'b,A,2.2.2.2', '', 'c say "hi,A,3.3.3.3'], $this->parser->splitRecords("a,A,1.1.1.1\nb,A,2.2.2.2\n\nc say \"hi,A,3.3.3.3"));
+    }
+
+    public function testSplitRecordsFallsBackOnUnterminatedQuote(): void
+    {
+        $this->assertSame(['a,A,1.1.1.1,0,300,0,"oops', 'b,A,2.2.2.2'], $this->parser->splitRecords("a,A,1.1.1.1,0,300,0,\"oops\nb,A,2.2.2.2"));
+    }
+
+    public function testADoubledQuoteInsideAQuotedCommentKeepsTheCellOpen(): void
+    {
+        $rows = $this->parser->splitRecords("a,A,1.1.1.1,0,300,No,\"x \"\"q\"\" y\nz\"\nb,A,2.2.2.2");
+
+        $this->assertSame(['a,A,1.1.1.1,0,300,No,"x ""q"" y' . "\n" . 'z"', 'b,A,2.2.2.2'], $rows);
+    }
+
+    public function testABackslashPairBeforeTheClosingQuoteEndsTheCell(): void
+    {
+        $text = '"a\\\\",A,1.1.1.1' . "\n" . 'b,A,2.2.2.2,0,300,"c"' . "\n" . 'd,A,3.3.3.3';
+
+        $this->assertCount(3, $this->parser->splitRecords($text));
+    }
+
+    public function testAQuoteAfterACarriageReturnStillOpensAQuotedCell(): void
+    {
+        $rows = $this->parser->splitRecords("a,A,1.1.1.1,0,300,\r\"x\ny\"\nb,A,2.2.2.2");
+
+        $this->assertSame(["a,A,1.1.1.1,0,300,\r\"x\ny\"", 'b,A,2.2.2.2'], $rows);
+    }
+
+    public function testAMissingClosingQuoteDoesNotSwallowTheNextLine(): void
+    {
+        $rows = $this->parser->splitRecords("@,TXT,\"v=spf1 -all\n_dmarc,TXT,\"v=DMARC1; p=reject\"");
+
+        $this->assertSame(['@,TXT,"v=spf1 -all', '_dmarc,TXT,"v=DMARC1; p=reject"'], $rows);
+    }
 }

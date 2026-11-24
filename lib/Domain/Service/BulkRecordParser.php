@@ -24,6 +24,67 @@ namespace Poweradmin\Domain\Service;
 
 class BulkRecordParser
 {
+    /** Whitespace str_getcsv skips before an opening quote (the newline is handled on its own) */
+    private const FIELD_SPACE = [' ', "\t", "\r", "\x0B", "\f"];
+
+    /**
+     * Split pasted bulk input into records, keeping a newline inside a double-quoted
+     * cell in that cell. A quote that never closes, or text right after a closing quote,
+     * falls back to one record per line for the rest of the input.
+     *
+     * @return string[]
+     */
+    public function splitRecords(string $text): array
+    {
+        $rows = [];
+        $length = strlen($text);
+        $start = 0;
+        $inQuotes = false;
+        $fieldStart = true;
+        $afterClose = false;
+        $malformed = false;
+
+        for ($pos = 0; $pos < $length; $pos++) {
+            $char = $text[$pos];
+
+            if ($inQuotes) {
+                // Same rules as the str_getcsv call in parseLine: a doubled quote stays inside the cell
+                if ($char === '"') {
+                    if (($text[$pos + 1] ?? '') === '"') {
+                        $pos++;
+                    } else {
+                        $inQuotes = false;
+                        $afterClose = true;
+                    }
+                }
+            } elseif ($afterClose && $char !== ',' && $char !== "\n" && !in_array($char, self::FIELD_SPACE, true)) {
+                // A typo such as a missing closing quote would otherwise pull the next line into this record
+                $malformed = true;
+                break;
+            } elseif ($char === "\n") {
+                $rows[] = substr($text, $start, $pos - $start);
+                $start = $pos + 1;
+                $fieldStart = true;
+                $afterClose = false;
+            } elseif ($char === ',') {
+                $fieldStart = true;
+                $afterClose = false;
+            } elseif ($char === '"' && $fieldStart) {
+                $inQuotes = true;
+                $fieldStart = false;
+            } elseif (!in_array($char, self::FIELD_SPACE, true)) {
+                $fieldStart = false;
+            }
+        }
+
+        if ($inQuotes || $malformed) {
+            // Re-split from the broken record by physical line so one stray quote cannot swallow the rest
+            return array_merge($rows, explode("\n", substr($text, $start)));
+        }
+
+        $rows[] = substr($text, $start);
+        return $rows;
+    }
     /**
      * Parse a CSV line into a record array.
      *

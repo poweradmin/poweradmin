@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -133,7 +133,8 @@ class BulkRecordAddController extends BaseController
 
         $zone_id = (int)$this->getSafeRequestValue('id');
         $records_text = is_string($_POST['records'] ?? null) ? $_POST['records'] : '';
-        $lines = explode("\n", trim($records_text));
+        $parser = new BulkRecordParser();
+        $lines = $parser->splitRecords(trim($records_text));
 
         $lineCount = count(array_filter($lines, static fn(string $line): bool => trim($line) !== ''));
         if ($lineCount > self::MAX_LINES) {
@@ -150,7 +151,6 @@ class BulkRecordAddController extends BaseController
 
         $success_count = 0;
         $failed_records = [];
-        $parser = new BulkRecordParser();
 
         foreach ($lines as $line) {
             $line = trim($line);
