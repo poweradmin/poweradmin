@@ -16764,3 +16764,7 @@ msgstr "Zona yang Anda pilih tindakannya bukan milik pengguna ini."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Kolom %s mengandung karakter tidak valid."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Sertakan rekaman yang dinonaktifkan"

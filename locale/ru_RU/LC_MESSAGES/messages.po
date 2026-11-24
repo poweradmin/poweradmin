@@ -16784,3 +16784,7 @@ msgstr "Зона, для которой вы выбрали действие, н
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Поле %s содержит недопустимые символы."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Включить отключённые записи"

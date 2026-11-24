@@ -16778,3 +16778,7 @@ msgstr "Strefa, dla której wybrano akcję, nie należy do tego użytkownika."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Pole %s zawiera nieprawidłowe znaki."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Dołącz wyłączone rekordy"

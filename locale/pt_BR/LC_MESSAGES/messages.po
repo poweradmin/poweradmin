@@ -16861,3 +16861,7 @@ msgstr "Uma zona para a qual você escolheu uma ação não pertence a este usu�
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "O campo %s contém caracteres inválidos."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Incluir registros desativados"

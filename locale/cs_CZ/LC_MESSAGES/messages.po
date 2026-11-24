@@ -16575,3 +16575,7 @@ msgstr "Zóna, pro kterou jste vybrali akci, nepatří tomuto uživateli."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Pole %s obsahuje neplatné znaky."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Zahrnout zakázané záznamy"

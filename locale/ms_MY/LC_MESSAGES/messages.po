@@ -16740,3 +16740,7 @@ msgstr "Zon yang anda pilih tindakannya bukan milik pengguna ini."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Medan %s mengandungi aksara tidak sah."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Sertakan rekod yang dinyahdayakan"

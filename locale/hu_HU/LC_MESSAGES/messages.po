@@ -16805,3 +16805,7 @@ msgstr "Egy zóna, amelyhez műveletet választott, nem ehhez a felhasználóhoz
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "A(z) %s mező érvénytelen karaktereket tartalmaz."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Letiltott rekordok belefoglalása"

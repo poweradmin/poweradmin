@@ -16675,3 +16675,7 @@ msgstr "Zona, kuriai pasirinkote veiksmą, nepriklauso šiam naudotojui."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Laukas %s turi neteisingų simbolių."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Įtraukti išjungtus įrašus"

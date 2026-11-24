@@ -16719,3 +16719,7 @@ msgstr "Зона, для якої ви вибрали дію, не належи�
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Поле %s містить недійсні символи."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Включити вимкнені записи"

@@ -16553,3 +16553,7 @@ msgstr "En sone du valgte en handling for, tilhører ikke denne brukeren."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Feltet %s inneholder ugyldige tegn."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Ta med deaktiverte poster"

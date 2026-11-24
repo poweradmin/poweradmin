@@ -15514,3 +15514,7 @@ msgstr "您为其选择了操作的区域不属于此用户。"
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%s 字段包含无效字符。"
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "包含已禁用的记录"

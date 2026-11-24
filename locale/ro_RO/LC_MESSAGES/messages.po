@@ -17115,3 +17115,7 @@ msgstr "O zonă pentru care ați ales o acțiune nu aparține acestui utilizator
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Câmpul %s conține caractere invalide."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Include înregistrările dezactivate"

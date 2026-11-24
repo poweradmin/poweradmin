@@ -16131,3 +16131,7 @@ msgstr "אזור שבחרת עבורו פעולה אינו שייך למשתמש
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "שדה %s מכיל תווים לא חוקיים."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "כלול רשומות מושבתות"

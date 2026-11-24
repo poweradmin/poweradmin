@@ -16412,3 +16412,7 @@ msgstr "Зона за коју сте изабрали акцију не при�
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Поље %s садржи неважеће знакове."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Укључи онемогућене записе"

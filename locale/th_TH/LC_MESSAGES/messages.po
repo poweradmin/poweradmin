@@ -15861,3 +15861,7 @@ msgstr "โซนที่คุณเลือกการดำเนินก
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "ฟิลด์ %s มีอักขระที่ไม่ถูกต้อง"
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "รวมเรคคอร์ดที่ปิดใช้งาน"

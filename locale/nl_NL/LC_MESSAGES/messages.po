@@ -16822,3 +16822,7 @@ msgstr "Een zone waarvoor u een actie hebt gekozen, behoort niet toe aan deze ge
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Het veld %s bevat ongeldige karakters."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Uitgeschakelde records opnemen"

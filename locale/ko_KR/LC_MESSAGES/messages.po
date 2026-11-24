@@ -16374,3 +16374,7 @@ msgstr "작업을 선택한 존 중 이 사용자에게 속하지 않는 존이 
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%s 필드에 유효하지 않은 문자가 포함되어 있습니다."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "비활성화된 레코드 포함"

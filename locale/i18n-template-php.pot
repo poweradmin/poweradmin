@@ -14957,3 +14957,7 @@ msgstr ""
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr ""
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr ""

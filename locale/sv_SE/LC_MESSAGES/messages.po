@@ -16609,3 +16609,7 @@ msgstr "En zon som du valde en åtgärd för tillhör inte den här användaren.
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Fältet %s innehåller ogiltiga tecken."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Inkludera inaktiverade poster"

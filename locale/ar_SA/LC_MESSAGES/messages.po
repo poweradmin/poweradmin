@@ -16332,3 +16332,7 @@ msgstr "المنطقة التي اخترت إجراءً لها لا تخص هذ�
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "يحتوي الحقل %s على أحرف غير صالحة."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "تضمين السجلات المعطلة"

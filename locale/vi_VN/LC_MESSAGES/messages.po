@@ -16525,3 +16525,7 @@ msgstr "Một vùng mà bạn đã chọn thao tác không thuộc về người
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Trường %s chứa ký tự không hợp lệ."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Bao gồm các bản ghi bị vô hiệu hóa"

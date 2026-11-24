@@ -16324,3 +16324,7 @@ msgstr "जिस ज़ोन के लिए आपने कोई कार
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%s क्षेत्र में अमान्य वर्ण शामिल हैं।"
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "अक्षम रिकॉर्ड शामिल करें"

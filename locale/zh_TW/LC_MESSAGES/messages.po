@@ -15533,3 +15533,7 @@ msgstr "您為其選擇了操作的區域不屬於此使用者。"
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%s 欄位包含無效字元。"
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "包含已停用的記錄"

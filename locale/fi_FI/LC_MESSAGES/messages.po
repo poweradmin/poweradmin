@@ -16429,3 +16429,7 @@ msgstr "Alue, jolle valitsit toiminnon, ei kuulu tälle käyttäjälle."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Kenttä %s sisältää virheellisiä merkkejä."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Sisällytä käytöstä poistetut tietueet"

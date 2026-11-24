@@ -16524,3 +16524,7 @@ msgstr "Zona za koju ste odabrali radnju ne pripada ovom korisniku."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Polje %s sadrži nevažeće znakove."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Uključi onemogućene zapise"

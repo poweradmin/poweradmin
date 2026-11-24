@@ -16654,3 +16654,7 @@ msgstr "İşlem seçtiğiniz bir zon bu kullanıcıya ait değil."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%s alanı geçersiz karakterler içeriyor."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Devre dışı kayıtları dahil et"

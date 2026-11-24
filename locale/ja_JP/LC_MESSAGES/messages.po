@@ -16597,3 +16597,7 @@ msgstr "操作を選択したゾーンのいずれかが、このユーザーに
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "%sフィールドに無効な文字が含まれています。"
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "無効なレコードを含める"

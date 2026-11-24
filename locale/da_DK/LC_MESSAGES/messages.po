@@ -16634,3 +16634,7 @@ msgstr "En zone, du har valgt en handling for, tilhører ikke denne bruger."
 #, php-format
 msgid "The %s field contains invalid characters."
 msgstr "Feltet %s indeholder ugyldige tegn."
+
+#: templates/default/edit.html:651
+msgid "Include disabled records"
+msgstr "Medtag deaktiverede poster"
