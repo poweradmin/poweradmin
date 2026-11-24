@@ -26,6 +26,7 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
@@ -370,6 +371,7 @@ class SqlDnsBackendProvider implements DnsBackendProvider
 
         // The comment goes with the record: unlinked it would show on sibling records
         DbRecordCommentRepository::purgeForRecords($this->db, $this->tableNameService->getTable(PdnsTable::COMMENTS), [$recordId]);
+        RecordManager::deleteRecordZoneTempl($this->db, $recordId);
 
         return true;
     }

@@ -1134,13 +1134,14 @@ class DomainManager implements DomainManagerInterface
                     // remove only the records this template applied here.
                     $this->deleteTemplateRecordsViaApi($zone_id, $zone_template_id, $dns_ttl);
                 } else {
-                    // Snapshot template-linked records before the bulk delete
-                    // so the audit log captures every removal.
+                    // Snapshot template-linked records before the bulk delete so the audit log
+                    // captures every removal. A link to a record in another zone is stale: skip it.
                     $selectStmt = $this->db->prepare(
                         "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
                          FROM $records_table r
                          INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
-                         WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id"
+                         WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id
+                           AND r.domain_id = rzt.domain_id"
                     );
                     $selectStmt->execute([':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id]);
                     $templateRecordsRemoved = $selectStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -1149,11 +1150,12 @@ class DomainManager implements DomainManagerInterface
                     // record and its mapping in one statement; the other backends
                     // delete records here and the mapping is cleared uniformly below.
                     if ($db_type == 'pgsql') {
-                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
+                        $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id AND r.domain_id = rzt.domain_id";
                     } elseif ($db_type == 'sqlite') {
-                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id)";
+                        $query = "DELETE FROM $records_table WHERE id IN (SELECT r.id FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id
+                            WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id)";
                     } else {
-                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id";
+                        $query = "DELETE r FROM $records_table r LEFT JOIN records_zone_templ rzt ON r.id = rzt.record_id WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.domain_id = rzt.domain_id";
                     }
                     $stmt = $this->db->prepare($query);
                     $stmt->execute(array(':zone_id' => $zone_id, ':zone_template_id' => $zone_template_id));
@@ -1211,6 +1213,9 @@ class DomainManager implements DomainManagerInterface
                                 $stmt->execute([':zone_id' => $zone_id]);
 
                                 DbRecordCommentRepository::purgeForRecords($this->db, $tableNameService->getTable(PdnsTable::COMMENTS), array_column($existingSoaRecords, 'id'));
+                                foreach (array_column($existingSoaRecords, 'id') as $soaId) {
+                                    RecordManager::deleteRecordZoneTempl($this->db, $soaId);
+                                }
 
                                 if ($existingSoaRecords !== []) {
                                     $this->captureChange(function () use ($existingSoaRecords, $zone_id): void {

@@ -122,6 +122,18 @@ class DomainManagerTemplateCnameConflictTest extends SqliteIntegrationTestCase
         $this->assertSame(0, $this->needsSync());
     }
 
+    #[RunInSeparateProcess]
+    public function testAStaleLinkToAnotherZonesRecordSurvivesAReapplyWithoutDeletingIt(): void
+    {
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content, ttl, prio) VALUES (77, 999, 'victim.other.test', 'A', '192.0.2.99', 3600, 0)");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (" . self::ZONE_ID . ", 77, " . self::TEMPLATE_ID . ")");
+        $this->templateRecord('mail', 'A', '192.0.2.20');
+
+        $this->assertTrue($this->makeDomainManager()->updateZoneRecords('sqlite', 3600, self::ZONE_ID, self::TEMPLATE_ID));
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM records WHERE id = 77 AND domain_id = 999")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM records_zone_templ WHERE record_id = 77")->fetchColumn());
+    }
+
     private function storeRecord(string $name, string $type, string $content): void
     {
         $stmt = $this->db->prepare("INSERT INTO records (domain_id, name, type, content, ttl, prio) VALUES (:zone, :name, :type, :content, 3600, 0)");

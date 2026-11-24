@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
@@ -188,6 +189,7 @@ readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInterface
         $delete->execute([':id' => $recordId]);
 
         DbRecordCommentRepository::purgeForRecords($this->db, $this->commentsTable, [$recordId]);
+        RecordManager::deleteRecordZoneTempl($this->db, $recordId);
     }
 
     public function updateSOASerial(int $zoneId): void

@@ -26,6 +26,7 @@ use Exception;
 use PDO;
 use Poweradmin\Application\Service\ApiStatusService;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -732,6 +733,7 @@ class DatabaseConsistencyService
 
         if ($deleted) {
             $this->purgeComments([$recordId]);
+            RecordManager::deleteRecordZoneTempl($this->db, $recordId);
         }
 
         return $deleted;
@@ -803,6 +805,9 @@ class DatabaseConsistencyService
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
             $stmt->execute($ids);
             $this->purgeComments($ids);
+            foreach ($ids as $id) {
+                RecordManager::deleteRecordZoneTempl($this->db, $id);
+            }
 
             $this->db->commit();
         } catch (Exception $e) {

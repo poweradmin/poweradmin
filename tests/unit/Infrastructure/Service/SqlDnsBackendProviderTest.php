@@ -347,8 +347,8 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordDeletesById(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        // The record delete, then the linked comment and link deletes
-        $stmt->expects($this->exactly(3))->method('execute')->willReturnCallback(
+        // The record delete, then the linked comment and link deletes and the template link
+        $stmt->expects($this->exactly(4))->method('execute')->willReturnCallback(
             static fn(array $params): bool => in_array($params, [[5], ['5']], true)
         );
 
