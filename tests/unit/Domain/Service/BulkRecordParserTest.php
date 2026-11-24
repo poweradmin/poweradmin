@@ -261,6 +261,19 @@ class BulkRecordParserTest extends TestCase
         $this->assertCount(3, $this->parser->splitRecords($text));
     }
 
+    public function testABackslashIsPlainDataInsideAQuotedCell(): void
+    {
+        $first = 'a,A,1.1.1.1,0,300,No,"x\\"';
+        $second = "b,A,2.2.2.2,0,300,No,\"\ny\"";
+
+        $rows = $this->parser->splitRecords($first . "\n" . $second);
+
+        $this->assertSame([$first, $second], $rows);
+        $parsed = $this->parser->parseLine($rows[0], 3600);
+        $this->assertIsArray($parsed);
+        $this->assertSame('x\\', $parsed['comment']);
+    }
+
     public function testAQuoteAfterACarriageReturnStillOpensAQuotedCell(): void
     {
         $rows = $this->parser->splitRecords("a,A,1.1.1.1,0,300,\r\"x\ny\"\nb,A,2.2.2.2");

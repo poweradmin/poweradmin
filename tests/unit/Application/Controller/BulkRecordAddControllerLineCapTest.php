@@ -83,6 +83,14 @@ class BulkRecordAddControllerLineCapTest extends TestCase
         $this->assertSame('/zones/12/edit', $controller->redirectedTo);
     }
 
+    public function testANewlineInsideAQuotedCommentDoesNotStartAnotherRecord(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->exactly(2))->method('createRecord')->willReturn(true);
+
+        $this->submit("web,A,192.0.2.1,0,300,No,\"note\nwww,A,6.6.6.6\"\nmail,A,192.0.2.2,0,300", $records);
+    }
+
     public function testEachAddedRecordIsLoggedOnlyByTheRecordService(): void
     {
         $records = $this->createMock(RecordManagerService::class);
