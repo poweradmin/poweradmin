@@ -99,4 +99,22 @@ class EmailTemplateServiceChangeRequestTest extends TestCase
         $this->assertStringNotContainsString('href=', $failed['html']);
         $this->assertStringContainsString('example.org', $failed['html']);
     }
+
+    public function testPlainTextPartIsNotHtmlEscapedWhileHtmlPartIs(): void
+    {
+        $mail = $this->service->renderChangeRequestFiledEmail(
+            'a&b.example.org',
+            12,
+            'Olaf Owner',
+            'Rita <R> & Co',
+            'zone_delete',
+            'Customer left',
+            '2026-09-20 10:00:00',
+            self::URL
+        );
+
+        $this->assertStringContainsString('Rita <R> & Co', $mail['text']);
+        $this->assertStringNotContainsString('&amp;', $mail['text']);
+        $this->assertStringContainsString('Rita &lt;R&gt; &amp; Co', $mail['html']);
+    }
 }

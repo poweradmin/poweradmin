@@ -74,6 +74,8 @@ class EmailTemplateService implements EmailTemplateRendererInterface
             'cache' => false, // Disable cache for development, can be enabled in production
             'debug' => $this->config->get('misc', 'display_errors', false),
             'strict_variables' => true,
+            // By file extension: *.html.twig stays escaped, *.txt.twig is plain text
+            'autoescape' => 'name',
         ]);
 
         // Add global variables available to all templates
