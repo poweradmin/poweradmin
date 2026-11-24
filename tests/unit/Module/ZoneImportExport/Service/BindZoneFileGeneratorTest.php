@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Module\ZoneImportExport\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Module\ZoneImportExport\Service\BindZoneFileGenerator;
 
@@ -128,9 +129,40 @@ class BindZoneFileGeneratorTest extends TestCase
 
     public function testGenerateEmptyRecords(): void
     {
-        $output = $this->generator->generate('example.com', []);
+        $this->assertSame('', $this->generator->generate('example.com', []));
+    }
 
-        $this->assertStringContainsString('$ORIGIN example.com.', $output);
-        $this->assertStringContainsString('$TTL 86400', $output);
+    #[DataProvider('disabledFlagProvider')]
+    public function testDisabledRecordsAreLeftOut(mixed $disabled, mixed $enabled): void
+    {
+        $records = [
+            ['name' => 'on.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => $enabled],
+            ['name' => 'off.example.com', 'type' => 'A', 'content' => '192.0.2.2', 'ttl' => 3600, 'prio' => 0, 'disabled' => $disabled],
+        ];
+
+        $output = $this->generator->generate('example.com', $records);
+
+        $this->assertStringContainsString('on.example.com. 3600 IN A 192.0.2.1', $output);
+        $this->assertStringNotContainsString('off.example.com', $output);
+        $this->assertStringNotContainsString('192.0.2.2', $output);
+    }
+
+    public static function disabledFlagProvider(): array
+    {
+        return [
+            'int' => [1, 0],
+            'bool' => [true, false],
+            'string 1' => ['1', '0'],
+            'postgres t' => ['t', 'f'],
+        ];
+    }
+
+    public function testAZoneWithOnlyDisabledRecordsExportsNothing(): void
+    {
+        $records = [
+            ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 1],
+        ];
+
+        $this->assertSame('', $this->generator->generate('example.com', $records));
     }
 }
