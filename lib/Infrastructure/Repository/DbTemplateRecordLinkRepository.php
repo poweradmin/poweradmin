@@ -92,7 +92,7 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
         $stmt = $this->db->prepare(
             "SELECT r.id, r.name, r.type, r.content, r.ttl, r.prio, r.disabled
              FROM {$this->recordsTable} r
-             INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id
+             INNER JOIN records_zone_templ rzt ON r.id = rzt.record_id AND r.domain_id = rzt.domain_id
              WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_templ_id"
         );
         $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
@@ -159,6 +159,13 @@ final class DbTemplateRecordLinkRepository implements TemplateRecordLinkReposito
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $stmt = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id IN ($placeholders)");
+        foreach (array_values($ids) as $i => $id) {
+            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+        $stmt->execute();
+
+        // SQLite reuses ids, so a left-over link would let a template re-apply delete the next holder
+        $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id IN ($placeholders)");
         foreach (array_values($ids) as $i => $id) {
             $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
         }

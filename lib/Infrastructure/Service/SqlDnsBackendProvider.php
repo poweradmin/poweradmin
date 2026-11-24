@@ -573,6 +573,11 @@ final class SqlDnsBackendProvider implements DnsBackendProviderInterface
         $stmt = $this->db->prepare("DELETE FROM $recordsTable WHERE id = ?");
         $stmt->execute([$recordId]);
 
+        // SQLite reuses ids, so a left-over template link would point at the next holder of this id
+        if (is_int($recordId) || ctype_digit($recordId)) {
+            $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?")->execute([(int)$recordId]);
+        }
+
         // SQLite reuses ids, so a left-over link would show this comment on the next record
         $commentsTable = $this->tableNameService->getTable(PdnsTable::COMMENTS);
         foreach (

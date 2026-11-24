@@ -600,7 +600,7 @@ class SqlDnsBackendProviderTest extends TestCase
     public function testDeleteRecordDeletesById(): void
     {
         $stmt = $this->createMock(PDOStatement::class);
-        $stmt->expects($this->exactly(3))->method('execute')->willReturnCallback(
+        $stmt->expects($this->exactly(4))->method('execute')->willReturnCallback(
             static fn(array $params): bool => in_array($params, [[5], ['5']], true)
         );
 

@@ -187,6 +187,11 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
         $delete = $this->db->prepare("DELETE FROM {$this->recordsTable} WHERE id = :id");
         $delete->execute([':id' => $recordId]);
 
+        // SQLite reuses ids, so a left-over template link would point at the next holder of this id
+        if (is_int($recordId) || ctype_digit($recordId)) {
+            $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id = :id")->execute([':id' => (int)$recordId]);
+        }
+
         // SQLite reuses ids, so a left-over link would show this comment on the next record
         foreach (
             [

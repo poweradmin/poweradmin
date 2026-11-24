@@ -572,6 +572,15 @@ class SqlConsistencyChecks extends AbstractConsistencyChecks
             return;
         }
 
+        $numeric = array_values(array_filter($recordIds, static fn($id): bool => is_int($id) || ctype_digit((string)$id)));
+        if ($numeric !== []) {
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE record_id IN (" . implode(',', array_fill(0, count($numeric), '?')) . ")");
+            foreach ($numeric as $i => $id) {
+                $stmt->bindValue($i + 1, (int)$id, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        }
+
         $placeholders = implode(',', array_fill(0, count($recordIds), '?'));
         foreach (
             [

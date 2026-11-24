@@ -43,6 +43,7 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
     private array $createdSupermasters = [];
     private bool $createdApiKeyZones = false;
     private bool $createdCommentLinks = false;
+    private bool $createdTemplateLinks = false;
 
     private const DB_HOST = '127.0.0.1';
     private const DB_PORT = '3306';
@@ -73,6 +74,10 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         if ($this->createdCommentLinks) {
             $this->db->exec("CREATE TABLE record_comment_links (record_id VARCHAR(255) CHARACTER SET ascii NOT NULL PRIMARY KEY, comment_id INT NOT NULL, UNIQUE KEY (comment_id))");
         }
+        $this->createdTemplateLinks = $this->db->query("SHOW TABLES LIKE 'records_zone_templ'")->fetchColumn() === false;
+        if ($this->createdTemplateLinks) {
+            $this->db->exec("CREATE TABLE records_zone_templ (id INT AUTO_INCREMENT PRIMARY KEY, domain_id INT NOT NULL, record_id INT NOT NULL, zone_templ_id INT NOT NULL)");
+        }
 
         $config = new FakeConfiguration([
             'database' => [
@@ -90,6 +95,9 @@ class SqlDnsBackendProviderIntegrationTest extends TestCase
         }
         if ($this->createdCommentLinks) {
             $this->db->exec("DROP TABLE IF EXISTS record_comment_links");
+        }
+        if ($this->createdTemplateLinks) {
+            $this->db->exec("DROP TABLE IF EXISTS records_zone_templ");
         }
 
         // Clean up created domains and their records

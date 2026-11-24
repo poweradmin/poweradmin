@@ -83,6 +83,12 @@ class RecordDeleteCommentLinkCleanupTest extends TestCase
         return $this->db->query("SELECT record_id FROM record_comment_links ORDER BY record_id")->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /** @return int[] */
+    private function templateLinks(): array
+    {
+        return array_map('intval', $this->db->query("SELECT record_id FROM records_zone_templ ORDER BY record_id")->fetchAll(PDO::FETCH_COLUMN));
+    }
+
     /** @return string[] */
     private function comments(): array
     {
@@ -134,6 +140,46 @@ class RecordDeleteCommentLinkCleanupTest extends TestCase
 
         $this->assertTrue($this->consistency()->deleteOrphanedRecord(20));
         $this->assertSame(['10', '11', '12', '13'], $this->links());
+    }
+
+    public function testRecordDeletesOutsideTheRecordManagerDropTheTemplateLink(): void
+    {
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (1, 10, 7), (1, 11, 7), (1, 12, 7), (1, 13, 7)");
+
+        $repo = new SqlDynamicDnsRepository($this->db, $this->createMock(SOARecordManagerInterface::class), 'records', 'domains');
+        $repo->deleteDnsRecord(12);
+        $this->assertSame([10, 11, 13], $this->templateLinks());
+
+        $provider = new SqlDnsBackendProvider($this->db, new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]));
+        $provider->deleteRecord(13);
+        $this->assertSame([10, 11], $this->templateLinks());
+
+        $this->assertTrue($this->consistency()->fixDuplicateSOA(1));
+        $this->assertSame([10], $this->templateLinks());
+
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content) VALUES (20, 99, 'x.gone', 'A', '192.0.2.9')");
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (99, 20, 7)");
+        $this->assertTrue($this->consistency()->deleteOrphanedRecord(20));
+        $this->assertSame([10], $this->templateLinks());
+
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (1, 10, 8)");
+        $this->templateRepository()->removeSoaRecords(1);
+        $this->assertSame([], $this->templateLinks());
+    }
+
+    public function testReapplyLeavesARecordOfAnotherZoneThatInheritedTheLinkedId(): void
+    {
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (2, 'b.example', 'NATIVE')");
+        $this->db->exec("INSERT INTO records (id, domain_id, name, type, content) VALUES (30, 2, 'www.b.example', 'A', '192.0.2.30'), (31, 1, 'own.a.example', 'A', '192.0.2.31')");
+        // Zone 1 holds links to record 30 (now in zone 2) and to its own record 31
+        $this->db->exec("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (1, 30, 7), (1, 31, 7), (1, 99, 7)");
+
+        $removed = $this->templateRepository()->removeLinkedRecords(1, 7);
+
+        $this->assertSame([31], array_map(static fn(array $row): int => (int)$row['id'], $removed));
+        $this->assertSame(1, (int)$this->db->query("SELECT COUNT(*) FROM records WHERE id = 30")->fetchColumn());
+        $this->assertSame(0, (int)$this->db->query("SELECT COUNT(*) FROM records WHERE id = 31")->fetchColumn());
+        $this->assertSame([], $this->templateLinks());
     }
 
     public function testBackendProviderZoneDeleteDropsLinksAndComments(): void
