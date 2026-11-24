@@ -130,4 +130,24 @@ class DbZoneRepositoryListFilterSortTest extends TestCase
             $this->names($this->repository()->getAllZonesFiltered(null, null, null))
         );
     }
+
+    public function testTheNameFilterMatchesAMixedCaseRowRegardlessOfTheCaseTyped(): void
+    {
+        $repository = $this->repository();
+
+        $this->assertSame(['Beta.example'], $this->names($repository->getAllZonesFiltered(null, null, 'beta.example')));
+        $this->assertSame(['Beta.example'], $this->names($repository->getAllZonesFiltered(null, null, 'BETA.EXAMPLE')));
+        $this->assertSame(1, $repository->getZoneCountFiltered(null, null, 'Beta.Example'));
+        $this->assertSame(['alpha.example'], $this->names($repository->getAllZonesFiltered(null, null, 'ALPHA.example')));
+    }
+
+    public function testALowercaseTwinOutsideTheAllowlistDoesNotHideTheCallersZone(): void
+    {
+        $this->db->exec("INSERT INTO domains (id, name, type) VALUES (6, 'beta.example', 'MASTER')");
+        $this->db->exec("INSERT INTO zones (domain_id, owner) VALUES (6, 9)");
+        $repository = $this->repository();
+
+        $this->assertSame(['Beta.example'], $this->names($repository->getAllZonesFiltered([2], 5, 'Beta.example')));
+        $this->assertSame(1, $repository->getZoneCountFiltered([2], 5, 'Beta.example'));
+    }
 }
