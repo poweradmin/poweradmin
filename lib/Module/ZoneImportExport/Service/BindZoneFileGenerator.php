@@ -33,10 +33,16 @@ class BindZoneFileGenerator
      *
      * @param string $zoneName The zone name
      * @param array $records Array of record arrays with keys: name, type, content, ttl, prio
-     * @return string The zone file content
+     * @return string The zone file content, empty when no enabled record remains
      */
     public function generate(string $zoneName, array $records): string
     {
+        // A zone file cannot mark a record disabled, so leave them out as PowerDNS's own export does
+        $records = array_values(array_filter($records, fn(array $record): bool => !$this->isDisabled($record)));
+        if ($records === []) {
+            return '';
+        }
+
         $output = [];
 
         // Header comment
@@ -96,6 +102,11 @@ class BindZoneFileGenerator
         }
 
         return implode("\n", $output) . "\n";
+    }
+
+    private function isDisabled(array $record): bool
+    {
+        return in_array($record['disabled'] ?? false, [true, 1, '1', 't', 'true'], true);
     }
 
     private function formatRecord(array $record, string $zoneName): string

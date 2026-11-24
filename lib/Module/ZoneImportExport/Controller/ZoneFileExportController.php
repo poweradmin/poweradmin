@@ -161,6 +161,7 @@ class ZoneFileExportController extends BaseController
         }
 
         $generator = new BindZoneFileGenerator();
-        return $generator->generate($zone_name, $records);
+        $content = $generator->generate($zone_name, $records);
+        return $content === '' ? null : $content;
     }
 }
