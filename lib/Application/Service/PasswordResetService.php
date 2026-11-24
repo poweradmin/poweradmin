@@ -167,6 +167,16 @@ class PasswordResetService
             return true; // Return true to not reveal account details
         }
 
+        // A disabled account gets no reset, with the same silent answer as an unknown address
+        if (array_key_exists('active', $user) && (int)$user['active'] !== 1) {
+            $this->logger->info('Password reset requested for disabled account', [
+                'user_id' => $user['id'],
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true;
+        }
+
         // Check if user's authentication method allows password reset
         // OIDC, SAML, and LDAP users should only authenticate through their external providers
         $authMethod = $user['auth_method'] ?? 'sql';
@@ -330,6 +340,11 @@ class PasswordResetService
                 // Get user data
                 $user = $this->userRepository->getUserByEmail($tokenData['email']);
                 if ($user) {
+                    // A token issued before the account was disabled must not work either
+                    if (array_key_exists('active', $user) && (int)$user['active'] !== 1) {
+                        return null;
+                    }
+
                     // Additional security check: verify auth method allows password reset
                     $authMethod = $user['auth_method'] ?? 'sql';
                     if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
