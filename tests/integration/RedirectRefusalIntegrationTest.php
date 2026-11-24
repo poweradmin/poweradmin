@@ -118,6 +118,40 @@ class RedirectRefusalIntegrationTest extends TestCase
         }
     }
 
+    public function testResponseStatusIsReadFromTheStreamHeaders(): void
+    {
+        [$process, $port] = $this->startStubServer("HTTP/1.1 404 Not Found\r\nContent-Length: 9\r\nConnection: close\r\n\r\nNot Found");
+
+        try {
+            (new HttpClient('http://127.0.0.1:' . $port, self::API_KEY))->makeRequest('GET', '/x');
+            $this->fail('Expected ApiErrorException');
+        } catch (ApiErrorException $e) {
+            $this->assertSame(404, $e->getCode());
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
+    public function testMetricsFetchWithCredentialsReturnsTheBodyOnSuccess(): void
+    {
+        [$process, $port] = $this->startStubServer("HTTP/1.1 200 OK\r\nContent-Length: 8\r\nConnection: close\r\n\r\nmetrics\n");
+
+        try {
+            $service = new PowerdnsStatusService();
+            foreach (['apiUrl' => 'http://127.0.0.1:' . $port, 'webserverUsername' => 'user', 'webserverPassword' => 'pass'] as $name => $value) {
+                $property = new ReflectionProperty($service, $name);
+                $property->setValue($service, $value);
+            }
+            $fetch = new ReflectionMethod($service, 'fetchMetricsWithAuth');
+
+            $this->assertSame("metrics\n", $fetch->invoke($service, 'http://127.0.0.1:' . $port . '/metrics'));
+        } finally {
+            proc_terminate($process);
+            proc_close($process);
+        }
+    }
+
     public function testOidcTokenRequestIsNotFollowedToARedirectTarget(): void
     {
         [$target, $targetPort] = $this->listenOnFreePort();
