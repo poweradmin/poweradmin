@@ -224,4 +224,61 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame('A', $result['type']);
         $this->assertSame('192.168.1.1', $result['content']);
     }
+
+    public function testANewlineInsideAQuotedCommentStaysInTheSameRow(): void
+    {
+        $text = "web,A,192.0.2.1,0,300,No,\"note\nwww,A,6.6.6.6\"\nmail,A,192.0.2.2";
+
+        $rows = $this->parser->splitRows($text);
+
+        $this->assertSame(["web,A,192.0.2.1,0,300,No,\"note\nwww,A,6.6.6.6\"", 'mail,A,192.0.2.2'], $rows);
+        $parsed = $this->parser->parseLine($rows[0]);
+        $this->assertIsArray($parsed);
+        $this->assertSame("note\nwww,A,6.6.6.6", $parsed['comment']);
+    }
+
+    public function testUnquotedInputSplitsOnEveryNewline(): void
+    {
+        $this->assertSame(['a,A,1.1.1.1', '', 'b,A,2.2.2.2'], $this->parser->splitRows("a,A,1.1.1.1\n\nb,A,2.2.2.2"));
+    }
+
+    public function testAQuoteThatNeverClosesFallsBackToOneRowPerLine(): void
+    {
+        $rows = $this->parser->splitRows("a,A,1.1.1.1,0,300,No,\"oops\nb,A,2.2.2.2\nc,A,3.3.3.3");
+
+        $this->assertSame(["a,A,1.1.1.1,0,300,No,\"oops", 'b,A,2.2.2.2', 'c,A,3.3.3.3'], $rows);
+    }
+
+    public function testAQuoteInsideAnUnquotedCellDoesNotOpenAQuotedCell(): void
+    {
+        $this->assertSame(['a,A,say"hi,0', 'b,A,2.2.2.2'], $this->parser->splitRows("a,A,say\"hi,0\nb,A,2.2.2.2"));
+    }
+
+    public function testADoubledQuoteInsideAQuotedCommentKeepsTheCellOpen(): void
+    {
+        $rows = $this->parser->splitRows("a,A,1.1.1.1,0,300,No,\"x \"\"q\"\" y\nz\"\nb,A,2.2.2.2");
+
+        $this->assertSame(['a,A,1.1.1.1,0,300,No,"x ""q"" y' . "\n" . 'z"', 'b,A,2.2.2.2'], $rows);
+    }
+
+    public function testABackslashPairBeforeTheClosingQuoteEndsTheCell(): void
+    {
+        $text = '"a\\\\",A,1.1.1.1' . "\n" . 'b,A,2.2.2.2,0,300,"c"' . "\n" . 'd,A,3.3.3.3';
+
+        $this->assertCount(3, $this->parser->splitRows($text));
+    }
+
+    public function testAQuoteAfterACarriageReturnStillOpensAQuotedCell(): void
+    {
+        $rows = $this->parser->splitRows("a,A,1.1.1.1,0,300,\r\"x\ny\"\nb,A,2.2.2.2");
+
+        $this->assertSame(["a,A,1.1.1.1,0,300,\r\"x\ny\"", 'b,A,2.2.2.2'], $rows);
+    }
+
+    public function testAMissingClosingQuoteDoesNotSwallowTheNextLine(): void
+    {
+        $rows = $this->parser->splitRows("@,TXT,\"v=spf1 -all\n_dmarc,TXT,\"v=DMARC1; p=reject\"");
+
+        $this->assertSame(['@,TXT,"v=spf1 -all', '_dmarc,TXT,"v=DMARC1; p=reject"'], $rows);
+    }
 }
