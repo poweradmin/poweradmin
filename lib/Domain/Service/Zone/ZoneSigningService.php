@@ -25,7 +25,9 @@ namespace Poweradmin\Domain\Service\Zone;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Port\ZoneRectifierInterface;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\ZoneSigningInterface;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -43,8 +45,20 @@ class ZoneSigningService
         private readonly AuditLoggerInterface $audit,
         private readonly LoggerInterface $logger,
         private readonly ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
-        private readonly bool $dnssecEnabled = true
+        private readonly bool $dnssecEnabled = true,
+        private readonly ?DomainRepositoryInterface $domainRepository = null
     ) {
+    }
+
+    /**
+     * A SLAVE or CONSUMER zone's serial belongs to its primary, so signing leaves it alone.
+     */
+    private function bumpSerial(int $zoneId): void
+    {
+        if ($this->domainRepository !== null && ZoneType::isReadOnly($this->domainRepository->getDomainType($zoneId))) {
+            return;
+        }
+        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 
     public function sign(int $zoneId, string $zoneName): ZoneSigningResult
@@ -76,7 +90,7 @@ class ZoneSigningService
         }
 
         // The DNSSEC toggle counts as a write: PowerDNS bumps the serial for it under SOA-EDIT-API
-        $this->soaRecordManager->updateSOASerial($zoneId);
+        $this->bumpSerial($zoneId);
 
         if (!$this->dnssec->secureZone($zoneName)) {
             $this->logger->error('DNSSEC signing failed for zone: {zone}', ['zone' => $zoneName]);
@@ -128,7 +142,7 @@ class ZoneSigningService
         }
         $secured = $this->dnssec->fetchZoneSecured($zoneName);
         if ($secured === null) {
-            $this->soaRecordManager->updateSOASerial($zoneId);
+            $this->bumpSerial($zoneId);
             $this->zoneCacheFlusher?->flushZone($zoneName);
             $this->audit->logDnssecUnsignZone($zoneId, $zoneName);
             return new ZoneSigningResult(ZoneSigningOutcome::UNCONFIRMED);
@@ -138,7 +152,7 @@ class ZoneSigningService
             return new ZoneSigningResult(ZoneSigningOutcome::VERIFY_FAILED);
         }
 
-        $this->soaRecordManager->updateSOASerial($zoneId);
+        $this->bumpSerial($zoneId);
         $this->zoneCacheFlusher?->flushZone($zoneName);
         $this->audit->logDnssecUnsignZone($zoneId, $zoneName);
 

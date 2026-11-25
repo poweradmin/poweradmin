@@ -26,6 +26,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManagerInterface;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Service\Zone\ZoneSigningOutcome;
@@ -104,6 +105,20 @@ class ZoneSigningServiceTest extends TestCase
         $this->audit->expects($this->never())->method('logDnssecSignZone');
 
         $this->assertSame(ZoneSigningOutcome::VERIFY_FAILED, $this->service()->sign(self::ZONE_ID, self::ZONE)->outcome);
+    }
+
+    public function testSigningAndUnsigningAReadOnlyZoneLeaveItsSerialAlone(): void
+    {
+        $repo = $this->createMock(DomainRepositoryInterface::class);
+        $repo->method('getDomainType')->willReturn('SLAVE');
+        $this->soa->expects($this->never())->method('updateSOASerial');
+        $this->dnssec->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true, true, false);
+        $this->dnssec->method('secureZone')->willReturn(true);
+        $this->dnssec->method('unsecureZone')->willReturn(true);
+        $service = new ZoneSigningService($this->dnssec, $this->validator, $this->soa, $this->audit, new NullLogger(), null, true, $repo);
+
+        $this->assertSame(ZoneSigningOutcome::SIGNED, $service->sign(self::ZONE_ID, self::ZONE)->outcome);
+        $this->assertSame(ZoneSigningOutcome::UNSIGNED, $service->unsign(self::ZONE_ID, self::ZONE)->outcome);
     }
 
     public function testUnsigningBumpsTheSerialOnlyAfterItTook(): void

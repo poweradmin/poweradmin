@@ -161,7 +161,8 @@ final class ZoneServices
             $this->services->auditService(),
             $this->logger,
             $this->services->zoneCacheFlusher(),
-            $this->dnssecEnabled()
+            $this->dnssecEnabled(),
+            $this->services->domainRepository()
         );
     }
 
