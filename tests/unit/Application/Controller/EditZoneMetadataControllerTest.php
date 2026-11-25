@@ -198,6 +198,35 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $errors);
     }
 
+    public function testValidateMetadataRowsCapsTheKindsOfOneZone(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $rows = static fn(int $n): array => array_map(
+            static fn(int $i): array => ['kind' => 'X-KIND-' . $i, 'content' => 'v'],
+            range(1, $n)
+        );
+        $check = fn(array $submitted, array $stored = []): array => $this->invokePrivateMethod($controller, 'validateMetadataRows', [$submitted, $stored]);
+
+        $this->assertSame([], $check($rows(64)));
+        $this->assertCount(1, $check($rows(65)));
+        $this->assertSame([], $check($rows(70), $rows(70)));
+        $this->assertCount(1, $check($rows(71), $rows(70)));
+    }
+
+    public function testValidateMetadataRowsCapsOneValueLengthButKeepsAStoredOne(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $long = ['kind' => 'ALSO-NOTIFY', 'content' => str_repeat('a', 1025)];
+        $ok = ['kind' => 'ALSO-NOTIFY', 'content' => str_repeat('a', 1024)];
+        $check = fn(array $submitted, array $stored = []): array => $this->invokePrivateMethod($controller, 'validateMetadataRows', [$submitted, $stored]);
+
+        $this->assertSame([], $check([$ok]));
+        $this->assertCount(1, $check([$long]));
+        $this->assertSame([], $check([$long], [$long]));
+        $padded = ['kind' => 'ALSO-NOTIFY', 'content' => str_repeat('a', 1025) . "\r\n"];
+        $this->assertSame([], $check([$long], [$padded]));
+    }
+
     public function testValidateMetadataRowsRejectsDuplicateSingleValueKind(): void
     {
         $controller = $this->createControllerWithConfig([]);

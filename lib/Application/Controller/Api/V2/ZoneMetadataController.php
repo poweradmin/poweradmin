@@ -339,12 +339,18 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400);
             }
 
+            // Checked before the limits, which load stored metadata (a PowerDNS call in API backend mode)
+            if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
+                return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
+            }
+
             if (count($values) > MetadataDefinitions::MAX_VALUES_PER_KIND && count($values) > $this->storedValueCount($zoneId, $kind)) {
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . MetadataDefinitions::MAX_VALUES_PER_KIND . ' values', 400);
             }
 
-            if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
-                return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
+            $limitError = $this->metadataLimitError($zoneId, $kind, $values);
+            if ($limitError !== null) {
+                return $this->returnApiError($limitError, 400);
             }
 
             if (!$this->saveMetadataKind($zoneId, $kind, $values)) {
@@ -474,6 +480,36 @@ class ZoneMetadataController extends PublicApiController
         }
 
         return $this->zoneRepository->getDomainMetadata($zoneId);
+    }
+
+    /**
+     * Refuses a value over the length cap, or a new kind on a zone at the kind cap. What is
+     * already stored may be kept or shrunk, never grown.
+     *
+     * @param array<int, string> $values
+     */
+    private function metadataLimitError(int $zoneId, string $kind, array $values): ?string
+    {
+        $tooLong = array_filter($values, static fn(string $v): bool => strlen($v) > MetadataDefinitions::MAX_VALUE_LENGTH);
+        $stored = null;
+        if ($tooLong !== []) {
+            $stored = $this->loadMetadata($zoneId);
+            $storedValues = array_column(array_filter(
+                $stored,
+                static fn(array $row): bool => strtoupper((string)$row['kind']) === $kind
+            ), 'content');
+            if (array_diff($tooLong, $storedValues) !== []) {
+                return 'Metadata values must be at most ' . MetadataDefinitions::MAX_VALUE_LENGTH . ' bytes';
+            }
+        }
+
+        $stored ??= $this->loadMetadata($zoneId);
+        $kinds = array_unique(array_map(static fn(array $row): string => strtoupper((string)$row['kind']), $stored));
+        if (!in_array($kind, $kinds, true) && count($kinds) >= MetadataDefinitions::MAX_KINDS_PER_ZONE) {
+            return 'A zone accepts at most ' . MetadataDefinitions::MAX_KINDS_PER_ZONE . ' metadata kinds';
+        }
+
+        return null;
     }
 
     /**

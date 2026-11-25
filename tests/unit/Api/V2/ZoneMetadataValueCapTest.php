@@ -52,7 +52,42 @@ class ZoneMetadataValueCapTest extends TestCase
         $this->assertSame(400, $this->put(101, 50)->getStatusCode());
     }
 
-    private function put(int $count, int $stored = 0): \Symfony\Component\HttpFoundation\JsonResponse
+    public function testRefusesAValueOverTheLengthCapUnlessItIsAlreadyStored(): void
+    {
+        $long = str_repeat('a', 1025);
+        $this->assertSame(200, $this->put(0, 0, [str_repeat('a', 1024)])->getStatusCode());
+
+        $over = $this->put(0, 0, [$long]);
+        $this->assertSame(400, $over->getStatusCode());
+        $this->assertStringContainsString('at most 1024 bytes', (string)$over->getContent());
+
+        $this->assertSame(200, $this->put(0, 0, [$long], [['kind' => 'ALSO-NOTIFY', 'content' => $long]])->getStatusCode());
+    }
+
+    public function testRefusesANewKindOnAZoneAtTheKindCap(): void
+    {
+        $others = array_map(static fn(int $i): array => ['kind' => 'X-KIND-' . $i, 'content' => 'v'], range(1, 64));
+        $over = $this->put(1, 0, null, $others);
+        $this->assertSame(400, $over->getStatusCode());
+        $this->assertStringContainsString('at most 64 metadata kinds', (string)$over->getContent());
+
+        $sameKind = [...array_slice($others, 1), ['kind' => 'ALSO-NOTIFY', 'content' => '198.51.100.1']];
+        $this->assertSame(200, $this->put(1, 0, null, $sameKind)->getStatusCode());
+        $this->assertSame(200, $this->put(1, 0, null, array_slice($others, 1))->getStatusCode());
+    }
+
+    public function testARequestThatFailsTheValueChecksDoesNotLoadStoredMetadata(): void
+    {
+        $response = $this->put(0, 0, ['one', 'two'], [], 'SOA-EDIT-API', true);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    /**
+     * @param array<int, string>|null $explicit
+     * @param array<int, array{kind: string, content: string}> $extraStored
+     */
+    private function put(int $count, int $stored = 0, ?array $explicit = null, array $extraStored = [], string $kind = 'ALSO-NOTIFY', bool $loadThrows = false): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canEditZoneMeta')->willReturn(true);
@@ -60,21 +95,24 @@ class ZoneMetadataValueCapTest extends TestCase
 
         $zones = $this->createMock(ZoneRepositoryInterface::class);
         $zones->method('zoneExists')->willReturn(true);
-        $zones->method('getDomainMetadata')->willReturn(array_map(
+        $zones->method('getDomainMetadata')->willReturn([...array_map(
             static fn(int $i): array => ['kind' => 'ALSO-NOTIFY', 'content' => '198.51.100.' . $i],
             $stored > 0 ? range(1, $stored) : []
-        ));
+        ), ...$extraStored]);
+        if ($loadThrows) {
+            $zones->method('getDomainMetadata')->willThrowException(new \RuntimeException('stored metadata unreachable'));
+        }
         $zones->method('replaceDomainMetadata')->willReturn(true);
 
-        $values = array_map(static fn(int $i): string => '192.0.2.' . $i, range(1, $count));
-        $request = Request::create('/api/v2/zones/3/metadata/ALSO-NOTIFY', 'PUT', [], [], [], [], json_encode(['values' => $values]));
+        $values = $explicit ?? array_map(static fn(int $i): string => '192.0.2.' . $i, range(1, $count));
+        $request = Request::create('/api/v2/zones/3/metadata/' . $kind, 'PUT', [], [], [], [], json_encode(['values' => $values]));
 
         $controller = (new \ReflectionClass(ZoneMetadataController::class))->newInstanceWithoutConstructor();
         $this->set($controller, 'apiPermissionService', $permissions);
         $this->set($controller, 'zoneRepository', $zones);
         $this->set($controller, 'authenticatedUserId', 7);
         $this->set($controller, 'request', $request);
-        $this->set($controller, 'pathParameters', ['id' => '3', 'kind' => 'ALSO-NOTIFY']);
+        $this->set($controller, 'pathParameters', ['id' => '3', 'kind' => $kind]);
         $this->set($controller, 'apiClient', null);
 
         return (new ReflectionMethod(ZoneMetadataController::class, 'updateMetadataKind'))->invoke($controller);

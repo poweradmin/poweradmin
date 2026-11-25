@@ -440,6 +440,10 @@ class EditZoneMetadataController extends BaseController
     {
         $errors = [];
         $countsByKind = [];
+        $storedRowsLoaded = null;
+        $stored = static function () use (&$storedRowsLoaded, $storedRows, $loadStored): array {
+            return $storedRowsLoaded ??= ($storedRows !== [] || $loadStored === null ? $storedRows : $loadStored());
+        };
         $storedCounts = null;
 
         foreach ($rows as $row) {
@@ -455,11 +459,16 @@ class EditZoneMetadataController extends BaseController
                 // A kind already stored over the cap may be kept or shrunk, never grown
                 $storedCounts ??= array_count_values(array_map(
                     static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
-                    $storedRows !== [] || $loadStored === null ? $storedRows : $loadStored()
+                    $stored()
                 ));
                 if ($countsByKind[$kind] > ($storedCounts[strtoupper($kind)] ?? 0)) {
                     return [_('Failed to update zone metadata.')];
                 }
+            }
+
+            // A value already stored over the length cap may be kept as it is
+            if (strlen((string)$row['content']) > MetadataDefinitions::MAX_VALUE_LENGTH && !$this->storedValueHeld($stored(), $kind, (string)$row['content'])) {
+                return [_('Failed to update zone metadata.')];
             }
 
             if (!$definition['multi'] && $countsByKind[$kind] > 1) {
@@ -467,7 +476,34 @@ class EditZoneMetadataController extends BaseController
             }
         }
 
+        if (count($countsByKind) > MetadataDefinitions::MAX_KINDS_PER_ZONE) {
+            // A zone already holding more kinds may be kept or shrunk, never grown
+            $storedKinds = array_unique(array_map(
+                static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
+                $stored()
+            ));
+            if (count($countsByKind) > count($storedKinds)) {
+                return [_('Failed to update zone metadata.')];
+            }
+        }
+
         return array_values(array_unique($errors));
+    }
+
+    /**
+     * Submitted rows arrive trimmed, so the stored value is compared trimmed.
+     *
+     * @param array<int, array<string, string>> $storedRows
+     */
+    private function storedValueHeld(array $storedRows, string $kind, string $content): bool
+    {
+        foreach ($storedRows as $row) {
+            if (strtoupper((string)($row['kind'] ?? '')) === strtoupper($kind) && trim((string)($row['content'] ?? '')) === $content) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
