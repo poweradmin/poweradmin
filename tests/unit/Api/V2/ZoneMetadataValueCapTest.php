@@ -52,7 +52,38 @@ class ZoneMetadataValueCapTest extends TestCase
         $this->assertSame(400, $this->put(101, 50)->getStatusCode());
     }
 
-    private function put(int $count, int $stored = 0): \Symfony\Component\HttpFoundation\JsonResponse
+    public function testAZoneCannotGainAKindPastTheKindCapButAHeldKindStaysEditable(): void
+    {
+        $kinds = fn(int $n): array => array_map(
+            static fn(int $i): array => ['kind' => 'X-K' . $i, 'content' => 'v'],
+            range(1, $n)
+        );
+
+        $this->assertSame(200, $this->put(1, 0, $kinds(63))->getStatusCode());
+        $this->assertSame(400, $this->put(1, 0, $kinds(64))->getStatusCode());
+        $this->assertSame(200, $this->put(1, 0, [...$kinds(64), ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.1']], 'X-K1')->getStatusCode());
+        // Already past the cap: the existing kinds stay editable
+        $this->assertSame(200, $this->put(1, 0, [...$kinds(70)], 'X-K5')->getStatusCode());
+    }
+
+    public function testAValueLongerThanTheByteCapIsRefusedUnlessAlreadyStored(): void
+    {
+        $long = str_repeat('a', 1025);
+        $this->assertSame(200, $this->put(1, 0, [], 'ALSO-NOTIFY', [str_repeat('a', 1024)])->getStatusCode());
+        $this->assertSame(400, $this->put(1, 0, [], 'ALSO-NOTIFY', [$long])->getStatusCode());
+
+        $stored = [['kind' => 'ALSO-NOTIFY', 'content' => $long]];
+        $this->assertSame(200, $this->put(1, 0, $stored, 'ALSO-NOTIFY', [$long])->getStatusCode());
+    }
+
+    public function testARequestThatFailsTheValueChecksDoesNotLoadStoredMetadata(): void
+    {
+        $response = $this->put(1, 0, [], 'SOA-EDIT-API', ['DEFAULT', 'INCREASE'], true);
+
+        $this->assertSame(400, $response->getStatusCode());
+    }
+
+    private function put(int $count, int $stored = 0, array $extraRows = [], string $kind = 'ALSO-NOTIFY', ?array $override = null, bool $loadThrows = false): \Symfony\Component\HttpFoundation\JsonResponse
     {
         $permissions = $this->createMock(ApiPermissionService::class);
         $permissions->method('canEditZoneMeta')->willReturn(true);
@@ -60,21 +91,24 @@ class ZoneMetadataValueCapTest extends TestCase
 
         $zones = $this->createMock(ZoneRepositoryInterface::class);
         $zones->method('zoneExists')->willReturn(true);
-        $zones->method('getDomainMetadata')->willReturn(array_map(
+        $zones->method('getDomainMetadata')->willReturn([...array_map(
             static fn(int $i): array => ['kind' => 'ALSO-NOTIFY', 'content' => '198.51.100.' . $i],
             $stored > 0 ? range(1, $stored) : []
-        ));
+        ), ...$extraRows]);
+        if ($loadThrows) {
+            $zones->method('getDomainMetadata')->willThrowException(new \RuntimeException('stored metadata unreachable'));
+        }
         $zones->method('replaceDomainMetadata')->willReturn(true);
 
-        $values = array_map(static fn(int $i): string => '192.0.2.' . $i, range(1, $count));
-        $request = Request::create('/api/v2/zones/3/metadata/ALSO-NOTIFY', 'PUT', [], [], [], [], json_encode(['values' => $values]));
+        $values = $override ?? array_map(static fn(int $i): string => '192.0.2.' . $i, range(1, $count));
+        $request = Request::create('/api/v2/zones/3/metadata/' . $kind, 'PUT', [], [], [], [], json_encode(['values' => $values]));
 
         $controller = (new \ReflectionClass(ZoneMetadataController::class))->newInstanceWithoutConstructor();
         $this->set($controller, 'apiPermissionService', $permissions);
         $this->set($controller, 'zoneRepository', $zones);
         $this->set($controller, 'authenticatedUserId', 7);
         $this->set($controller, 'request', $request);
-        $this->set($controller, 'pathParameters', ['id' => '3', 'kind' => 'ALSO-NOTIFY']);
+        $this->set($controller, 'pathParameters', ['id' => '3', 'kind' => $kind]);
         $this->set($controller, 'apiClient', null);
         $this->setBase($controller, 'config', \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance());
         $this->setBase($controller, 'logger', new \Psr\Log\NullLogger());

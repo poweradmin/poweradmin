@@ -410,6 +410,10 @@ class EditZoneMetadataController extends BaseController
         $errors = [];
         $countsByKind = [];
         $storedCounts = null;
+        $storedRows = null;
+        $stored = static function () use (&$storedRows, $loadStored): array {
+            return $storedRows ??= $loadStored === null ? [] : $loadStored();
+        };
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -419,9 +423,20 @@ class EditZoneMetadataController extends BaseController
                 // A kind already stored over the cap may be kept or shrunk, never grown
                 $storedCounts ??= array_count_values(array_map(
                     static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
-                    $loadStored === null ? [] : $loadStored()
+                    $stored()
                 ));
                 if ($countsByKind[$kind] > ($storedCounts[strtoupper($kind)] ?? 0)) {
+                    return [_('Failed to update zone metadata.')];
+                }
+            }
+
+            if (strlen($row['content']) > MetadataDefinitions::MAX_VALUE_BYTES) {
+                // Submitted rows arrive trimmed, so a stored value is compared trimmed
+                $keptValues = array_map(static fn($content): string => trim((string)$content), array_column(array_filter(
+                    $stored(),
+                    static fn(array $old): bool => strtoupper((string)($old['kind'] ?? '')) === strtoupper($kind)
+                ), 'content'));
+                if (!in_array($row['content'], $keptValues, true)) {
                     return [_('Failed to update zone metadata.')];
                 }
             }
@@ -435,6 +450,17 @@ class EditZoneMetadataController extends BaseController
             $options = MetadataDefinitions::getAllowedValues($kind, $this->getConfig());
             if ($options !== null && !in_array($row['content'], $options, true)) {
                 $errors[] = sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $options));
+            }
+        }
+
+        if (count($countsByKind) > MetadataDefinitions::MAX_KINDS_PER_ZONE) {
+            // A zone already holding more kinds may keep or drop some, never gain one
+            $storedKinds = array_unique(array_map(
+                static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
+                $stored()
+            ));
+            if (count($countsByKind) > count($storedKinds)) {
+                return [_('Failed to update zone metadata.')];
             }
         }
 

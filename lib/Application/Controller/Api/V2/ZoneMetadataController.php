@@ -354,10 +354,6 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400);
             }
 
-            if (count($values) > MetadataDefinitions::MAX_VALUES_PER_KIND && count($values) > $this->storedValueCount($zoneId, $kind)) {
-                return $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . MetadataDefinitions::MAX_VALUES_PER_KIND . ' values', 400);
-            }
-
             if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
@@ -366,7 +362,12 @@ class ZoneMetadataController extends PublicApiController
                 return $valueError;
             }
 
+            // Loaded last: in API backend mode this reads PowerDNS, so a bad request fails first
             $beforeMetadata = $this->loadMetadata($zoneId);
+
+            if (($limitError = $this->limitError($kind, $values, $beforeMetadata)) !== null) {
+                return $limitError;
+            }
 
             $companion = MetadataDefinitions::requiredCompanionKind($kind, $values[0]);
             if ($companion !== null && !in_array($companion, array_column($beforeMetadata, 'kind'), true)) {
@@ -530,18 +531,41 @@ class ZoneMetadataController extends PublicApiController
     }
 
     /**
-     * How many values the kind holds now; a kind stored over the cap may be re-saved or shrunk, never grown.
+     * Refuse a write that passes the per-kind value cap, the per-zone kind cap or the value
+     * length cap. A zone or kind already stored over a cap may be re-saved or shrunk, never grown.
+     *
+     * @param array<int, string> $values
+     * @param array<int, array{kind: string, content: string}> $stored
      */
-    private function storedValueCount(int $zoneId, string $kind): int
+    private function limitError(string $kind, array $values, array $stored): ?JsonResponse
     {
-        $count = 0;
-        foreach ($this->loadMetadata($zoneId) as $row) {
-            if (strtoupper((string)$row['kind']) === $kind) {
-                $count++;
+        $storedValues = [];
+        $storedKinds = [];
+        foreach ($stored as $row) {
+            $rowKind = strtoupper((string)$row['kind']);
+            $storedKinds[$rowKind] = true;
+            if ($rowKind === $kind) {
+                $storedValues[] = (string)$row['content'];
             }
         }
 
-        return $count;
+        $cap = MetadataDefinitions::MAX_VALUES_PER_KIND;
+        if (count($values) > max($cap, count($storedValues))) {
+            return $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . $cap . ' values', 400);
+        }
+
+        $kindCap = MetadataDefinitions::MAX_KINDS_PER_ZONE;
+        if (!isset($storedKinds[$kind]) && count($storedKinds) + 1 > max($kindCap, count($storedKinds))) {
+            return $this->returnApiError('A zone accepts at most ' . $kindCap . ' metadata kinds', 400);
+        }
+
+        foreach ($values as $value) {
+            if (strlen($value) > MetadataDefinitions::MAX_VALUE_BYTES && !in_array($value, $storedValues, true)) {
+                return $this->returnApiError('A metadata value may be at most ' . MetadataDefinitions::MAX_VALUE_BYTES . ' bytes', 400);
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -34,6 +34,12 @@ class MetadataDefinitions
     /** Most values one metadata kind may hold in a single write. */
     public const MAX_VALUES_PER_KIND = 100;
 
+    /** Most distinct metadata kinds one zone may hold. */
+    public const MAX_KINDS_PER_ZONE = 64;
+
+    /** Longest single metadata value in bytes; PowerDNS stores content as TEXT. */
+    public const MAX_VALUE_BYTES = 1024;
+
     /**
      * @var array<string, array<string, bool|string|array<int, string>>>
      */

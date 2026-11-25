@@ -237,6 +237,42 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertCount(1, $check($rows('ALLOW-AXFR-FROM', 101)));
     }
 
+    public function testValidateMetadataRowsCapsTheKindsOfOneZoneButKeepsHeldKinds(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $kinds = static fn(int $n): array => array_map(
+            static fn(int $i): array => ['kind' => 'X-K' . $i, 'content' => 'v'],
+            range(1, $n)
+        );
+        $check = fn(array $submitted, array $stored): array => $this->invokePrivateMethod(
+            $controller,
+            'validateMetadataRows',
+            [$submitted, static fn(): array => $stored]
+        );
+
+        $this->assertSame([], $check($kinds(64), []));
+        $this->assertCount(1, $check($kinds(65), []));
+        $this->assertSame([], $check($kinds(70), $kinds(70)));
+        $this->assertSame([], $check($kinds(66), $kinds(70)));
+        $this->assertCount(1, $check($kinds(71), $kinds(70)));
+    }
+
+    public function testValidateMetadataRowsCapsTheLengthOfOneValueUnlessAlreadyStored(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $long = str_repeat('a', 1025);
+        $check = fn(string $content, array $stored): array => $this->invokePrivateMethod(
+            $controller,
+            'validateMetadataRows',
+            [[['kind' => 'X-NOTE', 'content' => $content]], static fn(): array => $stored]
+        );
+
+        $this->assertSame([], $check(str_repeat('a', 1024), []));
+        $this->assertCount(1, $check($long, []));
+        $this->assertSame([], $check($long, [['kind' => 'X-NOTE', 'content' => $long]]));
+        $this->assertSame([], $check(str_repeat('a', 1100), [['kind' => 'X-NOTE', 'content' => str_repeat('a', 1100) . "\r\n"]]));
+    }
+
     public function testSaveMetadataViaApiRoutesSerialPoliciesThroughZoneProperties(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);
