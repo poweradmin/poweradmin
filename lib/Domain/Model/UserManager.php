@@ -558,7 +558,7 @@ class UserManager
                 $lock?->endUberuserLock($lockOwned, $saved);
             }
             if ($passwordHash !== null) {
-                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$id);
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser((int)$id, isset($usercheck['email']) ? (string)$usercheck['email'] : null);
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
@@ -767,7 +767,7 @@ class UserManager
                 );
             }
             if ($hashedPassword !== null) {
-                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($details['uid']);
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($details['uid'], isset($userCheck['email']) ? (string)$userCheck['email'] : null);
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));

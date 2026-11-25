@@ -89,4 +89,19 @@ class DbUserRepositoryResetTokenExpiryTest extends TestCase
 
         $this->assertSame(1, $this->unused('shared@example.com'));
     }
+
+    public function testEmailAndPasswordChangedInOneSaveSpendTheOldAddressTokens(): void
+    {
+        $this->assertTrue($this->repository->updateUser(1, ['email' => 'new@example.com', 'password' => 'new-hash']));
+
+        $this->assertSame(0, $this->unused('a@example.com'));
+        $this->assertSame(1, $this->unused('b@example.com'));
+    }
+
+    public function testAnOldAddressStillHeldByAnotherAccountIsLeftAlone(): void
+    {
+        $this->assertTrue($this->repository->updateUser(3, ['email' => 'new@example.com', 'password' => 'new-hash']));
+
+        $this->assertSame(1, $this->unused('shared@example.com'));
+    }
 }

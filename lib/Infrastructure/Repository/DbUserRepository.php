@@ -78,10 +78,11 @@ class DbUserRepository implements UserRepository
 
     public function updatePassword(int $userId, string $hashedPassword): bool
     {
+        $email = $this->readEmail($userId);
         $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
         $written = $stmt->execute([$hashedPassword, $userId]);
         if ($written) {
-            $this->expireResetTokensForUser($userId);
+            $this->expireResetTokensForUser($userId, $email);
         }
 
         return $written;
@@ -92,12 +93,10 @@ class DbUserRepository implements UserRepository
      * earlier (perhaps by someone else) stops working. The rows stay, since the
      * per-address request limit counts them. A shared address is left alone.
      */
-    public function expireResetTokensForUser(int $userId): void
+    public function expireResetTokensForUser(int $userId, ?string $email = null): void
     {
-        $stmt = $this->db->prepare('SELECT email FROM users WHERE id = :id');
-        $stmt->execute([':id' => $userId]);
-        $email = $stmt->fetchColumn();
-        if (!is_string($email) || $email === '' || $this->countUsersByEmail($email) > 1) {
+        $email ??= $this->readEmail($userId);
+        if ($email === null || $email === '' || $this->emailHeldByOtherUser($userId, $email)) {
             return;
         }
 
@@ -106,6 +105,24 @@ class DbUserRepository implements UserRepository
         $stmt = $this->db->prepare('UPDATE password_reset_tokens SET used = ' . DbCompat::boolTrue($dbType)
             . ' WHERE used = ' . DbCompat::boolFalse($dbType) . " AND $match");
         $stmt->execute([':email' => $email]);
+    }
+
+    private function readEmail(int $userId): ?string
+    {
+        $stmt = $this->db->prepare('SELECT email FROM users WHERE id = :id');
+        $stmt->execute([':id' => $userId]);
+        $email = $stmt->fetchColumn();
+
+        return is_string($email) ? $email : null;
+    }
+
+    private function emailHeldByOtherUser(int $userId, string $email): bool
+    {
+        $match = DbCompat::caseInsensitiveEquals($this->db->getAttribute(PDO::ATTR_DRIVER_NAME), 'email', ':email');
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM users WHERE $match AND id <> :id");
+        $stmt->execute([':email' => $email, ':id' => $userId]);
+
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     /**
@@ -1039,12 +1056,13 @@ class DbUserRepository implements UserRepository
 
         $query = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
         $stmt = $this->db->prepare($query);
+        $previousEmail = array_key_exists('password', $userData) ? $this->readEmail($userId) : null;
         $written = $stmt->execute($params);
         if ($written && ($movedToLdap ?? false)) {
             $this->deleteSsoLinks($userId);
         }
         if ($written && array_key_exists('password', $userData)) {
-            $this->expireResetTokensForUser($userId);
+            $this->expireResetTokensForUser($userId, $previousEmail);
         }
 
         return $written;
