@@ -194,16 +194,7 @@ class SessionAuthenticator extends LoggingService
         }
 
         // Check if the session hasn't expired yet.
-        if (isset($_SESSION["userid"]) && isset($_SESSION["lastmod"]) && $_SESSION["lastmod"] !== "" && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
-            $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
-
-            $auditService = new AuditService($this->db);
-            $auditService->logSessionExpired();
-
-            $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
-            $this->authService->logout($sessionEntity);
-
-            $this->logDebug('Session expired and user {userid} logged out', ['userid' => $_SESSION["userid"]]);
+        if ($this->endIdleSession((int)$iface_expire)) {
             return;
         }
 
@@ -262,6 +253,32 @@ class SessionAuthenticator extends LoggingService
         $this->checkMfaEnforcementRequirements();
 
         $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+    }
+
+    /**
+     * Ends a session idle past the limit. A login still waiting for its second
+     * factor counts too, as it holds a verified first factor.
+     */
+    private function endIdleSession(int $expire): bool
+    {
+        $userId = $_SESSION["userid"] ?? null;
+        $pendingId = $_SESSION["pending_userid"] ?? null;
+        $lastMod = $_SESSION["lastmod"] ?? '';
+        if (($userId === null && $pendingId === null) || $lastMod === '' || (time() - $lastMod) <= $expire) {
+            return false;
+        }
+
+        $this->logInfo('Session expired for user {userid}', ['userid' => $userId ?? $pendingId]);
+
+        if ($userId !== null) {
+            $auditService = new AuditService($this->db);
+            $auditService->logSessionExpired();
+        }
+
+        $this->authService->logout(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+
+        $this->logDebug('Session expired and user {userid} logged out', ['userid' => $userId ?? $pendingId]);
+        return true;
     }
 
     private function checkUserAgreementRequirements(): void

@@ -299,14 +299,29 @@ class MfaVerifyController extends BaseController
 
         if ($signedIn !== null && $signedIn !== (int)$pending) {
             $this->logger->warning('[MfaVerifyController] Pending login {pending} on the session of user {user_id}, ending the session', ['pending' => $pending, 'user_id' => $signedIn]);
-            session_regenerate_id(true);
-            $_SESSION = [];
-            $this->userContextService->setSessionData('message', _('Session expired, please login again.'));
-            $this->userContextService->setSessionData('type', 'danger');
-            $this->redirect('/login');
+            $this->endPendingLogin();
+        }
+
+        // This page skips the authenticator, so the idle limit is applied here
+        $lastMod = $this->userContextService->getSessionData('lastmod');
+        $expire = (int)$this->config->get('interface', 'session_timeout', 1800);
+        if (is_numeric($lastMod) && (time() - (int)$lastMod) > $expire) {
+            $this->logger->info('[MfaVerifyController] Pending login {pending} idle past the session timeout, ending the session', ['pending' => $pending]);
+            $this->endPendingLogin();
+        } elseif (is_numeric($lastMod)) {
+            $this->userContextService->setSessionData('lastmod', time());
         }
 
         return (int)$pending;
+    }
+
+    private function endPendingLogin(): void
+    {
+        session_regenerate_id(true);
+        $_SESSION = [];
+        $this->userContextService->setSessionData('message', _('Session expired, please login again.'));
+        $this->userContextService->setSessionData('type', 'danger');
+        $this->redirect('/login');
     }
 
     /**

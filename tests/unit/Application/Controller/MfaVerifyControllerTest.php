@@ -89,6 +89,40 @@ class MfaVerifyControllerTest extends TestCase
         $this->assertArrayNotHasKey('pending_userid', $_SESSION);
     }
 
+    public function testAPendingLoginIdlePastTheSessionTimeoutIsEndedWithoutCheckingTheCode(): void
+    {
+        $_SESSION['lastmod'] = time() - 3600;
+        $this->mfa->method('isMfaEnabled')->willReturn(true);
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $_POST = ['mfa_code' => '123456', 'mfa_token' => 'issued'];
+
+        $controller = $this->controller(['interface' => ['session_timeout' => 1800]]);
+        set_error_handler(static fn (int $errno, string $message): bool => str_contains($message, 'session_regenerate_id'), E_WARNING);
+        try {
+            (new ReflectionMethod(MfaVerifyController::class, 'handleMfaVerification'))->invoke($controller);
+        } catch (RuntimeException) {
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(['/login'], $this->redirects->getArrayCopy());
+        $this->assertArrayNotHasKey('pending_userid', $_SESSION);
+    }
+
+    public function testAPendingLoginStillUsingThePageWithinTheTimeoutHasItsIdleClockRefreshed(): void
+    {
+        $_SESSION['lastmod'] = time() - 1700;
+        $this->mfa->method('isMfaEnabled')->willReturn(false);
+        $this->mfa->method('getUserMfa')->willReturn(null);
+        $_POST = ['mfa_code' => '123456', 'mfa_token' => 'issued'];
+
+        $controller = $this->controller(['interface' => ['session_timeout' => 1800]]);
+        (new ReflectionMethod(MfaVerifyController::class, 'handleMfaVerification'))->invoke($controller);
+
+        $this->assertArrayHasKey('pending_userid', $_SESSION);
+        $this->assertGreaterThan(time() - 10, $_SESSION['lastmod']);
+    }
+
     public function testAFactorThatIsNotEnabledIsRefusedForCodesAndRecoveryCodes(): void
     {
         $this->mfa->method('isMfaEnabled')->with(self::PENDING_ID)->willReturn(false);
