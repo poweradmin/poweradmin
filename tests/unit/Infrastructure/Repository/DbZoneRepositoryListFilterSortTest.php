@@ -36,10 +36,23 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 class DbZoneRepositoryListFilterSortTest extends TestCase
 {
     private PDO $db;
+    /** @var string[] */
+    private array $preparedSql = [];
 
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $this->preparedSql = [];
+        $sink = &$this->preparedSql;
+        $this->db = new class ('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]) extends PDO {
+            public array $sink = [];
+
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                $this->sink[] = $query;
+                return parent::prepare($query, $options);
+            }
+        };
+        $this->db->sink = &$sink;
         $this->db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT, master TEXT)");
         $this->db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT)");
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER)");
@@ -149,5 +162,18 @@ class DbZoneRepositoryListFilterSortTest extends TestCase
 
         $this->assertSame(['Beta.example'], $this->names($repository->getAllZonesFiltered([2], 5, 'Beta.example')));
         $this->assertSame(1, $repository->getZoneCountFiltered([2], 5, 'Beta.example'));
+    }
+
+    public function testALargeZoneIdAllowlistStillRestrictsAndKeepsCountAndPageConsistent(): void
+    {
+        $repository = $this->repository();
+        $ids = array_merge(range(100000, 140000), [3, 4]);
+
+        $this->assertSame(['a_b.example', 'gamma.test'], $this->names($repository->getAllZonesFiltered($ids, null)));
+        $this->assertSame(2, $repository->getZoneCountFiltered($ids, null));
+        $this->assertSame(['gamma.test'], $this->names($repository->getAllZonesFiltered($ids, null, null, 1, 1)));
+        $this->assertSame(['a_b.example'], $this->names($repository->getAllZonesFiltered($ids, 9, null, null, null, 'a_b')));
+        $this->assertSame(0, $repository->getZoneCountFiltered($ids, 5));
+        $this->assertSame([], array_filter($this->preparedSql, fn(string $sql) => str_contains($sql, ':zone_id_')));
     }
 }

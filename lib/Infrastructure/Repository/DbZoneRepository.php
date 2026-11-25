@@ -1269,12 +1269,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Empty array is handled by callers (no results); here a non-empty list
         // restricts to exactly those zone IDs.
         if ($zoneIds !== null && $zoneIds !== []) {
-            $placeholders = [];
-            foreach (array_values($zoneIds) as $i => $zoneId) {
-                $placeholders[] = ":zone_id_$i";
-                $params[":zone_id_$i"] = (int)$zoneId;
-            }
-            $conditions[] = "d.id IN (" . implode(', ', $placeholders) . ")";
+            // Cast integer literals: one placeholder per id fails past the driver's bind limit
+            $conditions[] = "d.id IN (" . implode(', ', array_unique(array_map('intval', $zoneIds))) . ")";
         }
 
         if ($nameFilter !== null && $nameFilter !== '') {

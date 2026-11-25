@@ -39,14 +39,28 @@ use Poweradmin\Infrastructure\Session\ArraySession;
 class ApiZoneRepositoryListFilterSortTest extends TestCase
 {
     private PDO $db;
+    /** @var string[] */
+    private array $preparedSql = [];
 
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $this->preparedSql = [];
+        $sink = &$this->preparedSql;
+        $this->db = new class ('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]) extends PDO {
+            public array $sink = [];
+
+            public function prepare(string $query, array $options = []): \PDOStatement|false
+            {
+                $this->sink[] = $query;
+                return parent::prepare($query, $options);
+            }
+        };
+        $this->db->sink = &$sink;
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, zone_name TEXT,
             zone_type TEXT, zone_master TEXT, comment TEXT, owner INTEGER, zone_templ_id INTEGER)");
         $this->db->exec("CREATE TABLE zones_groups (domain_id INTEGER, group_id INTEGER)");
         $this->db->exec("CREATE TABLE user_group_members (user_id INTEGER, group_id INTEGER)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT, perm_templ INTEGER)");
         // Zone 2 was migrated from SQL mode, so its canonical id is its domain_id
         $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, owner) VALUES
             (1, NULL, 'alpha.example', 'MASTER', 5),
@@ -122,5 +136,17 @@ class ApiZoneRepositoryListFilterSortTest extends TestCase
         $zones = $this->repository()->getAllZonesFiltered(null, null, null, null, null, null, [['field' => 'id', 'desc' => true]]);
 
         $this->assertSame([900, 5, 4, 3, 1], array_column($zones, 'id'));
+    }
+
+    public function testALargeCanonicalZoneIdAllowlistStillRestrictsAndKeepsCountAndPageConsistent(): void
+    {
+        $repository = $this->repository();
+        $ids = array_merge(range(100000, 140000), [900, 4]);
+
+        $this->assertSame(['Beta.example', 'a_b.test'], $this->names($repository->getAllZonesFiltered($ids, null)));
+        $this->assertSame(2, $repository->getZoneCountFiltered($ids, null));
+        $this->assertSame(['a_b.test'], $this->names($repository->getAllZonesFiltered($ids, null, null, 1, 1)));
+        $this->assertSame(1, $repository->getZoneCountFiltered($ids, 5));
+        $this->assertSame([], array_filter($this->preparedSql, fn(string $sql) => str_contains($sql, ':zone_id_')));
     }
 }
