@@ -63,6 +63,8 @@ class EmailTemplateService
             'cache' => false, // Disable cache for development, can be enabled in production
             'debug' => $this->config->get('misc', 'display_errors', false),
             'strict_variables' => true,
+            // Per template name: .txt.twig stays plain text, .html.twig is escaped
+            'autoescape' => 'name',
         ]);
 
         // Add global variables available to all templates
