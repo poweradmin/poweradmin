@@ -559,10 +559,16 @@ class ZoneMetadataController extends PublicApiController
             return $this->returnApiError('A zone accepts at most ' . $kindCap . ' metadata kinds', 400);
         }
 
+        // Each stored copy of a long value may be kept once; extra copies are new values
+        $heldCopies = array_count_values($storedValues);
         foreach ($values as $value) {
-            if (strlen($value) > MetadataDefinitions::MAX_VALUE_BYTES && !in_array($value, $storedValues, true)) {
+            if (strlen($value) <= MetadataDefinitions::MAX_VALUE_BYTES) {
+                continue;
+            }
+            if (($heldCopies[$value] ?? 0) <= 0) {
                 return $this->returnApiError('A metadata value may be at most ' . MetadataDefinitions::MAX_VALUE_BYTES . ' bytes', 400);
             }
+            $heldCopies[$value]--;
         }
 
         return null;

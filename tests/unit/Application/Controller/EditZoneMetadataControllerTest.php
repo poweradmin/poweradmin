@@ -273,6 +273,22 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $check(str_repeat('a', 1100), [['kind' => 'X-NOTE', 'content' => str_repeat('a', 1100) . "\r\n"]]));
     }
 
+    public function testValidateMetadataRowsDoesNotLetOneStoredLongValueBeRepeated(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $long = str_repeat('a', 1025);
+        $row = ['kind' => 'X-NOTE', 'content' => $long];
+        $check = fn(array $submitted, array $stored): array => $this->invokePrivateMethod(
+            $controller,
+            'validateMetadataRows',
+            [$submitted, static fn(): array => $stored]
+        );
+
+        $this->assertSame([], $check([$row], [$row]));
+        $this->assertCount(1, $check([$row, $row], [$row]));
+        $this->assertSame([], $check([$row, $row], [$row, $row]));
+    }
+
     public function testSaveMetadataViaApiRoutesSerialPoliciesThroughZoneProperties(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);

@@ -411,6 +411,7 @@ class EditZoneMetadataController extends BaseController
         $countsByKind = [];
         $storedCounts = null;
         $storedRows = null;
+        $longCopies = [];
         $stored = static function () use (&$storedRows, $loadStored): array {
             return $storedRows ??= $loadStored === null ? [] : $loadStored();
         };
@@ -436,7 +437,11 @@ class EditZoneMetadataController extends BaseController
                     $stored(),
                     static fn(array $old): bool => strtoupper((string)($old['kind'] ?? '')) === strtoupper($kind)
                 ), 'content'));
-                if (!in_array($row['content'], $keptValues, true)) {
+                $copyKey = strtoupper($kind) . "\0" . $row['content'];
+                $longCopies[$copyKey] = ($longCopies[$copyKey] ?? 0) + 1;
+                // Each stored copy may be kept once; extra copies are new values
+                $heldCopies = count(array_filter($keptValues, static fn(string $kept): bool => $kept === $row['content']));
+                if ($longCopies[$copyKey] > $heldCopies) {
                     return [_('Failed to update zone metadata.')];
                 }
             }

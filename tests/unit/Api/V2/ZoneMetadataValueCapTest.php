@@ -76,6 +76,16 @@ class ZoneMetadataValueCapTest extends TestCase
         $this->assertSame(200, $this->put(1, 0, $stored, 'ALSO-NOTIFY', [$long])->getStatusCode());
     }
 
+    public function testOneStoredLongValueCannotBeSubmittedRepeated(): void
+    {
+        $long = str_repeat('a', 1025);
+        $stored = [['kind' => 'ALSO-NOTIFY', 'content' => $long]];
+
+        $this->assertSame(200, $this->put(1, 0, $stored, 'ALSO-NOTIFY', [$long])->getStatusCode());
+        $this->assertSame(400, $this->put(1, 0, $stored, 'ALSO-NOTIFY', [$long, $long])->getStatusCode());
+        $this->assertSame(200, $this->put(1, 0, [...$stored, ...$stored], 'ALSO-NOTIFY', [$long, $long])->getStatusCode());
+    }
+
     public function testARequestThatFailsTheValueChecksDoesNotLoadStoredMetadata(): void
     {
         $response = $this->put(1, 0, [], 'SOA-EDIT-API', ['DEFAULT', 'INCREASE'], true);
