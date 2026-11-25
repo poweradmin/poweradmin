@@ -47,8 +47,6 @@ use Exception;
 
 class ZoneMetadataController extends PublicApiController
 {
-    private const MAX_VALUES_PER_KIND = 100;
-
     private ZoneRepositoryInterface $zoneRepository;
     private ApiPermissionService $apiPermissionService;
     private ?PowerdnsApiClient $apiClient = null;
@@ -356,8 +354,8 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400);
             }
 
-            if (($countError = $this->tooManyValuesError($values)) !== null) {
-                return $countError;
+            if (count($values) > MetadataDefinitions::MAX_VALUES_PER_KIND && count($values) > $this->storedValueCount($zoneId, $kind)) {
+                return $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . MetadataDefinitions::MAX_VALUES_PER_KIND . ' values', 400);
             }
 
             if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
@@ -532,17 +530,18 @@ class ZoneMetadataController extends PublicApiController
     }
 
     /**
-     * Refuse a values list larger than MAX_VALUES_PER_KIND.
-     *
-     * @param array<int, string> $values
+     * How many values the kind holds now; a kind stored over the cap may be re-saved or shrunk, never grown.
      */
-    private function tooManyValuesError(array $values): ?JsonResponse
+    private function storedValueCount(int $zoneId, string $kind): int
     {
-        if (count($values) > self::MAX_VALUES_PER_KIND) {
-            return $this->returnApiError('Too many values: at most ' . self::MAX_VALUES_PER_KIND . ' per metadata kind', 400);
+        $count = 0;
+        foreach ($this->loadMetadata($zoneId) as $row) {
+            if (strtoupper((string)$row['kind']) === $kind) {
+                $count++;
+            }
         }
 
-        return null;
+        return $count;
     }
 
     /**

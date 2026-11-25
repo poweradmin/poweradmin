@@ -208,6 +208,35 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $errors);
     }
 
+    public function testValidateMetadataRowsCapsTheValuesOfOneKind(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $rows = static fn(int $n): array => array_map(
+            static fn(int $i): array => ['kind' => 'ALSO-NOTIFY', 'content' => '192.0.2.' . $i],
+            range(1, $n)
+        );
+
+        $this->assertSame([], $this->invokePrivateMethod($controller, 'validateMetadataRows', [$rows(100)]));
+        $this->assertCount(1, $this->invokePrivateMethod($controller, 'validateMetadataRows', [$rows(101)]));
+    }
+
+    public function testValidateMetadataRowsLetsAKindStoredOverTheCapBeKeptOrShrunkNotGrown(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $rows = static fn(string $kind, int $n): array => array_map(
+            static fn(int $i): array => ['kind' => $kind, 'content' => '192.0.2.' . $i],
+            range(1, $n)
+        );
+        $stored = $rows('ALSO-NOTIFY', 120);
+        $loader = static fn(): array => $stored;
+        $check = fn(array $submitted): array => $this->invokePrivateMethod($controller, 'validateMetadataRows', [$submitted, $loader]);
+
+        $this->assertSame([], $check($stored));
+        $this->assertSame([], $check($rows('ALSO-NOTIFY', 105)));
+        $this->assertCount(1, $check($rows('ALSO-NOTIFY', 121)));
+        $this->assertCount(1, $check($rows('ALLOW-AXFR-FROM', 101)));
+    }
+
     public function testSaveMetadataViaApiRoutesSerialPoliciesThroughZoneProperties(): void
     {
         $apiClient = $this->createMock(PowerdnsApiClient::class);

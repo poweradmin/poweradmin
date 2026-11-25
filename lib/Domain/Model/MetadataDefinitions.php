@@ -31,6 +31,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
  */
 class MetadataDefinitions
 {
+    /** Most values one metadata kind may hold in a single write. */
+    public const MAX_VALUES_PER_KIND = 100;
+
     /**
      * @var array<string, array<string, bool|string|array<int, string>>>
      */

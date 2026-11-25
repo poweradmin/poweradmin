@@ -125,7 +125,10 @@ class EditZoneMetadataController extends BaseController
 
             // Cheap in-memory checks first; loadMetadata() costs two PowerDNS API
             // calls in API-backend mode and is only needed past this point.
-            $validationErrors = $this->validateMetadataRows($submittedMetadata);
+            $validationErrors = $this->validateMetadataRows(
+                $submittedMetadata,
+                fn(): array => $this->loadMetadata($zoneId, $zone['name'])
+            );
 
             if (!empty($validationErrors)) {
                 $this->setMessage('edit_zone_metadata', 'error', $validationErrors[0]);
@@ -399,16 +402,29 @@ class EditZoneMetadataController extends BaseController
      * Validate metadata rows against single-value metadata constraints.
      *
      * @param array<int, array{kind: string, content: string}> $rows
+     * @param callable|null $loadStored Loads the stored rows, only when a kind goes over the cap
      * @return array<int, string>
      */
-    private function validateMetadataRows(array $rows): array
+    private function validateMetadataRows(array $rows, ?callable $loadStored = null): array
     {
         $errors = [];
         $countsByKind = [];
+        $storedCounts = null;
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
             $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
+
+            if ($countsByKind[$kind] > MetadataDefinitions::MAX_VALUES_PER_KIND) {
+                // A kind already stored over the cap may be kept or shrunk, never grown
+                $storedCounts ??= array_count_values(array_map(
+                    static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
+                    $loadStored === null ? [] : $loadStored()
+                ));
+                if ($countsByKind[$kind] > ($storedCounts[strtoupper($kind)] ?? 0)) {
+                    return [_('Failed to update zone metadata.')];
+                }
+            }
 
             if (!MetadataDefinitions::isMultiValue($kind) && $countsByKind[$kind] > 1) {
                 $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
