@@ -100,7 +100,14 @@ class LPRecordValidator implements DnsRecordValidatorInterface
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Use the provided priority if available, otherwise extract from content
-        $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPreferenceFromContent($content);
+        $priority = $this->extractPreferenceFromContent($content);
+        if ($prio !== '' && $prio !== null) {
+            // Digits only, so a negative or oversized value never reaches records.prio
+            if (!preg_match('/^\d{1,5}$/', trim((string)$prio)) || (int)$prio > 65535) {
+                return ValidationResult::failure(_('Priority must be between 0 and 65535'));
+            }
+            $priority = (int)$prio;
+        }
 
         // Add warnings according to RFC 6742
         $warnings = [

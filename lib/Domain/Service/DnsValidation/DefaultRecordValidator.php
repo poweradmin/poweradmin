@@ -89,7 +89,14 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // For generic records, priority is always 0 unless specified
-        $priority = ($prio !== '' && $prio !== null) ? (int)$prio : 0;
+        $priority = 0;
+        if ($prio !== '' && $prio !== null) {
+            // Digits only, so a negative or oversized value never reaches records.prio
+            if (!preg_match('/^\d{1,5}$/', trim((string)$prio)) || (int)$prio > 65535) {
+                return ValidationResult::failure(_('Priority must be between 0 and 65535'));
+            }
+            $priority = (int)$prio;
+        }
 
         return ValidationResult::success([
             'content' => $trimmed,

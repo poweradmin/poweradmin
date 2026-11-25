@@ -99,7 +99,14 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Use the provided priority if available, otherwise extract from the content
-        $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
+        $priority = $this->extractPriorityFromContent($content);
+        if ($prio !== '' && $prio !== null) {
+            // Digits only, so a negative or oversized value never reaches records.prio
+            if (!preg_match('/^\d{1,5}$/', trim((string)$prio)) || (int)$prio > 65535) {
+                return ValidationResult::failure(_('Priority must be between 0 and 65535'));
+            }
+            $priority = (int)$prio;
+        }
 
         // The port is stored as plain digits, as the validation read it
         $content = preg_replace('/(\s)(port)=0+(?=\d)/i', '$1$2=', $content);
