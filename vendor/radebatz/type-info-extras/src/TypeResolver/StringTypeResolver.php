@@ -20,6 +20,8 @@ use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayShapeNode;
 use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\CallableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeForParameterNode;
+use PHPStan\PhpDocParser\Ast\Type\ConditionalTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\ConstTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
@@ -287,9 +289,9 @@ final class StringTypeResolver implements TypeResolverInterface
 
             $type ??= $this->getTypeFromNode($node->type, $typeContext);
 
-            // handle integer ranges
+            // handle integer ranges, a malformed one as plain "int"
             if ($type->isIdentifiedBy(TypeIdentifier::INT)) {
-                return $this->resolveIntRange($node);
+                return $this->resolveIntRange($node) ?? $type;
             }
 
             $variableTypes = array_map(fn (TypeNode $t): BaseType => $this->getTypeFromNode($t, $typeContext), $node->genericTypes);
@@ -336,6 +338,11 @@ final class StringTypeResolver implements TypeResolverInterface
             }
 
             return Type::generic($type, ...$variableTypes);
+        }
+
+        if ($node instanceof ConditionalTypeForParameterNode || $node instanceof ConditionalTypeNode) {
+            // The condition is not evaluated here, so either branch can be returned.
+            $node = new UnionTypeNode([$node->if, $node->else]);
         }
 
         if ($node instanceof UnionTypeNode) {

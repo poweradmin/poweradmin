@@ -3,7 +3,7 @@
 /*!
  * Script to create the built examples zip archive;
  * requires the `zip` command to be present!
- * Copyright 2020-2025 The Bootstrap Authors
+ * Copyright 2020-2026 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
@@ -18,7 +18,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const pkgJson = path.join(__dirname, '../package.json')
 const pkg = JSON.parse(await fs.readFile(pkgJson, 'utf8'))
 
-const versionShort = pkg.config.version_short
+const versionShort = pkg.version.split('.').slice(0, 2).join('.')
 const distFolder = `bootstrap-${pkg.version}-examples`
 const rootDocsDir = '_site'
 const docsDir = `${rootDocsDir}/docs/${versionShort}/`
