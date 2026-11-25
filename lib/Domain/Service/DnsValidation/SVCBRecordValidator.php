@@ -95,7 +95,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // The priority column is a 16-bit value; refuse anything else before it is stored
-        if ($prio !== '' && $prio !== null && (preg_match('/^\d+$/', trim((string)$prio)) !== 1 || (int)$prio > 65535)) {
+        if ($prio !== '' && $prio !== null && DnsCommonValidator::parsePriority($prio) === null) {
             return ValidationResult::failure(_('SVCB priority must be between 0 and 65535.'));
         }
 

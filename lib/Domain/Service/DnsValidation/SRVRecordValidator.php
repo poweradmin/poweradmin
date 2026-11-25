@@ -414,8 +414,9 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Priority must be a number between 0 and 65535
-        if (ctype_digit((string)$prio) && (int)$prio <= 65535) {
-            return ValidationResult::success((int)$prio);
+        $parsed = DnsCommonValidator::parsePriority($prio);
+        if ($parsed !== null) {
+            return ValidationResult::success($parsed);
         }
 
         return ValidationResult::failure(_('Invalid value for the priority field of the SRV record.'));

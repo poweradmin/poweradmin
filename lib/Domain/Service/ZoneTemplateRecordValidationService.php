@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -144,7 +145,7 @@ class ZoneTemplateRecordValidationService
         }
 
         if ($type === RecordType::MX || $type === RecordType::SRV) {
-            if ($prio !== null && $prio !== '' && !(is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
+            if ($prio !== null && $prio !== '' && DnsCommonValidator::parsePriority($prio) === null) {
                 return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
             }
         }

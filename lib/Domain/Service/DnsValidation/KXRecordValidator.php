@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class KXRecordValidator implements DnsRecordValidatorInterface
@@ -157,8 +157,9 @@ class KXRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Preference must be a 16-bit unsigned integer (0-65535) per RFC 2230
-        if (is_numeric($prio) && intval($prio) >= 0 && intval($prio) <= 65535) {
-            return ValidationResult::success(intval($prio));
+        $parsed = DnsCommonValidator::parsePriority($prio);
+        if ($parsed !== null) {
+            return ValidationResult::success($parsed);
         }
 
         return ValidationResult::failure(_('Invalid value for KX preference field. Must be between 0 and 65535.'));
