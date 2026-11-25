@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+
 class BulkRecordParser
 {
     /** Whitespace str_getcsv skips before an opening quote (the newline is handled on its own) */
@@ -105,9 +107,9 @@ class BulkRecordParser
             return _('Invalid format. Expected at least: name,type,content');
         }
 
-        $name = trim($parts[0]);
+        $name = CsvFormulaEscaper::unescape(trim($parts[0]));
         $type = strtoupper(trim($parts[1]));
-        $content = trim($parts[2]);
+        $content = CsvFormulaEscaper::unescape(trim($parts[2]));
 
         if ($type === 'SRV') {
             return $this->parseSrvRecord($parts, $name, $content, $defaultTtl);
@@ -176,15 +178,15 @@ class BulkRecordParser
         $field = isset($parts[$offset]) ? trim($parts[$offset]) : '';
 
         if (strcasecmp($field, 'Yes') === 0) {
-            $comment = isset($parts[$offset + 1]) ? trim($parts[$offset + 1]) : '';
+            $comment = isset($parts[$offset + 1]) ? CsvFormulaEscaper::unescape(trim($parts[$offset + 1])) : '';
             return [1, $comment];
         }
 
         if (strcasecmp($field, 'No') === 0) {
-            $comment = isset($parts[$offset + 1]) ? trim($parts[$offset + 1]) : '';
+            $comment = isset($parts[$offset + 1]) ? CsvFormulaEscaper::unescape(trim($parts[$offset + 1])) : '';
             return [0, $comment];
         }
 
-        return [0, $field];
+        return [0, CsvFormulaEscaper::unescape($field)];
     }
 }

@@ -303,4 +303,44 @@ class BulkRecordParserTest extends TestCase
         $this->assertSame($content, $parsed['content']);
         $this->assertSame(3600, $parsed['ttl']);
     }
+
+    public function testExportedFormulaLookingCellsParseBackUnchanged(): void
+    {
+        $rows = [
+            ['www.example.com', 'TXT', '=cmd', 0, 300, 'No', '- migrated'],
+            ['www.example.com', 'TXT', '@home', 0, 300, 'Yes', '+1 call'],
+            ['www.example.com', 'TXT', "'quoted", 0, 300, 'No', "'plain note"],
+        ];
+
+        foreach ($rows as $row) {
+            $handle = fopen('php://memory', 'w+');
+            fputcsv($handle, \Poweradmin\Infrastructure\Utility\CsvFormulaEscaper::escapeRow($row), ',', '"', '');
+            rewind($handle);
+            $line = (string)stream_get_contents($handle);
+            fclose($handle);
+
+            $parsed = $this->parser->parseLine($line, $this->defaultTtl);
+
+            $this->assertIsArray($parsed);
+            $this->assertSame($row[2], $parsed['content']);
+            $this->assertSame($row[6], $parsed['comment']);
+        }
+    }
+
+    public function testQuoteLedValuesBeforeAFormulaCharacterSurviveTheRoundTrip(): void
+    {
+        foreach (["'=x", "'- see ticket", "' -foo", "''=x", "'plain"] as $value) {
+            $handle = fopen('php://memory', 'w+');
+            fputcsv($handle, \Poweradmin\Infrastructure\Utility\CsvFormulaEscaper::escapeRow(["www.example.com", "TXT", $value, 0, 300, "No", $value]), ',', '"', '');
+            rewind($handle);
+            $line = (string)stream_get_contents($handle);
+            fclose($handle);
+
+            $parsed = $this->parser->parseLine($line, $this->defaultTtl);
+
+            $this->assertIsArray($parsed);
+            $this->assertSame($value, $parsed['content'], $value);
+            $this->assertSame($value, $parsed['comment'], $value);
+        }
+    }
 }
