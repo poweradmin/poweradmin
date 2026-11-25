@@ -32,6 +32,7 @@ enum ZoneMetadataOutcome: string
     case INVALID_KIND = 'invalid_kind';
     case EMPTY_VALUES = 'empty_values';
     case SINGLE_VALUE_ONLY = 'single_value_only';
+    case TOO_MANY_VALUES = 'too_many_values';
     case INVALID_VALUE = 'invalid_value';
     case INVALID_TEXT = 'invalid_text';
     case COMPANION_REQUIRED = 'companion_required';

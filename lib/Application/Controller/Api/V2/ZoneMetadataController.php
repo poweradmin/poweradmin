@@ -413,6 +413,7 @@ class ZoneMetadataController extends PublicApiController
             ZoneMetadataOutcome::INVALID_KIND => $this->returnApiError('Invalid metadata kind', 400),
             ZoneMetadataOutcome::EMPTY_VALUES => $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400),
             ZoneMetadataOutcome::SINGLE_VALUE_ONLY => $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400),
+            ZoneMetadataOutcome::TOO_MANY_VALUES => $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . ZoneMetadataService::MAX_VALUES_PER_KIND . ' values', 400),
             ZoneMetadataOutcome::INVALID_VALUE => $this->returnApiError('Invalid value for ' . $kind . '. Allowed values: ' . implode(', ', $result->options ?? []), 422),
             ZoneMetadataOutcome::INVALID_TEXT => $this->returnApiError('The ' . $kind . ' field contains invalid characters.', 422),
             ZoneMetadataOutcome::COMPANION_REQUIRED => $this->returnApiError('Metadata kind ' . $kind . ' only takes effect together with ' . (string)$result->companion, 422),

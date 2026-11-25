@@ -134,6 +134,42 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertSame(ZoneMetadataOutcome::SINGLE_VALUE_ONLY, $this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, $rows, self::ADMIN)->outcome);
     }
 
+    public function testAKindRefusesMoreValuesThanTheCap(): void
+    {
+        $this->store->method('load')->willReturn([]);
+        $this->store->method('replaceKind')->willReturn(true);
+        $this->store->method('replaceAll')->willReturn(true);
+        $service = $this->sqlService();
+        $cap = ZoneMetadataService::MAX_VALUES_PER_KIND;
+        $values = static fn(int $n): array => array_map(fn(int $i): string => '192.0.2.' . ($i % 250 + 1) . '/' . $i, range(1, $n));
+        $rows = static fn(array $v): array => array_map(fn(string $c): array => ['kind' => 'ALSO-NOTIFY', 'content' => $c], $v);
+
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceKind(self::ZONE_ID, self::ZONE, 'ALSO-NOTIFY', $values($cap + 1), self::ADMIN)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceAll(self::ZONE_ID, self::ZONE, $rows($values($cap + 1)), self::ADMIN)->outcome);
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'ALSO-NOTIFY', $values($cap), self::ADMIN)->isOk());
+    }
+
+    public function testAKindAlreadyOverTheCapCanBeKeptOrShrunkButNotGrown(): void
+    {
+        $cap = ZoneMetadataService::MAX_VALUES_PER_KIND;
+        $rows = static fn(string $kind, int $n): array => array_map(fn(int $i): array => ['kind' => $kind, 'content' => '192.0.2.' . ($i % 250 + 1) . '/' . $i], range(1, $n));
+        $stored = $rows('ALSO-NOTIFY', $cap + 20);
+        $this->store->method('load')->willReturn($stored);
+        $this->store->method('replaceKind')->willReturn(true);
+        $this->store->method('replaceAll')->willReturn(true);
+        $service = $this->sqlService();
+        $values = static fn(int $n): array => array_column($rows('ALSO-NOTIFY', $n), 'content');
+
+        $withOther = [...$stored, ['kind' => 'SOA-EDIT-API', 'content' => 'DEFAULT']];
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $withOther, self::ADMIN)->isOk());
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $rows('ALSO-NOTIFY', $cap + 5), self::ADMIN)->isOk());
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceAll(self::ZONE_ID, self::ZONE, $rows('ALSO-NOTIFY', $cap + 21), self::ADMIN)->outcome);
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'ALSO-NOTIFY', $values($cap + 20), self::ADMIN)->isOk());
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceKind(self::ZONE_ID, self::ZONE, 'ALSO-NOTIFY', $values($cap + 21), self::ADMIN)->outcome);
+        // A kind with nothing stored over the cap still stops at the cap
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceAll(self::ZONE_ID, self::ZONE, [...$stored, ...$rows('ALLOW-AXFR-FROM', $cap + 1)], self::ADMIN)->outcome);
+    }
+
     public function testRepeatedMultiValueKindsAreAccepted(): void
     {
         $this->store->method('load')->willReturn([]);

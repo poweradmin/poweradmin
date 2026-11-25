@@ -44,6 +44,7 @@ class ZoneMetadataService
     public const SUPPORT_UNSUPPORTED_KNOWN = ZoneMetadataStoreInterface::SUPPORT_UNSUPPORTED_KNOWN;
     public const SUPPORT_UNKNOWN = ZoneMetadataStoreInterface::SUPPORT_UNKNOWN;
     public const MAX_KIND_LENGTH = 32;
+    public const MAX_VALUES_PER_KIND = 100;
 
     /** Kinds that change DNSSEC state, so they need the DNSSEC permission as well as metadata edit */
     private const DNSSEC_KINDS = ['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'];
@@ -223,15 +224,15 @@ class ZoneMetadataService
         if ($values === []) {
             return new ZoneMetadataResult(ZoneMetadataOutcome::EMPTY_VALUES, $kind);
         }
+        // The store gets its rows as stored, so it can remove a kind in another case
+        $stored = $this->store->load($zoneId, $zoneName);
+        $before = self::normalizeKinds($stored);
         $rows = array_map(fn(string $value): array => ['kind' => $kind, 'content' => $value], $values);
-        $refusal = $this->validateValues($rows);
+        $refusal = $this->validateValues($rows, $before);
         if ($refusal !== null) {
             return $refusal;
         }
 
-        // The store gets its rows as stored, so it can remove a kind in another case
-        $stored = $this->store->load($zoneId, $zoneName);
-        $before = self::normalizeKinds($stored);
         $after = self::replaceKindIn($before, $kind, $values);
         $refusal = $this->validateCompanions($rows, $after);
         if ($refusal !== null) {
@@ -296,7 +297,7 @@ class ZoneMetadataService
             }
         }
 
-        return $this->validateValues($rows) ?? $this->validateCompanions($rows, $rows);
+        return $this->validateValues($rows, $storedRows) ?? $this->validateCompanions($rows, $rows);
     }
 
     /** domainmetadata.kind is VARCHAR(32), so a longer kind cannot be stored as typed */
@@ -326,15 +327,20 @@ class ZoneMetadataService
 
     /**
      * @param list<array{kind: string, content: string}> $rows
+     * @param list<array{kind: string, content: string}> $storedRows A kind already stored over the cap may be kept or shrunk, never grown
      */
-    private function validateValues(array $rows): ?ZoneMetadataResult
+    private function validateValues(array $rows, array $storedRows = []): ?ZoneMetadataResult
     {
+        $storedCounts = array_count_values(array_column($storedRows, 'kind'));
         $countsByKind = [];
         foreach ($rows as $row) {
             $kind = $row['kind'];
             $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
             if (!MetadataDefinitions::isMultiValue($kind) && $countsByKind[$kind] > 1) {
                 return new ZoneMetadataResult(ZoneMetadataOutcome::SINGLE_VALUE_ONLY, $kind);
+            }
+            if ($countsByKind[$kind] > max(self::MAX_VALUES_PER_KIND, $storedCounts[$kind] ?? 0)) {
+                return new ZoneMetadataResult(ZoneMetadataOutcome::TOO_MANY_VALUES, $kind);
             }
 
             if (!mb_check_encoding($row['content'], 'UTF-8')) {

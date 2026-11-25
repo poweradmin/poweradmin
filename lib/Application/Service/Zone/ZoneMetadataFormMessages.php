@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service\Zone;
 use Poweradmin\Domain\Model\MetadataDefinitions;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataOutcome;
 use Poweradmin\Domain\Service\Zone\ZoneMetadataResult;
+use Poweradmin\Domain\Service\Zone\ZoneMetadataService;
 
 /**
  * Words a refused ZoneMetadataService write for the metadata editor.
@@ -39,6 +40,7 @@ final class ZoneMetadataFormMessages
             ZoneMetadataOutcome::INVALID_KIND => sprintf(_('Metadata kind %s is not valid.'), $kind),
             ZoneMetadataOutcome::EMPTY_VALUES => sprintf(_('Metadata kind %s needs a value.'), $kind),
             ZoneMetadataOutcome::SINGLE_VALUE_ONLY => sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind),
+            ZoneMetadataOutcome::TOO_MANY_VALUES => sprintf(_('Metadata kind %s accepts at most %d values.'), $kind, ZoneMetadataService::MAX_VALUES_PER_KIND),
             ZoneMetadataOutcome::INVALID_VALUE => sprintf(_('Invalid value for %s. Allowed values: %s.'), $kind, implode(', ', $result->options ?? [])),
             ZoneMetadataOutcome::INVALID_TEXT => sprintf(_('The %s field contains invalid characters.'), $kind),
             ZoneMetadataOutcome::COMPANION_REQUIRED => sprintf(
