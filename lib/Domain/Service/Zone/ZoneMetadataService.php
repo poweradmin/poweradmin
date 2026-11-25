@@ -45,6 +45,8 @@ class ZoneMetadataService
     public const SUPPORT_UNKNOWN = ZoneMetadataStoreInterface::SUPPORT_UNKNOWN;
     public const MAX_KIND_LENGTH = 32;
     public const MAX_VALUES_PER_KIND = 100;
+    public const MAX_KINDS_PER_ZONE = 64;
+    public const MAX_VALUE_BYTES = 1024;
 
     /** Kinds that change DNSSEC state, so they need the DNSSEC permission as well as metadata edit */
     private const DNSSEC_KINDS = ['PRESIGNED', 'NSEC3PARAM', 'NSEC3NARROW', 'PUBLISH-CDS', 'PUBLISH-CDNSKEY'];
@@ -234,7 +236,7 @@ class ZoneMetadataService
         }
 
         $after = self::replaceKindIn($before, $kind, $values);
-        $refusal = $this->validateCompanions($rows, $after);
+        $refusal = $this->validateKindCount($after, $before) ?? $this->validateCompanions($rows, $after);
         if ($refusal !== null) {
             return $refusal;
         }
@@ -297,7 +299,7 @@ class ZoneMetadataService
             }
         }
 
-        return $this->validateValues($rows, $storedRows) ?? $this->validateCompanions($rows, $rows);
+        return $this->validateValues($rows, $storedRows) ?? $this->validateKindCount($rows, $storedRows) ?? $this->validateCompanions($rows, $rows);
     }
 
     /** domainmetadata.kind is VARCHAR(32), so a longer kind cannot be stored as typed */
@@ -326,12 +328,33 @@ class ZoneMetadataService
     }
 
     /**
+     * A zone already holding more kinds than the cap may keep or shed them, never add one.
+     *
+     * @param list<array{kind: string, content: string}> $resulting
+     * @param list<array{kind: string, content: string}> $storedRows
+     */
+    private function validateKindCount(array $resulting, array $storedRows): ?ZoneMetadataResult
+    {
+        $limit = max(self::MAX_KINDS_PER_ZONE, count(array_unique(array_column($storedRows, 'kind'))));
+        if (count(array_unique(array_column($resulting, 'kind'))) > $limit) {
+            return new ZoneMetadataResult(ZoneMetadataOutcome::TOO_MANY_KINDS);
+        }
+
+        return null;
+    }
+
+    /**
      * @param list<array{kind: string, content: string}> $rows
      * @param list<array{kind: string, content: string}> $storedRows A kind already stored over the cap may be kept or shrunk, never grown
      */
     private function validateValues(array $rows, array $storedRows = []): ?ZoneMetadataResult
     {
         $storedCounts = array_count_values(array_column($storedRows, 'kind'));
+        // Submitted content arrives trimmed, so a stored long value is matched trimmed too
+        $storedLong = [];
+        foreach ($storedRows as $stored) {
+            $storedLong[$stored['kind'] . "\0" . trim($stored['content'])] = true;
+        }
         $countsByKind = [];
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -345,6 +368,9 @@ class ZoneMetadataService
 
             if (!mb_check_encoding($row['content'], 'UTF-8')) {
                 return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_TEXT, $kind);
+            }
+            if (strlen($row['content']) > self::MAX_VALUE_BYTES && !isset($storedLong[$kind . "\0" . $row['content']])) {
+                return new ZoneMetadataResult(ZoneMetadataOutcome::VALUE_TOO_LONG, $kind);
             }
 
             // PowerDNS stores an unknown policy string without complaint and then

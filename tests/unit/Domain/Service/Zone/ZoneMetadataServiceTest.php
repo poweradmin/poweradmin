@@ -170,6 +170,45 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertSame(ZoneMetadataOutcome::TOO_MANY_VALUES, $service->replaceAll(self::ZONE_ID, self::ZONE, [...$stored, ...$rows('ALLOW-AXFR-FROM', $cap + 1)], self::ADMIN)->outcome);
     }
 
+    public function testAZoneRefusesMoreKindsThanTheCapUnlessAlreadyOverIt(): void
+    {
+        $cap = ZoneMetadataService::MAX_KINDS_PER_ZONE;
+        $kinds = static fn(int $n): array => array_map(fn(int $i): array => ['kind' => 'X-K' . $i, 'content' => 'v'], range(1, $n));
+        $this->store->method('load')->willReturn($kinds($cap + 5));
+        $this->store->method('replaceAll')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
+        $service = $this->sqlService();
+
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, $kinds($cap + 5), self::ADMIN)->isOk());
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_KINDS, $service->replaceAll(self::ZONE_ID, self::ZONE, $kinds($cap + 6), self::ADMIN)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::TOO_MANY_KINDS, $service->replaceKind(self::ZONE_ID, self::ZONE, 'X-NEW', ['v'], self::ADMIN)->outcome);
+    }
+
+    public function testAValueLongerThanTheCapIsRefusedUnlessItIsAlreadyStored(): void
+    {
+        $long = str_repeat('a', ZoneMetadataService::MAX_VALUE_BYTES + 1);
+        $this->store->method('load')->willReturn([['kind' => 'X-OLD', 'content' => $long]]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $this->store->method('replaceKind')->willReturn(true);
+        $service = $this->sqlService();
+
+        $this->assertSame(ZoneMetadataOutcome::VALUE_TOO_LONG, $service->replaceKind(self::ZONE_ID, self::ZONE, 'X-NEW', [$long], self::ADMIN)->outcome);
+        $this->assertSame(ZoneMetadataOutcome::VALUE_TOO_LONG, $service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-NEW', 'content' => $long]], self::ADMIN)->outcome);
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-OLD', 'content' => $long]], self::ADMIN)->isOk());
+        $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'X-NEW', [str_repeat('a', ZoneMetadataService::MAX_VALUE_BYTES)], self::ADMIN)->isOk());
+    }
+
+    public function testAStoredLongValueWithSurroundingWhitespaceIsStillGrandfathered(): void
+    {
+        $long = str_repeat('a', 1100);
+        $this->store->method('load')->willReturn([['kind' => 'X-OLD', 'content' => $long . "\r\n"]]);
+        $this->store->method('replaceAll')->willReturn(true);
+
+        $result = $this->sqlService()->replaceAll(self::ZONE_ID, self::ZONE, [['kind' => 'X-OLD', 'content' => $long], ['kind' => 'X-NEW', 'content' => 'v']], self::ADMIN);
+
+        $this->assertTrue($result->isOk());
+    }
+
     public function testRepeatedMultiValueKindsAreAccepted(): void
     {
         $this->store->method('load')->willReturn([]);
