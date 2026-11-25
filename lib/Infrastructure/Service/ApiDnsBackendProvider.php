@@ -525,11 +525,19 @@ class ApiDnsBackendProvider implements DnsBackendProvider
             return null;
         }
 
-        $stmt = $this->db->prepare("SELECT COALESCE(domain_id, id) FROM zones WHERE zone_name = :name");
-        $stmt->execute([':name' => $zoneName]);
-        $id = $stmt->fetchColumn();
+        $lower = strtolower($zoneName);
 
-        return $id !== false ? (int)$id : null;
+        // The exact match goes first so a lowercase row wins; only a miss falls back to LOWER()
+        foreach (['zone_name', 'LOWER(zone_name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT COALESCE(domain_id, id) FROM zones WHERE $column = :name ORDER BY id");
+            $stmt->execute([':name' => $lower]);
+            $id = $stmt->fetchColumn();
+            if ($id !== false) {
+                return (int)$id;
+            }
+        }
+
+        return null;
     }
 
     public function getZoneTypeById(int $domainId): string

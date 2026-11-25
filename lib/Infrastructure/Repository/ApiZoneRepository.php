@@ -524,15 +524,30 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneByName(string $zoneName): ?array
     {
-        $query = "SELECT id FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $zoneId = $stmt->fetchColumn();
+        $zoneId = $this->findZoneRowValue('id', $zoneName);
         if (!$zoneId) {
             return null;
         }
         return $this->getZone((int)$zoneId);
+    }
+
+    /**
+     * The exact match goes first so a lowercase row wins; only a miss falls back to LOWER().
+     */
+    private function findZoneRowValue(string $select, string $zoneName): mixed
+    {
+        $lower = strtolower($zoneName);
+        foreach (['zone_name', 'LOWER(zone_name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT $select FROM zones WHERE $column = :name ORDER BY id");
+            $stmt->bindValue(':name', $lower, PDO::PARAM_STR);
+            $stmt->execute();
+            $value = $stmt->fetchColumn();
+            if ($value !== false) {
+                return $value;
+            }
+        }
+
+        return false;
     }
 
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array
@@ -754,11 +769,7 @@ class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneIdByName(string $zoneName): ?int
     {
-        $query = "SELECT COALESCE(domain_id, id) FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetchColumn();
+        $result = $this->findZoneRowValue('COALESCE(domain_id, id)', $zoneName);
         return $result ? (int)$result : null;
     }
 
