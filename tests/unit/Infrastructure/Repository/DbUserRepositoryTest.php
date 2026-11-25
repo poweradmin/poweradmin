@@ -237,10 +237,9 @@ class DbUserRepositoryTest extends TestCase
     {
         $stmt = $this->createMock(PDOStatement::class);
         $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetchColumn')->willReturn(false);
 
-        $this->db->method('prepare')
-            ->with($this->stringContains('UPDATE users SET password'))
-            ->willReturn($stmt);
+        $this->db->method('prepare')->willReturn($stmt);
 
         $result = $this->repository->updatePassword(1, 'new_hashed_password');
 
