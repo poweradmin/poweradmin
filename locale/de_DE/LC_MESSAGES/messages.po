@@ -17003,3 +17003,8 @@ msgstr "Das Feld %s enthält ungültige Zeichen."
 #: templates/default/edit.html:651
 msgid "Include disabled records"
 msgstr "Deaktivierte Einträge einschließen"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:43
+#, php-format
+msgid "Metadata kind %s accepts at most %d values."
+msgstr "Die Metadatenart %s akzeptiert höchstens %d Werte."

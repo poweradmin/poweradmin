@@ -15518,3 +15518,8 @@ msgstr "%s 字段包含无效字符。"
 #: templates/default/edit.html:651
 msgid "Include disabled records"
 msgstr "包含已禁用的记录"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:43
+#, php-format
+msgid "Metadata kind %s accepts at most %d values."
+msgstr "元数据类型 %s 最多接受 %d 个值。"

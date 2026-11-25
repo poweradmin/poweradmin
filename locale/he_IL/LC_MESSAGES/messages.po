@@ -16135,3 +16135,8 @@ msgstr "שדה %s מכיל תווים לא חוקיים."
 #: templates/default/edit.html:651
 msgid "Include disabled records"
 msgstr "כלול רשומות מושבתות"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:43
+#, php-format
+msgid "Metadata kind %s accepts at most %d values."
+msgstr "סוג המטא־נתונים %s מקבל לכל היותר %d ערכים."

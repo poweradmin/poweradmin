@@ -16557,3 +16557,8 @@ msgstr "Feltet %s inneholder ugyldige tegn."
 #: templates/default/edit.html:651
 msgid "Include disabled records"
 msgstr "Ta med deaktiverte poster"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:43
+#, php-format
+msgid "Metadata kind %s accepts at most %d values."
+msgstr "Metadatatypen %s godtar høyst %d verdier."
