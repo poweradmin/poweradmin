@@ -16684,3 +16684,13 @@ msgstr "Įtraukti išjungtus įrašus"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Metaduomenų rūšis %s priima ne daugiau kaip %d reikšmių."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Zona priima ne daugiau kaip %d metaduomenų rūšių."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Metaduomenų rūšies %s reikšmė gali būti ne ilgesnė kaip %d baitų."

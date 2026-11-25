@@ -17008,3 +17008,13 @@ msgstr "Deaktivierte Einträge einschließen"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Die Metadatenart %s akzeptiert höchstens %d Werte."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Eine Zone akzeptiert höchstens %d Metadatenarten."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Ein Wert der Metadatenart %s darf höchstens %d Byte lang sein."

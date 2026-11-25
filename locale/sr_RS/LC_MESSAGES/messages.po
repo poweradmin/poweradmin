@@ -16421,3 +16421,13 @@ msgstr "Укључи онемогућене записе"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Врста метаподатака %s прихвата највише %d вредности."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Зона прихвата највише %d врста метаподатака."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Вредност врсте метаподатака %s може имати највише %d бајтова."

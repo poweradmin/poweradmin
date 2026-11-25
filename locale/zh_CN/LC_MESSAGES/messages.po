@@ -15523,3 +15523,13 @@ msgstr "包含已禁用的记录"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "元数据类型 %s 最多接受 %d 个值。"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "一个区域最多接受 %d 种元数据类型。"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "元数据类型 %s 的值最长为 %d 字节。"

@@ -16333,3 +16333,13 @@ msgstr "अक्षम रिकॉर्ड शामिल करें"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "मेटाडेटा प्रकार %s अधिकतम %d मान स्वीकार करता है।"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "एक ज़ोन अधिकतम %d मेटाडेटा प्रकार स्वीकार करता है।"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "मेटाडेटा प्रकार %s का मान अधिकतम %d बाइट लंबा हो सकता है।"

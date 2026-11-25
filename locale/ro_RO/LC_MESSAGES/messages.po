@@ -17124,3 +17124,13 @@ msgstr "Include înregistrările dezactivate"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Tipul de metadate %s acceptă cel mult %d valori."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "O zonă acceptă cel mult %d tipuri de metadate."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "O valoare a tipului de metadate %s poate avea cel mult %d octeți."

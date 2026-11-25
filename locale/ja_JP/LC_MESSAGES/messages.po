@@ -16606,3 +16606,13 @@ msgstr "無効なレコードを含める"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "メタデータの種類 %s に指定できる値は最大 %d 個です。"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "1 つのゾーンに指定できるメタデータの種類は最大 %d 個です。"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "メタデータの種類 %s の値は最大 %d バイトです。"

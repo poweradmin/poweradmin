@@ -17186,3 +17186,13 @@ msgstr "Συμπερίληψη απενεργοποιημένων εγγραφώ
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Το είδος μεταδεδομένων %s δέχεται το πολύ %d τιμές."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Μια ζώνη δέχεται το πολύ %d είδη μεταδεδομένων."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Μια τιμή του είδους μεταδεδομένων %s μπορεί να έχει μήκος το πολύ %d byte."

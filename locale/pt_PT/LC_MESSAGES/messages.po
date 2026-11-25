@@ -16871,3 +16871,13 @@ msgstr "Incluir registos desativados"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "O tipo de metadados %s aceita no máximo %d valores."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Uma zona aceita no máximo %d tipos de metadados."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Um valor do tipo de metadados %s pode ter no máximo %d bytes."

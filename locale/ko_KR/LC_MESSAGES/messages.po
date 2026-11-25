@@ -16383,3 +16383,13 @@ msgstr "비활성화된 레코드 포함"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "메타데이터 종류 %s에는 최대 %d개의 값만 허용됩니다."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "영역 하나에는 최대 %d개의 메타데이터 종류만 허용됩니다."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "메타데이터 종류 %s의 값은 최대 %d바이트까지 가능합니다."

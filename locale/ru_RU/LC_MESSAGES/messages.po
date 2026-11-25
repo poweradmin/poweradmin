@@ -16793,3 +16793,13 @@ msgstr "Включить отключённые записи"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Тип метаданных %s допускает не более %d значений."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Зона допускает не более %d типов метаданных."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Значение типа метаданных %s может иметь длину не более %d байт."

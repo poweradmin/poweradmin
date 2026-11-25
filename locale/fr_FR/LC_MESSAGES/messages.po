@@ -17214,3 +17214,13 @@ msgstr "Inclure les enregistrements désactivés"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Le type de métadonnées %s accepte au plus %d valeurs."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Une zone accepte au plus %d types de métadonnées."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Une valeur du type de métadonnées %s peut comporter au plus %d octets."

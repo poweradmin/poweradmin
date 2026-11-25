@@ -16728,3 +16728,13 @@ msgstr "Включити вимкнені записи"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Тип метаданих %s допускає не більше %d значень."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Зона допускає не більше %d типів метаданих."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Значення типу метаданих %s може мати довжину не більше %d байтів."

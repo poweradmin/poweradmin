@@ -16584,3 +16584,13 @@ msgstr "Zahrnout zakázané záznamy"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Druh metadat %s přijímá nejvýše %d hodnot."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Zóna přijímá nejvýše %d druhů metadat."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Hodnota druhu metadat %s může mít nejvýše %d bajtů."

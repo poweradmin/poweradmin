@@ -15870,3 +15870,13 @@ msgstr "รวมเรคคอร์ดที่ปิดใช้งาน"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "ชนิดเมทาดาทา %s รับค่าได้สูงสุด %d ค่า"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "โซนหนึ่งรับชนิดเมทาดาทาได้สูงสุด %d ชนิด"
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "ค่าของชนิดเมทาดาทา %s ยาวได้สูงสุด %d ไบต์"

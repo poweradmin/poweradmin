@@ -16562,3 +16562,13 @@ msgstr "Ta med deaktiverte poster"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Metadatatypen %s godtar høyst %d verdier."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "En sone godtar høyst %d metadatatyper."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "En verdi av metadatatypen %s kan være høyst %d byte lang."

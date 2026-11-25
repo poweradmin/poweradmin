@@ -16316,3 +16316,13 @@ msgstr "Kaasa keelatud kirjed"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Metaandmete liik %s lubab kõige rohkem %d väärtust."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "Tsoon lubab kõige rohkem %d metaandmete liiki."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "Metaandmete liigi %s väärtus võib olla kõige rohkem %d baiti pikk."

@@ -16515,3 +16515,13 @@ msgstr "Include disabled records"
 #, php-format
 msgid "Metadata kind %s accepts at most %d values."
 msgstr "Metadata kind %s accepts at most %d values."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:44
+#, php-format
+msgid "A zone accepts at most %d metadata kinds."
+msgstr "A zone accepts at most %d metadata kinds."
+
+#: lib/Application/Service/Zone/ZoneMetadataFormMessages.php:45
+#, php-format
+msgid "A value of metadata kind %s may be at most %d bytes long."
+msgstr "A value of metadata kind %s may be at most %d bytes long."
