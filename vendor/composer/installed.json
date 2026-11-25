@@ -598,17 +598,17 @@
         },
         {
             "name": "jeremykendall/php-domain-parser",
-            "version": "6.4.0",
-            "version_normalized": "6.4.0.0",
+            "version": "6.4.1",
+            "version_normalized": "6.4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeremykendall/php-domain-parser.git",
-                "reference": "98401b32371fc1a75d93d4653d311b38e71f0d82"
+                "reference": "b3d8346ff66c1054e91bac75ada28ea51089007b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeremykendall/php-domain-parser/zipball/98401b32371fc1a75d93d4653d311b38e71f0d82",
-                "reference": "98401b32371fc1a75d93d4653d311b38e71f0d82",
+                "url": "https://api.github.com/repos/jeremykendall/php-domain-parser/zipball/b3d8346ff66c1054e91bac75ada28ea51089007b",
+                "reference": "b3d8346ff66c1054e91bac75ada28ea51089007b",
                 "shasum": ""
             },
             "require": {
@@ -616,17 +616,17 @@
                 "php": "^8.1"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.65.0",
-                "guzzlehttp/guzzle": "^7.9.2",
-                "guzzlehttp/psr7": "^1.6 || ^2.7.0",
-                "phpstan/phpstan": "^1.12.13",
-                "phpstan/phpstan-phpunit": "^1.4.2",
-                "phpstan/phpstan-strict-rules": "^1.6.1",
-                "phpunit/phpunit": "^10.5.15 || ^11.5.1",
+                "friendsofphp/php-cs-fixer": "^3.95.32",
+                "guzzlehttp/guzzle": "^7.9.2 || ^8.5.2",
+                "guzzlehttp/psr7": "^1.6 || ^2.7.0 || ^3.4.0",
+                "phpstan/phpstan": "^2.3.6",
+                "phpstan/phpstan-phpunit": "^2.1.2",
+                "phpstan/phpstan-strict-rules": "^2.1.1",
+                "phpunit/phpunit": "^10.5.15 || ^11.5.58 || ^12.5.44 || ^13.4.7",
                 "psr/http-factory": "^1.1.0",
                 "psr/simple-cache": "^1.0.1 || ^2.0.0",
-                "symfony/cache": "^v5.0.0 || ^6.4.16",
-                "symfony/var-dumper": "^v6.4.18 || ^7.2"
+                "symfony/cache": "^v5.0.0 || ^6.4.16 || ^v7.4.23",
+                "symfony/var-dumper": "^v6.4.18 || ^7.4.22"
             },
             "suggest": {
                 "league/uri": "To parse and extract the host from an URL using a RFC3986/RFC3987 URI parser",
@@ -636,7 +636,7 @@
                 "rowbot/url": "To parse and extract the host from an URL using a  WHATWG URL parser",
                 "symfony/polyfill-intl-idn": "to handle IDN host via the Symfony polyfill if ext-intl is not present"
             },
-            "time": "2025-04-26T11:19:48+00:00",
+            "time": "2026-11-17T22:34:28+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1822,17 +1822,17 @@
         },
         {
             "name": "symfony/config",
-            "version": "v7.4.23",
-            "version_normalized": "7.4.23.0",
+            "version": "v7.4.24",
+            "version_normalized": "7.4.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "8ef666abf731e85e59cf478929dda6c7cb2fa9c4"
+                "reference": "5faae9e1d39de4a73159858c341dbb31a679aabf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/8ef666abf731e85e59cf478929dda6c7cb2fa9c4",
-                "reference": "8ef666abf731e85e59cf478929dda6c7cb2fa9c4",
+                "url": "https://api.github.com/repos/symfony/config/zipball/5faae9e1d39de4a73159858c341dbb31a679aabf",
+                "reference": "5faae9e1d39de4a73159858c341dbb31a679aabf",
                 "shasum": ""
             },
             "require": {
@@ -1852,7 +1852,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-11-04T08:27:22+00:00",
+            "time": "2026-11-09T20:02:17+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -1880,7 +1880,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v7.4.23"
+                "source": "https://github.com/symfony/config/tree/v7.4.24"
             },
             "funding": [
                 {
@@ -2422,17 +2422,17 @@
         },
         {
             "name": "symfony/filesystem",
-            "version": "v7.4.23",
-            "version_normalized": "7.4.23.0",
+            "version": "v7.4.24",
+            "version_normalized": "7.4.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/filesystem.git",
-                "reference": "53d609da66578dad5a39fe290e8f924ec8f05e93"
+                "reference": "37a6b215cf82c881409e2ffaec61757964abd1f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/53d609da66578dad5a39fe290e8f924ec8f05e93",
-                "reference": "53d609da66578dad5a39fe290e8f924ec8f05e93",
+                "url": "https://api.github.com/repos/symfony/filesystem/zipball/37a6b215cf82c881409e2ffaec61757964abd1f7",
+                "reference": "37a6b215cf82c881409e2ffaec61757964abd1f7",
                 "shasum": ""
             },
             "require": {
@@ -2443,7 +2443,7 @@
             "require-dev": {
                 "symfony/process": "^6.4|^7.0|^8.0"
             },
-            "time": "2026-11-04T08:27:22+00:00",
+            "time": "2026-11-24T15:20:15+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -2471,7 +2471,7 @@
             "description": "Provides basic utilities for the filesystem",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/filesystem/tree/v7.4.23"
+                "source": "https://github.com/symfony/filesystem/tree/v7.4.24"
             },
             "funding": [
                 {
@@ -5023,23 +5023,23 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v3.7.1",
-            "version_normalized": "3.7.1.0",
+            "version": "v3.8.1",
+            "version_normalized": "3.8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
-                "reference": "ccb206b98faccc511ebae8e5fad50f2dc0b30621"
+                "reference": "0a3ae917402632fcba2aeddae9c98332f3d7dd05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/ccb206b98faccc511ebae8e5fad50f2dc0b30621",
-                "reference": "ccb206b98faccc511ebae8e5fad50f2dc0b30621",
+                "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/0a3ae917402632fcba2aeddae9c98332f3d7dd05",
+                "reference": "0a3ae917402632fcba2aeddae9c98332f3d7dd05",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1"
             },
-            "time": "2026-06-05T06:23:12+00:00",
+            "time": "2026-10-03T08:17:19+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -5047,7 +5047,7 @@
                     "name": "symfony/contracts"
                 },
                 "branch-alias": {
-                    "dev-main": "3.7-dev"
+                    "dev-main": "3.8-dev"
                 }
             },
             "installation-source": "dist",
@@ -5084,7 +5084,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/translation-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/translation-contracts/tree/v3.8.1"
             },
             "funding": [
                 {
@@ -5108,17 +5108,17 @@
         },
         {
             "name": "symfony/twig-bridge",
-            "version": "v7.4.22",
-            "version_normalized": "7.4.22.0",
+            "version": "v7.4.24",
+            "version_normalized": "7.4.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/twig-bridge.git",
-                "reference": "c959c7d2396e72e64c899fc9d0abba50733ea042"
+                "reference": "e8cf2debed8decf4431d045245b2fe29f060beb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/c959c7d2396e72e64c899fc9d0abba50733ea042",
-                "reference": "c959c7d2396e72e64c899fc9d0abba50733ea042",
+                "url": "https://api.github.com/repos/symfony/twig-bridge/zipball/e8cf2debed8decf4431d045245b2fe29f060beb4",
+                "reference": "e8cf2debed8decf4431d045245b2fe29f060beb4",
                 "shasum": ""
             },
             "require": {
@@ -5174,7 +5174,7 @@
                 "twig/inky-extra": "^3",
                 "twig/markdown-extra": "^3"
             },
-            "time": "2026-10-15T16:00:28+00:00",
+            "time": "2026-11-17T16:36:55+00:00",
             "type": "symfony-bridge",
             "installation-source": "dist",
             "autoload": {
@@ -5202,7 +5202,7 @@
             "description": "Provides integration for Twig with various Symfony components",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/twig-bridge/tree/v7.4.22"
+                "source": "https://github.com/symfony/twig-bridge/tree/v7.4.24"
             },
             "funding": [
                 {
