@@ -169,6 +169,26 @@ class UserProvisioningServiceRevocationRefusalTest extends TestCase
         $this->assertTrue($this->sync('oidc', 'Guest', withGroupCleanup: true));
     }
 
+    public function testRefusesWhenAMappedGroupCannotBeRemoved(): void
+    {
+        $this->templateIds(['Editors' => 1, 'Guest' => 7]);
+        $this->users->method('templateGrantsUberuser')->willReturn(false);
+        $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
+        $this->members->method('remove')->willThrowException(new \RuntimeException('lock timeout'));
+
+        $this->assertFalse($this->sync('oidc', 'Guest', withGroupCleanup: true));
+    }
+
+    public function testRefusesWhenTheGroupMembershipCannotBeRead(): void
+    {
+        $this->templateIds(['Editors' => 1, 'Guest' => 7]);
+        $this->users->method('templateGrantsUberuser')->willReturn(false);
+        $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
+        $this->members->method('findByUserId')->willThrowException(new \RuntimeException('db down'));
+
+        $this->assertFalse($this->sync('oidc', 'Guest', withGroupCleanup: true));
+    }
+
     public function testAnAdminAssignedTemplateIsLeftAloneWithoutADefault(): void
     {
         $this->templateIds(['Editors' => 1]);

@@ -266,6 +266,7 @@ final class LdapAuthenticator
         $userInfo = LdapUserInfo::fromLdapEntry($entries[0], $username, $ldap_fullname_attribute, $ldap_email_attribute, $ldap_groups_attribute);
 
         $rowObj = $this->userLookup->findActiveLdapUser($username);
+        $syncRefused = false;
 
         if (!$rowObj && $ldap_auto_provision && $this->provisioningService->provisionUser($userInfo, 'ldap')) {
             $rowObj = $this->userLookup->findActiveLdapUser($username);
@@ -275,13 +276,18 @@ final class LdapAuthenticator
                 $rowObj['fullname'] = $userInfo->getDisplayName() ?: $rowObj['fullname'];
             } else {
                 $rowObj = null;
+                $syncRefused = true;
             }
         }
 
         if (!$rowObj) {
-            $this->logger->warning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
+            if ($syncRefused) {
+                $this->logger->warning('Refusing LDAP sign-in of {username}: the account sync from the directory was refused', ['username' => $username]);
+            } else {
+                $this->logger->warning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
+            }
             if ($isLogin) {
-                $this->auditService->logLoginFailed(AuthMethod::LDAP, LoginFailureReason::ACCOUNT_DISABLED);
+                $this->auditService->logLoginFailed(AuthMethod::LDAP, $syncRefused ? LoginFailureReason::SYNC_REFUSED : LoginFailureReason::ACCOUNT_DISABLED);
             }
             $this->logger->info('LDAP authentication process ended due to no active user found.');
             return AuthOutcome::failure(_('LDAP Authentication failed!'));

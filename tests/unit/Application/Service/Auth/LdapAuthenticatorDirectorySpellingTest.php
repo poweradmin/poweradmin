@@ -34,6 +34,8 @@ use Poweradmin\Application\Service\Auth\LoginCredentials;
 use Poweradmin\Application\Service\Auth\UserProvisioningService;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Enum\AuthMethod;
+use Poweradmin\Domain\Enum\LoginFailureReason;
 use Poweradmin\Domain\Repository\AuthUserLookupInterface;
 use Poweradmin\Domain\Service\Auth\MfaService;
 use Poweradmin\Domain\Service\Auth\SessionKeys;
@@ -115,7 +117,22 @@ class LdapAuthenticatorDirectorySpellingTest extends TestCase
         $this->assertSame('Authentication failed!', $outcome->message);
     }
 
-    private function authenticator(): LdapAuthenticator
+    public function testARefusedAccountSyncIsAuditedWithItsOwnReasonNotAsADisabledAccount(): void
+    {
+        $this->attempts->method('userIdFor')->willReturn(7);
+        $lookup = $this->createMock(AuthUserLookupInterface::class);
+        $lookup->method('findActiveLdapUser')->willReturn(['id' => 7, 'fullname' => 'Alice', 'email' => 'a@example.com']);
+        $provisioning = $this->createMock(UserProvisioningService::class);
+        $provisioning->method('syncExistingUser')->willReturn(false);
+        $this->audit->expects($this->once())->method('logLoginFailed')->with(AuthMethod::LDAP, LoginFailureReason::SYNC_REFUSED);
+        self::$userBindOk = true;
+
+        $outcome = $this->authenticator($lookup, $provisioning)->authenticate(new LoginCredentials(' ALICE', 'right'));
+
+        $this->assertSame('LDAP Authentication failed!', $outcome->message);
+    }
+
+    private function authenticator(?AuthUserLookupInterface $lookup = null, ?UserProvisioningService $provisioning = null): LdapAuthenticator
     {
         $session = new ArraySession();
         $session->set(SessionKeys::USERLOGIN, ' ALICE');
@@ -126,12 +143,13 @@ class LdapAuthenticatorDirectorySpellingTest extends TestCase
             'ldap.uri' => 'ldap://double',
             'ldap.bind_dn' => 'cn=svc',
             'ldap.user_attribute' => 'uid',
+            'ldap.sync_user_info' => true,
             'security.password_cost' => 4,
             default => $default,
         });
 
         return new LdapAuthenticator(
-            $this->createMock(AuthUserLookupInterface::class),
+            $lookup ?? $this->createMock(AuthUserLookupInterface::class),
             $config,
             $this->audit,
             $this->createMock(CsrfTokenService::class),
@@ -140,7 +158,7 @@ class LdapAuthenticatorDirectorySpellingTest extends TestCase
             new UserContextService($session),
             new ClientContext('203.0.113.9', 'phpunit', 'Unknown', false),
             $this->createMock(MfaService::class),
-            $this->createMock(UserProvisioningService::class),
+            $provisioning ?? $this->createMock(UserProvisioningService::class),
             $session
         );
     }

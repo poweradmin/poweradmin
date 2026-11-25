@@ -32,6 +32,7 @@ enum LoginFailureReason: string
     case NO_SUCH_USER = 'no_such_user';
     case WRONG_PASSWORD = 'wrong_password';
     case ACCOUNT_DISABLED = 'account_disabled';
+    case SYNC_REFUSED = 'sync_refused';
     case DUPLICATE_USERS = 'duplicate_users';
     case LDAP_CONNECT_FAILED = 'ldap_connect';
     case LDAP_BIND_FAILED = 'ldap_bind';

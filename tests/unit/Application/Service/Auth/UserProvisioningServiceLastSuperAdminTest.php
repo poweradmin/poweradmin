@@ -301,7 +301,7 @@ class UserProvisioningServiceLastSuperAdminTest extends TestCase
         $this->assertSame([self::ADMIN_GROUP_ID], $this->memberOf);
     }
 
-    public function testAFailedMembershipReadStillUpdatesTheTemplate(): void
+    public function testAFailedMembershipReadStillUpdatesTheTemplateButRefusesTheSignIn(): void
     {
         $this->members = $this->createMock(UserGroupMemberRepositoryInterface::class);
         $this->members->method('findByUserId')->willThrowException(new \RuntimeException('lock wait timeout'));
@@ -323,8 +323,8 @@ class UserProvisioningServiceLastSuperAdminTest extends TestCase
             $this->members
         );
 
-        (new ReflectionMethod($service, 'updateExistingUser'))
-            ->invoke($service, self::USER_ID, new OidcUserInfo('admin', '', groups: []), 'oidc');
+        $this->assertFalse((new ReflectionMethod($service, 'updateExistingUser'))
+            ->invoke($service, self::USER_ID, new OidcUserInfo('admin', '', groups: []), 'oidc'));
     }
 
     /**

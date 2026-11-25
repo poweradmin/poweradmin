@@ -596,6 +596,7 @@ class UserProvisioningService
     {
         // Set once a revocation is due: failing to apply it then refuses the sign-in
         $revocationDue = false;
+        $groupsUnreadable = false;
         try {
             $updates = [];
 
@@ -677,9 +678,10 @@ class UserProvisioningService
             try {
                 $groupPlan = $this->planGroupMembership($userId, $userInfo->getGroups(), $authMethod);
             } catch (\Exception $e) {
-                // The profile and template still sync; groups are retried on the next sign-in
+                // Profile and template still sync; the sign-in is refused below, as a stale mapped group cannot be ruled out
                 $this->logger->error('Error reading group membership of user {userId}: {error}', ['userId' => $userId, 'error' => $e->getMessage()]);
                 $groupPlan = null;
+                $groupsUnreadable = true;
             }
             if ($groupPlan !== null) {
                 $this->addMappedGroups($userId, $groupPlan);
@@ -709,16 +711,22 @@ class UserProvisioningService
                 return true;
             });
 
-            // Applied: group cleanup below stays best-effort
+            // Applied: only a failed group removal below refuses the sign-in now
             $revocationDue = false;
 
-            if ($groupPlan !== null) {
-                $this->removeMappedGroups($userId, $groupPlan);
+            if ($groupsUnreadable) {
+                $this->logger->warning('Refusing sign-in of user {userId}: group membership could not be read', ['userId' => $userId]);
+                return false;
+            }
+
+            if ($groupPlan !== null && !$this->removeMappedGroups($userId, $groupPlan)) {
+                $this->logger->warning('Refusing sign-in of user {userId}: a mapped group could not be removed', ['userId' => $userId]);
+                return false;
             }
         } catch (\Exception $e) {
             $this->logger->error('Error updating existing user: {error}', ['error' => $e->getMessage()]);
 
-            return !$revocationDue;
+            return !$revocationDue && !$groupsUnreadable;
         }
 
         return true;
@@ -1377,17 +1385,32 @@ class UserProvisioningService
      * removal already counts what the provider granted in this sign-in.
      *
      * @param array{add: list<int>, remove: list<int>, names: array<int, string>} $plan
+     * @return bool False when a removal failed; a kept last super admin is not a failure
      */
-    private function removeMappedGroups(int $userId, array $plan): void
+    private function removeMappedGroups(int $userId, array $plan): bool
     {
+        $allRemoved = true;
         foreach ($plan['remove'] as $groupId) {
-            if ($this->removeUserFromGroup($userId, $groupId)) {
+            try {
+                $removed = $this->removeUserFromGroup($userId, $groupId);
+            } catch (\Exception $e) {
+                $this->logger->error('Error removing user {userId} from group {groupId}: {error}', [
+                    'userId' => $userId,
+                    'groupId' => $groupId,
+                    'error' => $e->getMessage()
+                ]);
+                $allRemoved = false;
+                continue;
+            }
+            if ($removed) {
                 $this->logger->info('Removed user {userId} from group: {group} (no longer in external group)', [
                     'userId' => $userId,
                     'group' => $plan['names'][$groupId] ?? $groupId
                 ]);
             }
         }
+
+        return $allRemoved;
     }
 
     /**
@@ -1484,31 +1507,23 @@ class UserProvisioningService
      * @param int $userId User ID
      * @param int $groupId Group ID
      * @return bool True if user was removed or wasn't a member
+     * @throws \Exception when the removal itself fails
      */
     private function removeUserFromGroup(int $userId, int $groupId): bool
     {
-        try {
-            $removed = $this->superAdminGuard->guard(
-                UberuserChange::memberRemoved($groupId, $userId),
-                fn(): bool => $this->groupMembers->remove($groupId, $userId)
-            );
-            if (is_array($removed)) {
-                // The sign-in goes on; the membership stays until another super admin exists
-                $this->logger->warning('Kept user {userId} in group {groupId}: removing them would leave no active super admin', [
-                    'userId' => $userId,
-                    'groupId' => $groupId
-                ]);
-                return false;
-            }
-
-            return $removed;
-        } catch (\Exception $e) {
-            $this->logger->error('Error removing user {userId} from group {groupId}: {error}', [
+        $removed = $this->superAdminGuard->guard(
+            UberuserChange::memberRemoved($groupId, $userId),
+            fn(): bool => $this->groupMembers->remove($groupId, $userId)
+        );
+        if (is_array($removed)) {
+            // The sign-in goes on; the membership stays until another super admin exists
+            $this->logger->warning('Kept user {userId} in group {groupId}: removing them would leave no active super admin', [
                 'userId' => $userId,
-                'groupId' => $groupId,
-                'error' => $e->getMessage()
+                'groupId' => $groupId
             ]);
             return false;
         }
+
+        return $removed;
     }
 }
