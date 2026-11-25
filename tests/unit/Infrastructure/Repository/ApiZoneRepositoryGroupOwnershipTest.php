@@ -83,6 +83,19 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
     }
 
     #[Test]
+    public function zoneIsFoundByNameInAnyCase(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (3, 3, 'Mixed.Example', 'MASTER', '', '', 1, 0)");
+
+        $zone = $this->repository()->getZoneByName('mixed.example');
+
+        $this->assertNotNull($zone);
+        $this->assertSame('Mixed.Example', $zone['name']);
+        $this->assertNull($this->repository()->getZoneByName('absent.example'));
+    }
+
+    #[Test]
     public function groupOwnedZoneIsVisibleWhenDomainIdDiffersFromId(): void
     {
         // Zone id 7, canonical id 4011 - the shape produced by an install migrated

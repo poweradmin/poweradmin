@@ -560,11 +560,19 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneByName(string $zoneName): ?array
     {
-        $query = "SELECT id FROM zones WHERE zone_name = :name";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
-        $stmt->execute();
-        $zoneId = $stmt->fetchColumn();
+        $lower = strtolower($zoneName);
+
+        // The exact match goes first so a lowercase row wins; only a miss falls back to LOWER()
+        $zoneId = false;
+        foreach (['zone_name', 'LOWER(zone_name)'] as $column) {
+            $stmt = $this->db->prepare("SELECT id FROM zones WHERE $column = :name ORDER BY id");
+            $stmt->bindValue(':name', $lower, PDO::PARAM_STR);
+            $stmt->execute();
+            $zoneId = $stmt->fetchColumn();
+            if ($zoneId) {
+                break;
+            }
+        }
         if (!$zoneId) {
             return null;
         }
