@@ -131,6 +131,8 @@ class MfaVerifyController extends BaseController
             $this->redirect('/');
         }
 
+        $this->endIdlePendingLogin();
+
         // Make verification more robust by just checking for the code
         if ($this->httpRequest->getPostParam('mfa_code') !== null) {
             $this->handleMfaVerification();
@@ -139,6 +141,31 @@ class MfaVerifyController extends BaseController
 
         // Otherwise, display the MFA form
         $this->displayMfaForm();
+    }
+
+    /**
+     * This page skips the session authenticator, so the idle limit of a pending login is enforced here.
+     */
+    private function endIdlePendingLogin(): void
+    {
+        $context = $this->getUserContextService();
+        $lastMod = $this->session()->get(SessionKeys::LASTMOD);
+        if (!$context->hasSessionData(SessionKeys::PENDING_USERID) || !is_numeric($lastMod)) {
+            return;
+        }
+
+        $timeout = (int)$this->config->get('interface', 'session_timeout', 1800);
+        if ((time() - (int)$lastMod) <= $timeout) {
+            $this->session()->set(SessionKeys::LASTMOD, time());
+            return;
+        }
+
+        $this->logger->info('[MfaVerifyController] Pending login idle past the session timeout, ending it');
+        $this->session()->regenerateId(true);
+        $this->session()->clear();
+        $context->setSessionData(SessionKeys::LOGIN_MESSAGE, _('Session expired, please login again.'));
+        $context->setSessionData(SessionKeys::LOGIN_MESSAGE_TYPE, 'danger');
+        $this->redirect('/login');
     }
 
     private function handleMfaVerification(): void

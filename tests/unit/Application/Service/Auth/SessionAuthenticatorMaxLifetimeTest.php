@@ -70,6 +70,24 @@ final class SessionAuthenticatorMaxLifetimeTest extends TestCase
         $this->assertFalse($session->has(SessionKeys::USERID));
     }
 
+    public function testALoginWaitingForItsSecondFactorIdlesOut(): void
+    {
+        $session = new ArraySession([
+            SessionKeys::PENDING_USERID => 1,
+            SessionKeys::USERLOGIN => 'alice',
+            SessionKeys::LASTMOD => time() - 1801,
+        ]);
+
+        try {
+            $this->authenticator($session, 0)->authenticate();
+            $this->fail('An idle pending login must redirect to the login page');
+        } catch (RequestHalted $halted) {
+            $this->assertSame(RequestHalted::KIND_REDIRECT, $halted->kind);
+        }
+
+        $this->assertFalse($session->has(SessionKeys::PENDING_USERID));
+    }
+
     public function testTheFirstSignedInRequestStartsTheClock(): void
     {
         $session = $this->signedInSession();

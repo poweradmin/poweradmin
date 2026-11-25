@@ -247,9 +247,10 @@ final class SessionAuthenticator
             $this->remoteUserSessionHandler()->apply((int)$iface_expire, $this->getCurrentRequestPath());
         }
 
-        // Check if the session hasn't expired yet.
-        if ($this->session->has(SessionKeys::USERID) && $this->session->has(SessionKeys::LASTMOD) && $this->session->get(SessionKeys::LASTMOD) !== "" && ((time() - $this->session->get(SessionKeys::LASTMOD)) > $iface_expire)) {
-            $this->logger->info('Session expired for user {userid}', ['userid' => $this->session->get(SessionKeys::USERID)]);
+        // A login still waiting for its second factor idles out like a signed-in session.
+        $holdsLogin = $this->session->has(SessionKeys::USERID) || $this->session->has(SessionKeys::PENDING_USERID);
+        if ($holdsLogin && $this->session->has(SessionKeys::LASTMOD) && $this->session->get(SessionKeys::LASTMOD) !== "" && ((time() - $this->session->get(SessionKeys::LASTMOD)) > $iface_expire)) {
+            $this->logger->info('Session expired for user {userid}', ['userid' => $this->session->get(SessionKeys::USERID, $this->session->get(SessionKeys::PENDING_USERID))]);
 
             $this->auditService()->logSessionExpired();
 

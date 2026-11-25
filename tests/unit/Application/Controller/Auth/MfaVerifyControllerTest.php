@@ -83,6 +83,35 @@ class MfaVerifyControllerTest extends SeamControllerTestCase
         $this->assertFalse($this->session->has(SessionKeys::PENDING_USERID));
     }
 
+    public function testAPendingLoginIdlePastTheSessionTimeoutIsEndedWithoutCheckingTheCode(): void
+    {
+        $this->session->remove(SessionKeys::USERID);
+        $mfa = $this->pendingLoginOf(self::VICTIM_ID);
+        $mfa->method('isMfaEnabled')->willReturn(true);
+        $mfa->expects($this->never())->method('verifyCode');
+        $this->session->set(SessionKeys::LASTMOD, time() - 1801);
+
+        $halt = $this->submitCode();
+
+        $this->assertSame('/login', $halt?->target);
+        $this->assertFalse($this->session->has(SessionKeys::PENDING_USERID));
+    }
+
+    public function testAPendingLoginStillUsingThePageWithinTheTimeoutHasItsIdleClockRefreshed(): void
+    {
+        $this->session->remove(SessionKeys::USERID);
+        $mfa = $this->pendingLoginOf(self::VICTIM_ID);
+        $mfa->method('isMfaEnabled')->willReturn(true);
+        $mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $mfa->method('verifyCode')->willReturn(false);
+        $this->session->set(SessionKeys::LASTMOD, time() - 1700);
+
+        $this->submitCode();
+
+        $this->assertSame(self::VICTIM_ID, $this->session->get(SessionKeys::PENDING_USERID));
+        $this->assertGreaterThan(time() - 10, $this->session->get(SessionKeys::LASTMOD));
+    }
+
     public function testTheCodeIsCheckedForThePendingLogin(): void
     {
         $this->session->remove(SessionKeys::USERID);
