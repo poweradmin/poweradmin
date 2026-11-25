@@ -210,4 +210,15 @@ class ApiDnsBackendProviderExactLookupTest extends TestCase
 
         $this->assertSame([1], $this->provider->getZoneIdsByAccount('alice'));
     }
+
+    public function testAZoneIsFoundByNameInAnyCaseAndALowercaseRowWins(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type) VALUES (3, 3, 'Mixed.Example', 'MASTER'), (4, 4, 'Dup.Example', 'MASTER'), (5, 5, 'dup.example', 'MASTER')");
+
+        $this->assertSame(3, $this->provider->getZoneIdByName('mixed.example'));
+        $this->assertSame(3, $this->provider->getZoneIdByName('MIXED.EXAMPLE'));
+        $this->assertSame(1, $this->provider->getZoneIdByName('Example.COM'));
+        $this->assertSame(5, $this->provider->getZoneIdByName('Dup.Example'));
+        $this->assertNull($this->provider->getZoneIdByName('absent.example'));
+    }
 }
