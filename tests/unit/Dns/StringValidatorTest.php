@@ -166,4 +166,15 @@ class StringValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertEquals('', $result->getData());
     }
+
+    public function testIsValidPriority(): void
+    {
+        foreach ([null, '', '0', '65535', ' 10 ', "10\n", '00010', 0, 10, 65535] as $ok) {
+            $this->assertTrue(StringValidator::isValidPriority($ok), var_export($ok, true));
+        }
+
+        foreach (['65536', '-1', '1.5', '1e3', '123456', '0000010', '+5', '   ', 'abc', 10.0, 1.5, -1, 65536, true, []] as $bad) {
+            $this->assertFalse(StringValidator::isValidPriority($bad), var_export($bad, true));
+        }
+    }
 }

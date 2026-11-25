@@ -62,7 +62,7 @@ class RecordPriorityRangeTest extends TestCase
     #[DataProvider('validatorProvider')]
     public function testAcceptsBoundaryPriorities(string $class, string $content): void
     {
-        foreach ([0, 65535, '0', '65535', '', null] as $prio) {
+        foreach ([0, 65535, '0', '65535', '', null, ' 5 '] as $prio) {
             $result = $this->make($class)->validate($content, 'host.example.com', $prio, 3600, 86400);
             $this->assertTrue($result->isValid(), $class . ' rejected ' . var_export($prio, true));
         }
@@ -71,7 +71,7 @@ class RecordPriorityRangeTest extends TestCase
     #[DataProvider('validatorProvider')]
     public function testRefusesPriorityOutsideRange(string $class, string $content): void
     {
-        foreach ([65536, 99999999999, -1, '-1', '99999999999', '1e3', '5x', ' 5', 1.5] as $prio) {
+        foreach ([65536, 99999999999, -1, '-1', '99999999999', '1e3', '5x', '   ', 10.0, 1.5] as $prio) {
             $result = $this->make($class)->validate($content, 'host.example.com', $prio, 3600, 86400);
             $this->assertFalse($result->isValid(), $class . ' accepted ' . var_export($prio, true));
         }

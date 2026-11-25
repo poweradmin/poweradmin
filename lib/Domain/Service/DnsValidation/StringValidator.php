@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class StringValidator
@@ -43,9 +43,15 @@ class StringValidator
             return true;
         }
 
-        $isWhole = is_int($prio) || (is_string($prio) && ctype_digit($prio));
+        if (is_int($prio)) {
+            $digits = (string)$prio;
+        } elseif (is_string($prio)) {
+            $digits = trim($prio);
+        } else {
+            return false;
+        }
 
-        return $isWhole && strlen((string)$prio) <= 5 && (int)$prio >= 0 && (int)$prio <= 65535;
+        return preg_match('/^\d{1,5}$/D', $digits) === 1 && (int)$digits <= 65535;
     }
 
     /**
