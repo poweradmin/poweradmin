@@ -339,6 +339,10 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400);
             }
 
+            if (count($values) > MetadataDefinitions::MAX_VALUES_PER_KIND && count($values) > $this->storedValueCount($zoneId, $kind)) {
+                return $this->returnApiError('Metadata kind ' . $kind . ' accepts at most ' . MetadataDefinitions::MAX_VALUES_PER_KIND . ' values', 400);
+            }
+
             if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
@@ -470,6 +474,21 @@ class ZoneMetadataController extends PublicApiController
         }
 
         return $this->zoneRepository->getDomainMetadata($zoneId);
+    }
+
+    /**
+     * How many values the kind holds now; a kind stored over the cap may be re-saved or shrunk, never grown.
+     */
+    private function storedValueCount(int $zoneId, string $kind): int
+    {
+        $count = 0;
+        foreach ($this->loadMetadata($zoneId) as $row) {
+            if (strtoupper((string)$row['kind']) === $kind) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     /**

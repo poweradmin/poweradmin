@@ -134,7 +134,8 @@ class EditZoneMetadataController extends BaseController
             // is kept; in API mode every kind is matched by PowerDNS's collation, so none is exempt.
             $validationErrors = $this->validateMetadataRows(
                 $submittedMetadata,
-                $this->apiClient === null ? $this->loadMetadata($zoneId, $zone['name']) : []
+                $this->apiClient === null ? $this->loadMetadata($zoneId, $zone['name']) : [],
+                fn(): array => $this->loadMetadata($zoneId, $zone['name'])
             );
             if ($validationErrors === [] && $this->apiClient !== null) {
                 $validationErrors = $this->apiModeOddKindRemovals($submittedMetadata, $this->loadMetadata($zoneId, $zone['name']));
@@ -432,12 +433,14 @@ class EditZoneMetadataController extends BaseController
      *
      * @param array<int, array{kind: string, content: string}> $rows
      * @param array<int, array<string, string>> $storedRows Rows that may keep a kind outside the allowed characters
+     * @param callable|null $loadStored Loads the stored rows, only when a kind goes over the cap
      * @return array<int, string>
      */
-    private function validateMetadataRows(array $rows, array $storedRows = []): array
+    private function validateMetadataRows(array $rows, array $storedRows = [], ?callable $loadStored = null): array
     {
         $errors = [];
         $countsByKind = [];
+        $storedCounts = null;
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -447,6 +450,17 @@ class EditZoneMetadataController extends BaseController
 
             $definition = $this->getMetadataDefinition($kind);
             $countsByKind[$kind] = ($countsByKind[$kind] ?? 0) + 1;
+
+            if ($countsByKind[$kind] > MetadataDefinitions::MAX_VALUES_PER_KIND) {
+                // A kind already stored over the cap may be kept or shrunk, never grown
+                $storedCounts ??= array_count_values(array_map(
+                    static fn(array $row): string => strtoupper((string)($row['kind'] ?? '')),
+                    $storedRows !== [] || $loadStored === null ? $storedRows : $loadStored()
+                ));
+                if ($countsByKind[$kind] > ($storedCounts[strtoupper($kind)] ?? 0)) {
+                    return [_('Failed to update zone metadata.')];
+                }
+            }
 
             if (!$definition['multi'] && $countsByKind[$kind] > 1) {
                 $errors[] = sprintf(_('Metadata kind %s accepts only a single value. Add only one row for this kind.'), $kind);
