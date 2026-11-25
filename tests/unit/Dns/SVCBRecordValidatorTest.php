@@ -216,4 +216,25 @@ class SVCBRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertSame('1 svc.example.com ech="AAAA" alpn=h2', $result->getData()['content']);
     }
+
+    #[DataProvider('outOfRangePriorityProvider')]
+    public function testPriorityOutsideSixteenBitRangeIsRefused(mixed $prio): void
+    {
+        $result = $this->validator->validate('1 svc.example.com', 'host.example.com', $prio, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function outOfRangePriorityProvider(): array
+    {
+        return [[99999999999], [65536], [-1], ['-5'], ['abc'], ['1e3']];
+    }
+
+    public function testPriorityUpperBoundIsAccepted(): void
+    {
+        $result = $this->validator->validate('1 svc.example.com', 'host.example.com', 65535, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame(65535, $result->getData()['prio']);
+    }
 }

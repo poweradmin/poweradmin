@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\URIRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -209,5 +210,26 @@ class URIRecordValidatorTest extends TestCase
             $data = $result->getData();
             $this->assertEquals($content, $data['content']);
         }
+    }
+
+    #[DataProvider('outOfRangePriorityProvider')]
+    public function testPriorityOutsideSixteenBitRangeIsRefused(mixed $prio): void
+    {
+        $result = $this->validator->validate('10 1 "https://example.com/"', 'uri.example.com', $prio, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function outOfRangePriorityProvider(): array
+    {
+        return [[99999999999], [65536], [-1], ['-5'], ['abc'], ['1e3']];
+    }
+
+    public function testPriorityUpperBoundIsAccepted(): void
+    {
+        $result = $this->validator->validate('10 1 "https://example.com/"', 'uri.example.com', 65535, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame(65535, $result->getData()['prio']);
     }
 }

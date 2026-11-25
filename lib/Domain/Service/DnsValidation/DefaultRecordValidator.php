@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -84,6 +84,11 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
         }
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // The priority column is a 16-bit value; refuse anything else before it is stored
+        if ($prio !== '' && $prio !== null && (preg_match('/^\d+$/', trim((string)$prio)) !== 1 || (int)$prio > 65535)) {
+            return ValidationResult::failure(_('Priority must be between 0 and 65535'));
+        }
 
         // For generic records, priority is always 0 unless specified
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : 0;

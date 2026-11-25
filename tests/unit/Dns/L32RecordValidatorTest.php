@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\L32RecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -320,5 +321,26 @@ class L32RecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
         $this->assertStringContainsString('broadcast or unspecified', $result->getErrors()[0]);
+    }
+
+    #[DataProvider('outOfRangePriorityProvider')]
+    public function testPriorityOutsideSixteenBitRangeIsRefused(mixed $prio): void
+    {
+        $result = $this->validator->validate('10 192.0.2.1', 'host.example.com', $prio, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function outOfRangePriorityProvider(): array
+    {
+        return [[99999999999], [65536], [-1], ['-5'], ['abc'], ['1e3']];
+    }
+
+    public function testPriorityUpperBoundIsAccepted(): void
+    {
+        $result = $this->validator->validate('10 192.0.2.1', 'host.example.com', 65535, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame(65535, $result->getData()['prio']);
     }
 }

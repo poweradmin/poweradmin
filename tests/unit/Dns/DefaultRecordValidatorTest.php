@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -203,5 +203,26 @@ class DefaultRecordValidatorTest extends TestCase
         $this->assertTrue($validator->validate('\# 2 abcd', 'record.example.com', '', 3600, 86400)->isValid());
         // Another unlisted type name keeps the old leniency for its own syntax
         $this->assertTrue((new DefaultRecordValidator($this->configMock, 'CUSTOM'))->validate('abcd', 'record.example.com', '', 3600, 86400)->isValid());
+    }
+
+    #[DataProvider('outOfRangePriorityProvider')]
+    public function testPriorityOutsideSixteenBitRangeIsRefused(mixed $prio): void
+    {
+        $result = $this->validator->validate('valid.content.example.com', 'record.example.com', $prio, 3600, 86400);
+
+        $this->assertFalse($result->isValid());
+    }
+
+    public static function outOfRangePriorityProvider(): array
+    {
+        return [[99999999999], [65536], [-1], ['-5'], ['abc'], ['1e3']];
+    }
+
+    public function testPriorityUpperBoundIsAccepted(): void
+    {
+        $result = $this->validator->validate('valid.content.example.com', 'record.example.com', 65535, 3600, 86400);
+
+        $this->assertTrue($result->isValid());
+        $this->assertSame(65535, $result->getData()['prio']);
     }
 }
