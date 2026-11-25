@@ -750,4 +750,66 @@ class PasswordResetSecurityTest extends TestCase
 
         return $this->passwordResetService;
     }
+
+    public function testDisabledAccountGetsNoResetToken(): void
+    {
+        $email = 'disabled@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 5, 'username' => 'off', 'email' => $email, 'fullname' => 'Off',
+            'auth_method' => 'sql', 'active' => 0,
+        ]);
+
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testTokenOfDisabledAccountIsRejected(): void
+    {
+        $token = 'valid-token-12345';
+        $email = 'disabled@example.com';
+        $this->tokenRepository->method('findActiveTokens')->willReturn([[
+            'id' => 1, 'token' => $token, 'email' => $email,
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600), 'used' => 0,
+        ]]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 5, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => 0,
+        ]);
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
+    }
+
+    public function testDisabledAccountGetsNoResetTokenWhenActiveIsNull(): void
+    {
+        $email = 'disabled@example.com';
+        $this->tokenRepository->method('countRecentAttempts')->willReturn(0);
+        $this->tokenRepository->method('countRecentAttemptsByIp')->willReturn(0);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 5, 'username' => 'off', 'email' => $email, 'fullname' => 'Off',
+            'auth_method' => 'sql', 'active' => null,
+        ]);
+
+        $this->tokenRepository->expects($this->never())->method('create');
+        $this->mailService->expects($this->never())->method('sendMail');
+
+        $this->assertTrue($this->passwordResetService->createResetRequest($email));
+    }
+
+    public function testTokenOfDisabledAccountIsRejectedWhenActiveIsNull(): void
+    {
+        $token = 'valid-token-12345';
+        $email = 'disabled@example.com';
+        $this->tokenRepository->method('findActiveTokens')->willReturn([[
+            'id' => 1, 'token' => $token, 'email' => $email,
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 3600), 'used' => 0,
+        ]]);
+        $this->userRepository->method('getUserByEmail')->willReturn([
+            'id' => 5, 'username' => 'off', 'email' => $email, 'auth_method' => 'sql', 'active' => null,
+        ]);
+
+        $this->assertNull($this->passwordResetService->validateToken($token));
+    }
 }
