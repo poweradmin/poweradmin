@@ -137,9 +137,9 @@ class DebugCommand extends Command
                 $io->section('Overridden Files');
                 do {
                     if ($fileLink = $this->getFileLink($file->key())) {
-                        $io->text(\sprintf('* <href=%s>%s</>', $fileLink, $file->current()));
+                        $io->text(\sprintf('* <href=%s>%s</>', $fileLink, OutputFormatter::escape($file->current())));
                     } else {
-                        $io->text(\sprintf('* %s', $file->current()));
+                        $io->text(\sprintf('* %s', OutputFormatter::escape($file->current())));
                     }
                     $file->next();
                 } while ($file->valid());
@@ -209,18 +209,17 @@ class DebugCommand extends Command
         }
         $data['loader_paths'] = $paths;
 
-        $io->writeln(json_encode($data));
+        $io->writeln(json_encode($data, \JSON_INVALID_UTF8_SUBSTITUTE), OutputInterface::OUTPUT_RAW);
     }
 
     private function displayGeneralText(SymfonyStyle $io, ?string $filter = null): void
     {
-        $decorated = $io->isDecorated();
         $types = ['functions', 'filters', 'tests', 'globals'];
         foreach ($types as $index => $type) {
             $items = [];
             foreach ($this->twig->{'get'.ucfirst($type)}() as $name => $entity) {
                 if (!$filter || str_contains($name, $filter)) {
-                    $items[$name] = $name.$this->getPrettyMetadata($type, $entity, $decorated);
+                    $items[$name] = $name.$this->getPrettyMetadata($type, $entity);
                 }
             }
 
@@ -248,7 +247,6 @@ class DebugCommand extends Command
 
     private function displayGeneralJson(SymfonyStyle $io, ?string $filter): void
     {
-        $decorated = $io->isDecorated();
         $types = ['functions', 'filters', 'tests', 'globals'];
         $data = [];
         foreach ($types as $type) {
@@ -270,8 +268,7 @@ class DebugCommand extends Command
             $data['warnings'] = $this->buildWarningMessages($wrongBundles);
         }
 
-        $data = json_encode($data, \JSON_PRETTY_PRINT);
-        $io->writeln($decorated ? OutputFormatter::escape($data) : $data);
+        $io->writeln(json_encode($data, \JSON_PRETTY_PRINT | \JSON_INVALID_UTF8_SUBSTITUTE), OutputInterface::OUTPUT_RAW);
     }
 
     private function getLoaderPaths(?string $name = null): array
@@ -356,7 +353,7 @@ class DebugCommand extends Command
         return null;
     }
 
-    private function getPrettyMetadata(string $type, mixed $entity, bool $decorated): ?string
+    private function getPrettyMetadata(string $type, mixed $entity): ?string
     {
         if ('tests' === $type) {
             return '';
@@ -368,7 +365,7 @@ class DebugCommand extends Command
                 return '(unknown?)';
             }
         } catch (\UnexpectedValueException $e) {
-            return \sprintf(' <error>%s</error>', $decorated ? OutputFormatter::escape($e->getMessage()) : $e->getMessage());
+            return \sprintf(' <error>%s</error>', OutputFormatter::escape($e->getMessage()));
         }
 
         if ('globals' === $type) {
@@ -378,15 +375,15 @@ class DebugCommand extends Command
 
             $description = substr(@json_encode($meta), 0, 50);
 
-            return \sprintf(' = %s', $decorated ? OutputFormatter::escape($description) : $description);
+            return \sprintf(' = %s', OutputFormatter::escape($description));
         }
 
         if ('functions' === $type) {
-            return '('.implode(', ', $meta).')';
+            return '('.OutputFormatter::escape(implode(', ', $meta)).')';
         }
 
         if ('filters' === $type) {
-            return $meta ? '('.implode(', ', $meta).')' : '';
+            return $meta ? '('.OutputFormatter::escape(implode(', ', $meta)).')' : '';
         }
 
         return null;
@@ -508,7 +505,7 @@ class DebugCommand extends Command
             }
             $firstNamespace = false;
             foreach ($paths as $path) {
-                $rows[] = [$namespace, $path.\DIRECTORY_SEPARATOR];
+                $rows[] = [OutputFormatter::escape($namespace), OutputFormatter::escape($path.\DIRECTORY_SEPARATOR)];
                 $namespace = '';
             }
             if (\count($paths) > 1) {
