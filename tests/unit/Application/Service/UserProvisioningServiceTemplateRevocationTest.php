@@ -40,12 +40,12 @@ class UserProvisioningServiceTemplateRevocationTest extends TestCase
         $this->db->exec("INSERT INTO oidc_user_links (user_id, provider_id, oidc_subject, username, email) VALUES (1, 'okta', 'sub-john', 'john', 'john@example.org')");
     }
 
-    private function signIn(?string $defaultTemplate, array $mapping = ['admins-group' => 'Admins'], bool $cleanupFails = false): ?int
+    private function signIn(?string $defaultTemplate, array $mapping = ['admins-group' => 'Admins'], bool $cleanupFails = false, array $groupMapping = []): ?int
     {
         $config = $this->createMock(ConfigurationManager::class);
         $config->method('getGroup')->willReturn(['sync_user_info' => false]);
         $config->method('get')->willReturnCallback(
-            function (string $group, string $key, mixed $default = null) use ($defaultTemplate, $mapping, $cleanupFails): mixed {
+            function (string $group, string $key, mixed $default = null) use ($defaultTemplate, $mapping, $cleanupFails, $groupMapping): mixed {
                 if ($key === 'group_mapping' && $cleanupFails) {
                     throw new \RuntimeException('group sync failed');
                 }
@@ -53,6 +53,7 @@ class UserProvisioningServiceTemplateRevocationTest extends TestCase
                 return match ($key) {
                     'default_permission_template' => $defaultTemplate ?? $default,
                     'permission_template_mapping' => $mapping,
+                    'group_mapping' => $groupMapping,
                     default => $default,
                 };
             }
@@ -118,10 +119,64 @@ class UserProvisioningServiceTemplateRevocationTest extends TestCase
         $this->assertSame(5, $this->template());
     }
 
-    public function testACleanupFailureAfterTheRevokeWasWrittenDoesNotRefuseTheSignIn(): void
+    public function testAGroupSyncFailureAfterTheRevokeWasWrittenRefusesTheSignIn(): void
     {
-        $this->assertSame(1, $this->signIn('Viewer', ['admins-group' => 'Admins'], true));
+        $this->assertNull($this->signIn('Viewer', ['admins-group' => 'Admins'], true));
         $this->assertSame(5, $this->template());
+    }
+
+    public function testAFailedGroupRemovalRefusesTheSignIn(): void
+    {
+        $this->db->exec("UPDATE users SET perm_templ_source = 'admin'");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES (3, 'Team', 5)");
+        $this->db->exec("INSERT INTO user_group_members (group_id, user_id) VALUES (3, 1)");
+        $this->db->exec("CREATE TRIGGER block_delete BEFORE DELETE ON user_group_members BEGIN SELECT RAISE(ABORT, 'delete failed'); END");
+
+        $this->assertNull($this->signIn(null, [], false, ['team-group' => 'Team']));
+        $this->assertSame(1, (int)$this->db->query('SELECT COUNT(*) FROM user_group_members')->fetchColumn());
+    }
+
+    public function testAGroupSyncFailureForAFirstSignInRefusesIt(): void
+    {
+        $this->assertNull($this->signInNewUser(true));
+    }
+
+    public function testAFirstSignInWithAWorkingGroupSyncCreatesTheUser(): void
+    {
+        $this->assertNotNull($this->signInNewUser(false));
+    }
+
+    private function signInNewUser(bool $syncFails): ?int
+    {
+        $config = $this->createMock(ConfigurationManager::class);
+        $config->method('getGroup')->willReturn(['sync_user_info' => false, 'auto_create_users' => true]);
+        $config->method('get')->willReturnCallback(
+            function (string $group, string $key, mixed $default = null) use ($syncFails): mixed {
+                if ($key === 'group_mapping' && $syncFails) {
+                    throw new \RuntimeException('group sync failed');
+                }
+
+                return match ($key) {
+                    'default_permission_template' => 'Viewer',
+                    'auto_create_users' => true,
+                    default => $default,
+                };
+            }
+        );
+        $service = new UserProvisioningService($this->db, $config, $this->createMock(Logger::class));
+        $userInfo = new OidcUserInfo(username: 'mary', email: 'mary@example.org', providerId: 'okta', subject: 'sub-mary', rawData: ['email_verified' => true]);
+
+        return $service->provisionUser($userInfo, 'okta');
+    }
+
+    public function testASuccessfulGroupRemovalAllowsTheSignIn(): void
+    {
+        $this->db->exec("UPDATE users SET perm_templ_source = 'admin'");
+        $this->db->exec("INSERT INTO user_groups (id, name, perm_templ) VALUES (3, 'Team', 5)");
+        $this->db->exec("INSERT INTO user_group_members (group_id, user_id) VALUES (3, 1)");
+
+        $this->assertSame(1, $this->signIn(null, [], false, ['team-group' => 'Team']));
+        $this->assertSame(0, (int)$this->db->query('SELECT COUNT(*) FROM user_group_members')->fetchColumn());
     }
 
     public function testASuperuserTemplateTheGrantPathWouldRefuseIsStillTreatedAsMapped(): void
