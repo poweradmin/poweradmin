@@ -355,7 +355,7 @@ class EditController extends BaseController
                 } else {
                     // Validation passed - proceed with signing
                     // Update SOA serial before signing
-                    $this->dnsRecord->updateSOASerial($zone_id);
+                    $this->bumpSerialForDnssecChange($this->dnsRecord, $zone_id);
 
                     // Try to secure the zone
                     $result = $dnssecProvider->secureZone($zone_name);
@@ -397,7 +397,7 @@ class EditController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $this->dnsRecord->updateSOASerial($zone_id);
+                        $this->bumpSerialForDnssecChange($this->dnsRecord, $zone_id);
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
                     } else {
                         $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));

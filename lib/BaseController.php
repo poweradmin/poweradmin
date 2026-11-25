@@ -254,6 +254,17 @@ abstract class BaseController
     }
 
     /**
+     * Bumps the SOA serial after a DNSSEC change. A SLAVE zone keeps the serial of its primary.
+     */
+    protected function bumpSerialForDnssecChange(DnsRecord $dnsRecord, int $zoneId): void
+    {
+        if ($dnsRecord->getDomainType($zoneId) === 'SLAVE') {
+            return;
+        }
+        $dnsRecord->updateSOASerial($zoneId);
+    }
+
+    /**
      * Checks if the current request is a POST request.
      *
      * @return bool True if the request method is POST, false otherwise.

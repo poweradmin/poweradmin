@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ class DnssecController extends BaseController
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
-                        $dnsRecord->updateSOASerial($zone_id);
+                        $this->bumpSerialForDnssecChange($dnsRecord, $zone_id);
                         $auditService = new AuditService($this->db);
                         $auditService->logDnssecUnsignZone($zone_id, (string)$zone_name);
                         $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
