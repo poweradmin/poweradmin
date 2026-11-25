@@ -1,8 +1,7 @@
 import { defineConfig } from 'astro/config'
-
+import astroBrokenLinksChecker from 'astro-broken-links-checker'
 import { bootstrap } from './src/libs/astro'
 import { getConfig } from './src/libs/config'
-import { algoliaPlugin } from './src/plugins/algolia-plugin'
 import { stackblitzPlugin } from './src/plugins/stackblitz-plugin'
 
 const isDev = process.env.NODE_ENV === 'development'
@@ -21,13 +20,21 @@ export default defineConfig({
   build: {
     assets: `docs/${getConfig().docs_version}/assets`
   },
-  integrations: [bootstrap()],
+  integrations: [
+    bootstrap(),
+    astroBrokenLinksChecker({
+      checkExternalLinks: false,
+      cacheExternalLinks: false,
+      throwError: true,
+      linkCheckerDir: '.link-checker'
+    })
+  ],
   markdown: {
     smartypants: false,
     syntaxHighlight: 'prism'
   },
   site,
   vite: {
-    plugins: [algoliaPlugin(), stackblitzPlugin()]
+    plugins: [stackblitzPlugin()]
   }
 })
