@@ -76,6 +76,32 @@ class ZoneMetadataValueCapTest extends TestCase
         $this->assertSame(200, $this->put(1, 0, null, array_slice($others, 1))->getStatusCode());
     }
 
+    public function testOneStoredLongValueCannotBeSubmittedRepeated(): void
+    {
+        $long = str_repeat('a', 1025);
+        $stored = [['kind' => 'ALSO-NOTIFY', 'content' => $long]];
+
+        $this->assertSame(200, $this->put(0, 0, [$long], $stored)->getStatusCode());
+        $this->assertSame(400, $this->put(0, 0, [$long, $long], $stored)->getStatusCode());
+        $this->assertSame(200, $this->put(0, 0, [$long, $long], [...$stored, ...$stored])->getStatusCode());
+    }
+
+    public function testAStoredRowWithNullContentDoesNotBreakTheCopyCount(): void
+    {
+        $long = str_repeat('a', 1025);
+        $stored = [['kind' => 'ALSO-NOTIFY', 'content' => null], ['kind' => 'ALSO-NOTIFY', 'content' => $long]];
+
+        set_error_handler(static function (int $no, string $msg): never {
+            throw new \ErrorException($msg, 0, $no);
+        });
+        try {
+            $this->assertSame(200, $this->put(0, 0, [$long], $stored)->getStatusCode());
+            $this->assertSame(400, $this->put(0, 0, [$long, $long], $stored)->getStatusCode());
+        } finally {
+            restore_error_handler();
+        }
+    }
+
     public function testARequestThatFailsTheValueChecksDoesNotLoadStoredMetadata(): void
     {
         $response = $this->put(0, 0, ['one', 'two'], [], 'SOA-EDIT-API', true);

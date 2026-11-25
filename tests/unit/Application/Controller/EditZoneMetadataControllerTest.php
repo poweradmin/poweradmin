@@ -227,6 +227,17 @@ class EditZoneMetadataControllerTest extends TestCase
         $this->assertSame([], $check([$long], [$padded]));
     }
 
+    public function testValidateMetadataRowsDoesNotLetOneStoredLongValueBeRepeated(): void
+    {
+        $controller = $this->createControllerWithConfig([]);
+        $long = ['kind' => 'ALSO-NOTIFY', 'content' => str_repeat('a', 1025)];
+        $check = fn(array $submitted, array $stored = []): array => $this->invokePrivateMethod($controller, 'validateMetadataRows', [$submitted, $stored]);
+
+        $this->assertSame([], $check([$long], [$long]));
+        $this->assertCount(1, $check([$long, $long], [$long]));
+        $this->assertSame([], $check([$long, $long], [$long, $long]));
+    }
+
     public function testValidateMetadataRowsRejectsDuplicateSingleValueKind(): void
     {
         $controller = $this->createControllerWithConfig([]);

@@ -498,7 +498,13 @@ class ZoneMetadataController extends PublicApiController
                 $stored,
                 static fn(array $row): bool => strtoupper((string)$row['kind']) === $kind
             ), 'content');
-            if (array_diff($tooLong, $storedValues) !== []) {
+            // Each stored copy of a long value may be kept once; extra copies are new values
+            $heldCopies = array_count_values(array_map('strval', $storedValues));
+            $overCopies = false;
+            foreach (array_count_values($tooLong) as $value => $copies) {
+                $overCopies = $overCopies || $copies > ($heldCopies[$value] ?? 0);
+            }
+            if ($overCopies) {
                 return 'Metadata values must be at most ' . MetadataDefinitions::MAX_VALUE_LENGTH . ' bytes';
             }
         }

@@ -445,6 +445,7 @@ class EditZoneMetadataController extends BaseController
             return $storedRowsLoaded ??= ($storedRows !== [] || $loadStored === null ? $storedRows : $loadStored());
         };
         $storedCounts = null;
+        $longCopies = [];
 
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -467,8 +468,13 @@ class EditZoneMetadataController extends BaseController
             }
 
             // A value already stored over the length cap may be kept as it is
-            if (strlen((string)$row['content']) > MetadataDefinitions::MAX_VALUE_LENGTH && !$this->storedValueHeld($stored(), $kind, (string)$row['content'])) {
-                return [_('Failed to update zone metadata.')];
+            if (strlen((string)$row['content']) > MetadataDefinitions::MAX_VALUE_LENGTH) {
+                $copyKey = strtoupper($kind) . "\0" . $row['content'];
+                $longCopies[$copyKey] = ($longCopies[$copyKey] ?? 0) + 1;
+                // Each stored copy may be kept once; extra copies are new values
+                if ($longCopies[$copyKey] > $this->storedValueCopies($stored(), $kind, (string)$row['content'])) {
+                    return [_('Failed to update zone metadata.')];
+                }
             }
 
             if (!$definition['multi'] && $countsByKind[$kind] > 1) {
@@ -495,15 +501,16 @@ class EditZoneMetadataController extends BaseController
      *
      * @param array<int, array<string, string>> $storedRows
      */
-    private function storedValueHeld(array $storedRows, string $kind, string $content): bool
+    private function storedValueCopies(array $storedRows, string $kind, string $content): int
     {
+        $copies = 0;
         foreach ($storedRows as $row) {
             if (strtoupper((string)($row['kind'] ?? '')) === strtoupper($kind) && trim((string)($row['content'] ?? '')) === $content) {
-                return true;
+                $copies++;
             }
         }
 
-        return false;
+        return $copies;
     }
 
     /**
