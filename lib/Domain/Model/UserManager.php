@@ -700,7 +700,7 @@ class UserManager
             $this->dropSsoLinksOnMoveToLdap($id, $usercheck['auth_method'] ?? null, $newAuthMethod);
             $this->resetEmailMfaWhenEditedByOther((int)$id, $usercheck['email'] ?? null, $email);
             if ($passwordHash !== null) {
-                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($id);
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($id, isset($usercheck['email']) ? (string)$usercheck['email'] : null);
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
@@ -1377,7 +1377,7 @@ class UserManager
                 );
             }
             if ($hashedPassword !== null) {
-                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($details['uid']);
+                (new DbUserRepository($this->db, $this->config))->expireResetTokensForUser($details['uid'], isset($userCheck['email']) ? (string)$userCheck['email'] : null);
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to edit this user."));
