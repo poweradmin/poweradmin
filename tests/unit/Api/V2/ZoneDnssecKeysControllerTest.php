@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Api\V2;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\Web\AuditService;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Port\DnssecProviderInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -488,5 +489,45 @@ class ZoneDnssecKeysControllerTest extends TestCase
         $this->assertSame(400, $status);
         $this->assertSame($message, $decoded['message']);
         $this->assertStringNotContainsString('MIGHAgEA', (string)$response->getContent());
+    }
+
+    public function testKeyWritesNeedUpdateRightsNotJustCreateOrDelete(): void
+    {
+        $createOnly = new ApiKeyScope(null, [ApiKeyScope::OP_CREATE], false);
+        $deleteOnly = new ApiKeyScope(null, [ApiKeyScope::OP_DELETE], false);
+        $updater = new ApiKeyScope(null, [ApiKeyScope::OP_UPDATE, ApiKeyScope::OP_DELETE], false);
+
+        $post = $this->operationsFor('POST');
+        $this->assertFalse($this->allows($createOnly, $post));
+        $this->assertTrue($this->allows($updater, $post));
+
+        $delete = $this->operationsFor('DELETE');
+        $this->assertFalse($this->allows($deleteOnly, $delete));
+        $this->assertTrue($this->allows($updater, $delete));
+
+        $this->assertSame([ApiKeyScope::OP_VIEW], $this->operationsFor('GET'));
+    }
+
+    /** @return string[] */
+    private function operationsFor(string $method): array
+    {
+        $controller = $this->controller();
+        $property = new \ReflectionProperty($controller, 'request');
+        $property->setValue($controller, \Symfony\Component\HttpFoundation\Request::create('/api/v2/zones/1/dnssec/keys', $method));
+        $m = new \ReflectionMethod($controller, 'requiredApiKeyOperations');
+
+        /** @var string[] */
+        return $m->invoke($controller);
+    }
+
+    /** @param string[] $operations */
+    private function allows(ApiKeyScope $scope, array $operations): bool
+    {
+        foreach ($operations as $operation) {
+            if (!$scope->isOperationTypeAllowed($operation)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

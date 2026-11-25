@@ -36,6 +36,7 @@ use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Http\RefusalStatus;
 use Poweradmin\Application\Service\Backend\DnsBackendProviderFactory;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
@@ -111,6 +112,17 @@ class ZoneDnssecKeysController extends PublicApiController
         };
 
         $this->sendAndHalt($response);
+    }
+
+    // Adding, importing or removing a key changes an existing zone, so it needs update
+    // rights rather than only create or delete.
+    protected function requiredApiKeyOperations(): array
+    {
+        return match (strtoupper($this->request->getMethod())) {
+            'GET', 'HEAD' => [ApiKeyScope::OP_VIEW],
+            'DELETE' => [ApiKeyScope::OP_UPDATE, ApiKeyScope::OP_DELETE],
+            default => [ApiKeyScope::OP_UPDATE],
+        };
     }
 
     #[OA\Get(
