@@ -58,8 +58,9 @@ class DnsCommonValidator
             }
 
             // For MX/SRV, priority must be 0-65535
-            if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-                return ValidationResult::success((int)$prio);
+            $parsed = self::parsePriority($prio);
+            if ($parsed !== null) {
+                return ValidationResult::success($parsed);
             } else {
                 return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'))
                     ->withField(RecordField::PRIO);
@@ -99,7 +100,20 @@ class DnsCommonValidator
      */
     public function isValidPriority(mixed $prio): bool
     {
-        // Simple version that checks if priority is a valid number within range
-        return is_numeric($prio) && $prio >= 0 && $prio <= 65535;
+        return self::parsePriority($prio) !== null;
+    }
+
+    /**
+     * The one 0-65535 priority rule: an int, or a string of 1 to 5 digits after trimming.
+     * A float, a negative, an exponent or a signed string is refused.
+     */
+    public static function parsePriority(mixed $prio): ?int
+    {
+        $digits = is_int($prio) ? (string)$prio : (is_string($prio) ? trim($prio) : '');
+        if (preg_match('/^\d{1,5}$/D', $digits) !== 1 || (int)$digits > 65535) {
+            return null;
+        }
+
+        return (int)$digits;
     }
 }

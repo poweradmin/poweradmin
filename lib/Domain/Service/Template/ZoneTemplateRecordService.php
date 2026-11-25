@@ -31,6 +31,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\DnsBackendProviderInterface;
 use Poweradmin\Domain\Repository\ZoneTemplateRepositoryInterface;
 use Poweradmin\Domain\Service\Dns\DnsFormatter;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validation\Refusal;
@@ -186,7 +187,7 @@ class ZoneTemplateRecordService
         }
 
         if (
-            (!is_numeric($record['prio']) || $record['prio'] < 0 || $record['prio'] > 65535)
+            DnsCommonValidator::parsePriority($record['prio']) === null
             && RecordType::hasPriority((string)$record['type'])
         ) {
             return ZoneTemplateWriteResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'));

@@ -291,15 +291,9 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::success(10);
         }
 
-        // Must be numeric
-        if (!is_numeric($prio)) {
-            return ValidationResult::failure(_('NID record preference must be a number.'));
-        }
-
-        $prioInt = (int)$prio;
-
-        // Must be between 0 and 65535
-        if ($prioInt < 0 || $prioInt > 65535) {
+        // Digits only, so a float, a negative or an exponent never reaches records.prio
+        $prioInt = DnsCommonValidator::parsePriority($prio);
+        if ($prioInt === null) {
             return ValidationResult::failure(_('NID record preference must be between 0 and 65535.'));
         }
 

@@ -136,11 +136,11 @@ class URIRecordValidator implements DnsRecordValidatorInterface
         // Use the provided priority if available, otherwise the priority from the content
         $priority = $this->extractPriorityFromContent($content);
         if ($prio !== '' && $prio !== null) {
-            // Digits only, so a negative or oversized value never reaches records.prio
-            if (!preg_match('/^\d{1,5}$/', trim((string)$prio)) || (int)$prio > 65535) {
+            $parsed = DnsCommonValidator::parsePriority($prio);
+            if ($parsed === null) {
                 return ValidationResult::failure(_('Priority must be between 0 and 65535'));
             }
-            $priority = (int)$prio;
+            $priority = $parsed;
         }
 
         return ValidationResult::success([

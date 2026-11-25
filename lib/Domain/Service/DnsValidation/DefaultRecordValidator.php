@@ -91,11 +91,11 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
         // For generic records, priority is always 0 unless specified
         $priority = 0;
         if ($prio !== '' && $prio !== null) {
-            // Digits only, so a negative or oversized value never reaches records.prio
-            if (!preg_match('/^\d{1,5}$/', trim((string)$prio)) || (int)$prio > 65535) {
+            $parsed = DnsCommonValidator::parsePriority($prio);
+            if ($parsed === null) {
                 return ValidationResult::failure(_('Priority must be between 0 and 65535'));
             }
-            $priority = (int)$prio;
+            $priority = $parsed;
         }
 
         return ValidationResult::success([

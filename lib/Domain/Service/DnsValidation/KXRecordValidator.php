@@ -153,9 +153,9 @@ class KXRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Preference must be a 16-bit unsigned integer (0-65535) per RFC 2230
-        $prioStr = is_int($prio) ? (string)$prio : $prio;
-        if (is_string($prioStr) && ctype_digit($prioStr) && (int)$prioStr <= 65535) {
-            return ValidationResult::success((int)$prioStr);
+        $parsed = DnsCommonValidator::parsePriority($prio);
+        if ($parsed !== null) {
+            return ValidationResult::success($parsed);
         }
 
         return ValidationResult::failure(_('Invalid value for KX preference field. Must be between 0 and 65535.'));

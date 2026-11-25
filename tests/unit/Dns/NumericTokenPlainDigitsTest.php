@@ -219,7 +219,7 @@ class NumericTokenPlainDigitsTest extends TestCase
             'exponent' => ['1e1', false, null],
             'decimal' => ['10.0', false, null],
             'sign' => ['+10', false, null],
-            'leading blank' => [' 10', false, null],
+            'padded blanks' => [' 10 ', true, 10],
         ];
     }
 }

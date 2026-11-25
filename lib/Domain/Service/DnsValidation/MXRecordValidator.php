@@ -161,8 +161,9 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Priority must be a number between 0 and 65535
-        if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-            return ValidationResult::success((int)$prio);
+        $parsed = DnsCommonValidator::parsePriority($prio);
+        if ($parsed !== null) {
+            return ValidationResult::success($parsed);
         }
 
         return ValidationResult::failure(_('Invalid value for MX priority field. Must be between 0 and 65535.'));
