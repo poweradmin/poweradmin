@@ -980,12 +980,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
 
         if ($zoneIds !== null && $zoneIds !== []) {
             // Canonical ids, as API key scopes and visible-zone ids both are
-            $placeholders = [];
-            foreach (array_values($zoneIds) as $i => $zoneId) {
-                $placeholders[] = ":zone_id_$i";
-                $params[":zone_id_$i"] = (int)$zoneId;
-            }
-            $conditions[] = CanonicalZoneSql::canonicalIdColumn('z') . " IN (" . implode(', ', $placeholders) . ")";
+            // Cast integer literals: one placeholder per id fails past the driver's bind limit
+            $conditions[] = CanonicalZoneSql::canonicalIdColumn('z') . " IN (" . implode(', ', array_unique(array_map('intval', $zoneIds))) . ")";
         }
 
         $unreachable = $this->unreachableSharedRowsCondition('z');
