@@ -122,4 +122,14 @@ class CsvFormulaEscaperTest extends TestCase
         $this->assertStringContainsString("'=abc", $written);
         $this->assertStringContainsString('plain', $written);
     }
+
+    public function testQuoteLedValueThatImportWouldStripGetsItsOwnGuard(): void
+    {
+        $this->assertSame("''=x", CsvFormulaEscaper::escape("'=x"));
+        $this->assertSame("'' -foo", CsvFormulaEscaper::escape("' -foo"));
+        $this->assertSame("''- see ticket", CsvFormulaEscaper::escape("'- see ticket"));
+        $this->assertSame("'plain", CsvFormulaEscaper::escape("'plain"));
+        $this->assertSame("'''=x", CsvFormulaEscaper::escape("''=x"));
+        $this->assertSame("'", CsvFormulaEscaper::escape("'"));
+    }
 }

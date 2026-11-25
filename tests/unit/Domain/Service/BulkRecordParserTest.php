@@ -5,6 +5,7 @@ namespace Poweradmin\Tests\Unit\Domain\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\BulkRecordParser;
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
 
 class BulkRecordParserTest extends TestCase
 {
@@ -308,5 +309,46 @@ class BulkRecordParserTest extends TestCase
         $this->assertIsArray($parsed);
         $this->assertSame($content, $parsed['content']);
         $this->assertSame(3600, $parsed['ttl']);
+    }
+
+    public function testExportedFormulaLookingCellsParseBackUnchanged(): void
+    {
+        $row = ['www', 'TXT', '=spf', 0, 300, 'No', '- migrated'];
+        $out = fopen('php://memory', 'w+');
+        fputcsv($out, CsvFormulaEscaper::escapeRow($row), ',', '"', '');
+        rewind($out);
+        $line = stream_get_contents($out);
+        fclose($out);
+
+        $result = $this->parser->parseLine($line, $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame('=spf', $result['content']);
+        $this->assertSame('- migrated', $result['comment']);
+    }
+
+    public function testLeadingQuoteBeforeAnOrdinaryCharacterIsKept(): void
+    {
+        $result = $this->parser->parseLine("www,TXT,'hello,300,No,it's", $this->defaultTtl);
+
+        $this->assertIsArray($result);
+        $this->assertSame("'hello", $result['content']);
+    }
+
+    public function testQuoteLedValuesBeforeAFormulaCharacterSurviveTheRoundTrip(): void
+    {
+        foreach (["'=x", "'- see ticket", "' -foo", "''=x", "'plain"] as $value) {
+            $handle = fopen('php://memory', 'w+');
+            fputcsv($handle, CsvFormulaEscaper::escapeRow(["www", "TXT", $value, 0, 300, "No", $value]), ',', '"', '');
+            rewind($handle);
+            $line = (string)stream_get_contents($handle);
+            fclose($handle);
+
+            $parsed = $this->parser->parseLine($line, $this->defaultTtl);
+
+            $this->assertIsArray($parsed);
+            $this->assertSame($value, $parsed['content'], $value);
+            $this->assertSame($value, $parsed['comment'], $value);
+        }
     }
 }

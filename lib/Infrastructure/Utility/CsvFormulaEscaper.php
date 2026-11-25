@@ -34,11 +34,36 @@ class CsvFormulaEscaper
 
         // Strip only ASCII spaces - tab/CR/LF must remain to count as direct triggers.
         $trimmed = ltrim($value, ' ');
-        if ($trimmed === '' || !in_array($trimmed[0], self::FORMULA_TRIGGERS, true)) {
+        if ($trimmed === '') {
+            return $value;
+        }
+
+        // A leading quote the import would strip needs a guard of its own to survive the round trip.
+        if (!in_array($trimmed[0], self::FORMULA_TRIGGERS, true) && !self::hasRemovableGuard($value)) {
             return $value;
         }
 
         return "'" . $value;
+    }
+
+    /**
+     * Whether unescape() drops the leading quote: after it come any quotes and spaces, then a formula trigger.
+     */
+    private static function hasRemovableGuard(string $value): bool
+    {
+        return $value !== '' && $value[0] === "'" && preg_match('/^[\' ]*[=+\-@\t\r\n]/', substr($value, 1)) === 1;
+    }
+
+    /**
+     * Undo escape(): drop the single quote it added in front of a formula trigger.
+     */
+    public static function unescape(mixed $value): mixed
+    {
+        if (!is_string($value) || !str_starts_with($value, "'")) {
+            return $value;
+        }
+
+        return self::hasRemovableGuard($value) ? substr($value, 1) : $value;
     }
 
     public static function escapeRow(array $row): array

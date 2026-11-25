@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Infrastructure\Utility\CsvFormulaEscaper;
+
 class BulkRecordParser
 {
     /** Whitespace str_getcsv skips before an opening quote (the newline is handled on its own) */
@@ -101,6 +103,8 @@ class BulkRecordParser
         // Empty escape, as the CSV export writes with fputcsv: a backslash is plain data,
         // so a TXT value holding \" survives the round trip.
         $parts = str_getcsv($line, ',', '"', '');
+        // The export prefixes cells that start with a formula character; take it back off.
+        $parts = array_map([CsvFormulaEscaper::class, 'unescape'], $parts);
 
         if (count($parts) < 3) {
             return _('Invalid format. Expected at least: name,type,content');
