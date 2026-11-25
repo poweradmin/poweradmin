@@ -103,7 +103,7 @@ final class BulkRecordParser
 
         // Empty escape, as the CSV export writes with fputcsv: a backslash is plain data,
         // so a TXT value holding \" survives the round trip.
-        $parts = str_getcsv($line, ',', '"', '');
+        $parts = array_map($this->stripFormulaGuard(...), str_getcsv($line, ',', '"', ''));
 
         if (count($parts) < 3) {
             return _('Invalid format. Expected at least: name,type,content');
@@ -165,6 +165,20 @@ final class BulkRecordParser
             'disabled' => $disabled,
             'comment' => $comment,
         ];
+    }
+
+    /**
+     * Undo the quote the export puts before a cell that starts with a formula
+     * character, so an exported "=1" or "- note" is read back unchanged.
+     */
+    private function stripFormulaGuard(string $cell): string
+    {
+        if ($cell === '' || $cell[0] !== "'") {
+            return $cell;
+        }
+
+        // Mirrors CsvFormulaEscaper: quotes and spaces, then a trigger, mean the first quote is a guard
+        return preg_match('/^[\' ]*[=+\-@\t\r\n]/', substr($cell, 1)) === 1 ? substr($cell, 1) : $cell;
     }
 
     /**

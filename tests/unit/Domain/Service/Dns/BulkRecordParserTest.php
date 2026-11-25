@@ -291,4 +291,53 @@ class BulkRecordParserTest extends TestCase
         $this->assertIsArray($parsed);
         $this->assertSame('x\\', $parsed['comment']);
     }
+
+    public function testAnExportedRowWithFormulaLookingCellsParsesBackUnchanged(): void
+    {
+        $escaper = new \Poweradmin\Infrastructure\Utility\CsvFormulaEscaper();
+        $row = ['www.example.com', 'TXT', '=1+1', '0', '300', 'No', '- migrated'];
+        $out = fopen('php://memory', 'w+');
+        fputcsv($out, $escaper->escapeRow($row), ',', '"', '');
+        rewind($out);
+        $line = (string)stream_get_contents($out);
+        fclose($out);
+
+        $this->assertStringContainsString("'=1+1", $line);
+        $parsed = $this->parser->parseLine($line);
+
+        $this->assertIsArray($parsed);
+        $this->assertSame('=1+1', $parsed['content']);
+        $this->assertSame('- migrated', $parsed['comment']);
+    }
+
+    public function testEveryGuardedCharacterIsStrippedAndAPlainQuoteIsKept(): void
+    {
+        foreach (['=', '+', '-', '@', "\t", "\r", "\n"] as $trigger) {
+            $cell = (new \Poweradmin\Infrastructure\Utility\CsvFormulaEscaper())->escape($trigger . 'x');
+            $parsed = $this->parser->parseLine('a.example.com,TXT,"' . $cell . '"');
+            $this->assertIsArray($parsed);
+            $this->assertSame(trim($trigger . 'x'), $parsed['content'], 'guard before ' . bin2hex($trigger));
+        }
+
+        $parsed = $this->parser->parseLine("a.example.com,TXT,'quoted");
+        $this->assertIsArray($parsed);
+        $this->assertSame("'quoted", $parsed['content']);
+    }
+
+    public function testQuoteLedValuesBeforeAFormulaCharacterSurviveTheRoundTrip(): void
+    {
+        foreach (["'=x", "'- see ticket", "' -foo", "''=x", "'plain"] as $value) {
+            $handle = fopen('php://memory', 'w+');
+            fputcsv($handle, (new \Poweradmin\Infrastructure\Utility\CsvFormulaEscaper())->escapeRow(["www.example.com", "TXT", $value, "0", "300", "No", $value]), ',', '"', '');
+            rewind($handle);
+            $line = (string)stream_get_contents($handle);
+            fclose($handle);
+
+            $parsed = $this->parser->parseLine($line);
+
+            $this->assertIsArray($parsed);
+            $this->assertSame($value, $parsed['content'], $value);
+            $this->assertSame($value, $parsed['comment'], $value);
+        }
+    }
 }
