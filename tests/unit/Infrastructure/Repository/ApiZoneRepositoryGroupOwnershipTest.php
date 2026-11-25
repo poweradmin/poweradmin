@@ -193,4 +193,16 @@ class ApiZoneRepositoryGroupOwnershipTest extends TestCase
         // The row id names no zone: scopes and visible ids are canonical
         $this->assertSame(0, $this->repository()->getZoneCountFiltered([7], null, null));
     }
+
+    #[Test]
+    public function theNameFilterMatchesAMixedCaseZoneRegardlessOfTheCaseTyped(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, zone_name, zone_type, zone_master, comment, owner, zone_templ_id)
+            VALUES (7, 4011, 'Beta.example', 'MASTER', '', '', 1, 0)");
+
+        $repository = $this->repository();
+
+        $this->assertSame(1, $repository->getZoneCountFiltered(null, null, 'BETA.example'));
+        $this->assertSame(['Beta.example'], array_column($repository->getAllZonesFiltered(null, null, 'beta.example'), 'name'));
+    }
 }

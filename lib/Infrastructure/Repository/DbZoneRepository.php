@@ -1264,8 +1264,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         if ($nameFilter !== null && $nameFilter !== '') {
-            $conditions[] = "d.name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            $conditions[] = "LOWER(d.name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
         }
 
         return [$conditions, $params];

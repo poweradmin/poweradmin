@@ -994,8 +994,8 @@ readonly class ApiZoneRepository implements ZoneRepositoryInterface
         }
 
         if ($nameFilter !== null && $nameFilter !== '') {
-            $conditions[] = "z.zone_name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            $conditions[] = "LOWER(z.zone_name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
         }
 
         return [$conditions, $params];
