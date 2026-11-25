@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,20 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
  */
 class StringValidator
 {
+    /**
+     * Blank means unset; otherwise a whole number from 0 to 65535 (the records.prio range).
+     */
+    public static function isValidPriority(mixed $prio): bool
+    {
+        if ($prio === '' || $prio === null) {
+            return true;
+        }
+
+        $isWhole = is_int($prio) || (is_string($prio) && ctype_digit($prio));
+
+        return $isWhole && strlen((string)$prio) <= 5 && (int)$prio >= 0 && (int)$prio <= 65535;
+    }
+
     /**
      * Test if string is printable
      *

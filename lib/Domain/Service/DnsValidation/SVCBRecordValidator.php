@@ -96,6 +96,10 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
+        if (!StringValidator::isValidPriority($prio)) {
+            return ValidationResult::failure(_('Priority must be between 0 and 65535'));
+        }
+
         // Use the provided priority if available, otherwise extract from the content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
 
