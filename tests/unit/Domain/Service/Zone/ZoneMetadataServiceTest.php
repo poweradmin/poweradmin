@@ -198,6 +198,18 @@ class ZoneMetadataServiceTest extends PermissionServiceTestCase
         $this->assertTrue($service->replaceKind(self::ZONE_ID, self::ZONE, 'X-NEW', [str_repeat('a', ZoneMetadataService::MAX_VALUE_BYTES)], self::ADMIN)->isOk());
     }
 
+    public function testAStoredLongValueCannotBeRepeatedBeyondTheCopiesStored(): void
+    {
+        $long = str_repeat('a', ZoneMetadataService::MAX_VALUE_BYTES + 1);
+        $this->store->method('load')->willReturn([['kind' => 'X-OLD', 'content' => $long], ['kind' => 'X-OLD', 'content' => 'short']]);
+        $this->store->method('replaceAll')->willReturn(true);
+        $service = $this->sqlService();
+        $copy = ['kind' => 'X-OLD', 'content' => $long];
+
+        $this->assertTrue($service->replaceAll(self::ZONE_ID, self::ZONE, [$copy], self::ADMIN)->isOk());
+        $this->assertSame(ZoneMetadataOutcome::VALUE_TOO_LONG, $service->replaceAll(self::ZONE_ID, self::ZONE, [$copy, $copy], self::ADMIN)->outcome);
+    }
+
     public function testAStoredLongValueWithSurroundingWhitespaceIsStillGrandfathered(): void
     {
         $long = str_repeat('a', 1100);

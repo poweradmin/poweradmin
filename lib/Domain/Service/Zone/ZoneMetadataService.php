@@ -351,10 +351,13 @@ class ZoneMetadataService
     {
         $storedCounts = array_count_values(array_column($storedRows, 'kind'));
         // Submitted content arrives trimmed, so a stored long value is matched trimmed too
+        // Each stored copy of an over-long value allows one submitted copy, so it cannot be repeated
         $storedLong = [];
         foreach ($storedRows as $stored) {
-            $storedLong[$stored['kind'] . "\0" . trim($stored['content'])] = true;
+            $key = $stored['kind'] . "\0" . trim($stored['content']);
+            $storedLong[$key] = ($storedLong[$key] ?? 0) + 1;
         }
+        $longSeen = [];
         $countsByKind = [];
         foreach ($rows as $row) {
             $kind = $row['kind'];
@@ -369,8 +372,12 @@ class ZoneMetadataService
             if (!mb_check_encoding($row['content'], 'UTF-8')) {
                 return new ZoneMetadataResult(ZoneMetadataOutcome::INVALID_TEXT, $kind);
             }
-            if (strlen($row['content']) > self::MAX_VALUE_BYTES && !isset($storedLong[$kind . "\0" . $row['content']])) {
-                return new ZoneMetadataResult(ZoneMetadataOutcome::VALUE_TOO_LONG, $kind);
+            if (strlen($row['content']) > self::MAX_VALUE_BYTES) {
+                $key = $kind . "\0" . $row['content'];
+                $longSeen[$key] = ($longSeen[$key] ?? 0) + 1;
+                if ($longSeen[$key] > ($storedLong[$key] ?? 0)) {
+                    return new ZoneMetadataResult(ZoneMetadataOutcome::VALUE_TOO_LONG, $kind);
+                }
             }
 
             // PowerDNS stores an unknown policy string without complaint and then
