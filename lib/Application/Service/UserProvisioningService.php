@@ -471,7 +471,9 @@ class UserProvisioningService extends LoggingService
             }
 
             // Apply group membership based on external groups
-            $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
+            if (!$this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod)) {
+                throw new \RuntimeException('Group membership sync failed for the new user');
+            }
 
             $this->logInfo('Successfully created new user: {username} with ID: {id}', [
                 'username' => $username,
@@ -598,7 +600,9 @@ class UserProvisioningService extends LoggingService
             }
 
             // Apply/sync group membership based on external groups
-            $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
+            if (!$this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod)) {
+                return false;
+            }
         } catch (\Exception $e) {
             $this->logError('Error updating existing user: {error}', ['error' => $e->getMessage()]);
             if ($revokePending) {
@@ -1156,6 +1160,26 @@ class UserProvisioningService extends LoggingService
     }
 
     /**
+     * Synchronize group membership, failing closed: a plan or removal error means a
+     * revoked group may still be held, so the caller refuses the sign-in.
+     *
+     * @return bool false when the sync could not be completed
+     */
+    private function applyGroupMembership(int $userId, array $externalGroups, string $authMethod): bool
+    {
+        try {
+            $this->syncGroupMembership($userId, $externalGroups, $authMethod);
+            return true;
+        } catch (\Throwable $e) {
+            $this->logError('Group membership sync failed for user {userId}: {error}', [
+                'userId' => $userId,
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
+    /**
      * Synchronize group membership based on OIDC/SAML groups
      * Maps external groups to Poweradmin groups, adds user to matching groups,
      * and removes user from mapped groups they no longer belong to.
@@ -1164,7 +1188,7 @@ class UserProvisioningService extends LoggingService
      * @param array $externalGroups Groups from external identity provider
      * @param string $authMethod Authentication method (oidc or saml)
      */
-    private function applyGroupMembership(int $userId, array $externalGroups, string $authMethod): void
+    private function syncGroupMembership(int $userId, array $externalGroups, string $authMethod): void
     {
         $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
 
@@ -1355,22 +1379,14 @@ class UserProvisioningService extends LoggingService
      *
      * @param int $userId User ID
      * @param int $groupId Group ID
-     * @return bool True if user was removed or wasn't a member
+     * @return bool True if user was removed, false if they weren't a member
+     * @throws \PDOException when the delete fails
      */
     private function removeUserFromGroup(int $userId, int $groupId): bool
     {
-        try {
-            $stmt = $this->db->prepare("DELETE FROM user_group_members WHERE group_id = ? AND user_id = ?");
-            $stmt->execute([$groupId, $userId]);
+        $stmt = $this->db->prepare("DELETE FROM user_group_members WHERE group_id = ? AND user_id = ?");
+        $stmt->execute([$groupId, $userId]);
 
-            return $stmt->rowCount() > 0;
-        } catch (\Exception $e) {
-            $this->logError('Error removing user {userId} from group {groupId}: {error}', [
-                'userId' => $userId,
-                'groupId' => $groupId,
-                'error' => $e->getMessage()
-            ]);
-            return false;
-        }
+        return $stmt->rowCount() > 0;
     }
 }
