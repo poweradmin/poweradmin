@@ -25,6 +25,7 @@ use Psr\Log\LoggerAwareTrait;
 use Radebatz\TypeInfoExtras\Type\ExplicitType;
 use Radebatz\TypeInfoExtras\Type\IntRangeType;
 use Radebatz\TypeInfoExtras\TypeResolver\StringTypeResolver;
+use Symfony\Component\TypeInfo\Exception\InvalidArgumentException;
 use Symfony\Component\TypeInfo\Exception\UnsupportedException;
 use Symfony\Component\TypeInfo\Type;
 use Symfony\Component\TypeInfo\Type\ArrayShapeType;
@@ -69,9 +70,16 @@ class TypeResolver implements LoggerAwareInterface
 
     protected TypeMapper $typeMapper;
 
+    /** Reuses parsed use statements when supported by symfony/type-info. */
+    protected TypeContextFactory $docblockContexts;
+
+    protected TypeContextFactory $reflectionContexts;
+
     public function __construct()
     {
         $this->typeMapper = new TypeMapper();
+        $this->docblockContexts = new TypeContextFactory(new SymfonyStringTypeResolver());
+        $this->reflectionContexts = new TypeContextFactory();
     }
 
     /**
@@ -125,7 +133,7 @@ class TypeResolver implements LoggerAwareInterface
             return null;
         }
 
-        $typeContext = (new TypeContextFactory(new SymfonyStringTypeResolver()))->createFromReflection($reflector);
+        $typeContext = $this->docblockContexts->createFromReflection($reflector);
 
         $tagName = match (true) {
             $reflector instanceof \ReflectionProperty => $reflector->isPromoted()
@@ -164,7 +172,7 @@ class TypeResolver implements LoggerAwareInterface
 
                 try {
                     return (new StringTypeResolver())->resolve((string) $tagValue, $typeContext);
-                } catch (UnsupportedException) {
+                } catch (UnsupportedException|InvalidArgumentException) {
                     $this->logger?->warning(sprintf('Unsupported docblock type "%s" on %s', $tagValue->type, $this->describe($reflector)));
                 }
             }
@@ -440,7 +448,7 @@ class TypeResolver implements LoggerAwareInterface
             );
 
         try {
-            $typeContext = (new TypeContextFactory())->createFromReflection($reflector);
+            $typeContext = $this->reflectionContexts->createFromReflection($reflector);
 
             return (new ReflectionTypeResolver())->resolve($subject, $typeContext);
         } catch (UnsupportedException) {

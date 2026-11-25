@@ -13,6 +13,7 @@ use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassLike;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Enum_;
+use PhpParser\Node\Stmt\GroupUse;
 use PhpParser\Node\Stmt\Interface_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Trait_;
@@ -89,14 +90,13 @@ class TokenScanner
     public function detailsFor(\ReflectionClass $class): ?array
     {
         $filename = $class->getFileName();
-        // internal classes have no file, and a class from `eval()` names one that does not exist
-        if ($filename === false || !is_file($filename)) {
+        // internal classes have no file, and a class from `eval()` names one that does not exist;
+        // a scanned file is answered from the cache without touching the filesystem again
+        if ($filename === false || (!isset($this->cache[$filename]) && !is_file($filename))) {
             return null;
         }
 
-        $results = $this->scanFile($filename);
-
-        return $results[$class->getName()] ?? null;
+        return $this->scanFile($filename)[$class->getName()] ?? null;
     }
 
     /**
@@ -135,6 +135,9 @@ class TokenScanner
         $result = [];
         foreach ($stmts as $stmt) {
             switch ($stmt::class) {
+                case GroupUse::class:
+                    $uses += $this->collect_group_uses($stmt);
+                    break;
                 case Use_::class:
                     $uses += $this->collect_uses($stmt);
                     break;
@@ -152,6 +155,26 @@ class TokenScanner
         }
 
         return $result;
+    }
+
+    /**
+     * @return array<string, class-string>
+     */
+    protected function collect_group_uses(GroupUse $stmt): array
+    {
+        $uses = [];
+        foreach ($stmt->uses as $use) {
+            $type = $use->type === Use_::TYPE_UNKNOWN ? $stmt->type : $use->type;
+            if ($type !== Use_::TYPE_NORMAL) {
+                continue;
+            }
+
+            /** @var class-string $name */
+            $name = $stmt->prefix . '\\' . $use->name;
+            $uses[(string) $use->getAlias()] = $name;
+        }
+
+        return $uses;
     }
 
     /**

@@ -9,7 +9,7 @@ Library adding some extra features to the Symfony [Type Info](https://github.com
 Compatible with Symfony
 [type-info:7.3.8+](https://github.com/symfony/type-info/tree/7.3),
 [type-info:7.4.1+](https://github.com/symfony/type-info/tree/7.4)
-and [type-info:8.0+](https://github.com/symfony/type-info), including the current development branch.
+and [type-info:8.0 to 8.2](https://github.com/symfony/type-info), including the 8.2 development branch.
 
 Basic Usage
 -----------

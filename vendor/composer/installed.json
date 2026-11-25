@@ -1628,23 +1628,23 @@
         },
         {
             "name": "radebatz/type-info-extras",
-            "version": "1.0.14",
-            "version_normalized": "1.0.14.0",
+            "version": "1.0.16",
+            "version_normalized": "1.0.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DerManoMann/type-info-extras.git",
-                "reference": "08ac334a97e92c890eec6f644a6555fdf225fa8d"
+                "reference": "f2415d2abbf014d1f511c37a87243c80e3da0547"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/08ac334a97e92c890eec6f644a6555fdf225fa8d",
-                "reference": "08ac334a97e92c890eec6f644a6555fdf225fa8d",
+                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/f2415d2abbf014d1f511c37a87243c80e3da0547",
+                "reference": "f2415d2abbf014d1f511c37a87243c80e3da0547",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.2",
                 "phpstan/phpdoc-parser": "^2.0",
-                "symfony/type-info": "^7.3.8 || ^7.4.1 || ^8.0 || ^8.1-@dev"
+                "symfony/type-info": "^7.3.8 || ^7.4.1 || >=8.0 <8.3@dev"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^3.70",
@@ -1652,7 +1652,7 @@
                 "phpunit/phpunit": "^11.0",
                 "rector/rector": "^2.0"
             },
-            "time": "2026-11-12T03:41:43+00:00",
+            "time": "2026-11-19T23:35:25+00:00",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -1688,7 +1688,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DerManoMann/type-info-extras/issues",
-                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.14"
+                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.16"
             },
             "install-path": "../radebatz/type-info-extras"
         },
@@ -5673,23 +5673,23 @@
         },
         {
             "name": "twbs/bootstrap",
-            "version": "v5.3.8",
-            "version_normalized": "5.3.8.0",
+            "version": "v5.3.9",
+            "version_normalized": "5.3.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "25aa8cc0b32f0d1a54be575347e6d84b70b1acd7"
+                "reference": "349bdb50b8ab6782248c1b296443087cd7222ead"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7",
-                "reference": "25aa8cc0b32f0d1a54be575347e6d84b70b1acd7",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/349bdb50b8ab6782248c1b296443087cd7222ead",
+                "reference": "349bdb50b8ab6782248c1b296443087cd7222ead",
                 "shasum": ""
             },
             "replace": {
                 "twitter/bootstrap": "self.version"
             },
-            "time": "2025-08-26T02:01:02+00:00",
+            "time": "2026-11-11T17:41:09+00:00",
             "type": "library",
             "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
@@ -5720,7 +5720,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/bootstrap/issues",
-                "source": "https://github.com/twbs/bootstrap/tree/v5.3.8"
+                "source": "https://github.com/twbs/bootstrap/tree/v5.3.9"
             },
             "install-path": "../twbs/bootstrap"
         },
@@ -5918,17 +5918,17 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.20.2",
-            "version_normalized": "6.20.2.0",
+            "version": "6.20.4",
+            "version_normalized": "6.20.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "fb6f36bc3287e2843d8dc4dff5621b84924d5d8f"
+                "reference": "52063c0fbcc4067c037c05c85378f0b954d099aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/fb6f36bc3287e2843d8dc4dff5621b84924d5d8f",
-                "reference": "fb6f36bc3287e2843d8dc4dff5621b84924d5d8f",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/52063c0fbcc4067c037c05c85378f0b954d099aa",
+                "reference": "52063c0fbcc4067c037c05c85378f0b954d099aa",
                 "shasum": ""
             },
             "require": {
@@ -5955,7 +5955,7 @@
                 "phpunit/phpunit": "^11.5 || >=12.5.22",
                 "rector/rector": "2.7.0"
             },
-            "time": "2026-11-03T19:52:48+00:00",
+            "time": "2026-11-11T21:52:50+00:00",
             "bin": [
                 "bin/openapi"
             ],
@@ -6002,7 +6002,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.20.2"
+                "source": "https://github.com/zircote/swagger-php/tree/6.20.4"
             },
             "funding": [
                 {
