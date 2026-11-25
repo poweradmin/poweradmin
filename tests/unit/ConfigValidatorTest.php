@@ -1633,6 +1633,31 @@ class ConfigValidatorTest extends TestCase
         $this->assertSame([], $validator->getWarnings());
     }
 
+    public function testEnabledRecaptchaWithAnEmptyKeyIsAWarning(): void
+    {
+        $validator = new ConfigValidator($this->validBase(['security' => ['recaptcha' => ['enabled' => true, 'site_key' => 'site', 'secret_key' => '']]]));
+
+        $this->assertTrue($validator->validate());
+        $this->assertArrayHasKey('security.recaptcha.secret_key', $validator->getWarnings());
+        $this->assertArrayNotHasKey('security.recaptcha.site_key', $validator->getWarnings());
+
+        $validator = new ConfigValidator($this->validBase(['security' => ['recaptcha' => ['enabled' => true, 'site_key' => '', 'secret_key' => 'secret']]]));
+        $validator->validate();
+        $this->assertArrayHasKey('security.recaptcha.site_key', $validator->getWarnings());
+    }
+
+    public function testRecaptchaWithKeysOrDisabledHasNoWarning(): void
+    {
+        $filled = new ConfigValidator($this->validBase(['security' => ['recaptcha' => ['enabled' => true, 'site_key' => 'site', 'secret_key' => 'secret']]]));
+        $filled->validate();
+        $off = new ConfigValidator($this->validBase(['security' => ['recaptcha' => ['enabled' => false, 'site_key' => '', 'secret_key' => '']]]));
+        $off->validate();
+
+        $this->assertArrayNotHasKey('security.recaptcha.secret_key', $filled->getWarnings());
+        $this->assertArrayNotHasKey('security.recaptcha.site_key', $filled->getWarnings());
+        $this->assertArrayNotHasKey('security.recaptcha.secret_key', $off->getWarnings());
+    }
+
     /**
      * @param array<string, mixed> $extra
      * @return array<string, mixed>

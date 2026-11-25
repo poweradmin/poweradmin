@@ -103,6 +103,7 @@ final class ConfigValidator
         $this->validatePdnsDbName();
         $this->validatePermissions();
         $this->validateApproval();
+        $this->validateRecaptcha();
         $this->validateZoneLimitDefaults();
         $this->warnOnNonBooleanToggles();
         $this->warnOnUnknownKeys();
@@ -531,6 +532,23 @@ final class ConfigValidator
         }
         if (!$this->getSetting('approval', 'allow_self_approval', true) && !$enabled) {
             $this->warnings['approval.allow_self_approval'] = 'approval.allow_self_approval has no effect while approval.enabled is false';
+        }
+    }
+
+    /**
+     * RecaptchaService treats an empty secret key as disabled, so the login form silently loses its CAPTCHA.
+     */
+    private function validateRecaptcha(): void
+    {
+        $recaptcha = $this->getSetting('security', 'recaptcha', []);
+        if (!is_array($recaptcha) || empty($recaptcha['enabled'])) {
+            return;
+        }
+
+        foreach (['secret_key', 'site_key'] as $key) {
+            if (trim((string)($recaptcha[$key] ?? '')) === '') {
+                $this->warnings['security.recaptcha.' . $key] = sprintf('security.recaptcha.%s is empty while security.recaptcha.enabled is true, so the login CAPTCHA does not work', $key);
+            }
         }
     }
 
