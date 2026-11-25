@@ -91,6 +91,42 @@ class MfaVerifyControllerPendingLoginTest extends TestCase
         $this->assertSame('Session expired, please login again.', $_SESSION[SessionKeys::LOGIN_MESSAGE]);
     }
 
+    public function testAPendingLoginIdlePastTheTimeoutEndsWithoutCheckingTheCode(): void
+    {
+        $_SESSION[SessionKeys::LASTMOD] = time() - 7200;
+        $this->mfa->expects($this->never())->method('verifyCode');
+        $this->mfa->expects($this->never())->method('consumeRecoveryCode');
+
+        $target = $this->submitCode();
+
+        $this->assertSame('/login', $target);
+        $this->assertArrayNotHasKey(SessionKeys::PENDING_USERID, $_SESSION);
+        $this->assertSame('Session expired, please login again.', $_SESSION[SessionKeys::LOGIN_MESSAGE]);
+    }
+
+    public function testARecentPendingLoginStillReachesTheCodeCheck(): void
+    {
+        $_SESSION[SessionKeys::LASTMOD] = time() - 60;
+        $this->mfa->method('isMfaEnabled')->willReturn(true);
+        $this->mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $this->mfa->expects($this->once())->method('verifyCode')->willReturn(false);
+
+        $this->submitCode();
+    }
+
+    public function testAPendingLoginStillUsingThePageWithinTheTimeoutHasItsIdleClockRefreshed(): void
+    {
+        $_SESSION[SessionKeys::LASTMOD] = time() - 1700;
+        $this->mfa->method('isMfaEnabled')->willReturn(true);
+        $this->mfa->method('getUserMfa')->willReturn(UserMfa::create(self::VICTIM_ID, true, 'JBSWY3DPEHPK3PXP'));
+        $this->mfa->method('verifyCode')->willReturn(false);
+
+        $this->submitCode();
+
+        $this->assertArrayHasKey(SessionKeys::PENDING_USERID, $_SESSION);
+        $this->assertGreaterThan(time() - 10, $_SESSION[SessionKeys::LASTMOD]);
+    }
+
     public function testTheCodeIsCheckedForThePendingLogin(): void
     {
         $this->mfa->method('isMfaEnabled')->willReturn(true);

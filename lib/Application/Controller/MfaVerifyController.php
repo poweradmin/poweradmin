@@ -121,6 +121,8 @@ class MfaVerifyController extends BaseController
             $this->redirect('/');
         }
 
+        $this->endIdlePendingLogin();
+
         // Make verification more robust by just checking for the code
         if ($this->request->getPostParam('mfa_code') !== null) {
             $this->handleMfaVerification();
@@ -391,6 +393,29 @@ class MfaVerifyController extends BaseController
         }
 
         return (int)$pending;
+    }
+
+    /**
+     * Ends a pending login that sat idle past the session timeout. This page skips the
+     * authenticator's idle check, so a correct code could otherwise promote a stale login.
+     */
+    private function endIdlePendingLogin(): void
+    {
+        $lastMod = $this->userContextService->getSessionData(SessionKeys::LASTMOD);
+        $expire = (int)$this->config->get('interface', 'session_timeout', 1800);
+        if (!is_numeric($lastMod)) {
+            return;
+        }
+        if ((time() - (int)$lastMod) <= $expire) {
+            $this->userContextService->setSessionData(SessionKeys::LASTMOD, time());
+            return;
+        }
+
+        $this->logger->info('[MfaVerifyController] Pending login idle past the session timeout, ending the session');
+        $sessionService = new SessionService();
+        $sessionService->endSession();
+        $sessionService->setSessionData(new SessionEntity(_('Session expired, please login again.'), 'danger'));
+        $this->redirect('/login');
     }
 
     /**
