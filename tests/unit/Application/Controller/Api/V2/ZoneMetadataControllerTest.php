@@ -114,6 +114,14 @@ class ZoneMetadataControllerTest extends TestCase
         $this->assertNull($this->invalidValueError($controller, 'ALLOW-AXFR-FROM', ['192.0.2.10']));
     }
 
+    public function testValuesListIsCappedAtOneHundredPerKind(): void
+    {
+        $controller = $this->createController();
+
+        $this->assertNull($this->invokePrivateMethod($controller, 'tooManyValuesError', [array_fill(0, 100, '192.0.2.1')]));
+        $this->assertStatus(400, $this->invokePrivateMethod($controller, 'tooManyValuesError', [array_fill(0, 101, '192.0.2.1')]));
+    }
+
     public function testConfiguredVocabularyNarrowsAcceptedValues(): void
     {
         $controller = $this->createController(null, ['dns' => ['soa_edit_api_options' => ['EPOCH']]]);

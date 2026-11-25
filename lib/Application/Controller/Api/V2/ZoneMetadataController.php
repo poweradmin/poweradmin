@@ -47,6 +47,8 @@ use Exception;
 
 class ZoneMetadataController extends PublicApiController
 {
+    private const MAX_VALUES_PER_KIND = 100;
+
     private ZoneRepositoryInterface $zoneRepository;
     private ApiPermissionService $apiPermissionService;
     private ?PowerdnsApiClient $apiClient = null;
@@ -354,6 +356,10 @@ class ZoneMetadataController extends PublicApiController
                 return $this->returnApiError('Values array must not be empty. Use DELETE to remove metadata.', 400);
             }
 
+            if (($countError = $this->tooManyValuesError($values)) !== null) {
+                return $countError;
+            }
+
             if (!MetadataDefinitions::isMultiValue($kind) && count($values) > 1) {
                 return $this->returnApiError('Metadata kind ' . $kind . ' accepts only a single value', 400);
             }
@@ -520,6 +526,20 @@ class ZoneMetadataController extends PublicApiController
                     422
                 );
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Refuse a values list larger than MAX_VALUES_PER_KIND.
+     *
+     * @param array<int, string> $values
+     */
+    private function tooManyValuesError(array $values): ?JsonResponse
+    {
+        if (count($values) > self::MAX_VALUES_PER_KIND) {
+            return $this->returnApiError('Too many values: at most ' . self::MAX_VALUES_PER_KIND . ' per metadata kind', 400);
         }
 
         return null;
