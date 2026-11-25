@@ -359,8 +359,10 @@ class EditController extends BaseController
                     $this->logger->warning('DNSSEC pre-flight validation failed for zone: {zone}', ['zone' => $zone_name]);
                 } else {
                     // Validation passed - proceed with signing
-                    // Update SOA serial before signing
-                    $this->soaRecordManager->updateSOASerial($zone_id);
+                    // A replicated zone keeps the primary's serial
+                    if (!ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
+                        $this->soaRecordManager->updateSOASerial($zone_id);
+                    }
 
                     // Try to secure the zone
                     $result = $dnssecProvider->secureZone($zone_name);
@@ -411,8 +413,9 @@ class EditController extends BaseController
                 if ($result) {
                     // Verify the zone is now unsecured
                     if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
-                        // Update SOA serial after unsigning
-                        $this->soaRecordManager->updateSOASerial($zone_id);
+                        if (!ZoneType::isReadOnly($this->zoneRepository->getDomainType($zone_id))) {
+                            $this->soaRecordManager->updateSOASerial($zone_id);
+                        }
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
                     } else {
                         $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));

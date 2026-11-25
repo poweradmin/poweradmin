@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\DnsBackendProviderFactory;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Zone;
+use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -294,7 +295,7 @@ class ZoneDnssecController extends PublicApiController
                 if ($validationError !== null) {
                     return $this->returnApiError($validationError, 400);
                 }
-                $this->bumpSoaSerial($zoneId);
+                $this->bumpSerialUnlessReplicated($zoneId);
                 $result = $this->dnssecProvider->secureZone($zoneName);
             } else {
                 $result = $this->dnssecProvider->unsecureZone($zoneName);
@@ -336,7 +337,7 @@ class ZoneDnssecController extends PublicApiController
         if ($enabled) {
             $this->dnssecProvider->rectifyZone($zoneName);
         } else {
-            $this->bumpSoaSerial($zoneId);
+            $this->bumpSerialUnlessReplicated($zoneId);
         }
 
         $this->logDnssecChange($zoneId, $zoneName, $enabled);
@@ -351,6 +352,17 @@ class ZoneDnssecController extends PublicApiController
         $validator = new ZoneValidationService($this->getRepositoryFactory()->createRecordRepository());
         $result = $validator->validateZoneForDnssec($zoneId, $zoneName);
         return $result['valid'] ? null : $validator->getFormattedErrorMessage($result);
+    }
+
+    /**
+     * A Secondary or Consumer zone takes its serial from the primary, so a local bump
+     * would push it ahead of the primary and stall transfers.
+     */
+    private function bumpSerialUnlessReplicated(int $zoneId): void
+    {
+        if (!ZoneType::isReadOnly($this->zoneRepository->getDomainType($zoneId))) {
+            $this->bumpSoaSerial($zoneId);
+        }
     }
 
     /**

@@ -179,6 +179,42 @@ class ZoneDnssecControllerTest extends TestCase
         $this->assertSame([1], $controller->soaBumps);
     }
 
+    public function testSigningAReplicatedZoneLeavesItsSerialAlone(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->zoneRepository->method('getDomainType')->willReturn('SLAVE');
+        $this->dnssecProvider->method('isDnssecEnabled')->willReturn(true);
+        $this->dnssecProvider->method('secureZone')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(false, true);
+        $this->apiClient->method('fetchZoneKeys')->willReturn([]);
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => true]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame([], $controller->soaBumps);
+    }
+
+    public function testUnsigningAReplicatedZoneLeavesItsSerialAlone(): void
+    {
+        $this->zoneRepository->method('zoneExists')->willReturn(true);
+        $this->permissionService->method('canManageDnssec')->willReturn(true);
+        $this->zoneRepository->method('getDomainNameById')->willReturn('example.com');
+        $this->zoneRepository->method('getDomainType')->willReturn('CONSUMER');
+        $this->dnssecProvider->method('unsecureZone')->willReturn(true);
+        $this->apiClient->method('fetchZoneSecured')->willReturnOnConsecutiveCalls(true, false);
+
+        $controller = $this->createController();
+        $controller->setRequestBody(json_encode(['enabled' => false]));
+        $response = $controller->callSetStatus();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame([], $controller->soaBumps);
+    }
+
     public function testGetStatusIncludesPresignedFlag(): void
     {
         $this->zoneRepository->method('zoneExists')->willReturn(true);
