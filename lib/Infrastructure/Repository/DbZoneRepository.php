@@ -1243,7 +1243,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Build query with optional JOIN for permission filtering
         if ($zoneIds === null && $userId === null) {
             // No filtering - count all zones
-            $query = "SELECT COUNT(*) FROM $domains_table";
+            $query = "SELECT COUNT(*) FROM $domains_table d";
             $params = [];
         } elseif ($zoneIds === null && $userId !== null) {
             // User can see all zones, but use JOIN for consistency
@@ -1265,8 +1265,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Add name filter if specified
         if ($nameFilter !== null && $nameFilter !== '') {
             $whereClause = ($zoneIds === null && $userId === null) ? 'WHERE' : 'AND';
-            $query .= " $whereClause d.name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            // Scoped to this query so another user's case twin cannot decide the result
+            $query .= " $whereClause LOWER(d.name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
         }
 
         $stmt = $this->db->prepare($query);
@@ -1327,8 +1328,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Add name filter if specified
         if ($nameFilter !== null && $nameFilter !== '') {
             $whereClause = $whereAdded ? 'AND' : 'WHERE';
-            $query .= " $whereClause d.name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            // Scoped to this query so another user's case twin cannot decide the result
+            $query .= " $whereClause LOWER(d.name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
             $whereAdded = true;
         }
 

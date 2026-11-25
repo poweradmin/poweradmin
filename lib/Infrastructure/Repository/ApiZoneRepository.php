@@ -904,8 +904,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            $query .= " AND LOWER(z.zone_name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
         }
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
@@ -937,8 +937,8 @@ class ApiZoneRepository implements ZoneRepositoryInterface
             $params = [':user_id' => $userId, ':user_id_own' => $userId, ':user_id_group' => $userId];
         }
         if ($nameFilter !== null && $nameFilter !== '') {
-            $query .= " AND z.zone_name = :name_filter";
-            $params[':name_filter'] = $nameFilter;
+            $query .= " AND LOWER(z.zone_name) = :name_filter";
+            $params[':name_filter'] = strtolower($nameFilter);
         }
         $query .= " ORDER BY z.zone_name";
         if ($limit !== null && $limit > 0) {
