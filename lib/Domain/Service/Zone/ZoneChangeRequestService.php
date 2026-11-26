@@ -590,7 +590,12 @@ class ZoneChangeRequestService
                     return RecordWriteResult::ok();
                 }
 
-                return $this->applyAdd($zoneId, $after, $reviewerName);
+                $added = $this->applyAdd($zoneId, $after, $reviewerName);
+                if ($added->success) {
+                    $this->zoneEdit->auditAddedRecord($zoneId, (string)($after['type'] ?? ''), (string)($after['name'] ?? ''), (string)($after['content'] ?? ''), (int)($after['ttl'] ?? 0), (int)($after['prio'] ?? 0));
+                }
+
+                return $added;
 
             case ZoneChangeRequest::OP_EDIT:
                 $recordId = $this->resolveRecordId($zoneId, $action);
@@ -610,7 +615,16 @@ class ZoneChangeRequestService
                 $recordId = $this->resolveRecordId($zoneId, $action);
 
                 // Already gone: the request asked for exactly this
-                return $recordId === null ? RecordWriteResult::ok() : $this->recordManager->deleteRecord($recordId, false);
+                if ($recordId === null) {
+                    return RecordWriteResult::ok();
+                }
+                $before = $this->records->getRecordFromId($recordId);
+                $deleted = $this->recordManager->deleteRecord($recordId, false);
+                if ($deleted->success && $before !== null) {
+                    $this->zoneEdit->auditDeletedRecord($zoneId, $before);
+                }
+
+                return $deleted;
 
             default:
                 return RecordWriteResult::failure(sprintf('Unknown action "%s".', (string)($action['op'] ?? '')));

@@ -480,6 +480,35 @@ class ZoneChangeRequestServiceTest extends TestCase
         $this->assertNull($request->error);
     }
 
+    public function testApproveWritesAnAuditLineForAnAddedAndADeletedRecord(): void
+    {
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(77));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::ok());
+        $this->recordManager->method('deleteRecord')->willReturn(RecordWriteResult::ok());
+        $this->audit = $this->createMock(AuditService::class);
+        $this->audit->expects($this->once())->method('logRecordAdd')->with(self::ZONE_ID, 'A', 'new.example.com', '192.0.2.5', 300, 0);
+        $this->audit->expects($this->once())->method('logRecordDelete')->with(self::ZONE_ID, 'A', 'mail.example.com', '192.0.2.2', $this->anything(), $this->anything());
+        $id = $this->fileThreeActions();
+
+        $result = $this->makeService()->approve($id, self::REVIEWER, 'bob');
+
+        $this->assertTrue($result->success, (string)$result->message);
+    }
+
+    public function testAnApprovalThatIsRolledBackLogsNoAddOrDelete(): void
+    {
+        $this->backend = $this->createMock(BackendCapabilitiesInterface::class);
+        $this->backend->method('supportsLocalWriteTransaction')->willReturn(true);
+        $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(77));
+        $this->recordManager->method('editRecord')->willReturn(RecordWriteResult::failure('Invalid IP address'));
+        $this->audit = $this->createMock(AuditService::class);
+        $this->audit->expects($this->never())->method('logRecordAdd');
+        $this->audit->expects($this->never())->method('logRecordDelete');
+        $id = $this->fileThreeActions();
+
+        $this->assertFalse($this->makeService()->approve($id, self::REVIEWER, 'bob')->success);
+    }
+
     public function testApproveOnATransactionalBackendBumpsInsideAndRectifiesAfterTheCommit(): void
     {
         $this->backend = $this->createMock(BackendCapabilitiesInterface::class);

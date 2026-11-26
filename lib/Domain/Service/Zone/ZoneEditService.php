@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\Zone;
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ZoneType;
+use Closure;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordCommentEditorInterface;
 use Poweradmin\Domain\Port\RecordCommentSyncInterface;
@@ -52,7 +53,7 @@ use Poweradmin\Domain\ValueObject\RecordIdentifier;
  */
 class ZoneEditService
 {
-    /** @var list<RecordLog>|null Audit lines held back until their transaction ends; null when not holding */
+    /** @var list<RecordLog|Closure(): void>|null Audit lines held back until their transaction ends; null when not holding */
     private ?array $heldAudit = null;
 
     /**
@@ -97,8 +98,43 @@ class ZoneEditService
         $this->heldAudit = null;
         if ($committed) {
             foreach ($held as $log) {
-                $log->write();
+                $log instanceof Closure ? $log() : $log->write();
             }
+        }
+    }
+
+    /**
+     * The audit line of a record an approved change request added, held like the edit lines.
+     */
+    public function auditAddedRecord(int $zoneId, string $type, string $name, string $content, int|string $ttl, int|string $prio): void
+    {
+        $this->writeOrHoldAudit(fn() => $this->audit->logRecordAdd($zoneId, $type, $name, $content, $ttl, $prio));
+    }
+
+    /**
+     * The audit line of a record an approved change request deleted, from the row as it was.
+     *
+     * @param array<string, mixed> $record
+     */
+    public function auditDeletedRecord(int $zoneId, array $record): void
+    {
+        $this->writeOrHoldAudit(fn() => $this->audit->logRecordDelete(
+            $zoneId,
+            (string)($record['type'] ?? ''),
+            (string)($record['name'] ?? ''),
+            (string)($record['content'] ?? ''),
+            $record['ttl'] ?? '',
+            $record['prio'] ?? null
+        ));
+    }
+
+    /** @param Closure(): void $log */
+    private function writeOrHoldAudit(Closure $log): void
+    {
+        if ($this->heldAudit !== null) {
+            $this->heldAudit[] = $log;
+        } else {
+            $log();
         }
     }
 
