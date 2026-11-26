@@ -50,13 +50,13 @@ final class DateTimeZoneNormalizer implements NormalizerInterface, DenormalizerI
      */
     public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): \DateTimeZone
     {
-        if ('' === $data || null === $data) {
-            throw NotNormalizableValueException::createForUnexpectedDataType('The data is either an empty string or null, you should pass a string that can be parsed as a DateTimeZone.', $data, ['string'], $context['deserialization_path'] ?? null, true);
+        if (!\is_string($data) && !\is_int($data) || '' === $data) {
+            throw NotNormalizableValueException::createForUnexpectedDataType('The data is either not a string or an empty string, you should pass a string that can be parsed as a DateTimeZone.', $data, ['string'], $context['deserialization_path'] ?? null, true);
         }
 
         try {
             return new \DateTimeZone($data);
-        } catch (\Exception $e) {
+        } catch (\Exception|\ValueError $e) {
             throw NotNormalizableValueException::createForUnexpectedDataType($e->getMessage(), $data, ['string'], $context['deserialization_path'] ?? null, true, $e->getCode(), $e);
         }
     }
