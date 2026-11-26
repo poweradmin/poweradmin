@@ -150,15 +150,32 @@ class Option
         }
 
         if (is_subclass_of($this->typeName, \BackedEnum::class) && (\is_string($value) || \is_int($value))) {
-            return $this->typeName::tryFrom($value) ?? throw InvalidOptionException::fromEnumValue($this->name, $value, $this->suggestedValues);
+            try {
+                $enum = $this->typeName::tryFrom($value);
+            } catch (\TypeError) {
+                $enum = null;
+            }
+
+            return $enum ?? throw InvalidOptionException::fromEnumValue($this->name, $value, $this->suggestedValues);
         }
 
-        if (\is_string($value) && \in_array($this->typeName, ['int', 'float'], true) && !is_numeric($value)) {
-            throw InvalidOptionException::fromInvalidType($this->name, $value, $this->typeName);
+        $expectedType = match ($this->typeName) {
+            'int', 'bool|int' => 'int',
+            'float', 'bool|float' => 'float',
+            default => null,
+        };
+
+        if (\is_string($value) && null !== $expectedType && !is_numeric($value)) {
+            throw InvalidOptionException::fromInvalidType($this->name, $value, $expectedType);
         }
 
         if ('array' === $this->typeName && $this->allowNull && [] === $value) {
             return null;
+        }
+
+        // PHP converts a numeric string out of the int range to true for a bool|int parameter
+        if ('bool|int' === $this->typeName && \is_string($value) && is_numeric($value) && \is_float($number = $value + 0) && ($number >= \PHP_INT_MAX || $number < \PHP_INT_MIN)) {
+            throw InvalidOptionException::fromInvalidType($this->name, $value, 'int');
         }
 
         if ('bool' !== $this->typeName) {

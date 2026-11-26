@@ -91,6 +91,34 @@ abstract class Helper implements HelperInterface
         return mb_substr($string, $from, $length, $encoding);
     }
 
+    /**
+     * Returns the beginning of a string that fits in the given number of columns.
+     *
+     * @internal
+     */
+    public static function substrToWidth(?string $string, int $width): string
+    {
+        $substring = self::substr($string, 0, $width);
+
+        if ($width <= 0 || self::width($substring) <= $width) {
+            return $substring;
+        }
+
+        // the width grows with the length: search the longest beginning that fits
+        $min = 0;
+        $max = $width - 1;
+        while ($min < $max) {
+            $length = ($min + $max + 1) >> 1;
+            if (self::width(self::substr($string, 0, $length)) <= $width) {
+                $min = $length;
+            } else {
+                $max = $length - 1;
+            }
+        }
+
+        return self::substr($string, 0, $min);
+    }
+
     public static function formatTime(int|float $secs, int $precision = 1): string
     {
         $ms = (int) ($secs * 1000);
@@ -154,13 +182,16 @@ abstract class Helper implements HelperInterface
     {
         $isDecorated = $formatter->isDecorated();
         $formatter->setDecorated(false);
-        // remove <...> formatting
-        $string = $formatter->format($string ?? '');
-        // remove already formatted characters
-        $string = preg_replace("/\033\[[^m]*m/", '', $string ?? '');
-        // remove terminal hyperlinks
-        $string = preg_replace('/\\033]8;[^;]*;[^\\033]*\\033\\\\/', '', $string ?? '');
-        $formatter->setDecorated($isDecorated);
+        try {
+            // remove <...> formatting
+            $string = $formatter->format($string ?? '');
+            // remove already formatted characters
+            $string = preg_replace("/\033\[[^m]*m/", '', $string ?? '');
+            // remove terminal hyperlinks
+            $string = preg_replace('/\\033]8;[^;]*;[^\\033]*\\033\\\\/', '', $string ?? '');
+        } finally {
+            $formatter->setDecorated($isDecorated);
+        }
 
         return $string;
     }

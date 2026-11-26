@@ -52,7 +52,8 @@ trait CompiledUrlMatcherTrait
             $this->context->setScheme(key($allowSchemes));
             try {
                 if ($ret = $this->doMatch($pathinfo)) {
-                    return $this->redirect($pathinfo, $ret['_route'], $this->context->getScheme()) + $ret;
+                    // a leading "//" or "/\", even with tabs or newlines in between, would make the redirection point to another host
+                    return $this->redirect(preg_replace(['#^/[\t\n\r]*+\K/#', '#^/[\t\n\r]*+\K\\\\#'], ['%2F', '%5C'], $pathinfo), $ret['_route'], $this->context->getScheme()) + $ret;
                 }
             } finally {
                 $this->context->setScheme($scheme);
@@ -62,7 +63,7 @@ trait CompiledUrlMatcherTrait
             $fallbackPathinfo = $pathinfo;
             $pathinfo = $trimmedPathinfo === $pathinfo ? $pathinfo.'/' : $trimmedPathinfo;
             if ($ret = $this->doMatch($pathinfo, $allow, $allowSchemes, $trailingSlashSchemes)) {
-                return $this->redirect($pathinfo, $ret['_route']) + $ret;
+                return $this->redirect(preg_replace(['#^/[\t\n\r]*+\K/#', '#^/[\t\n\r]*+\K\\\\#'], ['%2F', '%5C'], $pathinfo), $ret['_route']) + $ret;
             }
             if ($allowSchemes = $allowSchemes ?: $trailingSlashSchemes) {
                 goto redirect_scheme;
@@ -94,6 +95,10 @@ trait CompiledUrlMatcherTrait
         $supportsRedirections = 'GET' === $canonicalMethod && $this instanceof RedirectableUrlMatcherInterface;
 
         foreach ($this->staticRoutes[$trimmedPathinfo] ?? [] as [$ret, $requiredHost, $requiredMethods, $requiredSchemes, $hasTrailingSlash, , $condition]) {
+            if ($trimmedPathinfo !== $pathinfo && str_ends_with($pathinfo, '//')) {
+                break;
+            }
+
             if ($requiredHost) {
                 if ('{' !== $requiredHost[0] ? $requiredHost !== $host : !preg_match($requiredHost, $host, $hostMatches)) {
                     continue;
@@ -151,7 +156,7 @@ trait CompiledUrlMatcherTrait
                     }
 
                     foreach ($vars as $i => $v) {
-                        if (isset($matches[1 + $i])) {
+                        if (isset($matches[1 + $i]) && '_route' !== $v) {
                             $ret[$v] = $matches[1 + $i];
                         }
                     }
@@ -161,7 +166,7 @@ trait CompiledUrlMatcherTrait
                     }
 
                     if ('/' !== $pathinfo && !$hasTrailingVar && $hasTrailingSlash === ($trimmedPathinfo === $pathinfo)) {
-                        if ($supportsRedirections && (!$requiredMethods || isset($requiredMethods['GET']))) {
+                        if ($supportsRedirections && '/' !== $trimmedPathinfo && (!$requiredMethods || isset($requiredMethods['GET']))) {
                             $trailingSlashSchemes = $allowSchemes;
 
                             return $allow = $allowSchemes = [];
