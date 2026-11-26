@@ -20,4 +20,13 @@ class DynamicUpdateEntryPointTest extends TestCase
         $this->assertLessThan($firstResponse, $header);
         $this->assertLessThan((int)strpos($source, 'statusExit('), $header);
     }
+
+    public function testASqliteUpdateTakesTheWriteLockWithBeginImmediate(): void
+    {
+        $source = (string)file_get_contents(dirname(__DIR__, 2) . '/dynamic_update.php');
+
+        $this->assertStringContainsString("\$db_type === 'sqlite'", $source);
+        $this->assertStringContainsString('SET id = id WHERE 1 = 0', $source);
+        $this->assertStringNotContainsString("exec('BEGIN IMMEDIATE')", $source);
+    }
 }

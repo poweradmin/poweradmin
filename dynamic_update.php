@@ -95,6 +95,24 @@ $updateService = new DynamicDnsUpdateService(
         if (is_string($zoneName) && !$isSlave) {
             DnssecProviderFactory::rectifyAfterWrite($db, $config, $zoneName);
         }
+    },
+    $backendProvider->isApiBackend() ? null : function (\Closure $work) use ($db, $db_type, $records_table): mixed {
+        $db->beginTransaction();
+        try {
+            if ($db_type === 'sqlite') {
+                // Take the write lock now so a second update waits on busy_timeout instead of failing at once;
+                // a no-op write keeps PDO aware of the transaction.
+                $db->exec("UPDATE $records_table SET id = id WHERE 1 = 0");
+            }
+            $result = $work();
+            $db->commit();
+            return $result;
+        } catch (\Throwable $e) {
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+            throw $e;
+        }
     }
 );
 

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -32,6 +32,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class DynamicDnsValidationService
 {
+    /** Room for any real multi-homed host; the list replaces the whole record set */
+    public const MAX_ADDRESSES_PER_FAMILY = 16;
+
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipValidator;
     private ConfigurationManager $config;
@@ -110,6 +113,13 @@ class DynamicDnsValidationService
             // unparseable entry would therefore remove the record the client meant to keep.
             if ($this->hasUnparseableAddress($ipv4String) || $this->hasUnparseableAddress($ipv6String)) {
                 return ValidationResult::failure(['The supplied IP address list contains an invalid address']);
+            }
+
+            if (
+                count($ipList->getIpv4Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+                || count($ipList->getIpv6Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+            ) {
+                return ValidationResult::failure(['The supplied IP address list contains an invalid address: at most ' . self::MAX_ADDRESSES_PER_FAMILY . ' addresses per family']);
             }
 
             return ValidationResult::success(null);

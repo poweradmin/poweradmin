@@ -493,4 +493,68 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertSame('good', $this->service->processUpdate($request));
     }
+
+    public function testTheWritesAndTheSerialRunInsideTheTransactionAndRectifyAfterIt(): void
+    {
+        $events = [];
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            function () use (&$events): void {
+                $events[] = 'rectify';
+            },
+            function (\Closure $work) use (&$events): mixed {
+                $events[] = 'begin';
+                $result = $work();
+                $events[] = 'commit';
+                return $result;
+            }
+        );
+        $this->arrange('192.168.1.1');
+        $this->repository->method('insertDnsRecord')->willReturnCallback(function () use (&$events): void {
+            $events[] = 'insert';
+        });
+        $this->repository->method('updateSOASerial')->willReturnCallback(function () use (&$events): void {
+            $events[] = 'serial';
+        });
+
+        $this->assertSame('good', $service->processUpdate($this->request()));
+        $this->assertSame(['begin', 'insert', 'serial', 'commit', 'rectify'], $events);
+    }
+
+    public function testAFailureInsideTheTransactionSkipsTheSerialAndRectify(): void
+    {
+        $rectified = false;
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            function () use (&$rectified): void {
+                $rectified = true;
+            },
+            fn (\Closure $work): mixed => $work()
+        );
+        $this->arrange('192.168.1.1');
+        $this->repository->method('insertDnsRecord')->willThrowException(new \RuntimeException('insert failed'));
+        $this->repository->expects($this->never())->method('updateSOASerial');
+
+        $this->assertSame('dnserr', $service->processUpdate($this->request()));
+        $this->assertFalse($rectified);
+    }
+
+    private function request(): DynamicDnsRequest
+    {
+        return new DynamicDnsRequest('user', 'pass', 'www.example.com', '192.168.1.1', '', false, 'TestAgent/1.0');
+    }
+
+    private function arrange(string $ip): void
+    {
+        $this->validationService->method('validateRequest')->willReturn(ValidationResult::success(null));
+        $this->authService->method('authenticateUser')->willReturn(new User(1, 'hashedpass', false));
+        $this->validationService->method('createValidatedHostname')->willReturn(new HostnameValue('www.example.com'));
+        $this->validationService->method('createValidatedIpList')->willReturn(new IpAddressList([$ip], []));
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getDnsRecords')->willReturn([]);
+    }
 }

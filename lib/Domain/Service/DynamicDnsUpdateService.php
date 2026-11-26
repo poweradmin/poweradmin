@@ -36,17 +36,21 @@ class DynamicDnsUpdateService
     private DynamicDnsAuthenticationService $authService;
     private DynamicDnsRepositoryInterface $repository;
     private ?\Closure $rectifyZone;
+    private ?\Closure $transaction;
 
     /**
      * @param \Closure|null $rectifyZone Called with the zone ID after records of that zone were written
+     * @param \Closure|null $transaction Runs a closure atomically and returns its result; null on a backend without one
      */
     public function __construct(
         DynamicDnsValidationService $validationService,
         DynamicDnsAuthenticationService $authService,
         DynamicDnsRepositoryInterface $repository,
-        ?\Closure $rectifyZone = null
+        ?\Closure $rectifyZone = null,
+        ?\Closure $transaction = null
     ) {
         $this->rectifyZone = $rectifyZone;
+        $this->transaction = $transaction;
         $this->validationService = $validationService;
         $this->authService = $authService;
         $this->repository = $repository;
@@ -100,36 +104,46 @@ class DynamicDnsUpdateService
             return ['wasUpdated' => false, 'hasValidRecords' => false, 'noHost' => true];
         }
 
-        $wasUpdated = false;
-        $hasValidRecords = false;
-        $zoneUpdated = false;
+        // One transaction so a failure part-way leaves neither new records nor an old serial
+        $write = function () use ($zoneId, $hostname, $ipList, $dualstackUpdate): array {
+            $wasUpdated = false;
+            $hasValidRecords = false;
+            $zoneUpdated = false;
 
-        // For dualstack updates, always process both record types (even if no IPs provided)
-        // This allows clearing records when switching from dual-stack to single-stack
-        if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
-            if ($syncResult['wasUpdated']) {
-                $zoneUpdated = true;
-                $wasUpdated = true;
+            // For dualstack updates, always process both record types (even if no IPs provided)
+            // This allows clearing records when switching from dual-stack to single-stack
+            if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
+                if ($syncResult['wasUpdated']) {
+                    $zoneUpdated = true;
+                    $wasUpdated = true;
+                }
+                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                    $hasValidRecords = true;
+                }
             }
-            if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
-                $hasValidRecords = true;
-            }
-        }
 
-        if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
-            if ($syncResult['wasUpdated']) {
-                $zoneUpdated = true;
-                $wasUpdated = true;
+            if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
+                if ($syncResult['wasUpdated']) {
+                    $zoneUpdated = true;
+                    $wasUpdated = true;
+                }
+                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                    $hasValidRecords = true;
+                }
             }
-            if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
-                $hasValidRecords = true;
+
+            if ($zoneUpdated) {
+                $this->repository->updateSOASerial($zoneId);
             }
-        }
+
+            return [$wasUpdated, $hasValidRecords, $zoneUpdated];
+        };
+
+        [$wasUpdated, $hasValidRecords, $zoneUpdated] = $this->transaction !== null ? ($this->transaction)($write) : $write();
 
         if ($zoneUpdated) {
-            $this->repository->updateSOASerial($zoneId);
             // Nodes may have been added or removed, so a signed zone's NSEC/NSEC3 chain needs rebuilding
             if ($this->rectifyZone !== null) {
                 ($this->rectifyZone)($zoneId);

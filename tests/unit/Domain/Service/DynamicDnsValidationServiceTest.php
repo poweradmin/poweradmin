@@ -264,4 +264,22 @@ class DynamicDnsValidationServiceTest extends TestCase
         $this->assertContains('Hostname is required', $errors);
         $this->assertContains('At least one IP address is required', $errors);
     }
+
+    public function testRefusesMoreThanTheCapOfAddressesPerFamily(): void
+    {
+        $cap = DynamicDnsValidationService::MAX_ADDRESSES_PER_FAMILY;
+        $v4 = static fn (int $n): string => implode(',', array_map(static fn (int $i): string => '10.0.' . intdiv($i, 250) . '.' . ($i % 250 + 1), range(1, $n)));
+        $v6 = static fn (int $n): string => implode(',', array_map(static fn (int $i): string => '2001:db8::' . dechex($i), range(1, $n)));
+
+        $this->assertTrue($this->validationService->validateIpAddresses($v4($cap), $v6($cap))->isValid());
+        $this->assertFalse($this->validationService->validateIpAddresses($v4($cap + 1), '')->isValid());
+        $this->assertFalse($this->validationService->validateIpAddresses('', $v6($cap + 1))->isValid());
+    }
+
+    public function testRepeatedAddressesCountOnce(): void
+    {
+        $repeated = implode(',', array_fill(0, 100, '192.0.2.1'));
+
+        $this->assertTrue($this->validationService->validateIpAddresses($repeated, '')->isValid());
+    }
 }
