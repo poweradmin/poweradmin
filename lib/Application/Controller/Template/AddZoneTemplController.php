@@ -107,7 +107,7 @@ class AddZoneTemplController extends BaseController
             $this->redirect('/zones/templates');
         } else {
             $this->addSystemMessage('error', (string)$added->message);
-            $this->renderForm((string)$postParams['templ_name'], (string)$postParams['templ_descr'], $groupIds);
+            $this->renderForm((string)$postParams['templ_name'], (string)($postParams['templ_descr'] ?? ''), $groupIds);
         }
     }
 }

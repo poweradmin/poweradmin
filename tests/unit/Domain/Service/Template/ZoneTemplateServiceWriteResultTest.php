@@ -112,6 +112,17 @@ class ZoneTemplateServiceWriteResultTest extends SqliteIntegrationTestCase
         $this->assertSame([['name' => 'private']], $this->db->query("SELECT name FROM zone_templ WHERE id = " . self::PRIVATE_TEMPLATE)->fetchAll(\PDO::FETCH_ASSOC));
     }
 
+    public function testAMissingDescriptionIsStoredEmpty(): void
+    {
+        $service = $this->service();
+
+        $this->assertTrue($service->addZoneTempl(['templ_name' => 'nodescr'], self::ADMIN_USER_ID)->success);
+        $this->assertTrue($service->editZoneTempl(['templ_name' => 'renamed'], self::PRIVATE_TEMPLATE, self::ADMIN_USER_ID)->success);
+
+        $this->assertSame([['name' => 'nodescr', 'descr' => '']], $this->db->query("SELECT name, descr FROM zone_templ WHERE name = 'nodescr'")->fetchAll(\PDO::FETCH_ASSOC));
+        $this->assertSame([['name' => 'renamed', 'descr' => '']], $this->db->query("SELECT name, descr FROM zone_templ WHERE id = " . self::PRIVATE_TEMPLATE)->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
     public function testDefaultFlagOnlyAcceptsGlobalTemplates(): void
     {
         $service = $this->service();

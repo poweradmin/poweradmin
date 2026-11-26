@@ -322,7 +322,7 @@ class EditZoneTemplController extends BaseController
         // Call the addZoneTemplSaveAs with the correct signature
         $saved = $this->zoneTemplate()->addZoneTemplSaveAs(
             $postParams['templ_name'],
-            $postParams['templ_descr'],
+            (string)($postParams['templ_descr'] ?? ''),
             (int)$this->getCurrentUserId(),
             $records,
             $options,

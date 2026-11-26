@@ -193,7 +193,7 @@ class ZoneTemplateWriteService
             $owner = $this->access->resolveTemplateOwner(isset($details['templ_global']), $userid);
             $this->repository->createZoneTemplate(
                 $details['templ_name'],
-                $details['templ_descr'],
+                (string)($details['templ_descr'] ?? ''),
                 $owner,
                 $userid,
                 $owner === 0 ? [] : $groupIds
@@ -226,7 +226,7 @@ class ZoneTemplateWriteService
         $this->repository->updateZoneTemplate(
             $zone_templ_id,
             $details['templ_name'],
-            $details['templ_descr'],
+            (string)($details['templ_descr'] ?? ''),
             $this->access->resolveEditedTemplateOwner($zone_templ_id, isset($details['templ_global']), $user_id)
         );
 
