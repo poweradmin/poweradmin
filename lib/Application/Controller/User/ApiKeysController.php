@@ -26,6 +26,7 @@ use DateTime;
 use Exception;
 use Poweradmin\Application\Controller\BaseController;
 use Poweradmin\Application\Service\ControllerEnvironment;
+use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\ZoneSummary;
@@ -176,6 +177,14 @@ class ApiKeysController extends BaseController
                 return;
             }
 
+            $zones = self::mergeZoneScope($scope['zones'], null, $this->assignableZoneIds());
+            if ($zones === null) {
+                $this->messageService->addMessage('api_key_add', 'error', _('A selected zone is not available for this API key.'));
+                $this->renderAddForm();
+                return;
+            }
+            $scope['zones'] = $zones;
+
             // Parse expiration date if provided
             $expiresAtDate = null;
             if (!empty($expiresAt)) {
@@ -210,7 +219,11 @@ class ApiKeysController extends BaseController
             $this->messageService->addMessage('api_key_add', 'error', (string)$created->message);
         }
 
-        // Show the add form
+        $this->renderAddForm();
+    }
+
+    private function renderAddForm(): void
+    {
         $this->render('api_key_add.html', [
             'available_zones' => $this->getAssignableZones(),
             'zone_scopes_ready' => $this->apiKeyService()->zoneScopesReady(),
@@ -246,6 +259,14 @@ class ApiKeysController extends BaseController
                 $this->showError(_('API key name is required.'));
                 return;
             }
+
+            $zones = self::mergeZoneScope($scope['zones'], $apiKey->getZoneIds(), $this->assignableZoneIds());
+            if ($zones === null) {
+                $this->messageService->addMessage('api_key_edit', 'error', _('A selected zone is not available for this API key.'));
+                $this->renderEditForm($apiKey);
+                return;
+            }
+            $scope['zones'] = $zones;
 
             // Parse expiration date if provided
             $expiresAtDate = null;
@@ -294,7 +315,11 @@ class ApiKeysController extends BaseController
             $this->messageService->addMessage('api_key_edit', 'error', (string)$updated->message);
         }
 
-        // Show the edit form
+        $this->renderEditForm($apiKey);
+    }
+
+    private function renderEditForm(ApiKey $apiKey): void
+    {
         $this->render('api_key_edit.html', [
             'api_key' => $apiKey,
             'available_zones' => $this->getAssignableZones(),
@@ -304,6 +329,36 @@ class ApiKeysController extends BaseController
             'zone_scopes_ready' => $this->apiKeyService()->zoneScopesReady(),
             'zone_scope_unmapped' => ApiKeyService::hasUnmappedZoneScope($apiKey),
         ]);
+    }
+
+    /**
+     * The zone list to store: the submitted ids, which must all be assignable, plus the stored
+     * ids the form cannot show (deleted zones, zones the editor cannot see) so an edit keeps them.
+     *
+     * @param array<mixed> $submitted
+     * @param int[]|null $stored
+     * @param int[] $assignable
+     * @return int[]|null Null when a submitted id is not assignable
+     */
+    public static function mergeZoneScope(array $submitted, ?array $stored, array $assignable): ?array
+    {
+        $submittedIds = array_values(array_unique(array_map('intval', $submitted)));
+        if (array_diff($submittedIds, $assignable) !== []) {
+            return null;
+        }
+
+        // The id-0 marker of an unmapped scope is never written back.
+        $hidden = array_filter(array_diff(array_map('intval', $stored ?? []), $assignable), static fn(int $id): bool => $id > 0);
+
+        return array_values(array_unique(array_merge($submittedIds, $hidden)));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function assignableZoneIds(): array
+    {
+        return array_map(static fn(array $zone): int => $zone['id'], $this->getAssignableZones());
     }
 
     /**

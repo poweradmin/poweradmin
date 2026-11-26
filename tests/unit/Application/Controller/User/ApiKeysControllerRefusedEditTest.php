@@ -27,6 +27,7 @@ use Poweradmin\Application\Controller\User\ApiKeysController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\ZoneSummary;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\Auth\ApiKeyService;
 use Poweradmin\Domain\Service\Auth\ApiKeyWriteResult;
@@ -60,9 +61,7 @@ class ApiKeysControllerRefusedEditTest extends SeamControllerTestCase
         );
         $this->factory->method('permissionService')->willReturn($permissions);
 
-        $zones = $this->createMock(ZoneRepositoryInterface::class);
-        $zones->method('listZones')->willReturn([]);
-        $this->factory->method('zoneRepository')->willReturn($zones);
+        $this->assignableZones([42]);
 
         $audit = $this->createMock(AuditService::class);
         $audit->expects($this->never())->method('logApiKeyEdit');
@@ -105,6 +104,8 @@ class ApiKeysControllerRefusedEditTest extends SeamControllerTestCase
             fn(int $userId, string $permission): bool => $permission === Permission::PERM_API_MANAGE_KEYS
         );
         $this->factory->method('permissionService')->willReturn($permissions);
+
+        $this->assignableZones([42, 43]);
 
         $audit = $this->createMock(AuditService::class);
         $audit->expects($this->once())->method('logApiKeyEdit')->with(7, 'key', [
@@ -150,6 +151,8 @@ class ApiKeysControllerRefusedEditTest extends SeamControllerTestCase
         );
         $this->factory->method('permissionService')->willReturn($permissions);
 
+        $this->assignableZones([42, 43]);
+
         $audit = $this->createMock(AuditService::class);
         $audit->expects($this->once())->method('logApiKeyEdit')->with(7, 'key', $expectedScope);
         $this->factory->method('auditService')->willReturn($audit);
@@ -180,5 +183,89 @@ class ApiKeysControllerRefusedEditTest extends SeamControllerTestCase
         $same = ['read_only' => false, 'operations' => null, 'zones' => []];
 
         $this->assertSame([], ApiKeysController::scopeChanges($same, ['read_only' => false, 'operations' => null, 'zones' => null]));
+    }
+
+    public function testAnEditThatDoesNotRenderAStoredZoneKeepsItInTheScope(): void
+    {
+        $stored = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+        $stored->setZoneIds([42, 99]);
+
+        $service = $this->createMock(ApiKeyService::class);
+        $service->method('getApiKey')->with(7)->willReturn($stored);
+        $service->expects($this->once())->method('updateApiKey')
+            ->with(7, 'renamed', null, false, false, null, [99])
+            ->willReturn(ApiKeyWriteResult::ok($stored));
+        $this->factory->method('apiKeyService')->willReturn($service);
+        $this->grantKeyManagement();
+        $this->assignableZones([42]);
+        $this->factory->method('auditService')->willReturn($this->createMock(AuditService::class));
+
+        $this->post(['id' => '7', 'name' => 'renamed']);
+        $controller = new ApiKeysController(['page' => 'api_keys_edit'] + $this->requestData(), $this->environment($this->configure(['api' => ['enabled' => true]])));
+
+        try {
+            $controller->run();
+        } catch (\Poweradmin\Application\Controller\RequestHalted) {
+        }
+    }
+
+    public function testASubmittedZoneTheEditorCannotAssignIsRefusedBeforeAnyWrite(): void
+    {
+        $stored = new ApiKey('key', 'pwa_secret', self::USER_ID, null, null, false, null, 7);
+
+        $service = $this->createMock(ApiKeyService::class);
+        $service->method('getApiKey')->with(7)->willReturn($stored);
+        $service->expects($this->never())->method('updateApiKey');
+        $this->factory->method('apiKeyService')->willReturn($service);
+        $this->grantKeyManagement();
+        $this->assignableZones([42]);
+
+        $this->post(['id' => '7', 'name' => 'key', 'zones' => ['42', '777']]);
+        $controller = new ApiKeysController(['page' => 'api_keys_edit'] + $this->requestData(), $this->environment($this->configure(['api' => ['enabled' => true]])));
+
+        try {
+            $controller->run();
+        } catch (\Poweradmin\Application\Controller\RequestHalted) {
+        }
+
+        $this->assertSame([['error', 'A selected zone is not available for this API key.']], $this->messagesFor('api_key_edit'));
+        $this->assertSame('api_key_edit.html', $this->renderedTemplate());
+    }
+
+    public function testMergingKeepsHiddenStoredIdsAndRefusesForeignOnes(): void
+    {
+        $this->assertSame([42, 7], ApiKeysController::mergeZoneScope(['42'], [42, 7], [42]));
+        $this->assertSame([7], ApiKeysController::mergeZoneScope([], [42, 7], [42]));
+        $this->assertSame([], ApiKeysController::mergeZoneScope([], [42], [42]));
+        $this->assertNull(ApiKeysController::mergeZoneScope(['5'], null, [42]));
+        $this->assertNull(ApiKeysController::mergeZoneScope(['abc'], null, [42]));
+    }
+
+    public function testMergingDoesNotWriteTheUnmappedScopeMarkerBack(): void
+    {
+        $this->assertSame([42, 7], ApiKeysController::mergeZoneScope(['42'], [0, 42, 7], [42]));
+        $this->assertSame([], ApiKeysController::mergeZoneScope([], [0], [42]));
+    }
+
+    private function grantKeyManagement(): void
+    {
+        $permissions = $this->createMock(PermissionService::class);
+        $permissions->method('hasPermission')->willReturnCallback(
+            fn(int $userId, string $permission): bool => $permission === Permission::PERM_API_MANAGE_KEYS
+        );
+        $this->factory->method('permissionService')->willReturn($permissions);
+    }
+
+    /**
+     * @param list<int> $ids
+     */
+    private function assignableZones(array $ids): void
+    {
+        $zones = $this->createMock(ZoneRepositoryInterface::class);
+        $zones->method('listZones')->willReturn(array_map(
+            static fn(int $id): ZoneSummary => new ZoneSummary($id, "z{$id}.example", "z{$id}.example", 'MASTER', 0, '', false, [], []),
+            $ids
+        ));
+        $this->factory->method('zoneRepository')->willReturn($zones);
     }
 }
