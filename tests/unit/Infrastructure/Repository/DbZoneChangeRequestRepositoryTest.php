@@ -25,6 +25,7 @@ namespace Poweradmin\Tests\Unit\Infrastructure\Repository;
 use PDO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use TestHelpers\RecordingPdo;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Infrastructure\Repository\DbZoneChangeRequestRepository;
 use Psr\Log\LoggerInterface;
@@ -36,13 +37,12 @@ use Psr\Log\LoggerInterface;
 #[CoversClass(DbZoneChangeRequestRepository::class)]
 class DbZoneChangeRequestRepositoryTest extends TestCase
 {
-    private PDO $db;
+    private RecordingPdo $db;
     private DbZoneChangeRequestRepository $repository;
 
     protected function setUp(): void
     {
-        $this->db = new PDO('sqlite::memory:');
-        $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->db = new RecordingPdo();
         $this->db->exec(<<<SQL
             CREATE TABLE zone_change_requests (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -151,6 +151,18 @@ class DbZoneChangeRequestRepositoryTest extends TestCase
         $this->assertSame([$mine], $this->ids($this->repository->list(['status' => 'rejected'], 0, 10)));
         $this->assertSame(2, $this->repository->count(['requesterId' => 7]));
         $this->assertSame([$mine], $this->ids($this->repository->list(['zoneIds' => [1], 'requesterId' => 7], 0, 10)));
+    }
+
+    public function testAZoneListLongerThanTheDriverBindLimitStillFilters(): void
+    {
+        $this->file(1);
+        $this->file(2);
+        $ids = range(1, 40000);
+
+        $this->assertSame(2, $this->repository->countPending($ids));
+        $this->assertCount(2, $this->repository->listPending($ids, 0, 10));
+        $this->assertSame([1 => 1, 2 => 1], $this->repository->countPendingByZone($ids, $ids, 7));
+        $this->assertFalse($this->db->preparedNumberedPlaceholders(), 'one bind per zone id');
     }
 
     public function testPendingCountsTreatNullAsEveryZoneAndEmptyAsNone(): void

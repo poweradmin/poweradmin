@@ -107,11 +107,8 @@ class DbZoneLogger
             return [];
         }
 
-        $values = array_values($zoneIds);
-        $placeholders = [];
-        foreach ($values as $i => $_zid) {
-            $placeholders[] = ':z' . $i;
-        }
+        // Integer literals: one placeholder per id fails past the driver's bind limit
+        $ids = implode(', ', array_unique(array_map('intval', $zoneIds)));
 
         $dbType = $this->config->get('database', 'type', 'mysql');
         // The user: field stores colons as %3A and spaces as %20 (AuditLineValue::user); the % they add must not act as a wildcard
@@ -121,15 +118,12 @@ class DbZoneLogger
         $sql = "SELECT DISTINCT u.username FROM users u
                 WHERE EXISTS (
                     SELECT 1 FROM log_zones lz
-                    WHERE lz.zone_id IN (" . implode(', ', $placeholders) . ")
+                    WHERE lz.zone_id IN (" . $ids . ")
                       AND " . $userCondition . "
                 )
                 ORDER BY u.username";
 
         $stmt = $this->db->prepare($sql);
-        foreach ($values as $i => $zid) {
-            $stmt->bindValue(':z' . $i, (int) $zid, PDO::PARAM_INT);
-        }
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
@@ -226,13 +220,8 @@ class DbZoneLogger
         }
 
         if ($zoneIds !== null && !empty($zoneIds)) {
-            $placeholders = [];
-            foreach (array_values($zoneIds) as $i => $zid) {
-                $key = ':zone_owner_id_' . $i;
-                $placeholders[] = $key;
-                $params[$key] = [(int) $zid, PDO::PARAM_INT];
-            }
-            $conditions[] = 'log_zones.zone_id IN (' . implode(', ', $placeholders) . ')';
+            // Integer literals: one placeholder per id fails past the driver's bind limit
+            $conditions[] = 'log_zones.zone_id IN (' . implode(', ', array_unique(array_map('intval', $zoneIds))) . ')';
         }
     }
 

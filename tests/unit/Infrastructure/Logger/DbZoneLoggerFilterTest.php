@@ -26,6 +26,7 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use TestHelpers\RecordingPdo;
 use Poweradmin\Domain\Config\ConfigurationInterface;
 use Poweradmin\Domain\Port\BackendCapabilitiesInterface;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
@@ -99,6 +100,27 @@ class DbZoneLoggerFilterTest extends SqliteIntegrationTestCase
         $this->assertSame(0, $logger->countFilteredLogs([], []));
         $this->assertSame([], $logger->getFilteredLogs([], 50, 0, []));
         $this->assertSame([], $logger->getDistinctUsersForZones([]));
+    }
+
+    #[Test]
+    public function aZoneListLongerThanTheDriverBindLimitStillFilters(): void
+    {
+        $ids = range(100, 40100);
+        $ids[] = self::BETA;
+
+        $this->assertSame(1, $this->logger()->countFilteredLogs([], $ids));
+        $this->assertSame([self::BETA], $this->loggedZoneIds([], $ids));
+        $this->assertSame(['mia'], $this->logger()->getDistinctUsersForZones($ids));
+
+        $db = new RecordingPdo();
+        $db->exec("CREATE TABLE log_zones (id INTEGER PRIMARY KEY, event TEXT NOT NULL, created_at TEXT, zone_id INTEGER)");
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT NOT NULL, type TEXT NOT NULL)");
+        $db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT NOT NULL)");
+        $logger = new DbZoneLogger($db, $this->loggingConfiguration());
+        $logger->countFilteredLogs([], $ids);
+        $logger->getFilteredLogs([], 50, 0, $ids);
+        $logger->getDistinctUsersForZones($ids);
+        $this->assertFalse($db->preparedNumberedPlaceholders(), 'one bind per zone id');
     }
 
     #[Test]

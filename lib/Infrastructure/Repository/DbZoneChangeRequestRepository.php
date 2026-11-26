@@ -317,12 +317,8 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
             if ($filters['zoneIds'] === []) {
                 return [null, []];
             }
-            $placeholders = [];
-            foreach (array_values($filters['zoneIds']) as $i => $zoneId) {
-                $placeholders[] = ":zone_id_$i";
-                $bindings[":zone_id_$i"] = [(int)$zoneId, PDO::PARAM_INT];
-            }
-            $conditions[] = 'zone_id IN (' . implode(', ', $placeholders) . ')';
+            // Integer literals: one placeholder per id fails past the driver's bind limit
+            $conditions[] = 'zone_id IN (' . implode(', ', array_unique(array_map('intval', $filters['zoneIds']))) . ')';
         }
         // What a reviewer sees: requests in the zones they review, or their own
         if (isset($filters['orRequesterId']) && array_key_exists('reviewableZoneIds', $filters) && $filters['reviewableZoneIds'] !== null) {
@@ -330,12 +326,8 @@ final class DbZoneChangeRequestRepository implements ZoneChangeRequestRepository
             if ($filters['reviewableZoneIds'] === []) {
                 $conditions[] = 'requester_id = :or_requester_id';
             } else {
-                $placeholders = [];
-                foreach (array_values($filters['reviewableZoneIds']) as $i => $zoneId) {
-                    $placeholders[] = ":reviewable_zone_id_$i";
-                    $bindings[":reviewable_zone_id_$i"] = [(int)$zoneId, PDO::PARAM_INT];
-                }
-                $conditions[] = '(zone_id IN (' . implode(', ', $placeholders) . ') OR requester_id = :or_requester_id)';
+                $ids = implode(', ', array_unique(array_map('intval', $filters['reviewableZoneIds'])));
+                $conditions[] = '(zone_id IN (' . $ids . ') OR requester_id = :or_requester_id)';
             }
         }
 
