@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
@@ -133,7 +134,7 @@ class ZoneTemplateRecordValidationService
                 return $ttlResult;
             }
 
-            if ($prio !== null && $prio !== '' && (!is_numeric($prio) || $prio < 0 || $prio > 65535)) {
+            if ($prio !== null && $prio !== '' && !StringValidator::isValidPriority($prio)) {
                 return ValidationResult::failure(_('Invalid value for MX priority field. Must be between 0 and 65535.'));
             }
 

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Exception;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\DnsFormatter;
@@ -630,7 +631,7 @@ class ZoneTemplate
         }
 
         // Check if priority is valid for this record type
-        if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
+        if ($prio === null || $prio === '' || !StringValidator::isValidPriority($prio)) {
             if ($type == 'MX' || $type == 'SRV') {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;
@@ -760,7 +761,7 @@ class ZoneTemplate
         }
 
         // Check if priority is valid for this record type
-        if (!is_numeric($record['prio']) || $record['prio'] < 0 || $record['prio'] > 65535) {
+        if ($record['prio'] === null || $record['prio'] === '' || !StringValidator::isValidPriority($record['prio'])) {
             if ($record['type'] == 'MX' || $record['type'] == 'SRV') {
                 $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
                 return false;
