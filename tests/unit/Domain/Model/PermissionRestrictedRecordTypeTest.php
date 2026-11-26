@@ -72,6 +72,16 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertFalse(Permission::isTemplateRecordTypeRestricted('TYPE65402', 'own'));
     }
 
+    public function testSoaAndNsAreRestrictedInTemplatesWhenEditLevelIsNone(): void
+    {
+        foreach (['SOA', 'NS', 'TYPE2', 'TYPE6'] as $type) {
+            $this->assertTrue(Permission::isTemplateRecordTypeRestricted($type, 'none'), $type);
+            $this->assertTrue(Permission::isTemplateRecordTypeRestricted($type, 'own_as_client'), $type);
+            $this->assertFalse(Permission::isTemplateRecordTypeRestricted($type, 'own'), $type);
+        }
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('A', 'none'));
+    }
+
     public function testNonRestrictedTypesArePermitted(): void
     {
         foreach (['A', 'AAAA', 'CNAME', 'MX', 'TXT', 'PTR', 'SRV'] as $type) {
