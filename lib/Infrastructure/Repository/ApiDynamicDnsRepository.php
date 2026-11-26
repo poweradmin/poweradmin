@@ -171,12 +171,14 @@ final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInte
         return $this->getDnsRecords($zoneId, $hostname, 'CNAME') !== [];
     }
 
-    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
+    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): int|string
     {
-        $result = $this->backendProvider->addRecord($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
-        if (!$result) {
+        $recordId = $this->backendProvider->addRecordGetId($zoneId, $hostname->getValue(), $recordType, $content, 60, 0);
+        if ($recordId === null) {
             throw new \RuntimeException("Failed to add DNS record via API for zone $zoneId");
         }
+
+        return $recordId;
     }
 
     public function deleteDnsRecord(int|string $recordId): void

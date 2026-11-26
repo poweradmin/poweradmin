@@ -50,7 +50,10 @@ interface DynamicDnsRepositoryInterface
     /** True when the name holds a CNAME, which may not coexist with address records. */
     public function hasCnameRecord(int $zoneId, HostnameValue $hostname): bool;
 
-    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void;
+    /**
+     * @return int|string|null The id of the new record, null when the backend does not report one
+     */
+    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): int|string|null;
 
     public function deleteDnsRecord(int|string $recordId): void;
 

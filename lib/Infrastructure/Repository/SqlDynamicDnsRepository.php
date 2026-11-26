@@ -170,7 +170,7 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
         return $this->getDnsRecords($zoneId, $hostname, 'CNAME') !== [];
     }
 
-    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): void
+    public function insertDnsRecord(int $zoneId, HostnameValue $hostname, string $recordType, string $content): int
     {
         $insert = $this->db->prepare("
             INSERT INTO {$this->recordsTable} (domain_id, name, type, content, ttl, prio)
@@ -182,6 +182,9 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
             ':type' => $recordType,
             ':content' => $content
         ]);
+
+        // The sequence name is for PostgreSQL; MySQL and SQLite ignore it
+        return (int)$this->db->lastInsertId('records_id_seq');
     }
 
     public function deleteDnsRecord(int|string $recordId): void

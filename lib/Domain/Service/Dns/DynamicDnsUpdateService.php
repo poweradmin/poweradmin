@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 use Closure;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
+use Poweradmin\Domain\Port\RecordChangeWriterInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
 use Poweradmin\Domain\Service\Auth\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -40,10 +41,15 @@ use Poweradmin\Domain\ValueObject\IpAddressList;
  */
 readonly class DynamicDnsUpdateService
 {
+    /** The TTL the repositories give every DDNS record. */
+    private const DDNS_TTL = 60;
+
     /**
      * @param string $clientIp The caller's address, recorded with failed login attempts
      * @param Closure|null $requiresApproval fn(int $userId, int $zoneId): bool, true when the user's changes
      *        to the zone go through change requests; omitted, updates are never refused for review
+     * @param Closure|null $changeLoggerFor fn(int $userId, string $username): RecordChangeWriterInterface, the
+     *        record change log writer attributed to the DDNS client; omitted, record changes are not logged
      */
     public function __construct(
         private DynamicDnsValidationService $validationService,
@@ -53,7 +59,8 @@ readonly class DynamicDnsUpdateService
         private string $clientIp = '',
         private ?Closure $requiresApproval = null,
         private ?ZoneCacheFlusherInterface $zoneCacheFlusher = null,
-        private ?PostWriteZoneRectifier $zoneRectifier = null
+        private ?PostWriteZoneRectifier $zoneRectifier = null,
+        private ?Closure $changeLoggerFor = null
     ) {
     }
 
@@ -138,7 +145,8 @@ readonly class DynamicDnsUpdateService
                 return $this->emptyResult('cname', $zoneId);
             }
 
-            $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords);
+            $changeLogger = $this->changeLoggerFor === null ? null : ($this->changeLoggerFor)($user->getId(), $username);
+            $updateResult = $this->updateZone($zoneId, $zoneName, $hostname, $ipList, $dualstackUpdate, $mayRemoveRecords, $changeLogger);
         } catch (\Exception $e) {
             return $this->emptyResult('dnserr', $zoneId);
         }
@@ -219,7 +227,8 @@ readonly class DynamicDnsUpdateService
         HostnameValue $hostname,
         IpAddressList $ipList,
         bool $dualstackUpdate,
-        bool $mayRemoveRecords
+        bool $mayRemoveRecords,
+        ?RecordChangeWriterInterface $changeLogger
     ): array {
         // Dualstack updates always process both record types so the opposite family is
         // cleared when switching from dual-stack to single-stack.
@@ -242,20 +251,27 @@ readonly class DynamicDnsUpdateService
         }
 
         // One unit, so a failure part-way leaves neither new addresses nor a stale serial behind
-        [$wasUpdated, $hasValidRecords] = $this->repository->atomically(function () use ($zoneId, $hostname, $wanted, $existing): array {
+        [$wasUpdated, $hasValidRecords, $pendingLogs] = $this->repository->atomically(function () use ($zoneId, $zoneName, $hostname, $wanted, $existing, $changeLogger): array {
             $wasUpdated = false;
             $hasValidRecords = false;
+            $pendingLogs = [];
             foreach ($wanted as $recordType => $ips) {
-                $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
+                $syncResult = $this->syncDnsRecords($zoneId, $zoneName, $hostname, $recordType, $ips, $existing[$recordType], $changeLogger);
                 $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
                 $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
+                array_push($pendingLogs, ...$syncResult['logs']);
             }
             if ($wasUpdated) {
                 $this->repository->updateSOASerial($zoneId);
             }
 
-            return [$wasUpdated, $hasValidRecords];
+            return [$wasUpdated, $hasValidRecords, $pendingLogs];
         });
+
+        // Log inside the transaction and a failed insert aborts it on PostgreSQL
+        foreach ($pendingLogs as $log) {
+            $this->logChange($log);
+        }
 
         // After the commit, so the rectify and the cache flush see the rows
         if ($wasUpdated) {
@@ -273,30 +289,68 @@ readonly class DynamicDnsUpdateService
     /**
      * @param array<string, int|string> $existing current record ids of this type, keyed by content
      */
-    private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps, array $existing): array
+    private function syncDnsRecords(int $zoneId, string $zoneName, HostnameValue $hostname, string $recordType, array $newIps, array $existing, ?RecordChangeWriterInterface $changeLogger): array
     {
         $hasExistingRecords = !empty($existing);
         $wasUpdated = false;
+        $logs = [];
 
         foreach ($newIps as $ip) {
             if (isset($existing[$ip])) {
                 unset($existing[$ip]);
                 continue;
             }
-            $this->repository->insertDnsRecord($zoneId, $hostname, $recordType, $ip);
+            $recordId = $this->repository->insertDnsRecord($zoneId, $hostname, $recordType, $ip);
+            $logs[] = static fn() => $changeLogger?->logRecordCreate(
+                self::snapshot($recordId, $zoneName, $hostname, $recordType, $ip, self::DDNS_TTL),
+                $zoneId
+            );
             $wasUpdated = true;
         }
 
-        foreach ($existing as $recordId) {
+        foreach ($existing as $content => $recordId) {
             $this->repository->deleteDnsRecord($recordId);
+            $logs[] = static fn() => $changeLogger?->logRecordDelete(
+                self::snapshot($recordId, $zoneName, $hostname, $recordType, (string)$content, null),
+                $zoneId
+            );
             $wasUpdated = true;
         }
 
         return [
+            'logs' => $logs,
             'wasUpdated' => $wasUpdated,
             'hasExistingRecords' => $hasExistingRecords,
             'finalIpCount' => count($newIps),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function snapshot(int|string|null $recordId, string $zoneName, HostnameValue $hostname, string $recordType, string $content, ?int $ttl): array
+    {
+        return [
+            'id' => $recordId,
+            'name' => $hostname->getValue(),
+            'type' => $recordType,
+            'content' => $content,
+            'ttl' => $ttl,
+            'prio' => 0,
+            'disabled' => false,
+            'zone_name' => $zoneName,
+        ];
+    }
+
+    /**
+     * A failed log line must not undo or fail the update it describes.
+     */
+    private function logChange(callable $log): void
+    {
+        try {
+            $log();
+        } catch (\Throwable) {
+        }
     }
 
     private function determineErrorCode(array $errors): string

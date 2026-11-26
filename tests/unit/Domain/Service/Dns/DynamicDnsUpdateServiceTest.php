@@ -832,4 +832,88 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertSame('dnserr', $service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['status']);
     }
+
+    public function testAddedAndRemovedAddressesAreWrittenToTheRecordChangeLogUnderTheClient(): void
+    {
+        $user = new User(5, 'hashedpass', false);
+        $hostname = new HostnameValue('new.example.com');
+        $ipList = new IpAddressList(['192.168.1.2'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 123]);
+        $this->repository->method('insertDnsRecord')->willReturn(124);
+
+        $logger = $this->createMock(\Poweradmin\Domain\Port\RecordChangeWriterInterface::class);
+        $logger->expects($this->once())->method('logRecordCreate')->with(
+            ['id' => 124, 'name' => 'new.example.com', 'type' => 'A', 'content' => '192.168.1.2', 'ttl' => 60, 'prio' => 0, 'disabled' => false, 'zone_name' => 'example.com'],
+            1
+        );
+        $logger->expects($this->once())->method('logRecordDelete')->with(
+            ['id' => 123, 'name' => 'new.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'ttl' => null, 'prio' => 0, 'disabled' => false, 'zone_name' => 'example.com'],
+            1
+        );
+        $actor = null;
+        $service = new DynamicDnsUpdateService(
+            $this->validationService,
+            $this->authService,
+            $this->repository,
+            changeLoggerFor: function (int $userId, string $username) use ($logger, &$actor) {
+                $actor = [$userId, $username];
+
+                return $logger;
+            }
+        );
+
+        $this->assertTrue($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+        $this->assertSame([5, 'ddns-client'], $actor);
+    }
+
+    public function testRecordChangesAreLoggedAfterTheTransactionAndAThrowingLoggerDoesNotFailTheUpdate(): void
+    {
+        $user = new User(5, 'hashedpass', false);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+
+        $inside = false;
+        $repository = $this->createMock(\Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface::class);
+        $repository->method('getZoneType')->willReturn('MASTER');
+        $repository->method('getDnsRecords')->willReturn([]);
+        $repository->method('insertDnsRecord')->willReturn(124);
+        $repository->method('atomically')->willReturnCallback(static function (\Closure $work) use (&$inside): mixed {
+            $inside = true;
+            try {
+                return $work();
+            } finally {
+                $inside = false;
+            }
+        });
+
+        $insideAtLog = null;
+        $logger = $this->createMock(\Poweradmin\Domain\Port\RecordChangeWriterInterface::class);
+        $logger->method('logRecordCreate')->willReturnCallback(static function () use (&$inside, &$insideAtLog): void {
+            $insideAtLog = $inside;
+            throw new \RuntimeException('log insert failed');
+        });
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $repository, changeLoggerFor: static fn() => $logger);
+
+        $result = $service->applyForUser($user, 'ddns-client', new HostnameValue('new.example.com'), new IpAddressList(['192.168.1.2'], []), false);
+
+        $this->assertTrue($result['changed']);
+        $this->assertFalse($insideAtLog);
+    }
+
+    public function testAnUpdateThatChangesNothingLogsNothing(): void
+    {
+        $user = new User(5, 'hashedpass', false);
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn(['192.168.1.1' => 123]);
+
+        $logger = $this->createMock(\Poweradmin\Domain\Port\RecordChangeWriterInterface::class);
+        $logger->expects($this->never())->method('logRecordCreate');
+        $logger->expects($this->never())->method('logRecordDelete');
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, changeLoggerFor: static fn() => $logger);
+
+        $this->assertFalse($service->applyForUser($user, 'ddns-client', new HostnameValue('new.example.com'), new IpAddressList(['192.168.1.1'], []), false)['changed']);
+    }
 }

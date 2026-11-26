@@ -34,6 +34,9 @@ use Poweradmin\Domain\Service\Dns\DynamicDnsValidationService;
 use Poweradmin\Domain\Service\Auth\PermissionService;
 use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Application\Service\Auth\ApiKeyActor;
+use Poweradmin\Domain\Port\RecordChangeWriterInterface;
+use Poweradmin\Infrastructure\Logger\RecordChangeLogger;
 use Poweradmin\Infrastructure\Repository\DbLoginAttemptRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Poweradmin\Application\Service\Auth\LoginAttemptService;
@@ -76,7 +79,9 @@ class DynamicDnsRequestFactory
             $client->ip,
             self::requiresApproval($config, $permissions),
             $zoneCacheFlusher,
-            $zoneRectifier
+            $zoneRectifier,
+            // The client is not the session user, so its changes are logged under its own name
+            static fn(int $userId, string $username): RecordChangeWriterInterface => new RecordChangeLogger($db, $config, new ApiKeyActor($userId, $username))
         );
     }
 

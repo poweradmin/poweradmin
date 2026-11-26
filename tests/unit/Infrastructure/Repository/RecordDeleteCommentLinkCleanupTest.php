@@ -104,6 +104,15 @@ class RecordDeleteCommentLinkCleanupTest extends TestCase
         $this->assertSame(['c10', 'c11', 'c13'], $this->comments());
     }
 
+    public function testDynamicDnsInsertReturnsTheNewRecordId(): void
+    {
+        $repo = new SqlDynamicDnsRepository($this->db, $this->createMock(SOARecordManagerInterface::class), 'records', 'domains');
+
+        $id = $repo->insertDnsRecord(1, new \Poweradmin\Domain\ValueObject\HostnameValue('www.a.example'), 'A', '192.0.2.77');
+
+        $this->assertSame('192.0.2.77', $this->db->query("SELECT content FROM records WHERE id = " . (int)$id)->fetchColumn());
+    }
+
     public function testDynamicDnsWritesInAnAtomicBlockAreRolledBackTogether(): void
     {
         $repo = new SqlDynamicDnsRepository($this->db, $this->createMock(SOARecordManagerInterface::class), 'records', 'domains');
