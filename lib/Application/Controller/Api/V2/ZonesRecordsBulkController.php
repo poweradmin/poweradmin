@@ -491,6 +491,9 @@ class ZonesRecordsBulkController extends PublicApiController
         if ($ttl < 0) {
             throw new ApiErrorException('TTL must not be negative', 400);
         }
+        if ($disabled !== 0 && $disabled !== 1) {
+            throw new ApiErrorException('Disabled field must be 0 or 1', 400);
+        }
 
         // Convert name to FQDN
         $fqdn = $this->normalizeV2RecordName($name, $zoneName);

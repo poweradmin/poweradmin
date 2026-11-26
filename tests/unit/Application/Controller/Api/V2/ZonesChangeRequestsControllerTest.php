@@ -92,6 +92,20 @@ class ZonesChangeRequestsControllerTest extends TestCase
         $this->assertSame('pending', $body['data']['change_request']['status']);
     }
 
+    public function testFilingAnAddWithADisabledValueOtherThanZeroOrOneIsRefused(): void
+    {
+        $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);
+        $this->permissions->method('canRequestZoneRecord')->willReturn(true);
+        $this->service->expects($this->never())->method('fileRecordAdd');
+
+        $response = $this->file([
+            'actions' => [['op' => 'add', 'record' => ['name' => 'www', 'type' => 'A', 'content' => '192.0.2.1', 'disabled' => 2]]],
+        ]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringContainsString('disabled field must be 0 or 1', (string)$response->getContent());
+    }
+
     public function testFilingAnEditHandsTheEditorARowWithTheDisabledFlagAndTtl(): void
     {
         $this->permissions->method('getChangeApprovalMode')->willReturn(ChangeApprovalPolicy::MODE_REQUEST);

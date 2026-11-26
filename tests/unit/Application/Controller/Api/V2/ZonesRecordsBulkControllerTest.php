@@ -246,6 +246,16 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame("Invalid action: frobnicate. Must be 'create', 'update', or 'delete'", $this->messageOf($response));
     }
 
+    public function testACreateWithADisabledValueOtherThanZeroOrOneFailsTheBatch(): void
+    {
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['operations' => [$this->createOperation(['disabled' => 2])]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(['Operation 0 (create): Disabled field must be 0 or 1'], $this->decode($response)['data']['errors']);
+    }
+
     public function testACreateMissingARequiredFieldFailsTheWholeBatch(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));

@@ -625,6 +625,9 @@ class ZonesRRSetsController extends PublicApiController
                 if ($disabled === null || $priority === null) {
                     return $this->returnApiError("Invalid 'disabled' or 'priority' value in record", 400);
                 }
+                if ($disabled !== 0 && $disabled !== 1) {
+                    return $this->returnApiError('Disabled field must be 0 or 1', 400);
+                }
 
                 $records[] = [
                     'content' => $this->formatV2RecordContent($type, trim($recordData['content'])),

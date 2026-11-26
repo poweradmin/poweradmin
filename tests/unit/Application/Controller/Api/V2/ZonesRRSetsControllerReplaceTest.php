@@ -483,6 +483,18 @@ class ZonesRRSetsControllerReplaceTest extends V2ControllerTestCase
         $this->assertSame("Invalid 'disabled' or 'priority' value in record", $this->messageOf($response));
     }
 
+    public function testADisabledValueOtherThanZeroOrOneIsRefusedBeforeTheServiceRuns(): void
+    {
+        $this->replacer->expects($this->never())->method('replace');
+
+        foreach ([2, -1, '5'] as $disabled) {
+            $response = $this->replace(['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1', 'disabled' => $disabled]]]);
+
+            $this->assertSame(400, $response->getStatusCode());
+            $this->assertSame('Disabled field must be 0 or 1', $this->messageOf($response));
+        }
+    }
+
     /**
      * @return array<string, array{array<string, mixed>, int, string}>
      */

@@ -295,6 +295,9 @@ class ZonesChangeRequestsController extends PublicApiController
             if ($ttl === null || $priority === null || $disabled === null) {
                 return $this->returnApiError($label . ': fields ttl, priority, and disabled must be numeric', 400);
             }
+            if ($disabled !== 0 && $disabled !== 1) {
+                return $this->returnApiError($label . ': disabled field must be 0 or 1', 400);
+            }
             // 0 is RFC-valid ("do not cache") and TTLValidator accepts it
             if ($ttl < 0) {
                 return $this->returnApiError($label . ': TTL must not be negative', 400);
