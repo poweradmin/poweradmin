@@ -34,6 +34,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\DnsBackendProvider;
+use Poweradmin\Domain\Service\ReverseTtlResolver;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\NullLogger;
 use ReflectionClass;
@@ -95,6 +96,49 @@ class StoredContentFallbackTest extends TestCase
 
         $this->assertSame(400, $response->getStatusCode());
         $this->assertSame([], $this->edits);
+    }
+
+    #[RunInSeparateProcess]
+    public function testBulkUpdateRefusesADisabledFlagOtherThanZeroOrOne(): void
+    {
+        try {
+            $this->bulkUpdate(['id' => 7, 'disabled' => 2], $this->record('A', '192.0.2.1'));
+            $this->fail('A disabled flag of 2 was accepted');
+        } catch (ApiErrorException $e) {
+            $this->assertSame(400, $e->getCode());
+            $this->assertSame('Disabled field must be 0 or 1', $e->getMessage());
+        }
+
+        $this->assertSame([], $this->edits);
+    }
+
+    #[RunInSeparateProcess]
+    public function testBulkUpdateOmittingDisabledKeepsAStoredNonBooleanValueAsEnabled(): void
+    {
+        $record = $this->record('CAA', '0 issue "ca.example"');
+        $record['disabled'] = 2;
+
+        $this->bulkUpdate(['id' => 7, 'ttl' => 600], $record);
+
+        $this->assertCount(1, $this->edits);
+        $this->assertSame(1, (int)$this->edits[0]['disabled']);
+    }
+
+    #[RunInSeparateProcess]
+    public function testBulkCreateRefusesADisabledFlagOtherThanZeroOrOne(): void
+    {
+        $controller = $this->controller(ZonesRecordsBulkController::class, [], $this->record('A', '192.0.2.1'));
+        (new ReflectionClass($controller))->getProperty('reverseTtlResolver')
+            ->setValue($controller, $this->createMock(ReverseTtlResolver::class));
+        $method = (new ReflectionClass($controller))->getMethod('performCreateOperation');
+
+        try {
+            $method->invoke($controller, 3, ['name' => 'www', 'type' => 'A', 'content' => '192.0.2.1', 'ttl' => 60, 'disabled' => 127], 'MASTER', 'example.com');
+            $this->fail('A disabled flag of 127 was accepted');
+        } catch (ApiErrorException $e) {
+            $this->assertSame(400, $e->getCode());
+            $this->assertSame('Disabled field must be 0 or 1', $e->getMessage());
+        }
     }
 
     /** @return array<string, mixed> */

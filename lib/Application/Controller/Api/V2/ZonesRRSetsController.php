@@ -499,6 +499,10 @@ class ZonesRRSetsController extends PublicApiController
                 if (!is_array($recordData) || (isset($recordData['content']) && is_array($recordData['content']))) {
                     return $this->returnApiError('Invalid field types in request body', 400);
                 }
+                $disabledFlag = $this->inputIntFromBool($recordData, 'disabled', 0);
+                if ($disabledFlag !== null && $disabledFlag !== 0 && $disabledFlag !== 1) {
+                    return $this->returnApiError('Disabled field must be 0 or 1', 400);
+                }
             }
 
             $nameRaw = $this->inputString($input, 'name', '');

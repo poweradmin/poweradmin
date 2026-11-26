@@ -143,6 +143,31 @@ class ApiInputTypeGuardsTest extends TestCase
     }
 
     /** @return array<string, array{mixed}> */
+    public static function outOfRangeDisabledFlags(): array
+    {
+        return [
+            'two' => [2],
+            'large' => [127],
+            'negative' => [-1],
+            'numeric string' => ['5'],
+        ];
+    }
+
+    #[DataProvider('outOfRangeDisabledFlags')]
+    public function testRrsetReplaceRefusesADisabledFlagOtherThanZeroOrOne(mixed $flag): void
+    {
+        $controller = $this->zoneWriteController(
+            ZonesRRSetsController::class,
+            ['name' => 'www', 'type' => 'A', 'ttl' => 60, 'records' => [['content' => '192.0.2.1', 'disabled' => $flag]]]
+        );
+
+        $response = $this->call($controller, 'replaceRRSet');
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame('Disabled field must be 0 or 1', $this->message($response));
+    }
+
+    /** @return array<string, array{mixed}> */
     public static function malformedOperations(): array
     {
         return [

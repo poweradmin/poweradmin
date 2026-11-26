@@ -47,6 +47,7 @@ use Poweradmin\Domain\Utility\RecordIdHelper;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Service\DnsBackendProvider;
 use Poweradmin\Domain\Service\ReverseTtlResolver;
@@ -413,6 +414,10 @@ class ZonesRecordsBulkController extends PublicApiController
             throw new ApiErrorException('Fields ttl, priority, and disabled must be numeric', 400);
         }
 
+        if ($disabled !== 0 && $disabled !== 1) {
+            throw new ApiErrorException('Disabled field must be 0 or 1', 400);
+        }
+
         // Validate TTL
         if ($ttl < 1) {
             throw new ApiErrorException('TTL must be greater than 0', 400);
@@ -527,9 +532,12 @@ class ZonesRecordsBulkController extends PublicApiController
         $content = $this->inputString($operation, 'content', $existingRecord['content']);
         $ttl = $this->inputInt($operation, 'ttl', (int)$existingRecord['ttl']);
         $prio = $this->inputInt($operation, 'priority', (int)($existingRecord['prio'] ?? 0));
-        $disabled = $this->inputIntFromBool($operation, 'disabled', (int)($existingRecord['disabled'] ?? 0));
+        $disabled = $this->inputIntFromBool($operation, 'disabled', DbCompat::boolFromDb($existingRecord['disabled'] ?? 0));
         if ($name === null || $type === null || $content === null || $ttl === null || $prio === null || $disabled === null) {
             throw new ApiErrorException('Invalid field types in request body', 400);
+        }
+        if ($disabled !== 0 && $disabled !== 1) {
+            throw new ApiErrorException('Disabled field must be 0 or 1', 400);
         }
         // Stored content may predate the control character check; heal it when it is the fallback
         $content = array_key_exists('content', $operation)
