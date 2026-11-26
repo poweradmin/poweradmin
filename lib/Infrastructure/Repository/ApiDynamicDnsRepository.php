@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Closure;
 use Poweradmin\Infrastructure\Database\SharedZoneIds;
 use PDO;
 use Poweradmin\Domain\Model\Permission;
@@ -189,5 +190,10 @@ final readonly class ApiDynamicDnsRepository implements DynamicDnsRepositoryInte
     public function updateSOASerial(int $zoneId): void
     {
         $this->soaRecordManager->updateSOASerial($zoneId);
+    }
+
+    public function atomically(Closure $work): mixed
+    {
+        return $work();
     }
 }

@@ -241,16 +241,24 @@ readonly class DynamicDnsUpdateService
             }
         }
 
-        $wasUpdated = false;
-        $hasValidRecords = false;
-        foreach ($wanted as $recordType => $ips) {
-            $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
-            $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
-            $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
-        }
+        // One unit, so a failure part-way leaves neither new addresses nor a stale serial behind
+        [$wasUpdated, $hasValidRecords] = $this->repository->atomically(function () use ($zoneId, $hostname, $wanted, $existing): array {
+            $wasUpdated = false;
+            $hasValidRecords = false;
+            foreach ($wanted as $recordType => $ips) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, $recordType, $ips, $existing[$recordType]);
+                $wasUpdated = $wasUpdated || $syncResult['wasUpdated'];
+                $hasValidRecords = $hasValidRecords || $syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0;
+            }
+            if ($wasUpdated) {
+                $this->repository->updateSOASerial($zoneId);
+            }
 
+            return [$wasUpdated, $hasValidRecords];
+        });
+
+        // After the commit, so the rectify and the cache flush see the rows
         if ($wasUpdated) {
-            $this->repository->updateSOASerial($zoneId);
             $this->zoneRectifier?->rectify($zoneName);
             $this->zoneCacheFlusher?->flushZone($zoneName);
         }

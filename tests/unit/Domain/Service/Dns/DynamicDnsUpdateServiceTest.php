@@ -32,6 +32,7 @@ class DynamicDnsUpdateServiceTest extends TestCase
         $this->validationService = $this->createMock(DynamicDnsValidationService::class);
         $this->authService = $this->createMock(DynamicDnsAuthenticationService::class);
         $this->repository = $this->createMock(DynamicDnsRepositoryInterface::class);
+        $this->repository->method('atomically')->willReturnCallback(static fn(\Closure $work): mixed => $work());
 
         $this->service = new DynamicDnsUpdateService(
             $this->validationService,
@@ -773,5 +774,62 @@ class DynamicDnsUpdateServiceTest extends TestCase
 
         $this->assertTrue($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
         $this->assertFalse($service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['changed']);
+    }
+
+    public function testTheSerialIsBumpedInsideTheUnitOfWorkAndTheRectifyRunsAfterIt(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('new.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn([]);
+
+        $events = [];
+        $repository = $this->createMock(DynamicDnsRepositoryInterface::class);
+        $repository->method('getZoneType')->willReturn('MASTER');
+        $repository->method('getDnsRecords')->willReturn([]);
+        $repository->method('atomically')->willReturnCallback(static function (\Closure $work) use (&$events): mixed {
+            $events[] = 'begin';
+            $result = $work();
+            $events[] = 'commit';
+
+            return $result;
+        });
+        $repository->method('insertDnsRecord')->willReturnCallback(static function () use (&$events): void {
+            $events[] = 'insert';
+        });
+        $repository->method('updateSOASerial')->willReturnCallback(static function () use (&$events): void {
+            $events[] = 'serial';
+        });
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->method('flushZone')->willReturnCallback(static function () use (&$events): void {
+            $events[] = 'flush';
+        });
+
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $repository, zoneCacheFlusher: $flusher);
+        $service->applyForUser($user, 'ddns-client', $hostname, $ipList, false);
+
+        $this->assertSame(['begin', 'insert', 'serial', 'commit', 'flush'], $events);
+    }
+
+    public function testAFailedInsertLeavesTheSerialAndTheCacheAlone(): void
+    {
+        $user = new User(1, 'hashedpass', false);
+        $hostname = new HostnameValue('new.example.com');
+        $ipList = new IpAddressList(['192.168.1.1'], []);
+
+        $this->authService->method('getUserZones')->willReturn([1 => 'example.com']);
+        $this->repository->method('getZoneType')->willReturn('MASTER');
+        $this->repository->method('getDnsRecords')->willReturn([]);
+        $this->repository->method('insertDnsRecord')->willThrowException(new \RuntimeException('write failed'));
+        $this->repository->expects($this->never())->method('updateSOASerial');
+        $flusher = $this->createMock(ZoneCacheFlusherInterface::class);
+        $flusher->expects($this->never())->method('flushZone');
+
+        $service = new DynamicDnsUpdateService($this->validationService, $this->authService, $this->repository, zoneCacheFlusher: $flusher);
+
+        $this->assertSame('dnserr', $service->applyForUser($user, 'ddns-client', $hostname, $ipList, false)['status']);
     }
 }

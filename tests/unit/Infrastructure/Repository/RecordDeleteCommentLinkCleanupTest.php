@@ -104,6 +104,24 @@ class RecordDeleteCommentLinkCleanupTest extends TestCase
         $this->assertSame(['c10', 'c11', 'c13'], $this->comments());
     }
 
+    public function testDynamicDnsWritesInAnAtomicBlockAreRolledBackTogether(): void
+    {
+        $repo = new SqlDynamicDnsRepository($this->db, $this->createMock(SOARecordManagerInterface::class), 'records', 'domains');
+        $hostname = new \Poweradmin\Domain\ValueObject\HostnameValue('www.a.example');
+
+        $this->expectException(\RuntimeException::class);
+        try {
+            $repo->atomically(function () use ($repo, $hostname): void {
+                $repo->insertDnsRecord(1, $hostname, 'A', '192.0.2.50');
+                $repo->deleteDnsRecord(12);
+                throw new \RuntimeException('second write failed');
+            });
+        } finally {
+            $contents = $this->db->query("SELECT content FROM records WHERE type = 'A' ORDER BY id")->fetchAll(PDO::FETCH_COLUMN);
+            $this->assertSame(['192.0.2.1', '192.0.2.2'], $contents);
+        }
+    }
+
     public function testBackendProviderDeleteDropsTheLink(): void
     {
         $provider = new SqlDnsBackendProvider($this->db, new FakeConfiguration(['database' => ['type' => 'sqlite', 'pdns_db_name' => '']]));

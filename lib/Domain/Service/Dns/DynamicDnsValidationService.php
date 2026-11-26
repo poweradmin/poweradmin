@@ -36,6 +36,9 @@ use Poweradmin\Domain\Config\ConfigurationInterface;
  */
 class DynamicDnsValidationService
 {
+    /** One host's round-robin set; keeps the answer inside a UDP packet and a request from writing without bound. */
+    public const MAX_ADDRESSES_PER_FAMILY = 16;
+
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private ConfigurationInterface $config;
@@ -108,6 +111,13 @@ class DynamicDnsValidationService
 
             if ($ipv6String !== '' && !$ipList->hasIpv6Addresses()) {
                 return ValidationResult::failure(['No valid IPv6 address in the supplied IP address list']);
+            }
+
+            if (
+                count($ipList->getIpv4Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+                || count($ipList->getIpv6Addresses()) > self::MAX_ADDRESSES_PER_FAMILY
+            ) {
+                return ValidationResult::failure(['The supplied IP address list contains more than ' . self::MAX_ADDRESSES_PER_FAMILY . ' addresses of one family']);
             }
 
             // The list is the complete record set: anything not in it is deleted. Dropping an

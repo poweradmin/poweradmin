@@ -34,6 +34,19 @@ class DynamicDnsValidationServiceTest extends TestCase
         $this->assertTrue($result->isValid());
     }
 
+    public function testMoreAddressesOfOneFamilyThanTheCapAreRefused(): void
+    {
+        $max = DynamicDnsValidationService::MAX_ADDRESSES_PER_FAMILY;
+        $v4 = static fn(int $n): string => implode(',', array_map(static fn(int $i): string => '10.0.' . intdiv($i, 250) . '.' . ($i % 250 + 1), range(1, $n)));
+        $v6 = static fn(int $n): string => implode(',', array_map(static fn(int $i): string => '2001:db8::' . dechex($i), range(1, $n)));
+
+        $this->assertTrue($this->validationService->validateIpAddresses($v4($max), $v6($max))->isValid());
+        $this->assertFalse($this->validationService->validateIpAddresses($v4($max + 1), '')->isValid());
+        $this->assertFalse($this->validationService->validateIpAddresses('', $v6($max + 1))->isValid());
+        // The same address repeated is one address
+        $this->assertTrue($this->validationService->validateIpAddresses(implode(',', array_fill(0, $max * 4, '192.0.2.1')), '')->isValid());
+    }
+
     public function testValidateRequestMissingUserAgent(): void
     {
         $request = new DynamicDnsRequest(

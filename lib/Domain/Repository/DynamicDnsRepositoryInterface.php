@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Closure;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 
@@ -54,4 +55,14 @@ interface DynamicDnsRepositoryInterface
     public function deleteDnsRecord(int|string $recordId): void;
 
     public function updateSOASerial(int $zoneId): void;
+
+    /**
+     * Runs the writes in $work as one unit: on the SQL backend they commit together or not at
+     * all; the API backend has no transaction to offer and just runs them.
+     *
+     * @template T
+     * @param Closure(): T $work
+     * @return T
+     */
+    public function atomically(Closure $work): mixed;
 }

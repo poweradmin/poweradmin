@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Closure;
 use PDO;
+use Poweradmin\Infrastructure\Database\PdoTransaction;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
@@ -206,5 +208,26 @@ final readonly class SqlDynamicDnsRepository implements DynamicDnsRepositoryInte
     public function updateSOASerial(int $zoneId): void
     {
         $this->soaRecordManager->updateSOASerial($zoneId);
+    }
+
+    public function atomically(Closure $work): mixed
+    {
+        $transaction = new PdoTransaction($this->db);
+        if ($transaction->inTransaction()) {
+            return $work();
+        }
+
+        $transaction->begin();
+        try {
+            $result = $work();
+            $transaction->commit();
+        } catch (\Throwable $e) {
+            if ($transaction->inTransaction()) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        }
+
+        return $result;
     }
 }
