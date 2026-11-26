@@ -498,6 +498,11 @@ class BindZoneFileParser
             return $origin ?? '';
         }
 
+        // @ means the origin; without one it is kept for the zone name to fill in
+        if ($name === '@') {
+            return $origin ?? $name;
+        }
+
         // Already fully qualified
         if (str_ends_with($name, '.')) {
             return rtrim($name, '.');
