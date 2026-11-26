@@ -196,6 +196,28 @@ ZONE;
         $this->assertEquals('example.com', $records[0]->content);
     }
 
+    public function testAtInRdataIsTheOrigin(): void
+    {
+        $content = <<<ZONE
+\$ORIGIN example.com.
+\$TTL 3600
+www  IN  CNAME  @
+@    IN  MX     10 @
+ZONE;
+
+        $records = $this->parser->parse($content)->getRecords();
+
+        $this->assertEquals('example.com', $records[0]->content);
+        $this->assertEquals('example.com', $records[1]->content);
+    }
+
+    public function testAtInRdataWithoutOriginIsKept(): void
+    {
+        $records = $this->parser->parse("www  3600  IN  CNAME  @")->getRecords();
+
+        $this->assertEquals('@', $records[0]->content);
+    }
+
     public function testParseMultilineRecord(): void
     {
         $content = <<<ZONE
