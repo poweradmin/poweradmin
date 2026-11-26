@@ -16628,3 +16628,17 @@ msgstr "En zon accepterar högst %d metadatatyper."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Ett värde av metadatatypen %s får vara högst %d byte långt."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "En vald zon är inte tillgänglig för den här API-nyckeln."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Användarnamnet matchar kontot för zoner eller autoprimärer som ännu saknar ägare, välj ett annat."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Fältet %s får vara högst %d byte."

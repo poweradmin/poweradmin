@@ -16572,3 +16572,17 @@ msgstr "En sone godtar høyst %d metadatatyper."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "En verdi av metadatatypen %s kan være høyst %d byte lang."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "En valgt sone er ikke tilgjengelig for denne API-nøkkelen."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Dette brukernavnet samsvarer med kontoen til soner eller autoprimærer som ennå ikke har en eier, velg et annet."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Feltet %s kan være høyst %d byte."

@@ -16543,3 +16543,17 @@ msgstr "Zona prihvaća najviše %d vrsta metapodataka."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Vrijednost vrste metapodataka %s može imati najviše %d bajtova."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Odabrana zona nije dostupna za ovaj API ključ."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Ovo korisničko ime odgovara računu zona ili autoprimarnih poslužitelja koji još nemaju vlasnika, odaberite drugo."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Polje %s može imati najviše %d bajtova."

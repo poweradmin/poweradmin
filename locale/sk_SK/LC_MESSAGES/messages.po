@@ -16562,3 +16562,17 @@ msgstr "Zóna prijíma najviac %d druhov metadát."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Hodnota druhu metadát %s môže mať najviac %d bajtov."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Vybraná zóna nie je pre tento kľúč API dostupná."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Toto používateľské meno zodpovedá účtu zón alebo autoprimárnych serverov, ktoré zatiaľ nemajú vlastníka, zvoľte iné."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Pole %s môže mať najviac %d bajtov."

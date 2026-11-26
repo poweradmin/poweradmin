@@ -17099,3 +17099,17 @@ msgstr "Glacann crios le %d cineál meiteashonraí ar a mhéad."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Ní féidir le luach den chineál meiteashonraí %s a bheith níos faide ná %d beart."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Níl crios roghnaithe ar fáil don eochair API seo."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Meaitseálann an t-ainm úsáideora seo cuntas crios nó uathphríomhfhreastalaithe nach bhfuil úinéir acu fós, roghnaigh ceann eile."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Ní féidir leis an réimse %s a bheith níos mó ná %d beart."

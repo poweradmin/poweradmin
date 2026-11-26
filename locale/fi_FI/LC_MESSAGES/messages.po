@@ -16448,3 +16448,17 @@ msgstr "Vyöhyke hyväksyy enintään %d metatietolajia."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Metatietolajin %s arvo saa olla enintään %d tavua pitkä."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Valittu vyöhyke ei ole tämän API-avaimen käytettävissä."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Tämä käyttäjänimi vastaa vyöhykkeiden tai automaattisten ensisijaisten palvelimien tiliä, joilla ei vielä ole omistajaa, valitse toinen."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Kenttä %s saa olla enintään %d tavua."

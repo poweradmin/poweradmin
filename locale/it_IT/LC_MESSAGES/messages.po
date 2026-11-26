@@ -16949,3 +16949,17 @@ msgstr "Una zona accetta al massimo %d tipi di metadati."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Un valore del tipo di metadati %s può essere lungo al massimo %d byte."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Una zona selezionata non è disponibile per questa chiave API."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Questo nome utente corrisponde all’account di zone o autoprimary che non hanno ancora un proprietario, scegline un altro."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Il campo %s può essere al massimo di %d byte."

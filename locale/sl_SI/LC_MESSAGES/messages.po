@@ -16688,3 +16688,17 @@ msgstr "Cona sprejme največ %d vrst metapodatkov."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Vrednost vrste metapodatkov %s je lahko dolga največ %d bajtov."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Izbrana cona za ta ključ API ni na voljo."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "To uporabniško ime se ujema z računom con ali samodejnih primarnih strežnikov, ki še nimajo lastnika, izberite drugo."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Polje %s ima lahko največ %d bajtov."

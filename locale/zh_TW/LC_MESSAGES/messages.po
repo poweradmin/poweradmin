@@ -15552,3 +15552,17 @@ msgstr "一個區域最多接受 %d 種中繼資料類型。"
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "中繼資料類型 %s 的值最長為 %d 位元組。"
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "所選區域不可用於此 API 金鑰。"
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "此使用者名稱與尚無擁有者的區域或自動主伺服器的帳戶相符，請選擇其他名稱。"
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s 欄位最多為 %d 位元組。"

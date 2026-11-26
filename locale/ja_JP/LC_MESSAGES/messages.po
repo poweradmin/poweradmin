@@ -16616,3 +16616,17 @@ msgstr "1 つのゾーンに指定できるメタデータの種類は最大 %d 
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "メタデータの種類 %s の値は最大 %d バイトです。"
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "選択したゾーンはこの API キーでは使用できません。"
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "このユーザー名は、まだ所有者のいないゾーンまたは自動プライマリのアカウントと一致します。別の名前を選んでください。"
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s フィールドは最大 %d バイトです。"

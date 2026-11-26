@@ -17196,3 +17196,17 @@ msgstr "Μια ζώνη δέχεται το πολύ %d είδη μεταδεδ�
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Μια τιμή του είδους μεταδεδομένων %s μπορεί να έχει μήκος το πολύ %d byte."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Μια επιλεγμένη ζώνη δεν είναι διαθέσιμη για αυτό το κλειδί API."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Αυτό το όνομα χρήστη ταιριάζει με τον λογαριασμό ζωνών ή αυτόματων πρωτευόντων που δεν έχουν ακόμη κάτοχο, επιλέξτε άλλο."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Το πεδίο %s μπορεί να έχει το πολύ %d byte."

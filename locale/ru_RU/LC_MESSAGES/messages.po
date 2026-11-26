@@ -16803,3 +16803,17 @@ msgstr "Зона допускает не более %d типов метадан
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Значение типа метаданных %s может иметь длину не более %d байт."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Выбранная зона недоступна для этого ключа API."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Это имя пользователя совпадает с учётной записью зон или автопервичных серверов, у которых ещё нет владельца, выберите другое."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Поле %s может иметь не более %d байт."

@@ -16393,3 +16393,17 @@ msgstr "영역 하나에는 최대 %d개의 메타데이터 종류만 허용됩�
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "메타데이터 종류 %s의 값은 최대 %d바이트까지 가능합니다."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "선택한 영역은 이 API 키에 사용할 수 없습니다."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "이 사용자 이름은 아직 소유자가 없는 영역 또는 자동 기본 서버의 계정과 일치합니다. 다른 이름을 선택하세요."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s 필드는 최대 %d바이트까지 가능합니다."

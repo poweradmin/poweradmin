@@ -16673,3 +16673,17 @@ msgstr "Bir bölge en fazla %d meta veri türü kabul eder."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "%s meta veri türünün bir değeri en fazla %d bayt uzunluğunda olabilir."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Seçilen bir bölge bu API anahtarı için kullanılamıyor."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Bu kullanıcı adı henüz sahibi olmayan bölgelerin veya otomatik birincil sunucuların hesabıyla eşleşiyor, lütfen başka bir ad seçin."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s alanı en fazla %d bayt olabilir."

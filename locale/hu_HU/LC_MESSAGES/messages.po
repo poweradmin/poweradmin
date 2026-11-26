@@ -16824,3 +16824,17 @@ msgstr "Egy zóna legfeljebb %d metaadat-típust fogad el."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "A(z) %s metaadat-típus egy értéke legfeljebb %d bájt hosszú lehet."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Egy kiválasztott zóna nem érhető el ehhez az API-kulcshoz."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Ez a felhasználónév egyezik olyan zónák vagy automatikus elsődleges kiszolgálók fiókjával, amelyeknek még nincs tulajdonosuk, válasszon másikat."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "A(z) %s mező legfeljebb %d bájt lehet."

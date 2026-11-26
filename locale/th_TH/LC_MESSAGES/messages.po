@@ -15880,3 +15880,17 @@ msgstr "โซนหนึ่งรับชนิดเมทาดาทาไ
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "ค่าของชนิดเมทาดาทา %s ยาวได้สูงสุด %d ไบต์"
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "โซนที่เลือกไม่พร้อมใช้งานสำหรับคีย์ API นี้"
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "ชื่อผู้ใช้นี้ตรงกับบัญชีของโซนหรือ autoprimary ที่ยังไม่มีเจ้าของ โปรดเลือกชื่ออื่น"
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "ช่อง %s ต้องมีขนาดไม่เกิน %d ไบต์"

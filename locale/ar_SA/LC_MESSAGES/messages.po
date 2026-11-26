@@ -16351,3 +16351,17 @@ msgstr "تقبل المنطقة %d نوعًا من البيانات الوصفي
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "يمكن أن يبلغ طول قيمة نوع البيانات الوصفية %s %d بايت كحد أقصى."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "منطقة محددة غير متاحة لمفتاح API هذا."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "اسم المستخدم هذا يطابق حساب مناطق أو مصادر أساسية تلقائية ليس لها مالك بعد، يرجى اختيار اسم آخر."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "يجب ألا يتجاوز الحقل %s %d بايت."

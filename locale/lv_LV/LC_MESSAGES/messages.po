@@ -16387,3 +16387,17 @@ msgstr "Zona pieņem ne vairāk kā %d metadatu veidus."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Metadatu veida %s vērtība var būt ne garāka par %d baitiem."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Atlasītā zona šai API atslēgai nav pieejama."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Šis lietotājvārds sakrīt ar tādu zonu vai automātisko primāro serveru kontu, kuriem vēl nav īpašnieka, lūdzu, izvēlieties citu."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Laukā %s var būt ne vairāk kā %d baiti."

@@ -15533,3 +15533,17 @@ msgstr "一个区域最多接受 %d 种元数据类型。"
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "元数据类型 %s 的值最长为 %d 字节。"
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "所选区域不可用于此 API 密钥。"
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "此用户名与尚无所有者的区域或自动主服务器的账户匹配，请选择其他用户名。"
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s 字段最多为 %d 字节。"

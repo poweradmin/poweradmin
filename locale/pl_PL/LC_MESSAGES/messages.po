@@ -16797,3 +16797,17 @@ msgstr "Strefa przyjmuje najwyżej %d rodzajów metadanych."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Wartość rodzaju metadanych %s może mieć najwyżej %d bajtów."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Wybrana strefa nie jest dostępna dla tego klucza API."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Ta nazwa użytkownika odpowiada kontu stref lub autoprimary, które nie mają jeszcze właściciela, wybierz inną."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Pole %s może mieć najwyżej %d bajtów."

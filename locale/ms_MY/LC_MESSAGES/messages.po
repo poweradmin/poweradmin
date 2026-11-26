@@ -16759,3 +16759,17 @@ msgstr "Sesebuah zon menerima paling banyak %d jenis metadata."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Nilai jenis metadata %s boleh mencapai paling panjang %d bait."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Zon yang dipilih tidak tersedia untuk kunci API ini."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Nama pengguna ini sepadan dengan akaun zon atau autoprimary yang belum mempunyai pemilik, sila pilih yang lain."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Medan %s mesti paling banyak %d bait."

@@ -16343,3 +16343,17 @@ msgstr "एक ज़ोन अधिकतम %d मेटाडेटा प�
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "मेटाडेटा प्रकार %s का मान अधिकतम %d बाइट लंबा हो सकता है।"
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "चयनित ज़ोन इस API कुंजी के लिए उपलब्ध नहीं है।"
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "यह उपयोगकर्ता नाम उन ज़ोन या ऑटोप्राइमरी के खाते से मेल खाता है जिनका अभी कोई स्वामी नहीं है, कृपया कोई दूसरा चुनें।"
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "%s फ़ील्ड अधिकतम %d बाइट का हो सकता है।"

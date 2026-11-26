@@ -16326,3 +16326,17 @@ msgstr "Tsoon lubab kõige rohkem %d metaandmete liiki."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Metaandmete liigi %s väärtus võib olla kõige rohkem %d baiti pikk."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Valitud tsoon ei ole selle API-võtme jaoks saadaval."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "See kasutajanimi kattub tsoonide või automaatsete primaarserverite kontoga, millel pole veel omanikku, palun valige muu."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Väli %s võib olla kõige rohkem %d baiti."

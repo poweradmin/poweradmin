@@ -16544,3 +16544,17 @@ msgstr "Một vùng chấp nhận tối đa %d loại siêu dữ liệu."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "Một giá trị của loại siêu dữ liệu %s dài tối đa %d byte."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "Một vùng đã chọn không khả dụng cho khóa API này."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "Tên người dùng này trùng với tài khoản của các vùng hoặc autoprimary chưa có chủ sở hữu, vui lòng chọn tên khác."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "Trường %s tối đa %d byte."

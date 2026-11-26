@@ -16150,3 +16150,17 @@ msgstr "אזור מקבל לכל היותר %d סוגי מטא־נתונים."
 #, php-format
 msgid "A value of metadata kind %s may be at most %d bytes long."
 msgstr "ערך מסוג המטא־נתונים %s יכול להיות באורך של עד %d בתים."
+
+#: lib/Application/Controller/User/ApiKeysController.php:182
+#: lib/Application/Controller/User/ApiKeysController.php:265
+msgid "A selected zone is not available for this API key."
+msgstr "אזור שנבחר אינו זמין עבור מפתח API זה."
+
+#: lib/Application/Service/User/UserFormMessages.php:45
+msgid "This username matches the account of zones or autoprimaries that have no owner yet, please choose another one."
+msgstr "שם משתמש זה תואם לחשבון של אזורים או שרתים ראשיים אוטומטיים שעדיין אין להם בעלים, בחר שם אחר."
+
+#: lib/Domain/Model/RecordComment.php:95
+#, php-format
+msgid "The %s field must be at most %d bytes."
+msgstr "השדה %s יכול להיות לכל היותר %d בתים."
