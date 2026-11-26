@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -69,6 +69,11 @@ class Permission
     public static function isTemplateRecordTypeRestricted(string $type, string $permEdit): bool
     {
         if (self::isRecordTypeRestrictedForClient($type, $permEdit)) {
+            return true;
+        }
+
+        // A user with no record edit rights must not seed SOA/NS through a template either.
+        if ($permEdit === 'none' && in_array(strtoupper($type), self::RESTRICTED_TYPES_FOR_CLIENT, true)) {
             return true;
         }
 

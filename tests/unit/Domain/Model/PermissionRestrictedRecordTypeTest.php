@@ -94,6 +94,14 @@ class PermissionRestrictedRecordTypeTest extends TestCase
         $this->assertFalse(Permission::isTemplateRecordTypeRestricted('SOA', 'own'));
     }
 
+    public function testTemplateGateRestrictsSoaAndNsForNoneEditor(): void
+    {
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('SOA', 'none'));
+        $this->assertTrue(Permission::isTemplateRecordTypeRestricted('NS', 'none'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('NS', 'own'));
+        $this->assertFalse(Permission::isTemplateRecordTypeRestricted('NS', 'all'));
+    }
+
     public function testTemplateGateLeavesOrdinaryTypesAlone(): void
     {
         $this->assertFalse(Permission::isTemplateRecordTypeRestricted('A', 'own_as_client'));
