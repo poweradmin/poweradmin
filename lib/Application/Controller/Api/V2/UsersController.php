@@ -613,7 +613,7 @@ class UsersController extends PublicApiController
             // Use the domain service to create user
             $result = UserCommandFactory::create($input);
             if (!is_array($result)) {
-                $result = $this->userManagementService->createUser($result);
+                $result = $this->userManagementService->createUser($result, $currentUserId);
             }
 
             if (!$result['success']) {

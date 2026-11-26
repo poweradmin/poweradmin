@@ -39,6 +39,9 @@ class DbZoneAccountOwnerRepositoryTest extends TestCase
         $this->db = new PDO('sqlite::memory:', null, null, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $this->db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER NULL, owner INTEGER, zone_name TEXT)");
         $this->db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT)");
+        $this->db->exec("CREATE TABLE zones_groups (id INTEGER PRIMARY KEY, domain_id INTEGER NOT NULL, group_id INTEGER NOT NULL)");
+        $this->db->exec("CREATE TABLE user_groups (id INTEGER PRIMARY KEY, name TEXT)");
+        $this->db->exec("INSERT INTO user_groups (id, name) VALUES (5, 'ops')");
         $this->db->exec("INSERT INTO users (id, username) VALUES (1, 'alice')");
     }
 
@@ -106,5 +109,24 @@ class DbZoneAccountOwnerRepositoryTest extends TestCase
     public function testAnUnknownZoneResolvesToNull(): void
     {
         $this->assertNull($this->repository()->oldestOwnerUsername(999));
+    }
+
+    public function testAZoneOwnedOnlyByAGroupHasAnOwner(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (1, 301, 0, 'grouped.example'), (2, 302, 0, 'orphan.example'), (3, 303, 1, 'direct.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (301, 5)");
+
+        $this->assertTrue($this->repository(false)->hasOwner(301));
+        $this->assertFalse($this->repository(false)->hasOwner(302));
+        $this->assertTrue($this->repository(false)->hasOwner(303));
+        $this->assertNull($this->repository(false)->oldestOwnerUsername(301));
+    }
+
+    public function testAGrantOfADeletedGroupIsNoOwner(): void
+    {
+        $this->db->exec("INSERT INTO zones (id, domain_id, owner, zone_name) VALUES (1, 304, 0, 'stale.example')");
+        $this->db->exec("INSERT INTO zones_groups (domain_id, group_id) VALUES (304, 77)");
+
+        $this->assertFalse($this->repository(false)->hasOwner(304));
     }
 }

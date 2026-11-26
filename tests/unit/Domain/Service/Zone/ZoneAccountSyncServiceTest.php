@@ -61,10 +61,10 @@ class ZoneAccountSyncServiceTest extends TestCase
     }
 
     #[Test]
-    public function anAccountIsPendingOnlyWhileAZoneCarryingItHasNoDirectOwner(): void
+    public function anAccountIsPendingOnlyWhileAZoneCarryingItHasNoOwner(): void
     {
         $this->backendProvider->method('getZoneIdsByAccount')->willReturnMap([['pending', [7, 8]], ['settled', [9]], ['unused', []]]);
-        $this->owners->method('oldestOwnerUsername')->willReturnCallback(fn(int $zoneId): ?string => $zoneId === 8 ? null : 'bob');
+        $this->owners->method('hasOwner')->willReturnCallback(fn(int $zoneId): bool => $zoneId !== 8);
 
         $service = new ZoneAccountSyncService($this->owners, $this->config, $this->backendProvider);
 

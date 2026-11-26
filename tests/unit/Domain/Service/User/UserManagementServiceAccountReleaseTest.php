@@ -51,6 +51,9 @@ class UserManagementServiceAccountReleaseTest extends TestCase
 
     private string $storedUsername = 'someone';
 
+    /** @var list<int> */
+    private array $adminIds = [];
+
     /** @var list<string> */
     private array $calls = [];
 
@@ -81,6 +84,7 @@ class UserManagementServiceAccountReleaseTest extends TestCase
         $permissions->method('canDeleteZoneById')->willReturn(true);
         $permissions->method('canEditZoneMeta')->willReturn(true);
         $permissions->method('userOwnsZone')->willReturn(true);
+        $permissions->method('isAdmin')->willReturnCallback(fn(int $userId): bool => in_array($userId, $this->adminIds, true));
         $zones = $this->createMock(ZoneManagementService::class);
         $zones->method('deleteZone')->willReturn(['success' => true, 'message' => '']);
 
@@ -110,6 +114,33 @@ class UserManagementServiceAccountReleaseTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $result['code']);
+    }
+
+    #[Test]
+    public function testASuperuserCanCreateTheUserWhoseAccountAnOwnerlessZoneCarries(): void
+    {
+        $this->rebuild(adopts: true);
+        $this->adminIds = [1];
+        $this->accountSync->method('hasOwnerlessZoneWithAccount')->willReturn(true);
+        $this->userRepository->method('permissionTemplateExists')->willReturn(true);
+        $this->userRepository->method('createUser')->willReturn(9);
+        $command = new CreateUserCommand('pending', 'Secret123!', 'Alice', 'a@example.com', permissionTemplateId: 3);
+
+        $this->assertTrue($this->service->createUser($command, 1)['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $this->service->createUser($command, 2)['code']);
+    }
+
+    #[Test]
+    public function testASuperuserCanRenameAUserToAPendingAccountName(): void
+    {
+        $this->rebuild(adopts: true);
+        $this->adminIds = [1];
+        $this->storedUsername = 'old';
+        $this->accountSync->method('hasOwnerlessZoneWithAccount')->willReturn(true);
+        $this->userRepository->method('updateUser')->willReturn(true);
+
+        $this->assertTrue($this->service->updateUser(2, new UpdateUserCommand(username: 'pending'), 1)['success']);
+        $this->assertSame(UserManagementService::ERR_USERNAME_CLAIMED, $this->service->updateUser(2, new UpdateUserCommand(username: 'pending'), 3)['code']);
     }
 
     #[Test]

@@ -60,4 +60,17 @@ final class DbZoneAccountOwnerRepository implements ZoneAccountOwnerLookupInterf
 
         return $account === false ? null : (string)$account;
     }
+
+    public function hasOwner(int $domainId): bool
+    {
+        if ($this->oldestOwnerUsername($domainId) !== null) {
+            return true;
+        }
+
+        $stmt = $this->db->prepare('SELECT 1 FROM zones_groups zg INNER JOIN user_groups ug ON ug.id = zg.group_id WHERE zg.domain_id = ? LIMIT 1');
+        $stmt->bindValue(1, $domainId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
 }

@@ -34,4 +34,11 @@ interface ZoneAccountOwnerLookupInterface
      * @param int|null $excludeUserId A user to leave out, for a zone about to lose them as an owner
      */
     public function oldestOwnerUsername(int $domainId, ?int $excludeUserId = null): ?string;
+
+    /**
+     * Whether the zone has any owner, a direct one or a group it is shared with.
+     *
+     * @param int $domainId Canonical zone id, as for oldestOwnerUsername()
+     */
+    public function hasOwner(int $domainId): bool;
 }

@@ -230,7 +230,7 @@ class UserManagementService
      *
      * @return array Result with success status, message, and user ID if successful
      */
-    public function createUser(CreateUserCommand $command): array
+    public function createUser(CreateUserCommand $command, ?int $actingUserId = null): array
     {
         if ($command->username === '') {
             return [
@@ -277,7 +277,7 @@ class UserManagementService
         if ($this->userRepository->getUserByUsername($command->username)) {
             return $this->usernameExists();
         }
-        if ($this->accountNameClaimed($command->username)) {
+        if ($this->accountNameClaimed($command->username, $actingUserId)) {
             return $this->usernameClaimed();
         }
 
@@ -442,7 +442,7 @@ class UserManagementService
             if ($existingUser && (int)$existingUser['id'] !== $userId) {
                 return $this->usernameExists();
             }
-            if ($this->accountNameClaimed($command->username)) {
+            if ($this->accountNameClaimed($command->username, $actingUserId)) {
                 return $this->usernameClaimed();
             }
         }
@@ -1131,11 +1131,12 @@ class UserManagementService
 
     /**
      * Whether adoption would hand zones to a user of this name: an ownerless zone carries it as
-     * its account, or an autoprimary does. Such a name is for the account's real user to take.
+     * its account, or an autoprimary does. Such a name is for the account's real user to take,
+     * and an administrator may create that user.
      */
-    private function accountNameClaimed(string $username): bool
+    private function accountNameClaimed(string $username, ?int $actingUserId): bool
     {
-        if (!$this->adoptsZoneOwnerFromAccount) {
+        if (!$this->adoptsZoneOwnerFromAccount || ($actingUserId !== null && $this->permissions->isAdmin($actingUserId))) {
             return false;
         }
         if ($this->accountSync?->hasOwnerlessZoneWithAccount($username)) {

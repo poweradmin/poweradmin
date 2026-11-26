@@ -159,7 +159,7 @@ class AddUserController extends BaseController
 
         $created = UserCommandFactory::create($input, $useRemoteUser);
         if (!is_array($created)) {
-            $created = $this->services()->userManagementService()->createUser($created);
+            $created = $this->services()->userManagementService()->createUser($created, $callerId);
         }
         if ($created['success']) {
             $newUserId = (int)$created['user_id'];

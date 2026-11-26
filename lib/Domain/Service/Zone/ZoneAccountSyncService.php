@@ -52,8 +52,8 @@ class ZoneAccountSyncService
     }
 
     /**
-     * Whether a zone with no direct owner carries this account. Adoption by account would
-     * hand such a zone to a user of that name.
+     * Whether a zone with no owner, direct or through a group, carries this account. Adoption
+     * by account would hand such a zone to a user of that name.
      */
     public function hasOwnerlessZoneWithAccount(string $account): bool
     {
@@ -62,7 +62,7 @@ class ZoneAccountSyncService
         }
 
         foreach ($this->backendProvider->getZoneIdsByAccount($account) as $domainId) {
-            if ($this->owners->oldestOwnerUsername($domainId) === null) {
+            if (!$this->owners->hasOwner($domainId)) {
                 return true;
             }
         }
