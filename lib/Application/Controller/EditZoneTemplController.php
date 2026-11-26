@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -25,7 +25,7 @@
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
- * @copyright   2010-2025 Poweradmin Development Team
+ * @copyright   2010-2026 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
@@ -221,15 +221,23 @@ class EditZoneTemplController extends BaseController
         $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
 
         $syncedZoneIds = [];
+        $allUpdated = true;
         foreach ($zones as $zone) {
             // PowerDNS record updates use domain_id; sync tracking uses Poweradmin zones.id.
-            $dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id);
-            $syncedZoneIds[] = $zone['zone_id'];
+            // A refused zone stays out of sync, so it is retried next time
+            if ($dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone['domain_id'], $zone_templ_id)) {
+                $syncedZoneIds[] = $zone['zone_id'];
+            } else {
+                $allUpdated = false;
+            }
         }
 
         $syncService->markZonesAsSynced($syncedZoneIds, $zone_templ_id);
 
-        $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+        // A refused zone already queued its error; a success message beside it would contradict it
+        if ($allUpdated) {
+            $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+        }
         $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
     }
 

@@ -103,8 +103,9 @@ interface DomainManagerInterface
      * @param int $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
+     * @return bool False when the update was refused for lack of permission
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id);
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool;
 
     /**
      * Get Zone Template ID for Zone ID

@@ -519,7 +519,7 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -531,7 +531,13 @@ class DomainManager implements DomainManagerInterface
         // instead of dropping the template records and re-adding nothing.
         if ($zone_template_id != 0 && !($zone_master_add || $zone_slave_add)) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this zone."));
-            return;
+            return false;
+        }
+
+        // Without edit rights on this zone, the records below must not be written either.
+        if ($zone_template_id != 0 && !($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1"))) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this zone."));
+            return false;
         }
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
@@ -672,6 +678,7 @@ class DomainManager implements DomainManagerInterface
         }
 
         $this->db->commit();
+        return true;
     }
 
     /**

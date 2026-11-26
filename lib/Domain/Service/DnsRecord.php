@@ -744,11 +744,11 @@ class DnsRecord
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      *
-     * @return void
+     * @return bool False when the update was refused for lack of permission
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): bool
     {
-        $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
+        return $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
     }
 
     /** Delete array of domains
