@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\Web\AuditService;
 use Poweradmin\Application\Http\RefusalStatus;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipModeService;
 use Poweradmin\Domain\Service\Zone\ZoneOwnershipRefusal;
@@ -81,6 +82,17 @@ class ZoneOwnersController extends PublicApiController
                 ZoneOwnershipModeService::MODE_GROUPS_ONLY => 'Add a group first (zone ownership mode is groups_only).',
                 default => 'Add another owner or a group first.',
             },
+        };
+    }
+
+    // Adding or removing an owner or a group assignment changes who may edit an existing zone,
+    // so it needs update rights; removing also needs delete.
+    protected function requiredApiKeyOperations(): array
+    {
+        return match (strtoupper($this->request->getMethod())) {
+            'GET', 'HEAD' => [ApiKeyScope::OP_VIEW],
+            'DELETE' => [ApiKeyScope::OP_UPDATE, ApiKeyScope::OP_DELETE],
+            default => [ApiKeyScope::OP_UPDATE],
         };
     }
 

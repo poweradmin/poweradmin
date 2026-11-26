@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Error\GroupNotFoundException;
 use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\PublicApiController;
@@ -58,6 +59,17 @@ class GroupZonesController extends PublicApiController
         $this->zoneGroupService = $this->services()->zoneGroupService();
         $this->apiPermissionService = $this->services()->apiPermissionService();
         $this->domainRepository = $this->services()->domainRepository();
+    }
+
+    // Assigning a zone to a group or taking it away changes who may edit an existing zone,
+    // so it needs update rights; removing also needs delete.
+    protected function requiredApiKeyOperations(): array
+    {
+        return match (strtoupper($this->request->getMethod())) {
+            'GET', 'HEAD' => [ApiKeyScope::OP_VIEW],
+            'DELETE' => [ApiKeyScope::OP_UPDATE, ApiKeyScope::OP_DELETE],
+            default => [ApiKeyScope::OP_UPDATE],
+        };
     }
 
     /**

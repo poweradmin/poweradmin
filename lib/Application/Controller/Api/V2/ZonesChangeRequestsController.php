@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\ZoneChangeRequest;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
@@ -84,6 +85,12 @@ class ZonesChangeRequestsController extends PublicApiController
         };
 
         $this->sendAndHalt($response);
+    }
+
+    // Filing asks for changes to an existing zone, whatever the action, so it needs update rights.
+    protected function requiredApiKeyOperations(): array
+    {
+        return [ApiKeyScope::OP_UPDATE];
     }
 
     #[OA\Post(
