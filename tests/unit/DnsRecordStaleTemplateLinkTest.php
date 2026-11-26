@@ -70,4 +70,39 @@ class DnsRecordStaleTemplateLinkTest extends TestCase
         $this->assertSame('0', (string)$db->query("SELECT COUNT(*) FROM records WHERE id = 11")->fetchColumn(), 'Own linked record is removed');
         $this->assertSame('0', (string)$db->query("SELECT COUNT(*) FROM records_zone_templ WHERE record_id = 10")->fetchColumn(), 'Stale link is dropped');
     }
+
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function testEditRightsWithoutZoneAddKeepTheTemplateRecords(): void
+    {
+        $_SESSION['userid'] = 1;
+
+        $db = new PDOLayer('sqlite::memory:', '', '', [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $db->exec("CREATE TABLE perm_items (id INTEGER PRIMARY KEY, name TEXT)");
+        $db->exec("CREATE TABLE perm_templ_items (id INTEGER PRIMARY KEY, templ_id INTEGER, perm_id INTEGER)");
+        $db->exec("CREATE TABLE perm_templ (id INTEGER PRIMARY KEY, name TEXT)");
+        $db->exec("CREATE TABLE users (id INTEGER PRIMARY KEY, perm_templ INTEGER)");
+        $db->exec("CREATE TABLE domains (id INTEGER PRIMARY KEY, name TEXT, type TEXT)");
+        $db->exec("CREATE TABLE records (id INTEGER PRIMARY KEY, domain_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER)");
+        $db->exec("CREATE TABLE zones (id INTEGER PRIMARY KEY, domain_id INTEGER, owner INTEGER, zone_templ_id INTEGER)");
+        $db->exec("CREATE TABLE records_zone_templ (domain_id INTEGER, record_id INTEGER, zone_templ_id INTEGER)");
+        $db->exec("CREATE TABLE zone_templ_records (id INTEGER PRIMARY KEY, zone_templ_id INTEGER, name TEXT, type TEXT, content TEXT, ttl INTEGER, prio INTEGER)");
+        $db->exec("INSERT INTO perm_items VALUES (1, 'zone_content_edit_own')");
+        $db->exec("INSERT INTO perm_templ VALUES (1, 'editor')");
+        $db->exec("INSERT INTO perm_templ_items VALUES (1, 1, 1)");
+        $db->exec("INSERT INTO users VALUES (1, 1)");
+        $db->exec("INSERT INTO domains VALUES (1, 'mine.example', 'MASTER')");
+        $db->exec("INSERT INTO zones VALUES (1, 1, 1, 5)");
+        $db->exec("INSERT INTO records VALUES (11, 1, 'mine.example', 'NS', 'ns1.mine.example', 300, 0)");
+        $db->exec("INSERT INTO records_zone_templ VALUES (1, 11, 5)");
+
+        $config = $this->createMock(AppConfiguration::class);
+        $dnsRecord = new DnsRecord($db, $config);
+        ob_start();
+        $dnsRecord->update_zone_records('sqlite', 300, 1, 5);
+        ob_end_clean();
+
+        $this->assertSame('1', (string)$db->query("SELECT COUNT(*) FROM records WHERE id = 11")->fetchColumn(), 'Template record is kept');
+        $this->assertSame('1', (string)$db->query("SELECT COUNT(*) FROM records_zone_templ")->fetchColumn(), 'Link is kept');
+    }
 }

@@ -1917,6 +1917,16 @@ class DnsRecord
         $zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add') ? "1" : "0";
         $zone_slave_add = UserManager::verify_permission($this->db, 'zone_slave_add') ? "1" : "0";
 
+        // Records are rewritten only with zone add rights, so refuse before the delete
+        // instead of dropping the template records and re-adding nothing.
+        if ($zone_template_id != 0 && $zone_master_add != "1" && $zone_slave_add != "1") {
+            $error = new ErrorMessage(_("You do not have the permission to edit this zone."));
+            $errorPresenter = new ErrorPresenter();
+            $errorPresenter->present($error);
+
+            return;
+        }
+
         $soa_rec = $this->get_soa_record($zone_id);
         $this->db->beginTransaction();
 
