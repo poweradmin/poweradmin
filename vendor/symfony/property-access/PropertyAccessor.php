@@ -56,7 +56,6 @@ class PropertyAccessor implements PropertyAccessorInterface
     private const IS_REF_CHAINED = 2;
     private const CACHE_PREFIX_READ = 'r';
     private const CACHE_PREFIX_WRITE = 'w';
-    private const CACHE_PREFIX_PROPERTY_PATH = 'p';
     private const RESULT_PROTO = [self::VALUE => null];
 
     private static array $dynamicPropertiesCache = [];
@@ -416,11 +415,19 @@ class PropertyAccessor implements PropertyAccessorInterface
                         throw $e;
                     }
                 } elseif (PropertyReadInfo::TYPE_PROPERTY === $type) {
-                    if (!isset($object->$name) && !\array_key_exists($name, (array) $object)) {
+                    if (PropertyReadInfo::VISIBILITY_PUBLIC !== $access->getVisibility()) {
+                        if (!$isNullSafe && !$ignoreInvalidProperty) {
+                            throw new NoSuchPropertyException(\sprintf('The property "%s" in class "%s" is not publicly readable.', $name, get_debug_type($object)));
+                        }
+
+                        return $result;
+                    }
+
+                    if (!isset($object->$name) && !\array_key_exists($name, get_mangled_object_vars($object))) {
                         try {
                             $r = new \ReflectionProperty($class, $name);
 
-                            if ($r->isPublic() && !$r->hasType()) {
+                            if ($r->isPublic() && !$r->hasType() && !(\PHP_VERSION_ID >= 80400 && $r->isVirtual())) {
                                 throw new UninitializedPropertyException(\sprintf('The property "%s::$%s" is not initialized.', $class, $name));
                             }
                         } catch (\ReflectionException $e) {
@@ -443,6 +450,14 @@ class PropertyAccessor implements PropertyAccessorInterface
                     $type = ($type = $r->getType()) instanceof \ReflectionNamedType ? $type->getName() : (string) $type;
 
                     throw new UninitializedPropertyException(\sprintf('The property "%s::$%s" is not readable because it is typed "%s". You should initialize it or declare a default value instead.', $matches[1], $r->getName(), $type), 0, $e);
+                }
+
+                if (__FILE__ === $e->getFile() && \PHP_VERSION_ID >= 80400 && ($r = new \ReflectionClass($class))->hasProperty($name) && ($r = $r->getProperty($name))->isVirtual() && !$r->hasHook(\PropertyHookType::Get)) {
+                    if (!$isNullSafe && !$ignoreInvalidProperty) {
+                        throw new NoSuchPropertyException(\sprintf('The property "%s" in class "%s" is not publicly readable.', $name, get_debug_type($object)), 0, $e);
+                    }
+
+                    return $result;
                 }
 
                 throw $e;
@@ -478,6 +493,11 @@ class PropertyAccessor implements PropertyAccessorInterface
             return $this->readPropertyCache[$key];
         }
 
+        if (1000 < \count($this->readPropertyCache)) {
+            // stop memory leak if there are many keys
+            $this->readPropertyCache = \array_slice($this->readPropertyCache, 500, null, true);
+        }
+
         if ($this->cacheItemPool) {
             $item = $this->cacheItemPool->getItem(self::CACHE_PREFIX_READ.rawurlencode($key));
             if ($item->isHit()) {
@@ -491,7 +511,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             'enable_constructor_extraction' => false,
         ]);
 
-        if (isset($item)) {
+        if (isset($item) && self::isPersistable($class, $property, $accessor)) {
             $this->cacheItemPool->save($item->set($accessor));
         }
 
@@ -534,7 +554,11 @@ class PropertyAccessor implements PropertyAccessorInterface
                 if (PropertyWriteInfo::TYPE_METHOD === $type) {
                     $object->{$mutator->getName()}($value);
                 } elseif (PropertyWriteInfo::TYPE_PROPERTY === $type) {
-                    $object->{$mutator->getName()} = $value;
+                    if (PropertyWriteInfo::VISIBILITY_PUBLIC === $mutator->getVisibility()) {
+                        $object->{$mutator->getName()} = $value;
+                    } elseif (!$this->ignoreInvalidProperty) {
+                        throw new NoSuchPropertyException(\sprintf('The property "%s" in class "%s" is not publicly writable.', $mutator->getName(), get_debug_type($object)));
+                    }
                 } elseif (PropertyWriteInfo::TYPE_ADDER_AND_REMOVER === $type) {
                     $this->writeCollection($zval, $property, $value, $mutator->getAdderInfo(), $mutator->getRemoverInfo());
                 }
@@ -542,7 +566,7 @@ class PropertyAccessor implements PropertyAccessorInterface
                 $object->$property = $value;
             } elseif (!$this->ignoreInvalidProperty) {
                 if ($mutator->hasErrors()) {
-                    throw new NoSuchPropertyException(implode('. ', $mutator->getErrors()).'.');
+                    throw new NoSuchPropertyException(implode('. ', array_map(static fn (string $error): string => rtrim($error, '.'), $mutator->getErrors())).'.');
                 }
 
                 throw new NoSuchPropertyException(\sprintf('Could not determine access type for property "%s" in class "%s".', $property, get_debug_type($object)));
@@ -606,6 +630,11 @@ class PropertyAccessor implements PropertyAccessorInterface
             return $this->writePropertyCache[$key];
         }
 
+        if (1000 < \count($this->writePropertyCache)) {
+            // stop memory leak if there are many keys
+            $this->writePropertyCache = \array_slice($this->writePropertyCache, 500, null, true);
+        }
+
         if ($this->cacheItemPool) {
             $item = $this->cacheItemPool->getItem(self::CACHE_PREFIX_WRITE.rawurlencode($key));
             if ($item->isHit()) {
@@ -620,7 +649,7 @@ class PropertyAccessor implements PropertyAccessorInterface
             'enable_adder_remover_extraction' => $useAdderAndRemover,
         ]);
 
-        if (isset($item)) {
+        if (isset($item) && self::isPersistable($class, $property, $mutator)) {
             $this->cacheItemPool->save($item->set($mutator));
         }
 
@@ -665,20 +694,13 @@ class PropertyAccessor implements PropertyAccessorInterface
             return $this->propertyPathCache[$propertyPath];
         }
 
-        if ($this->cacheItemPool) {
-            $item = $this->cacheItemPool->getItem(self::CACHE_PREFIX_PROPERTY_PATH.rawurlencode($propertyPath));
-            if ($item->isHit()) {
-                return $this->propertyPathCache[$propertyPath] = $item->get();
-            }
+        if (1000 < \count($this->propertyPathCache)) {
+            // stop memory leak if there are many keys
+            $this->propertyPathCache = \array_slice($this->propertyPathCache, 500, null, true);
         }
 
-        $propertyPathInstance = new PropertyPath($propertyPath);
-        if (isset($item)) {
-            $item->set($propertyPathInstance);
-            $this->cacheItemPool->save($item);
-        }
-
-        return $this->propertyPathCache[$propertyPath] = $propertyPathInstance;
+        // property paths are not persisted in the cache pool: they can come from the input and parsing them is as fast as fetching them
+        return $this->propertyPathCache[$propertyPath] = new PropertyPath($propertyPath);
     }
 
     /**
@@ -735,5 +757,42 @@ class PropertyAccessor implements PropertyAccessorInterface
         } while ($r = $r->getParentClass());
 
         return false;
+    }
+
+    /**
+     * Tells whether the info found for a property can be persisted in the cache pool.
+     *
+     * Magic methods accept any name, and a method can be found through many spellings of its name. Persisting all of them would let the pool grow with the input.
+     *
+     * @param PropertyReadInfo|PropertyWriteInfo|null $info
+     */
+    private static function isPersistable(string $class, string $property, $info): bool
+    {
+        if (property_exists($class, $property)) {
+            return true;
+        }
+
+        if ($info instanceof PropertyReadInfo && PropertyReadInfo::TYPE_METHOD === $info->getType()) {
+            $methods = [$info->getName()];
+        } elseif ($info instanceof PropertyWriteInfo && PropertyWriteInfo::TYPE_METHOD === $info->getType()) {
+            $methods = [$info->getName()];
+        } elseif ($info instanceof PropertyWriteInfo && PropertyWriteInfo::TYPE_ADDER_AND_REMOVER === $info->getType()) {
+            $methods = [$info->getAdderInfo()->getName(), $info->getRemoverInfo()->getName()];
+        } else {
+            return false;
+        }
+
+        // camelCase or snake_case only, since extractors also accept extra underscores and spaces
+        if (!preg_match('/^(?:[a-zA-Z0-9\x80-\xff]++|[a-z0-9\x80-\xff]++(?:_[a-z0-9\x80-\xff]++)++)$/D', $property)) {
+            return false;
+        }
+
+        foreach ($methods as $method) {
+            if (!method_exists($class, $method) || $method !== (new \ReflectionMethod($class, $method))->name) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

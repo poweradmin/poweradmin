@@ -3125,6 +3125,7 @@ class ComposerStaticInit0ad1039ae44b47b344e495959a2ee847
         'Symfony\\Component\\Routing\\Loader\\Configurator\\RoutesReference' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/RoutesReference.php',
         'Symfony\\Component\\Routing\\Loader\\Configurator\\RoutingConfigurator' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/RoutingConfigurator.php',
         'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\AddTrait' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/Traits/AddTrait.php',
+        'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\GlobResourceTrait' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/Traits/GlobResourceTrait.php',
         'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\HostTrait' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/Traits/HostTrait.php',
         'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\LocalizedRouteTrait' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/Traits/LocalizedRouteTrait.php',
         'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\PrefixTrait' => __DIR__ . '/..' . '/symfony/routing/Loader/Configurator/Traits/PrefixTrait.php',

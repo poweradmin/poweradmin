@@ -32,6 +32,8 @@ use Symfony\Component\TypeInfo\Type\UnionType;
  */
 trait TypeFactoryTrait
 {
+    private static int $fromValueDepth = 0;
+
     /**
      * @template T of TypeIdentifier
      * @template U value-of<T>
@@ -424,24 +426,26 @@ trait TypeFactoryTrait
         }
 
         if (is_iterable($value)) {
-            /** @var list<BuiltinType<TypeIdentifier::INT>|BuiltinType<TypeIdentifier::STRING>> $keyTypes */
+            /** @var list<Type> $keyTypes */
             $keyTypes = [];
 
             /** @var list<Type> $valueTypes */
             $valueTypes = [];
 
-            foreach ($value as $k => $v) {
-                $keyTypes[] = self::fromValue($k);
-                $valueTypes[] = self::fromValue($v);
+            try {
+                if (++self::$fromValueDepth > 512) {
+                    throw new InvalidArgumentException('Cannot create a type from a value nested more than 512 levels deep, it may contain a reference cycle.');
+                }
+
+                foreach ($value as $k => $v) {
+                    $keyTypes[] = \is_string($k) ? self::string() : self::fromValue($k);
+                    $valueTypes[] = self::fromValue($v);
+                }
+            } finally {
+                --self::$fromValueDepth;
             }
 
-            if ($keyTypes) {
-                $keyTypes = array_values(array_unique($keyTypes));
-                $keyType = \count($keyTypes) > 1 ? self::union(...$keyTypes) : $keyTypes[0];
-            } else {
-                $keyType = Type::arrayKey();
-            }
-
+            $keyType = $keyTypes ? CollectionType::mergeCollectionValueTypes($keyTypes) : Type::arrayKey();
             $valueType = $valueTypes ? CollectionType::mergeCollectionValueTypes($valueTypes) : Type::mixed();
 
             return self::collection($type, $valueType, $keyType, \is_array($value) && $value && array_is_list($value));
