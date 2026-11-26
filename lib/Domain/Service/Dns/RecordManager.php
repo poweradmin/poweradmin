@@ -53,6 +53,9 @@ use Poweradmin\Infrastructure\Database\CanonicalZoneSql;
  */
 class RecordManager implements RecordManagerInterface
 {
+    // The comment column is TEXT, which holds 65535 bytes
+    private const MAX_COMMENT_BYTES = 65535;
+
     private PDO $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
@@ -297,6 +300,22 @@ class RecordManager implements RecordManagerInterface
     }
 
     /**
+     * A comment longer than the comment column holds fails after the record row is
+     * already written, so it is refused before any write. Reports whether it was refused.
+     *
+     * @param array|null $comment RRset comment ['content' => string, ...]
+     */
+    private function refuseOversizedComment(?array $comment): bool
+    {
+        if (strlen((string)($comment['content'] ?? '')) <= self::MAX_COMMENT_BYTES) {
+            return false;
+        }
+
+        $this->messageService->addSystemError(sprintf(_('The %s field must be at most %d characters.'), _('Comment'), self::MAX_COMMENT_BYTES));
+        return true;
+    }
+
+    /**
      * Add a record and return its ID
      *
      * This function validates and inserts a record into the database,
@@ -317,6 +336,10 @@ class RecordManager implements RecordManagerInterface
      */
     public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio, int $disabled = 0, ?array $comment = null): int|string|null
     {
+        if ($this->refuseOversizedComment($comment)) {
+            return null;
+        }
+
         $perm_edit = Permission::getEditPermission($this->db);
 
         $user_is_zone_owner = $this->userIsZoneOwner($zone_id);
@@ -426,6 +449,10 @@ class RecordManager implements RecordManagerInterface
      */
     public function editRecord(array $record, ?array $comment = null): bool
     {
+        if ($this->refuseOversizedComment($comment)) {
+            return false;
+        }
+
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
 
