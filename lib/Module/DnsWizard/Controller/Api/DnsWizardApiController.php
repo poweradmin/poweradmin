@@ -156,12 +156,16 @@ class DnsWizardApiController extends InternalApiController
      */
     private function validateWizardData(): JsonResponse
     {
-        $input = json_decode($this->request->getContent(), true) ?? [];
+        $input = $this->decodedInput();
         $type = $input['type'] ?? '';
         $formData = $input['formData'] ?? [];
 
         if (empty($type)) {
             return $this->returnApiError('Missing wizard type', 400);
+        }
+
+        if (!is_string($type) || !is_array($formData)) {
+            return $this->returnApiError('Invalid wizard type or form data', 400);
         }
 
         try {
@@ -186,12 +190,16 @@ class DnsWizardApiController extends InternalApiController
      */
     private function previewWizardRecord(): JsonResponse
     {
-        $input = json_decode($this->request->getContent(), true) ?? [];
+        $input = $this->decodedInput();
         $type = $input['type'] ?? '';
         $formData = $input['formData'] ?? [];
 
         if (empty($type)) {
             return $this->returnApiError('Missing wizard type', 400);
+        }
+
+        if (!is_string($type) || !is_array($formData)) {
+            return $this->returnApiError('Invalid wizard type or form data', 400);
         }
 
         try {
@@ -229,13 +237,17 @@ class DnsWizardApiController extends InternalApiController
      */
     private function parseExistingRecord(): JsonResponse
     {
-        $input = json_decode($this->request->getContent(), true) ?? [];
+        $input = $this->decodedInput();
         $type = $input['type'] ?? '';
         $content = $input['content'] ?? '';
         $recordData = $input['recordData'] ?? [];
 
         if (empty($type) || empty($content)) {
             return $this->returnApiError('Missing wizard type or record content', 400);
+        }
+
+        if (!is_string($type) || !is_string($content) || !is_array($recordData)) {
+            return $this->returnApiError('Invalid wizard type, record content or record data', 400);
         }
 
         try {
@@ -262,12 +274,16 @@ class DnsWizardApiController extends InternalApiController
      */
     private function generateRecord(): JsonResponse
     {
-        $input = json_decode($this->request->getContent(), true) ?? [];
+        $input = $this->decodedInput();
         $type = $input['type'] ?? '';
         $formData = $input['formData'] ?? [];
 
         if (empty($type)) {
             return $this->returnApiError('Missing wizard type', 400);
+        }
+
+        if (!is_string($type) || !is_array($formData)) {
+            return $this->returnApiError('Invalid wizard type or form data', 400);
         }
 
         try {
@@ -355,5 +371,15 @@ class DnsWizardApiController extends InternalApiController
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
+    }
+
+    /**
+     * @return array<string, mixed> The JSON request body, empty when it is not an object
+     */
+    private function decodedInput(): array
+    {
+        $input = json_decode($this->request->getContent(), true);
+
+        return is_array($input) ? $input : [];
     }
 }
