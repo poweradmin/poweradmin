@@ -2684,6 +2684,7 @@ return array(
     'Symfony\\Component\\Routing\\Loader\\Configurator\\RoutesReference' => $vendorDir . '/symfony/routing/Loader/Configurator/RoutesReference.php',
     'Symfony\\Component\\Routing\\Loader\\Configurator\\RoutingConfigurator' => $vendorDir . '/symfony/routing/Loader/Configurator/RoutingConfigurator.php',
     'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\AddTrait' => $vendorDir . '/symfony/routing/Loader/Configurator/Traits/AddTrait.php',
+    'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\GlobResourceTrait' => $vendorDir . '/symfony/routing/Loader/Configurator/Traits/GlobResourceTrait.php',
     'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\HostTrait' => $vendorDir . '/symfony/routing/Loader/Configurator/Traits/HostTrait.php',
     'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\LocalizedRouteTrait' => $vendorDir . '/symfony/routing/Loader/Configurator/Traits/LocalizedRouteTrait.php',
     'Symfony\\Component\\Routing\\Loader\\Configurator\\Traits\\PrefixTrait' => $vendorDir . '/symfony/routing/Loader/Configurator/Traits/PrefixTrait.php',

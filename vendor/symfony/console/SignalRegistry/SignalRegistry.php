@@ -64,6 +64,14 @@ final class SignalRegistry
      */
     public function handle(int $signal): void
     {
+        // PHP cannot autoload a class that is already being autoloaded, so a handler that needs it would fail.
+        // An alarm can be retried a second later; other signals cannot be delayed and run right away.
+        if (\SIGALRM === $signal && self::isAutoloading()) {
+            pcntl_alarm(1);
+
+            return;
+        }
+
         $count = \count($this->signalHandlers[$signal]);
 
         foreach ($this->signalHandlers[$signal] as $i => $signalHandler) {
@@ -131,5 +139,34 @@ final class SignalRegistry
     public function scheduleAlarm(int $seconds): void
     {
         pcntl_alarm($seconds);
+    }
+
+    private static function isAutoloading(): bool
+    {
+        $autoloaders = ['spl_autoload_call' => [null]];
+
+        foreach (spl_autoload_functions() as $autoloader) {
+            if ($autoloader instanceof \Closure) {
+                $r = new \ReflectionFunction($autoloader);
+                $autoloader = [$r->getClosureThis() ?? $r->getClosureScopeClass()?->name, $r->name];
+            } elseif (\is_object($autoloader)) {
+                $autoloader = [$autoloader, '__invoke'];
+            } elseif (\is_string($autoloader)) {
+                $autoloader = [null, $autoloader];
+            }
+
+            // Before PHP 8.4, all closures are named "{closure}" in stack frames, so they cannot be told apart
+            if (!str_ends_with($autoloader[1], '{closure}')) {
+                $autoloaders[$autoloader[1]][] = $autoloader[0];
+            }
+        }
+
+        foreach (debug_backtrace(\DEBUG_BACKTRACE_PROVIDE_OBJECT | \DEBUG_BACKTRACE_IGNORE_ARGS) as $frame) {
+            if (\in_array($frame['object'] ?? $frame['class'] ?? null, $autoloaders[$frame['function']] ?? [], true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
