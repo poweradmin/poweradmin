@@ -105,20 +105,8 @@ class DbZoneLoggerFilterTest extends TestCase
         $count = $logger->countFilteredLogs([], [10, 20, 30]);
 
         $this->assertSame(7, $count);
-        $this->assertStringContainsString(
-            'log_zones.zone_id IN (:zone_owner_id_0, :zone_owner_id_1, :zone_owner_id_2)',
-            $capturedSql
-        );
-
-        $idBinds = array_values(array_filter(
-            $boundParams,
-            fn($b) => str_starts_with($b['key'], ':zone_owner_id_')
-        ));
-        $this->assertCount(3, $idBinds);
-        $this->assertSame(10, $idBinds[0]['value']);
-        $this->assertSame(PDO::PARAM_INT, $idBinds[0]['type']);
-        $this->assertSame(20, $idBinds[1]['value']);
-        $this->assertSame(30, $idBinds[2]['value']);
+        $this->assertStringContainsString('log_zones.zone_id IN (10, 20, 30)', $capturedSql);
+        $this->assertSame([], $boundParams);
     }
 
     public function testGetFilteredLogsWithZoneIdsAppendsInClauseAndBindsLimitOffset(): void
@@ -144,17 +132,45 @@ class DbZoneLoggerFilterTest extends TestCase
         $logger = new DbZoneLogger($this->db);
         $logger->getFilteredLogs([], 25, 50, [11, 22]);
 
-        $this->assertStringContainsString(
-            'log_zones.zone_id IN (:zone_owner_id_0, :zone_owner_id_1)',
-            $capturedSql
-        );
+        $this->assertStringContainsString('log_zones.zone_id IN (11, 22)', $capturedSql);
         $this->assertStringContainsString('LIMIT :limit OFFSET :offset', $capturedSql);
 
         $keys = array_column($boundParams, 'key');
         $this->assertContains(':limit', $keys);
         $this->assertContains(':offset', $keys);
-        $this->assertContains(':zone_owner_id_0', $keys);
-        $this->assertContains(':zone_owner_id_1', $keys);
+        $this->assertSame([], array_filter($keys, fn($k) => str_starts_with($k, ':zone_owner_id_')));
+    }
+
+    public function testALargeZoneIdListBindsNoPlaceholderPerId(): void
+    {
+        $ids = range(1, 5000);
+        $captured = [];
+        $keys = [];
+        $stmt = $this->createMock(PDOStatement::class);
+        $stmt->method('bindValue')->willReturnCallback(function ($key) use (&$keys) {
+            $keys[] = $key;
+            return true;
+        });
+        $stmt->method('execute')->willReturn(true);
+        $stmt->method('fetch')->willReturn(['number_of_logs' => 0]);
+        $stmt->method('fetchAll')->willReturn([]);
+        $this->db->method('prepare')->willReturnCallback(function (string $sql) use (&$captured, $stmt) {
+            $captured[] = $sql;
+            return $stmt;
+        });
+
+        $logger = new DbZoneLogger($this->db);
+        $logger->countFilteredLogs([], $ids);
+        $logger->getFilteredLogs([], 25, 0, $ids);
+        $logger->getDistinctUsersForZones($ids);
+
+        $this->assertCount(3, $captured);
+        foreach ($captured as $sql) {
+            $this->assertStringContainsString('IN (1, 2, 3,', $sql);
+            $this->assertStringNotContainsString(':zone_owner_id_', $sql);
+            $this->assertStringNotContainsString(':z0', $sql);
+        }
+        $this->assertLessThan(10, count($keys));
     }
 
     public function testZoneIdFilterCombinesWithNameAndDateFilters(): void
@@ -182,7 +198,7 @@ class DbZoneLoggerFilterTest extends TestCase
         $this->assertStringContainsString('INNER JOIN', $capturedSql);
         $this->assertStringContainsString('domains.name LIKE :search_by', $capturedSql);
         $this->assertStringContainsString('log_zones.created_at >= :date_from', $capturedSql);
-        $this->assertStringContainsString('log_zones.zone_id IN (:zone_owner_id_0)', $capturedSql);
+        $this->assertStringContainsString('log_zones.zone_id IN (42)', $capturedSql);
         $this->assertSame(2, substr_count($capturedSql, ' AND '));
     }
 
@@ -195,7 +211,7 @@ class DbZoneLoggerFilterTest extends TestCase
         $this->assertSame([], $logger->getDistinctUsersForZones([]));
     }
 
-    public function testGetDistinctUsersForZonesParameterizesZoneIds(): void
+    public function testGetDistinctUsersForZonesInlinesIntegerZoneIds(): void
     {
         $capturedSql = null;
         $boundParams = [];
@@ -219,17 +235,9 @@ class DbZoneLoggerFilterTest extends TestCase
         $users = $logger->getDistinctUsersForZones([5, 9]);
 
         $this->assertSame(['alice', 'bob'], $users);
-        $this->assertStringContainsString('lz.zone_id IN (:z0, :z1)', $capturedSql);
+        $this->assertStringContainsString('lz.zone_id IN (5, 9)', $capturedSql);
         $this->assertStringContainsString('CONCAT(', $capturedSql);
-
-        $idBinds = array_values(array_filter(
-            $boundParams,
-            fn($b) => in_array($b['key'], [':z0', ':z1'], true)
-        ));
-        $this->assertCount(2, $idBinds);
-        $this->assertSame(5, $idBinds[0]['value']);
-        $this->assertSame(PDO::PARAM_INT, $idBinds[0]['type']);
-        $this->assertSame(9, $idBinds[1]['value']);
+        $this->assertSame([], $boundParams);
     }
 
     /**
