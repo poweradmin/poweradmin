@@ -208,6 +208,17 @@ class RecordEditServiceTest extends TestCase
         $this->assertSame('The comment field contains invalid characters.', $result->write->message);
     }
 
+    public function testACommentOverTheStorageLimitIsRefusedBeforeAnyWrite(): void
+    {
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $this->comments->expects($this->never())->method('updateCommentForRecord');
+
+        $result = $this->service()->edit($this->request(['comment' => str_repeat('a', 65536)]));
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame('The comment field must be at most 65535 bytes.', $result->write->message);
+    }
+
     public function testTheEditIsAuditedWithTheRowBeforeAndTheRereadRowAfter(): void
     {
         $this->audit->expects($this->once())->method('logRecordEdit')->with(self::ZONE_ID, $this->current, $this->reread);

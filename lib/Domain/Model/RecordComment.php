@@ -82,6 +82,19 @@ readonly class RecordComment
         return $this->comment;
     }
 
+    /** What the comments table can hold (a TEXT column). */
+    public const MAX_BYTES = 65535;
+
+    public static function exceedsLimit(string $comment): bool
+    {
+        return strlen($comment) > self::MAX_BYTES;
+    }
+
+    public static function tooLongMessage(): string
+    {
+        return sprintf(_('The %s field must be at most %d bytes.'), 'comment', self::MAX_BYTES);
+    }
+
     public static function create(
         int $domainId,
         string $name,

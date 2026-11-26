@@ -173,6 +173,18 @@ class ZoneEditServiceTest extends TestCase
         }
     }
 
+    public function testARowCommentOverTheStorageLimitIsRefusedAndNothingIsWritten(): void
+    {
+        $this->zones->expects($this->never())->method('updateZoneComment');
+        $this->recordManager->expects($this->never())->method('editRecord');
+        $this->recordManager->expects($this->never())->method('finalizeZone');
+
+        $result = $this->makeService()->save($this->submission([$this->row('5', 'www', '192.0.2.1', comment: str_repeat('a', 65536))]));
+
+        $this->assertSame(ZoneSaveOutcome::WRITE_FAILED, $result->outcome);
+        $this->assertSame(['The comment field must be at most 65535 bytes.'], $result->errors);
+    }
+
     public function testAnAbsentZoneCommentKeepsTheStoredOne(): void
     {
         $this->zones = $this->createMock(ZoneRepositoryInterface::class);

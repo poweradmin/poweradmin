@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service\Zone;
 
 use Poweradmin\Domain\Enum\ZoneSaveOutcome;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\RecordCommentEditorInterface;
@@ -118,6 +119,11 @@ class ZoneEditService
 
         if (!$this->commentsAreValidText($submission)) {
             return new ZoneSaveResult(ZoneSaveOutcome::WRITE_FAILED, errors: [sprintf(_('The %s field contains invalid characters.'), 'comment')]);
+        }
+        foreach ($submission->rows as $row) {
+            if ($row->comment !== null && RecordComment::exceedsLimit($row->comment)) {
+                return new ZoneSaveResult(ZoneSaveOutcome::WRITE_FAILED, errors: [RecordComment::tooLongMessage()]);
+            }
         }
 
         // A truncated submission lost its trailing fields, so the zone comment must

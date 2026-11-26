@@ -256,6 +256,16 @@ class ZonesRecordsBulkControllerTest extends V2ControllerTestCase
         $this->assertSame(['Operation 0 (create): Disabled field must be 0 or 1'], $this->decode($response)['data']['errors']);
     }
 
+    public function testACommentOverTheStorageLimitFailsTheBatchBeforeTheWrite(): void
+    {
+        $this->recordManager->expects($this->never())->method('addRecordGetId');
+
+        $response = $this->bulk(['operations' => [$this->createOperation(['comment' => str_repeat('a', 65536)])]]);
+
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(['Operation 0 (create): The comment field must be at most 65535 bytes.'], $this->decode($response)['data']['errors']);
+    }
+
     public function testACreateMissingARequiredFieldFailsTheWholeBatch(): void
     {
         $this->recordManager->method('addRecordGetId')->willReturn(RecordWriteResult::ok(1));

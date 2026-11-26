@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service\Record;
 
 use Closure;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\Zone\ChangeApprovalPolicy;
@@ -112,6 +113,9 @@ class RecordAddService
     ): RecordAddResult {
         if (!mb_check_encoding($comment, 'UTF-8')) {
             return RecordAddResult::refused(RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment')));
+        }
+        if (RecordComment::exceedsLimit($comment)) {
+            return RecordAddResult::refused(RecordWriteResult::failure(RecordComment::tooLongMessage()));
         }
 
         $ttl ??= $this->ttlResolver->resolveTtlForType($type, DnsHelper::isReverseZoneName($zoneName));

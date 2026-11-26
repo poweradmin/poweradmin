@@ -232,6 +232,18 @@ class RecordAddServiceTest extends TestCase
         $this->assertSame(Refusal::INVALID_INPUT, $result->record->refusal);
     }
 
+    public function testRefusesACommentOverTheStorageLimitBeforeAnyWrite(): void
+    {
+        $records = $this->createMock(RecordManagerService::class);
+        $records->expects($this->never())->method('createRecord');
+
+        $result = $this->makeService($records)
+            ->add(5, 'example.com', 'www', 'A', '192.0.2.1', 60, 0, str_repeat('a', 65536), 7, 'alice');
+
+        $this->assertFalse($result->isOk());
+        $this->assertSame('The comment field must be at most 65535 bytes.', $result->record->message);
+    }
+
     public function testRefusesTheWriteWhenTheUserMayNotEditTheZone(): void
     {
         $records = $this->createMock(RecordManagerService::class);

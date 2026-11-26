@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service\Record;
 
 use Closure;
 use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepositoryInterface;
@@ -98,6 +99,9 @@ class RecordManagerService
     ): RecordWriteResult {
         if (!mb_check_encoding($comment, 'UTF-8')) {
             return RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment'));
+        }
+        if (RecordComment::exceedsLimit($comment)) {
+            return RecordWriteResult::failure(RecordComment::tooLongMessage());
         }
 
         $zone_name = $this->domainRepository->getDomainNameById($zone_id);

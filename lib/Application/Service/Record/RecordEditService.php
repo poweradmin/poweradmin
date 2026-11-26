@@ -26,6 +26,7 @@ use Closure;
 use Exception;
 use Poweradmin\Application\Service\Zone\ChangeApprovalContext;
 use Poweradmin\Domain\Config\ConfigurationInterface;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Port\AuditLoggerInterface;
 use Poweradmin\Domain\Port\ZoneCacheFlusherInterface;
@@ -73,6 +74,9 @@ class RecordEditService
     {
         if ($request->comment !== null && !mb_check_encoding($request->comment, 'UTF-8')) {
             return RecordEditResult::refused(RecordWriteResult::failure(sprintf(_('The %s field contains invalid characters.'), 'comment')));
+        }
+        if ($request->comment !== null && RecordComment::exceedsLimit($request->comment)) {
+            return RecordEditResult::refused(RecordWriteResult::failure(RecordComment::tooLongMessage()));
         }
 
         $name = DnsHelper::restoreZoneSuffix(DnsIdnService::toPunycode($request->name), $request->zoneName);

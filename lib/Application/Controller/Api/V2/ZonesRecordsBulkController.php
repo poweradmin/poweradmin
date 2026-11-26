@@ -26,6 +26,7 @@ use Closure;
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Model\ApiKeyScope;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Auth\ApiPermissionService;
@@ -515,6 +516,9 @@ class ZonesRecordsBulkController extends PublicApiController
         // the batch bumps the serial and rectifies once at the end.
         // API backend: the comment rides in the RRset PATCH, as on a single POST.
         $comment = trim((string)$this->inputString($operation, 'comment', ''));
+        if (RecordComment::exceedsLimit($comment)) {
+            throw new ApiErrorException(RecordComment::tooLongMessage(), 400);
+        }
         $username = $this->getAuthenticatedUsername();
         $rrsetComment = $comment === '' ? null : ['content' => $comment, 'account' => $username];
         $created = $this->recordManager->addRecordGetId($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled, false, $rrsetComment, $this->validateOnly);
@@ -694,6 +698,9 @@ class ZonesRecordsBulkController extends PublicApiController
         $content = array_key_exists('content', $operation) ? trim($content) : DnsRecordValidationService::healStoredContent($content);
         // Trimmed as on create; whitespace-only becomes '' and clears the comment
         $comment = $comment === null ? null : trim($comment);
+        if ($comment !== null && RecordComment::exceedsLimit($comment)) {
+            throw new ApiErrorException(RecordComment::tooLongMessage(), 400);
+        }
         // A TTL of 0 is RFC-valid ("do not cache") and TTLValidator accepts it, so
         // only a negative value is refused here. An update that leaves ttl out
         // inherits the stored value and must not be rejected for it.

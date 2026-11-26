@@ -68,6 +68,15 @@ final class RecordManagerServiceCommentEncodingTest extends TestCase
         $this->assertSame('The comment field contains invalid characters.', $result->message);
     }
 
+    public function testACommentOverTheStorageLimitRefusesTheRecordBeforeAnythingIsWritten(): void
+    {
+        $result = $this->service(0)->createRecord(1, 'host', 'A', '192.0.2.1', 3600, 0, str_repeat('é', 32768), 'admin');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('The comment field must be at most 65535 bytes.', $result->message);
+        $this->assertTrue($this->service(1)->createRecord(1, 'host', 'A', '192.0.2.1', 3600, 0, str_repeat('a', 65535), 'admin')->success);
+    }
+
     public function testAValidMultibyteCommentIsStored(): void
     {
         $this->assertTrue($this->service(1)->createRecord(1, 'host', 'A', '192.0.2.1', 3600, 0, 'sveiki, pasauli ąčę', 'admin')->success);
